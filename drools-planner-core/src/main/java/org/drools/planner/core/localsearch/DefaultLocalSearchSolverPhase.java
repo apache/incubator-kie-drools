@@ -20,6 +20,7 @@ import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
@@ -87,6 +88,12 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         return localSearchStepScope;
     }
 
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        decider.solvingStarted(solverScope);
+    }
+
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseStarted(localSearchSolverPhaseScope);
         decider.phaseStarted(localSearchSolverPhaseScope);
@@ -123,6 +130,12 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
                 new Object[]{localSearchSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 localSearchSolverPhaseScope.calculateSolverTimeMillisSpend(),
                 localSearchSolverPhaseScope.getBestScore()});
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        decider.solvingEnded(solverScope);
     }
 
 }

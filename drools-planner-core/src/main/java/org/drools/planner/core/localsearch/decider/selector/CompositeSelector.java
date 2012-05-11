@@ -24,7 +24,9 @@ import java.util.Random;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
+import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * A CompositeSelector unions multiple Selectors.
@@ -48,6 +50,13 @@ public class CompositeSelector extends AbstractSelector {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        for (Selector selector : selectorList) {
+            selector.solvingStarted(solverScope);
+        }
+    }
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
@@ -86,6 +95,13 @@ public class CompositeSelector extends AbstractSelector {
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         for (Selector selector : selectorList) {
             selector.phaseEnded(localSearchSolverPhaseScope);
+        }
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        for (Selector selector : selectorList) {
+            selector.solvingEnded(solverScope);
         }
     }
 

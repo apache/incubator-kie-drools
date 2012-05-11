@@ -19,10 +19,12 @@ package org.drools.planner.core.move.factory;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMoveFactory implements MoveFactory {
+public abstract class AbstractMoveFactory extends LocalSearchSolverPhaseLifecycleListenerAdapter
+        implements MoveFactory {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,21 +37,5 @@ public abstract class AbstractMoveFactory implements MoveFactory {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
 
 }

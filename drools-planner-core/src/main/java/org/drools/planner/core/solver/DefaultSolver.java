@@ -171,6 +171,9 @@ public class DefaultSolver implements Solver {
         }
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
+        for (SolverPhase solverPhase : solverPhaseList) {
+            solverPhase.solvingStarted(solverScope);
+        }
         logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
                 new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
                         solverScope.getBestScore(), (randomSeed != null ? randomSeed : "not fixed")});
@@ -189,6 +192,9 @@ public class DefaultSolver implements Solver {
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
+        for (SolverPhase solverPhase : solverPhaseList) {
+            solverPhase.solvingEnded(solverScope);
+        }
         bestSolutionRecaller.solvingEnded(solverScope);
         long timeMillisSpend = solverScope.calculateTimeMillisSpend();
         if (timeMillisSpend == 0L) {

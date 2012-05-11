@@ -17,6 +17,7 @@
 package org.drools.planner.core.termination;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class PhaseToSolverTerminationBridge extends AbstractTermination {
@@ -30,6 +31,36 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+    }
+
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+    }
+
+    @Override
+    public void stepStarted(AbstractStepScope stepScope) {
+        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+    }
+
+    @Override
+    public void stepEnded(AbstractStepScope stepScope) {
+        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+    }
+
+    @Override
+    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+    }
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(

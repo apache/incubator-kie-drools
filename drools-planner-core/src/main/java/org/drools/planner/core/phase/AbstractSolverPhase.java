@@ -21,6 +21,7 @@ import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @see DefaultLocalSearchSolverPhase
  */
-public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLifecycleListener {
+public abstract class AbstractSolverPhase implements SolverPhase {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -50,24 +51,39 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
     // Worker methods
     // ************************************************************************
 
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
+        termination.solvingStarted(solverScope);
+        solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
+    }
+
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
+        termination.solvingEnded(solverScope);
+        solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
+    }
+
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         solverPhaseScope.reset();
+        bestSolutionRecaller.phaseStarted(solverPhaseScope);
         termination.phaseStarted(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
     }
 
     public void stepStarted(AbstractStepScope stepScope) {
+        bestSolutionRecaller.stepStarted(stepScope);
         termination.stepStarted(stepScope);
         solverPhaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
     public void stepEnded(AbstractStepScope stepScope) {
-        bestSolutionRecaller.extractBestSolution(stepScope);
+        bestSolutionRecaller.stepEnded(stepScope);
         termination.stepEnded(stepScope);
         solverPhaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+        bestSolutionRecaller.phaseEnded(solverPhaseScope);
         termination.phaseEnded(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
     }

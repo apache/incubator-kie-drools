@@ -27,6 +27,7 @@ import org.drools.planner.core.localsearch.decider.selector.Selector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +79,12 @@ public class DefaultDecider implements Decider {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        selector.solvingStarted(solverScope);
+        acceptor.solvingStarted(solverScope);
+        forager.solvingStarted(solverScope);
+    }
 
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         selector.phaseStarted(localSearchSolverPhaseScope);
@@ -174,6 +181,12 @@ public class DefaultDecider implements Decider {
         selector.phaseEnded(localSearchSolverPhaseScope);
         acceptor.phaseEnded(localSearchSolverPhaseScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
+    }
+
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        selector.solvingEnded(solverScope);
+        acceptor.solvingEnded(solverScope);
+        forager.solvingEnded(solverScope);
     }
 
 }

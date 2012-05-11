@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * Combines several acceptors into one.
@@ -38,6 +39,13 @@ public class CompositeAcceptor extends AbstractAcceptor {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        for (Acceptor acceptor : acceptorList) {
+            acceptor.solvingStarted(solverScope);
+        }
+    }
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
@@ -74,6 +82,13 @@ public class CompositeAcceptor extends AbstractAcceptor {
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         for (Acceptor acceptor : acceptorList) {
             acceptor.phaseEnded(localSearchSolverPhaseScope);
+        }
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        for (Acceptor acceptor : acceptorList) {
+            acceptor.solvingEnded(solverScope);
         }
     }
 

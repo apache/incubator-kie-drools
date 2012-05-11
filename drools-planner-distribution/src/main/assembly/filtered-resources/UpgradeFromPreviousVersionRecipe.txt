@@ -1971,7 +1971,8 @@ Before in *BenchmarkConfig.xml:
 Before in *BenchmarkConfig.xml:
     <statisticDirectory>...</>
 
-[MINOR] If you've implemented a custom Termination, Selector, Acceptor or Forager: 2 lifecycle methods have been renamed
+[MINOR] If you've implemented a custom MoveFactory, Termination, Selector, Acceptor or Forager
+and if you have overridden lifecycle methods (which is unlikely): 2 lifecycle methods have been renamed.
 The method beforeDeciding is renamed to stepStarted and the method stepTaken is renamed to stepEnded.
 Before in *.java:
     public void beforeDeciding(...) {
@@ -1989,3 +1990,9 @@ After in *.java:
     public void stepEnded(...) {
        ...
     }
+
+[MINOR] If you've implemented a custom BestSolutionRecaller, the method extractBestSolution is renamed to stepEnded.
+Before in *SolutionRecaller.java:
+    public void extractBestSolution(AbstractStepScope stepScope) {...}
+Before in *SolutionRecaller.java:
+    public void stepEnded(AbstractStepScope stepScope) {...}

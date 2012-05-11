@@ -26,6 +26,7 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
@@ -54,6 +55,10 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     // Lifecycle methods
     // ************************************************************************
 
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        planningValueSelector.solvingStarted(solverScope);
+    }
+
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         planningValueSelector.phaseStarted(solverPhaseScope);
         scoreDirector = solverPhaseScope.getScoreDirector();
@@ -73,6 +78,10 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         planningEntity = null;
         isFirstValue = false;
         workingValue = null;
+    }
+
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        planningValueSelector.solvingEnded(solverScope);
     }
 
     // ************************************************************************

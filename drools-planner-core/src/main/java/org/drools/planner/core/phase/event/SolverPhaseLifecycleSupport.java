@@ -21,11 +21,19 @@ import java.util.Iterator;
 import org.drools.event.AbstractEventSupport;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * Internal API.
  */
 public class SolverPhaseLifecycleSupport extends AbstractEventSupport<SolverPhaseLifecycleListener> {
+
+    public void fireSolvingStarted(DefaultSolverScope solverScope) {
+        final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
+        while (iter.hasNext()) {
+            iter.next().solvingStarted(solverScope);
+        }
+    }
 
     public void firePhaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
@@ -52,6 +60,13 @@ public class SolverPhaseLifecycleSupport extends AbstractEventSupport<SolverPhas
         final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
         while (iter.hasNext()) {
             iter.next().phaseEnded(solverPhaseScope);
+        }
+    }
+
+    public void fireSolvingEnded(DefaultSolverScope solverScope) {
+        final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
+        while (iter.hasNext()) {
+            iter.next().solvingEnded(solverScope);
         }
     }
 

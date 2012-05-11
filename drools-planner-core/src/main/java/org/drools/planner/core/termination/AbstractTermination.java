@@ -17,6 +17,7 @@
 package org.drools.planner.core.termination;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
@@ -25,36 +26,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract superclass for {@link Termination}.
  */
-public abstract class AbstractTermination implements Termination {
+public abstract class AbstractTermination extends SolverPhaseLifecycleListenerAdapter implements Termination {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    public void solvingStarted(DefaultSolverScope solverScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void stepStarted(AbstractStepScope stepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void stepEnded(AbstractStepScope stepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void solvingEnded(DefaultSolverScope solverScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
 
 }

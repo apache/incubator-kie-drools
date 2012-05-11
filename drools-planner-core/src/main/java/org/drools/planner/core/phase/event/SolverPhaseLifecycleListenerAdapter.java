@@ -18,8 +18,10 @@ package org.drools.planner.core.phase.event;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.event.SolverLifecycleListenerAdapter;
 
-public abstract class SolverPhaseLifecycleListenerAdapter implements SolverPhaseLifecycleListener {
+public abstract class SolverPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
+        implements SolverPhaseLifecycleListener {
 
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         // Hook method

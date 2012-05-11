@@ -23,7 +23,7 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  * A SolverPhase
  * @see AbstractSolverPhase
  */
-public interface SolverPhase {
+public interface SolverPhase extends SolverPhaseLifecycleListener {
 
     void solve(DefaultSolverScope solverScope);
 

@@ -19,6 +19,8 @@ package org.drools.planner.core.bestsolution;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A BestSolutionRecaller remembers the best solution that a {@link Solver} encounters.
  */
-public class BestSolutionRecaller implements SolverLifecycleListener {
+public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -44,6 +46,7 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         // Starting bestSolution is already set by Solver.setPlanningProblem()
         boolean workingSolutionInitialized = solverScope.isWorkingSolutionInitialized();
@@ -59,7 +62,8 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
         solverScope.getBestSolution().setScore(startingInitializedScore);
     }
 
-    public void extractBestSolution(AbstractStepScope stepScope) {
+    @Override
+    public void stepEnded(AbstractStepScope stepScope) {
         if (!stepScope.isSolutionInitialized()) {
             return;
         }
@@ -86,9 +90,6 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
         solverScope.setBestSolution(newBestSolution);
         solverScope.setBestScore(newBestSolution.getScore());
         solverEventSupport.fireBestSolutionChanged(newBestSolution);
-    }
-
-    public void solvingEnded(DefaultSolverScope solverScope) {
     }
 
 }

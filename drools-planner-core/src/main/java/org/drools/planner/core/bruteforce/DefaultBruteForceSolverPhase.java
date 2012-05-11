@@ -65,6 +65,13 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         return bruteForceStepScope;
     }
 
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        // TODO hook the walker up in the solver lifecycle (this will probably be fixed by selector unification)
+//        bruteForceEntityWalker.solvingStarted(solverScope);
+    }
+
     public void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
         super.phaseStarted(bruteForceSolverPhaseScope);
         bruteForceEntityWalker.phaseStarted(bruteForceSolverPhaseScope);
@@ -89,6 +96,13 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
                 new Object[]{bruteForceSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend(),
                 bruteForceSolverPhaseScope.getBestScore()});
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        // TODO hook the walker up in the solver lifecycle (this will probably be fixed by selector unification)
+//        bruteForceEntityWalker.solvingEnded(solverScope);
     }
 
 }

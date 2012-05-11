@@ -96,6 +96,14 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         return greedyFitStepScope;
     }
 
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        // TODO hook the walker up in the solver lifecycle (this will probably be fixed by selector unification)
+//        greedyPlanningEntitySelector.solvingStarted(solverScope);
+//        greedyDecider.solvingStarted(solverScope);
+    }
+
     public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         super.phaseStarted(greedyFitSolverPhaseScope);
         greedyPlanningEntitySelector.phaseStarted(greedyFitSolverPhaseScope);
@@ -127,6 +135,14 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
                 new Object[]{greedyFitSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 greedyFitSolverPhaseScope.calculateSolverTimeMillisSpend(),
                 greedyFitSolverPhaseScope.getBestScore()});
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        // TODO hook the walker up in the solver lifecycle (this will probably be fixed by selector unification)
+//        greedyPlanningEntitySelector.solvingEnded(solverScope);
+//        greedyDecider.solvingEnded(solverScope);
     }
 
 }

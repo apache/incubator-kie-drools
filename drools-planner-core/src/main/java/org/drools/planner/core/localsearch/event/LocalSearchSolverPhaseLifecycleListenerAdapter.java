@@ -18,8 +18,10 @@ package org.drools.planner.core.localsearch.event;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.solver.event.SolverLifecycleListenerAdapter;
 
-public abstract class LocalSearchSolverPhaseLifecycleListenerAdapter implements LocalSearchSolverPhaseLifecycleListener {
+public abstract class LocalSearchSolverPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
+        implements LocalSearchSolverPhaseLifecycleListener {
 
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         // Hook method

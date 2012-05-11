@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,14 +16,16 @@
 
 package org.drools.planner.core.solver.event;
 
-import java.util.EventListener;
-
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-public interface SolverLifecycleListener extends EventListener {
+public abstract class SolverLifecycleListenerAdapter implements SolverLifecycleListener {
 
-    void solvingStarted(DefaultSolverScope solverScope);
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        // Hook method
+    }
 
-    void solvingEnded(DefaultSolverScope solverScope);
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        // Hook method
+    }
 
 }

@@ -28,7 +28,7 @@ import org.drools.planner.core.solver.event.SolverLifecycleListener;
 /**
  * A Termination determines when a {@link Solver} or a {@link SolverPhase} should stop.
  */
-public interface Termination extends SolverLifecycleListener, SolverPhaseLifecycleListener {
+public interface Termination extends SolverPhaseLifecycleListener {
 
     /**
      * Called by the {@link Solver} after every phase to determine if the search should stop.

@@ -20,8 +20,9 @@ import java.util.EventListener;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.solver.event.SolverLifecycleListener;
 
-public interface LocalSearchSolverPhaseLifecycleListener extends EventListener {
+public interface LocalSearchSolverPhaseLifecycleListener extends SolverLifecycleListener {
 
     void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope);
 
