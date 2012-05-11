@@ -1195,16 +1195,15 @@ public class DefaultAgenda
                     final AgendaItem item = (AgendaItem) group.getNext();
                     // if there is an item to fire from that group
                     if ( item != null ) {
-                        //if the rule will be fired or not, it is necessary the routine bellow to clean up ruleflow activations
+                        // if that item is allowed to fire
+                        // The routine bellow cleans up ruleflow activations
+                        InternalRuleFlowGroup ruleFlowGroup = null;
                         if ( item.getActivationNode() != null ) {
-                            InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) item.getActivationNode().getParentContainer();
+                            ruleFlowGroup = (InternalRuleFlowGroup) item.getActivationNode().getParentContainer();
                             // it is possible that the ruleflow group is no longer active if it was
                             // cleared during execution of this activation
                             ruleFlowGroup.removeActivation( item );
-                            ruleFlowGroup.deactivateIfEmpty();
                         }
-
-                        // if that item is allowed to fire
                         if ( filter == null || filter.accept( item ) ) {
                             // fire it
                             fireActivation( item );
@@ -1221,6 +1220,11 @@ public class DefaultAgenda
                                                                                           ActivationCancelledCause.FILTER );
                             tryagain = true;
                         }
+                        // The routine bellow cleans up ruleflow activations
+                        if ( ruleFlowGroup != null ) {
+                            ruleFlowGroup.deactivateIfEmpty();
+                        }
+
                     }
                 }
             } while ( tryagain );
