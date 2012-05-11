@@ -16,12 +16,8 @@
 
 package org.drools.planner.core.heuristic.selector.entity.cached;
 
-import java.util.Collections;
-
 import org.drools.planner.core.domain.entity.PlanningEntitySorter;
-import org.drools.planner.core.heuristic.selector.cached.SelectorCacheType;
-import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
-import org.drools.planner.core.heuristic.selector.move.cached.CachingMoveSelector;
+import org.drools.planner.core.heuristic.selector.common.SelectorCacheType;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 // TODO Refactor to general purpose SortingEntitySelector

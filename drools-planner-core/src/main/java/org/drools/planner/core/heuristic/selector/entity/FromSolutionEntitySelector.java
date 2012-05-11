@@ -18,8 +18,10 @@ package org.drools.planner.core.heuristic.selector.entity;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.heuristic.selector.common.RandomIterator;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 
 /**
@@ -28,12 +30,23 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     private PlanningEntityDescriptor entityDescriptor;
+    private boolean randomSelection = false;
     private long randomProbabilityWeight = 1L;
+
+    private Random workingRandom = null;
 
     private List<Object> entityList = null;
 
     public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor) {
         this.entityDescriptor = entityDescriptor;
+    }
+
+    public boolean isRandomSelection() {
+        return randomSelection;
+    }
+
+    public void setRandomSelection(boolean randomSelection) {
+        this.randomSelection = randomSelection;
     }
 
     public long getRandomProbabilityWeight() {
@@ -51,6 +64,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseStarted(solverPhaseScope);
+        workingRandom = solverPhaseScope.getWorkingRandom();
         // TODO if entities are added and removed by moves, then this caching is broken
         entityList = entityDescriptor.extractEntities(solverPhaseScope.getWorkingSolution());
     }
@@ -62,6 +76,9 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public Iterator<Object> iterator() {
+        if (randomSelection) {
+            new RandomIterator(entityList, workingRandom);
+        }
         return entityList.iterator();
     }
 
@@ -70,7 +87,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public boolean isNeverEnding() {
-        return false;
+        return !randomSelection;
     }
 
     public long getSize() {
