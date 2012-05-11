@@ -264,6 +264,8 @@ public class DefaultAgenda
      *            The item to schedule.
      */
     public void scheduleItem(final ScheduledAgendaItem item, final InternalWorkingMemory wm) {
+        this.scheduledActivations.add( item );
+        item.setEnqueued( true );
         if( item.getPropagationContext().getReaderContext() == null ) {
             // this is not a serialization propagation, so schedule it
             // otherwise the timer will be correlated with this activation later during the 
@@ -272,8 +274,6 @@ public class DefaultAgenda
                                           this,
                                           wm );
         }
-        this.scheduledActivations.add( item );
-        item.setEnqueued( true );
     }
 
     
@@ -439,7 +439,12 @@ public class DefaultAgenda
         
         final Timer timer = rule.getTimer();
         if ( timer != null && item instanceof ScheduledAgendaItem ) {
-            scheduleItem( (ScheduledAgendaItem) item,
+            ScheduledAgendaItem sitem = (ScheduledAgendaItem) item;
+            if ( sitem.isEnqueued() ) {
+                // it's about to be re-added to scheduled list, so remove first
+                this.scheduledActivations.remove( sitem );
+            }
+            scheduleItem( sitem,
                           workingMemory );
         } else {                
             InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup( rule.getAgendaGroup() );
