@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.move.cached;
+package org.drools.planner.core.heuristic.selector.entity.cached;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,29 +22,29 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.heuristic.selector.cached.SelectorCacheType;
-import org.drools.planner.core.heuristic.selector.entity.cached.CachingEntitySelector;
-import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.move.cached.CachingMoveSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
- * A {@link MoveSelector} that caches the result of its child {@link MoveSelector}.
+ * A {@link EntitySelector} that caches the result of its child {@link EntitySelector}.
  * <p/>
- * Keep this code in sync with {@link CachingEntitySelector}.
+ * Keep this code in sync with {@link CachingMoveSelector}.
  */
-public class CachingMoveSelector extends AbstractMoveSelector {
+public class CachingEntitySelector extends AbstractEntitySelector {
 
     protected final SelectorCacheType cacheType;
-    protected MoveSelector childMoveSelector;
+    protected EntitySelector childEntitySelector;
 
     protected long cachedSize = -1L;
-    protected List<Move> cachedMoveList = null;
+    protected List<Object> cachedEntityList = null;
     protected long cachedRandomProbabilityWeight = -1L;
 
-    public CachingMoveSelector(SelectorCacheType cacheType) {
+    public CachingEntitySelector(SelectorCacheType cacheType) {
         this.cacheType = cacheType;
         if (cacheType != SelectorCacheType.SOLVER && cacheType != SelectorCacheType.PHASE
                 && cacheType != SelectorCacheType.STEP) {
@@ -53,15 +53,15 @@ public class CachingMoveSelector extends AbstractMoveSelector {
         }
     }
 
-    public MoveSelector getChildMoveSelector() {
-        return childMoveSelector;
+    public EntitySelector getChildEntitySelector() {
+        return childEntitySelector;
     }
 
-    public void setChildMoveSelector(MoveSelector childMoveSelector) {
-        this.childMoveSelector = childMoveSelector;
-        if (childMoveSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childMoveSelector (" + childMoveSelector + ") has sizeInfinite ("
-                    + childMoveSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+    public void setChildEntitySelector(EntitySelector childEntitySelector) {
+        this.childEntitySelector = childEntitySelector;
+        if (childEntitySelector.isNeverEnding()) {
+            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has sizeInfinite ("
+                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
         }
     }
 
@@ -118,15 +118,15 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     }
 
     protected void constructCache(DefaultSolverScope solverScope) {
-        cachedSize = childMoveSelector.getSize();
+        cachedSize = childEntitySelector.getSize();
         if (cachedSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The moveSelector (" + this + ") has a childMoveSelector ("
-                    + childMoveSelector + ") with cachedSize (" + cachedSize
+            throw new IllegalStateException("The entitySelector (" + this + ") has a childEntitySelector ("
+                    + childEntitySelector + ") with cachedSize (" + cachedSize
                     + ") which is higher then Integer.MAX_VALUE.");
         }
-        cachedMoveList = new ArrayList<Move>((int)cachedSize);
-        CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
-        cachedRandomProbabilityWeight = childMoveSelector.getRandomProbabilityWeight();
+        cachedEntityList = new ArrayList<Object>((int)cachedSize);
+        CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
+        cachedRandomProbabilityWeight = childEntitySelector.getRandomProbabilityWeight();
         orderCache(solverScope);
     }
 
@@ -136,7 +136,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
 
     protected void disposeCache(DefaultSolverScope solverScope) {
         cachedSize = -1L;
-        cachedMoveList = null;
+        cachedEntityList = null;
         cachedRandomProbabilityWeight = -1L;
     }
 
@@ -144,8 +144,8 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public Iterator<Move> iterator() {
-        return cachedMoveList.iterator();
+    public Iterator<Object> iterator() {
+        return cachedEntityList.iterator();
     }
 
     public boolean isContinuous() {
@@ -166,7 +166,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
 
     @Override
     public String toString() {
-        return "Caching(" + childMoveSelector + ")";
+        return "Caching(" + childEntitySelector + ")";
     }
 
 }

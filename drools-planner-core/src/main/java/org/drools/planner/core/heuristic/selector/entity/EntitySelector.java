@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,17 @@
 
 package org.drools.planner.core.heuristic.selector.entity;
 
-@Deprecated
-public enum PlanningEntitySelectionOrder {
-    ORIGINAL,
-    RANDOM,
-    DECREASING_DIFFICULTY;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.move.Move;
+
+/**
+ * Selects {@link PlanningEntity} annotated instances.
+ * @see AbstractEntitySelector
+ * @see FromSolutionEntitySelector
+ */
+public interface EntitySelector extends Selector, Iterable<Object> {
+
+
+
 }

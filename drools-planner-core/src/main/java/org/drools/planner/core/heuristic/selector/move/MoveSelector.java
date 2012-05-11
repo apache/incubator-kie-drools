@@ -21,6 +21,7 @@ import org.drools.planner.core.move.Move;
 
 /**
  * Generates {@link Move}s.
+ * @see AbstractMoveSelector
  */
 public interface MoveSelector extends Selector, Iterable<Move> {
 

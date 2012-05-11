@@ -27,6 +27,7 @@ import org.drools.planner.core.move.Move;
  * A Selector selects or generates moves for the Decider.
  * @see AbstractSelector
  */
+@Deprecated
 public interface Selector extends DeciderAware, LocalSearchSolverPhaseLifecycleListener {
 
     Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope);

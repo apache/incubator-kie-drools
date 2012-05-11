@@ -13,6 +13,7 @@ import org.drools.planner.core.score.director.ScoreDirector;
 /**
  * Determines the order in which the planning entities of 1 planning entity class are selected for an algorithm
  */
+@Deprecated
 public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
         implements Iterable<Object> {
 
@@ -64,7 +65,7 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
             if (!planningEntityDescriptor.getPlanningEntityClass().isInstance(planningEntity)) {
                 it.remove();
             } else if (planningEntityDescriptor.isInitialized(planningEntity)) {
-                if (resetInitializedPlanningEntities) {
+                if (resetInitializedPlanningEntities) { // TODO this should be extracted to a custom solver phase before this phase
                     ScoreDirector scoreDirector = solverPhaseScope.getScoreDirector();
                     scoreDirector.beforeEntityRemoved(planningEntity);
                     planningEntityDescriptor.uninitialize(planningEntity);

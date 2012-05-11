@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link Selector}.
  * @see Selector
  */
+@Deprecated
 public abstract class AbstractSelector extends LocalSearchSolverPhaseLifecycleListenerAdapter implements Selector {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

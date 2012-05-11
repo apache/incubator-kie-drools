@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package org.drools.planner.core.heuristic.selector.entity;
 
-@Deprecated
-public enum PlanningEntitySelectionOrder {
+public enum EntitySelectorOrder {
     ORIGINAL,
-    RANDOM,
-    DECREASING_DIFFICULTY;
+    RANDOM
 }
