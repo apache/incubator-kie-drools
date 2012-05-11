@@ -751,6 +751,19 @@ ut.commit();</programlisting>
             <entry><code>start_date</code></entry>
             <entry>The start date of the process instance</entry>
           </row>
+          <row>
+            <entry><code>status</code></entry>
+            <entry>The status of process instance that maps to process instance state</entry>
+          </row>
+          <row>
+            <entry><code>parentProcessInstanceId</code></entry>
+            <entry>The process instance id of the parent process instance if any</entry>
+          </row>
+          <row>
+            <entry><code>outcome</code></entry>
+            <entry>The outcome of the process instance, for instance error code in case
+             of process instance was finished with error event</entry>
+          </row>
         </tbody>
         </tgroup>
       </table>

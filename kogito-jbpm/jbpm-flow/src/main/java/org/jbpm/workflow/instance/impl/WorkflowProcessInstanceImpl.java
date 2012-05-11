@@ -242,27 +242,31 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		variableScopeInstance.setVariable(name, value);
 	}
+	
+	public void setState(final int state, String outcome) {
+	    super.setState(state, outcome);
+        // TODO move most of this to ProcessInstanceImpl
+        if (state == ProcessInstance.STATE_COMPLETED
+                || state == ProcessInstance.STATE_ABORTED) {
+            InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
+            InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
+            processRuntime.getProcessEventSupport().fireBeforeProcessCompleted(this, kruntime);
+            // deactivate all node instances of this process instance
+            while (!nodeInstances.isEmpty()) {
+                NodeInstance nodeInstance = nodeInstances.get(0);
+                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
+                        .cancel();
+            }
+            removeEventListeners();
+            processRuntime.getProcessInstanceManager().removeProcessInstance(this);
+            processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
+
+            processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
+        }
+	}
 
 	public void setState(final int state) {
-		super.setState(state);
-		// TODO move most of this to ProcessInstanceImpl
-		if (state == ProcessInstance.STATE_COMPLETED
-				|| state == ProcessInstance.STATE_ABORTED) {
-			InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
-			InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
-			processRuntime.getProcessEventSupport().fireBeforeProcessCompleted(this, kruntime);
-			// deactivate all node instances of this process instance
-			while (!nodeInstances.isEmpty()) {
-				NodeInstance nodeInstance = nodeInstances.get(0);
-				((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
-						.cancel();
-			}
-			removeEventListeners();
-			processRuntime.getProcessInstanceManager().removeProcessInstance(this);
-			processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
-
-			processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
-		}
+		setState(state, null);
 	}
 
 	public void disconnect() {

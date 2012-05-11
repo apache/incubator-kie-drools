@@ -36,9 +36,13 @@ public interface ProcessInstance extends org.drools.runtime.process.ProcessInsta
 
     void setState(int state);
     
+    void setState(int state, String outcome);
+    
     void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
     
     InternalKnowledgeRuntime getKnowledgeRuntime();
 
     void start();
+    
+    String getOutcome();
 }

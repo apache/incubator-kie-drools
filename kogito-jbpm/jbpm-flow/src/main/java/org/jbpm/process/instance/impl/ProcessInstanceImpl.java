@@ -48,6 +48,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
     private transient InternalKnowledgeRuntime kruntime;
     private Map<String, Object> metaData = new HashMap<String, Object>();
+    private String outcome;
 
     public void setId(final long id) {
         this.id = id;
@@ -82,6 +83,11 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
 
     public void setState(final int state) {
+        internalSetState(state);
+    }
+    
+    public void setState(final int state, String outcome) {
+        this.outcome = outcome;
         internalSetState(state);
     }
     
@@ -222,6 +228,14 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 
     public void setMetaData(String name, Object data) {
         this.metaData.put(name, data);
+    }
+
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
+    }
+
+    public String getOutcome() {
+        return outcome;
     }
     
 }
