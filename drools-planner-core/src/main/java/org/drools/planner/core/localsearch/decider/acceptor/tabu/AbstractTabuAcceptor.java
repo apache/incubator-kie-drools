@@ -153,7 +153,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         int maximumTabuListSize = tabuSize + partialTabuSize; // is at least 1
         int tabuStepIndex = localSearchStepScope.getStepIndex();
         // Remove the oldest tabu(s)

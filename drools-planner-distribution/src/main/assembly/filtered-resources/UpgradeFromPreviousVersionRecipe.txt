@@ -1960,7 +1960,7 @@ If you're still using ANT, add the drools-planner-benchmark-?.jar
 and adjust your ANT script and your IDE's classpath accordingly.
 
 [MINOR] The benchmarker configuration no longer supports benchmarkInstanceDirectory, outputSolutionFilesDirectory
-or statisticDirectory. If you were using any of these usefully, let us know how by filing a jira issue.
+or statisticDirectory. If you were using any of these usefully, let us know how by filing a JIRA issue.
 The statistics subdirectory has been removed.
 The index.html file is now available in the benchmarkReportDirectory.
 The entire benchmarkReportDirectory has been restructured into a nicer form.
@@ -1970,3 +1970,22 @@ Before in *BenchmarkConfig.xml:
     <outputSolutionFilesDirectory>...</>
 Before in *BenchmarkConfig.xml:
     <statisticDirectory>...</>
+
+[MINOR] If you've implemented a custom Termination, Selector, Acceptor or Forager: 2 lifecycle methods have been renamed
+The method beforeDeciding is renamed to stepStarted and the method stepTaken is renamed to stepEnded.
+Before in *.java:
+    public void beforeDeciding(...) {
+       ...
+    }
+After in *.java:
+    public void stepStarted(...) {
+       ...
+    }
+Before in *.java:
+    public void stepTaken(...) {
+       ...
+    }
+After in *.java:
+    public void stepEnded(...) {
+       ...
+    }

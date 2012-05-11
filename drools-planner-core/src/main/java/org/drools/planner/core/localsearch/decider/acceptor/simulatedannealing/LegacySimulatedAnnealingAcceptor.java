@@ -80,8 +80,8 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        super.stepTaken(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+        super.stepEnded(localSearchStepScope);
         temperature *= temperatureSurvival;
     }
 

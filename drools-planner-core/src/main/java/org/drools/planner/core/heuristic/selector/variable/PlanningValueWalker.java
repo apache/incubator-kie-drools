@@ -18,7 +18,6 @@ package org.drools.planner.core.heuristic.selector.variable;
 
 import java.util.Iterator;
 
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.generic.GenericChainedChangeMove;
@@ -27,7 +26,6 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
 
 public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
@@ -61,12 +59,12 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         scoreDirector = solverPhaseScope.getScoreDirector();
     }
 
-    public void beforeDeciding(AbstractStepScope stepScope) {
-        planningValueSelector.beforeDeciding(stepScope);
+    public void stepStarted(AbstractStepScope stepScope) {
+        planningValueSelector.stepStarted(stepScope);
     }
 
-    public void stepTaken(AbstractStepScope stepScope) {
-        planningValueSelector.stepTaken(stepScope);
+    public void stepEnded(AbstractStepScope stepScope) {
+        planningValueSelector.stepEnded(stepScope);
     }
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {

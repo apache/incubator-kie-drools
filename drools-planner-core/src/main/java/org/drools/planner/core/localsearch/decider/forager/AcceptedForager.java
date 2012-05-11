@@ -70,8 +70,8 @@ public class AcceptedForager extends AbstractForager {
     }
 
     @Override
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
+        deciderScoreComparatorFactory.stepStarted(localSearchStepScope);
         scoreComparator = deciderScoreComparatorFactory.createDeciderScoreComparator();
         acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(scoreComparator);
         selectedCount = 0;
@@ -162,8 +162,8 @@ public class AcceptedForager extends AbstractForager {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.stepTaken(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+        deciderScoreComparatorFactory.stepEnded(localSearchStepScope);
     }
 
     @Override

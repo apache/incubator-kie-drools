@@ -64,7 +64,7 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         @Override
-        public void stepTaken(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope stepScope) {
             long timeMillisSpend = stepScope.getSolverPhaseScope().calculateSolverTimeMillisSpend();
             if (timeMillisSpend >= nextTimeMillisThreshold) {
                 long timeMillisSpendInterval = timeMillisSpend - lastTimeMillisSpend;

@@ -18,7 +18,6 @@ package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -53,7 +52,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         LocalSearchStepScope stepScope = createNextStepScope(solverPhaseScope, null);
         while (!termination.isPhaseTerminated(solverPhaseScope)) {
             stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(solverPhaseScope));
-            beforeDeciding(stepScope);
+            stepStarted(stepScope);
             decider.decideNextStep(stepScope);
             Move nextStep = stepScope.getStep();
             if (nextStep == null) {
@@ -68,7 +67,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             if (assertStepScoreIsUncorrupted) {
                 solverPhaseScope.assertWorkingScore(stepScope.getScore());
             }
-            stepTaken(stepScope);
+            stepEnded(stepScope);
             stepScope = createNextStepScope(solverPhaseScope, stepScope);
         }
         phaseEnded(solverPhaseScope);
@@ -97,14 +96,14 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         }
     }
 
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        super.beforeDeciding(localSearchStepScope);
-        decider.beforeDeciding(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
+        super.stepStarted(localSearchStepScope);
+        decider.stepStarted(localSearchStepScope);
     }
 
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        super.stepTaken(localSearchStepScope);
-        decider.stepTaken(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+        super.stepEnded(localSearchStepScope);
+        decider.stepEnded(localSearchStepScope);
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = localSearchStepScope.getLocalSearchSolverPhaseScope();
         logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}), accepted move size ({})" +
                 " for picked step ({}).",

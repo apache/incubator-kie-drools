@@ -47,9 +47,9 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.beforeDeciding(localSearchStepScope);
+            acceptor.stepStarted(localSearchStepScope);
         }
     }
 
@@ -64,9 +64,9 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.stepTaken(localSearchStepScope);
+            acceptor.stepEnded(localSearchStepScope);
         }
     }
 

@@ -48,7 +48,7 @@ public class TopListSelector extends AbstractSelector {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         topList = decider.getForager().getTopList(topSize);
     }
 

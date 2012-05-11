@@ -25,7 +25,7 @@ public interface BruteForceSolverPhaseLifecycleListener extends EventListener {
 
     void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope);
 
-    void stepTaken(BruteForceStepScope bruteForceStepScope);
+    void stepEnded(BruteForceStepScope bruteForceStepScope);
 
     void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope);
 

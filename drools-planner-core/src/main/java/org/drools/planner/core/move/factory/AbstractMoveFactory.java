@@ -40,11 +40,11 @@ public abstract class AbstractMoveFactory implements MoveFactory {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 

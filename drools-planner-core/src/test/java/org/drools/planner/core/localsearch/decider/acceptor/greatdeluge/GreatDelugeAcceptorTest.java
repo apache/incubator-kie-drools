@@ -26,7 +26,6 @@ import org.drools.planner.core.move.DummyMove;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
-import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataSolution;
@@ -44,7 +43,7 @@ public class GreatDelugeAcceptorTest {
         acceptor.phaseStarted(localSearchSolverPhaseScope);
         LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         localSearchStepScope.setStepIndex(0);
-        acceptor.beforeDeciding(localSearchStepScope);
+        acceptor.stepStarted(localSearchStepScope);
         // Pre conditions
         MoveScope a1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2000));
         MoveScope a2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1300));
@@ -58,14 +57,14 @@ public class GreatDelugeAcceptorTest {
         assertEquals(false, acceptor.isAccepted(a2));
         assertEquals(true, acceptor.isAccepted(a3));
         // TODO reable a thorough test of great deluge
-//        acceptor.stepTaken(localSearchStepScope);
+//        acceptor.stepEnded(localSearchStepScope);
 //        assertEquals(false, acceptor.isAccepted(b1));
 //        assertEquals(true, acceptor.isAccepted(b2));
-//        acceptor.stepTaken(localSearchStepScope);
+//        acceptor.stepEnded(localSearchStepScope);
 //        assertEquals(false, acceptor.isAccepted(c1));
-//        acceptor.stepTaken(localSearchStepScope);
+//        acceptor.stepEnded(localSearchStepScope);
 //        assertEquals(true, acceptor.isAccepted(c2));
-//        acceptor.stepTaken(localSearchStepScope);
+//        acceptor.stepEnded(localSearchStepScope);
 //        // Post conditions
 //        acceptor.phaseEnded(localSearchSolverPhaseScope);
     }

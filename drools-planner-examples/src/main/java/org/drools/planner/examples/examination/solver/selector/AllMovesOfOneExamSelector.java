@@ -98,10 +98,10 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     }
 
     @Override
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        periodChangeMoveFactory.beforeDeciding(localSearchStepScope);
-        roomChangeMoveFactory.beforeDeciding(localSearchStepScope);
-        examSwapMoveFactory.beforeDeciding(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
+        periodChangeMoveFactory.stepStarted(localSearchStepScope);
+        roomChangeMoveFactory.stepStarted(localSearchStepScope);
+        examSwapMoveFactory.stepStarted(localSearchStepScope);
     }
 
     public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
@@ -117,10 +117,10 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        periodChangeMoveFactory.stepTaken(localSearchStepScope);
-        roomChangeMoveFactory.stepTaken(localSearchStepScope);
-        examSwapMoveFactory.stepTaken(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+        periodChangeMoveFactory.stepEnded(localSearchStepScope);
+        roomChangeMoveFactory.stepEnded(localSearchStepScope);
+        examSwapMoveFactory.stepEnded(localSearchStepScope);
     }
 
     @Override

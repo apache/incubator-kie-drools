@@ -63,9 +63,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
         forager.phaseStarted(greedyFitSolverPhaseScope);
     }
 
-    public void beforeDeciding(GreedyFitStepScope greedyFitStepScope) {
-        planningVariableWalker.beforeDeciding(greedyFitStepScope);
-        forager.beforeDeciding(greedyFitStepScope);
+    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
+        planningVariableWalker.stepStarted(greedyFitStepScope);
+        forager.stepStarted(greedyFitStepScope);
     }
 
     public void decideNextStep(GreedyFitStepScope stepScope) {
@@ -140,9 +140,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
         forager.addMove(moveScope);
     }
 
-    public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
-        planningVariableWalker.stepTaken(greedyFitStepScope);
-        forager.stepTaken(greedyFitStepScope);
+    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
+        planningVariableWalker.stepEnded(greedyFitStepScope);
+        forager.stepEnded(greedyFitStepScope);
     }
 
     public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {

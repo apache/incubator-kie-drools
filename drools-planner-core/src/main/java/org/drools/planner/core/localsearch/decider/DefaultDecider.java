@@ -85,10 +85,10 @@ public class DefaultDecider implements Decider {
         forager.phaseStarted(localSearchSolverPhaseScope);
     }
 
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        selector.beforeDeciding(localSearchStepScope);
-        acceptor.beforeDeciding(localSearchStepScope);
-        forager.beforeDeciding(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
+        selector.stepStarted(localSearchStepScope);
+        acceptor.stepStarted(localSearchStepScope);
+        forager.stepStarted(localSearchStepScope);
     }
 
     public void decideNextStep(LocalSearchStepScope stepScope) {
@@ -164,10 +164,10 @@ public class DefaultDecider implements Decider {
         forager.addMove(moveScope);
     }
 
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        selector.stepTaken(localSearchStepScope);
-        acceptor.stepTaken(localSearchStepScope);
-        forager.stepTaken(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+        selector.stepEnded(localSearchStepScope);
+        acceptor.stepEnded(localSearchStepScope);
+        forager.stepEnded(localSearchStepScope);
     }
 
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {

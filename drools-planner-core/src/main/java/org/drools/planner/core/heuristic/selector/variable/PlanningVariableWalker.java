@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
@@ -57,15 +56,15 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
         scoreDirector = solverPhaseScope.getScoreDirector();
     }
 
-    public void beforeDeciding(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope stepScope) {
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
-            planningValueWalker.beforeDeciding(stepScope);
+            planningValueWalker.stepStarted(stepScope);
         }
     }
 
-    public void stepTaken(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope stepScope) {
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
-            planningValueWalker.stepTaken(stepScope);
+            planningValueWalker.stepEnded(stepScope);
         }
     }
 

@@ -25,9 +25,9 @@ public interface GreedySolverPhaseLifecycleListener extends EventListener {
 
     void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope);
 
-    void beforeDeciding(GreedyFitStepScope greedyFitStepScope);
+    void stepStarted(GreedyFitStepScope greedyFitStepScope);
 
-    void stepTaken(GreedyFitStepScope greedyFitStepScope);
+    void stepEnded(GreedyFitStepScope greedyFitStepScope);
 
     void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope);
 

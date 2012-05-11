@@ -25,11 +25,11 @@ public abstract class GreedySolverPhaseLifecycleListenerAdapter implements Greed
         // Hook method
     }
 
-    public void beforeDeciding(GreedyFitStepScope greedyFitStepScope) {
+    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
         // Hook method
     }
 
-    public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
+    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
         // Hook method
     }
 

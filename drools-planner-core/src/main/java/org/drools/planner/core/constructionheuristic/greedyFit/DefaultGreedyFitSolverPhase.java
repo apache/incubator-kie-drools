@@ -59,7 +59,7 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         while (!termination.isPhaseTerminated(solverPhaseScope) && it.hasNext()) {
             Object planningEntity = it.next();
             stepScope.setPlanningEntity(planningEntity);
-            beforeDeciding(stepScope);
+            stepStarted(stepScope);
             greedyDecider.decideNextStep(stepScope);
             Move nextStep = stepScope.getStep();
             if (nextStep == null) {
@@ -77,7 +77,7 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
             if (!it.hasNext()) {
                 stepScope.setSolutionInitialized(true);
             }
-            stepTaken(stepScope);
+            stepEnded(stepScope);
             stepScope = createNextStepScope(solverPhaseScope, stepScope);
         }
         phaseEnded(solverPhaseScope);
@@ -102,16 +102,16 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         greedyDecider.phaseStarted(greedyFitSolverPhaseScope);
     }
 
-    public void beforeDeciding(GreedyFitStepScope greedyFitStepScope) {
-        super.beforeDeciding(greedyFitStepScope);
-        greedyPlanningEntitySelector.beforeDeciding(greedyFitStepScope);
-        greedyDecider.beforeDeciding(greedyFitStepScope);
+    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
+        super.stepStarted(greedyFitStepScope);
+        greedyPlanningEntitySelector.stepStarted(greedyFitStepScope);
+        greedyDecider.stepStarted(greedyFitStepScope);
     }
 
-    public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
-        super.stepTaken(greedyFitStepScope);
-        greedyPlanningEntitySelector.stepTaken(greedyFitStepScope);
-        greedyDecider.stepTaken(greedyFitStepScope);
+    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
+        super.stepEnded(greedyFitStepScope);
+        greedyPlanningEntitySelector.stepEnded(greedyFitStepScope);
+        greedyDecider.stepEnded(greedyFitStepScope);
         logger.debug("    Step index ({}), time spend ({}), score ({}), initialized planning entity ({}).",
                 new Object[]{greedyFitStepScope.getStepIndex(),
                         greedyFitStepScope.getGreedyFitSolverPhaseScope().calculateSolverTimeMillisSpend(),

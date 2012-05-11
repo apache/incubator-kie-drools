@@ -57,9 +57,9 @@ public class CompositeSelector extends AbstractSelector {
     }
 
     @Override
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
         for (Selector selector : selectorList) {
-            selector.beforeDeciding(localSearchStepScope);
+            selector.stepStarted(localSearchStepScope);
         }
     }
 
@@ -76,9 +76,9 @@ public class CompositeSelector extends AbstractSelector {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         for (Selector selector : selectorList) {
-            selector.stepTaken(localSearchStepScope);
+            selector.stepEnded(localSearchStepScope);
         }
     }
 

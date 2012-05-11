@@ -50,7 +50,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
             customSolverPhaseCommand.changeWorkingSolution(solverScope.getScoreDirector());
             Score score = customSolverPhaseScope.calculateScore();
             customStepScope.setScore(score);
-            stepTaken(customStepScope);
+            stepEnded(customStepScope);
             customStepScope = createNextStepScope(customSolverPhaseScope, customStepScope);
         }
         phaseEnded(customSolverPhaseScope);
@@ -73,8 +73,8 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         super.phaseStarted(customSolverPhaseScope);
     }
 
-    public void stepTaken(CustomStepScope customStepScope) {
-        super.stepTaken(customStepScope);
+    public void stepEnded(CustomStepScope customStepScope) {
+        super.stepEnded(customStepScope);
         CustomSolverPhaseScope customSolverPhaseScope = customStepScope.getCustomSolverPhaseScope();
         logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
                 new Object[]{customStepScope.getStepIndex(),

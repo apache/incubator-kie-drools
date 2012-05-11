@@ -70,7 +70,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         if (localSearchStepScope.getStepIndex() == localSearchStepScope.getLocalSearchSolverPhaseScope().getBestSolutionStepIndex()) {
             // New best score
             waterLevelScore = localSearchStepScope.getLocalSearchSolverPhaseScope().getBestScore().multiply(waterLevelUpperBoundRate);

@@ -41,7 +41,7 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
 
     @Override
     protected Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope) {
-        // TODO this should be better done in stepTaken
+        // TODO this should be better done in stepEnded
         return Collections.singletonList(localSearchStepScope.createOrGetClonedSolution());
     }
     

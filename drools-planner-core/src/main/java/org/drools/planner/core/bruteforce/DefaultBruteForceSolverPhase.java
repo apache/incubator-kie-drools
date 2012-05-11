@@ -46,7 +46,7 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
             bruteForceEntityWalker.walk();
             Score score = bruteForceSolverPhaseScope.calculateScore();
             bruteForceStepScope.setScore(score);
-            stepTaken(bruteForceStepScope);
+            stepEnded(bruteForceStepScope);
             bruteForceStepScope = createNextStepScope(bruteForceSolverPhaseScope, bruteForceStepScope);
         }
         phaseEnded(bruteForceSolverPhaseScope);
@@ -70,9 +70,9 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         bruteForceEntityWalker.phaseStarted(bruteForceSolverPhaseScope);
     }
 
-    public void stepTaken(BruteForceStepScope bruteForceStepScope) {
-        super.stepTaken(bruteForceStepScope);
-        bruteForceEntityWalker.stepTaken(bruteForceStepScope);
+    public void stepEnded(BruteForceStepScope bruteForceStepScope) {
+        super.stepEnded(bruteForceStepScope);
+        bruteForceEntityWalker.stepEnded(bruteForceStepScope);
         BruteForceSolverPhaseScope bruteForceSolverPhaseScope = bruteForceStepScope.getBruteForceSolverPhaseScope();
         // TODO The steps are too fine, so debug log is too much. Yet we still want some debug indication
         logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",

@@ -25,11 +25,11 @@ public abstract class SolverPhaseLifecycleListenerAdapter implements SolverPhase
         // Hook method
     }
 
-    public void beforeDeciding(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope stepScope) {
         // Hook method
     }
 
-    public void stepTaken(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope stepScope) {
         // Hook method
     }
 

@@ -60,16 +60,16 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     @Override
-    public void beforeDeciding(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
-            termination.beforeDeciding(stepScope);
+            termination.stepStarted(stepScope);
         }
     }
 
     @Override
-    public void stepTaken(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
-            termination.stepTaken(stepScope);
+            termination.stepEnded(stepScope);
         }
     }
 

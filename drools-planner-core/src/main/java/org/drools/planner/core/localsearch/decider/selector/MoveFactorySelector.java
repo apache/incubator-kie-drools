@@ -56,8 +56,8 @@ public class MoveFactorySelector extends AbstractSelector {
     }
 
     @Override
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        moveFactory.beforeDeciding(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
+        moveFactory.stepStarted(localSearchStepScope);
     }
 
     public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
@@ -73,8 +73,8 @@ public class MoveFactorySelector extends AbstractSelector {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        moveFactory.stepTaken(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+        moveFactory.stepEnded(localSearchStepScope);
     }
 
     @Override

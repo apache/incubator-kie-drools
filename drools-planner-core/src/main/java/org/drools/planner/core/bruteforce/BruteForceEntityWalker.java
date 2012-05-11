@@ -97,9 +97,9 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
         }
     }
 
-    public void stepTaken(BruteForceStepScope bruteForceStepScope) {
+    public void stepEnded(BruteForceStepScope bruteForceStepScope) {
         for (PlanningVariableWalker planningVariableWalker : planningVariableWalkerList) {
-            planningVariableWalker.stepTaken(bruteForceStepScope);
+            planningVariableWalker.stepEnded(bruteForceStepScope);
         }
     }
 

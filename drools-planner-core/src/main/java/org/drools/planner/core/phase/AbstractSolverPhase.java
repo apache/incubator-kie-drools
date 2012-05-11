@@ -16,15 +16,11 @@
 
 package org.drools.planner.core.phase;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,15 +56,15 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
         solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
     }
 
-    public void beforeDeciding(AbstractStepScope stepScope) {
-        termination.beforeDeciding(stepScope);
-        solverPhaseLifecycleSupport.fireBeforeDeciding(stepScope);
+    public void stepStarted(AbstractStepScope stepScope) {
+        termination.stepStarted(stepScope);
+        solverPhaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
-    public void stepTaken(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope stepScope) {
         bestSolutionRecaller.extractBestSolution(stepScope);
-        termination.stepTaken(stepScope);
-        solverPhaseLifecycleSupport.fireStepTaken(stepScope);
+        termination.stepEnded(stepScope);
+        solverPhaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {

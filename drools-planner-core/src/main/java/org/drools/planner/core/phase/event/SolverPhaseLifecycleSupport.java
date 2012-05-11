@@ -34,17 +34,17 @@ public class SolverPhaseLifecycleSupport extends AbstractEventSupport<SolverPhas
         }
     }
 
-    public void fireBeforeDeciding(AbstractStepScope stepScope) {
+    public void fireStepStarted(AbstractStepScope stepScope) {
         final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
         while (iter.hasNext()) {
-            iter.next().beforeDeciding(stepScope);
+            iter.next().stepStarted(stepScope);
         }
     }
 
-    public void fireStepTaken(AbstractStepScope stepScope) {
+    public void fireStepEnded(AbstractStepScope stepScope) {
         final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
         while (iter.hasNext()) {
-            iter.next().stepTaken(stepScope);
+            iter.next().stepEnded(stepScope);
         }
     }
 

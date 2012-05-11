@@ -87,8 +87,8 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        super.stepTaken(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+        super.stepEnded(localSearchStepScope);
         double timeGradient = localSearchStepScope.getTimeGradient();
         double reverseTimeGradient = 1.0 - timeGradient;
         temperatureParts = new double[partsLength];
