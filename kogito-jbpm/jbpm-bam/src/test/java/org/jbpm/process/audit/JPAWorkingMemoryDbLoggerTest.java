@@ -35,6 +35,7 @@ import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
@@ -317,6 +318,54 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         }
         JPAProcessInstanceDbLog.clear();
         processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
+        assertTrue(processInstances.isEmpty());
+    }
+    
+    
+    @Test
+    public void testLogger5() throws Exception {
+        
+        // load the process
+        KnowledgeBase kbase = createKnowledgeBase();
+        // create a new session
+        Environment env = createEnvironment(context);
+        Properties properties = new Properties();
+        properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
+        properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
+        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+        StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
+        new JPAWorkingMemoryDbLogger(session);
+        JPAProcessInstanceDbLog.setEnvironment(env);
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        int initialProcessInstanceSize = processInstances.size();
+        
+        // start process instance
+        long processInstanceId = session.startProcess("com.sample.ruleflow").getId();
+        
+        logger.debug("Checking process instances for process 'com.sample.ruleflow'");
+        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
+        ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
+        logger.debug(processInstance.toString() 
+        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        assertNotNull(processInstance.getStart());
+        assertNotNull(processInstance.getEnd());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals("com.sample.ruleflow", processInstance.getProcessId());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getStatus());
+        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        assertEquals(6, nodeInstances.size());
+        for (NodeInstanceLog nodeInstance: nodeInstances) {
+            logger.debug(nodeInstance.toString());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals("com.sample.ruleflow", processInstance.getProcessId());
+            assertNotNull(nodeInstance.getDate());
+        }
+        JPAProcessInstanceDbLog.clear();
+        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
         assertTrue(processInstances.isEmpty());
     }
     

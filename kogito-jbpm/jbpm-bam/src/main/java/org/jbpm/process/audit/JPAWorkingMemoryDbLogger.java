@@ -34,12 +34,19 @@ import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.audit.event.RuleFlowVariableLogEvent;
 import org.drools.event.KnowledgeRuntimeEventManager;
+import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessStartedEvent;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeRuntime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.jbpm.process.audit.event.ExtendedRuleFlowLogEvent;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+
 
 /**
  * Enables history log via JPA.
@@ -72,11 +79,11 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         switch (logEvent.getType()) {
             case LogEvent.BEFORE_RULEFLOW_CREATED:
                 RuleFlowLogEvent processEvent = (RuleFlowLogEvent) logEvent;
-                addProcessLog(processEvent.getProcessInstanceId(), processEvent.getProcessId());
+                addProcessLog(processEvent);
                 break;
             case LogEvent.AFTER_RULEFLOW_COMPLETED:
             	processEvent = (RuleFlowLogEvent) logEvent;
-                updateProcessLog(processEvent.getProcessInstanceId());
+                updateProcessLog(processEvent);
                 break;
             case LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED:
             	RuleFlowNodeLogEvent nodeEvent = (RuleFlowNodeLogEvent) logEvent;
@@ -95,22 +102,31 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         }
     }
 
-    private void addProcessLog(long processInstanceId, String processId) {
-        ProcessInstanceLog log = new ProcessInstanceLog(processInstanceId, processId);
-    	persist(log);
+    private void addProcessLog(RuleFlowLogEvent processEvent) {
+        ProcessInstanceLog log = new ProcessInstanceLog(processEvent.getProcessInstanceId(), processEvent.getProcessId());
+        if (processEvent instanceof ExtendedRuleFlowLogEvent) {
+            log.setParentProcessInstanceId(((ExtendedRuleFlowLogEvent) processEvent).getParentProcessInstanceId());
+        }
+        persist(log);
     }
 
     @SuppressWarnings("unchecked")
-    private void updateProcessLog(long processInstanceId) {
-        EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
-        List<ProcessInstanceLog> result = em.createQuery(
-            "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
-                .setParameter(1, processInstanceId).getResultList();
-        if (result != null && result.size() != 0) {
+    private void updateProcessLog(RuleFlowLogEvent processEvent) {
+    	 EntityManager em = getEntityManager();
+         UserTransaction ut = joinTransaction(em);
+         List<ProcessInstanceLog> result = em.createQuery(
+         "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
+             .setParameter(1, processEvent.getProcessInstanceId()).getResultList();
+         
+         if (result != null && result.size() != 0) {
             ProcessInstanceLog log = result.get(result.size() - 1);
             log.setEnd(new Date());
-            em.merge(log);
+            if (processEvent instanceof ExtendedRuleFlowLogEvent) {
+                log.setStatus(((ExtendedRuleFlowLogEvent) processEvent).getProcessInstanceState());
+                log.setOutcome(((ExtendedRuleFlowLogEvent) processEvent).getOutcome());
+            }
+            
+            em.merge(log);   
         }
         flush(em, ut);
     }
@@ -213,4 +229,38 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         }
     }
     
+    public void beforeProcessStarted(ProcessStartedEvent event) {
+        long parentProcessInstanceId = -1;
+        try {
+            ProcessInstanceImpl processInstance = (ProcessInstanceImpl) event.getProcessInstance();
+            parentProcessInstanceId = (Long) processInstance.getMetaData().get("ParentProcessInstanceId");
+        } catch (Exception e) {
+            //in case of problems with getting hold of parentProcessInstanceId don't break the operation
+        }
+        LogEvent logEvent =  new ExtendedRuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED,
+                event.getProcessInstance().getProcessId(),
+                event.getProcessInstance().getProcessName(),
+                event.getProcessInstance().getId(), parentProcessInstanceId) ;
+        
+        // filters are not available from super class, TODO make fireLogEvent protected instead of private in WorkinMemoryLogger
+        logEventCreated( logEvent );
+    }
+
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+        String outcome = null;
+        try {
+            ProcessInstanceImpl processInstance = (ProcessInstanceImpl) event.getProcessInstance();
+            outcome = processInstance.getOutcome();
+        } catch (Exception e) {
+            //in case of problems with getting hold of parentProcessInstanceId don't break the operation
+        }
+        LogEvent logEvent =  new ExtendedRuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_COMPLETED,
+                event.getProcessInstance().getProcessId(),
+                event.getProcessInstance().getProcessName(),
+                event.getProcessInstance().getId(), event.getProcessInstance().getState(), outcome) ;
+        
+        // filters are not available from super class, TODO make fireLogEvent protected instead of private in WorkinMemoryLogger
+        logEventCreated( logEvent );
+    }
+
 }

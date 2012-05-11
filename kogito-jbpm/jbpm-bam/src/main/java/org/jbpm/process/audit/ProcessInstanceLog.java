@@ -47,6 +47,13 @@ public class ProcessInstanceLog implements Serializable {
     @Column(name = "end_date")
     private Date end;
     
+    @Column(nullable=true)
+    private int status;
+    @Column(nullable=true)
+    private long parentProcessInstanceId;
+    @Column(nullable=true)
+    private String outcome;
+    
     ProcessInstanceLog() {
     }
     
@@ -110,6 +117,9 @@ public class ProcessInstanceLog implements Serializable {
 				+ ((processId == null) ? 0 : processId.hashCode());
 		result = prime * result	+ (int) processInstanceId;
 		result = prime * result + ((start == null) ? 0 : start.hashCode());
+		result = prime * result   + (int) parentProcessInstanceId;
+		result = prime * result +  status;
+		result = prime * result + ((outcome == null) ? 0 : outcome.hashCode());
 		return result;
 	}
 
@@ -141,6 +151,41 @@ public class ProcessInstanceLog implements Serializable {
 				return false;
 		} else if (!start.equals(other.start))
 			return false;
+		
+		if (parentProcessInstanceId != other.parentProcessInstanceId)
+            return false;
+		if (status != other.status)
+            return false;
+		
+		if (outcome == null) {
+            if (other.outcome != null)
+                return false;
+        } else if (!outcome.equals(other.outcome))
+            return false;
 		return true;
 	}
+
+	public int getStatus() {
+        return status;
+    }
+
+	public void setStatus(int status) {
+        this.status = status;
+    }
+
+	public long getParentProcessInstanceId() {
+        return parentProcessInstanceId;
+    }
+
+	public void setParentProcessInstanceId(long parentProcessInstanceId) {
+        this.parentProcessInstanceId = parentProcessInstanceId;
+    }
+
+	public String getOutcome() {
+        return outcome;
+    }
+
+	public void setOutcome(String errorCode) {
+        this.outcome = errorCode;
+    }
 }
