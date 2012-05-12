@@ -39,7 +39,7 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.service.MvelFilePath;
+import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;

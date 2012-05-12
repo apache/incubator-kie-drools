@@ -17,6 +17,7 @@
 package org.jbpm.task.service.base.async;
 
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.jbpm.task.AccessType;
@@ -28,7 +29,6 @@ import org.jbpm.task.Task;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.TaskServiceTaskAttributesBaseTest;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
@@ -177,7 +177,74 @@ public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
     } 
     
     public void testSetPriority() throws Exception {
-        TaskServiceTaskAttributesBaseTest.testSetPriority(fillVariables(), client);
+        testSetPriority(fillVariables(), client);
     }
         
+    public static void testSetPriority(Map vars, Object client) throws Exception {
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now,";
+        str += "actualOwner = new User('Darth Vader')}),";
+        str += "deadlines = new Deadlines(),";
+        str += "delegation = new Delegation(),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'] ]}),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        
+        try { 
+            Method addTaskMethod = getMethod(client, "addTask");
+            addTaskMethod.invoke(client, task, null, addTaskResponseHandler );
+        } catch(Exception e) { 
+            e.printStackTrace();
+            fail(e.getMessage());
+}
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        int newPriority = 33;
+        
+        BlockingTaskOperationResponseHandler setPriorityResponseHandler = new BlockingTaskOperationResponseHandler();
+        try { 
+            Method setPriorityMethod = getMethod(client, "setPriority");
+            setPriorityMethod.invoke(client, taskId, "Darth Vader", newPriority, setPriorityResponseHandler );
+        } catch(Exception e) { 
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        setPriorityResponseHandler.waitTillDone(1000);
+        assertFalse( setPriorityResponseHandler.hasError() );
+        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        try { 
+            Method getTaskMethod = getMethod(client, "getTask");
+            getTaskMethod.invoke(client, taskId, getTaskResponseHandler);
+        } catch(Exception e) { 
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        Task task1 = getTaskResponseHandler.getTask();
+        assertNotSame(task, task1);
+        assertFalse(  task.equals( task1) );
+       
+        int newPriority1 = task1.getPriority();
+        assertEquals(newPriority, newPriority1);
+
+        // Make the same as the returned tasks, so we can test equals
+        task.setPriority( newPriority );
+        task.getTaskData().setStatus( Status.Created );
+        assertEquals(task, task1);       
+    }
+    
+    private static Method getMethod(Object object, String methodName) { 
+        // Now the MinaTaskClient is inheriting the addTask method
+        Method [] methods = object.getClass().getMethods(); 
+        Method methodFound = null;
+        for( int i = 0; i < methods.length; ++i ) { 
+            if( methodName.equals(methods[i].getName()) ) { 
+               methodFound = methods[i];
+               break;
+            }
+        }
+        return methodFound;
+    }
 }

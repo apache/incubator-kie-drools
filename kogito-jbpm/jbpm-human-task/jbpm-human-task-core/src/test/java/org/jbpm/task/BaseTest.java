@@ -34,7 +34,7 @@ import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
-import org.jbpm.task.service.UserGroupCallbackManager;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,7 +187,7 @@ public abstract class BaseTest extends TestCase {
         assertTrue( "Third deadline was not met." , thirdDeadlineMet );   
         
         // Wait for deadlines to finish
-        Thread.sleep(1000);
+        Thread.sleep(1000); 
     }
     
 }

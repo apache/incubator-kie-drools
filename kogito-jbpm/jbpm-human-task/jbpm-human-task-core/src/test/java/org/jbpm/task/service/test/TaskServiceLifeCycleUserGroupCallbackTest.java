@@ -18,10 +18,10 @@ package org.jbpm.task.service.test;
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceLifeCycleBaseUserGroupCallbackTest;
+import org.jbpm.task.service.base.async.TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 
-public class TaskServiceLifeCycleUserGroupCallbackTest extends TaskServiceLifeCycleBaseUserGroupCallbackTest {
+public class TaskServiceLifeCycleUserGroupCallbackTest extends TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();

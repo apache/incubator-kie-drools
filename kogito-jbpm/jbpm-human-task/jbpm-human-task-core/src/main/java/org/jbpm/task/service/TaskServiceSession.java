@@ -16,6 +16,8 @@
 
 package org.jbpm.task.service;
 
+import org.jbpm.task.identity.UserGroupCallback;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

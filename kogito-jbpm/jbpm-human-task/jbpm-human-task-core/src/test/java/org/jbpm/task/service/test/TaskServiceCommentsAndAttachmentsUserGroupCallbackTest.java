@@ -19,10 +19,10 @@ package org.jbpm.task.service.test;
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackTest;
+import org.jbpm.task.service.base.async.TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 
-public class TaskServiceCommentsAndAttachmentsUserGroupCallbackTest extends TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackTest {
+public class TaskServiceCommentsAndAttachmentsUserGroupCallbackTest extends TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackAsyncTest {
 
     @Override
     protected void setUp() throws Exception {

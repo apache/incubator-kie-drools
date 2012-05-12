@@ -30,7 +30,7 @@ import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Task;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
-import org.jbpm.task.service.MvelFilePath;
+import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;

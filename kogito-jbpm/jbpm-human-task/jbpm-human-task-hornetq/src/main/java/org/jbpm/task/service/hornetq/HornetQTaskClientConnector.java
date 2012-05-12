@@ -121,17 +121,16 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
                                         }
                                     } catch (HornetQException e) {
                                         if (e.getCode() != HornetQException.OBJECT_CLOSED) {
-                                            logger.error(e.getMessage());
+                                            logger.error(">>> "+e.getMessage());
                                             return;
                                         }
-                                        throw new RuntimeException("Client Exception with class " + getClass()
+                                        throw new RuntimeException(" >>> Client HornetQ Exception with class " + getClass()
                                             + " using port " + port, e);
 
                                     } catch (Exception e) {
                                         // LOG the exception and continue receiving
                                         // messages.
-                                        logger.error(e.getMessage());
-                                        throw new RuntimeException("Client Exception with class " + getClass()
+                                        throw new RuntimeException(" >>> Client Exception with class " + getClass()
                                             + " using port " + port, e);
                                     }
                                 }

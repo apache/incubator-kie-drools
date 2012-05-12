@@ -23,8 +23,8 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.UserGroupCallbackManager;
-import org.jbpm.task.service.UserGroupCallbackOneImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
+import org.jbpm.task.identity.UserGroupCallbackOneImpl;
 
 public abstract class BaseTestNoUserGroupSetup extends BaseTest {
     

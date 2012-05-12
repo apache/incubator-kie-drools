@@ -38,7 +38,7 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
-import org.jbpm.task.service.MvelFilePath;
+import org.jbpm.task.MvelFilePath;
 
 public class QueryTest extends BaseTest {
 

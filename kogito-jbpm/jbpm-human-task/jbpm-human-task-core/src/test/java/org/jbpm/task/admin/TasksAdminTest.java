@@ -15,6 +15,7 @@
  */
 package org.jbpm.task.admin;
 
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

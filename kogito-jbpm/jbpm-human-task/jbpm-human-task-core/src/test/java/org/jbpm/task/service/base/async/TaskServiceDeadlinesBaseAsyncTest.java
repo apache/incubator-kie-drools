@@ -38,7 +38,7 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.service.MvelFilePath;
+import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
@@ -54,6 +54,9 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
     private Properties conf;
     private Wiser wiser;
 
+    private static String emailAddressTony = "tony@domain.com"; 
+    private static String emailAddressDarth = "darth@domain.com"; 
+    
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
         Map vars = new HashMap();
         vars.put("users", users);
@@ -65,8 +68,8 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
         notificationHandler.setManager(manager);
 
         MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
-        userInfo.getEmails().put(users.get("darth"), "darth@domain.com");
+        userInfo.getEmails().put( users.get("tony"), emailAddressTony);
+        userInfo.getEmails().put( users.get("darth"), emailAddressDarth );
 
         userInfo.getLanguages().put(users.get("tony"), "en-UK");
         userInfo.getLanguages().put(users.get("darth"), "en-UK");
@@ -111,17 +114,27 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
         list.add(getWiser().getMessages().get(0).getEnvelopeReceiver());
         list.add(getWiser().getMessages().get(1).getEnvelopeReceiver());
 
-        assertTrue(list.contains("tony@domain.com"));
-        assertTrue(list.contains("darth@domain.com"));
+        assertTrue( list.contains(emailAddressTony));
+        assertTrue( list.contains(emailAddressDarth));
 
-
-        MimeMessage msg = ((WiserMessage) getWiser().getMessages().get(0)).getMimeMessage();
-        assertEquals("My Body", msg.getContent());
-        assertEquals("My Subject", msg.getSubject());
-        assertEquals("from@domain.com", ((InternetAddress) msg.getFrom()[0]).getAddress());
-        assertEquals("replyTo@domain.com", ((InternetAddress) msg.getReplyTo()[0]).getAddress());
-        assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
-        assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
+        MimeMessage msg = (( WiserMessage  ) getWiser().getMessages().get( 0 )).getMimeMessage();
+        assertEquals( "My Body", msg.getContent() );
+        assertEquals( "My Subject", msg.getSubject() );
+        assertEquals( "from@domain.com", ((InternetAddress)msg.getFrom()[0]).getAddress() );
+        assertEquals( "replyTo@domain.com", ((InternetAddress)msg.getReplyTo()[0]).getAddress() );
+        boolean tonyMatched = false;
+        boolean darthMatched = false;
+        for( int i = 0; i < msg.getRecipients(RecipientType.TO).length; ++i ) { 
+            String emailAddress = ((InternetAddress)msg.getRecipients( RecipientType.TO )[i]).getAddress(); 
+           if( "tony@domain.com".equals(emailAddress) ) { 
+               tonyMatched = true;
+    }
+           else if( "darth@domain.com".equals(emailAddress) ) { 
+              darthMatched = true; 
+           }
+        }
+        assertTrue("Could not find tony in recipients list.", tonyMatched);
+        assertTrue("Could not find darth in recipients list.", darthMatched);
     }
 
     public void testDelayedReassignmentOnDeadline() throws Exception {
@@ -148,12 +161,11 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
 
         taskService.setEscalatedDeadlineHandler(notificationHandler);
 
-        String expressionDataPath = "/org/jbpm/task/service/DeadlineWithReassignment.mvel";
-        Reader reader = new InputStreamReader(getClass().getResourceAsStream(expressionDataPath));
-        Task task = (Task) eval(reader, vars);
+        Reader reader =  new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.DeadlineWithReassignment ) );
 
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        client.addTask(task, null, addTaskResponseHandler);
+        Task task = ( Task )  eval( reader, vars );               
+        client.addTask( task, null, addTaskResponseHandler );
         long taskId = addTaskResponseHandler.getTaskId();
 
         // Shouldn't have re-assigned yet

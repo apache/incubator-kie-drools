@@ -26,11 +26,11 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Task;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
-import org.jbpm.task.service.MvelFilePath;
-import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
@@ -39,7 +39,7 @@ import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 public abstract class TaskServiceEscalationBaseTest extends BaseTest {
 
 	protected TaskServer server;
-	protected TaskClient client;
+	protected AsyncTaskService client;
 
     public void testSetup() {
         assertTrue( true );

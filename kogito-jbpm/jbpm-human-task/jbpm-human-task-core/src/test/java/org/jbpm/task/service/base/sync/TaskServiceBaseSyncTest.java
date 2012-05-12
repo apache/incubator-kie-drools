@@ -25,7 +25,7 @@ import org.jbpm.task.BaseTest;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.MvelFilePath;
+import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.utils.CollectionUtils;

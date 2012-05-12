@@ -21,11 +21,11 @@ import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 import java.util.Properties;
 
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceDeadlinesBaseUserGroupCallbackTest;
+import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 import org.subethamail.wiser.Wiser;
 
-public class TaskServiceDeadlinesUserGroupCallbackTest extends TaskServiceDeadlinesBaseUserGroupCallbackTest {
+public class TaskServiceDeadlinesUserGroupCallbackTest extends TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest {
 
     @Override
     protected void setUp() throws Exception {        
