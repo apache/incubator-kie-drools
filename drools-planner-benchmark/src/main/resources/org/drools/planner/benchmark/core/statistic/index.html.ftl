@@ -13,12 +13,21 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
+<#macro rankingBadge solverBenchmark>
+    <#if !solverBenchmark.ranking??>
+    <span class="badge badge-warning">F</span>
+    <#elseif solverBenchmark.rankingBest>
+    <span class="badge badge-success">${solverBenchmark.ranking}</span>
+    <#else>
+    <span class="badge">${solverBenchmark.ranking}</span>
+    </#if>
+</#macro>
 <body onload="prettyPrint()">
 
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span2">
-            <div class="benchmark-report-nav"
+            <div class="benchmark-report-nav">
                 <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
                 <ul class="nav nav-list">
                     <li><a href="#summary">Summary</a></li>
@@ -45,7 +54,7 @@
                     <li>
                         <ul class="nav nav-list">
                         <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                            <li><a href="#solverBenchmark_${solverBenchmark.name}">${solverBenchmark.name}</a></li>
+                            <li><a href="#solverBenchmark_${solverBenchmark.name}">${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></a></li>
                         </#list>
                         </ul>
                     </li>
@@ -95,7 +104,7 @@
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
-                                        <th>${solverBenchmark.name}</th>
+                                        <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                             <#if !singleBenchmark??>
@@ -111,13 +120,7 @@
                                         <#else>
                                             <td>${solverBenchmark.averageScore}</td>
                                         </#if>
-                                        <#if !solverBenchmark.ranking??>
-                                            <td></td>
-                                        <#elseif solverBenchmark.rankingBest>
-                                            <td><span class="badge badge-success">${solverBenchmark.ranking}</span></td>
-                                        <#else>
-                                            <td><span class="badge">${solverBenchmark.ranking}</span></td>
-                                        </#if>
+                                        <td><@rankingBadge solverBenchmark=solverBenchmark/></td>
                                     </tr>
                                 </#list>
                                 </table>
@@ -156,7 +159,7 @@
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
-                                        <th>${solverBenchmark.name}</th>
+                                        <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                             <#if !singleBenchmark??>
@@ -205,7 +208,7 @@
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
-                                        <th>${solverBenchmark.name}</th>
+                                        <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                             <#if !singleBenchmark??>
@@ -272,7 +275,7 @@
                 </div>
             <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                 <section id="solverBenchmark_${solverBenchmark.name}">
-                    <h2>${solverBenchmark.name}</h2>
+                    <h2>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></h2>
                     <#if solverBenchmark.hasAnyFailure()>
                         <div class="alert alert-error">
                             <p>${solverBenchmark.failureCount} benchmarks have failed!</p>
