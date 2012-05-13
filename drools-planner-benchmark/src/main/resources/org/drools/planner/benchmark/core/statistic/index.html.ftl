@@ -31,9 +31,16 @@
                         </ul>
                     </li>
                     <li class="divider"></li>
-                <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                    <li><a href="#problem_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
-                </#list>
+                    <li><a href="#problemBenchmark">Problem benchmarks</a></li>
+                    <li>
+                        <ul class="nav nav-list">
+                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                            <li><a href="#problemBenchmark_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
+                        </#list>
+                        </ul>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="#solverBenchmark">Solver benchmarks</a></li>
                     <li class="divider"></li>
                     <li><a href="#benchmarkInformation">Benchmark information</a></li>
                 </ul>
@@ -210,47 +217,54 @@
                 </section>
             </section>
 
-            <h1>Solver benchmarks</h1>
-            <p>TODO</p>
-
-            <div class="page-header">
-                <h1>Problem benchmarks</h1>
-            </div>
-        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-            <section id="problem_${problemBenchmark.name}">
-                <h2>${problemBenchmark.name}</h2>
-                <#if problemBenchmark.hasAnyFailure()>
-                    <div class="alert alert-error">
-                        <p>${problemBenchmark.failureCount} benchmarks have failed!</p>
-                    </div>
-                </#if>
-                <#if problemBenchmark.hasAnySuccess() && problemBenchmark.hasAnyProblemStatistic()>
-                    <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <#assign firstRow = true>
-                            <#list problemBenchmark.problemStatisticList as problemStatistic>
-                                <li<#if firstRow> class="active"</#if>>
-                                    <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType}</a>
-                                </li>
-                                <#assign firstRow = false>
-                            </#list>
-                        </ul>
-                        <div class="tab-content">
-                            <#assign firstRow = true>
-                            <#list problemBenchmark.problemStatisticList as problemStatistic>
-                                <div class="tab-pane<#if firstRow> active</#if>" id="problemStatistic_${problemStatistic.anchorId}">
-                                    <div class="btn-group">
-                                        <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CVS file</button>
-                                    </div>
-                                    <img src="${problemStatistic.graphFilePath}"/>
-                                </div>
-                                <#assign firstRow = false>
-                            </#list>
+            <section id="problemBenchmark">
+                <div class="page-header">
+                    <h1>Problem benchmarks</h1>
+                </div>
+            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                <section id="problemBenchmark_${problemBenchmark.name}">
+                    <h2>${problemBenchmark.name}</h2>
+                    <#if problemBenchmark.hasAnyFailure()>
+                        <div class="alert alert-error">
+                            <p>${problemBenchmark.failureCount} benchmarks have failed!</p>
                         </div>
-                    </div>
-                </#if>
+                    </#if>
+                    <#if problemBenchmark.hasAnySuccess() && problemBenchmark.hasAnyProblemStatistic()>
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs">
+                                <#assign firstRow = true>
+                                <#list problemBenchmark.problemStatisticList as problemStatistic>
+                                    <li<#if firstRow> class="active"</#if>>
+                                        <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType}</a>
+                                    </li>
+                                    <#assign firstRow = false>
+                                </#list>
+                            </ul>
+                            <div class="tab-content">
+                                <#assign firstRow = true>
+                                <#list problemBenchmark.problemStatisticList as problemStatistic>
+                                    <div class="tab-pane<#if firstRow> active</#if>" id="problemStatistic_${problemStatistic.anchorId}">
+                                        <div class="btn-group">
+                                            <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CVS file</button>
+                                        </div>
+                                        <img src="${problemStatistic.graphFilePath}"/>
+                                    </div>
+                                    <#assign firstRow = false>
+                                </#list>
+                            </div>
+                        </div>
+                    </#if>
+                </section>
+            </#list>
             </section>
-        </#list>
+
+            <section id="solverBenchmark">
+                <div class="page-header">
+                    <h1>Solver benchmarks</h1>
+                </div>
+                <p>TODO</p>
+            </section>
+
             <section id="benchmarkInformation">
                 <div class="page-header">
                     <h1>Benchmark information</h1>
