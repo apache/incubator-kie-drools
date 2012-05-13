@@ -131,7 +131,46 @@
 
                 <section id="summary_winningScoreDifference">
                     <h2>Winning score difference summary chart</h2>
-                    <img src="${plannerStatistic.winningScoreDifferenceSummaryFile.name}"/>
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#summary_winningScoreDifference_chart" data-toggle="tab">Chart</a>
+                            </li>
+                            <li>
+                                <a href="#summary_winningScoreDifference_table" data-toggle="tab">Table</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="summary_winningScoreDifference_chart">
+                                <img src="${plannerStatistic.winningScoreDifferenceSummaryFile.name}"/>
+                            </div>
+                            <div class="tab-pane" id="summary_winningScoreDifference_table">
+                                <table class="table table-striped table-bordered">
+                                    <tr>
+                                        <th>Solver</th>
+                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <th>${problemBenchmark.name}</th>
+                                    </#list>
+                                    </tr>
+                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                    <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                        <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
+                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                            <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                            <#if !singleBenchmark??>
+                                                <td></td>
+                                            <#elseif !singleBenchmark.success>
+                                                <td><span class="label warning">Failed</span></td>
+                                            <#else>
+                                                <td>${singleBenchmark.winningScoreDifference}</td>
+                                            </#if>
+                                        </#list>
+                                    </tr>
+                                </#list>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <section id="summary_timeSpend">
