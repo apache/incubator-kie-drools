@@ -17,25 +17,27 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span2">
-            <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
-            <ul class="nav nav-list">
-                <li><a href="#summary">Summary</a></li>
-                <li>
-                    <ul class="nav nav-list">
-                        <li><a href="#summary_bestScore">Best score</a></li>
-                        <li><a href="#summary_winningScoreDifference">Winning score difference</a></li>
-                        <li><a href="#summary_timeSpend">Time spend</a></li>
-                        <li><a href="#summary_scalability">Scalability</a></li>
-                        <li><a href="#summary_averageCalculateCount">Average calculate count</a></li>
-                    </ul>
-                </li>
-                <li class="divider"></li>
-            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                <li><a href="#problem_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
-            </#list>
-                <li class="divider"></li>
-                <li><a href="#benchmarkInformation">Benchmark information</a></li>
-            </ul>
+            <div class="benchmark-report-nav"
+                <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
+                <ul class="nav nav-list">
+                    <li><a href="#summary">Summary</a></li>
+                    <li>
+                        <ul class="nav nav-list">
+                            <li><a href="#summary_bestScore">Best score</a></li>
+                            <li><a href="#summary_winningScoreDifference">Winning score difference</a></li>
+                            <li><a href="#summary_timeSpend">Time spend</a></li>
+                            <li><a href="#summary_scalability">Scalability</a></li>
+                            <li><a href="#summary_averageCalculateCount">Average calculate count</a></li>
+                        </ul>
+                    </li>
+                    <li class="divider"></li>
+                <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                    <li><a href="#problem_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
+                </#list>
+                    <li class="divider"></li>
+                    <li><a href="#benchmarkInformation">Benchmark information</a></li>
+                </ul>
+            </div>
         </div>
         <div class="span10">
             <header class="main-page-header">
@@ -272,7 +274,7 @@
                     </tr>
                     <tr>
                         <th>plannerVersion</th>
-                        <td>${plannerStatistic.plannerBenchmark.plannerVersion!}</td>
+                        <td>${plannerStatistic.plannerBenchmark.plannerVersion!"Unjarred development snapshot"}</td>
                     </tr>
                 </table>
             </section>
