@@ -31,6 +31,7 @@ import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
 
+@Deprecated
 public class DependentPlanningVariableDescriptor {
 
     private final PlanningEntityDescriptor planningEntityDescriptor;
