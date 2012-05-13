@@ -19,6 +19,9 @@ package org.drools.planner.benchmark.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.XStream;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
@@ -161,6 +164,14 @@ public class SolverBenchmark {
             }
         }
         return null;
+    }
+
+    public String getSolverConfigAsHtmlEscapedXml() {
+        // TODO reuse a single XStream instance for the entire report
+        XStream xStream = XmlSolverFactory.buildXstream();
+        xStream.setMode(XStream.NO_REFERENCES);
+        String xml = xStream.toXML(solverConfig);
+        return StringEscapeUtils.escapeHtml(xml);
     }
 
 }

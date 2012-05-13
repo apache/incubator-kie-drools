@@ -6,6 +6,7 @@
     <title>Planner benchmark report ${plannerStatistic.plannerBenchmark.startingTimestamp?datetime}</title>
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="twitterbootstrap/css/prettify.css" type="text/css" rel="stylesheet" />
     <link href="website/css/benchmarkReport.css" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -41,6 +42,13 @@
                     </li>
                     <li class="divider"></li>
                     <li><a href="#solverBenchmark">Solver benchmarks</a></li>
+                    <li>
+                        <ul class="nav nav-list">
+                        <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                            <li><a href="#solverBenchmark_${solverBenchmark.name}">${solverBenchmark.name}</a></li>
+                        </#list>
+                        </ul>
+                    </li>
                     <li class="divider"></li>
                     <li><a href="#benchmarkInformation">Benchmark information</a></li>
                 </ul>
@@ -262,7 +270,22 @@
                 <div class="page-header">
                     <h1>Solver benchmarks</h1>
                 </div>
-                <p>TODO</p>
+            <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                <section id="solverBenchmark_${solverBenchmark.name}">
+                    <h2>${solverBenchmark.name}</h2>
+                    <#if solverBenchmark.hasAnyFailure()>
+                        <div class="alert alert-error">
+                            <p>${solverBenchmark.failureCount} benchmarks have failed!</p>
+                        </div>
+                    </#if>
+                    <button class="btn showSolverConfiguration" data-toggle="collapse" data-target="#solverBenchmark_${solverBenchmark.name}_config">
+                        Show/hide Solver configuration
+                    </button>
+                    <div id="solverBenchmark_${solverBenchmark.name}_config" class="collapse in">
+                        <pre class="prettyprint lang-xml">${solverBenchmark.solverConfigAsHtmlEscapedXml}</pre>
+                    </div>
+                </section>
+            </#list>
             </section>
 
             <section id="benchmarkInformation">
@@ -298,5 +321,6 @@
 
 <script src="twitterbootstrap/js/jquery.js"></script>
 <script src="twitterbootstrap/js/bootstrap.js"></script>
+<script src="twitterbootstrap/js/prettify.js"></script>
 </body>
 </html>
