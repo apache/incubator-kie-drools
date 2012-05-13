@@ -37,3 +37,7 @@
 .rankingBest td {
     background-color: #dff0d8 !important
 }
+
+.download-btn-group {
+    margin: 10px;
+}

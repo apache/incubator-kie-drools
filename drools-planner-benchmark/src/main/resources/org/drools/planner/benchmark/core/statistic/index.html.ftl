@@ -244,10 +244,10 @@
                                 <#assign firstRow = true>
                                 <#list problemBenchmark.problemStatisticList as problemStatistic>
                                     <div class="tab-pane<#if firstRow> active</#if>" id="problemStatistic_${problemStatistic.anchorId}">
-                                        <div class="btn-group">
+                                        <img src="${problemStatistic.graphFilePath}"/>
+                                        <div class="btn-group download-btn-group">
                                             <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CVS file</button>
                                         </div>
-                                        <img src="${problemStatistic.graphFilePath}"/>
                                     </div>
                                     <#assign firstRow = false>
                                 </#list>
