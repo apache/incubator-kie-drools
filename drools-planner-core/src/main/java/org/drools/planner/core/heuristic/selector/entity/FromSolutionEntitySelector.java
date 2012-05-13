@@ -29,16 +29,20 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
  */
 public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
-    private PlanningEntityDescriptor entityDescriptor;
-    private boolean randomSelection = false;
-    private long randomProbabilityWeight = 1L;
+    protected PlanningEntityDescriptor entityDescriptor;
+    protected boolean randomSelection = false;
+    protected long randomProbabilityWeight = 1L;
 
-    private Random workingRandom = null;
+    protected Random workingRandom = null;
 
-    private List<Object> entityList = null;
+    protected List<Object> entityList = null;
 
     public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor) {
         this.entityDescriptor = entityDescriptor;
+    }
+
+    public PlanningEntityDescriptor getEntityDescriptor() {
+        return entityDescriptor;
     }
 
     public boolean isRandomSelection() {
@@ -76,10 +80,11 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public Iterator<Object> iterator() {
-        if (randomSelection) {
-            new RandomIterator(entityList, workingRandom);
+        if (!randomSelection) {
+            return entityList.iterator();
+        } else {
+            return new RandomIterator<Object>(entityList, workingRandom);
         }
-        return entityList.iterator();
     }
 
     public boolean isContinuous() {
@@ -87,7 +92,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public boolean isNeverEnding() {
-        return !randomSelection;
+        return randomSelection;
     }
 
     public long getSize() {

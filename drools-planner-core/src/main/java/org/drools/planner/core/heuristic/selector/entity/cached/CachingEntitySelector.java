@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectorCacheType;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
@@ -59,7 +60,7 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     public void setChildEntitySelector(EntitySelector childEntitySelector) {
         this.childEntitySelector = childEntitySelector;
         if (childEntitySelector.isNeverEnding()) {
-            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has sizeInfinite ("
+            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
                     + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
         }
     }
@@ -142,6 +143,10 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public PlanningEntityDescriptor getEntityDescriptor() {
+        return childEntitySelector.getEntityDescriptor();
+    }
 
     public Iterator<Object> iterator() {
         return cachedEntityList.iterator();

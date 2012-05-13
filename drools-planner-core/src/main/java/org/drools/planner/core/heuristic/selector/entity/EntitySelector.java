@@ -17,16 +17,19 @@
 package org.drools.planner.core.heuristic.selector.entity;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.Selector;
-import org.drools.planner.core.move.Move;
 
 /**
- * Selects {@link PlanningEntity} annotated instances.
+ * Selects instances of 1 {@link PlanningEntity} annotated class.
  * @see AbstractEntitySelector
  * @see FromSolutionEntitySelector
  */
 public interface EntitySelector extends Selector, Iterable<Object> {
 
-
+    /**
+     * @return never null
+     */
+    PlanningEntityDescriptor getEntityDescriptor();
 
 }

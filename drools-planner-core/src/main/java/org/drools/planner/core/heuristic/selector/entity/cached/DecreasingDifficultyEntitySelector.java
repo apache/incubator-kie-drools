@@ -23,7 +23,7 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 // TODO Refactor to general purpose SortingEntitySelector
 public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
 
-    private final PlanningEntitySorter planningEntitySorter;
+    protected final PlanningEntitySorter planningEntitySorter;
 
     public DecreasingDifficultyEntitySelector(SelectorCacheType cacheType, PlanningEntitySorter planningEntitySorter) {
         super(cacheType);
