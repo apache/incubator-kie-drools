@@ -9,14 +9,14 @@ import java.lang.reflect.Field;
 import java.util.Properties;
 
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallback;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.service.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.service.EscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.UserGroupCallback;
-import org.jbpm.task.service.UserGroupCallbackManager;
 import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;

@@ -1,8 +1,9 @@
 package org.jbpm.task.servlet;
 
 import java.util.List;
+import org.jbpm.task.identity.UserGroupCallback;
 
-import org.jbpm.task.service.UserGroupCallback;
+
 
 public class CustomUserGroupCallbackImpl implements UserGroupCallback {
 

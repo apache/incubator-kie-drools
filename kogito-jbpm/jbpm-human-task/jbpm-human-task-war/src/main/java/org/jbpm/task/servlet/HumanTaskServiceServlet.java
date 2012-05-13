@@ -9,7 +9,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -21,41 +20,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AllowedToDelegate;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BooleanExpression;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.Delegation;
-import org.jbpm.task.Escalation;
 import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Notification;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.identity.UserGroupCallback;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
 import org.jbpm.task.service.EscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
-import org.jbpm.task.service.UserGroupCallback;
-import org.jbpm.task.service.UserGroupCallbackManager;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.jbpm.task.service.jms.JMSTaskServer;
 import org.jbpm.task.service.jms.TaskServiceConstants;
 import org.jbpm.task.service.mina.MinaTaskServer;
-import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
-import org.mvel2.compiler.ExpressionCompiler;
 
 public class HumanTaskServiceServlet extends HttpServlet {
 
