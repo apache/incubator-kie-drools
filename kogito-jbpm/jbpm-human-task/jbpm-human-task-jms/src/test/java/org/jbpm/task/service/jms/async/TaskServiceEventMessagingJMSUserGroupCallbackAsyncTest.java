@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.jms;
+package org.jbpm.task.service.jms.async;
 
 import java.util.Properties;
 
@@ -23,13 +23,14 @@ import javax.naming.Context;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
+import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceLifeCycleBaseUserGroupCallbackTest;
+import org.jbpm.task.service.base.async.TaskServiceEventMessagingBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 
-public class TaskServiceLifeCycleJMSUserGroupCallbackTest extends TaskServiceLifeCycleBaseUserGroupCallbackTest {
+public class TaskServiceEventMessagingJMSUserGroupCallbackAsyncTest extends TaskServiceEventMessagingBaseUserGroupCallbackAsyncTest {
 
     private Context context;
     
@@ -58,7 +59,7 @@ public class TaskServiceLifeCycleJMSUserGroupCallbackTest extends TaskServiceLif
             System.out.print(".");
             Thread.sleep( 50 );
         }
-
+        
         Properties clientProperties = new Properties();
         clientProperties.setProperty("JMSTaskClient.connectionFactory", "ConnectionFactory");
         clientProperties.setProperty("JMSTaskClient.transactedQueue", "true");
@@ -70,12 +71,20 @@ public class TaskServiceLifeCycleJMSUserGroupCallbackTest extends TaskServiceLif
                                 new JMSTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()),
                                 clientProperties, context));
         client.connect();
+        
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
+        userInfo.getEmails().put(users.get("steve"), "steve@domain.com");
+
+        userInfo.getLanguages().put(users.get("tony"), "en-UK");
+        userInfo.getLanguages().put(users.get("steve"), "en-UK");
+        taskService.setUserinfo(userInfo);
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
         client.disconnect();
         server.stop();
-    }
-
+    }    
+    
 }

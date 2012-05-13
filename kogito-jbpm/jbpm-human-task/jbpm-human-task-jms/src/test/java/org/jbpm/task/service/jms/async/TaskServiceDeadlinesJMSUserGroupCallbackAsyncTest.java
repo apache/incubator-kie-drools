@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.jms;
+package org.jbpm.task.service.jms.async;
 
 import java.util.Properties;
 
@@ -23,21 +23,28 @@ import javax.naming.Context;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
-import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceEventMessagingBaseUserGroupCallbackTest;
+import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
+import org.subethamail.wiser.Wiser;
 
-public class TaskServiceEventMessagingJMSUserGroupCallbackTest extends TaskServiceEventMessagingBaseUserGroupCallbackTest {
+public class TaskServiceDeadlinesJMSUserGroupCallbackAsyncTest extends TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest {
 
     private Context context;
     
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception {        
         super.setUp();
-        
+
+        setConf(new Properties());
+        getConf().setProperty("mail.smtp.host", "localhost");
+        getConf().setProperty("mail.smtp.port", "2345");
+        getConf().setProperty("from", "from@domain.com");
+        getConf().setProperty("replyTo", "replyTo@domain.com");
+        getConf().setProperty("defaultLanguage", "en-UK");
+
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
         
         this.context = EasyMock.createMock(Context.class);
@@ -59,7 +66,7 @@ public class TaskServiceEventMessagingJMSUserGroupCallbackTest extends TaskServi
             System.out.print(".");
             Thread.sleep( 50 );
         }
-        
+
         Properties clientProperties = new Properties();
         clientProperties.setProperty("JMSTaskClient.connectionFactory", "ConnectionFactory");
         clientProperties.setProperty("JMSTaskClient.transactedQueue", "true");
@@ -68,23 +75,21 @@ public class TaskServiceEventMessagingJMSUserGroupCallbackTest extends TaskServi
         clientProperties.setProperty("JMSTaskClient.responseQueueName", "tasksResponseQueue");
         
         client = new TaskClient(new JMSTaskClientConnector("client 1",
-                                new JMSTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()),
-                                clientProperties, context));
+                new JMSTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()),
+                clientProperties, context));
         client.connect();
-        
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
-        userInfo.getEmails().put(users.get("steve"), "steve@domain.com");
 
-        userInfo.getLanguages().put(users.get("tony"), "en-UK");
-        userInfo.getLanguages().put(users.get("steve"), "en-UK");
-        taskService.setUserinfo(userInfo);
+        setWiser(new Wiser());
+        getWiser().setHostname(getConf().getProperty("mail.smtp.host"));
+        getWiser().setPort(Integer.parseInt(getConf().getProperty("mail.smtp.port")));        
+        getWiser().start();
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
         client.disconnect();
         server.stop();
-    }    
-    
+        getWiser().stop();
+    }
+
 }

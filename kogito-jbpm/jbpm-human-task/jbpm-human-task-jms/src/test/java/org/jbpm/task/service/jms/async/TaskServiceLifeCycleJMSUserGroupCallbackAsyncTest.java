@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.jms;
+package org.jbpm.task.service.jms.async;
 
 import java.util.Properties;
 
@@ -24,12 +24,12 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceLifeCycleBaseUserGroupCallbackTest;
+import org.jbpm.task.service.base.async.TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 
-public class TaskLifeCycleJMSUserGroupCallbackTest extends TaskServiceLifeCycleBaseUserGroupCallbackTest {
+public class TaskServiceLifeCycleJMSUserGroupCallbackAsyncTest extends TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest {
 
     private Context context;
     
