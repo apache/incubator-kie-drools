@@ -6,14 +6,14 @@
     <title>Planner benchmark report ${plannerStatistic.plannerBenchmark.startingTimestamp?datetime}</title>
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="twitterbootstrap/css/prettify.css" type="text/css" rel="stylesheet" />
+    <link href="twitterbootstrap/css/prettify.css" rel="stylesheet" />
     <link href="website/css/benchmarkReport.css" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
-<body>
+<body onload="prettyPrint()">
 
 <div class="container-fluid">
     <div class="row-fluid">
