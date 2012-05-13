@@ -60,7 +60,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     public void setChildMoveSelector(MoveSelector childMoveSelector) {
         this.childMoveSelector = childMoveSelector;
         if (childMoveSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childMoveSelector (" + childMoveSelector + ") has sizeInfinite ("
+            throw new IllegalStateException("The childMoveSelector (" + childMoveSelector + ") has neverEnding ("
                     + childMoveSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
         }
     }
