@@ -219,7 +219,46 @@
 
                 <section id="summary_scalability">
                     <h2>Scalability summary chart</h2>
-                    <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#summary_scalability_chart" data-toggle="tab">Chart</a>
+                            </li>
+                            <li>
+                                <a href="#summary_scalability_table" data-toggle="tab">Table</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="summary_scalability_chart">
+                                <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
+                            </div>
+                            <div class="tab-pane" id="summary_scalability_table">
+                                <table class="table table-striped table-bordered">
+                                    <tr>
+                                        <th>Solver</th>
+                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <th>${problemBenchmark.name}</th>
+                                    </#list>
+                                    </tr>
+                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                    <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                        <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
+                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                            <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                            <#if !singleBenchmark??>
+                                                <td></td>
+                                            <#elseif !singleBenchmark.success>
+                                                <td><span class="label warning">Failed</span></td>
+                                            <#else>
+                                                <td>${singleBenchmark.problemScale}</td>
+                                            </#if>
+                                        </#list>
+                                    </tr>
+                                </#list>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <section id="summary_averageCalculateCount">
