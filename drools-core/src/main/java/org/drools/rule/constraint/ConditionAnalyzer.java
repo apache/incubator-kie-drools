@@ -172,7 +172,11 @@ public class ConditionAnalyzer {
                 AccessorNode accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getAccessor();
                 expression.addInvocation(analyzeAccessor(accessorNode, null));
             } else if (accessor instanceof AccessorNode) {
-                expression.addInvocation(analyzeAccessor((AccessorNode)accessor, null));
+                AccessorNode accessorNode = (AccessorNode)accessor;
+                while (accessorNode != null) {
+                    expression.addInvocation(analyzeAccessor(accessorNode, null));
+                    accessorNode = accessorNode.getNextNode();
+                }
             } else {
                 throw new RuntimeException("Unexpected accessor: " + accessor);
             }
@@ -623,20 +627,24 @@ public class ConditionAnalyzer {
     public static class VariableExpression implements Expression {
         final String variableName;
         final EvaluatedExpression subsequentInvocations;
-        final Class<?> type;
+        final Class<?> variableType;
 
-        VariableExpression(String variableName, EvaluatedExpression subsequentInvocations, Class<?> type) {
+        VariableExpression(String variableName, EvaluatedExpression subsequentInvocations, Class<?> variableType) {
             this.variableName = variableName;
             this.subsequentInvocations = subsequentInvocations;
-            this.type = type;
+            this.variableType = variableType;
         }
 
         public boolean canBeNull() {
             return true;
         }
 
+        public Class<?> getVariableType() {
+            return variableType;
+        }
+
         public Class<?> getType() {
-            return subsequentInvocations != null ? subsequentInvocations.getType() : type;
+            return subsequentInvocations != null ? subsequentInvocations.getType() : variableType;
         }
 
         public String toString() {

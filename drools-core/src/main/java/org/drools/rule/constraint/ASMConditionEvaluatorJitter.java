@@ -468,7 +468,7 @@ public class ASMConditionEvaluatorJitter {
                 push(((FixedExpression) exp).getValue(), requiredClass);
                 return exp.getType();
             } else if (exp instanceof EvaluatedExpression) {
-                return jitEvaluatedExpression((EvaluatedExpression) exp, true);
+                return jitEvaluatedExpression((EvaluatedExpression) exp, true, Object.class);
             } else if (exp instanceof VariableExpression) {
                 return jitVariableExpression((VariableExpression) exp);
             } else if (exp instanceof AritmeticExpression) {
@@ -491,15 +491,15 @@ public class ASMConditionEvaluatorJitter {
             return exp.getType();
         }
 
-        private Class<?> jitEvaluatedExpression(EvaluatedExpression exp, boolean firstInvocation) {
+        private Class<?> jitEvaluatedExpression(EvaluatedExpression exp, boolean firstInvocation, Class<?> currentClass) {
             if (exp.firstExpression != null) {
-                jitExpression(exp.firstExpression, Object.class);
+                currentClass = jitExpression(exp.firstExpression, currentClass);
                 if (exp.firstExpression instanceof FixedExpression) {
                     firstInvocation = false;
                 }
             }
             Iterator<Invocation> invocations = exp.invocations.iterator();
-            Class<?> currentClass = jitInvocation(invocations.next(), Object.class, firstInvocation);
+            currentClass = jitInvocation(invocations.next(), currentClass, firstInvocation);
             while (invocations.hasNext()) {
                 currentClass = jitInvocation(invocations.next(), currentClass, false);
             }
@@ -509,7 +509,7 @@ public class ASMConditionEvaluatorJitter {
         private Class<?> jitVariableExpression(VariableExpression exp) {
             jitReadVariable(exp.variableName);
             return exp.subsequentInvocations != null ?
-                    jitEvaluatedExpression(exp.subsequentInvocations, false) :
+                    jitEvaluatedExpression(exp.subsequentInvocations, false, exp.getVariableType()) :
                     exp.getType();
         }
 
