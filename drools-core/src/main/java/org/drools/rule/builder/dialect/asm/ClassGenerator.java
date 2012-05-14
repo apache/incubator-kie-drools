@@ -637,7 +637,7 @@ public class ClassGenerator {
         }
 
         protected final void cast(Class<?> from, Class<?> to) {
-            if (from.isAssignableFrom(to)) {
+            if (to.isAssignableFrom(from)) {
                 return;
             }
             if (from.isPrimitive()) {
