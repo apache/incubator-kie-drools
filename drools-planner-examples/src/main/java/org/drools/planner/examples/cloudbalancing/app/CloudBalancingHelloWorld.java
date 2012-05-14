@@ -32,7 +32,7 @@ public class CloudBalancingHelloWorld {
                 "/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
 
-        // Load a problem with 400 computer and 1200 processes
+        // Load a problem with 400 computers and 1200 processes
         CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
 
         // Solve the problem
