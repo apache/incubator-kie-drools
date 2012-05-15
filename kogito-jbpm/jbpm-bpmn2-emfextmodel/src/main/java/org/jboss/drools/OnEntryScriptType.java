@@ -38,7 +38,7 @@ public interface OnEntryScriptType extends EObject {
 	 * @see #setScript(String)
 	 * @see org.jboss.drools.DroolsPackage#getOnEntryScriptType_Script()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='element' name='script' namespace='http://www.omg.org/spec/BPMN/20100524/MODEL'"
+	 *        extendedMetaData="kind='element' name='script' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	String getScript();

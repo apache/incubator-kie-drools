@@ -29,10 +29,6 @@ import org.jboss.drools.OnExitScriptType;
 
 import org.jboss.drools.util.DroolsValidator;
 
-import org.omg.spec.bpmn._20100524.model.ModelPackage;
-
-import org.omg.spec.bpmn._20100524.model.impl.ModelPackageImpl;
-
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Package</b>.
@@ -159,16 +155,11 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		// Initialize simple dependencies
 		XMLTypePackage.eINSTANCE.eClass();
 
-		// Obtain or create and register interdependencies
-		ModelPackageImpl theModelPackage = (ModelPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ModelPackage.eNS_URI) instanceof ModelPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ModelPackage.eNS_URI) : ModelPackage.eINSTANCE);
-
 		// Create package meta-data objects
 		theDroolsPackage.createPackageContents();
-		theModelPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theDroolsPackage.initializePackageContents();
-		theModelPackage.initializePackageContents();
 
 		// Register package validator
 		EValidator.Registry.INSTANCE.put
@@ -743,7 +734,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "script",
-			 "namespace", "http://www.omg.org/spec/BPMN/20100524/MODEL"
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getOnEntryScriptType_ScriptFormat(), 
@@ -765,7 +756,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "script",
-			 "namespace", "http://www.omg.org/spec/BPMN/20100524/MODEL"
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getOnExitScriptType_ScriptFormat(), 

@@ -43,13 +43,4 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnExitScriptType/scriptFormat"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Model" basePackage="org.omg.spec.bpmn._20100524" resource="XML"
-      disposableProviderFactory="true" ecorePackage="model.ecore#/">
-    <genClasses ecoreClass="model.ecore#//DocumentRoot">
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//DocumentRoot/mixed"/>
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference model.ecore#//DocumentRoot/xMLNSPrefixMap"/>
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference model.ecore#//DocumentRoot/xSISchemaLocation"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//DocumentRoot/script"/>
-    </genClasses>
-  </genPackages>
 </genmodel:GenModel>

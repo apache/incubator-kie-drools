@@ -3,11 +3,8 @@
   targetNamespace="http://www.jboss.org/drools"
   elementFormDefault="qualified" 
   xmlns="http://www.w3.org/2001/XMLSchema"
-  xmlns:drools="http://www.jboss.org/drools"
-  xmlns:tns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  xmlns:drools="http://www.jboss.org/drools">
   
-  <import namespace="http://www.omg.org/spec/BPMN/20100524/MODEL" schemaLocation="bpmn2emfscriptmodel.xsd"/>
-
   <attribute name="packageName">
     <simpleType>
       <restriction base="string" />
@@ -56,7 +53,7 @@
   <element name="onEntry-script">
     <complexType>
       <sequence>
-      	<element ref="tns:script" minOccurs="1" maxOccurs="1"/>
+      	<element name="script" minOccurs="1" maxOccurs="1" type="string" />
       </sequence>
       <attributeGroup ref="drools:onxscriptattributes" />
     </complexType>
@@ -65,7 +62,7 @@
   <element name="onExit-script">
     <complexType>
       <sequence>
-      	<element ref="tns:script" minOccurs="1" maxOccurs="1"/>
+      	<element name="script" minOccurs="1" maxOccurs="1" type="string" />
       </sequence>
       <attributeGroup ref="drools:onxscriptattributes" />
     </complexType>
