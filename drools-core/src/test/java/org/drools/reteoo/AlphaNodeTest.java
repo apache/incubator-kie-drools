@@ -16,8 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.beans.IntrospectionException;
-
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
@@ -26,25 +24,24 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.AlphaNode.AlphaMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Rule;
-import org.drools.spi.Evaluator;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.beans.IntrospectionException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class AlphaNodeTest extends DroolsTestCase {
     
@@ -74,17 +71,13 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "type",
-                                                            getClass().getClassLoader() );
+        final ClassFieldReader extractor = store.getReader(Cheese.class,
+                "type",
+                getClass().getClassLoader());
 
-        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue("cheddar");
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                         Operator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    evaluator,
-                                                                    field );
+        final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 
         // With Memory
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
@@ -161,11 +154,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                         Operator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    evaluator,
-                                                                    field );
+        final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
@@ -232,11 +221,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                         Operator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    evaluator,
-                                                                    field );
+        final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,

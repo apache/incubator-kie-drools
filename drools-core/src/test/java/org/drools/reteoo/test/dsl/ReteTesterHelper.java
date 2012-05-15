@@ -30,12 +30,13 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.base.evaluators.Operator;
 import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
@@ -116,9 +117,9 @@ public class ReteTesterHelper {
                                                             extractor.getValueType(), 
                                                             null );
 
-        return new LiteralConstraint( extractor,
-                                      evaluator,
-                                      fieldValue );
+        return new MvelConstraintTestUtil( fieldName + evaluatorString + value,
+                                           fieldValue,
+                                           extractor );
     }
 
     public Evaluator getEvaluator(Class< ? > cls,

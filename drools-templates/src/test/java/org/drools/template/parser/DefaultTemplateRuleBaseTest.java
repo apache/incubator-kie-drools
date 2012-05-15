@@ -1,20 +1,16 @@
 package org.drools.template.parser;
 
+import org.drools.rule.GroupElement;
+import org.drools.rule.IndexableConstraint;
+import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.spi.Constraint;
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.rule.IndexableConstraint;
-import org.drools.spi.Constraint;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.rule.GroupElement;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
-import org.drools.rule.VariableConstraint;
+import static org.junit.Assert.assertEquals;
 
 public class DefaultTemplateRuleBaseTest {
 

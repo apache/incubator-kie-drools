@@ -11,8 +11,6 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.LiteralRestriction;
 import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.UnificationRestriction;
@@ -107,20 +105,15 @@ public class ConstraintBuilder {
                                                     String rightValue,
                                                     InternalReadAccessor extractor,
                                                     LiteralRestrictionDescr restrictionDescr) {
-        if (USE_MVEL_EXPRESSION) {
-            if (!isMvelOperator(operator)) {
-                Evaluator evaluator = buildLiteralEvaluator(context, extractor, restrictionDescr, vtype);
-                return new EvaluatorConstraint(field, evaluator, extractor);
-            }
-
-            String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
-            boolean isIndexable = operator.equals("==");
-            MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr);
-            return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable, field, extractor);
-        } else {
-            LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
-            return restriction != null ? new LiteralConstraint(extractor, restriction) : null;
+        if (!isMvelOperator(operator)) {
+            Evaluator evaluator = buildLiteralEvaluator(context, extractor, restrictionDescr, vtype);
+            return new EvaluatorConstraint(field, evaluator, extractor);
         }
+
+        String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
+        boolean isIndexable = operator.equals("==");
+        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr);
+        return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable, field, extractor);
     }
 
     private static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {
@@ -167,15 +160,6 @@ public class ConstraintBuilder {
             expr = "isEmpty()" + expr.substring(5);
         }
         return expr;
-    }
-
-    public static LiteralRestriction buildLiteralRestriction( RuleBuildContext context,
-                                                              InternalReadAccessor extractor,
-                                                              LiteralRestrictionDescr literalRestrictionDescr,
-                                                              FieldValue field,
-                                                              ValueType vtype) {
-        Evaluator evaluator = buildLiteralEvaluator(context, extractor, literalRestrictionDescr, vtype);
-        return evaluator == null ? null : new LiteralRestriction(field, evaluator, extractor);
     }
 
     public static Evaluator buildLiteralEvaluator( RuleBuildContext context,

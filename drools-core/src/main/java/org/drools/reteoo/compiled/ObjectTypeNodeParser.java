@@ -20,7 +20,7 @@ import org.drools.base.ClassFieldReader;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.*;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
 /**
@@ -194,23 +194,21 @@ public class ObjectTypeNodeParser {
 
     /**
      * Returns the {@link ClassFieldReader} for the hashed AlphaNode. The AlphaNode's constraint has to be a
-     * LiteralConstraint. This is the only type of hashed alpha currently supported.
+     * MvelConstraint. This is the only type of hashed alpha currently supported.
      *
      * @param alphaNode hashed alpha to get reader for
      * @return ClassFieldReader
      * @throws IllegalArgumentException thrown if the AlphaNode's {@link org.drools.spi.AlphaNodeFieldConstraint} is not a
-     *                                  {@link org.drools.rule.LiteralConstraint}.
+     *                                  {@link MvelConstraint}.
      */
     private ClassFieldReader getClassFieldReaderForHashedAlpha(final AlphaNode alphaNode) throws IllegalArgumentException {
         final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-        if (!(fieldConstraint instanceof LiteralConstraint)) {
-            throw new IllegalArgumentException("Only support LiteralConstraint hashed AlphaNodes, not " + fieldConstraint.getClass());
+        if (!(fieldConstraint instanceof MvelConstraint)) {
+            throw new IllegalArgumentException("Only support MvelConstraint hashed AlphaNodes, not " + fieldConstraint.getClass());
         }
         // we need to get the first alpha in the map to get the attribute name that be use for the prefix of the
         // generated variable name
-        final LiteralConstraint literalConstraint = (LiteralConstraint) alphaNode.getConstraint();
-
-        return (ClassFieldReader) literalConstraint.getFieldExtractor();
+        return (ClassFieldReader) ((MvelConstraint)fieldConstraint).getFieldExtractor();
     }
 }

@@ -16,15 +16,6 @@
 
 package org.drools.event;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -34,17 +25,22 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Consequence;
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import static org.junit.Assert.assertEquals;
 
 public class RuleBaseEventSupportTest {
 
@@ -79,13 +75,8 @@ public class RuleBaseEventSupportTest {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = new EqualityEvaluatorsDefinition().getEvaluator( ValueType.STRING_TYPE,
-                                                                                     Operator.EQUAL,
-                                                                                     null );
+        final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    evaluator,
-                                                                    field );
         pattern.addConstraint( constraint );
         rule1.addPattern( pattern );
 
@@ -117,9 +108,8 @@ public class RuleBaseEventSupportTest {
 
         final FieldValue field2 = FieldFactory.getFieldValue( "stilton" );
 
-        final LiteralConstraint constraint2 = new LiteralConstraint( extractor,
-                                                                     evaluator,
-                                                                     field2 );
+        final MvelConstraint constraint2 = new MvelConstraintTestUtil("type == \"stilton\"", field, extractor);
+
         pattern2.addConstraint( constraint2 );
         rule2.addPattern( pattern2 );
 

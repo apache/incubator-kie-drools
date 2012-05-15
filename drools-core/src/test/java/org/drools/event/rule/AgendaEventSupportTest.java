@@ -16,17 +16,6 @@
 
 package org.drools.event.rule;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -45,16 +34,29 @@ import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.common.InternalFactHandle;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Consequence;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class AgendaEventSupportTest {
 
@@ -95,9 +97,8 @@ public class AgendaEventSupportTest {
                                                            Operator.EQUAL,
                                                            null );
 
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    evaluator,
-                                                                    field );
+        final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
+
         pattern.addConstraint( constraint );
         rule.addPattern( pattern );
 

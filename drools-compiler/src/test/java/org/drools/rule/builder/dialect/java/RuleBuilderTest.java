@@ -16,50 +16,40 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.HashSet;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.base.ClassTypeResolver;
+import antlr.collections.List;
 import org.drools.base.EnabledBoolean;
-import org.drools.base.TypeResolver;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.time.TimeUtils;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.type.DateFormatsImpl;
+import org.junit.Test;
 
-import antlr.collections.List;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Calendar;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RuleBuilderTest {
 
@@ -82,7 +72,7 @@ public class RuleBuilderTest {
         
         pkg.addGlobal( "results", List.class );
 
-        final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
+        final RuleDescr ruleDescr = pkgDescr.getRules().get( 0 );
         final String ruleClassName = "RuleClassName.java";
         ruleDescr.setClassName( ruleClassName );
         ruleDescr.addAttribute( new AttributeDescr( "dialect",
@@ -271,8 +261,8 @@ public class RuleBuilderTest {
         final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
-        if (pat.getConstraints().get(0) instanceof LiteralConstraint) {
-            final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
+        if (pat.getConstraints().get(0) instanceof MvelConstraint) {
+            final MvelConstraint fc = (MvelConstraint) pat.getConstraints().get( 0 );
             assertTrue( "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(),
                         fc.getField().getValue() instanceof BigDecimal );
         }
@@ -316,8 +306,8 @@ public class RuleBuilderTest {
         final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
-        if (pat.getConstraints().get(0) instanceof LiteralConstraint) {
-            final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
+        if (pat.getConstraints().get(0) instanceof MvelConstraint) {
+            final MvelConstraint fc = (MvelConstraint) pat.getConstraints().get( 0 );
             assertTrue( "Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(),
                         fc.getField().getValue() instanceof BigInteger );
         }
