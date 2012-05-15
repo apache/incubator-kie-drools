@@ -16,14 +16,6 @@
 
 package org.drools.reteoo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.drools.FactHandle;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
@@ -35,24 +27,26 @@ import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Query;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
+import org.drools.rule.constraint.MvelConstraint;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 public class QueryTerminalNodeTest {
     private ReteooRuleBase   ruleBase;
     private BuildContext     buildContext;
     private EntryPointNode   entryPoint;
-
-    private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
@@ -78,16 +72,13 @@ public class QueryTerminalNodeTest {
                                                                        buildContext );
         queryObjectTypeNode.attach();
 
-        ClassFieldReader extractor = store.getReader( DroolsQuery.class,
-                                                            "name",
-                                                            DroolsQuery.class.getClassLoader() );
+        ClassFieldReader extractor = store.getReader(DroolsQuery.class,
+                "name",
+                DroolsQuery.class.getClassLoader());
 
-        FieldValue field = FieldFactory.getFieldValue( "query-1" );
-
-        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                              evaluator,
-                                                              field );
+        MvelConstraint constraint = new MvelConstraintTestUtil( "name == \"query-1\"",
+                                                                FieldFactory.getFieldValue( "query-1" ),
+                                                                extractor );
 
         AlphaNode alphaNode = new AlphaNode( this.buildContext.getNextId(),
                                              constraint,
@@ -111,11 +102,9 @@ public class QueryTerminalNodeTest {
                                         "type",
                                         getClass().getClassLoader() );
 
-        field = FieldFactory.getFieldValue( "stilton" );
-
-        constraint = new LiteralConstraint( extractor,
-                                            evaluator,
-                                            field );
+        constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
+                                                 FieldFactory.getFieldValue( "stilton" ),
+                                                 extractor );
 
         alphaNode = new AlphaNode( this.buildContext.getNextId(),
                                    constraint,

@@ -17,6 +17,7 @@ import org.drools.rule.IndexableConstraint;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.MutableTypeConstraint;
 import org.drools.runtime.rule.Variable;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
@@ -38,7 +39,7 @@ import static org.drools.core.util.ClassUtils.*;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
 
-public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
+public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
     private static final boolean TEST_JITTING = false;
     private static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
 
@@ -90,6 +91,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.indexingDeclaration = indexingDeclaration;
         this.extractor = extractor;
         this.isUnification = isUnification;
+    }
+
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.extractor = readAccessor;
     }
 
     public String getPackageName() {
@@ -452,7 +457,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return expression;
     }
 
-    private ParserConfiguration getParserConfiguration(InternalWorkingMemory workingMemory) {
+    protected ParserConfiguration getParserConfiguration(InternalWorkingMemory workingMemory) {
         return getMVELDialectRuntimeData(workingMemory).getParserConfiguration();
     }
 

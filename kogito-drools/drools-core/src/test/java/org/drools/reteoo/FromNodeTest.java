@@ -16,19 +16,11 @@
 
 package org.drools.reteoo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
+import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
@@ -46,16 +38,27 @@ import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.From;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
-import org.drools.spi.FieldValue;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class FromNodeTest {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
@@ -88,11 +91,9 @@ public class FromNodeTest {
                                                             "type",
                                                             getClass().getClassLoader() );
 
-        final FieldValue field = FieldFactory.getFieldValue( "stilton" );
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                         Operator.EQUAL ),
-                                                                    field );
+        final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
+                                                                      FieldFactory.getFieldValue( "stilton" ),
+                                                                      extractor );
 
         final List list = new ArrayList();
         final Cheese cheese1 = new Cheese( "cheddar",
@@ -319,11 +320,9 @@ public class FromNodeTest {
                                                             "type",
                                                             getClass().getClassLoader() );
 
-        final FieldValue field = FieldFactory.getFieldValue( "stilton" );
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                         Operator.EQUAL ),
-                                                                    field );
+        final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
+                                                                      FieldFactory.getFieldValue("stilton"),
+                                                                      extractor );
 
         final List list = new ArrayList();
         final Cheese cheese1 = new Cheese( "stilton",

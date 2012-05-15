@@ -734,32 +734,7 @@ public class PatternBuilder
             if ( declr == null ) {
                 // trying to create implicit declaration
                 final Pattern thisPattern = (Pattern) context.getBuildStack().peek();
-                declr = this.createDeclarationObject( context,
-                                                      value2,
-                                                      thisPattern );
-                if ( declr == null ) {
-                    // maybe it was a class literal ?
-                    try {
-                        final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( value2 );
-                        restrictionDescr = new LiteralRestrictionDescr( operator,
-                                                                        relDescr.isNegated(),
-                                                                        relDescr.getParameters(),
-                                                                        cls.getName(),
-                                                                        LiteralRestrictionDescr.TYPE_STRING ); // default type
-                        restriction = buildLiteralRestriction( context,
-                                                               extractor,
-                                                               restrictionDescr,
-                                                               getFieldValue(context, vtype, restrictionDescr),
-                                                               vtype );
-                    } catch ( ClassNotFoundException cnfe ) {
-                        // we will later fallback to regular predicates, so don't raise error
-                        //                            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                        //                                                                          d,
-                        //                                                                          null,
-                        //                                                                          "Unable to return Declaration for identifier '" + rightValue + "'" ) );
-                        return false;
-                    }
-                }
+                declr = createDeclarationObject( context, value2, thisPattern );
             }
         }
 

@@ -16,21 +16,16 @@
 
 package org.drools.examples.manners;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.DefaultAgendaEventListener;
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
-
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.DefaultAgendaEventListener;
-import org.drools.WorkingMemory;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ReteooMannersTest extends BaseMannersTest {
 

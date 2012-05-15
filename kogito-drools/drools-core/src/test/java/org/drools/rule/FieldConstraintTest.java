@@ -16,16 +16,6 @@
 
 package org.drools.rule;
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -45,12 +35,22 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
-import org.drools.spi.Evaluator;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FieldConstraintTest {
 
@@ -86,18 +86,14 @@ public class FieldConstraintTest {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "type",
-                                                            getClass().getClassLoader() );
+        final ClassFieldReader extractor = store.getReader(Cheese.class,
+                "type",
+                getClass().getClassLoader());
 
-        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+        final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"cheddar\"",
+                                                                      FieldFactory.getFieldValue( "cheddar" ),
+                                                                      extractor );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE,
-                                                         Operator.EQUAL );
-
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    evaluator,
-                                                                    field );
         final ContextEntry context = constraint.createContextEntry();
 
         final Cheese cheddar = new Cheese( "cheddar",
@@ -137,18 +133,13 @@ public class FieldConstraintTest {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "price",
-                                                            getClass().getClassLoader() );
+        final ClassFieldReader extractor = store.getReader(Cheese.class,
+                "price",
+                getClass().getClassLoader());
 
-        final FieldValue field = FieldFactory.getFieldValue( 5 );
-
-        final Evaluator evaluator = equals.getEvaluator( ValueType.PINTEGER_TYPE,
-                                                         Operator.EQUAL );
-
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    evaluator,
-                                                                    field );
+        final MvelConstraint constraint = new MvelConstraintTestUtil( "price == 5",
+                                                                      FieldFactory.getFieldValue( 5 ),
+                                                                      extractor );
         final ContextEntry context = constraint.createContextEntry();
 
         final Cheese cheddar = new Cheese( "cheddar",

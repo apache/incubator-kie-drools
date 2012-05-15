@@ -1,15 +1,5 @@
 package org.drools.rule.builder.dialect.java;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
@@ -20,19 +10,24 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.EvalCondition;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueConstraint;
-import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.Rule;
-import org.drools.rule.VariableConstraint;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Constraint;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueExpression;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 
 public class JavaDialectBinaryEqualityTest{

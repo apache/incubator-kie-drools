@@ -33,7 +33,6 @@ import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.DeclarationScopeResolver;
-import org.drools.spi.InternalReadAccessor;
 
 /**
  * LogicTransformation is reponsible for removing redundant nodes and move Or
@@ -85,7 +84,7 @@ class LogicTransformer {
         processTree( cloned );
         cloned.pack();
 
-        GroupElement[] ands = null;
+        GroupElement[] ands;
         // is top element an AND?
         if ( cloned.isAnd() ) {
             // Yes, so just return it
@@ -94,13 +93,12 @@ class LogicTransformer {
             // it is an OR, so each child is an AND branch
             ands = new GroupElement[cloned.getChildren().size()];
             int i = 0;
-            for ( final Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
-                final RuleConditionElement branch = (RuleConditionElement) it.next();
-                if ( (branch instanceof GroupElement) && (((GroupElement) branch).isAnd()) ) {
+            for (final RuleConditionElement branch : cloned.getChildren()) {
+                if ((branch instanceof GroupElement) && (((GroupElement) branch).isAnd())) {
                     ands[i++] = (GroupElement) branch;
                 } else {
                     ands[i] = GroupElementFactory.newAndInstance();
-                    ands[i].addChild( branch );
+                    ands[i].addChild(branch);
                     i++;
                 }
             }
@@ -154,63 +152,62 @@ class LogicTransformer {
                                 contextStack,
                                 (RuleConditionElement) it.next() );
             }
-            for ( Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
-                Object next = it.next();
-                if ( next instanceof Declaration ) {
+            for (Constraint next : pattern.getConstraints()) {
+                if (next instanceof Declaration) {
                     continue;
                 }
                 Constraint constraint = (Constraint) next;
                 Declaration[] decl = constraint.getRequiredDeclarations();
-                for ( int i = 0; i < decl.length; i++ ) {
-                    Declaration resolved = resolver.getDeclaration( null,
-                                                                    decl[i].getIdentifier() );
-                    
-                    if ( constraint instanceof VariableConstraint && ((VariableConstraint)constraint).getRestriction() instanceof UnificationRestriction ) {
-                        UnificationRestriction restriction = ( UnificationRestriction ) ((VariableConstraint)constraint).getRestriction();
-                        if( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( resolved.getPattern().getObjectType() ) ) {
+                for (int i = 0; i < decl.length; i++) {
+                    Declaration resolved = resolver.getDeclaration(null,
+                            decl[i].getIdentifier());
+
+                    if (constraint instanceof VariableConstraint && ((VariableConstraint) constraint).getRestriction() instanceof UnificationRestriction) {
+                        UnificationRestriction restriction = (UnificationRestriction) ((VariableConstraint) constraint).getRestriction();
+                        if (ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(resolved.getPattern().getObjectType())) {
                             // if the resolved still points to DroolsQuery, we know this is the first unification pattern, so redeclare it as the visible Declaration
-                            Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), restriction.getVariableRestriction().getReadAccessor(), pattern, false );
-                            pattern.addDeclaration(  redeclaredDeclr ); 
-                        } else if ( resolved.getPattern() != pattern ) {
+                            Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), restriction.getVariableRestriction().getReadAccessor(), pattern, false);
+                            pattern.addDeclaration(redeclaredDeclr);
+                        } else if (resolved.getPattern() != pattern) {
                             // It's a subsequent unification, so it should be able to use the redeclared Declaration as a normal VariableRestriction.
                             // but only rewrite if the resolved declaration is not for current pattern (this occurs if LogicTransformer is applied twice
                             // to the same tree that has already been rewritten before.
-                            ((VariableConstraint)constraint).setRestriction( restriction.getVariableRestriction() );
+                            ((VariableConstraint) constraint).setRestriction(restriction.getVariableRestriction());
                         }
-                    } else if (constraint instanceof MvelConstraint && ((MvelConstraint)constraint).isUnification()) {
-                        if( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( resolved.getPattern().getObjectType() ) ) {
-                            Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), ((MvelConstraint)constraint).getFieldExtractor(), pattern, false );
+                    } else if (constraint instanceof MvelConstraint && ((MvelConstraint) constraint).isUnification()) {
+                        if (ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(resolved.getPattern().getObjectType())) {
+                            Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), ((MvelConstraint) constraint).getFieldExtractor(), pattern, false);
                             pattern.addDeclaration(redeclaredDeclr);
                         } else {
-                            ((MvelConstraint)constraint).unsetUnification();
+                            ((MvelConstraint) constraint).unsetUnification();
                         }
                     }
-                    
-                    if ( resolved != null && resolved != decl[i] && resolved.getPattern() != pattern ) {
-                        constraint.replaceDeclaration( decl[i],
-                                                       resolved );
-                    } else if ( resolved == null ) {
+
+                    if (resolved != null && resolved != decl[i] && resolved.getPattern() != pattern) {
+                        constraint.replaceDeclaration(decl[i],
+                                resolved);
+                    } else if (resolved == null) {
                         // it is probably an implicit declaration, so find the corresponding pattern
                         Pattern old = decl[i].getPattern();
-                        Pattern current = resolver.findPatternByIndex( old.getIndex() );
-                        if ( current != null && old != current ) {
-                            resolved = new Declaration( decl[i].getIdentifier(),
-                                                        decl[i].getExtractor(),
-                                                        current );
-                            constraint.replaceDeclaration( decl[i],
-                                                           resolved );
+                        Pattern current = resolver.findPatternByIndex(old.getIndex());
+                        if (current != null && old != current) {
+                            resolved = new Declaration(decl[i].getIdentifier(),
+                                    decl[i].getExtractor(),
+                                    current);
+                            constraint.replaceDeclaration(decl[i],
+                                    resolved);
                         }
                     }
                 }
             }
         } else if ( element instanceof EvalCondition ) {
             Declaration[] decl = ((EvalCondition) element).getRequiredDeclarations();
-            for ( int i = 0; i < decl.length; i++ ) {
-                Declaration resolved = resolver.getDeclaration( null,
-                                                                decl[i].getIdentifier() );
-                if ( resolved != null && resolved != decl[i] ) {
-                    ((EvalCondition) element).replaceDeclaration( decl[i],
-                                                                  resolved );
+            for (Declaration aDecl : decl) {
+                Declaration resolved = resolver.getDeclaration(null,
+                        aDecl.getIdentifier());
+                if (resolved != null && resolved != aDecl) {
+                    ((EvalCondition) element).replaceDeclaration(aDecl,
+                            resolved);
                 }
             }
         } else if ( element instanceof Accumulate ) {
@@ -223,22 +220,22 @@ class LogicTransformer {
         } else if ( element instanceof From ) {
             DataProvider provider = ((From) element).getDataProvider();
             Declaration[] decl = provider.getRequiredDeclarations();
-            for ( int i = 0; i < decl.length; i++ ) {
-                Declaration resolved = resolver.getDeclaration( null,
-                                                                decl[i].getIdentifier() );
-                if ( resolved != null && resolved != decl[i] ) {
-                    provider.replaceDeclaration( decl[i],
-                                                 resolved );
-                } else if ( resolved == null ) {
+            for (Declaration aDecl : decl) {
+                Declaration resolved = resolver.getDeclaration(null,
+                        aDecl.getIdentifier());
+                if (resolved != null && resolved != aDecl) {
+                    provider.replaceDeclaration(aDecl,
+                            resolved);
+                } else if (resolved == null) {
                     // it is probably an implicit declaration, so find the corresponding pattern
-                    Pattern old = decl[i].getPattern();
-                    Pattern current = resolver.findPatternByIndex( old.getIndex() );
-                    if ( current != null && old != current ) {
-                        resolved = new Declaration( decl[i].getIdentifier(),
-                                                    decl[i].getExtractor(),
-                                                    current );
-                        provider.replaceDeclaration( decl[i],
-                                                     resolved );
+                    Pattern old = aDecl.getPattern();
+                    Pattern current = resolver.findPatternByIndex(old.getIndex());
+                    if (current != null && old != current) {
+                        resolved = new Declaration(aDecl.getIdentifier(),
+                                aDecl.getExtractor(),
+                                current);
+                        provider.replaceDeclaration(aDecl,
+                                resolved);
                     }
                 }
             }
@@ -281,10 +278,10 @@ class LogicTransformer {
             qe.setVariableIndexes( ArrayUtils.toIntArray( varIndexes ) );            
         } else {
             contextStack.push( element );
-            for ( Iterator it = element.getNestedElements().iterator(); it.hasNext(); ) {
-                processElement( resolver,
-                                contextStack,
-                                (RuleConditionElement) it.next() );
+            for (RuleConditionElement ruleConditionElement : element.getNestedElements()) {
+                processElement(resolver,
+                        contextStack,
+                        ruleConditionElement);
             }
             contextStack.pop();
         }
@@ -311,14 +308,14 @@ class LogicTransformer {
         ce.pack();
 
         Object[] children = (Object[]) ce.getChildren().toArray();
-        for ( int i = 0; i < children.length; i++ ) {
-            if ( children[i] instanceof GroupElement ) {
-                final GroupElement child = (GroupElement) children[i];
+        for (Object aChildren : children) {
+            if (aChildren instanceof GroupElement) {
+                final GroupElement child = (GroupElement) aChildren;
 
-                processTree( child );
-                if ( (child.isOr() || child.isAnd()) && child.getType() == ce.getType() ) {
-                    child.pack( ce );
-                } else if ( child.isOr() ) {
+                processTree(child);
+                if ((child.isOr() || child.isAnd()) && child.getType() == ce.getType()) {
+                    child.pack(ce);
+                } else if (child.isOr()) {
                     hasChildOr = true;
                 }
             }
@@ -381,11 +378,10 @@ class LogicTransformer {
             // first we split children as OR or not OR
             int permutations = 1;
             int index = 0;
-            for ( final Iterator it = parent.getChildren().iterator(); it.hasNext(); ) {
-                final Object child = it.next();
-                if ( (child instanceof GroupElement) && ((GroupElement) child).isOr() ) {
+            for (final RuleConditionElement child : parent.getChildren()) {
+                if ((child instanceof GroupElement) && ((GroupElement) child).isOr()) {
                     permutations *= ((GroupElement) child).getChildren().size();
-                    orsList.add( child );
+                    orsList.add(child);
                 } else {
                     others[index] = child;
                 }
@@ -408,8 +404,8 @@ class LogicTransformer {
                 int mod = 1;
                 for ( int j = ors.length - 1; j >= 0; j-- ) {
                     // we must insert at the beginning to keep the order
-                    and.getChildren().add( 0,
-                                           ((RuleConditionElement) ors[j].getChildren().get( indexes[j] )).clone() );
+                    and.getChildren().add(0,
+                            ors[j].getChildren().get(indexes[j]).clone());
                     if ( (i % mod) == 0 ) {
                         indexes[j] = (indexes[j] + 1) % ors[j].getChildren().size();
                     }
@@ -472,10 +468,10 @@ class LogicTransformer {
             final GroupElement or = (GroupElement) parent.getChildren().get( 0 );
             parent.setType( GroupElement.OR );
             parent.getChildren().clear();
-            for ( final Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+            for (RuleConditionElement ruleConditionElement : or.getChildren()) {
                 final GroupElement newExists = GroupElementFactory.newExistsInstance();
-                newExists.addChild( (RuleConditionElement) it.next() );
-                parent.addChild( newExists );
+                newExists.addChild(ruleConditionElement);
+                parent.addChild(newExists);
             }
             parent.pack();
         }
@@ -519,10 +515,10 @@ class LogicTransformer {
             final GroupElement or = (GroupElement) parent.getChildren().get( 0 );
             parent.setType( GroupElement.AND );
             parent.getChildren().clear();
-            for ( final Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+            for (RuleConditionElement ruleConditionElement : or.getChildren()) {
                 final GroupElement newNot = GroupElementFactory.newNotInstance();
-                newNot.addChild( (RuleConditionElement) it.next() );
-                parent.addChild( newNot );
+                newNot.addChild(ruleConditionElement);
+                parent.addChild(newNot);
             }
             parent.pack();
         }

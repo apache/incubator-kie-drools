@@ -16,27 +16,12 @@
 
 package org.drools.reteoo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.drools.Cheese;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
@@ -46,18 +31,31 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.PredicateConstraint;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 public class CompositeObjectSinkAdapterTest {
     private ReteooRuleBase               ruleBase;
     private BuildContext                 buildContext;
 
-    private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
     @Before
@@ -71,7 +69,6 @@ public class CompositeObjectSinkAdapterTest {
 
     public int    la;
     public int    blah;
-    public String wah;
 
     @Test
     public void testBeta() {
@@ -128,10 +125,11 @@ public class CompositeObjectSinkAdapterTest {
     public void testSingleAlpha() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
-                                                             equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                  Operator.EQUAL ),
-                                                             new ObjectFieldImpl( "stilton" ) );
+
+        final MvelConstraint lit = new MvelConstraintTestUtil( "type == \"stilton\"",
+                                                                new ObjectFieldImpl( "stilton" ),
+                                                                new MockExtractor() );
+
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
                                             new MockObjectSource( 0 ),
@@ -156,10 +154,11 @@ public class CompositeObjectSinkAdapterTest {
     public void testDoubleAlphaWithBeta() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
-                                                             equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                  Operator.EQUAL ),
-                                                             new ObjectFieldImpl( "stilton" ) );
+
+        final MvelConstraint lit = new MvelConstraintTestUtil( "type == \"stilton\"",
+                                                               new ObjectFieldImpl( "stilton" ),
+                                                               new MockExtractor() );
+
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
                                             new MockObjectSource( 0 ),
@@ -174,10 +173,10 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final LiteralConstraint lit2 = new LiteralConstraint( new MockExtractor(),
-                                                              equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                   Operator.EQUAL ),
-                                                              new ObjectFieldImpl( "cheddar" ) );
+        final MvelConstraint lit2 = new MvelConstraintTestUtil( "type == \"cheddar\"",
+                                                               new ObjectFieldImpl( "cheddar" ),
+                                                               new MockExtractor() );
+
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
                                              new MockObjectSource( buildContext.getNextId() ),
@@ -221,10 +220,10 @@ public class CompositeObjectSinkAdapterTest {
                                                           "type",
                                                           this.getClass().getClassLoader() );
 
-        final LiteralConstraint lit = new LiteralConstraint( extractor,
-                                                             equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                  Operator.EQUAL ),
-                                                             new ObjectFieldImpl( "stilton" ) );
+        final MvelConstraint lit = new MvelConstraintTestUtil( "type == \"stilton\"",
+                                                                new ObjectFieldImpl( "stilton" ),
+                                                                new MockExtractor() );
+
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
                                             new MockObjectSource( buildContext.getNextId() ),
@@ -239,10 +238,10 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                   Operator.EQUAL ),
-                                                              new ObjectFieldImpl( "cheddar" ) );
+        final MvelConstraint lit2 = new MvelConstraintTestUtil( "type == \"cheddar\"",
+                                                                new ObjectFieldImpl( "cheddar" ),
+                                                                new MockExtractor() );
+
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
                                              new MockObjectSource( buildContext.getNextId() ),
@@ -254,10 +253,10 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 2,
                       ad.hashableSinks.size() );
 
-        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                   Operator.EQUAL ),
-                                                              new ObjectFieldImpl( "stinky" ) );
+        final MvelConstraint lit3 = new MvelConstraintTestUtil( "type == \"stinky\"",
+                                                                new ObjectFieldImpl( "stinky" ),
+                                                                new MockExtractor() );
+
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
                                              new MockObjectSource( buildContext.getNextId() ),
@@ -284,10 +283,10 @@ public class CompositeObjectSinkAdapterTest {
                                                           "charType",
                                                           this.getClass().getClassLoader() );
 
-        final LiteralConstraint lit = new LiteralConstraint( extractor,
-                                                             equals.getEvaluator( extractor.getValueType(),
-                                                                                  Operator.EQUAL ),
-                                                             new LongFieldImpl( 65 ) ); // chars are handled as integers
+        final MvelConstraint lit = new MvelConstraintTestUtil( "charType == 65",
+                                                               new LongFieldImpl( 65 ),
+                                                               extractor );
+
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
                                             new MockObjectSource( buildContext.getNextId() ),
@@ -302,10 +301,10 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( extractor.getValueType(),
-                                                                                   Operator.EQUAL ),
-                                                              new LongFieldImpl( 66 ) );
+        final MvelConstraint lit2 = new MvelConstraintTestUtil( "charType == 66",
+                                                                new LongFieldImpl( 66 ),
+                                                                extractor );
+
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
                                              new MockObjectSource( buildContext.getNextId() ),
@@ -317,10 +316,10 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 2,
                       ad.hashableSinks.size() );
 
-        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( extractor.getValueType(),
-                                                                                   Operator.EQUAL ),
-                                                              new LongFieldImpl( 67 ) );
+        final MvelConstraint lit3 = new MvelConstraintTestUtil( "charType == 67",
+                                                                new LongFieldImpl( 67 ),
+                                                                extractor );
+
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
                                              new MockObjectSource( buildContext.getNextId() ),
@@ -367,10 +366,10 @@ public class CompositeObjectSinkAdapterTest {
                                                           "charObjectType",
                                                           this.getClass().getClassLoader() );
 
-        final LiteralConstraint lit = new LiteralConstraint( extractor,
-                                                             equals.getEvaluator( extractor.getValueType(),
-                                                                                  Operator.EQUAL ),
-                                                             new LongFieldImpl( 65 ) ); // chars are handled as integers
+        final MvelConstraint lit = new MvelConstraintTestUtil( "charObjectType == 65",
+                                                               new LongFieldImpl( 65 ),
+                                                               extractor );
+
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
                                             new MockObjectSource( buildContext.getNextId() ),
@@ -385,10 +384,10 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( extractor.getValueType(),
-                                                                                   Operator.EQUAL ),
-                                                              new LongFieldImpl( 66 ) );
+        final MvelConstraint lit2 = new MvelConstraintTestUtil( "charObjectType == 66",
+                                                                new LongFieldImpl( 66 ),
+                                                                extractor );
+
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
                                              new MockObjectSource( buildContext.getNextId() ),
@@ -400,10 +399,10 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 2,
                       ad.hashableSinks.size() );
 
-        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( extractor.getValueType(),
-                                                                                   Operator.EQUAL ),
-                                                              new LongFieldImpl( 67 ) );
+        final MvelConstraint lit3 = new MvelConstraintTestUtil( "charObjectType == 67",
+                                                                new LongFieldImpl( 67 ),
+                                                                extractor );
+
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
                                              new MockObjectSource( buildContext.getNextId() ),
@@ -450,28 +449,29 @@ public class CompositeObjectSinkAdapterTest {
         InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                           "type",
                                                           this.getClass().getClassLoader() );
-        final LiteralConstraint lit1 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                   Operator.EQUAL ),
-                                                              new ObjectFieldImpl( "stilton" ) );
+
+        final MvelConstraint lit1 = new MvelConstraintTestUtil( "type == \"stilton\"",
+                                                                new ObjectFieldImpl( "stilton" ),
+                                                                new MockExtractor() );
+
         final AlphaNode al1 = new AlphaNode( buildContext.getNextId(),
                                              lit1,
                                              new MockObjectSource( buildContext.getNextId() ),
                                              buildContext );
 
-        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                   Operator.EQUAL ),
-                                                              new ObjectFieldImpl( "brie" ) );
+        final MvelConstraint lit2 = new MvelConstraintTestUtil( "type == \"brie\"",
+                new ObjectFieldImpl( "brie" ),
+                new MockExtractor() );
+
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
                                              new MockObjectSource( buildContext.getNextId() ),
                                              buildContext );
 
-        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
-                                                              equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                                   Operator.EQUAL ),
-                                                              new ObjectFieldImpl( "muzzarela" ) );
+        final MvelConstraint lit3 = new MvelConstraintTestUtil( "type == \"muzzarela\"",
+                                                                new ObjectFieldImpl( "muzzarela" ),
+                                                                new MockExtractor() );
+
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
                                              new MockObjectSource( buildContext.getNextId() ),

@@ -1,24 +1,5 @@
 package org.drools.integrationtests;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
 import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
@@ -40,19 +21,17 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
-import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
-import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldValue;
@@ -61,6 +40,25 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 public class MVELTest extends CommonTestMethodBase {
     
@@ -492,9 +490,9 @@ public class MVELTest extends CommonTestMethodBase {
         AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
-        if (constraint instanceof LiteralConstraint) {
-            assertTrue( (( LiteralConstraint )constraint).getFieldExtractor() instanceof ClassFieldReader );
-            FieldValue r = (( LiteralConstraint )constraint).getField();
+        if (constraint instanceof MvelConstraint) {
+            assertTrue( (( MvelConstraint )constraint).getFieldExtractor() instanceof ClassFieldReader );
+            FieldValue r = (( MvelConstraint )constraint).getField();
             assertEquals( p.getAddress(), r.getValue() );
         }
     }         
@@ -548,17 +546,17 @@ public class MVELTest extends CommonTestMethodBase {
         AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
-        if (constraint instanceof LiteralConstraint) {
-            assertTrue( (( LiteralConstraint )constraint).getFieldExtractor() instanceof MVELClassFieldReader );
-            assertEquals( new Address("s1"), (( LiteralConstraint )constraint).getField().getValue() );
+        if (constraint instanceof MvelConstraint) {
+            assertTrue( ((MvelConstraint)constraint).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertEquals( new Address("s1"), (( MvelConstraint )constraint).getField().getValue() );
         }
 
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
-        if (constraint instanceof LiteralConstraint) {
-            assertTrue( (( LiteralConstraint )constraint).getFieldExtractor() instanceof MVELClassFieldReader );
-            assertEquals( new Address("s1").getStreet(), (( LiteralConstraint )constraint).getField().getValue() );
+        if (constraint instanceof MvelConstraint) {
+            assertTrue( (( MvelConstraint )constraint).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertEquals( new Address("s1").getStreet(), (( MvelConstraint )constraint).getField().getValue() );
         }
     }    
     
@@ -612,16 +610,16 @@ public class MVELTest extends CommonTestMethodBase {
         AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
-        if (constraint instanceof LiteralConstraint) {
-            assertTrue( (( LiteralConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
-            assertEquals( new Address("s1"), (( LiteralConstraint ) alphanode.getConstraint()).getField().getValue() );
+        if (constraint instanceof MvelConstraint) {
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
 
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
-        if (constraint instanceof LiteralConstraint) {
-            assertTrue( (( LiteralConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
-            assertEquals( new Address("s1").getStreet(), (( LiteralConstraint ) alphanode.getConstraint()).getField().getValue() );
+        if (constraint instanceof MvelConstraint) {
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertEquals( new Address("s1").getStreet(), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
     }       
     
@@ -675,17 +673,17 @@ public class MVELTest extends CommonTestMethodBase {
         AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
-        if (constraint instanceof LiteralConstraint) {
-            assertTrue( (( LiteralConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
-            assertEquals( new Address("s1"), (( LiteralConstraint ) alphanode.getConstraint()).getField().getValue() );
+        if (constraint instanceof MvelConstraint) {
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
 
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
-        if (constraint instanceof LiteralConstraint) {
-            assertTrue( (( LiteralConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
-            assertEquals( new Address("s1").getStreet(), (( LiteralConstraint ) alphanode.getConstraint()).getField().getValue() );
+        if (constraint instanceof MvelConstraint) {
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertEquals( new Address("s1").getStreet(), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
     }     
     

@@ -16,6 +16,36 @@
 
 package org.drools.examples.manners;
 
+import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.ClassObjectType;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
+import org.drools.base.evaluators.Operator;
+import org.drools.base.field.BooleanFieldImpl;
+import org.drools.base.field.LongFieldImpl;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
+import org.drools.rule.GroupElementFactory;
+import org.drools.rule.InvalidRuleException;
+import org.drools.rule.MvelConstraintTestUtil;
+import org.drools.rule.Package;
+import org.drools.rule.Pattern;
+import org.drools.rule.Rule;
+import org.drools.rule.VariableConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.Consequence;
+import org.drools.spi.ConsequenceException;
+import org.drools.spi.Evaluator;
+import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.Tuple;
+import org.junit.Before;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -31,40 +61,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
-import org.drools.base.field.BooleanFieldImpl;
-import org.drools.base.field.LongFieldImpl;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.Declaration;
-import org.drools.rule.GroupElement;
-import org.drools.rule.GroupElementFactory;
-import org.drools.rule.InvalidRuleException;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Package;
-import org.drools.rule.Pattern;
-import org.drools.rule.Rule;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Consequence;
-import org.drools.spi.ConsequenceException;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.Tuple;
 
 public abstract class BaseMannersTest {
     /** Number of guests at the dinner (default: 16). */
@@ -91,10 +87,6 @@ public abstract class BaseMannersTest {
     private Evaluator       objectEqualEvaluator;
     private Evaluator       objectNotEqualEvaluator;
     private Evaluator       integerEqualEvaluator;
-    //private Evaluator       integerNotEqualEvaluator;
-    private Evaluator       booleanEqualEvaluator;
-
-    //private Evaluator       booleanNotEqualEvaluator;
 
     ClassFieldAccessorStore store;
 
@@ -131,9 +123,6 @@ public abstract class BaseMannersTest {
         this.objectNotEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE,
                                                            Operator.NOT_EQUAL,
                                                            null );
-        this.booleanEqualEvaluator = evals.getEvaluator( ValueType.PBOOLEAN_TYPE,
-                                                         Operator.EQUAL,
-                                                         null );
 
         this.pkg = new Package( "org.drools.examples.manners" );
         this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
@@ -191,8 +180,7 @@ public abstract class BaseMannersTest {
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                             "state",
-                                                            Context.START_UP,
-                                                            this.integerEqualEvaluator ) );
+                                                            Context.START_UP ) );
 
         rule.addPattern( contextPattern );
 
@@ -339,8 +327,7 @@ public abstract class BaseMannersTest {
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                             "state",
-                                                            Context.ASSIGN_SEATS,
-                                                            this.integerEqualEvaluator ) );
+                                                            Context.ASSIGN_SEATS ) );
 
         rule.addPattern( contextPattern );
 
@@ -363,8 +350,7 @@ public abstract class BaseMannersTest {
 
         seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
                                                             "pathDone",
-                                                            true,
-                                                            this.booleanEqualEvaluator ) );
+                                                            true ) );
 
         setFieldDeclaration( seatingPattern,
                              "rightSeat",
@@ -618,8 +604,7 @@ public abstract class BaseMannersTest {
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                             "state",
-                                                            Context.MAKE_PATH,
-                                                            this.integerEqualEvaluator ) );
+                                                            Context.MAKE_PATH ) );
 
         rule.addPattern( contextPattern );
 
@@ -639,8 +624,7 @@ public abstract class BaseMannersTest {
 
         seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
                                                             "pathDone",
-                                                            false,
-                                                            this.booleanEqualEvaluator ) );
+                                                            false ) );
 
         rule.addPattern( seatingPattern );
 
@@ -772,8 +756,7 @@ public abstract class BaseMannersTest {
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                             "state",
-                                                            Context.MAKE_PATH,
-                                                            this.integerEqualEvaluator ) );
+                                                            Context.MAKE_PATH ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -787,8 +770,7 @@ public abstract class BaseMannersTest {
 
         seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
                                                             "pathDone",
-                                                            false,
-                                                            this.booleanEqualEvaluator ) );
+                                                            false ) );
 
         rule.addPattern( seatingPattern );
 
@@ -876,8 +858,7 @@ public abstract class BaseMannersTest {
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                             "state",
-                                                            Context.CHECK_DONE,
-                                                            this.integerEqualEvaluator ) );
+                                                            Context.CHECK_DONE ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -978,8 +959,7 @@ public abstract class BaseMannersTest {
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                             "state",
-                                                            Context.CHECK_DONE,
-                                                            this.integerEqualEvaluator ) );
+                                                            Context.CHECK_DONE ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -1054,8 +1034,7 @@ public abstract class BaseMannersTest {
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                             "state",
-                                                            Context.PRINT_RESULTS,
-                                                            this.integerEqualEvaluator ) );
+                                                            Context.PRINT_RESULTS ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -1215,8 +1194,7 @@ public abstract class BaseMannersTest {
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                           final String fieldName,
-                                                          final int fieldValue,
-                                                          final Evaluator evaluator) throws IntrospectionException {
+                                                          final int fieldValue) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
@@ -1225,15 +1203,14 @@ public abstract class BaseMannersTest {
 
         final FieldValue field = new LongFieldImpl( fieldValue );
 
-        return new LiteralConstraint( extractor,
-                                      evaluator,
-                                      field );
+        return new MvelConstraintTestUtil( fieldName + " == " + fieldValue,
+                                           new LongFieldImpl( fieldValue ),
+                                           extractor );
     }
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                           final String fieldName,
-                                                          final boolean fieldValue,
-                                                          final Evaluator evaluator) throws IntrospectionException {
+                                                          final boolean fieldValue) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
@@ -1242,9 +1219,9 @@ public abstract class BaseMannersTest {
 
         final FieldValue field = new BooleanFieldImpl( fieldValue );
 
-        return new LiteralConstraint( extractor,
-                                      evaluator,
-                                      field );
+        return new MvelConstraintTestUtil( fieldName + " == " + fieldValue,
+                new BooleanFieldImpl( fieldValue ),
+                extractor );
     }
 
     private void setFieldDeclaration(final Pattern pattern,
