@@ -20,7 +20,7 @@
         <property name="lastModificationDate" type="timestamp" access="field" />
         <property name="state" type="integer" not-null="true" access="field" />
         
-        <property name="processInstanceByteArray" type="org.jbpm.persistence.processinstance.BlobUserType" 
+        <property name="processInstanceByteArray" type="org.hibernate.type.PrimitiveByteArrayBlobType" 
             column="processInstanceByteArray" access="field" length="2147483647" />
 
         <set name="eventTypes" table="EventTypes" access="field" >
