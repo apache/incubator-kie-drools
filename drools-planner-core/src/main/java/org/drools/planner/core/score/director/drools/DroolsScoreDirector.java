@@ -217,7 +217,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
             }
         }
         if (!lackingSet.isEmpty()) {
-            analysis.append("  The workingMemory has ").append(excessSet.size())
+            analysis.append("  The workingMemory has ").append(lackingSet.size())
                     .append(" ConstraintOccurrence(s) lacking:\n");
             int count = 0;
             for (Object o : lackingSet) {
