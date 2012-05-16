@@ -24,7 +24,6 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.FieldFactory;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.AlphaNode.AlphaMemory;
@@ -45,8 +44,6 @@ import static org.junit.Assert.assertSame;
 
 public class AlphaNodeTest extends DroolsTestCase {
     
-    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
-
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
     @Before

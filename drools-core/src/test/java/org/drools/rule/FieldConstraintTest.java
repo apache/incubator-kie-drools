@@ -24,22 +24,15 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +48,6 @@ import static org.junit.Assert.assertTrue;
 public class FieldConstraintTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    EqualityEvaluatorsDefinition   equals      = new EqualityEvaluatorsDefinition();
-    ComparableEvaluatorsDefinition comparables = new ComparableEvaluatorsDefinition();
 
     @Before
     public void setUp() throws Exception {
@@ -158,9 +149,9 @@ public class FieldConstraintTest {
         final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
 
         // check constraint
-        assertFalse( constraint.isAllowed( stiltonHandle,
-                                           workingMemory,
-                                           context ) );
+        assertFalse(constraint.isAllowed(stiltonHandle,
+                workingMemory,
+                context));
     }
 
     /**
@@ -257,133 +248,9 @@ public class FieldConstraintTest {
                                true );
 
         final PredicateContextEntry context = (PredicateContextEntry) constraint1.createContextEntry();
-        context.updateFromTuple( workingMemory,
-                                 tuple );
+        context.updateFromTuple(workingMemory,
+                tuple);
         assertTrue( constraint1.isAllowedCachedLeft( context,
                                                      f1 ) );
-    }
-
-    /**
-     * <pre>
-     *
-     *
-     *                (Cheese (price ?price )
-     *                (Cheese (price =(* 2 ?price) )
-     *                (Cheese (price &gt;(* 2 ?price) )
-     *
-     *
-     * </pre>
-     *
-     * @throws IntrospectionException
-     */
-    @Test
-    public void testReturnValueConstraint() throws IntrospectionException {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
-
-        final InternalReadAccessor priceExtractor = store.getReader( Cheese.class,
-                                                                     "price",
-                                                                     getClass().getClassLoader() );
-
-        final Pattern pattern = new Pattern( 0,
-                                             new ClassObjectType( Cheese.class ) );
-
-        // Bind the extractor to a decleration
-        // Declarations know the pattern they derive their value form
-        final Declaration priceDeclaration = new Declaration( "price1",
-                                                              priceExtractor,
-                                                              pattern );
-
-        final ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
-            private static final long serialVersionUID = 510l;
-
-            public FieldValue evaluate(Object object,
-                                       Tuple tuple, // ?price
-                                       Declaration[] previousDeclarations,
-                                       Declaration[] localDeclarations,
-                                       WorkingMemory workingMemory,
-                                       Object context) {
-                int price = ((Number) previousDeclarations[0].getValue( (InternalWorkingMemory) workingMemory,
-                                                                        workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) )).intValue();
-                return FieldFactory.getFieldValue( 2 * price );
-
-            }
-
-            public Object createContext() {
-                return null;
-            }
-
-            public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
-
-            }
-
-            public void writeExternal(ObjectOutput out) throws IOException {
-
-            }
-
-            public void replaceDeclaration(Declaration declaration,
-                                           Declaration resolved) {
-            }
-        };
-
-        final ReturnValueRestriction restriction1 = new ReturnValueRestriction( priceExtractor,
-                                                                                isDoubleThePrice,
-                                                                                new Declaration[]{priceDeclaration},
-                                                                                new Declaration[0],
-                                                                                new String[0],
-                                                                                equals.getEvaluator( ValueType.INTEGER_TYPE,
-                                                                                                     Operator.EQUAL ) );
-
-        final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
-                                                                             restriction1 );
-
-        final ReturnValueRestriction restriction2 = new ReturnValueRestriction( priceExtractor,
-                                                                                isDoubleThePrice,
-                                                                                new Declaration[]{priceDeclaration},
-                                                                                new Declaration[0],
-                                                                                new String[0],
-                                                                                comparables.getEvaluator( ValueType.INTEGER_TYPE,
-                                                                                                          Operator.GREATER ) );
-
-        final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
-                                                                             restriction2 );
-
-        final Cheese cheddar0 = new Cheese( "cheddar",
-                                            5 );
-        final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
-
-        LeftTupleImpl tuple = new LeftTupleImpl( f0,
-                                         null,
-                                         true );
-
-        final Cheese cheddar1 = new Cheese( "cheddar",
-                                            10 );
-        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
-        tuple = new LeftTupleImpl( tuple,
-                               new RightTuple( f1,
-                                               null ),
-                               null,
-                               true );
-
-        final ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.createContextEntry();
-        context1.updateFromTuple( workingMemory,
-                                  tuple );
-        assertTrue( constraint1.isAllowedCachedLeft( context1,
-                                                     f1 ) );
-
-        final ReturnValueContextEntry context2 = (ReturnValueContextEntry) constraint2.createContextEntry();
-        context2.updateFromTuple( workingMemory,
-                                  tuple );
-        assertFalse( constraint2.isAllowedCachedLeft( context2,
-                                                      f1 ) );
-
-        final Cheese cheddar2 = new Cheese( "cheddar",
-                                            11 );
-
-        final InternalFactHandle f2 = (InternalFactHandle) workingMemory.insert( cheddar2 );
-
-        assertTrue( constraint2.isAllowedCachedLeft( context2,
-                                                     f2 ) );
     }
 }

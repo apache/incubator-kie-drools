@@ -16,28 +16,25 @@
 
 package org.drools.util;
 
-import org.drools.rule.constraint.MvelConstraint;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.core.util.RightTupleList;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
+import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.RightTuple;
+import org.drools.rule.constraint.MvelConstraint;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class FieldIndexEntryTest {
-    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 

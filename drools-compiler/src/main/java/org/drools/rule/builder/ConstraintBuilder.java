@@ -1,8 +1,11 @@
 package org.drools.rule.builder;
 
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.base.evaluators.Operator;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.DescrBuildError;
@@ -10,11 +13,9 @@ import org.drools.compiler.Dialect;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.RelationalExprDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
-import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
 import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.rule.constraint.EvaluatorConstraint;
@@ -24,7 +25,6 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.Restriction;
 import org.mvel2.ConversionHandler;
 import org.mvel2.DataConversion;
 import org.mvel2.util.CompatibilityStrategy;
@@ -40,29 +40,26 @@ import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 public class ConstraintBuilder {
 
-    public static final boolean USE_MVEL_EXPRESSION = true;
     private static Set<String> mvelOperators;
 
     static {
-        if (USE_MVEL_EXPRESSION) {
-            CompatibilityStrategy.setCompatibilityEvaluator(StringCoercionCompatibilityEvaluator.INSTANCE);
-            DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
-            DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
+        CompatibilityStrategy.setCompatibilityEvaluator(StringCoercionCompatibilityEvaluator.INSTANCE);
+        DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
+        DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
 
-            mvelOperators = new HashSet<String>() {{
-                add("==");
-                add("!=");
-                add(">");
-                add(">=");
-                add("<");
-                add("<=");
-                add("str");
-                add("contains");
-                add("matches");
-                add("excludes");
-                add("memberOf");
-            }};
-        }
+        mvelOperators = new HashSet<String>() {{
+            add("==");
+            add("!=");
+            add(">");
+            add(">=");
+            add("<");
+            add("<=");
+            add("str");
+            add("contains");
+            add("matches");
+            add("excludes");
+            add("memberOf");
+        }};
     }
 
     public static boolean isMvelOperator(String operator) {
@@ -77,22 +74,29 @@ public class ConstraintBuilder {
                                                      String operator,
                                                      String rightValue,
                                                      InternalReadAccessor extractor,
-                                                     Restriction restriction) {
-        if (USE_MVEL_EXPRESSION) {
-            if (!isMvelOperator(operator)) {
-                return new EvaluatorConstraint(restriction.getRequiredDeclarations(), restriction.getEvaluator(), extractor);
-            }
-
-            boolean isUnification = restriction instanceof UnificationRestriction;
-            if (isUnification) {
-                expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
-            }
-            boolean isIndexable = operator.equals("==");
-            MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression);
-            return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, isIndexable, getIndexingDeclaration(restriction), extractor, isUnification);
-        } else {
-            return new VariableConstraint(extractor, restriction);
+                                                     Declaration requiredDeclaration,
+                                                     RelationalExprDescr relDescr) {
+        if (!isMvelOperator(operator)) {
+            Target right = getRightTarget( extractor );
+            Target left = (requiredDeclaration.isPatternDeclaration() && !(Date.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
+            final Evaluator evaluator = getEvaluator( context,
+                                                      relDescr,
+                                                      extractor.getValueType(),
+                                                      operator,
+                                                      relDescr.isNegated(),
+                                                      relDescr.getParametersText(),
+                                                      left,
+                                                      right );
+            return new EvaluatorConstraint(new Declaration[] { requiredDeclaration }, evaluator, extractor);
         }
+
+        boolean isUnification = requiredDeclaration != null && requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && Operator.EQUAL.getOperatorString().equals( operator );
+        if (isUnification) {
+            expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
+        }
+        boolean isIndexable = operator.equals("==");
+        MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression);
+        return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, isIndexable, requiredDeclaration, extractor, isUnification);
     }
 
     public static Constraint buildLiteralConstraint(RuleBuildContext context,
@@ -128,12 +132,6 @@ public class ConstraintBuilder {
             expr = leftValue + " == " + rightValue;
         }
         return expr;
-    }
-
-    private static Declaration getIndexingDeclaration(Restriction restriction) {
-        if (restriction instanceof ReturnValueRestriction) return null;
-        Declaration[] declarations = restriction.getRequiredDeclarations();
-        return declarations != null && declarations.length > 0 ? declarations[0] : null;
     }
 
     private static String normalizeMVELLiteralExpression(ValueType vtype,

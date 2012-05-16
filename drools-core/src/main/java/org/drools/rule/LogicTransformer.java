@@ -162,19 +162,7 @@ class LogicTransformer {
                     Declaration resolved = resolver.getDeclaration(null,
                             decl[i].getIdentifier());
 
-                    if (constraint instanceof VariableConstraint && ((VariableConstraint) constraint).getRestriction() instanceof UnificationRestriction) {
-                        UnificationRestriction restriction = (UnificationRestriction) ((VariableConstraint) constraint).getRestriction();
-                        if (ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(resolved.getPattern().getObjectType())) {
-                            // if the resolved still points to DroolsQuery, we know this is the first unification pattern, so redeclare it as the visible Declaration
-                            Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), restriction.getVariableRestriction().getReadAccessor(), pattern, false);
-                            pattern.addDeclaration(redeclaredDeclr);
-                        } else if (resolved.getPattern() != pattern) {
-                            // It's a subsequent unification, so it should be able to use the redeclared Declaration as a normal VariableRestriction.
-                            // but only rewrite if the resolved declaration is not for current pattern (this occurs if LogicTransformer is applied twice
-                            // to the same tree that has already been rewritten before.
-                            ((VariableConstraint) constraint).setRestriction(restriction.getVariableRestriction());
-                        }
-                    } else if (constraint instanceof MvelConstraint && ((MvelConstraint) constraint).isUnification()) {
+                    if (constraint instanceof MvelConstraint && ((MvelConstraint) constraint).isUnification()) {
                         if (ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(resolved.getPattern().getObjectType())) {
                             Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), ((MvelConstraint) constraint).getFieldExtractor(), pattern, false);
                             pattern.addDeclaration(redeclaredDeclr);

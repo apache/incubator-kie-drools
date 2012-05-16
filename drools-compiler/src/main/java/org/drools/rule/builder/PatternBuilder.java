@@ -16,28 +16,13 @@
 
 package org.drools.rule.builder;
 
-import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.RecognitionException;
 import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
-import org.drools.base.evaluators.Operator;
 import org.drools.base.mvel.ActivationPropertyHandler;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
@@ -59,7 +44,19 @@ import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.MVELDumper;
-import org.drools.lang.descr.*;
+import org.drools.lang.descr.AnnotationDescr;
+import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
+import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.OperatorDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.RelationalExprDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
@@ -69,14 +66,11 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Query;
-import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.rule.constraint.MvelConstraint;
@@ -87,7 +81,6 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
-import org.drools.spi.Restriction;
 import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -96,7 +89,21 @@ import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
 
-import static org.drools.rule.builder.ConstraintBuilder.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+
+import static org.drools.rule.builder.ConstraintBuilder.buildCompilationUnit;
+import static org.drools.rule.builder.ConstraintBuilder.buildLiteralConstraint;
+import static org.drools.rule.builder.ConstraintBuilder.buildVariableConstraint;
+import static org.drools.rule.builder.ConstraintBuilder.getEvaluator;
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 /**
  * A builder for patterns
@@ -724,7 +731,6 @@ public class PatternBuilder
             }
         }
 
-        Restriction restriction = null;
         Declaration[] declarations = null;
         Declaration declr = null;
 
@@ -742,30 +748,20 @@ public class PatternBuilder
             String[] parts = value2.split( "\\." );
             if ( parts.length == 2 ) {
                 if ( "this".equals( parts[0].trim() ) ) {
-                    declr = this.createDeclarationObject( context,
-                                                          parts[1].trim(),
-                                                          (Pattern) context.getBuildStack().peek() );
+                    declr = createDeclarationObject(context, parts[1].trim(), (Pattern) context.getBuildStack().peek());
                     value2 = parts[1].trim();
                 } else {
-                    declr = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                             parts[0].trim() );
+                    declr = context.getDeclarationResolver().getDeclaration( context.getRule(), parts[0].trim() );
                     // if a declaration exists, then it may be a variable direct property access
                     if ( declr != null ) {
                         if ( declr.isPatternDeclaration() ) {
                             // TODO: no need to extract inner declaration when using mvel constraint
                             declarations = new Declaration[] { declr };
-                            declr = this.createDeclarationObject( context,
-                                                                  parts[1].trim(),
-                                                                  declr.getPattern() );
+                            declr = createDeclarationObject(context, parts[1].trim(), declr.getPattern());
                             value2 = parts[1].trim();
 
                         } else {
                             // we will later fallback to regular predicates, so don't raise error
-
-                            //                            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                            //                                                                          relDescr,
-                            //                                                                          "",
-                            //                                                                          "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
                             return false;
                         }
                     }
@@ -773,79 +769,104 @@ public class PatternBuilder
             }
         }
 
-        if ( declr != null ) {
-            Target right = getRightTarget( extractor );
-            Target left = (declr.isPatternDeclaration() && !(Date.class.isAssignableFrom( declr.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( declr.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
-            final Evaluator evaluator = getEvaluator( context,
-                                                      relDescr,
-                                                      extractor.getValueType(),
-                                                      operator,
-                                                      relDescr.isNegated(),
-                                                      relDescr.getParametersText(),
-                                                      left,
-                                                      right );
-            if ( evaluator == null ) {
-                return false;
-            }
-
-            restriction = new VariableRestriction( extractor,
-                                                   declr,
-                                                   evaluator );
-
-            if ( declr.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && Operator.EQUAL.getOperatorString().equals( operator ) ) {
-                // declaration is query argument, so allow for unification.
-                restriction = new UnificationRestriction( (VariableRestriction) restriction );
-            }
-        }
-
-        if ( restriction == null ) {
-            Dialect dialect = context.getDialect();
-            if ( !value2.startsWith( "(" ) ) {
-                // it's not a traditional return value, so override the dialect
-                MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
-                context.setDialect( mvelDialect );
-            }
-
-            // execute it as a return value
-            restriction = buildRestriction( context,
-                                            (Pattern) context.getBuildStack().peek(),
-                                            extractor,
-                                            new ReturnValueRestrictionDescr( operator,
-                                                                             relDescr.isNegated(),
-                                                                             relDescr.getParametersText(),
-                                                                             value2 ) );
-            // fall back to original dialect
-            context.setDialect( dialect );
-
-        }
-
-        if ( restriction == null ) {
-            // something failed and an error should already have been reported
-            return false;
-        }
-
         if (declarations == null) {
-            if (declr == null) {
-                ReturnValueRestriction returnValueRestriction = (ReturnValueRestriction)restriction;
-                Declaration[] requiredDeclarations = restriction.getRequiredDeclarations();
-                String[] requiredGlobals = returnValueRestriction.getRequiredGlobals();
-                declarations = new Declaration[(requiredDeclarations != null ? requiredDeclarations.length : 0) + (requiredGlobals != null ? requiredGlobals.length : 0)];
-                int i = 0;
-                if (requiredDeclarations != null) {
-                    for (Declaration requiredDeclaration : requiredDeclarations)
-                        declarations[i++] = requiredDeclaration;
-                }
-                if (requiredGlobals != null) {
-                    for (String requiredGlobal : requiredGlobals)
-                        declarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), requiredGlobal);
-                }
-            } else {
+            if (declr != null) {
                 declarations = new Declaration[] { declr };
+            } else {
+                declarations = getDeclarationsForReturnValue(context, relDescr, operator, value2, extractor);
+                if (declarations == null) {
+                    return false;
+                }
             }
         }
 
-        pattern.addConstraint(buildVariableConstraint(context, pattern, expr, declarations, value1, operator, value2, extractor, restriction));
+        pattern.addConstraint(buildVariableConstraint(context, pattern, expr, declarations, value1, operator, value2, extractor, declr, relDescr));
         return true;
+    }
+
+    private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2, InternalReadAccessor extractor) {
+        Dialect dialect = context.getDialect();
+        if ( !value2.startsWith( "(" ) ) {
+            // it's not a traditional return value, so override the dialect
+            MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
+            context.setDialect( mvelDialect );
+        }
+
+        Pattern pattern = (Pattern) context.getBuildStack().peek();
+        ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr( operator,
+                                                                                                   relDescr.isNegated(),
+                                                                                                   relDescr.getParametersText(),
+                                                                                                   value2 );
+
+        Map<String, Class< ? >> declarationsMap = getDeclarationsMap( returnValueRestrictionDescr,
+                context,
+                true );
+        Class< ? > thisClass = null;
+        if ( pattern.getObjectType() instanceof ClassObjectType ) {
+            thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
+        }
+
+        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
+        AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                returnValueRestrictionDescr,
+                returnValueRestrictionDescr.getContent(),
+                new BoundIdentifiers( declarationsMap,
+                        globals,
+                        null,
+                        thisClass ) );
+        if ( analysis == null ) {
+            // something bad happened
+            return null;
+        }
+        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+
+        final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
+        final List<Declaration> factDeclarations = new ArrayList<Declaration>();
+        for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
+            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(), id );
+            if ( decl.getPattern() == pattern ) {
+                factDeclarations.add( decl );
+            } else {
+                tupleDeclarations.add( decl );
+            }
+        }
+        createImplicitBindings( context,
+                pattern,
+                analysis.getNotBoundedIdentifiers(),
+                usedIdentifiers,
+                factDeclarations );
+
+        final Declaration[] previousDeclarations = tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+        final Declaration[] localDeclarations = factDeclarations.toArray( new Declaration[factDeclarations.size()] );
+
+        Arrays.sort( previousDeclarations,
+                SortDeclarations.instance );
+        Arrays.sort( localDeclarations,
+                SortDeclarations.instance );
+
+        final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
+
+        Declaration[] requiredDeclarations = new Declaration[previousDeclarations.length + localDeclarations.length];
+        System.arraycopy( previousDeclarations,
+                0,
+                requiredDeclarations,
+                0,
+                previousDeclarations.length );
+        System.arraycopy( localDeclarations,
+                0,
+                requiredDeclarations,
+                previousDeclarations.length,
+                localDeclarations.length );
+
+        Declaration[] declarations = new Declaration[requiredDeclarations.length + requiredGlobals.length];
+        int i = 0;
+        for (Declaration requiredDeclaration : requiredDeclarations) {
+            declarations[i++] = requiredDeclaration;
+        }
+        for (String requiredGlobal : requiredGlobals) {
+            declarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), requiredGlobal);
+        }
+        return declarations;
     }
 
     private LiteralRestrictionDescr buildLiteralRestrictionDescr(RuleBuildContext context,
@@ -1064,9 +1085,8 @@ public class PatternBuilder
                      SortDeclarations.instance );
 
         boolean isJavaEval = isEvalExpression && context.getDialect() instanceof JavaDialect;
-        boolean usePredicateConstraint = !USE_MVEL_EXPRESSION || isJavaEval;
 
-        if (usePredicateConstraint) {
+        if (isJavaEval) {
             final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
                     previousDeclarations,
                     localDeclarations,
@@ -1338,91 +1358,6 @@ public class PatternBuilder
             // we will fallback to regular preducates, so don't raise an error
         }
         return field;
-    }
-
-    private ReturnValueRestriction buildRestriction( final RuleBuildContext context,
-                                                     final Pattern pattern,
-                                                     final InternalReadAccessor extractor,
-                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr ) {
-        Map<String, Class< ? >> declarations = getDeclarationsMap( returnValueRestrictionDescr,
-                                                                   context,
-                                                                   true );
-        Class< ? > thisClass = null;
-        if ( pattern.getObjectType() instanceof ClassObjectType ) {
-            thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-        }
-
-        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
-        AnalysisResult analysis = context.getDialect().analyzeExpression( context,
-                                                                          returnValueRestrictionDescr,
-                                                                          returnValueRestrictionDescr.getContent(),
-                                                                          new BoundIdentifiers( declarations,
-                                                                                                globals,
-                                                                                                null,
-                                                                                                thisClass ) );
-        if ( analysis == null ) {
-            // something bad happened
-            return null;
-        }
-        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-
-        final List tupleDeclarations = new ArrayList();
-        final List factDeclarations = new ArrayList();
-        for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                      id );
-            if ( decl.getPattern() == pattern ) {
-                factDeclarations.add( decl );
-            } else {
-                tupleDeclarations.add( decl );
-            }
-        }
-        this.createImplicitBindings( context,
-                                     pattern,
-                                     analysis.getNotBoundedIdentifiers(),
-                                     usedIdentifiers,
-                                     factDeclarations );
-
-        Target right = getRightTarget( extractor );
-        Target left = Target.FACT;
-        final Evaluator evaluator = getEvaluator( context,
-                                                  returnValueRestrictionDescr,
-                                                  extractor.getValueType(),
-                                                  returnValueRestrictionDescr.getEvaluator(),
-                                                  returnValueRestrictionDescr.isNegated(),
-                                                  returnValueRestrictionDescr.getParameterText(),
-                                                  left,
-                                                  right );
-        if ( evaluator == null ) {
-            return null;
-        }
-
-        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
-
-        Arrays.sort( previousDeclarations,
-                     SortDeclarations.instance );
-        Arrays.sort( localDeclarations,
-                     SortDeclarations.instance );
-
-        final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
-        final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( extractor,
-                                                                                          previousDeclarations,
-                                                                                          localDeclarations,
-                                                                                          requiredGlobals,
-                                                                                          evaluator );
-
-        final ReturnValueBuilder builder = context.getDialect().getReturnValueBuilder();
-
-        builder.build( context,
-                       usedIdentifiers,
-                       previousDeclarations,
-                       localDeclarations,
-                       returnValueRestriction,
-                       returnValueRestrictionDescr,
-                       analysis );
-
-        return returnValueRestriction;
     }
 
     public static void registerReadAccessor( final RuleBuildContext context,

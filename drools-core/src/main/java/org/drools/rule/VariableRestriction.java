@@ -16,151 +16,21 @@
 
 package org.drools.rule;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-
 import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
-import org.drools.spi.Restriction;
-import org.drools.time.Interval;
 
-public class VariableRestriction
-    implements
-    AcceptsReadAccessor,
-    Restriction {
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
-    private static final long    serialVersionUID = 510l;
+public class VariableRestriction {
 
-    private Declaration          declaration;
-
-    private Declaration[]        requiredDeclarations;
-
-    private Evaluator            evaluator;
-
-    private InternalReadAccessor readAccessor;
-
-    public VariableRestriction() {
-    }
-
-    public VariableRestriction(final InternalReadAccessor fieldExtractor,
-                               final Declaration declaration,
-                               final Evaluator evaluator) {
-        this.declaration = declaration;
-        this.requiredDeclarations = new Declaration[]{declaration};
-        this.evaluator = evaluator;
-        this.readAccessor = fieldExtractor;
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( declaration );
-        out.writeObject( requiredDeclarations );
-        out.writeObject( evaluator );
-        out.writeObject( readAccessor );
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        declaration = (Declaration) in.readObject();
-        requiredDeclarations = (Declaration[]) in.readObject();
-        evaluator = (Evaluator) in.readObject();
-        readAccessor = (InternalReadAccessor) in.readObject();
-    }
-
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
-        this.readAccessor = readAccessor;
-    }
-
-    public Declaration[] getRequiredDeclarations() {
-        return this.requiredDeclarations;
-    }
-    
-    public InternalReadAccessor getReadAccessor() {
-        return this.readAccessor;
-    }
-
-    public void replaceDeclaration(Declaration oldDecl,
-                                   Declaration newDecl) {
-        if ( this.declaration.equals( oldDecl ) ) {
-            this.declaration = newDecl;
-            this.requiredDeclarations[0] = newDecl;
-        }
-    }
-
-    public Evaluator getEvaluator() {
-        return this.evaluator;
-    }
-
-    public boolean isAllowed(final InternalReadAccessor extractor,
-                             final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory,
-                             final ContextEntry context) {
-        return this.evaluator.evaluate( workingMemory,
-                                        this.readAccessor,
-                                        this.evaluator.prepareLeftObject( handle ),
-                                        this.declaration.getExtractor(),
-                                        this.evaluator.prepareRightObject( handle ) );
-    }
-
-    public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final InternalFactHandle handle) {
-        return this.evaluator.evaluateCachedLeft( ((VariableContextEntry) context).workingMemory,
-                                                  (VariableContextEntry) context,
-                                                  this.evaluator.prepareRightObject( handle ) );
-    }
-
-    public boolean isAllowedCachedRight(final LeftTuple tuple,
-                                        final ContextEntry context) {
-        return this.evaluator.evaluateCachedRight( ((VariableContextEntry) context).workingMemory,
-                                                   (VariableContextEntry) context,
-                                                   this.evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
-    }
-
-    public boolean isTemporal() {
-        return this.evaluator.isTemporal();
-    }
-
-    public Interval getInterval() {
-        return this.evaluator.getInterval();
-    }
-
-    public String toString() {
-        return this.evaluator + " " + this.declaration;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
-        result = PRIME * result + ((this.evaluator == null) ? 0 : this.evaluator.hashCode());
-        result = PRIME * result + this.requiredDeclarations[0].hashCode();
-        return result;
-    }
-
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || getClass() != object.getClass() ) {
-            return false;
-        }
-
-        final VariableRestriction other = (VariableRestriction) object;
-
-        return this.declaration.equals( other.declaration ) && this.evaluator.equals( other.evaluator ) && Arrays.equals( this.requiredDeclarations,
-                                                                                                                          other.requiredDeclarations );
-    }
+    private VariableRestriction() { }
 
     public static VariableContextEntry createContextEntry(InternalReadAccessor fieldExtractor,
                                                           Declaration declaration,
@@ -188,16 +58,6 @@ public class VariableRestriction
                                                    declaration,
                                                    evaluator );
         }
-    }
-
-    public ContextEntry createContextEntry() {
-        return createContextEntry(readAccessor, declaration, evaluator);
-    }
-
-    public VariableRestriction clone() {
-        return new VariableRestriction( this.readAccessor,
-                                        this.declaration.clone(),
-                                        this.evaluator );
     }
 
     public static abstract class VariableContextEntry

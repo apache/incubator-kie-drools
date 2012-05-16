@@ -18,8 +18,8 @@ package org.drools.common;
 
 import org.drools.Cheese;
 import org.drools.base.evaluators.Operator;
-import org.drools.rule.VariableConstraint;
 
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,61 +31,61 @@ public class TripleBetaConstraintsTest extends BaseBetaConstraintsTest {
 
     @Test
     public void testNoneIndxed() {
-        VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
-        VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
-        VariableConstraint constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
-        VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint3 = getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
     }
     
     @Test
     public void testOneIndxed() {
-        VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
-        VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
-        VariableConstraint constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
-        VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint3 = getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
         
-        constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
-        constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
-        constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
-        constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
+        constraint1 = getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
+        constraint3 = getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
+        constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
         
-        constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
-        constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
-        constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
-        constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
+        constraint1 = getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
+        constraint3 = getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
+        constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
     }
 
     @Test
     public void testTwoIndxed() {
-        VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
-        VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
-        VariableConstraint constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
-        VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint3 = getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
         
-        constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
-        constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
-        constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
-        constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
+        constraint1 = getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
+        constraint3 = getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
+        constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
         
-        constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
-        constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
-        constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
-        constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
+        constraint1 = getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
+        constraint3 = getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
+        constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
     }
     
     @Test
     public void testThreeIndxed() {
-        VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
-        VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
-        VariableConstraint constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
-        VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
+        BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint3 = getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
     }
 }

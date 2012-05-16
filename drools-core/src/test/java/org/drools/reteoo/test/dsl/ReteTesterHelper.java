@@ -16,10 +16,6 @@
 
 package org.drools.reteoo.test.dsl;
 
-import java.beans.IntrospectionException;
-import java.util.HashSet;
-import java.util.List;
-
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
@@ -33,16 +29,15 @@ import org.drools.rule.Declaration;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
-import org.drools.rule.VariableRestriction;
-import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.Restriction;
+
+import java.beans.IntrospectionException;
+import java.util.HashSet;
+import java.util.List;
 
 public class ReteTesterHelper {
 
@@ -84,20 +79,8 @@ public class ReteTesterHelper {
         final InternalReadAccessor extractor = store.getReader( clazz,
                                                                 fieldName,
                                                                 getClass().getClassLoader() );
-
-        Evaluator evaluator = getEvaluator( clazz,
-                                            ":=".equals( evaluatorString ) ? Operator.EQUAL.getOperatorString() : evaluatorString );
-        
-        Restriction vr = new VariableRestriction( extractor, declaration, evaluator );                
-
-        if (  ":=".equals( evaluatorString ) ) {
-            vr = new UnificationRestriction( (VariableRestriction)  vr );
-        }
-
-        VariableConstraint vc = new VariableConstraint( extractor,
-                                                        vr );
-        
-        return vc;
+        String expression = fieldName + " " + evaluatorString + " " + declaration.getIdentifier();
+        return new MvelConstraintTestUtil(expression, declaration, extractor);
     }
 
     public AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
@@ -110,10 +93,7 @@ public class ReteTesterHelper {
                                                                 fieldName,
                                                                 getClass().getClassLoader() );
 
-        Evaluator evaluator = getEvaluator( clazz,
-                                            evaluatorString );
-        
-        FieldValue fieldValue = FieldFactory.getFieldValue( value, 
+        FieldValue fieldValue = FieldFactory.getFieldValue( value,
                                                             extractor.getValueType(), 
                                                             null );
 
@@ -134,9 +114,7 @@ public class ReteTesterHelper {
 
     public Pattern getPattern(int index,
                               String type) throws ClassNotFoundException {
-        Pattern pattern = new Pattern( index,
-                                       new ClassObjectType( typeResolver.resolveType( type ) ) );
-        return pattern;
+        return new Pattern( index, new ClassObjectType( typeResolver.resolveType( type ) ) );
     }
 
     public void addImports(List<String> imports) {

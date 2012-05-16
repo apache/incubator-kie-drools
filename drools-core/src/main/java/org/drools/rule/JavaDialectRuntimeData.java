@@ -387,8 +387,6 @@ public class JavaDialectRuntimeData
         for (final Constraint object : pattern.getConstraints()) {
             if (object instanceof PredicateConstraint) {
                 remove(((PredicateConstraint) object).getPredicateExpression().getClass().getName());
-            } else if (object instanceof ReturnValueConstraint) {
-                remove(((ReturnValueConstraint) object).getExpression().getClass().getName());
             }
         }
     }

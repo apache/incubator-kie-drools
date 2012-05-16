@@ -16,39 +16,36 @@
 
 package org.drools.util;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.rule.constraint.MvelConstraint;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.ConcurrentHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.RightTupleIndexHashTable;
 import org.drools.core.util.RightTupleList;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.InternalReadAccessor;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class ConcurrentRightTupleIndexHashTableTest {
-    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
 
