@@ -42,11 +42,11 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
 
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        validateConfiguration();
+        validate();
         initSelectedPlanningEntityList(solverPhaseScope);
     }
 
-    private void validateConfiguration() {
+    private void validate() {
         if (selectionOrder == PlanningEntitySelectionOrder.DECREASING_DIFFICULTY) {
             PlanningEntitySorter planningEntitySorter = planningEntityDescriptor.getPlanningEntitySorter();
             if (!planningEntitySorter.isSortDifficultySupported()) {

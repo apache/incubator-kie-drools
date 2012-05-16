@@ -70,12 +70,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        validateConfiguration();
+        validate();
         tabuToStepIndexMap = new HashMap<Object, Integer>(tabuSize + partialTabuSize);
         tabuSequenceList = new LinkedList<Object>();
     }
 
-    private void validateConfiguration() {
+    private void validate() {
         if (tabuSize < 0) {
             throw new IllegalArgumentException("The tabuSize (" + tabuSize
                     + ") cannot be negative.");

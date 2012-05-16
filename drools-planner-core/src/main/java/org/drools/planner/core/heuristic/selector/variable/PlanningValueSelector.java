@@ -66,13 +66,13 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        validateConfiguration();
+        validate();
         scoreDirector = solverPhaseScope.getScoreDirector();
         workingRandom = solverPhaseScope.getWorkingRandom();
         initSelectedPlanningValueList(solverPhaseScope);
     }
 
-    private void validateConfiguration() {
+    private void validate() {
         if (selectionOrder == PlanningValueSelectionOrder.INCREASING_STRENGTH) {
             PlanningValueSorter valueSorter = planningVariableDescriptor.getValueSorter();
             if (!valueSorter.isSortStrengthSupported()) {
