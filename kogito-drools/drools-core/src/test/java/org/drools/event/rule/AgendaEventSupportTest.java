@@ -23,14 +23,7 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.SetEvaluatorsDefinition;
-import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.common.InternalFactHandle;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -42,7 +35,6 @@ import org.drools.rule.constraint.MvelConstraint;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Consequence;
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 import org.junit.Test;
@@ -61,13 +53,6 @@ import static org.junit.Assert.assertSame;
 public class AgendaEventSupportTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
-    static {
-        registry.addEvaluatorDefinition( new EqualityEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new ComparableEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new SetEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new MatchesEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
-    }
 
     //    public void testIsSerializable() {
     //        assertTrue( Serializable.class.isAssignableFrom( AgendaEventSupport.class ) );
@@ -87,15 +72,11 @@ public class AgendaEventSupportTest {
 
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg.getClassFieldAccessorStore().setEagerWire( true );
-        final ClassFieldReader extractor = pkg.getClassFieldAccessorStore().getReader( Cheese.class,
-                                                                                       "type",
-                                                                                       getClass().getClassLoader() );
+        final ClassFieldReader extractor = pkg.getClassFieldAccessorStore().getReader(Cheese.class,
+                "type",
+                getClass().getClassLoader());
 
-        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
-
-        final Evaluator evaluator = registry.getEvaluator( ValueType.STRING_TYPE,
-                                                           Operator.EQUAL,
-                                                           null );
+        final FieldValue field = FieldFactory.getFieldValue("cheddar");
 
         final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 

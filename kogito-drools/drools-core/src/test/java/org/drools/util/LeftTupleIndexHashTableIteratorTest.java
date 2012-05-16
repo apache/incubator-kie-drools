@@ -16,21 +16,6 @@
 
 package org.drools.util;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -38,13 +23,8 @@ import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
-import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.SetEvaluatorsDefinition;
-import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.SingleBetaConstraints;
@@ -52,36 +32,39 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LeftTupleIndexHashTable;
-import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
+import org.drools.core.util.LeftTupleList;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.rule.Declaration;
+import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Pattern;
-import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LeftTupleIndexHashTableIteratorTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
-    static {
-        registry.addEvaluatorDefinition( new EqualityEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new ComparableEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new SetEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new MatchesEvaluatorsDefinition() );
-        registry.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
-    }
 
     @Test
     public void test1() {
-        VariableConstraint constraint0 = (VariableConstraint) getConstraint( "d",
-                                                                             Operator.EQUAL,
-                                                                             "this",
-                                                                             Foo.class );
-        VariableConstraint[] constraints = new VariableConstraint[]{constraint0};
+        BetaNodeFieldConstraint constraint0 = getConstraint( "d",
+                                                             Operator.EQUAL,
+                                                             "this",
+                                                             Foo.class );
+        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[]{constraint0};
 
         RuleBaseConfiguration config = new RuleBaseConfiguration();
 
@@ -287,13 +270,9 @@ public class LeftTupleIndexHashTableIteratorTest {
                                                    extractor,
                                                    new Pattern( 0,
                                                                 new ClassObjectType( clazz ) ) );
-        Evaluator evaluator = registry.getEvaluatorDefinition( operator.getOperatorString() ).getEvaluator( extractor.getValueType(),
-                                                                                                            operator.getOperatorString(),
-                                                                                                            operator.isNegated(),
-                                                                                                            null );
-        return new VariableConstraint( extractor,
-                                       declaration,
-                                       evaluator );
+
+        String expression = fieldName + " " + operator.getOperatorString() + " " + declaration.getIdentifier();
+        return new MvelConstraintTestUtil(expression, declaration, extractor);
     }
 
     public static class Foo {

@@ -18,8 +18,8 @@ package org.drools.common;
 
 import org.drools.Cheese;
 import org.drools.base.evaluators.Operator;
-import org.drools.rule.VariableConstraint;
 
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,15 +30,15 @@ public class SingleBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
     public void testIndxed() {
-        VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
-        VariableConstraint[] constraints = new VariableConstraint[] { constraint0 };
+        BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
 
     @Test
     public void testNotIndxed() {
-        VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
-        VariableConstraint[] constraints = new VariableConstraint[] { constraint0 };
+        BetaNodeFieldConstraint  constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
             

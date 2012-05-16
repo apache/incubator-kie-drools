@@ -24,7 +24,6 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.*;
@@ -70,24 +69,10 @@ public class OppositeRestrictionsTest extends OppositesBase {
         r4.setOperator( Operator.NOT_EQUAL );
         r4.setOrderNumber( 3 );
 
-        LiteralRestriction r5 = LiteralRestriction.createRestriction( pattern,
-                                                                      "foo" );
-        r5.setFieldPath( "0" );
-        r5.setOperator( MatchesEvaluatorsDefinition.MATCHES );
-        r5.setOrderNumber( 4 );
-
-        LiteralRestriction r6 = LiteralRestriction.createRestriction( pattern,
-                                                                      "foo" );
-        r6.setFieldPath( "0" );
-        r6.setOperator( MatchesEvaluatorsDefinition.NOT_MATCHES );
-        r6.setOrderNumber( 5 );
-
         data.add( r1 );
         data.add( r2 );
         data.add( r3 );
         data.add( r4 );
-        data.add( r5 );
-        data.add( r6 );
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
@@ -104,11 +89,6 @@ public class OppositeRestrictionsTest extends OppositesBase {
                 r4) ^ TestBaseOld.causeMapContains(map,
                 r4,
                 r3)) );
-        assertTrue( (TestBaseOld.causeMapContains(map,
-                r5,
-                r6) ^ TestBaseOld.causeMapContains(map,
-                r6,
-                r5)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );

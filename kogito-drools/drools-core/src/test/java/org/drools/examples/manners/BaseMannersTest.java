@@ -20,9 +20,6 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.common.InternalWorkingMemory;
@@ -34,12 +31,10 @@ import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
-import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
@@ -84,9 +79,6 @@ public abstract class BaseMannersTest {
     private ClassObjectType countType;
     private ClassObjectType pathType;
     private ClassObjectType chosenType;
-    private Evaluator       objectEqualEvaluator;
-    private Evaluator       objectNotEqualEvaluator;
-    private Evaluator       integerEqualEvaluator;
 
     ClassFieldAccessorStore store;
 
@@ -112,17 +104,6 @@ public abstract class BaseMannersTest {
 
         //shadow = ShadowProxyFactory.getProxy( Chosen.class );
         this.chosenType = new ClassObjectType( Chosen.class );
-
-        EqualityEvaluatorsDefinition evals = new EqualityEvaluatorsDefinition();
-        this.integerEqualEvaluator = evals.getEvaluator( ValueType.PINTEGER_TYPE,
-                                                         Operator.EQUAL,
-                                                         null );
-        this.objectEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                        Operator.EQUAL,
-                                                        null );
-        this.objectNotEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                           Operator.NOT_EQUAL,
-                                                           null );
 
         this.pkg = new Package( "org.drools.examples.manners" );
         this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
@@ -376,7 +357,7 @@ public abstract class BaseMannersTest {
         rightGuestPattern.addConstraint( getBoundVariableConstraint( rightGuestPattern,
                                                                      "name",
                                                                      seatingRightGuestNameDeclaration,
-                                                                     this.objectEqualEvaluator ) );
+                                                                     "==" ) );
 
         setFieldDeclaration( rightGuestPattern,
                              "sex",
@@ -405,12 +386,12 @@ public abstract class BaseMannersTest {
         leftGuestPattern.addConstraint( getBoundVariableConstraint( rightGuestPattern,
                                                                     "hobby",
                                                                     rightGuestHobbyDeclaration,
-                                                                    this.objectEqualEvaluator ) );
+                                                                    "==" ) );
 
         leftGuestPattern.addConstraint( getBoundVariableConstraint( leftGuestPattern,
                                                                     "sex",
                                                                     rightGuestSexDeclaration,
-                                                                    this.objectNotEqualEvaluator ) );
+                                                                    "!=" ) );
 
         rule.addPattern( leftGuestPattern );
         final Declaration leftGuestNameDeclaration = rule.getDeclaration( "leftGuestName" );
@@ -435,12 +416,12 @@ public abstract class BaseMannersTest {
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                   "id",
                                                                   seatingIdDeclaration,
-                                                                  this.integerEqualEvaluator ) );
+                                                                  "==" ) );
 
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                   "guestName",
                                                                   leftGuestNameDeclaration,
-                                                                  this.objectEqualEvaluator ) );
+                                                                  "==" ) );
         final GroupElement notPath = GroupElementFactory.newNotInstance();
         notPath.addChild( notPathPattern );
         rule.addPattern( notPath );
@@ -454,17 +435,17 @@ public abstract class BaseMannersTest {
         notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
                                                                     "id",
                                                                     seatingIdDeclaration,
-                                                                    this.integerEqualEvaluator ) );
+                                                                    "==" ) );
 
         notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
                                                                     "guestName",
                                                                     leftGuestNameDeclaration,
-                                                                    this.objectEqualEvaluator ) );
+                                                                    "==" ) );
 
         notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
                                                                     "hobby",
                                                                     rightGuestHobbyDeclaration,
-                                                                    this.objectEqualEvaluator ) );
+                                                                    "==" ) );
 
         final GroupElement notChosen = GroupElementFactory.newNotInstance();
         notChosen.addChild( notChosenPattern );
@@ -640,7 +621,7 @@ public abstract class BaseMannersTest {
         pathPattern.addConstraint( getBoundVariableConstraint( pathPattern,
                                                                "id",
                                                                seatingPidDeclaration,
-                                                               this.integerEqualEvaluator ) );
+                                                               "==" ) );
 
         setFieldDeclaration( pathPattern,
                              "guestName",
@@ -663,11 +644,11 @@ public abstract class BaseMannersTest {
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                   "id",
                                                                   seatingIdDeclaration,
-                                                                  this.integerEqualEvaluator ) );
+                                                                  "==" ) );
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                   "guestName",
                                                                   pathGuestNameDeclaration,
-                                                                  this.objectEqualEvaluator ) );
+                                                                  "==" ) );
 
         final GroupElement not = GroupElementFactory.newNotInstance();
 
@@ -885,7 +866,7 @@ public abstract class BaseMannersTest {
         seatingPattern.addConstraint( getBoundVariableConstraint( seatingPattern,
                                                                   "rightSeat",
                                                                   lastSeatDeclaration,
-                                                                  this.integerEqualEvaluator ) );
+                                                                  "==" ) );
 
         rule.addPattern( seatingPattern );
 
@@ -1239,15 +1220,14 @@ public abstract class BaseMannersTest {
     private BetaNodeFieldConstraint getBoundVariableConstraint(final Pattern pattern,
                                                                final String fieldName,
                                                                final Declaration declaration,
-                                                               final Evaluator evaluator) throws IntrospectionException {
+                                                               final String operator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
                                                                 fieldName,
                                                                 getClass().getClassLoader() );
 
-        return new VariableConstraint( extractor,
-                                       declaration,
-                                       evaluator );
+        String expression = fieldName + " " + operator + " " + declaration.getIdentifier();
+        return new MvelConstraintTestUtil(expression, declaration, extractor);
     }
 }

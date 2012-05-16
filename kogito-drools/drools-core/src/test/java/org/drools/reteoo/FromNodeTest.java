@@ -26,9 +26,6 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -40,7 +37,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.From;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Pattern;
-import org.drools.rule.VariableConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
@@ -61,8 +57,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 public class FromNodeTest {
-    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
-
     ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
     private ReteooRuleBase       ruleBase;
     private BuildContext         buildContext;
@@ -210,10 +204,8 @@ public class FromNodeTest {
                                                          ageExtractor,
                                                          pattern );
 
-        final VariableConstraint variableConstraint = new VariableConstraint( priceExtractor,
-                                                                              declaration,
-                                                                              equals.getEvaluator( ValueType.PINTEGER_TYPE,
-                                                                                                   Operator.EQUAL ) );
+        MvelConstraint variableConstraint = new MvelConstraintTestUtil("price == age", declaration, priceExtractor);
+
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
         configuration.setIndexRightBetaMemory( false );
         configuration.setIndexLeftBetaMemory( false );

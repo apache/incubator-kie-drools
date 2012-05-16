@@ -1,18 +1,10 @@
 package org.drools.rule.builder.dialect.java;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
-import java.io.StringReader;
-import java.util.List;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELPredicateExpression;
-import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -24,16 +16,21 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.VariableConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.FieldValue;
 import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueExpression;
 import org.junit.Test;
+
+import java.io.StringReader;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class JavaDialectTest {
     
@@ -124,17 +121,10 @@ public class JavaDialectTest {
         }
         
         BetaNode betaanode = (BetaNode) node.getSinkPropagator().getSinks()[0];
-        BetaNodeFieldConstraint[] constraint = ( BetaNodeFieldConstraint[] ) betaanode.getConstraints();
+        BetaNodeFieldConstraint[] constraint = betaanode.getConstraints();
         PredicateConstraint c = ( PredicateConstraint ) constraint[0];
         assertTrue( c.getPredicateExpression() instanceof PredicateExpression );
         assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
         assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
-
-        if (constraint[1] instanceof VariableConstraint) {
-            ReturnValueRestriction r = ( ReturnValueRestriction ) (( VariableConstraint )constraint[1]).getRestriction();
-            assertTrue( r.getExpression() instanceof ReturnValueExpression );
-            assertTrue( r.getExpression() instanceof CompiledInvoker );
-            assertTrue( !(r.getExpression() instanceof MVELReturnValueExpression ) );
-        }
     }
 }

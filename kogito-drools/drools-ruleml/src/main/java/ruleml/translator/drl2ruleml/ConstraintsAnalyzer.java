@@ -10,9 +10,6 @@ import org.drools.base.evaluators.ComparableEvaluatorsDefinition.IntegerGreaterE
 import org.drools.base.evaluators.ComparableEvaluatorsDefinition.IntegerGreaterOrEqualEvaluator;
 import org.drools.base.evaluators.ComparableEvaluatorsDefinition.IntegerLessEvaluator;
 import org.drools.base.evaluators.ComparableEvaluatorsDefinition.IntegerLessOrEqualEvaluator;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition.IntegerEqualEvaluator;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition.ObjectEqualEvaluator;
-import org.drools.base.evaluators.EqualityEvaluatorsDefinition.StringEqualEvaluator;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;

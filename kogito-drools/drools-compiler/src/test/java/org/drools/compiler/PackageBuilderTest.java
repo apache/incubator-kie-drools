@@ -16,22 +16,6 @@
 
 package org.drools.compiler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
@@ -85,7 +69,6 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
-import org.drools.rule.VariableConstraint;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
@@ -97,6 +80,22 @@ import org.drools.util.CompositeClassLoader;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class PackageBuilderTest extends DroolsTestCase {
     

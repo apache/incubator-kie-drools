@@ -68,11 +68,6 @@ public class EvaluatorRegistry
         }
 
         // loading default built in evaluators
-        this.addEvaluatorDefinition( new EqualityEvaluatorsDefinition() );
-        this.addEvaluatorDefinition( new ComparableEvaluatorsDefinition() );
-        this.addEvaluatorDefinition( new SetEvaluatorsDefinition() );
-        this.addEvaluatorDefinition( new MatchesEvaluatorsDefinition() );
-        this.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
         this.addEvaluatorDefinition( new BeforeEvaluatorDefinition() );
         this.addEvaluatorDefinition( new AfterEvaluatorDefinition() );
         this.addEvaluatorDefinition( new MeetsEvaluatorDefinition() );
