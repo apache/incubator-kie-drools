@@ -29,6 +29,10 @@
   <url>http://www.jboss.org/jbpm/</url>
 
   <properties>
+    <jbpm.version>5.4.0-SNAPSHOT</jbpm.version>
+    <jbpm.osgi.version>5.4.0.SNAPSHOT</jbpm.osgi.version>
+    <console.version>2.3.2-SNAPSHOT</console.version>
+    
     <!--
      These are properties used in the database profiles. Some of them must be initialized
      empty so that Maven applies them via filtering to the resources. 
@@ -44,9 +48,7 @@
     <maven.jdbc.username></maven.jdbc.username>
     <maven.jdbc.password></maven.jdbc.password>
     <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
-    <jbpm.version>5.4.0-SNAPSHOT</jbpm.version>
-    <jbpm.osgi.version>5.4.0.SNAPSHOT</jbpm.osgi.version>
-    <console.version>2.3.2-SNAPSHOT</console.version>
+    <maven.jdbc.schema>public</maven.jdbc.schema>
   </properties>
 
   <repositories>
@@ -139,49 +141,14 @@
     <profile>
       <id>database</id>
       <dependencies>
-        <!--  Add the downloaded jdbc driver jar for the database to the classpath.
-              Warning: <groupId>, <artifactId> and <version> are just placeholders and do not matter. -->
         <dependency>
-           <groupId>org.jbpm</groupId>
-           <artifactId>downloaded-jdbc-driver-jar</artifactId>
-           <version>1.0</version>
-           <scope>system</scope>
-           <systemPath>${maven.jdbc.driver.jar}</systemPath>
+           <groupId>${maven.jdbc.driver.group}</groupId>
+           <artifactId>${maven.jdbc.driver.artifact}</artifactId>
+           <version>${maven.jdbc.driver.version}</version>
+           <scope>test</scope>
         </dependency>  
       </dependencies>
     </profile>
-    <!-- The following is an example of how to test with a particular database:
-    <profile>
-        <id>postgresql</id>
-        <properties>
-          <! see http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/session-configuration.html#configuration-optional-dialects 
-          <maven.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</maven.hibernate.dialect>
-          <!  helpful: http://docs.jboss.org/ironjacamar/userguide/1.0/en-US/html/ex_datasources.html 
-          <maven.datasource.classname>org.postgresql.xa.PGXADataSource</maven.datasource.classname>
-          <maven.jdbc.driver.class>org.postgresql.Driver</maven.jdbc.driver.class>
-          
-          <maven.jdbc.db.name>jbpm3</maven.jdbc.db.name>
-          <maven.jdbc.db.port>5432</maven.jdbc.db.port>
-          <maven.jdbc.db.server>localhost</maven.jdbc.db.server>
-           
-          <! This is the local path of the jdbc driver jar needed 
-          <maven.jdbc.driver.jar>/opt/bin/jenkins-1.409.1/jobs/jbpm5-db/workspace/database/postgresql84/postgresql-8.4-702.jdbc3.jar</maven.jdbc.driver.jar>
-         
-          <maven.jdbc.username>jbpm3</maven.jdbc.username>
-          <maven.jdbc.password>jbpm3</maven.jdbc.password>
-          <maven.jdbc.url>jdbc:postgresql://localhost:5432/jbpm3</maven.jdbc.url>
-        </properties>
-        <dependencies>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>downloaded-jdbc-driver-jar</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${maven.jdbc.driver.jar}</systemPath>
-          </dependency>
-        </dependencies>
-    </profile>
-    -->
     
     <profile>
       <id>hibernate-4</id>

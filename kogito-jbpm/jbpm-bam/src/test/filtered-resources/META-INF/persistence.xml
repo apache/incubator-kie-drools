@@ -33,6 +33,9 @@
             <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
             <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
             <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+      
+            <!-- neccessary when testing db2 -->      
+            <property name="hibernate.default_schema" value="${maven.jdbc.schema}" />
 	    </properties>        
     </persistence-unit>
 </persistence>
