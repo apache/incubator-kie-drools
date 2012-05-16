@@ -26,6 +26,7 @@ public class Interface implements Serializable {
 	
     private String id;
     private String name;
+    private String implementationRef;
     private Map<String, Operation> operations = new HashMap<String, Operation>();
     
     public Interface(String id, String name) {
@@ -51,10 +52,19 @@ public class Interface implements Serializable {
         return operations.get(name);
     }
     
+    public void setImplementationRef(String implementationRef) {
+        this.implementationRef = implementationRef;
+    }
+
+    public String getImplementationRef() {
+        return implementationRef;
+    }
+
     public class Operation {
         private String id;
         private String name;
         private Message message;
+        private String implementationRef;
         public Operation(String id, String name) {
             this.id = id;
             this.name = name;
@@ -79,6 +89,12 @@ public class Interface implements Serializable {
         }
         public Interface getInterface() {
             return Interface.this;
+        }
+        public void setImplementationRef(String implementationRef) {
+            this.implementationRef = implementationRef;
+        }
+        public String getImplementationRef() {
+            return implementationRef;
         }
     }
 

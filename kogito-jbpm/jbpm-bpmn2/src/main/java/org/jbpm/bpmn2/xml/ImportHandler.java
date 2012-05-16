@@ -1,7 +1,9 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.drools.definition.process.Process;
 import org.drools.xml.BaseAbstractHandler;
@@ -32,15 +34,27 @@ public class ImportHandler extends BaseAbstractHandler implements Handler {
 		WorkflowProcessImpl process = (WorkflowProcessImpl) parser.getParent();
 
 		final String name = attrs.getValue("name");
+		final String type = attrs.getValue("importType");
+		final String location = attrs.getValue("location");
+		final String namespace = attrs.getValue("namespace");
 		emptyAttributeCheck(localName, "name", name, parser);
 
-		java.util.List<String> list = process.getImports();
-		if (list == null) {
-			list = new ArrayList<String>();
-			process.setImports(list);
+		if (type != null && location != null && namespace != null) {
+    		Map<String, String> typedImports = (Map<String, String>) process.getMetaData(type);
+    		if (typedImports == null) {
+    		    typedImports = new HashMap<String, String>();
+    		    process.setMetaData(type, typedImports);
+    		}
+    		typedImports.put(namespace, location);
+		} else {
+		
+    		java.util.List<String> list = process.getImports();
+    		if (list == null) {
+    			list = new ArrayList<String>();
+    			process.setImports(list);
+    		}
+    		list.add(name);
 		}
-		list.add(name);
-
 		return null;
 	}
 

@@ -49,9 +49,13 @@ public class OperationHandler extends BaseAbstractHandler implements Handler {
 
 		String id = attrs.getValue("id");
 		String name = attrs.getValue("name");
+		String implRef = attrs.getValue("implementationRef");
 		
 		Interface i = (Interface) parser.getParent();
         Operation operation = i.addOperation(id, name);
+        if (implRef != null) {
+            operation.setImplementationRef(implRef);
+        }
 		return operation;
 	}
 

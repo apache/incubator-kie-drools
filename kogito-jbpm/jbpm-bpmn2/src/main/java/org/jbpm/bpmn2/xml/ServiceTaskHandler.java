@@ -45,6 +45,7 @@ public class ServiceTaskHandler extends TaskHandler {
         super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;
         String operationRef = element.getAttribute("operationRef");
+        String implementation = element.getAttribute("implementation");
         List<Interface> interfaces = (List<Interface>)
             ((ProcessBuildData) parser.getData()).getMetaData("Interfaces");
         if (interfaces == null) {
@@ -63,6 +64,13 @@ public class ServiceTaskHandler extends TaskHandler {
         workItemNode.getWork().setParameter("Interface", operation.getInterface().getName());
         workItemNode.getWork().setParameter("Operation", operation.getName());
         workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
+        
+        // parameters to support web service invocation 
+        if (implementation != null) {
+            workItemNode.getWork().setParameter("interfaceImplementationRef", operation.getInterface().getImplementationRef());
+            workItemNode.getWork().setParameter("operationImplementationRef", operation.getImplementationRef());
+            workItemNode.getWork().setParameter("implementation", implementation);
+        }
     }
     
     protected String getTaskName(final Element element) {

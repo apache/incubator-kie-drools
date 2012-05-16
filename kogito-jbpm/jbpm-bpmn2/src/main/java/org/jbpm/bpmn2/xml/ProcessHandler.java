@@ -126,6 +126,11 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		((ProcessBuildData) parser.getData()).addProcess(process);
 		// register the definitions object as metadata of process.
 		process.setMetaData("Definitions", parser.getParent());
+		// register bpmn2 imports as meta data of process
+		Object typedImports = ((ProcessBuildData) parser.getData()).getMetaData("Bpmn2Imports");
+		if (typedImports != null) {
+		    process.setMetaData("Bpmn2Imports", typedImports);
+		}
 		return process;
 	}
 

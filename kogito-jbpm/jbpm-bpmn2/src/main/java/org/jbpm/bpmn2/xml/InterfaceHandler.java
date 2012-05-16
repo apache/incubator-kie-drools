@@ -64,6 +64,7 @@ public class InterfaceHandler extends BaseAbstractHandler implements Handler {
 
 		String id = attrs.getValue("id");
 		String name = attrs.getValue("name");
+		String implRef = attrs.getValue("implementationRef");
 
 		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
 		List<Interface> interfaces = (List<Interface>) buildData.getMetaData("Interfaces");
@@ -71,7 +72,10 @@ public class InterfaceHandler extends BaseAbstractHandler implements Handler {
             interfaces = new ArrayList<Interface>();
             buildData.setMetaData("Interfaces", interfaces);
         }
-        Interface i = new Interface(id, name); 
+        Interface i = new Interface(id, name);
+        if (implRef != null) {
+            i.setImplementationRef(implRef);
+        }
         interfaces.add(i);
 		return i;
 	}

@@ -39,7 +39,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
 		super(BPMN2_URI);
 		
         addHandler("definitions", new DefinitionsHandler());
-        
+        addHandler("import", new Bpmn2ImportHandler());
         addHandler("process", new ProcessHandler());
         
         addHandler("property", new PropertyHandler());

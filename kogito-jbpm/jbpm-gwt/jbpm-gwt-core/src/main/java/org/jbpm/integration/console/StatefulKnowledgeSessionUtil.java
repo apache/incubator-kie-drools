@@ -65,6 +65,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
+import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.integration.console.shared.GuvnorConnectionUtils;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
@@ -332,7 +333,7 @@ public class StatefulKnowledgeSessionUtil {
             ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler);
             handler.connect();
         }
-        
+        ksession.getWorkItemManager().registerWorkItemHandler( "Service Task", new ServiceTaskHandler(ksession));
     }
     
     /**
