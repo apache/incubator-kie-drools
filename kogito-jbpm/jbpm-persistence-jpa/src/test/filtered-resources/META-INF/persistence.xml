@@ -22,7 +22,6 @@
         <class>org.jbpm.persistence.processinstance.objects.NonSerializableClass</class>
         
         <class>org.drools.marshalling.util.MarshalledData</class>
-        <class>org.jbpm.persistence.processinstance.objects.UserTypePropertyHolder</class>
         
         <properties>
             <property name="hibernate.max_fetch_depth" value="3"/>
