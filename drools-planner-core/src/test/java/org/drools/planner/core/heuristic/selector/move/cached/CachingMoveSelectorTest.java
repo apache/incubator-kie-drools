@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +55,7 @@ public class CachingMoveSelectorTest {
     public void runCacheType(SelectorCacheType cacheType, int timesCalled) {
         CachingMoveSelector moveSelector = new CachingMoveSelector(cacheType);
         MoveSelector childMoveSelector = mock(MoveSelector.class);
-        final List<Move> moveList = Arrays.<Move>asList(new DummyMove(), new DummyMove(), new DummyMove());
+        final List<Move> moveList = Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
         when(childMoveSelector.iterator()).thenAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return moveList.iterator();
@@ -123,11 +124,11 @@ public class CachingMoveSelectorTest {
         Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
         assertTrue(iterator.hasNext());
-        assertNotNull(iterator.next());
+        assertCode("a1", iterator.next());
         assertTrue(iterator.hasNext());
-        assertNotNull(iterator.next());
+        assertCode("a2", iterator.next());
         assertTrue(iterator.hasNext());
-        assertNotNull(iterator.next());
+        assertCode("a3", iterator.next());
         assertFalse(iterator.hasNext());
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(false, moveSelector.isNeverEnding());

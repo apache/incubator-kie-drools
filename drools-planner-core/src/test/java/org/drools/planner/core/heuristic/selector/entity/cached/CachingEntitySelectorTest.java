@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -123,11 +124,11 @@ public class CachingEntitySelectorTest {
         Iterator<Object> iterator = entitySelector.iterator();
         assertNotNull(iterator);
         assertTrue(iterator.hasNext());
-        assertNotNull(iterator.next());
+        assertCode("e1", iterator.next());
         assertTrue(iterator.hasNext());
-        assertNotNull(iterator.next());
+        assertCode("e2", iterator.next());
         assertTrue(iterator.hasNext());
-        assertNotNull(iterator.next());
+        assertCode("e3", iterator.next());
         assertFalse(iterator.hasNext());
         assertEquals(false, entitySelector.isContinuous());
         assertEquals(false, entitySelector.isNeverEnding());

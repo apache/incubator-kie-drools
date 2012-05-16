@@ -19,15 +19,33 @@ package org.drools.planner.core.move;
 import java.util.Collection;
 
 import org.drools.planner.core.score.director.ScoreDirector;
+import org.drools.planner.core.testdata.util.CodeAssertable;
 
-public class DummyMove implements Move {
+public class DummyMove implements Move, CodeAssertable {
+
+    protected String code;
+
+    public DummyMove() {
+    }
+
+    public DummyMove(String code) {
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new DummyMove();
+        return new DummyMove("undo " + code);
     }
 
     public void doMove(ScoreDirector scoreDirector) {

@@ -37,7 +37,8 @@ public interface Selector extends SolverPhaseLifecycleListener {
 
     /**
      * Is true if {@link #isContinuous()} is true
-     * or if this selector is in random order (but not when it is in shuffled order).
+     * or if this selector is in random order (for most cases).
+     * Is never true when this selector is in shuffled order (which is less scalable but more exact).
      * @return true if the {@link Iterator#hasNext()} of the {@link Iterator} created by {@link Iterable#iterator()}
      * never returns false.
      */

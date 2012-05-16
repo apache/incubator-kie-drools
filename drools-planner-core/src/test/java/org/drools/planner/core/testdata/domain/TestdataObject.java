@@ -1,6 +1,8 @@
 package org.drools.planner.core.testdata.domain;
 
-public class TestdataObject {
+import org.drools.planner.core.testdata.util.CodeAssertable;
+
+public class TestdataObject implements CodeAssertable{
 
     protected String code;
 
