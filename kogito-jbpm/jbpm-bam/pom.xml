@@ -79,6 +79,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-persistence-jpa</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
@@ -99,7 +106,12 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+ 
+  <properties>
+    <maven.jdbc.url>jdbc:h2:mem:bamTest;MVCC=TRUE</maven.jdbc.url>
 
+  </properties>
+  
   <profiles>
     <profile>
       <id>hibernate-4</id>

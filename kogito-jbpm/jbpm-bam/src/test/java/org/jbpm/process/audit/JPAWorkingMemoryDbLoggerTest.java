@@ -16,7 +16,7 @@
 
 package org.jbpm.process.audit;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -32,7 +32,6 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -46,6 +45,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class tests the following classes: 
+ * <ul>
+ * <li>JPAWorkingMemoryDbLogger</li>
+ * <li>JPAProcessInstanceDbLog</li>
+ * </ul>
+ */
 public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 
     private HashMap<String, Object> context;
@@ -58,7 +64,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
 
     @Test
@@ -91,7 +97,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         logger.debug(processInstance.toString() 
         + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
         assertNotNull(processInstance.getStart());
-        assertNotNull(processInstance.getEnd());
+        assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
@@ -176,7 +182,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         logger.debug(processInstance.toString() 
         + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
         assertNotNull(processInstance.getStart());
-        assertNotNull(processInstance.getEnd());
+        assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
@@ -231,10 +237,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
-        logger.debug(processInstance.toString() 
-        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        logger.debug(processInstance.toString() + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
         assertNotNull(processInstance.getStart());
-        assertNotNull(processInstance.getEnd());
+        assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = JPAProcessInstanceDbLog.findVariableInstances(processInstanceId);
@@ -274,7 +279,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         });
         
         // record the initial count to compare to later
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
@@ -292,12 +297,14 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow3'");
         processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
-        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
+        int expected = initialProcessInstanceSize + 1; 
+        assertEquals("[Expected " + expected + " ProcessInstanceLog instances, not " + processInstances.size() + "]",  
+                expected, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
         logger.debug(processInstance.toString()
         + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
         assertNotNull(processInstance.getStart());
-        assertNotNull(processInstance.getEnd());
+        assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = JPAProcessInstanceDbLog.findVariableInstances(processInstanceId);

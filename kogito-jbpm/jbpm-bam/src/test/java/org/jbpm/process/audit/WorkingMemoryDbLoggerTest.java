@@ -16,8 +16,9 @@
 
 package org.jbpm.process.audit;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
@@ -29,15 +30,19 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
-import org.drools.impl.EnvironmentFactory;
-import org.drools.persistence.util.PersistenceUtil;
 import org.drools.rule.Package;
-import org.jbpm.process.audit.JbpmTestCase;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * This class tests the following classes: 
+ * <ul>
+ * <li>WorkingMemoryDbLogger</li>
+ * <li>ProcessInstanceDbLog</li>
+ * </ul>
+ */
 public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
     
     private HashMap<String, Object> context;
@@ -49,7 +54,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
 
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
     
     @Test
@@ -166,11 +171,11 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
         // create a builder
         PackageBuilder builder = new PackageBuilder();
         // load the process
-        Reader source = new InputStreamReader(
-            WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow.rf"));
+        Reader source = new InputStreamReader(WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow.rf"));
         builder.addProcessFromXml(source);
-        source = new InputStreamReader(
-    		WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow2.rf"));
+        source = new InputStreamReader(WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow2.rf"));
+        builder.addProcessFromXml(source);
+        source = new InputStreamReader(WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow3.rf"));
         builder.addProcessFromXml(source);
         // create the knowledge base 
         Package pkg = builder.getPackage();
