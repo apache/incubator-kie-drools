@@ -43,8 +43,11 @@ public class CallActivityHandler extends AbstractNodeHandler {
     	super.handleNode(node, element, uri, localName, parser);
     	SubProcessNode subProcessNode = (SubProcessNode) node;
 		String processId = element.getAttribute("calledElement");
-		if (processId != null) {
+		if (processId != null && processId.length() > 0) {
 			subProcessNode.setProcessId(processId);
+		} else {
+		    String processName = element.getAttribute("calledElementByName");
+		    subProcessNode.setProcessName(processName);
 		}
 		String waitForCompletion = element.getAttribute("waitForCompletion");
 		if (waitForCompletion != null && "false".equals(waitForCompletion)) {

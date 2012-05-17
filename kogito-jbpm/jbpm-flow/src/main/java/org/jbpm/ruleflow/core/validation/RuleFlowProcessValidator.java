@@ -258,7 +258,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "SubProcess node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
                 }
-                if (subProcess.getProcessId() == null) {
+                if (subProcess.getProcessId() == null && subProcess.getProcessName() == null) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "SubProcess node '" + node.getName() + "' [" + node.getId() + "] has no process id."));
                 }

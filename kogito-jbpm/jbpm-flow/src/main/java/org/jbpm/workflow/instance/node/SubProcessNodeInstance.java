@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.KnowledgeBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.Process;
@@ -29,6 +30,7 @@ import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.StartProcessHelper;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.DataAssociation;
@@ -81,6 +83,10 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             }
         }
         String processId = getSubProcessNode().getProcessId();
+        if (processId == null) {
+            // if process id is not given try with process name
+            processId = getSubProcessNode().getProcessName();
+        }
         // resolve processId if necessary
         Map<String, String> replacements = new HashMap<String, String>();
 		Matcher matcher = PARAMETER_MATCHER.matcher(processId);
@@ -109,9 +115,20 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         for (Map.Entry<String, String> replacement: replacements.entrySet()) {
         	processId = processId.replace("#{" + replacement.getKey() + "}", replacement.getValue());
         }
+        KnowledgeBase kbase = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getKnowledgeBase();
         // start process instance
-        Process process = ((ProcessInstance) getProcessInstance())
-    		.getKnowledgeRuntime().getKnowledgeBase().getProcess(processId);
+        Process process = kbase.getProcess(processId);
+        
+        if (process == null) {
+            // try to find it by name
+            String latestProcessId = StartProcessHelper.findLatestProcessByName(kbase, processId);
+            if (latestProcessId != null) {
+                processId = latestProcessId;
+                process = kbase.getProcess(processId);
+            
+            }
+        }
+        
         if (process == null) {
         	System.err.println("Could not find process " + processId);
         	System.err.println("Aborting process");

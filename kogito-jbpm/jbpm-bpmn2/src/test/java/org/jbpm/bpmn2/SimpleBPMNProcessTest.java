@@ -852,6 +852,34 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertEquals("new value",
 				((WorkflowProcessInstance) processInstance).getVariable("y"));
 	}
+	
+   public void testCallActivityByName() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+                .newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivityByName.bpmn2"),
+                ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"),
+                ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcessV2.bpmn2"),
+                ResourceType.BPMN2);
+        if (!kbuilder.getErrors().isEmpty()) {
+            for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                logger.error(error.toString());
+            }
+            throw new IllegalArgumentException(
+                    "Errors while parsing knowledge base");
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "oldValue");
+        ProcessInstance processInstance = ksession.startProcess(
+                "ParentProcess", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertEquals("new value V2",
+                ((WorkflowProcessInstance) processInstance).getVariable("y"));
+    }
 
 	public void testSubProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");

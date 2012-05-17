@@ -36,6 +36,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable {
 	private static final long serialVersionUID = 510l;
 	
 	private String processId;
+	private String processName;
 	private boolean waitForCompletion = true;
 
         private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
@@ -154,6 +155,14 @@ public class SubProcessNode extends StateBasedNode implements Mappable {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one outgoing connection!");
         }
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
+    public String getProcessName() {
+        return processName;
     }
     
 }

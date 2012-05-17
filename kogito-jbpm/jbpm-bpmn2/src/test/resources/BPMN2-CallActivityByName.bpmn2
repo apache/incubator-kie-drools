@@ -11,21 +11,37 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_subXItem" />
-  <itemDefinition id="_subYItem" />
+  <itemDefinition id="_xItem" />
+  <itemDefinition id="_yItem" />
 
-  <process processType="Private" isExecutable="true" id="SubProcess" name="Sub Process" tns:version="1" >
+  <process processType="Private" isExecutable="true" id="ParentProcess" name="Parent Process" >
 
     <!-- process variables -->
-    <property id="subX" itemSubjectRef="_subXItem"/>
-    <property id="subY" itemSubjectRef="_subYItem"/>
+    <property id="x" itemSubjectRef="_xItem"/>
+    <property id="y" itemSubjectRef="_yItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
-    <scriptTask id="_2" name="Hello" >
-      <script>System.out.println("subX=" + subX);
-kcontext.setVariable("subY", "new value");</script>
-    </scriptTask>
+    <callActivity id="_2" name="CallActivity" tns:calledElementByName="Sub Process" >
+      <ioSpecification>
+        <dataInput id="_2_subXInput" name="subX" />
+        <dataOutput id="_2_subYOutput" name="subY" />
+        <inputSet>
+          <dataInputRefs>_2_subXInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_subYOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>x</sourceRef>
+        <targetRef>_2_subXInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_subYOutput</sourceRef>
+        <targetRef>y</targetRef>
+      </dataOutputAssociation>
+    </callActivity>
     <endEvent id="_3" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
@@ -37,23 +53,23 @@ kcontext.setVariable("subY", "new value");</script>
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="SubProcess" >
+    <bpmndi:BPMNPlane bpmnElement="ParentProcess" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="96" y="16" width="80" height="48" />
+        <dc:Bounds x="96" y="16" width="110" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="208" y="16" width="48" height="48" />
+        <dc:Bounds x="238" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
         <di:waypoint x="40" y="40" />
-        <di:waypoint x="136" y="40" />
+        <di:waypoint x="151" y="40" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_2-_3" >
-        <di:waypoint x="136" y="40" />
-        <di:waypoint x="232" y="40" />
+        <di:waypoint x="151" y="40" />
+        <di:waypoint x="262" y="40" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
