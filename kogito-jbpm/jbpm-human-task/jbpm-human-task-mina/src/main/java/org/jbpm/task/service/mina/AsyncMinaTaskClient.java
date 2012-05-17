@@ -21,8 +21,12 @@ import org.jbpm.task.service.TaskClient;
 
 public class AsyncMinaTaskClient extends TaskClient {
 
-    public AsyncMinaTaskClient() {
-        super(new MinaTaskClientConnector("client 1",
+    public AsyncMinaTaskClient(String connectorName) {
+        super(new MinaTaskClientConnector(connectorName,
                 new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+    }
+    
+    public AsyncMinaTaskClient() {
+        this("AsynMinaTaskClient");
     }
 }

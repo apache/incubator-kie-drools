@@ -25,7 +25,6 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.process.workitem.wsht.AsyncGenericHTWorkItemHandler;
-import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.MyObject;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AsyncTaskService;
@@ -416,8 +415,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         
         Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
                                                             getContentResponseHandler.getContent().getContent(), 
-                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+                                                            ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
                                                             ksession.getEnvironment());
         
         assertEquals("This is the content", data);
@@ -431,8 +429,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                                (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
+                                                                ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
                                                                 , ksession.getEnvironment());
 
                 
@@ -492,8 +489,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         
         Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
                                                             getContentResponseHandler.getContent().getContent(), 
-                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+                                                            ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
                                                             ksession.getEnvironment());
         
         //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
@@ -511,8 +507,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
 
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
+                                                            ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
                                                             , ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
         operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
@@ -527,9 +522,6 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     
     public void testTaskCreateFailedWithLog() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
-        if (handler instanceof AsyncWSHumanTaskHandler) {
-            ((AsyncWSHumanTaskHandler) handler).setAction(OnErrorAction.LOG);
-        }
         if (handler instanceof AsyncGenericHTWorkItemHandler) {
             ((AsyncGenericHTWorkItemHandler) handler).setAction(OnErrorAction.LOG);
         }
@@ -550,9 +542,6 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     
     public void testTaskCreateFailedWithAbort() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
-        if (handler instanceof AsyncWSHumanTaskHandler) {
-            ((AsyncWSHumanTaskHandler) handler).setAction(OnErrorAction.ABORT);
-        }
         if (handler instanceof AsyncGenericHTWorkItemHandler) {
             ((AsyncGenericHTWorkItemHandler) handler).setAction(OnErrorAction.ABORT);
         }

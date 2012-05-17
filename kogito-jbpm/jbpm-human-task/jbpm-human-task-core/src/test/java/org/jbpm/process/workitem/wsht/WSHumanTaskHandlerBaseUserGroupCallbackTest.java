@@ -291,8 +291,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         
         Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
                                                             getContentResponseHandler.getContent().getContent(), 
-                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+                                                            ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
                                                             ksession.getEnvironment());        
         assertEquals("This is the content", data);
 
@@ -305,8 +304,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                                (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
+                                                                ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
                                                                 , ksession.getEnvironment());
 
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);

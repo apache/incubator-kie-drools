@@ -62,10 +62,10 @@ import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+@Deprecated
 public class GenericCommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(AsyncWSHumanTaskHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenericCommandBasedWSHumanTaskHandler.class);
     private String ipAddress;
     private int port;
     private TaskClient client;

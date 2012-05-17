@@ -7,7 +7,7 @@ import org.drools.SystemEventListenerFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.service.TaskService;
 
 public class LocalHumanTaskService {
@@ -29,7 +29,7 @@ public class LocalHumanTaskService {
 	public static org.jbpm.task.TaskService getTaskService(StatefulKnowledgeSession ksession) {
 	    TaskService taskService = getService(ksession.getEnvironment());
 		
-		SyncWSHumanTaskHandler humanTaskHandler = new SyncWSHumanTaskHandler(
+		LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler(
 			new LocalTaskService(taskService), ksession);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
 		

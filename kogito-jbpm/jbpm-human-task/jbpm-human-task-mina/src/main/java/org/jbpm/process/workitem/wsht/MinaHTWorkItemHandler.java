@@ -17,6 +17,7 @@ package org.jbpm.process.workitem.wsht;
 
 import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 /**
@@ -24,7 +25,7 @@ import org.jbpm.task.service.mina.AsyncMinaTaskClient;
  * This class provides the default configurations for a Mina WorkItem Handler
  */
 public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
-
+    private String connectorName = "SyncMinaHTWorkItemHandler";
     public MinaHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
         init();
@@ -34,9 +35,18 @@ public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
         super(session, action);
         init();
     }
+    
+    public MinaHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(session, action);
+        this.connectorName = connectorName;
+        setClient(client);
+        init();
+    }
 
     private void init(){
-        setClient(new SyncTaskServiceWrapper(new AsyncMinaTaskClient()));
+        if(getClient() == null){
+            setClient(new SyncTaskServiceWrapper(new AsyncMinaTaskClient(this.connectorName)));
+        }
         if(getPort() <= 0){
             setPort(9123);
         }
@@ -44,6 +54,13 @@ public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
             setIpAddress("127.0.0.1");
         }
     }
-   
-    
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+
 }

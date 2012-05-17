@@ -15,14 +15,10 @@
  */
 package org.jbpm.process.workitem.wsht.hornetq.async;
 
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
 public class WSHumanTaskHandlerHornetQAsyncTest extends WSHumanTaskHandlerBaseAsyncTest {
@@ -40,15 +36,14 @@ public class WSHumanTaskHandlerHornetQAsyncTest extends WSHumanTaskHandlerBaseAs
             System.out.print(".");
             Thread.sleep(50);
         }
-        setClient(new TaskClient(new HornetQTaskClientConnector("client 1",
-                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));        
-        AsyncWSHumanTaskHandler handler = new AsyncWSHumanTaskHandler(getClient(), ksession);
-        handler.setConnection("127.0.0.1", 5445);
-        setHandler(handler);
+
+        setClient(new AsyncHornetQTaskClient("client1"));        
+        getClient().connect();
+        setHandler(new AsyncHornetQHTWorkItemHandler(ksession));
     }
 
     protected void tearDown() throws Exception {
-        ((AsyncWSHumanTaskHandler) getHandler()).dispose();
+        ((AsyncHornetQHTWorkItemHandler) getHandler()).dispose();
         getClient().disconnect();
         server.stop();
         super.tearDown();

@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
 @Deprecated
 public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(AsyncWSHumanTaskHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommandBasedWSHumanTaskHandler.class);
     private String ipAddress = "127.0.0.1";
     private int port = 9123;
     private TaskClient client;

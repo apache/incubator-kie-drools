@@ -21,12 +21,13 @@ import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.AsyncTaskService;
 /**
  *
  * This class provides the default configurations for a Mina WorkItem Handler
  */
 public class AsyncMinaHTWorkItemHandler extends AsyncGenericHTWorkItemHandler{
-
+    private String connectorName = "AsyncMinaHTWorkItemHandler";
     public AsyncMinaHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
         init();
@@ -36,10 +37,19 @@ public class AsyncMinaHTWorkItemHandler extends AsyncGenericHTWorkItemHandler{
         super(session, action);
         init();
     }
+    
+    public AsyncMinaHTWorkItemHandler(String connectorName, AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(session, action);
+        setClient(client);
+        this.connectorName = connectorName;
+        init();
+    }
 
     private void init(){
-        setClient(new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
+        if(getClient() == null){
+            setClient(new TaskClient(new MinaTaskClientConnector(this.connectorName,
+                    new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
+        }
         if(getPort() <= 0){
             setPort(9123);
         }
@@ -47,6 +57,16 @@ public class AsyncMinaHTWorkItemHandler extends AsyncGenericHTWorkItemHandler{
             setIpAddress("127.0.0.1");
         }
     }
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+    
+    
    
     
 }

@@ -15,26 +15,24 @@
  */
 package org.jbpm.process.workitem.wsht.local.sync;
 
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
-import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.local.LocalTaskService;
 
 public class WSHumanTaskHandlerLocalSyncTest extends WSHumanTaskHandlerBaseSyncTest {
 
-    private TaskServer server;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
        
         setClient(new LocalTaskService(taskService));
-        
-        setHandler(new SyncWSHumanTaskHandler(getClient(), ksession));
+        LocalHTWorkItemHandler htWorkItemHandler = new LocalHTWorkItemHandler(getClient(), ksession);
+        setHandler(htWorkItemHandler);
     }
 
     protected void tearDown() throws Exception {
-        ((SyncWSHumanTaskHandler) getHandler()).dispose();
+        ((LocalHTWorkItemHandler) getHandler()).dispose();
         getClient().disconnect();
         super.tearDown();
     }

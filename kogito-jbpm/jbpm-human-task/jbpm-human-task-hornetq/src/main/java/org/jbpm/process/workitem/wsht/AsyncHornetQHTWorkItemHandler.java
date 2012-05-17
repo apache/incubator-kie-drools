@@ -17,6 +17,7 @@ package org.jbpm.process.workitem.wsht;
 
 import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
+import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 /**
  *
@@ -24,6 +25,7 @@ import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
  */
 public class AsyncHornetQHTWorkItemHandler extends AsyncGenericHTWorkItemHandler{
 
+    private String connectorName = "AsyncHornetQHTWorkItemHandler";
     public AsyncHornetQHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
         init();
@@ -33,9 +35,24 @@ public class AsyncHornetQHTWorkItemHandler extends AsyncGenericHTWorkItemHandler
         super(session, action);
         init();
     }
+    
+    public AsyncHornetQHTWorkItemHandler(AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(session, action);
+        setClient(client);
+        init();
+    }
+    
+    public AsyncHornetQHTWorkItemHandler(String connectorName, AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(session, action);
+        setClient(client);
+        this.connectorName = connectorName;
+        init();
+    }
 
     private void init(){
-        setClient(new AsyncHornetQTaskClient("AsyncHTWorkItemHandler"));
+        if(getClient() == null){
+            setClient(new AsyncHornetQTaskClient(this.connectorName));
+        }
         if(getPort() <= 0){
             setPort(5445);
         }
@@ -43,6 +60,14 @@ public class AsyncHornetQHTWorkItemHandler extends AsyncGenericHTWorkItemHandler
             setIpAddress("127.0.0.1");
         }
     }
-   
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
     
+ 
 }

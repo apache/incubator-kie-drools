@@ -122,8 +122,6 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                     throw new IllegalArgumentException("Could not connect task client");
                 }
                 registerTaskEvents();
-            }else{
-                logger.warn(" Task Service Client was already connected, just saying ... ");
             }
         }
     }

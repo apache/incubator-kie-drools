@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
 @Deprecated
 public class WSHumanTaskHandler implements WorkItemHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(WSHumanTaskHandler.class);
     private String ipAddress = "127.0.0.1";
     private int port = 9123;
     private TaskClient client;

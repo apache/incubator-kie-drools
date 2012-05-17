@@ -25,7 +25,6 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.process.workitem.wsht.GenericHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.MyObject;
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
@@ -362,8 +361,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
         Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
                                                             getClient().getContent(contentId).getContent(), 
-                                                            (getHandler() instanceof SyncWSHumanTaskHandler)?((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+                                                            ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
                                                             ksession.getEnvironment());
         assertEquals("This is the content", data);
 
@@ -371,8 +369,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
        
 
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                            (getHandler() instanceof SyncWSHumanTaskHandler)?((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext()
+                                                            ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext()
                                                             , ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result);
         
@@ -426,9 +423,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         
 
         Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
-                                                            getClient().getContent(contentId).getContent(), 
-                                                            (getHandler() instanceof SyncWSHumanTaskHandler)?((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+                                                            getClient().getContent(contentId).getContent(),  
+                                                            ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
                                                             ksession.getEnvironment());
       
         //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
@@ -439,8 +435,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         getClient().start(task.getId(), "Darth Vader");
 
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                            (getHandler() instanceof SyncWSHumanTaskHandler)?((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext()
+                                                             ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext()
                                                             , ksession.getEnvironment());
                 
         getClient().complete(task.getId(), "Darth Vader", result);
@@ -454,9 +449,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     
     public void testTaskCreateFailedWithLog() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
-        if (handler instanceof SyncWSHumanTaskHandler) {
-            ((SyncWSHumanTaskHandler) handler).setAction(OnErrorAction.LOG);
-        }
+        
         if (handler instanceof GenericHTWorkItemHandler) {
             ((GenericHTWorkItemHandler) handler).setAction(OnErrorAction.LOG);
         }
@@ -477,9 +470,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     
     public void testTaskCreateFailedWithAbort() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
-        if (handler instanceof SyncWSHumanTaskHandler) {
-            ((SyncWSHumanTaskHandler) handler).setAction(OnErrorAction.ABORT);
-        }
+        
         if (handler instanceof GenericHTWorkItemHandler) {
             ((GenericHTWorkItemHandler) handler).setAction(OnErrorAction.ABORT);
         }
@@ -499,9 +490,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     
     public void testTaskCreateFailedWithRethrow() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
-        if (handler instanceof SyncWSHumanTaskHandler) {
-            ((SyncWSHumanTaskHandler) handler).setAction(OnErrorAction.RETHROW);
-        }
+        
         if (handler instanceof GenericHTWorkItemHandler) {
             ((GenericHTWorkItemHandler) handler).setAction(OnErrorAction.RETHROW);
         }

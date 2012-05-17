@@ -17,6 +17,7 @@ package org.jbpm.process.workitem.wsht;
 
 import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 /**
@@ -25,28 +26,38 @@ import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
  */
 public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
 
+    private String connectorName = "SyncHornetQHTWorkItemHandler";
     public HornetQHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
-        init("HTWorkItemHandler");
-    }
-
-    public HornetQHTWorkItemHandler(String connectorName, KnowledgeRuntime session) {
-        super(session);
-        init(connectorName);
+        init();
     }
     
     public HornetQHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
-        init("HTWorkItemHandler");
+        init();
     }
     
-    public HornetQHTWorkItemHandler(String connectorName, KnowledgeRuntime session, OnErrorAction action) {
-        super(session, action);
-        init(connectorName);
+    public HornetQHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
+        super(client, session);
+        init();
+    }
+    
+    public HornetQHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(client, session, action);
+        init();
+    }
+    
+    public HornetQHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(client, session, action);
+        setClient(client);
+        this.connectorName = connectorName;
+        init();
     }
 
-    private void init(String connectorName){
-        setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient(connectorName)));
+    private void init(){
+        if(getClient() == null){
+            setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient(this.connectorName)));
+        }
         if(getPort() <= 0){
             setPort(5445);
         }
@@ -54,6 +65,16 @@ public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
             setIpAddress("127.0.0.1");
         }
     }
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+    
+    
    
     
 }

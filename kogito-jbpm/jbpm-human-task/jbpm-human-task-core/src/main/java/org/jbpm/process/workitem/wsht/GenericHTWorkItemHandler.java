@@ -50,7 +50,17 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     public GenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
     }
-
+    
+    public GenericHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(session, action);
+        this.client = client;
+    }
+    
+    public GenericHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
+        super(session);
+        this.client = client;
+    }
+     
     public GenericHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
     }
@@ -92,7 +102,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     }
     
 
-    private void registerTaskEvents() {
+    protected void registerTaskEvents() {
         TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
@@ -119,8 +129,6 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                     throw new IllegalArgumentException("Could not connect task client: on ip: "+ipAddress +" - port: "+port);
                 }
                 registerTaskEvents();
-//            }else{
-//                logger.warn(" Task Service Client was already connected, just saying ... ");
             }
         }
     }
