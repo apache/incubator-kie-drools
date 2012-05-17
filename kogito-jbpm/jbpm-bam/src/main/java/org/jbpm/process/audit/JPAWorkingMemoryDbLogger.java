@@ -19,7 +19,13 @@ package org.jbpm.process.audit;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.NotSupportedException;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryLogger;
@@ -32,6 +38,8 @@ import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Enables history log via JPA.
@@ -39,6 +47,8 @@ import org.drools.runtime.KnowledgeRuntime;
  */
 public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
 
+    private static Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLogger.class);
+    
     protected Environment env;
 
     public JPAWorkingMemoryDbLogger(WorkingMemory workingMemory) {
@@ -87,45 +97,120 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
 
     private void addProcessLog(long processInstanceId, String processId) {
         ProcessInstanceLog log = new ProcessInstanceLog(processInstanceId, processId);
-        getEntityManager().persist(log);
+    	persist(log);
     }
 
     @SuppressWarnings("unchecked")
     private void updateProcessLog(long processInstanceId) {
-        List<ProcessInstanceLog> result = getEntityManager().createQuery(
+        EntityManager em = getEntityManager();
+        UserTransaction ut = joinTransaction(em);
+        List<ProcessInstanceLog> result = em.createQuery(
             "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
                 .setParameter(1, processInstanceId).getResultList();
         if (result != null && result.size() != 0) {
             ProcessInstanceLog log = result.get(result.size() - 1);
             log.setEnd(new Date());
-            getEntityManager().merge(log);
+            em.merge(log);
         }
+        flush(em, ut);
     }
 
     private void addNodeEnterLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId, String nodeName) {
         NodeInstanceLog log = new NodeInstanceLog(
     		NodeInstanceLog.TYPE_ENTER, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
-        getEntityManager().persist(log);
+    	persist(log);
     }
 
     private void addNodeExitLog(long processInstanceId,
             String processId, String nodeInstanceId, String nodeId, String nodeName) {
         NodeInstanceLog log = new NodeInstanceLog(
             NodeInstanceLog.TYPE_EXIT, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
-        getEntityManager().persist(log);
+    	persist(log);
     }
 
     private void addVariableLog(long processInstanceId, String processId, String variableInstanceId, String variableId, String objectToString) {
     	VariableInstanceLog log = new VariableInstanceLog(
     		processInstanceId, processId, variableInstanceId, variableId, objectToString);
-        getEntityManager().persist(log);
+    	persist(log);
     }
 
     public void dispose() {
     }
 
-    protected EntityManager getEntityManager() {
-        return (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+    /**
+     * This method creates a entity manager. 
+     */
+    private EntityManager getEntityManager() {
+        EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+        return emf.createEntityManager(); 
     }
 
+    /**
+     * This method persists the entity given to it. 
+     * </p>
+     * This method also makes sure that the entity manager used for persisting the entity, joins the existing JTA transaction. 
+     * @param entity An entity to be persisted.
+     */
+    private void persist(Object entity) { 
+        EntityManager em = getEntityManager();
+        UserTransaction ut = joinTransaction(em);
+        em.persist(entity);
+        flush(em, ut);
+    }
+    
+    /**
+     * This method opens a new transaction, if none is currently running, and joins the entity manager/persistence context
+     * to that transaction. 
+     * @param em The entity manager we're using. 
+     * @return {@link UserTransaction} If we've started a new transaction, then we return it so that it can be closed. 
+     * @throws NotSupportedException 
+     * @throws SystemException 
+     * @throws Exception if something goes wrong. 
+     */
+    private static UserTransaction joinTransaction(EntityManager em) {
+        boolean newTx = false;
+        UserTransaction ut = null;
+        try { 
+            ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
+                ut.begin();
+                newTx = true;
+            }
+        } catch(Exception e) { 
+            logger.error("Unable to find or open a transaction: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        em.joinTransaction(); 
+       
+        if( newTx ) { 
+            return ut;
+        }
+        return null;
+    }
+
+    /**
+     * This method closes the entity manager and transaction. It also makes sure that any objects associated 
+     * with the entity manager/persistence context are detached. 
+     * </p>
+     * Obviously, if the transaction returned by the {@link #joinTransaction(EntityManager)} method is null, 
+     * nothing is done with the transaction parameter.
+     * @param em The entity manager.
+     * @param ut The (user) transaction.
+     */
+    private static void flush(EntityManager em, UserTransaction ut) {
+        em.flush(); // This saves any changes made
+        em.clear(); // This makes sure that any returned entities are no longer attached to this entity manager/persistence context
+        em.close(); // and this closes the entity manager
+        try { 
+            if( ut != null ) { 
+                // There's a tx running, close it.
+                ut.commit();
+            }
+        } catch(Exception e) { 
+            logger.error("Unable to commit transaction: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
 }
