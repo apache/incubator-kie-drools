@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 
 public class ConditionAnalyzer {
@@ -920,6 +921,12 @@ public class ConditionAnalyzer {
         }
 
         public Class<?> getKeyType() {
+            if (keyType == Object.class && key instanceof FixedExpression) {
+                Object value = ((FixedExpression)key).getValue();
+                if (value != null) {
+                    return value.getClass();
+                }
+            }
             return keyType;
         }
 

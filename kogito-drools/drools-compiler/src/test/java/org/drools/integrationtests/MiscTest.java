@@ -11035,4 +11035,52 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         ksession.dispose();
     }
+
+
+    @Test
+    public void testMapAccessorWithPrimitiveKey() {
+        String str = "package com.sample\n" +
+                "import org.drools.integrationtests.MiscTest.MapContainerBean\n" +
+                "rule R1 when\n" +
+                "  MapContainerBean( map[1] == \"one\" )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  MapContainerBean( map[1+1] == \"two\" )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R3 when\n" +
+                "  MapContainerBean( map[this.get3()] == \"three\" )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R4 when\n" +
+                "  MapContainerBean( map[4] == null )\n" +
+                "then\n" +
+                "end\n";
+
+                KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new MapContainerBean());
+        assertEquals(4, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    public static class MapContainerBean {
+        private final Map<Integer, String> map = new HashMap<Integer, String>();
+
+        MapContainerBean() {
+            map.put(1, "one");
+            map.put(2, "two");
+            map.put(3, "three");
+        }
+
+        public Map<Integer, String> getMap() {
+            return map;
+        }
+
+        public int get3() {
+            return 3;
+        }
+    }
 }
