@@ -433,6 +433,14 @@ public class ClassGenerator {
             Type type = storedTypes.get(registry);
             mv.visitVarInsn(type.getOpcode(ILOAD), registry);
             String typeName = type.getClassName();
+            convertPrimitiveToObject(typeName);
+        }
+
+        protected void convertPrimitiveToObject(Class<?> primitiveClass) {
+            convertPrimitiveToObject(primitiveClass.getName());
+        }
+
+        private void convertPrimitiveToObject(String typeName) {
             if (typeName.equals("int"))
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
             else if (typeName.equals("boolean"))

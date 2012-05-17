@@ -704,7 +704,10 @@ public class ASMConditionEvaluatorJitter {
                 mv.visitVarInsn(ALOAD, 1);
                 cast(Map.class);
             }
-            jitExpression(invocation.getKey(), invocation.getKeyType());
+            Class<?> keyClass = jitExpression(invocation.getKey(), invocation.getKeyType());
+            if (keyClass.isPrimitive()) {
+                convertPrimitiveToObject(keyClass);
+            }
             invokeInterface(Map.class, "get", Object.class, Object.class);
             if (invocation.getReturnType() != Object.class) {
                 cast(invocation.getReturnType());
