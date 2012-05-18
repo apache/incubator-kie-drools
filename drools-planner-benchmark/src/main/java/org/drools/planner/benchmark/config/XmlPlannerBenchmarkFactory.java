@@ -86,7 +86,7 @@ public class XmlPlannerBenchmarkFactory {
         Reader reader = null;
         try {
             reader = new InputStreamReader(in, "UTF-8");
-            return configureFromTemplate(reader);
+            return configureFromTemplate(reader, model);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support UTF-8 encoding.", e);
         } finally {
