@@ -98,6 +98,7 @@ public class XmlPlannerBenchmarkFactory {
     public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader, Object model) {
         Configuration cfg = new Configuration();
         cfg.setObjectWrapper(new DefaultObjectWrapper());
+        cfg.setNumberFormat("computer"); // don't do any Freemarker magic to numbers
         try {
             return this.configureFromTemplate(new Template("benchmarkTemplate.ftl", reader, cfg, "UTF-8"), model);
         } catch (IOException e) {
