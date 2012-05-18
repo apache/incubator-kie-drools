@@ -236,7 +236,8 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 			if (logs != null) {
 				for (NodeInstanceLog l: logs) {
 					String nodeName = l.getNodeName();
-					if (l.getType() == NodeInstanceLog.TYPE_ENTER && names.contains(nodeName)) {
+					// needs to check both types as catch events will not have TYPE_ENTER entries
+					if ((l.getType() == NodeInstanceLog.TYPE_ENTER || l.getType() == NodeInstanceLog.TYPE_EXIT) && names.contains(nodeName)) {
 						names.remove(nodeName);
 					}
 				}

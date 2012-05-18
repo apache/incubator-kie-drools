@@ -172,7 +172,7 @@ public class Hibernate4ProcessPersistenceTest {
         if (logs != null) {
             for (NodeInstanceLog l: logs) {
                 String nodeName = l.getNodeName();
-                if (l.getType() == NodeInstanceLog.TYPE_ENTER && names.contains(nodeName)) {
+                if ((l.getType() == NodeInstanceLog.TYPE_ENTER || l.getType() == NodeInstanceLog.TYPE_EXIT) && names.contains(nodeName)) {
                     names.remove(nodeName);
                 }
             }
