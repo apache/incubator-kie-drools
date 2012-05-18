@@ -16,15 +16,24 @@
 
 package org.drools.planner.benchmark.config;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 
-import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.config.XmlSolverFactory;
+
+import com.thoughtworks.xstream.XStream;
+
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 public class XmlPlannerBenchmarkFactory {
 
@@ -63,6 +72,53 @@ public class XmlPlannerBenchmarkFactory {
             IOUtils.closeQuietly(reader);
             IOUtils.closeQuietly(in);
         }
+    }
+
+    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream in) {
+        return this.configureFromTemplate(in, null);
+    }
+
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader) {
+        return this.configureFromTemplate(reader, null);
+    }
+
+    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream in, Object model) {
+        Reader reader = null;
+        try {
+            reader = new InputStreamReader(in, "UTF-8");
+            return configureFromTemplate(reader);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("This vm does not support UTF-8 encoding.", e);
+        } finally {
+            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(in);
+        }
+    }
+
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader, Object model) {
+        Configuration cfg = new Configuration();
+        cfg.setObjectWrapper(new DefaultObjectWrapper());
+        try {
+            return this.configureFromTemplate(new Template("benchmarkTemplate.ftl", reader, cfg, "UTF-8"), model);
+        } catch (IOException e) {
+            throw new IllegalStateException("The template for a benchmark cannot be read.", e);
+        }
+    }
+
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Template template, Object model) {
+        StringWriter out = new StringWriter();
+        try {
+            template.process(model, out);
+            return this.configure(new StringReader(out.toString()));
+        } catch (TemplateException e) {
+            throw new IllegalStateException("There was a problem with the benchmark template.", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("There was a problem writing the benchmark config from the template.", e);
+        }
+    }
+
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Template template) {
+        return this.configureFromTemplate(template, null);
     }
 
     public XmlPlannerBenchmarkFactory configure(Reader reader) {
