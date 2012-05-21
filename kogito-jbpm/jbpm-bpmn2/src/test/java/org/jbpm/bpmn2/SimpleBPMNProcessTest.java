@@ -2263,7 +2263,6 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 	
-
 	public void testBusinessRuleTask() throws Exception {
 	    Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
 	    resources.put("BPMN2-BusinessRuleTask.bpmn2", ResourceType.BPMN2);
@@ -2329,6 +2328,71 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertNull("First process should be completed", ksession.getProcessInstance(pi1id));
         assertNotNull("Second process should NOT be completed", ksession.getProcessInstance(pi2id));
 
+    }
+    
+	public void testConditionalBoundaryEventOnTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundaryConditionalEventOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new TestWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
+        
+        Person person = new Person();
+        person.setName("john");
+        ksession.insert(person);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "Boundary event", "Condition met", "End2");
+    }
+	
+	public void testConditionalBoundaryEventOnTaskComplete() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundaryConditionalEventOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
+        
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        Person person = new Person();
+        person.setName("john");
+        // as the node that boundary event is attached to has been completed insert will not have any effect
+        ksession.insert(person);
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "User Task2", "End1");
+    }
+	
+	public void testConditionalBoundaryEventOnTaskActiveOnStartup() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundaryConditionalEventOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new TestWorkItemHandler());
+        
+        Person person = new Person();
+        person.setName("john");
+        ksession.insert(person);
+        ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
+        
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "Boundary event", "Condition met", "End2");
+    }
+	
+	public void testConditionalBoundaryEventInterrupting() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ConditionalBoundaryEventInterrupting.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("ConditionalBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        ksession = restoreSession(ksession, true);
+        Person person = new Person();
+        person.setName("john");
+        ksession.insert(person);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello", "StartSubProcess",
+                "Task", "BoundaryEvent", "Goodbye", "EndProcess");
     }
 
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {

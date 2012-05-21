@@ -18,14 +18,21 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.InternalFactHandle;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.rule.Declaration;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.rule.impl.InternalAgenda;
+import org.drools.spi.Activation;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
@@ -67,6 +74,21 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 				timerInstances.add(timerInstance.getId());
 			}
 		}
+       
+		if (getEventBasedNode().getBoundaryEvents() != null) {
+		    
+		    for (String name : getEventBasedNode().getBoundaryEvents()) {
+                
+                boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                    .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", name, getProcessInstance().getId());
+                if (isActive) {
+                    getProcessInstance().getKnowledgeRuntime().signalEvent(name, null);
+                } else {
+                    addActivationListener();
+                }
+		    }
+		}
+
 	}
 	
     protected TimerInstance createTimerInstance(Timer timer) {
@@ -123,7 +145,14 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             if (timerInstances.contains(timerInstance.getId())) {
                 triggerTimer(timerInstance);
             }
-    	}
+    	} else if (type.equals(getActivationType())) {
+            if (event instanceof ActivationCreatedEvent) {
+                String name = ((ActivationCreatedEvent)event).getActivation().getRule().getName();
+                if (checkProcessInstance((Activation) ((ActivationCreatedEvent)event).getActivation())) {
+                    ((ActivationCreatedEvent)event).getKnowledgeRuntime().signalEvent(name, null);
+                }
+            }
+        }
     }
     
     private void triggerTimer(TimerInstance timerInstance) {
@@ -136,7 +165,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
     
     public String[] getEventTypes() {
-    	return new String[] { "timerTriggered" };
+    	return new String[] { "timerTriggered", getActivationType()};
     }
     
     public void triggerCompleted() {
@@ -159,6 +188,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
 	protected void triggerCompleted(String type, boolean remove) {
 		cancelTimers();
+		removeActivationListener();
 		super.triggerCompleted(type, remove);
 	}
 	
@@ -173,6 +203,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     public void cancel() {
         cancelTimers();
         removeEventListeners();
+        removeActivationListener();
         super.cancel();
     }
     
@@ -187,4 +218,32 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 		}
 	}
 	
+	private String getActivationType() {
+	    return "RuleFlowStateEvent-" + this.getProcessInstance().getProcessId();
+	}
+	
+    private void addActivationListener() {
+        getProcessInstance().addEventListener(getActivationType(), this, true);
+    }
+    
+    private void removeActivationListener() {
+        getProcessInstance().addEventListener(getActivationType(), this, true);
+    }
+    
+    protected boolean checkProcessInstance(Activation activation) {
+        final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
+        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
+            Declaration declaration = (Declaration) it.next();
+            if ("processInstance".equals(declaration.getIdentifier())
+            		|| "org.drools.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
+                Object value = declaration.getValue(
+                    ((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).session,
+                    ((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
+                if (value instanceof ProcessInstance) {
+                    return ((ProcessInstance) value).getId() == getProcessInstance().getId();
+                }
+            }
+        }
+        return true;
+    }
 }

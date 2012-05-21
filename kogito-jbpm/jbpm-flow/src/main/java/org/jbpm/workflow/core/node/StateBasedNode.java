@@ -16,7 +16,9 @@
 
 package org.jbpm.workflow.core.node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.core.timer.Timer;
@@ -28,6 +30,8 @@ public class StateBasedNode extends ExtendedNodeImpl {
     private static final long serialVersionUID = 510l;
 
 	private Map<Timer, DroolsAction> timers;
+	
+	private List<String> boundaryEvents;
 	
 	public Map<Timer, DroolsAction> getTimers() {
 		return timers;
@@ -54,5 +58,20 @@ public class StateBasedNode extends ExtendedNodeImpl {
 			timers.clear();
 		}
 	}
+
+	public void addBoundaryEvents(String boundaryEvent) {
+        if (this.boundaryEvents == null) {
+            this.boundaryEvents = new ArrayList<String>();
+        }
+	    this.boundaryEvents.add(boundaryEvent);
+    }
+	
+    public void setBoundaryEvents(List<String> boundaryEvents) {
+        this.boundaryEvents = boundaryEvents;
+    }
+
+    public List<String> getBoundaryEvents() {
+        return boundaryEvents;
+    }
 	
 }

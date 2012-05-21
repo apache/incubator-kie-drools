@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <process id="ConditionalBoundaryEvent" name="Conditional Boundary Event Process" isExecutable="true" processType="Private">
+    <startEvent id="_1" name="StartProcess">
+      <outgoing>_1-_2</outgoing>
+    </startEvent>
+    <subProcess id="_2" name="Hello">
+      <incoming>_1-_2</incoming>
+      <outgoing>_2-_3</outgoing>
+      <startEvent id="_2-1" name="StartSubProcess">
+        <outgoing>_2-1-_2-2</outgoing>
+      </startEvent>
+      <task id="_2-2" tns:taskName="MyTask" name="Task">
+        <incoming>_2-1-_2-2</incoming>
+        <outgoing>_2-2-_2-3</outgoing>
+        <ioSpecification id="InputOutputSpecification_1">
+          <inputSet id="InputSet_1"/>
+          <outputSet id="OutputSet_1"/>
+        </ioSpecification>
+      </task>
+      <endEvent id="_2-3" name="EscalationEvent">
+        <incoming>_2-2-_2-3</incoming>
+      </endEvent>
+      <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2"/>
+      <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3"/>
+    </subProcess>
+    <endEvent id="_3" name="EndProcess">
+      <incoming>_2-_3</incoming>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+    <boundaryEvent id="_4" name="BoundaryEvent" attachedToRef="_2">
+      <outgoing>_4-_5</outgoing>
+      <conditionalEventDefinition id="ConditionalEventDefinition_1">
+        <condition xsi:type="tFormalExpression" id="FormalExpression_1" language="http://www.jboss.org/drools/rule">org.jbpm.bpmn2.objects.Person(name == &quot;john&quot;)</condition>
+      </conditionalEventDefinition>
+    </boundaryEvent>
+    <scriptTask id="_5" name="Goodbye">
+      <incoming>_4-_5</incoming>
+      <outgoing>_5-_6</outgoing>
+      <script>System.out.println(&quot;Condition met&quot;);</script>
+    </scriptTask>
+    <endEvent id="_6" name="EndProcess">
+      <incoming>_5-_6</incoming>
+    </endEvent>
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5"/>
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="ConditionalBoundaryEvent">
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="_2" isExpanded="true">
+        <dc:Bounds height="185.0" width="242.0" x="74.0" y="68.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="12.0" y="116.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="_2-1">
+        <dc:Bounds height="48.0" width="48.0" x="122.0" y="89.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_1" bpmnElement="_2-2">
+        <dc:Bounds height="48.0" width="100.0" x="196.0" y="88.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_2-3">
+        <dc:Bounds height="48.0" width="48.0" x="222.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="_3">
+        <dc:Bounds height="48.0" width="48.0" x="360.0" y="115.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="_4">
+        <dc:Bounds height="48.0" width="48.0" x="266.0" y="229.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_5">
+        <dc:Bounds height="48.0" width="80.0" x="250.0" y="301.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_3" bpmnElement="_6">
+        <dc:Bounds height="48.0" width="48.0" x="365.0" y="301.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_2-1-_2-2" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_Task_1">
+        <di:waypoint xsi:type="dc:Point" x="170.0" y="113.0"/>
+        <di:waypoint xsi:type="dc:Point" x="196.0" y="112.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-2-_2-3" sourceElement="BPMNShape_Task_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="246.0" y="136.0"/>
+        <di:waypoint xsi:type="dc:Point" x="246.0" y="163.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="60.0" y="140.0"/>
+        <di:waypoint xsi:type="dc:Point" x="74.0" y="160.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_2-_3" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="316.0" y="160.0"/>
+        <di:waypoint xsi:type="dc:Point" x="360.0" y="139.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="_4-_5" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="290.0" y="271.0"/>
+        <di:waypoint xsi:type="dc:Point" x="290.0" y="301.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="_5-_6" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_3">
+        <di:waypoint xsi:type="dc:Point" x="330.0" y="325.0"/>
+        <di:waypoint xsi:type="dc:Point" x="365.0" y="325.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -30,6 +30,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.StateNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -80,6 +81,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             } else if ("signalEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleSignalNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                break;
+            } else if ("conditionalEventDefinition".equals(nodeName)) {
+                handleConditionNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -254,6 +258,38 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setScope("external");
                     eventNode.setMetaData("SignalName", type);
+                }
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+    protected void handleConditionNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser, final String attachedTo,
+            final boolean cancelActivity) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
+        EventNode eventNode = (EventNode) node;
+        eventNode.setMetaData("AttachedTo", attachedTo);
+        eventNode.setMetaData("CancelActivity", cancelActivity);
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("conditionalEventDefinition".equals(nodeName)) {
+                org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+                while (subNode != null) {
+                    String subnodeName = subNode.getNodeName();
+                    if ("condition".equals(subnodeName)) {
+                        eventNode.setMetaData("Condition", xmlNode.getTextContent());
+                        List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                        EventTypeFilter eventFilter = new EventTypeFilter();
+                        eventFilter.setType("Condition-" + attachedTo);
+                        eventFilters.add(eventFilter);
+                        eventNode.setScope("external");
+                        eventNode.setEventFilters(eventFilters);
+                        break;
+                    }
+                    subNode = subNode.getNextSibling();
                 }
             }
             xmlNode = xmlNode.getNextSibling();

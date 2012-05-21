@@ -69,6 +69,7 @@ import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ConstraintTrigger;
+import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
@@ -364,6 +365,9 @@ public class ProcessBuilderImpl implements ProcessBuilder {
                 }
             } else if ( nodes[i] instanceof NodeContainer ) {
                 generateRules( ((NodeContainer) nodes[i]).getNodes(), process, builder);
+            } else if ( nodes[i] instanceof EventNode ) {
+                EventNode state = (EventNode) nodes[i];
+                builder.append( createEventStateRule(process, state) );
             }
         }
     }
@@ -409,6 +413,24 @@ public class ProcessBuilderImpl implements ProcessBuilder {
 	    		"end \n\n";
     	}
 	}
+    
+    private String createEventStateRule(Process process, EventNode event) {
+        String condition = (String) event.getMetaData("Condition");
+        String attachedTo = (String) event.getMetaData("AttachedTo");
+        if (condition == null
+                || condition.trim().length() == 0) {
+            return "";
+        } else {
+            return 
+                "rule \"RuleFlowStateEvent-" + process.getId() + "-" + event.getUniqueId() + "-" + 
+                    attachedTo + "\" \n" + 
+                "      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
+                "    when \n" + 
+                "      " + condition + "\n" + 
+                "    then \n" +
+                "end \n\n";
+        }
+    }
     
     private String createStateRules(Process process, StateNode state) {
         String result = "";

@@ -16,10 +16,6 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.Iterator;
-import java.util.Map;
-
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
@@ -30,13 +26,10 @@ import org.drools.event.rule.AgendaGroupPushedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.RuleFlowGroupActivatedEvent;
 import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.spi.Activation;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.MilestoneNode;
 
 /**
@@ -67,22 +60,6 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         } else {
             addActivationListener();
         }
-    }
-    
-    private boolean checkProcessInstance(Activation activation) {
-    	final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
-        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
-            Declaration declaration = (Declaration) it.next();
-            if ("processInstance".equals(declaration.getIdentifier())) {
-            	Object value = declaration.getValue(
-        			((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).session,
-        			((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
-            	if (value instanceof ProcessInstance) {
-            		return ((ProcessInstance) value).getId() == getProcessInstance().getId();
-            	}
-        	}
-        }
-        return true;
     }
     
     public void addEventListeners() {
