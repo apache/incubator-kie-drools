@@ -141,6 +141,13 @@ public class EventNodeHandler extends AbstractNodeHandler {
                 xmlDump.append("        <condition xsi:type=\"tFormalExpression\" language=\"http://www.jboss.org/drools/rule\">" + eventNode.getMetaData("Condition") +"</condition>"+ EOL);
                 xmlDump.append("      </conditionalEventDefinition>"+ EOL);
                 endNode("boundaryEvent", xmlDump);
+            } else if (type.startsWith("Message-")) {
+                type = type.substring(8);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <messageEventDefinition messageRef=\"" + type + "\"/>" + EOL);
+                endNode("boundaryEvent", xmlDump);
             }
 		}
 	}

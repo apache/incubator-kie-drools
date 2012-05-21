@@ -400,21 +400,19 @@ public class XmlBPMNProcessDumper {
                         "  <message id=\"" + getUniqueNodeId(node) + "_Message\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                 }
             } else if (node instanceof EventNode) {
-            	if (node.getMetaData().get("AttachedTo") == null) {
-                	List<EventFilter> filters = ((EventNode) node).getEventFilters();
-                	if (filters.size() > 0) {
-    	                String messageRef = ((EventTypeFilter) filters.get(0)).getType();
-		                if (messageRef.startsWith("Message-")) {
-			                messageRef = messageRef.substring(8);
-			                String messageType = (String) node.getMetaData().get("MessageType");
-			                xmlDump.append(
-			                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" " + 
-			                    	("".equals(messageType) || "java.lang.Object".equals(messageType) ?
-	                        			"" : "structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\" ") + 
-	                        			"/>" + EOL +
-			                    "  <message id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "\" itemRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" />" + EOL + EOL);
-		                }
-                	}
+            	List<EventFilter> filters = ((EventNode) node).getEventFilters();
+            	if (filters.size() > 0) {
+	                String messageRef = ((EventTypeFilter) filters.get(0)).getType();
+	                if (messageRef.startsWith("Message-")) {
+		                messageRef = messageRef.substring(8);
+		                String messageType = (String) node.getMetaData().get("MessageType");
+		                xmlDump.append(
+		                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" " + 
+		                    	("".equals(messageType) || "java.lang.Object".equals(messageType) ?
+                        			"" : "structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\" ") + 
+                        			"/>" + EOL +
+		                    "  <message id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "\" itemRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" />" + EOL + EOL);
+	                }
             	}
             } else if (node instanceof StartNode) {
                 StartNode startNode = (StartNode) node;

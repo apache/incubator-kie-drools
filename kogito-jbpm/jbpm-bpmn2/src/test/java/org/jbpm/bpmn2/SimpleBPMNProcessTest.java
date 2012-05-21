@@ -2394,6 +2394,35 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello", "StartSubProcess",
                 "Task", "BoundaryEvent", "Goodbye", "EndProcess");
     }
+	
+	public void testMessageBoundaryEventOnTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundaryMessageEventOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new TestWorkItemHandler());
+       
+        ProcessInstance processInstance = ksession.startProcess("BoundaryMessageOnTask");
+        ksession.signalEvent("Message-HelloMessage", "message data");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "Boundary event",
+                "Condition met", "End2");
+    }
+	
+	public void testMessageBoundaryEventOnTaskComplete() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundaryMessageEventOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+       
+        ProcessInstance processInstance = ksession.startProcess("BoundaryMessageOnTask");
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        ksession.signalEvent("Message-HelloMessage", "message data");
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "User Task2",
+                "End1");
+    }
 
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBaseFactory

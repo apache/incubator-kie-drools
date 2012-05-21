@@ -473,7 +473,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     	}
             	        String eventType = "Compensate-" + activityRef;
             	        ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
-                    } else if (node.getMetaData().get("SignalName") != null) {
+                    } else if (node.getMetaData().get("SignalName") != null || type.startsWith("Message-")) {
                         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
                         final long attachedToNodeId = attachedNode.getId();
                         if (cancelActivity) {
@@ -498,27 +498,27 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             });
                             actions.add(action);
                             ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
-                            
-                            // cancel boundary event when node is completed by removing filter
-                            final long id = node.getId();
-                            StateBasedNode stateBasedNode = (StateBasedNode) attachedNode;
-                            
-                            List<DroolsAction> actionsAttachedTo = stateBasedNode.getActions(StateBasedNode.EVENT_NODE_EXIT);
-                            if (actionsAttachedTo == null) {
-                                actionsAttachedTo = new ArrayList<DroolsAction>();
-                            }
-                            DroolsConsequenceAction actionAttachedTo =  new DroolsConsequenceAction("java", "" +
-                            		"org.drools.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
-                            		"if (node instanceof org.jbpm.workflow.core.node.EventNode) {" +
-                            		" ((org.jbpm.workflow.core.node.EventNode)node).getEventFilters().clear();" +
-                            		"((org.jbpm.workflow.core.node.EventNode)node).addEventFilter(new org.jbpm.process.core.event.EventFilter () " +
-                            		"{public boolean acceptsEvent(String type, Object event) { return false;}});" +
-                            		"}");
-                         
-
-                            actionsAttachedTo.add(actionAttachedTo);
-                            stateBasedNode.setActions(StateBasedNode.EVENT_NODE_EXIT, actionsAttachedTo);
                         }
+                        // cancel boundary event when node is completed by removing filter
+                        final long id = node.getId();
+                        StateBasedNode stateBasedNode = (StateBasedNode) attachedNode;
+                        
+                        List<DroolsAction> actionsAttachedTo = stateBasedNode.getActions(StateBasedNode.EVENT_NODE_EXIT);
+                        if (actionsAttachedTo == null) {
+                            actionsAttachedTo = new ArrayList<DroolsAction>();
+                        }
+                        DroolsConsequenceAction actionAttachedTo =  new DroolsConsequenceAction("java", "" +
+                        		"org.drools.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
+                        		"if (node instanceof org.jbpm.workflow.core.node.EventNode) {" +
+                        		" ((org.jbpm.workflow.core.node.EventNode)node).getEventFilters().clear();" +
+                        		"((org.jbpm.workflow.core.node.EventNode)node).addEventFilter(new org.jbpm.process.core.event.EventFilter () " +
+                        		"{public boolean acceptsEvent(String type, Object event) { return false;}});" +
+                        		"}");
+                     
+
+                        actionsAttachedTo.add(actionAttachedTo);
+                        stateBasedNode.setActions(StateBasedNode.EVENT_NODE_EXIT, actionsAttachedTo);
+                        
                     } else if (type.startsWith("Condition-")) {
                         String processId = ((RuleFlowProcess) nodeContainer).getId();
                         String eventType = "RuleFlowStateEvent-" + processId + "-" + ((EventNode) node).getUniqueId() + "-" + attachedTo;

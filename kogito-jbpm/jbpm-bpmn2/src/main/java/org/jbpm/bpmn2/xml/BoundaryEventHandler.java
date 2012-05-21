@@ -23,6 +23,7 @@ import java.util.Map;
 import org.drools.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
+import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -84,6 +85,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 break;
             } else if ("conditionalEventDefinition".equals(nodeName)) {
                 handleConditionNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                break;
+            } else if ("messageEventDefinition".equals(nodeName)) {
+                handleMessageNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -291,6 +295,42 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     }
                     subNode = subNode.getNextSibling();
                 }
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+    protected void handleMessageNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser, final String attachedTo,
+            final boolean cancelActivity) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
+        EventNode eventNode = (EventNode) node;
+        eventNode.setMetaData("AttachedTo", attachedTo);
+        eventNode.setMetaData("CancelActivity", cancelActivity);
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, eventNode);
+            } else if ("messageEventDefinition".equals(nodeName)) {
+                String messageRef = ((Element) xmlNode).getAttribute("messageRef");
+                Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser
+                        .getData()).getMetaData("Messages");
+                if (messages == null) {
+                    throw new IllegalArgumentException("No messages found");
+                }
+                Message message = messages.get(messageRef);
+                if (message == null) {
+                    throw new IllegalArgumentException("Could not find message " + messageRef);
+                }
+                eventNode.setMetaData("MessageType", message.getType());
+                List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                EventTypeFilter eventFilter = new EventTypeFilter();
+                eventFilter.setType("Message-" + messageRef);
+                eventFilters.add(eventFilter);
+                eventNode.setScope("external");
+                eventNode.setEventFilters(eventFilters);
             }
             xmlNode = xmlNode.getNextSibling();
         }
