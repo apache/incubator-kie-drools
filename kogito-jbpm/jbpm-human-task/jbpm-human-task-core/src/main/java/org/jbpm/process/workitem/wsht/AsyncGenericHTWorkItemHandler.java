@@ -48,6 +48,12 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private WorkItemManager manager;
     private boolean local = false;
     private boolean connected = false;
+    private ClassLoader classLoader;
+    
+    public AsyncGenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(session, action);
+        this.classLoader = classLoader;
+    }
     
     public AsyncGenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
@@ -92,10 +98,17 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     public int getPort() {
         return port;
     }
-    
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+    
     private void registerTaskEvents() {
-        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, session.getEnvironment(),  client);
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, session.getEnvironment(),  client, classLoader);
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
         eventHandlers.put(key, eventResponseHandler);
@@ -189,17 +202,19 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         private WorkItemManager manager;
         private AsyncTaskService client;
         private Environment env;
-        public TaskCompletedHandler(WorkItemManager manager, Environment env,  AsyncTaskService client) {
+        private ClassLoader classLoader;
+        public TaskCompletedHandler(WorkItemManager manager, Environment env,  AsyncTaskService client, ClassLoader classLoader) {
             this.manager = manager;
             this.client = client;
             this.env = env;
+            this.classLoader = classLoader;
         }
 
         public void execute(Payload payload) {
             TaskEvent event = (TaskEvent) payload.get();
             long taskId = event.getTaskId();
             TaskClientHandler.GetTaskResponseHandler getTaskResponseHandler =
-                    new GetCompletedTaskResponseHandler(manager, env, client);
+                    new GetCompletedTaskResponseHandler(manager, env, client, classLoader);
             client.getTask(taskId, getTaskResponseHandler);
         }
 
@@ -213,10 +228,12 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         private WorkItemManager manager;
         private AsyncTaskService client;
         private Environment env;
-        public GetCompletedTaskResponseHandler(WorkItemManager manager, Environment env, AsyncTaskService client) {
+        private ClassLoader classLoader;
+        public GetCompletedTaskResponseHandler(WorkItemManager manager, Environment env, AsyncTaskService client, ClassLoader classLoader) {
             this.manager = manager;
             this.client = client;
             this.env = env;
+            this.classLoader = classLoader;
         }
 
         public void execute(Task task) {
@@ -228,7 +245,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 long contentId = task.getTaskData().getOutputContentId();
                 if (contentId != -1) {
                     TaskClientHandler.GetContentResponseHandler getContentResponseHandler =
-                            new GetResultContentResponseHandler(manager, env, task, results);
+                            new GetResultContentResponseHandler(manager, env, task, results, classLoader);
                     client.getContent(contentId, getContentResponseHandler);
                 } else {
                     manager.completeWorkItem(workItemId, results);
@@ -245,15 +262,17 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         private Task task;
         private Map<String, Object> results;
         private Environment env;
-        public GetResultContentResponseHandler(WorkItemManager manager,  Environment env, Task task, Map<String, Object> results) {
+        private ClassLoader classLoader;
+        public GetResultContentResponseHandler(WorkItemManager manager,  Environment env, Task task, Map<String, Object> results, ClassLoader classLoader) {
             this.manager = manager;
             this.task = task;
             this.results = results;
             this.env = env;
+            this.classLoader = classLoader;
         }
 
         public void execute(Content content) {
-                Object result = ContentMarshallerHelper.unmarshall( content.getContent(), env);
+                Object result = ContentMarshallerHelper.unmarshall( content.getContent(), env, classLoader);
                 results.put("Result", result);
                 if (result instanceof Map) {
                     @SuppressWarnings("rawtypes")

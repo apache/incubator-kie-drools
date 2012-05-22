@@ -42,6 +42,13 @@ public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
         setClient(client);
         init();
     }
+    
+    public MinaHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(client, session, action, classLoader);
+        this.connectorName = connectorName;
+        setClient(client);
+        init();
+    }
 
     private void init(){
         if(getClient() == null){

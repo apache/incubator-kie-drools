@@ -53,6 +53,12 @@ public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
         this.connectorName = connectorName;
         init();
     }
+    public HornetQHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(client, session, action, classLoader);
+        setClient(client);
+        this.connectorName = connectorName;
+        init();
+    }
 
     private void init(){
         if(getClient() == null){

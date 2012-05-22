@@ -20,6 +20,7 @@ import org.jbpm.task.AsyncTaskService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.drools.runtime.Environment;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
@@ -41,6 +42,7 @@ import org.jbpm.task.service.TaskClientHandler.SetDocumentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskOperationResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public class TaskClient implements AsyncTaskService{
 
@@ -48,12 +50,17 @@ public class TaskClient implements AsyncTaskService{
 	private final AtomicInteger counter;
 	private final String name;
 	private final TaskClientConnector connector;
-
-	public TaskClient(TaskClientConnector connector) {
+        private final Environment environment;
+	
+        public TaskClient(TaskClientConnector connector) {
+            this(connector, null);
+        }
+        public TaskClient(TaskClientConnector connector, Environment environment) {
 		this.connector = connector;
 		this.counter = connector.getCounter();
 		this.name = connector.getName();
 		this.handler = connector.getHandler();
+                this.environment = environment;
 	}
 
     public void addTask(Task task, ContentData content, 
@@ -366,6 +373,27 @@ public class TaskClient implements AsyncTaskService{
                          String userId,
                          ContentData outputData,
                          TaskOperationResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 5 );
+        args.add( Operation.Complete );
+        args.add( taskId );
+        args.add( userId );
+        args.add( null );
+        args.add( outputData );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.OperationRequest,
+                                   args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+
+        connector.write( cmd );
+    }
+    
+    public void completeWithResults(long taskId,
+                         String userId,
+                         Object results,
+                         TaskOperationResponseHandler responseHandler) {
+        ContentData outputData = ContentMarshallerHelper.marshal(results, environment);
         List<Object> args = new ArrayList<Object>( 5 );
         args.add( Operation.Complete );
         args.add( taskId );
@@ -844,4 +872,5 @@ public class TaskClient implements AsyncTaskService{
                                     responseHandler );
         connector.write( cmd );
     }
+    
 }

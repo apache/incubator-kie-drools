@@ -35,6 +35,7 @@ import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
 
@@ -92,10 +93,7 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        ContentData data = new ContentData();
-        data.setAccessType(AccessType.Inline);
-        data.setType("type");
-        data.setContent("content".getBytes());
+        ContentData data = ContentMarshallerHelper.marshal("content", null);
         
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, data );
@@ -107,14 +105,15 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         
         Task task1 = client.getTask( taskId );
         assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
-        assertEquals( "type", task1.getTaskData().getDocumentType() );
+        assertEquals( "java.lang.String", task1.getTaskData().getDocumentType() );
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue( contentId != -1 ); 
 
         
         
         Content content = client.getContent(contentId);
-        assertEquals("content", new String(content.getContent()));
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("content", unmarshalledObject.toString());
     }
     
     public void testNewTaskWithLargeContent() {
@@ -124,14 +123,12 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        ContentData data = new ContentData();
-        data.setAccessType(AccessType.Inline);
-        data.setType("type");
         String largeContent = "";
         for (int i = 0; i < 1000; i++) {
         	largeContent += i + "xxxxxxxxx";
         }
-        data.setContent(largeContent.getBytes());
+        
+        ContentData data = ContentMarshallerHelper.marshal(largeContent, null);
         
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, data );
@@ -143,12 +140,13 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         
         Task task1 = client.getTask( taskId );
         assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
-        assertEquals( "type", task1.getTaskData().getDocumentType() );
+        assertEquals( "java.lang.String", task1.getTaskData().getDocumentType() );
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue( contentId != -1 ); 
         
         Content content = client.getContent(contentId);
-        assertEquals(largeContent, new String(content.getContent()));
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals(largeContent, unmarshalledObject.toString());
     }
     
     public void testClaimWithMultiplePotentialOwners() throws Exception {
@@ -1130,26 +1128,64 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
         assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );  
         
-        ContentData data = new ContentData();
-        data.setAccessType(AccessType.Inline);
-        data.setType("type");
-        data.setContent("content".getBytes());
-        
+        ContentData data = ContentMarshallerHelper.marshal("content", null);
         client.complete( taskId, users.get( "darth" ).getId(), data ); 
 
         
         Task task2 = client.getTask( taskId );
         assertEquals( AccessType.Inline, task2.getTaskData().getOutputAccessType() );
-        assertEquals( "type", task2.getTaskData().getOutputType() );
+        assertEquals( "java.lang.String", task2.getTaskData().getOutputType() );
         long contentId = task2.getTaskData().getOutputContentId();
         assertTrue( contentId != -1 ); 
         
         
         
         Content content = client.getContent(contentId);
-        assertEquals("content", new String(content.getContent()));
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("content", unmarshalledObject.toString());
     }
+    
+    public void testCompleteWithResults() {
+        Map <String, Object> vars = fillVariables();
         
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null );
+        
+        long taskId = task.getId();             
+        
+        // Go straight from Ready to Inprogress
+        
+        client.start( taskId, users.get( "darth" ).getId() );
+        
+        
+        Task task1 = client.getTask( taskId );
+        assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );  
+        
+        
+        
+        client.completeWithResults( taskId, users.get( "darth" ).getId(), "content" ); 
+
+        
+        Task task2 = client.getTask( taskId );
+        assertEquals( AccessType.Inline, task2.getTaskData().getOutputAccessType() );
+        assertEquals( "java.lang.String", task2.getTaskData().getOutputType() );
+        long contentId = task2.getTaskData().getOutputContentId();
+        assertTrue( contentId != -1 ); 
+        
+        
+        
+        Content content = client.getContent(contentId);
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("content", unmarshalledObject.toString());
+    }
+    
     public void testFail() {
         Map <String, Object> vars = fillVariables();
         

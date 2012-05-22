@@ -61,6 +61,8 @@ public interface AsyncTaskService {
     
     void complete(long taskId, String userId, ContentData outputData, TaskOperationResponseHandler responseHandler);
 
+    void completeWithResults(long taskId, String userId, Object results, TaskOperationResponseHandler responseHandler);
+    
     boolean connect();
 
     boolean connect(String address, int port);

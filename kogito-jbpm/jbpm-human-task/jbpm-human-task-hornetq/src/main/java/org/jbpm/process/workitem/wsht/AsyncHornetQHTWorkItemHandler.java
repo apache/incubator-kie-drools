@@ -48,6 +48,12 @@ public class AsyncHornetQHTWorkItemHandler extends AsyncGenericHTWorkItemHandler
         this.connectorName = connectorName;
         init();
     }
+     public AsyncHornetQHTWorkItemHandler(String connectorName, AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(session, action, classLoader);
+        setClient(client);
+        this.connectorName = connectorName;
+        init();
+    }
 
     private void init(){
         if(getClient() == null){

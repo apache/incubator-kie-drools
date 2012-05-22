@@ -37,6 +37,10 @@ public class LocalHTWorkItemHandler extends GenericHTWorkItemHandler{
     public LocalHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action) {
         super(client, session, action);
     }
+    
+    public LocalHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(client, session, action, classLoader);
+    }
   
     @Override
     public void connect(){

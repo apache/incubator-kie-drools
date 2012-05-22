@@ -76,7 +76,7 @@ public class ContentMarshallerHelper {
 
             content = new ContentData();
             content.setContent(toByteArray);
-            content.setType("java.lang.Object");
+            content.setType(o.getClass().getCanonicalName());
             content.setAccessType(AccessType.Inline);
 
         } catch (IOException ex) {
@@ -85,8 +85,11 @@ public class ContentMarshallerHelper {
         return content;
     }
 
-
     public static Object unmarshall(byte[] content, Environment env) {
+        return unmarshall(content, env, null);
+    }
+    
+    public static Object unmarshall(byte[] content, Environment env, ClassLoader classloader) {
         MarshallerReaderContext context = null;
         try {
             ByteArrayInputStream stream = new ByteArrayInputStream(content);
@@ -98,6 +101,11 @@ public class ContentMarshallerHelper {
             }
             ObjectMarshallingStrategyStore objectMarshallingStrategyStore = marshallingConfigurationImpl.getObjectMarshallingStrategyStore();
             context = new MarshallerReaderContext(stream, null, null, objectMarshallingStrategyStore, null, env);
+            if(classloader != null){
+                context.classLoader = classloader;
+            }else{
+                context.classLoader = ContentMarshallerHelper.class.getClassLoader();
+            }
             ExtensionRegistry registry = PersisterHelper.buildRegistry( context, null ); 
             Header _header = PersisterHelper.readFromStreamWithHeader(context, registry);
             Variable parseFrom = JBPMMessages.Variable.parseFrom(_header.getPayload(), registry);

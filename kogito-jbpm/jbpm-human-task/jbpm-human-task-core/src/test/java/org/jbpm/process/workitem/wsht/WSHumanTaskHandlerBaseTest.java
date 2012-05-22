@@ -398,14 +398,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
 
 		operationResponseHandler = new BlockingTaskOperationResponseHandler();
-		ContentData result = new ContentData();
-		result.setAccessType(AccessType.Inline);
-		result.setType("java.lang.String");
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream out = new ObjectOutputStream(bos);
-		out.writeObject("This is the result");
-		out.close();
-		result.setContent(bos.toByteArray());
+		ContentData result = ContentMarshallerHelper.marshal("This is the result", null);
 		getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
 		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
 

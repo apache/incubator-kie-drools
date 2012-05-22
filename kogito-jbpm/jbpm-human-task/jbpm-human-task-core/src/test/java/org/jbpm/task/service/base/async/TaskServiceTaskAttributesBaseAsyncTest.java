@@ -33,6 +33,7 @@ import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
     
@@ -65,10 +66,7 @@ public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
         
         long taskId = addTaskResponseHandler.getTaskId();
         
-        ContentData outputData = new ContentData();
-        outputData.setAccessType(AccessType.Inline);
-        outputData.setContent("This is my output!!!!".getBytes());
-        outputData.setType("text/plain");
+        ContentData outputData = ContentMarshallerHelper.marshal("This is my output!!!!", null);
         
         BlockingTaskOperationResponseHandler setOutputResponseHandler = new BlockingTaskOperationResponseHandler();
         client.setOutput( taskId, "Darth Vader", outputData, setOutputResponseHandler );
@@ -88,8 +86,9 @@ public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
         client.getContent(outputContentId, getOutputResponseHandler);
         assertNotNull(getOutputResponseHandler.getContent());
         Content content = getOutputResponseHandler.getContent();
-        assertEquals("This is my output!!!!", new String(content.getContent()));
-        assertEquals("text/plain", task1.getTaskData().getOutputType());
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("This is my output!!!!", unmarshalledObject.toString());
+        assertEquals("java.lang.String", task1.getTaskData().getOutputType());
         assertEquals(AccessType.Inline, task1.getTaskData().getOutputAccessType());
         assertEquals(outputContentId, content.getId());
         

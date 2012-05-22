@@ -62,7 +62,7 @@ import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+@Deprecated
 public class CommandBasedHornetQWSHumanTaskHandler implements WorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandBasedHornetQWSHumanTaskHandler.class);

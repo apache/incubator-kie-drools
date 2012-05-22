@@ -53,7 +53,6 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -680,10 +679,7 @@ public class VariablePersistenceStrategiesASyncHTTest extends BaseTest {
 
     @Test
     public void testTaskDataWithVPSandMAPWithDeadline() throws Exception {
-        ContentMarshallerContext context = new ContentMarshallerContext();
-        ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
         
-        context.setStrategies(Arrays.asList(strategies));
         taskService.setEscalatedDeadlineHandler(buildDeadlineHandler(env));
         //JPA Entity
         EntityManager em = domainEmf.createEntityManager();

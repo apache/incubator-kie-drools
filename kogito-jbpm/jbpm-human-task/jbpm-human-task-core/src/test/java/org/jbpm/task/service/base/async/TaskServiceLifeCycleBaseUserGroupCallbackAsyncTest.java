@@ -33,6 +33,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest extends BaseTestNoUserGroupSetup {
     private static final int DEFAULT_WAIT_TIME = 5000;
@@ -113,10 +114,7 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest extends
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        ContentData data = new ContentData();
-        data.setAccessType(AccessType.Inline);
-        data.setType("type");
-        data.setContent("content".getBytes());
+        ContentData data = ContentMarshallerHelper.marshal("content", null);
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
         if(task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
@@ -135,14 +133,15 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest extends
         client.getTask( taskId, getTaskResponseHandler );
         Task task1 = getTaskResponseHandler.getTask();
         assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
-        assertEquals( "type", task1.getTaskData().getDocumentType() );
+        assertEquals( "java.lang.String", task1.getTaskData().getDocumentType() );
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue( contentId != -1 ); 
 
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         client.getContent(contentId, getContentResponseHandler);
         Content content = getContentResponseHandler.getContent();
-        assertEquals("content", new String(content.getContent()));
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("content", unmarshalledObject.toString());
     }
     
     public void testNewTaskWithLargeContent() {
@@ -155,14 +154,12 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest extends
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        ContentData data = new ContentData();
-        data.setAccessType(AccessType.Inline);
-        data.setType("type");
         String largeContent = "";
         for (int i = 0; i < 1000; i++) {
             largeContent += i + "xxxxxxxxx";
         }
-        data.setContent(largeContent.getBytes());
+        
+        ContentData data = ContentMarshallerHelper.marshal(largeContent, null);
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
         if(task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
@@ -181,15 +178,15 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest extends
         client.getTask( taskId, getTaskResponseHandler );
         Task task1 = getTaskResponseHandler.getTask();
         assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
-        assertEquals( "type", task1.getTaskData().getDocumentType() );
+        assertEquals( "java.lang.String", task1.getTaskData().getDocumentType() );
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue( contentId != -1 ); 
 
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         client.getContent(contentId, getContentResponseHandler);
         Content content = getContentResponseHandler.getContent();
-        System.out.println(new String(content.getContent()));
-        assertEquals(largeContent, new String(content.getContent()));
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals(largeContent, unmarshalledObject.toString());
     }
     
     public void testClaimWithMultiplePotentialOwners() throws Exception {
@@ -1508,10 +1505,7 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest extends
         assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
         assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );  
         
-        ContentData data = new ContentData();
-        data.setAccessType(AccessType.Inline);
-        data.setType("type");
-        data.setContent("content".getBytes());
+        ContentData data = ContentMarshallerHelper.marshal("content", null);
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete( taskId, users.get( "darth" ).getId(), data, responseHandler ); 
         responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
@@ -1520,14 +1514,15 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackAsyncTest extends
         client.getTask( taskId, getTaskResponseHandler );
         Task task2 = getTaskResponseHandler.getTask();
         assertEquals( AccessType.Inline, task2.getTaskData().getOutputAccessType() );
-        assertEquals( "type", task2.getTaskData().getOutputType() );
+        assertEquals( "java.lang.String", task2.getTaskData().getOutputType() );
         long contentId = task2.getTaskData().getOutputContentId();
         assertTrue( contentId != -1 ); 
         
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         client.getContent(contentId, getContentResponseHandler);
         Content content = getContentResponseHandler.getContent();
-        assertEquals("content", new String(content.getContent()));
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("content", unmarshalledObject.toString());
     }
         
     public void testFail() {

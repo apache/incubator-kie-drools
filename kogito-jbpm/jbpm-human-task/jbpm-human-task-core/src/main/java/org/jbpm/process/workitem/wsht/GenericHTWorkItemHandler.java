@@ -46,6 +46,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private int port;
     private boolean local = false;
     private boolean connected = false;
+    private ClassLoader classLoader;
     
     public GenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
@@ -54,6 +55,12 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     public GenericHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
         this.client = client;
+    }
+    
+    public GenericHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(session, action);
+        this.client = client;
+        this.classLoader = classLoader;
     }
     
     public GenericHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
@@ -100,7 +107,14 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     public int getPort() {
         return port;
     }
-    
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
     protected void registerTaskEvents() {
         TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
@@ -213,7 +227,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 long contentId = task.getTaskData().getOutputContentId();
                 if (contentId != -1) {
                     Content content = client.getContent(contentId);
-                    Object result = ContentMarshallerHelper.unmarshall( content.getContent(), session.getEnvironment());
+                    Object result = ContentMarshallerHelper.unmarshall( content.getContent(), session.getEnvironment(), classLoader);
                     results.put("Result", result);
                     if (result instanceof Map) {
                         Map<?, ?> map = (Map<?, ?>) result;

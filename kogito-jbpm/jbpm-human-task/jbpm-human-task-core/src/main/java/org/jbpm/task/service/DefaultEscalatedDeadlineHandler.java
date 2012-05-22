@@ -18,7 +18,6 @@ package org.jbpm.task.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,7 +65,9 @@ public class DefaultEscalatedDeadlineHandler
 
     WorkItemManager      manager;
     
-    private Environment          environment;
+    private Environment  environment;
+    
+    private ClassLoader  classLoader;
     
     public DefaultEscalatedDeadlineHandler(Properties properties) {
         handler = new EmailWorkItemHandler();
@@ -80,6 +81,21 @@ public class DefaultEscalatedDeadlineHandler
         replyTo = properties.getProperty( "replyTo", null );
         
         handler.setConnection( host, port, user, password );
+    }
+    
+    public DefaultEscalatedDeadlineHandler(Properties properties, ClassLoader classLoader) {
+        handler = new EmailWorkItemHandler();
+        
+        String host = properties.getProperty( "mail.smtp.host", "localhost" );
+        String port = properties.getProperty( "mail.smtp.port", "25" );    
+        String user = properties.getProperty( "mail.smtp.user" );
+        String password = properties.getProperty( "mail.smtp.password" ); 
+        
+        from = properties.getProperty( "from", null );
+        replyTo = properties.getProperty( "replyTo", null );
+        
+        handler.setConnection( host, port, user, password );
+        this.classLoader = classLoader;
     }
     
     public DefaultEscalatedDeadlineHandler() {
@@ -136,6 +152,14 @@ public class DefaultEscalatedDeadlineHandler
 
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     
@@ -205,7 +229,7 @@ public class DefaultEscalatedDeadlineHandler
         if ( content != null ) {
             Object objectFromBytes = null;
             try {
-                objectFromBytes = ContentMarshallerHelper.unmarshall( content.getContent(), environment);
+                objectFromBytes = ContentMarshallerHelper.unmarshall( content.getContent(), environment, classLoader);
 
             } catch (Exception e) {
                 objectFromBytes = TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );

@@ -29,6 +29,7 @@ import org.jbpm.task.TaskService;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
     
@@ -60,10 +61,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         
         long taskId = task.getId();
         
-        ContentData outputData = new ContentData();
-        outputData.setAccessType(AccessType.Inline);
-        outputData.setContent("This is my output!!!!".getBytes());
-        outputData.setType("text/plain");
+        ContentData outputData = ContentMarshallerHelper.marshal("This is my output!!!!", null);
         
         client.setOutput( taskId, "Darth Vader", outputData );
         
@@ -77,8 +75,9 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
 
         Content content = client.getContent(outputContentId);
         assertNotNull(content);
-        assertEquals("This is my output!!!!", new String(content.getContent()));
-        assertEquals("text/plain", task1.getTaskData().getOutputType());
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("This is my output!!!!", unmarshalledObject.toString());
+        assertEquals("java.lang.String", task1.getTaskData().getOutputType());
         assertEquals(AccessType.Inline, task1.getTaskData().getOutputAccessType());
         assertEquals(outputContentId, content.getId());
         

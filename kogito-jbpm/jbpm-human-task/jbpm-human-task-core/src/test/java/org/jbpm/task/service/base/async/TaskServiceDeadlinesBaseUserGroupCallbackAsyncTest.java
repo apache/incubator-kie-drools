@@ -54,7 +54,7 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest extends
 
     private String emailAddressTony = "tony@domain.com"; 
     private String emailAddressDarth = "darth@domain.com"; 
-    public void fix_testDelayedEmailNotificationOnDeadline() throws Exception {
+    public void testDelayedEmailNotificationOnDeadline() throws Exception {
         Map  vars = new HashMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );
@@ -88,8 +88,10 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest extends
         long taskId = addTaskResponseHandler.getTaskId();    
                                         
         Content content = new Content();
-        //content.setContent( "['subject' : 'My Subject', 'body' : 'My Body']".getBytes() );
-        ContentData marshalledObject = ContentMarshallerHelper.marshal("['subject' : 'My Subject', 'body' : 'My Body']", null);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("subject", "My Subject");
+        params.put("body", "My Body");
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         BlockingSetContentResponseHandler setContentResponseHandler  = new BlockingSetContentResponseHandler();
         client.setDocumentContent( taskId, content, setContentResponseHandler );
@@ -98,7 +100,7 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest extends
         client.getContent( contentId, getResponseHandler );
         content = getResponseHandler.getContent();
         Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        assertEquals( "['subject' : 'My Subject', 'body' : 'My Body']", unmarshalledObject.toString() );
+        assertEquals( "{body=My Body, subject=My Subject}", unmarshalledObject.toString() );
         
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size() );             

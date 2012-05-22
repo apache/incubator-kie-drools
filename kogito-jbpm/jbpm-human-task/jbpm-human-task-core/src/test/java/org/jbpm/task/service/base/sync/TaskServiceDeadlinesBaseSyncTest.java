@@ -53,7 +53,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     private Properties conf;
     private Wiser wiser;
 
-    public void fix_testDelayedEmailNotificationOnDeadline() throws Exception {
+    public void testDelayedEmailNotificationOnDeadline() throws Exception {
         Map vars = new HashMap();
         vars.put("users", users);
         vars.put("groups", groups);
@@ -80,15 +80,18 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         long taskId = task.getId();
 
         Content content = new Content();
-        //content.setContent("['subject' : 'My Subject', 'body' : 'My Body']".getBytes());
-        ContentData marshalledObject = ContentMarshallerHelper.marshal("['subject' : 'My Subject', 'body' : 'My Body']", null);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("subject", "My Subject");
+        params.put("body", "My Body");
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         client.setDocumentContent(taskId, content);
         long contentId = content.getId();
         
         content = client.getContent(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        assertEquals("['subject' : 'My Subject', 'body' : 'My Body']", unmarshallObject.toString());
+        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
 
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
