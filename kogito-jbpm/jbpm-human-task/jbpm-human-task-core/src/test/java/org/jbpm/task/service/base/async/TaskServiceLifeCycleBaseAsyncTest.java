@@ -1308,7 +1308,7 @@ public abstract class TaskServiceLifeCycleBaseAsyncTest extends BaseTest {
         client.getTask( taskId, getTaskResponseHandler );
         Task task2 = getTaskResponseHandler.getTask();
         assertEquals( AccessType.Inline, task2.getTaskData().getOutputAccessType() );
-        assertEquals( "type", task2.getTaskData().getOutputType() );
+        assertEquals( "java.lang.String", task2.getTaskData().getOutputType() );
         long contentId = task2.getTaskData().getOutputContentId();
         assertTrue( contentId != -1 ); 
         
