@@ -255,7 +255,14 @@ public class PersisterHelper {
             Context ctx = strategyObject.createContext();
             context.strategyContexts.put( strategyObject, ctx );
             if( _entry.hasData() && ctx != null ) {
-                ctx.read( new DroolsObjectInputStream( _entry.getData().newInput(), context.ruleBase.getRootClassLoader() ) );
+		ClassLoader classLoader = null;
+                if (context.classLoader != null ){
+                    classLoader = context.classLoader;
+                } 
+                if(context.ruleBase != null){
+                    classLoader = context.ruleBase.getRootClassLoader();
+                }
+                ctx.read( new DroolsObjectInputStream( _entry.getData().newInput(), classLoader) );
             }
         }
     }
