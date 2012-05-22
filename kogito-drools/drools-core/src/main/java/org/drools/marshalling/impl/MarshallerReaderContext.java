@@ -70,6 +70,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public final Map<Integer, Object>                                              nodeMemories;
 
     public Object                                                                  parameterObject;
+    public ClassLoader                                                             classLoader;
 
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
@@ -135,7 +136,12 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                                              ClassNotFoundException {
         String name = desc.getName();
         try {
-            return Class.forName( name, false, (this.ruleBase == null) ? null : this.ruleBase.getRootClassLoader() );
+	    if(this.classLoader == null){
+              if(this.ruleBase != null){
+                  this.classLoader = this.ruleBase.getRootClassLoader();
+              }
+            }
+            return Class.forName( name, false, this.classLoader );
         } catch ( ClassNotFoundException ex ) {
             return super.resolveClass( desc );
         }
