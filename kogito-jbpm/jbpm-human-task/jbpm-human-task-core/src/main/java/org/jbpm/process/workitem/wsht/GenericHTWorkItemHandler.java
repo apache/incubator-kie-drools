@@ -213,7 +213,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 long contentId = task.getTaskData().getOutputContentId();
                 if (contentId != -1) {
                     Content content = client.getContent(contentId);
-                    Object result = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), marshallerContext, session.getEnvironment());
+                    Object result = ContentMarshallerHelper.unmarshall( content.getContent(), session.getEnvironment());
                     results.put("Result", result);
                     if (result instanceof Map) {
                         Map<?, ?> map = (Map<?, ?>) result;

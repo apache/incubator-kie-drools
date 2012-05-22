@@ -359,9 +359,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
 
-        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+        Object data = ContentMarshallerHelper.unmarshall(
                                                             getClient().getContent(contentId).getContent(), 
-                                                            ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
                                                             ksession.getEnvironment());
         assertEquals("This is the content", data);
 
@@ -369,8 +368,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
        
 
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                            ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext()
-                                                            , ksession.getEnvironment());
+                                                                ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result);
         
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
@@ -422,9 +420,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         
         
 
-        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(
                                                             getClient().getContent(contentId).getContent(),  
-                                                            ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
                                                             ksession.getEnvironment());
       
         //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
@@ -435,8 +432,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         getClient().start(task.getId(), "Darth Vader");
 
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                             ((GenericHTWorkItemHandler)getHandler()).getMarshallerContext()
-                                                            , ksession.getEnvironment());
+                                                                ksession.getEnvironment());
                 
         getClient().complete(task.getId(), "Darth Vader", result);
 

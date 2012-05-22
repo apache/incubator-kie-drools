@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.Environment;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
@@ -48,7 +49,6 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -66,7 +66,7 @@ public class DefaultEscalatedDeadlineHandler
 
     WorkItemManager      manager;
     
-    private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
+    private Environment          environment;
     
     public DefaultEscalatedDeadlineHandler(Properties properties) {
         handler = new EmailWorkItemHandler();
@@ -130,6 +130,16 @@ public class DefaultEscalatedDeadlineHandler
         this.manager = manager;
     }
 
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    
+    
     public void executeEscalatedDeadline(Task task,
                                          Deadline deadline,
                                          Content content,
@@ -195,7 +205,7 @@ public class DefaultEscalatedDeadlineHandler
         if ( content != null ) {
             Object objectFromBytes = null;
             try {
-                objectFromBytes = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), this.marshallerContext, null);
+                objectFromBytes = ContentMarshallerHelper.unmarshall( content.getContent(), environment);
 
             } catch (Exception e) {
                 objectFromBytes = TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );
@@ -302,15 +312,6 @@ public class DefaultEscalatedDeadlineHandler
                      list );
         }
         list.add( user );
-    }
-    
-    public void setMarshallerContext(ContentMarshallerContext context) {
-       this.marshallerContext = context;
-    }
-
-       
-    public ContentMarshallerContext getMarshallerContext() {
-        return marshallerContext;
     }
 
 }

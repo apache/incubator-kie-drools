@@ -59,6 +59,7 @@ import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,36 +221,11 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
         ContentData content = null;
         Object contentObject = workItem.getParameter("Content");
+        if (contentObject == null) {
+            contentObject = new HashMap<String, Object>(workItem.getParameters());
+        }
         if (contentObject != null) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out;
-            try {
-                out = new ObjectOutputStream(bos);
-                out.writeObject(contentObject);
-                out.close();
-                content = new ContentData();
-                content.setContent(bos.toByteArray());
-                content.setAccessType(AccessType.Inline);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        } // If the content is not set we will automatically copy all the input objects into 
-        // the task content
-        else {
-            contentObject = workItem.getParameters();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out;
-            try {
-                out = new ObjectOutputStream(bos);
-                out.writeObject(contentObject);
-                out.close();
-                content = new ContentData();
-                content.setContent(bos.toByteArray());
-                content.setAccessType(AccessType.Inline);
-                content.setType("java.util.map");
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            content = ContentMarshallerHelper.marshal(contentObject, session.getEnvironment());
         }
         task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
 

@@ -15,20 +15,23 @@
  */
 package org.jbpm.task.utils;
 
+import com.google.protobuf.ExtensionRegistry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategy.Context;
-import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.impl.*;
+import org.drools.marshalling.impl.ProtobufMessages.Header;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
+import org.jbpm.marshalling.impl.JBPMMessages;
+import org.jbpm.marshalling.impl.JBPMMessages.Variable;
+import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.service.ContentData;
 import org.slf4j.Logger;
@@ -38,152 +41,80 @@ public class ContentMarshallerHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ContentMarshallerHelper.class);
 
-    public static ContentData marshal(Object o, ContentMarshallerContext marshallerContext, Environment env) {
-        ObjectMarshallingStrategy[] strats = null;
-        if (env != null && env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) != null) {
-            strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
-        } else {
-            strats = new ObjectMarshallingStrategy[1];
-            strats[0] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
-        }
+    public static ContentData marshal(Object o, Environment env) {
+        MarshallerWriteContext context = null;
         ContentData content = null;
-
-        if (o instanceof Map) {
-            for (Object key : ((Map) o).keySet()) {
-                Object value = ((Map) o).get(key);
-                if (value != null) {
-	                MarshalledContentWrapper marshalledValue = null;
-	                for (ObjectMarshallingStrategy strat : strats) {
-	                    //Use the first strategy that accept the Object based on the order of the provided strategies
-	                    if (strat.accept(value)) {
-	                        marshalledValue = marshalSingle(strat, marshallerContext, value);
-	                        break;
-	                    }
-	                }
-	                ((Map) o).put(key, marshalledValue);
-                }
+        try {
+            MarshallingConfigurationImpl marshallingConfigurationImpl = null;
+            if(env != null){
+                 marshallingConfigurationImpl = new MarshallingConfigurationImpl((ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES), false, false);
+            }else{
+                marshallingConfigurationImpl = new MarshallingConfigurationImpl(new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)}, false, false);
             }
-        }
-        MarshalledContentWrapper marshalled = null;
-        for (ObjectMarshallingStrategy strat : strats) {
-            //Use the first strategy that accept the Object based on the order of the provided strategies
-            if (strat.accept(o)) {
-                marshalled = marshalSingle(strat, marshallerContext, o);
-                break;
+            ObjectMarshallingStrategyStore objectMarshallingStrategyStore = marshallingConfigurationImpl.getObjectMarshallingStrategyStore();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+         
+            context = new MarshallerWriteContext(stream, null, null, null, objectMarshallingStrategyStore, env);
+            Variable marshallVariable = null;
+            if(o instanceof Map){
+                 marshallVariable = ProtobufProcessMarshaller.marshallVariablesMap(
+                                                        context,
+                                                        (Map<String, Object>)o);
+            }else{
+                 marshallVariable = ProtobufProcessMarshaller.marshallVariable(
+                                                        context,
+                                                        "results",
+                                                        o);
             }
-        }
-        content = new ContentData();
-        content.setContent(marshalled.getContent());
-        // A map by default should be serialized
-        content.setType(marshalled.getMarshaller());
-        content.setAccessType(AccessType.Inline);
+            PersisterHelper.writeToStreamWithHeader(
+                    context,
+                    marshallVariable);
+            
+            context.close();
+            
+            byte[] toByteArray = stream.toByteArray();
 
+            content = new ContentData();
+            content.setContent(toByteArray);
+            content.setType("java.lang.Object");
+            content.setAccessType(AccessType.Inline);
 
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } 
         return content;
     }
 
-    private static MarshalledContentWrapper marshalSingle(ObjectMarshallingStrategy strat, ContentMarshallerContext marshallerContext, Object o) {
 
-        MarshalledContentWrapper contentWrap = null;
+    public static Object unmarshall(byte[] content, Environment env) {
+        MarshallerReaderContext context = null;
         try {
-            Context context = null;
-            if(marshallerContext != null){
-                if (marshallerContext.strategyContext.get(strat.getClass()) == null) {
-                    context = strat.createContext();
-                    marshallerContext.strategyContext.put(strat.getClass(), context);
-                } else {
-                    context = marshallerContext.strategyContext.get(strat.getClass());
-                }
+            ByteArrayInputStream stream = new ByteArrayInputStream(content);
+            MarshallingConfigurationImpl marshallingConfigurationImpl = null;
+            if(env != null){
+                 marshallingConfigurationImpl = new MarshallingConfigurationImpl((ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES), false, false);
             }else{
-                throw new IllegalStateException(" The Marshaller Context Needs to be Provided");
+                marshallingConfigurationImpl = new MarshallingConfigurationImpl(new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)}, false, false);
             }
-            byte[] marshalled = null;
-            if (marshallerContext.isUseMarshal()) {
-              marshalled = strat.marshal(context, null, o);
-            } else {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ObjectOutputStream out = new ObjectOutputStream(baos);
-                strat.write(out, o);
-                marshalled = baos.toByteArray();
-                out.close();
-                baos.close();
-            }
-            contentWrap = new MarshalledContentWrapper(marshalled, strat.getClass().getCanonicalName(), o.getClass());
-
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-
-
-        return contentWrap;
-    }
-
-    public static Object unmarshall(String type, byte[] content, ContentMarshallerContext marshallerContext, Environment env) {
-
-        ObjectMarshallingStrategy[] strats = null;
-        if (env != null && env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) != null) {
-            strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
-        } else if (!marshallerContext.getStrategies().isEmpty()){
-
-              strats = (ObjectMarshallingStrategy[]) marshallerContext.getStrategies().toArray();
-        } else {
-            strats = new ObjectMarshallingStrategy[1];
-            strats[0] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
-        }
-        Object data = null;
-        ObjectMarshallingStrategy selectedStrat = null;
-        for (ObjectMarshallingStrategy strat : strats) {
-            if (strat.getClass().getCanonicalName().equals(type)) {
-                selectedStrat = strat;
-            }
-        }
-        Context context = marshallerContext.strategyContext.get(selectedStrat.getClass());
-        try {
-            if (marshallerContext.isUseMarshal()) {
-                data = selectedStrat.unmarshal(context, null, content, ContentMarshallerHelper.class.getClassLoader());
-            } else {
-                ByteArrayInputStream bs = new ByteArrayInputStream(content);
-                ObjectInputStream oIn = new ObjectInputStream(bs);
-                data = selectedStrat.read(oIn);
-                oIn.close();
-                bs.close();
-            }
-            if (data instanceof Map) {
-                ByteArrayInputStream bs = null;
-                ObjectInputStream oIn = null;
-                Map localData = new HashMap();
-                for (Object key : ((Map) data).keySet()) {
-                    MarshalledContentWrapper value = (MarshalledContentWrapper) ((Map) data).get(key);
-                    Object unmarshalledObj = null;
-
-                    for (ObjectMarshallingStrategy strat : strats) {
-                        if (strat.getClass().getCanonicalName().equals(value.getMarshaller())) {
-                            selectedStrat = strat;
-                        }
-                    }
-                    context = marshallerContext.strategyContext.get(selectedStrat.getClass());
-                    if (marshallerContext.isUseMarshal()) {
-                        unmarshalledObj = selectedStrat.unmarshal(context, null, value.getContent(), ContentMarshallerHelper.class.getClassLoader());
-                    } else {
-                        bs = new ByteArrayInputStream(value.getContent());
-                        oIn = new ObjectInputStream(bs);
-                        unmarshalledObj = selectedStrat.read(oIn);
-                        oIn.close();
-                        bs.close();
-                    }
-
-                    localData.put(key, unmarshalledObj);
+            ObjectMarshallingStrategyStore objectMarshallingStrategyStore = marshallingConfigurationImpl.getObjectMarshallingStrategyStore();
+            context = new MarshallerReaderContext(stream, null, null, objectMarshallingStrategyStore, null, env);
+            ExtensionRegistry registry = PersisterHelper.buildRegistry( context, null ); 
+            Header _header = PersisterHelper.readFromStreamWithHeader(context, registry);
+            Variable parseFrom = JBPMMessages.Variable.parseFrom(_header.getPayload(), registry);
+            Object value = ProtobufProcessMarshaller.unmarshallVariableValue(context, parseFrom);
+            
+            if(value instanceof Map){
+                Map result = new HashMap();
+                Map<String, Variable> variablesMap = (Map<String, Variable>)value;
+                for(String key: variablesMap.keySet()){
+                    result.put(key, ProtobufProcessMarshaller.unmarshallVariableValue(context, variablesMap.get(key)));
                 }
-                data = localData;
+                return result;
             }
-        } catch (IOException ex) {
-            logger.error(ex.getMessage(), ex);
-        } catch (ClassNotFoundException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
-
-        return data;
-
+            return value;
+        } catch (Exception ex) { 
+            ex.printStackTrace();
+        } 
+        return null;
     }
 }

@@ -413,9 +413,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         getClient().getContent(contentId, getContentResponseHandler);
         
-        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
-                                                            getContentResponseHandler.getContent().getContent(), 
-                                                            ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+        Object data = ContentMarshallerHelper.unmarshall(
+                                                            getContentResponseHandler.getContent().getContent(),   
                                                             ksession.getEnvironment());
         
         assertEquals("This is the content", data);
@@ -429,8 +428,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                                ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
-                                                                , ksession.getEnvironment());
+                                                                ksession.getEnvironment());
 
                 
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
@@ -487,9 +485,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         
          
         
-        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
-                                                            getContentResponseHandler.getContent().getContent(), 
-                                                            ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(
+                                                            getContentResponseHandler.getContent().getContent(),   
                                                             ksession.getEnvironment());
         
         //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
@@ -507,8 +504,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
 
         ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                            ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
-                                                            , ksession.getEnvironment());
+                                                                ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
         operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());

@@ -52,7 +52,6 @@ import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
@@ -70,7 +69,6 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
     private WorkItemManager manager = null;
     private KnowledgeRuntime session;
     private OnErrorAction action;
-    private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
     private Map<TaskEventKey, EventResponseHandler> eventHandlers = new HashMap<TaskEventKey, EventResponseHandler>();
     
     public AsyncWSHumanTaskHandler() {
@@ -97,14 +95,6 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         this.client = client;
         this.session = session;
         this.action = action;
-    }
-
-    public ContentMarshallerContext getMarshallerContext() {
-        return marshallerContext;
-    }
-
-    public void setMarshallerContext(ContentMarshallerContext marshallerContext) {
-        this.marshallerContext = marshallerContext;
     }
 
     public void setConnection(String ipAddress, int port) {
@@ -135,7 +125,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
 
     private void registerTaskEvents() {
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, marshallerContext, session.getEnvironment(),  client);
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, session.getEnvironment(),  client);
         client.registerForEvent(key, false, eventResponseHandler);
         eventHandlers.put(key, eventResponseHandler);
         key = new TaskEventKey(TaskFailedEvent.class, -1);
@@ -253,7 +243,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
             contentObject = workItem.getParameters();
         }
         if (contentObject != null) {
-            content = ContentMarshallerHelper.marshal(contentObject, marshallerContext,  session.getEnvironment());
+            content = ContentMarshallerHelper.marshal(contentObject,  session.getEnvironment());
         }
         
         task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
@@ -312,12 +302,10 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
 
         private WorkItemManager manager;
         private AsyncTaskService client;
-        private ContentMarshallerContext marshallContext;
         private Environment env;
-        public TaskCompletedHandler(WorkItemManager manager, ContentMarshallerContext marshallContext, Environment env,  AsyncTaskService client) {
+        public TaskCompletedHandler(WorkItemManager manager, Environment env,  AsyncTaskService client) {
             this.manager = manager;
             this.client = client;
-            this.marshallContext = marshallContext;
             this.env = env;
         }
 
@@ -325,7 +313,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
             TaskEvent event = (TaskEvent) payload.get();
             long taskId = event.getTaskId();
             GetTaskResponseHandler getTaskResponseHandler =
-                    new GetCompletedTaskResponseHandler(manager, marshallContext, env, client);
+                    new GetCompletedTaskResponseHandler(manager, env, client);
             client.getTask(taskId, getTaskResponseHandler);
         }
 
@@ -338,12 +326,10 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
 
         private WorkItemManager manager;
         private AsyncTaskService client;
-        private ContentMarshallerContext marshallContext;
         private Environment env;
-        public GetCompletedTaskResponseHandler(WorkItemManager manager, ContentMarshallerContext marshallContext,Environment env, AsyncTaskService client) {
+        public GetCompletedTaskResponseHandler(WorkItemManager manager, Environment env, AsyncTaskService client) {
             this.manager = manager;
             this.client = client;
-            this.marshallContext = marshallContext;
             this.env = env;
         }
 
@@ -356,7 +342,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
                 long contentId = task.getTaskData().getOutputContentId();
                 if (contentId != -1) {
                     GetContentResponseHandler getContentResponseHandler =
-                            new GetResultContentResponseHandler(manager, marshallContext, env, task, results);
+                            new GetResultContentResponseHandler(manager, env, task, results);
                     client.getContent(contentId, getContentResponseHandler);
                 } else {
                     manager.completeWorkItem(workItemId, results);
@@ -372,18 +358,16 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         private WorkItemManager manager;
         private Task task;
         private Map<String, Object> results;
-        private ContentMarshallerContext marshallContext;
         private Environment env;
-        public GetResultContentResponseHandler(WorkItemManager manager, ContentMarshallerContext marshallContext, Environment env, Task task, Map<String, Object> results) {
+        public GetResultContentResponseHandler(WorkItemManager manager, Environment env, Task task, Map<String, Object> results) {
             this.manager = manager;
             this.task = task;
             this.results = results;
-            this.marshallContext = marshallContext;
             this.env = env;
         }
 
         public void execute(Content content) {
-                Object result = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), marshallContext, env);
+                Object result = ContentMarshallerHelper.unmarshall( content.getContent(), env);
                 results.put("Result", result);
                 if (result instanceof Map) {
                     @SuppressWarnings("rawtypes")

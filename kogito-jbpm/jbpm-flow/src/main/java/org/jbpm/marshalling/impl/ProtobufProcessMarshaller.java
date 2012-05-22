@@ -28,6 +28,7 @@ import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
+import java.util.*;
 
 public class ProtobufProcessMarshaller
         implements
@@ -225,6 +226,25 @@ public class ProtobufProcessMarshaller
                                                                   context,
                                                                   value ) ) )
                 .build();
+    }
+    
+    public static Variable marshallVariablesMap(MarshallerWriteContext context, Map<String, Object> variables) throws IOException{
+        Map<String, Variable> marshalledVariables = new HashMap<String, Variable>();
+        for(String key : variables.keySet()){
+            ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( variables.get(key) );
+            Integer index = context.getStrategyIndex( strategy );
+            Variable variable = JBPMMessages.Variable.newBuilder()
+                                 .setName( key )
+                                 .setStrategyIndex( index )
+                                 .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
+                                                                                   context,
+                                                                                   variables.get(key) ) ) )
+                                 .build();
+            marshalledVariables.put(key, variable);
+            
+        }
+        
+        return marshallVariable(context, "variablesMap" ,marshalledVariables);
     }
 
     public static Variable marshallVariableSerializableStrategy(MarshallerWriteContext context,

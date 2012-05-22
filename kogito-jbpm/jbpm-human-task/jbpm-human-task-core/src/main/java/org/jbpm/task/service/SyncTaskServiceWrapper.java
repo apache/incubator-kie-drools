@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import org.drools.runtime.Environment;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
@@ -43,6 +44,7 @@ import org.jbpm.task.service.responsehandlers.BlockingQueryGenericResponseHandle
 import org.jbpm.task.service.responsehandlers.BlockingSetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
  *
@@ -51,7 +53,8 @@ public class SyncTaskServiceWrapper implements TaskService {
 
     private int timeout = 10000;
     private AsyncTaskService taskService;
-
+    private Environment environment;
+    
     public SyncTaskServiceWrapper(AsyncTaskService taskService) {
         this.taskService = taskService;
     }
@@ -169,18 +172,7 @@ public class SyncTaskServiceWrapper implements TaskService {
 	public void completeWithResults(long taskId, String userId, Object results) {
 		ContentData contentData = null;
 		if (results != null) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out;
-			try {
-				out = new ObjectOutputStream(bos);
-				out.writeObject(results);
-				out.close();
-				contentData = new ContentData();
-				contentData.setContent(bos.toByteArray());
-				contentData.setAccessType(AccessType.Inline);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+                    contentData = ContentMarshallerHelper.marshal(results, this.environment);
 		}
 		complete(taskId, userId, contentData);
 	}
@@ -779,5 +771,12 @@ public class SyncTaskServiceWrapper implements TaskService {
         return responseHandler.getResults();
     }
 
-    
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
 }

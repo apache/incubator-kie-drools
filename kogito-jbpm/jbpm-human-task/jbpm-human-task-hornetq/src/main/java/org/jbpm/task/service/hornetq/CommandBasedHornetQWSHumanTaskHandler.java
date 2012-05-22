@@ -59,6 +59,7 @@ import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,39 +193,13 @@ public class CommandBasedHornetQWSHumanTaskHandler implements WorkItemHandler {
 		task.setTaskData(taskData);
 
 		ContentData content = null;
-		Object contentObject = workItem.getParameter("Content");
-		if (contentObject != null) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out;
-			try {
-				out = new ObjectOutputStream(bos);
-				out.writeObject(contentObject);
-				out.close();
-				content = new ContentData();
-				content.setContent(bos.toByteArray());
-				content.setAccessType(AccessType.Inline);
-			} catch (IOException e) {
-                logger.error(e.getMessage(), e);
-			}
-		}
-		// If the content is not set we will automatically copy all the input objects into 
-		// the task content
-		else {
-		    contentObject = workItem.getParameters();
-		    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		    ObjectOutputStream out;
-		    try {
-		        out = new ObjectOutputStream(bos);
-		        out.writeObject(contentObject);
-		        out.close();
-		        content = new ContentData();
-		        content.setContent(bos.toByteArray());
-		        content.setAccessType(AccessType.Inline);
-		        content.setType("java.util.map");
-		    } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-		    }
-		}
+                Object contentObject = workItem.getParameter("Content");
+                if (contentObject == null) {
+                    contentObject = new HashMap<String, Object>(workItem.getParameters());
+                }
+                if (contentObject != null) {
+                    content = ContentMarshallerHelper.marshal(contentObject, session.getEnvironment());
+                }
 		client.addTask(task, content, null);
 	}
 	

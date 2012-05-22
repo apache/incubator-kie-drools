@@ -37,7 +37,6 @@ import org.jbpm.task.service.TaskClientHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
@@ -96,7 +95,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     
 
     private void registerTaskEvents() {
-        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, marshallerContext, session.getEnvironment(),  client);
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, session.getEnvironment(),  client);
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
         eventHandlers.put(key, eventResponseHandler);
@@ -189,12 +188,10 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
         private WorkItemManager manager;
         private AsyncTaskService client;
-        private ContentMarshallerContext marshallContext;
         private Environment env;
-        public TaskCompletedHandler(WorkItemManager manager, ContentMarshallerContext marshallContext, Environment env,  AsyncTaskService client) {
+        public TaskCompletedHandler(WorkItemManager manager, Environment env,  AsyncTaskService client) {
             this.manager = manager;
             this.client = client;
-            this.marshallContext = marshallContext;
             this.env = env;
         }
 
@@ -202,7 +199,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
             TaskEvent event = (TaskEvent) payload.get();
             long taskId = event.getTaskId();
             TaskClientHandler.GetTaskResponseHandler getTaskResponseHandler =
-                    new GetCompletedTaskResponseHandler(manager, marshallContext, env, client);
+                    new GetCompletedTaskResponseHandler(manager, env, client);
             client.getTask(taskId, getTaskResponseHandler);
         }
 
@@ -215,12 +212,10 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
         private WorkItemManager manager;
         private AsyncTaskService client;
-        private ContentMarshallerContext marshallContext;
         private Environment env;
-        public GetCompletedTaskResponseHandler(WorkItemManager manager, ContentMarshallerContext marshallContext,Environment env, AsyncTaskService client) {
+        public GetCompletedTaskResponseHandler(WorkItemManager manager, Environment env, AsyncTaskService client) {
             this.manager = manager;
             this.client = client;
-            this.marshallContext = marshallContext;
             this.env = env;
         }
 
@@ -233,7 +228,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 long contentId = task.getTaskData().getOutputContentId();
                 if (contentId != -1) {
                     TaskClientHandler.GetContentResponseHandler getContentResponseHandler =
-                            new GetResultContentResponseHandler(manager, marshallContext, env, task, results);
+                            new GetResultContentResponseHandler(manager, env, task, results);
                     client.getContent(contentId, getContentResponseHandler);
                 } else {
                     manager.completeWorkItem(workItemId, results);
@@ -249,18 +244,16 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         private WorkItemManager manager;
         private Task task;
         private Map<String, Object> results;
-        private ContentMarshallerContext marshallContext;
         private Environment env;
-        public GetResultContentResponseHandler(WorkItemManager manager, ContentMarshallerContext marshallContext, Environment env, Task task, Map<String, Object> results) {
+        public GetResultContentResponseHandler(WorkItemManager manager,  Environment env, Task task, Map<String, Object> results) {
             this.manager = manager;
             this.task = task;
             this.results = results;
-            this.marshallContext = marshallContext;
             this.env = env;
         }
 
         public void execute(Content content) {
-                Object result = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), marshallContext, env);
+                Object result = ContentMarshallerHelper.unmarshall( content.getContent(), env);
                 results.put("Result", result);
                 if (result instanceof Map) {
                     @SuppressWarnings("rawtypes")

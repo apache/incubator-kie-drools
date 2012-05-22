@@ -54,7 +54,6 @@ import org.jbpm.task.event.TaskSkippedEvent;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
@@ -78,9 +77,6 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     private OnErrorAction action;
     private boolean initialized = false;
     private Map<TaskEventKey, EventResponseHandler> eventHandlers = new HashMap<TaskEventKey, EventResponseHandler>();
-    
-    private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
-    
     
     public SyncWSHumanTaskHandler() {
     	this.action = OnErrorAction.LOG;
@@ -106,14 +102,6 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
         this.client = client;
         this.session = session;
         this.action = action;
-    }
-
-    public ContentMarshallerContext getMarshallerContext() {
-        return marshallerContext;
-    }
-
-    public void setMarshallerContext(ContentMarshallerContext marshallerContext) {
-        this.marshallerContext = marshallerContext;
     }
     
     public void setConnection(String ipAddress, int port) {
@@ -271,7 +259,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
             contentObject = workItem.getParameters();
         }
         if (contentObject != null) {
-            content = ContentMarshallerHelper.marshal(contentObject, marshallerContext,  session.getEnvironment());
+            content = ContentMarshallerHelper.marshal(contentObject,  session.getEnvironment());
         }
         task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
         try {
@@ -351,7 +339,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 				long contentId = task.getTaskData().getOutputContentId();
 				if (contentId != -1) {
 					Content content = client.getContent(contentId);
-                                        Object result = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), marshallerContext, session.getEnvironment());
+                                        Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment());
 					results.put("Result", result);
                                         if (result instanceof Map) {
                                             Map<?, ?> map = (Map) result;

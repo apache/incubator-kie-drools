@@ -41,7 +41,6 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
@@ -457,7 +456,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		assertTrue(contentId != -1);
 		BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
 		getClient().getContent(contentId, getContentResponseHandler);
-		Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), getContentResponseHandler.getContent().getContent(), new ContentMarshallerContext(), null);
+		Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall( getContentResponseHandler.getContent().getContent(), null);
                 //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
 		assertEquals("MyObjectValue", ((MyObject)data.get("MyObject")).getValue());
                 assertEquals("10", data.get("Priority"));
@@ -468,7 +467,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
 
 		operationResponseHandler = new BlockingTaskOperationResponseHandler();
-		ContentData result = ContentMarshallerHelper.marshal("This is the result", new ContentMarshallerContext(),  null);
+		ContentData result = ContentMarshallerHelper.marshal("This is the result",  null);
 		getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
 		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
 

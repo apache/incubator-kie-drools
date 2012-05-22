@@ -57,7 +57,6 @@ import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,6 @@ public class GenericCommandBasedWSHumanTaskHandler implements WorkItemHandler {
     private TaskClient client;
     private KnowledgeRuntime session;
     private OnErrorAction action;
-    private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
 
     public GenericCommandBasedWSHumanTaskHandler() {
         this.session = null;

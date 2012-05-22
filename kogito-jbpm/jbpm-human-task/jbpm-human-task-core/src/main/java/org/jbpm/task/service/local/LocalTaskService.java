@@ -15,16 +15,13 @@
  */
 package org.jbpm.task.service.local;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
+import org.drools.runtime.Environment;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.EventTriggerTransport;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.AccessType;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
@@ -37,6 +34,7 @@ import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
  *
@@ -46,6 +44,7 @@ public class LocalTaskService implements TaskService {
 
     private org.jbpm.task.service.TaskService service;
     private TaskServiceSession session;
+    private Environment environment;
 
     public LocalTaskService(org.jbpm.task.service.TaskService taskService) {
         this.service = taskService;
@@ -83,18 +82,7 @@ public class LocalTaskService implements TaskService {
     public void completeWithResults(long taskId, String userId, Object results) {
         ContentData contentData = null;
         if (results != null) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out;
-            try {
-                out = new ObjectOutputStream(bos);
-                out.writeObject(results);
-                out.close();
-                contentData = new ContentData();
-                contentData.setContent(bos.toByteArray());
-                contentData.setAccessType(AccessType.Inline);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            contentData = ContentMarshallerHelper.marshal(results, this.environment);
         }
         complete(taskId, userId, contentData);
     }
@@ -291,6 +279,14 @@ public class LocalTaskService implements TaskService {
 
     public void claimNextAvailable(String userId, List<String> groupIds, String language) {
         session.claimNextAvailable(userId, groupIds, language);
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     private static class SimpleEventTransport implements EventTriggerTransport {

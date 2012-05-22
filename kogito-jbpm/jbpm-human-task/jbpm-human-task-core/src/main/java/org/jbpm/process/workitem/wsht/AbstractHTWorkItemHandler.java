@@ -37,7 +37,6 @@ import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.service.ContentData;
-import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
@@ -52,7 +51,6 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHTWorkItemHandler.class);
     protected KnowledgeRuntime session;
     protected OnErrorAction action;
-    protected ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
     protected Map<TaskEventKey, EventResponseHandler> eventHandlers = new HashMap<TaskEventKey, EventResponseHandler>();
 
     public AbstractHTWorkItemHandler(KnowledgeRuntime session) {
@@ -63,14 +61,6 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     public AbstractHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         this.session = session;
         this.action = action;
-    }
-
-    public ContentMarshallerContext getMarshallerContext() {
-        return marshallerContext;
-    }
-
-    public void setMarshallerContext(ContentMarshallerContext marshallerContext) {
-        this.marshallerContext = marshallerContext;
     }
 
     public void setAction(OnErrorAction action) {
@@ -167,7 +157,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             contentObject = new HashMap<String, Object>(workItem.getParameters());
         }
         if (contentObject != null) {
-            content = ContentMarshallerHelper.marshal(contentObject, marshallerContext, session.getEnvironment());
+            content = ContentMarshallerHelper.marshal(contentObject, session.getEnvironment());
         }
         return content;
     }
