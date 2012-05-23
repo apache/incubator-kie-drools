@@ -63,7 +63,7 @@ public class HumanTaskExample {
             Map<String, Object> results = new HashMap<String, Object>();
             results.put("comment", "Agreed, existing laptop needs replacing");
             results.put("outcome", "Accept");
-            ContentData contentData = ContentMarshallerHelper.marshal(results, hornetQHTWorkItemHandler.getMarshallerContext(), null);
+            ContentData contentData = ContentMarshallerHelper.marshal(results,  null);
 
             taskClient.complete(task1.getId(), "sales-rep", contentData);
 
@@ -78,7 +78,7 @@ public class HumanTaskExample {
             
             results = new HashMap<String, Object>();
             results.put("outcome", "Agree");
-            contentData = ContentMarshallerHelper.marshal(results, hornetQHTWorkItemHandler.getMarshallerContext(), null);
+            contentData = ContentMarshallerHelper.marshal(results, null);
 
 
             taskClient.complete(task2.getId(), "krisv", contentData);
@@ -99,7 +99,7 @@ public class HumanTaskExample {
 
             results = new HashMap<String, Object>();
             results.put("outcome", "Agree");
-            contentData = ContentMarshallerHelper.marshal(results, hornetQHTWorkItemHandler.getMarshallerContext(), null);
+            contentData = ContentMarshallerHelper.marshal(results, null);
 
             taskClient.complete(task3.getId(), "john", contentData);
 
@@ -116,8 +116,7 @@ public class HumanTaskExample {
 
             Content content = taskClient.getContent(task.getTaskData().getDocumentContentId());
 
-            Object result = ContentMarshallerHelper.unmarshall("org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy",
-                    content.getContent(), hornetQHTWorkItemHandler.getMarshallerContext(), null);
+            Object result = ContentMarshallerHelper.unmarshall(content.getContent(), null);
 
             Map<?, ?> map = (Map<?, ?>) result;
             for (Map.Entry<?, ?> entry : map.entrySet()) {
