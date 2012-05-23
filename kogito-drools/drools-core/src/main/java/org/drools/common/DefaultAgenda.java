@@ -1223,6 +1223,7 @@ public class DefaultAgenda
                         // The routine bellow cleans up ruleflow activations
                         if ( ruleFlowGroup != null ) {
                             ruleFlowGroup.deactivateIfEmpty();
+                            this.workingMemory.executeQueuedActions();
                         }
 
                     }
