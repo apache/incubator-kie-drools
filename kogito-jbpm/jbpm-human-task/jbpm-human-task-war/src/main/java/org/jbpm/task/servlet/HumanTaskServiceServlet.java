@@ -126,7 +126,7 @@ public class HumanTaskServiceServlet extends HttpServlet {
                         Object idObject = ids.nextElement();
                         if( idObject instanceof String ) {
                             String id = (String) idObject;
-                            groups.put(id, new Group(id));
+                            users.put(id, new User(id));
                         }
                     }
                 }
@@ -134,10 +134,6 @@ public class HumanTaskServiceServlet extends HttpServlet {
     	} catch (Exception e) {
             System.err.println("Problem loading users from specified file: " + usersConfig + " error message: " + e);
         }
-        
-        taskService.addUsersAndGroups(users, groups);
-        users = new HashMap<String, User>(); 
-        groups = new HashMap<String, Group>();
         
         try {
             if (groupsConfig != null && groupsConfig.length() > 0) {
@@ -279,7 +275,9 @@ public class HumanTaskServiceServlet extends HttpServlet {
         } else {
             configLocation = new URL(location);
         }
-                
+          if (configLocation == null) {
+        	  throw new IllegalArgumentException("File was not found at given location " + location);
+          }
         return configLocation.openStream();
     }
 
