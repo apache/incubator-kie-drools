@@ -344,13 +344,9 @@ public class PatientVariablePersistenceStrategyTest {
         logger.info(" >>> Getting Task Content = "+summary.getId());
         Content content = this.localTaskService.getContent(summary.getId());
         Task task = this.localTaskService.getTask(summary.getId());
-//        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(content.getContent()));
         Object readObject = 
-                ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
-                                                            content.getContent(), 
-                                                            ((SyncWSHumanTaskHandler)htHandler).getMarshallerContext(),  
+                ContentMarshallerHelper.unmarshall(         content.getContent(), 
                                                             ksession.getEnvironment());
-                //ois.readObject();
         
         logger.info(" >>> Object = "+readObject);
         return (MedicalRecord)readObject;
@@ -362,25 +358,7 @@ public class PatientVariablePersistenceStrategyTest {
      * @return 
      */
     private ContentData prepareContentData(Map data){
-        ContentData contentData = ContentMarshallerHelper.marshal(data, ((SyncWSHumanTaskHandler)htHandler).getMarshallerContext(), ksession.getEnvironment());
-                
-//                null;
-//        if (data != null) {
-//                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//                ObjectOutputStream out;
-//                try {
-//                        out = new ObjectOutputStream(bos);
-//                        out.writeObject(data);
-//                        out.close();
-//                        contentData = new ContentData();
-//                        contentData.setContent(bos.toByteArray());
-//                        contentData.setAccessType(AccessType.Inline);
-//                }
-//                catch (IOException e) {
-//                        System.err.print(e);
-//                }
-//        }
-        
+        ContentData contentData = ContentMarshallerHelper.marshal(data, ksession.getEnvironment());
         return contentData;
     }
 }
