@@ -16,15 +16,12 @@
 
 package org.jbpm.task.service;
 
-import org.jbpm.task.identity.UserGroupCallback;
-import org.jbpm.task.identity.UserGroupCallbackManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 
@@ -47,6 +44,8 @@ import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
+import org.jbpm.task.identity.UserGroupCallback;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService.ScheduledTaskDeadline;
@@ -680,11 +679,7 @@ public class TaskServiceSession {
         doCallbackUserOperation(userId);
         List<Status> status = new ArrayList<Status>();
         status.add(Status.Ready);
-        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatus")
-                                         .setParameter("userId", userId)
-                                         .setParameter("language", language)
-                                         .setParameter("status", status);
-        List<TaskSummary> queryTasks = query.getResultList();
+        List<TaskSummary> queryTasks = getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
         if(queryTasks.size() > 0){
             taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null );
         } else{
@@ -696,12 +691,7 @@ public class TaskServiceSession {
         doCallbackUserOperation(userId);
         List<Status> status = new ArrayList<Status>();
         status.add(Status.Ready);
-        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatusWithGroups")
-                                         .setParameter("userId", userId)
-                                         .setParameter("groupIds", groupIds)
-                                         .setParameter("language", language)
-                                         .setParameter("status", status);
-        List<TaskSummary> queryTasks = query.getResultList();
+        List<TaskSummary> queryTasks = getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
         if(queryTasks.size() > 0){
             taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, groupIds );
         } else{
@@ -1010,7 +1000,7 @@ public class TaskServiceSession {
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
         doCallbackUserOperation(userId);
-        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatusByGroup")
+        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatusWithGroups")
                                          .setParameter("userId", userId)
                                          .setParameter("groupIds", groupIds)
                                          .setParameter("language", language)
