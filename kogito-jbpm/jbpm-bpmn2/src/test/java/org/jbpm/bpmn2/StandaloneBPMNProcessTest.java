@@ -744,7 +744,7 @@ public class StandaloneBPMNProcessTest extends TestCase {
 				list.add(event.getProcessInstance().getId());
 			}
 		});
-        ksession.signalEvent("MyStartSignal", "NewValue");
+        ksession.signalEvent("MySignal", "NewValue");
 		assertEquals(1, list.size());
     }
     

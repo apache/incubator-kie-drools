@@ -28,7 +28,7 @@
       <outputSet>
         <dataOutputRefs>_1_Output</dataOutputRefs>
       </outputSet>
-      <signalEventDefinition signalRef="MyStartSignal" />
+      <signalEventDefinition signalRef="MySignal" />
     </startEvent>
     <scriptTask id="_2" name="Hello" >
       <script>System.out.println("x = " + x);</script>

@@ -115,7 +115,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
            
         });
         ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
-        ksession.signalEvent("MyMessage", "maciek");
+        ksession.signalEvent("MySignal", "value");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
     
@@ -150,7 +150,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         });
         ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
-        ksession.signalEvent("MyMessage", "maciek");
+        ksession.signalEvent("MySignal", "value");
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
@@ -1493,7 +1493,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				list.add(event.getProcessInstance().getId());
 			}
 		});
-		ksession.signalEvent("MyStartSignal", "NewValue");
+		ksession.signalEvent("MySignal", "NewValue");
 		assertEquals(1, list.size());
 	}
 
@@ -1508,7 +1508,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				list.add(event.getProcessInstance().getId());
 			}
 		});
-		ksession.signalEvent("MyStartSignal", "NewValue");
+		ksession.signalEvent("MySignal", "NewValue");
 		assertEquals(1, list.size());
 	}
 

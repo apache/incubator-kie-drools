@@ -267,6 +267,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	public void disconnect() {
 		removeEventListeners();
+		unregisterExternalEventNodeListeners();
+		
 		for (NodeInstance nodeInstance : nodeInstances) {
 			if (nodeInstance instanceof StateBasedNodeInstance) {
 				((StateBasedNodeInstance) nodeInstance).removeEventListeners();
@@ -310,6 +312,16 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				if ("external".equals(((EventNode) node).getScope())) {
 					addEventListener(((EventNode) node).getType(),
 						new ExternalEventListener(), true);
+				}
+			}
+		}
+	}
+	
+	private void unregisterExternalEventNodeListeners() {
+		for (Node node : getWorkflowProcess().getNodes()) {
+			if (node instanceof EventNode) {
+				if ("external".equals(((EventNode) node).getScope())) {
+					externalEventListeners.remove(((EventNode) node).getType());
 				}
 			}
 		}

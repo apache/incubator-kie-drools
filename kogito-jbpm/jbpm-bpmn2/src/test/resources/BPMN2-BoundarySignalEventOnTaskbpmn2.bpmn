@@ -9,7 +9,7 @@
     <scriptTask id="ScriptTask_1" name="Signal received">
       <incoming>SequenceFlow_5</incoming>
       <outgoing>SequenceFlow_4</outgoing>
-      <script>System.out.println(x);</script>
+      <script>System.out.println("Signal handled");</script>
     </scriptTask>
     <endEvent id="EndEvent_2" name="End2">
       <incoming>SequenceFlow_4</incoming>
@@ -68,7 +68,7 @@
       <outputSet id="OutputSet_1">
         <dataOutputRefs>_4_Output</dataOutputRefs>
       </outputSet>
-      <signalEventDefinition id="SignalEventDefinition_2" signalRef="MyMessage"/>
+      <signalEventDefinition id="SignalEventDefinition_2" signalRef="MySignal"/>
     </boundaryEvent>
     <sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="_1" targetRef="UserTask_1"/>
     <sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="UserTask_1" targetRef="UserTask_2"/>
