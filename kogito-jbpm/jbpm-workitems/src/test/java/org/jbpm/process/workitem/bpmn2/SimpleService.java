@@ -1,4 +1,4 @@
-package org.jbpm.bpmn2.objects;
+package org.jbpm.process.workitem.bpmn2;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
