@@ -774,7 +774,26 @@ public class TaskServiceSession {
         return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsTaskStakeholder", userId, language);
     }
     
+    /**
+     * This method allows the user to exercise the query of his/her choice. 
+     * This method will be deleted in future versions. 
+     * </p>
+     * Only select queries are currently supported, for obvious reasons. 
+     * 
+     * @param qlString The query string. 
+     * @param size     Maximum number of results to return.
+     * @param offset   The offset from the beginning of the result list determining the first result. 
+     * 
+     * @return         The result of the query. 
+     */
+    @Deprecated
     public List<?> query(final String qlString, final Integer size, final Integer offset) {
+        String regex = "(?i) *select .*";
+        String badRegex = "(?i).*(delete|update) .*";
+        if( ! qlString.matches(regex) || qlString.matches(badRegex) ) { 
+            throw new UnsupportedOperationException("Only select queries are supported: '" + qlString + "'");
+        }
+        
     	final Query genericQuery = tpm.createNewQuery(qlString);
     	genericQuery.setMaxResults(size);
     	genericQuery.setFirstResult(offset);

@@ -103,6 +103,19 @@ public interface TaskService {
 
     void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners);
 
+    /**
+     * This method allows the user to exercise the query of his/her choice. 
+     * This method will be deleted in future versions. 
+     * </p>
+     * Only select queries are currently supported, for obvious reasons. 
+     * 
+     * @param qlString The query string. 
+     * @param size     Maximum number of results to return.
+     * @param offset   The offset from the beginning of the result list determining the first result. 
+     * 
+     * @return         The result of the query. 
+     */
+    @Deprecated
     List<?> query(String qlString, Integer size, Integer offset);
 
     void register(long taskId, String userId);

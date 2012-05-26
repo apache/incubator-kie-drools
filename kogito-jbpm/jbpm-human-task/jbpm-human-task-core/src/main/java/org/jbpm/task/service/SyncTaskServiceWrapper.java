@@ -46,9 +46,6 @@ import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandl
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
-/**
- *
- */
 public class SyncTaskServiceWrapper implements TaskService {
 
     private int timeout = 10000;
@@ -519,6 +516,19 @@ public class SyncTaskServiceWrapper implements TaskService {
         }
     }
 
+    /**
+     * This method allows the user to exercise the query of his/her choice. 
+     * This method will be deleted in future versions. 
+     * </p>
+     * Only select queries are currently supported, for obvious reasons. 
+     * 
+     * @param qlString The query string. 
+     * @param size     Maximum number of results to return.
+     * @param offset   The offset from the beginning of the result list determining the first result. 
+     * 
+     * @return         The result of the query. 
+     */
+    @Deprecated
     public List<?> query(String qlString, Integer size, Integer offset) {
         BlockingQueryGenericResponseHandler responseHandler = new BlockingQueryGenericResponseHandler();
         taskService.query(qlString, size, offset, responseHandler);

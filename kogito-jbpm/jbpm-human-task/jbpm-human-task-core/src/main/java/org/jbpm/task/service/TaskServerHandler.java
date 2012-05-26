@@ -534,6 +534,9 @@ public class TaskServerHandler {
                     clients.put(uuid, session);
                     break;
                 }
+                /**
+                 * TODO: This needs to be be deleted when the .query() functionality finally gets deleted. 
+                 */
                 case QueryGenericRequest: {
                     // prepare
                 	String qlString = (String) cmd.getArguments().get(0);

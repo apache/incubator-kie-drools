@@ -282,6 +282,9 @@ public class TaskClientHandler {
         public void execute(List<TaskSummary> results);
     }
     
+    /**
+     * Needs to be deleted when the .query() functionality gets deleted. 
+     */
     public static interface QueryGenericResponseHandler
     		extends
     		ResponseHandler {
