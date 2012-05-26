@@ -16,6 +16,7 @@
 
 package org.jbpm.task.service;
 
+import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -640,10 +641,8 @@ public class TaskServiceSession {
     }
 
     public Task getTaskByWorkItemId(final long workItemId) {
-        Query query = tpm.createQuery("TaskByWorkItemId");
-        query.setParameter("workItemId", workItemId);
-        Object taskObject =  query.getSingleResult();
-        
+        HashMap<String, Object> params = addParametersToMap("workItemId", workItemId);
+        Object taskObject = tpm.queryWithParametersInTransaction("TaskByWorkItemId", params, true);
         return (Task) taskObject;
     }
 
@@ -698,6 +697,8 @@ public class TaskServiceSession {
             logger.info(" No Task Available to Assign");
         }
     }
+    
+  
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
                                                               final String language) {
     	return getTasksAssignedAsPotentialOwner(userId, groupIds, language, -1, -1);
@@ -710,49 +711,48 @@ public class TaskServiceSession {
         doCallbackUserOperation(userId);
         groupIds = doUserGroupCallbackOperation(userId, groupIds);
         
-        final Query tasksAssignedAsPotentialOwner = tpm.createQuery("TasksAssignedAsPotentialOwnerWithGroups");
-        tasksAssignedAsPotentialOwner.setParameter("userId", userId);
-        tasksAssignedAsPotentialOwner.setParameter("groupIds", groupIds);
-        tasksAssignedAsPotentialOwner.setParameter("language", language);
+        HashMap<String, Object> params = addParametersToMap(
+                "userId", userId,
+                "groupIds", groupIds,
+                "language", language);
         if(maxResults != -1) {
-            tasksAssignedAsPotentialOwner.setFirstResult(firstResult);
-            tasksAssignedAsPotentialOwner.setMaxResults(maxResults);
+            params.put(TaskPersistenceManager.FIRST_RESULT, firstResult);
+            params.put(TaskPersistenceManager.MAX_RESULTS, maxResults);
         }
 
-        return (List<TaskSummary>) tasksAssignedAsPotentialOwner.getResultList();
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerWithGroups", params);
     }
 
     @SuppressWarnings("unchecked")
     public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(final long parentId, final String userId,
                                                                  final String language) {
         doCallbackUserOperation(userId);
+        Map<String, Object> params = addParametersToMap(
+                "userId", userId,
+                "parentId", parentId,
+                "language", language);
         
-        final Query tasksAssignedAsPotentialOwner = tpm.createQuery("SubTasksAssignedAsPotentialOwner");
-        tasksAssignedAsPotentialOwner.setParameter("parentId", parentId);
-        tasksAssignedAsPotentialOwner.setParameter("userId", userId);
-        tasksAssignedAsPotentialOwner.setParameter("language", language);
-
-        return (List<TaskSummary>) tasksAssignedAsPotentialOwner.getResultList();
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("SubTasksAssignedAsPotentialOwner", params);
     }
 
     @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByGroup(final String groupId,
                                                                      final String language) {
         doCallbackGroupOperation(groupId);
-        final Query tasksAssignedAsPotentialOwnerByGroup = tpm.createQuery("TasksAssignedAsPotentialOwnerByGroup");
-        tasksAssignedAsPotentialOwnerByGroup.setParameter("groupId", groupId);
-        tasksAssignedAsPotentialOwnerByGroup.setParameter("language", language);
-
-        return (List<TaskSummary>) tasksAssignedAsPotentialOwnerByGroup.getResultList();
+        Map<String, Object> params = addParametersToMap(
+                "groupId", groupId,
+                "language", language);
+        
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroup", params);
     }
 
     @SuppressWarnings("unchecked")
     public List<TaskSummary> getSubTasksByParent(final long parentId, final String language) {
-        final Query subTaskByParent = tpm.createQuery("GetSubTasksByParentTaskId");
-        subTaskByParent.setParameter("parentId", parentId);
-        subTaskByParent.setParameter("language", language);
-
-        return (List<TaskSummary>) subTaskByParent.getResultList();
+        Map<String, Object> params = addParametersToMap(
+                "parentId", parentId, 
+                "language", language);
+        
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("GetSubTasksByParentTaskId", params);
     }
 
     public List<TaskSummary> getTasksAssignedAsRecipient(final String userId,
@@ -760,20 +760,17 @@ public class TaskServiceSession {
         doCallbackUserOperation(userId);
 
         return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsRecipient", userId, language);
-
     }
 
     public List<TaskSummary> getTasksAssignedAsTaskInitiator(final String userId,
                                                              final String language) {
         doCallbackUserOperation(userId);
-
         return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsTaskInitiator", userId, language);
     }
-
+    
     public List<TaskSummary> getTasksAssignedAsTaskStakeholder(final String userId,
                                                                final String language) {
         doCallbackUserOperation(userId);
-
         return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsTaskStakeholder", userId, language);
     }
     
@@ -956,7 +953,10 @@ public class TaskServiceSession {
     /**
      * Executes the specified operation within a transaction. Note that if there is a currently active
      * transaction, if will reuse it.
-     *
+     * 
+     * This logic is unfortunately duplicated in {@link TaskPersistenceManager#queryWithParametersInTransaction(String, Map)}. 
+     * If you change the logic here, please make sure to change the logic there as well (and vice versa). 
+     * 
      * @param operation operation to execute
      */
     private void doOperationInTransaction(final TransactedOperation operation) {
@@ -991,35 +991,29 @@ public class TaskServiceSession {
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language) {
         doCallbackUserOperation(userId);
-        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatus")
-                                         .setParameter("userId", userId)
-                                         .setParameter("language", language)
-                                         .setParameter("status", status);
-        return query.getResultList();
+        HashMap<String, Object> params = addParametersToMap(
+                "userId", userId,
+                "language", language,
+                "status", status);
+        List<TaskSummary> result = (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatus", params);
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
         doCallbackUserOperation(userId);
-        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatusWithGroups")
-                                         .setParameter("userId", userId)
-                                         .setParameter("groupIds", groupIds)
-                                         .setParameter("language", language)
-                                         .setParameter("status", status);
-        return query.getResultList();
+        HashMap<String, Object> params = addParametersToMap(
+                                         "userId", userId,
+                                         "groupIds", groupIds,
+                                         "language", language,
+                                         "status", status);
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatusByGroup", params);
     }
 
     private interface TransactedOperation {
         void doOperation();
     }
 
-    /**
-     * This method is run 
-     * @param escalatedDeadlineHandler
-     * @param service
-     * @param taskId
-     * @param deadlineId
-     */
-    public synchronized void executeEscalatedDeadline(EscalatedDeadlineHandler escalatedDeadlineHandler, TaskService service, long taskId, long deadlineId) { 
+    public void executeEscalatedDeadline(EscalatedDeadlineHandler escalatedDeadlineHandler, TaskService service, long taskId, long deadlineId) { 
 
         boolean txOwner = false;
         boolean operationSuccessful = false;
@@ -1042,6 +1036,7 @@ public class TaskServiceSession {
                     content,
                     service);     
 
+            operationSuccessful = true;
             tpm.endTransaction(txOwner);
         } catch(Exception e) {
             tpm.rollBackTransaction(txOwner);
@@ -1062,6 +1057,7 @@ public class TaskServiceSession {
             List<String> allGroupIds = null;
             if (UserGroupCallbackManager.getInstance().getProperty("disable.all.groups") == null) {
                 // get all groups
+                // (The fact that this isn't done in a query will probably become a problem at some point.. )
                 Query query = tpm.createNewQuery("select g.id from Group g");
     			allGroupIds = ((List<String>) query.getResultList());
             }
@@ -1460,5 +1456,6 @@ public class TaskServiceSession {
             logger.debug("Unable to add user " + userId);
         }
     }
+    
 
 }

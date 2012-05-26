@@ -215,7 +215,7 @@ public class TaskService {
         this.escalatedDeadlineHandler = escalatedDeadlineHandler;
     }
 
-    public void executeEscalatedDeadline(final long taskId, final long deadlineId) {
+    public synchronized void executeEscalatedDeadline(final long taskId, final long deadlineId) {
         TaskServiceSession session = createSession();
         
         session.executeEscalatedDeadline(escalatedDeadlineHandler, this, taskId, deadlineId);

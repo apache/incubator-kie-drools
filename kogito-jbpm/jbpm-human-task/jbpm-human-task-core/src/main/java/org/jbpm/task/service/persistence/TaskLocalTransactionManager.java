@@ -55,7 +55,7 @@ class TaskLocalTransactionManager implements TaskTransactionManager {
                 em.getTransaction().commit();
             }
         } catch (Exception e) {
-            logger.warn("Unable to begin transaction", e);
+            logger.warn("Unable to commit transaction", e);
             throw new RuntimeException("Unable to commit transaction", e);
         }
     }
@@ -91,5 +91,5 @@ class TaskLocalTransactionManager implements TaskTransactionManager {
     public void dispose() {
         // no-op
     }
-    
+
 }

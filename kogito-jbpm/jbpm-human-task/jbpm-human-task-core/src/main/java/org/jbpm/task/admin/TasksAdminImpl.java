@@ -15,7 +15,9 @@
  */
 package org.jbpm.task.admin;
 
+import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -38,28 +40,45 @@ public class TasksAdminImpl implements TasksAdmin {
     }
 
     public List<TaskSummary> getActiveTasks() {
+        HashMap<String, Object> params = addParametersToMap(
+                "status", Status.InProgress,
+                "language", "en-UK");
         
-        return tpm.createQuery("TasksByStatus").setParameter("status", Status.InProgress).setParameter("language", "en-UK").getResultList();
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatus", params);
     }
 
     public List<TaskSummary> getActiveTasks(Date since) {
-        
-        return tpm.createQuery("TasksByStatus").setParameter("status", Status.InProgress).setParameter("language", "en-UK").setParameter("since", since).getResultList();
+        HashMap<String, Object> params = addParametersToMap(
+                "status", Status.InProgress,
+                "language", "en-UK",
+                "since", since);
+                
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatus", params);
     }
 
     public List<TaskSummary> getCompletedTasks() {
-        return tpm.createQuery("TasksByStatus").setParameter("status", Status.Completed).setParameter("language", "en-UK").getResultList();
+        HashMap<String, Object> params = addParametersToMap(
+                "status", Status.Completed,
+                "language", "en-UK");
+        
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatus", params);
     }
 
     public List<TaskSummary> getCompletedTasks(Date since) {
-        return tpm.createQuery("TasksByStatusSince").setParameter("status", Status.Completed).setParameter("language", "en-UK").setParameter("since", since).getResultList();
+        HashMap<String, Object> params = addParametersToMap(
+                "status", Status.Completed,
+                "language", "en-UK",
+                "since", since);
+        
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatusSince", params);
     }
     public List<TaskSummary> getCompletedTasksByProcessId(Long processId) {
+        HashMap<String, Object> params = addParametersToMap(
+                "status", Status.Completed,
+                "language", "en-UK",
+                "processId", processId);
         
-        return tpm.createQuery("TasksByStatusByProcessId")
-                .setParameter("status", Status.Completed)
-                .setParameter("language", "en-UK")
-                .setParameter("processId", processId).getResultList();
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatusByProcessId", params);
     }
 
     public int archiveTasks(List<TaskSummary> tasks) {
@@ -97,7 +116,9 @@ public class TasksAdminImpl implements TasksAdmin {
     }
 
     public List<TaskSummary> getArchivedTasks() {
-        return tpm.createQuery("ArchivedTasks").setParameter("language", "en-UK").getResultList();
+        HashMap<String, Object> params = addParametersToMap(
+                "language", "en-UK");
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("ArchivedTasks", params);
     }
 
     public void dispose() {

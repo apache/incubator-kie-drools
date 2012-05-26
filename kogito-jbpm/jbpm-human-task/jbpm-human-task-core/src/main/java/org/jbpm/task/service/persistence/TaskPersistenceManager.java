@@ -15,7 +15,9 @@
  */
 package org.jbpm.task.service.persistence;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -26,6 +28,9 @@ import org.jbpm.task.Task;
 import org.jbpm.task.User;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.IncorrectParametersException;
+import org.jbpm.task.service.TaskException;
+import org.jbpm.task.service.TaskServiceSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +66,9 @@ public class TaskPersistenceManager {
     private TaskTransactionManager ttxm;
     private EntityManager em;
 
+    public final static String FIRST_RESULT = "firstResult";
+    public final static String MAX_RESULTS = "maxResults";
+    
     TaskPersistenceManager(EntityManager em) { 
         this.em = em;
         this.ttxm = new TaskLocalTransactionManager();
@@ -171,7 +179,8 @@ public class TaskPersistenceManager {
     
     @SuppressWarnings("unchecked")
     public List<DeadlineSummary> getUnescalatedDeadlinesList() { 
-        return em.createNamedQuery("UnescalatedDeadlines").getResultList();
+        Object result = queryInTransaction("UnescalatedDeadlines");
+        return (List<DeadlineSummary>) result;
     }
     
     public Object findEntity(Class<?> entityClass, Object primaryKey) { 
@@ -186,10 +195,14 @@ public class TaskPersistenceManager {
         em.persist(entity);
     }
     
-    public Query createQuery(String queryName) { 
-        return em.createNamedQuery(queryName);
-    }
-    
+    /**
+     * It is strongly suggested that you only use this method within a transaction!!
+     * </p>
+     * PostgreSQL and DB2 are 2 databases which, depending on your situation, will probably require this. 
+     * 
+     * @param queryString The JPQL query string to execute.
+     * @return The result of the query.
+     */
     public Query createNewQuery(String queryString ) { 
         return em.createQuery(queryString);
     }
@@ -209,24 +222,129 @@ public class TaskPersistenceManager {
     }
     
     public List<TaskSummary> queryTasksWithUserIdAndLanguage(String queryName, String userId, String language) { 
-        Query query = createQuery(queryName);
-        query.setParameter("userId", userId);
-        query.setParameter("language", language);
-        Object resultListObject = query.getResultList();
-
-        return (List<TaskSummary>) resultListObject;
+        HashMap<String, Object> params = addParametersToMap(
+                "userId", userId,
+                "language", language);
+        
+        return (List<TaskSummary>) queryWithParametersInTransaction(queryName, params);
     }
 
     public List<TaskSummary> queryTasksWithUserIdStatusAndLanguage(String queryName, String userId, List<Status> status, String language) { 
-        Query query = createQuery(queryName);
-        query.setParameter("userId", userId);
-        query.setParameter("status", status);
-        query.setParameter("language", language);
-        Object resultListObject = query.getResultList();
-
-        return (List<TaskSummary>) resultListObject;
+        HashMap<String, Object> params = addParametersToMap(
+                "userId", userId,
+                "status", status,
+                "language", language);
+        
+        return (List<TaskSummary>) queryWithParametersInTransaction(queryName, params);
     }
 
+    public List<TaskSummary> queryTasksWithUserIdGroupsAndLanguage(String queryName, String userId, List<String> groupIds, String language) { 
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("userId", userId);
+        params.put("groupIds", groupIds);
+        params.put("language", language);
 
- 
+        return (List<TaskSummary>) queryWithParametersInTransaction(queryName, params);
+    }
+
+    /**
+     * This method runs a query within a transaction and returns the result. 
+     * 
+     * This logic is unfortunately duplicated in {@link TaskServiceSession#doOperationInTransaction}. 
+     * If you change the logic here, please make sure to change the logic there as well (and vice versa). 
+     * 
+     * @param queryName
+     * @param params
+     * @return
+     */
+    public Object queryWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult) { 
+        Object result = null;
+        
+        boolean txOwner = false;
+        boolean operationSuccessful = false;
+        boolean txStarted = false;
+        try {
+            txOwner = beginTransaction();
+            txStarted = true;
+            
+            result = queryWithParameters(queryName, params, singleResult); 
+            operationSuccessful = true;   
+            
+            endTransaction(txOwner);
+        } catch(Exception e) {
+            rollBackTransaction(txOwner);
+            
+            String message; 
+            if( !txStarted ) { message = "Could not start transaction."; }
+            else if( !operationSuccessful ) { message = "Operation failed"; }
+            else { message = "Could not commit transaction"; }
+            
+            if (e instanceof TaskException) {
+                throw (TaskException) e;
+            } else {
+                throw new RuntimeException(message, e);
+            }
+        }
+        return result;
+    }
+
+    public Object queryWithParametersInTransaction(String queryName, Map<String, Object> params) { 
+        return queryWithParametersInTransaction(queryName, params, false);
+    }
+    
+    public Object queryInTransaction(String queryName) { 
+        return queryWithParametersInTransaction(queryName, null, false);
+    }
+    
+    /**
+     * This method should ONLY be called by the {@link TaskPersistenceManager#queryWithParametersInTransaction(String, Map, boolean)}
+     * method.
+     * 
+     * @param queryName the named query to execute.
+     * @param params The parameters
+     * @param singleResult If true, only retrieve a single result, otherwise return the result list. 
+     * 
+     * @return The result of the query. 
+     */
+    private Object queryWithParameters(String queryName, Map<String, Object> params, boolean singleResult) { 
+        Query query = em.createNamedQuery(queryName);
+        if( params != null && ! params.isEmpty() ) { 
+            for( String name : params.keySet() ) { 
+                if( FIRST_RESULT.equals(name) ) {
+                    query.setFirstResult((Integer) params.get(name));
+                    continue;
+                }
+                if( MAX_RESULTS.equals(name) ) { 
+                    query.setMaxResults((Integer) params.get(name));
+                    continue;
+                }
+                query.setParameter(name, params.get(name) );
+            }
+        }
+        if( singleResult ) { 
+            return query.getSingleResult();
+        }
+        return query.getResultList();
+    }
+    
+    public static HashMap<String, Object> addParametersToMap(Object ... parameterValues) { 
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        
+        if( parameterValues.length % 2 != 0 ) { 
+            throw new IncorrectParametersException("Expected an even number of parameters, not " + parameterValues.length);
+        }
+        
+        for( int i = 0; i < parameterValues.length; ++i ) {
+            String parameterName = null;
+            if( parameterValues[i] instanceof String ) { 
+                parameterName = (String) parameterValues[i];
+            } else { 
+                throw new IncorrectParametersException("Expected a String as the parameter name, not a " + parameterValues[i].getClass().getSimpleName());
+            }
+            ++i;
+            parameters.put(parameterName, parameterValues[i]);
+        }
+        
+        return parameters;
+    }
 }

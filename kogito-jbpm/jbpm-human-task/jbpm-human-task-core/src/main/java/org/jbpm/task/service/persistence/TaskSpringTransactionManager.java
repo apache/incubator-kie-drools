@@ -24,10 +24,7 @@ import org.drools.persistence.TransactionManager;
 class TaskSpringTransactionManager implements TaskTransactionManager {
 
     public final static int STATUS_ROLLBACK_ONLY = 5;
-    
-    private static volatile AtomicInteger idGenerator = new AtomicInteger(0);
-    private int id = idGenerator.incrementAndGet();
-    private AtomicInteger l = new AtomicInteger(0);
+
     private TransactionManager tm;
     private boolean useJTA;
 
@@ -91,41 +88,6 @@ class TaskSpringTransactionManager implements TaskTransactionManager {
         tm = null;
     }
     
-    /**
-     * Code used for debugging
-     */
-    private static final boolean debug = false;
-    @SuppressWarnings("unused")
-    private void debug(String op, boolean plus, boolean owner ) {
-        if( debug ) { 
-            debugEmfGenerated(op, plus, owner);
-        }
-    }
-    
-    @SuppressWarnings("unused")
-    private void debugNested(String op, boolean plus) { 
-        int lvl = l.get();
-        if( plus ) { 
-            lvl = l.incrementAndGet();
-        } else { 
-            lvl = l.getAndDecrement();
-        }
 
-        System.out.println( id + " [" + op + "] " + lvl );
-    }
-    
-    @SuppressWarnings("unused")
-    private void debugEmfGenerated(String op, boolean plus, boolean owner) { 
-        int lvl = l.get();
-        if( owner ) { 
-            if( plus ) { 
-                lvl = l.incrementAndGet();
-            } else {
-                lvl = l.getAndDecrement();
-            }
-        }
-
-        System.out.println( id + " [" + op + "] " + lvl + " " + (owner?"":"-"));
-    }
     
 }
