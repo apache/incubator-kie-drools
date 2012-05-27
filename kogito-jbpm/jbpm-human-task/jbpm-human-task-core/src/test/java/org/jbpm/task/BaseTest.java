@@ -16,9 +16,13 @@
 
 package org.jbpm.task;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -52,8 +56,9 @@ public abstract class BaseTest extends TestCase {
     protected TaskService taskService;
     protected TaskServiceSession taskSession;
 
-    protected final boolean useJTA = false;
-    private PoolingDataSource ds;
+    protected boolean useJTA = false;
+    protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
+    private PoolingDataSource pds;
     
     protected EntityManagerFactory createEntityManagerFactory() { 
         return Persistence.createEntityManagerFactory("org.jbpm.task");
@@ -68,17 +73,27 @@ public abstract class BaseTest extends TestCase {
         conf.setProperty("defaultLanguage", "en-UK");
         SendIcal.initInstance(conf);
 
+        Properties dsProps = loadDataSourceProperties();
+        String txType = dsProps.getProperty("txType", "RESOURCE_LOCAL");
+        if( "RESOURCE_LOCAL".equals(txType) ) { 
+            useJTA = false;
+        } else if( "JTA".equals(txType) ) { 
+            useJTA = true;
+        }
+        
         if( useJTA ) { 
-            ds = new PoolingDataSource();
-            ds.setUniqueName( "jdbc/taskDS" );
-            ds.setClassName( "bitronix.tm.resource.jdbc.lrc.LrcXADataSource" );
-            ds.setMaxPoolSize( 3 );
-            ds.setAllowLocalTransactions( true );
-            ds.getDriverProperties().put( "user", "sa" );
-            ds.getDriverProperties().put( "password", "sasa" );
-            ds.getDriverProperties().put( "url", "jdbc:h2:mem:taskDb" );
-            ds.getDriverProperties().put( "driverClassName", "org.h2.Driver" );
-            ds.init();
+            pds = new PoolingDataSource();
+            pds.setUniqueName( "jdbc/taskDS" );
+            pds.setClassName(dsProps.getProperty("className"));
+            pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
+            pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps.getProperty("allowLocalTransactions")));
+            for (String propertyName : new String[] { "user", "password" }) {
+                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+            }
+            
+            setDatabaseSpecificDataSourceProperties(pds, dsProps);
+            
+            pds.init();
         }
         
         // Use persistence.xml configuration
@@ -96,12 +111,31 @@ public abstract class BaseTest extends TestCase {
         
         taskSession = taskService.createSession();
     }
+    
+    private Properties loadDataSourceProperties() { 
+        String propertiesNotFoundMessage = "Unable to load datasource properties [" + DATASOURCE_PROPERTIES + "]";
 
+        InputStream propsInputStream = getClass().getResourceAsStream(DATASOURCE_PROPERTIES);
+        assertNotNull(propertiesNotFoundMessage, propsInputStream);
+        Properties dsProps = new Properties();
+        if (propsInputStream != null) {
+            try {
+                dsProps.load(propsInputStream);
+            } catch (IOException ioe) {
+                logger.warn("Unable to find properties, using default H2 properties: " + ioe.getMessage());
+                ioe.printStackTrace();
+            }
+        } 
+        return dsProps;
+    }
+    
     protected void tearDown() throws Exception {
-        taskSession.dispose();
+        if( taskSession != null ) { 
+            taskSession.dispose();
+        }
         emf.close();
         if( useJTA ) { 
-            ds.close();
+            pds.close();
         }
     }
     
@@ -152,7 +186,7 @@ public abstract class BaseTest extends TestCase {
     public static Map<String, Object> fillVariables(Map<String, User> users, Map<String, Group> groups ) { 
         Map <String, Object> vars = new HashMap<String, Object>();
         vars.put( "users", users );
-        vars.put( "groups", groups );        
+        vars.put( "groups", groups );     
         vars.put( "now", new Date() );
         return vars;
     }
@@ -178,7 +212,7 @@ public abstract class BaseTest extends TestCase {
                 thirdDeadlineMet = true;
             }
             else { 
-                fail( deadlineTime + " is not an expected deadline time [now=" + now + "]" );
+                fail( deadlineTime + " is not an expected deadline time. Now is [" + now + " (" + (deadlineTime-now) + ")]." );
             }
         }
         
@@ -188,6 +222,49 @@ public abstract class BaseTest extends TestCase {
         
         // Wait for deadlines to finish
         Thread.sleep(1000); 
+    }
+    
+    private void setDatabaseSpecificDataSourceProperties(PoolingDataSource pds, Properties dsProps) { 
+        String driverClass = dsProps.getProperty("driverClassName");
+        if (driverClass.startsWith("org.h2")) {
+            for (String propertyName : new String[] { "url", "driverClassName" }) {
+                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+            }
+        } else {
+
+            if (driverClass.startsWith("oracle")) {
+                pds.getDriverProperties().put("driverType", "thin");
+                pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
+            } else if (driverClass.startsWith("com.ibm.db2")) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+                pds.getDriverProperties().put("driverType", "4");
+            } else if (driverClass.startsWith("com.microsoft")) {
+                for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+                pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
+                pds.getDriverProperties().put("selectMethod", "cursor");
+                pds.getDriverProperties().put("InstanceName", "MSSQL01");
+            } else if (driverClass.startsWith("com.mysql")) {
+                for (String propertyName : new String[] { "databaseName", "serverName", "portNumber", "url" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+            } else if (driverClass.startsWith("com.sybase")) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+                pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
+                pds.getDriverProperties().put("networkProtocol", "Tds");
+            } else if (driverClass.startsWith("org.postgresql")) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+            } else {
+                throw new RuntimeException("Unknown driver class: " + driverClass);
+            }
+        }
     }
     
 }

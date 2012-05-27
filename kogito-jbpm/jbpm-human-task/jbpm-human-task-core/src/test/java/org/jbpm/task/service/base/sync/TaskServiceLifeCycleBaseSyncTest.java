@@ -1307,38 +1307,49 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         Content content = client.getContent(contentId);
         assertEquals("content", new String(content.getContent()));
     }
-    //@TODO: FIX IT, looks like a persistence problem around persistent bags for local impl
-//    public void testRegisterRemove() throws Exception {
-//    	Map <String, Object> vars = new HashMap<String, Object>();     
-//        vars.put( "users", users );
-//        vars.put( "groups", groups );
-//        vars.put( "now", new Date() );
-//        
-//        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-//        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'], users['darth'] ], }),";                        
-//        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-//
-//        
-//        Task task = ( Task )  eval( new StringReader( str ), vars );
-//        client.addTask( task, null );
-//        
-//        long taskId = task.getId();               
-//       
-//        client.register(taskId, users.get("bobba").getId());
-//
-//        
-//        Task task1 = client.getTask(taskId);
-//        List<OrganizationalEntity> myRecipientTasks = task1.getPeopleAssignments().getRecipients();
-//        
-//        assertNotNull(myRecipientTasks);
-//        assertEquals(1, myRecipientTasks.size());
-//        assertTrue(task1.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
-//        
-//        client.remove(taskId, users.get("bobba").getId());
-//        
-//        Task task2 = client.getTask( taskId );
-//        assertFalse(task2.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
-//    }
+    
+    /**
+     * The issue here has to do with the fact that hibernate uses lazy initialization. 
+     * Actually, what's happening is that one of the collections retrieved isn't retrieved "for update", 
+     * so that the proxy collection instance retrieved can't be updated. 
+     * (The collection instance can't be updated because hibernate doesn't allowed that unless the collection 
+     * has been retrieved "for update" -- which is actually logical.)
+     * 
+     * This, of course, only happens when using the LocalTaskService. Why? Because the LocalTaskService
+     * "shares" a persistence context with the client. If I spent another half-hour, I could explain
+     * why that causes this particular problem. 
+     * Regardless,  I can't stress enough how much that complicates the situation here, and, especially, 
+     * why that makes the LocalTaskService a significantly different variant of the TaskService
+     * than the HornetQ, Mina or other transport medium based instances.  
+     */
+    public void FIXME_testRegisterRemove() throws Exception {
+    	  Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null );
+        
+        long taskId = task.getId();               
+       
+        client.register(taskId, users.get("bobba").getId());
+
+        
+        Task task1 = client.getTask(taskId);
+        List<OrganizationalEntity> myRecipientTasks = task1.getPeopleAssignments().getRecipients();
+        
+        assertNotNull(myRecipientTasks);
+        assertEquals(1, myRecipientTasks.size());
+        assertTrue(task1.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+        
+        client.remove(taskId, users.get("bobba").getId());
+        
+        Task task2 = client.getTask( taskId );
+        assertFalse(task2.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+    }
     
     public void testRemoveNotInRecipientList() {
         Map <String, Object> vars = fillVariables();

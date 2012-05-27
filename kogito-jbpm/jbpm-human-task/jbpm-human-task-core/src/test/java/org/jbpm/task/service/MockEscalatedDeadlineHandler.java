@@ -55,6 +55,7 @@ public class MockEscalatedDeadlineHandler implements EscalatedDeadlineHandler {
         long startInMillis = System.currentTimeMillis();
         int size = 0;
         
+        int tries = 0;
         while (true) {
             synchronized (list) {
                 size = list.size();
@@ -64,10 +65,14 @@ public class MockEscalatedDeadlineHandler implements EscalatedDeadlineHandler {
             }
 
             long waitInMillis = (System.currentTimeMillis() - startInMillis);
-            if (size >= totalSize || waitInMillis >= (totalWaitInMillis)) {
-                break;
+            if (waitInMillis >= (totalWaitInMillis)) {
+               if( size >= totalSize ) { 
+                   break;
+               }
             }
-
+            else { 
+                Thread.sleep(totalWaitInMillis-waitInMillis);
+            }
         }
     }
     
