@@ -1,7 +1,0 @@
-#set ($labelParam = ${language.getParam("label", $item.label)})
-#set ($valueParam = ${language.getParam("value", $item.value)})
-<xul:menuitem
-    #if($valueParam)$valueParam#end
-    #if($labelParam)$labelParam#end
-    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-/>

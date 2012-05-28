@@ -1,5 +1,0 @@
-#set ($listStart = "<#list")
-#set ($listEnd = "</#list>")
-$listStart ${item.inputName} as ${item.variableName}>
-    ${language.translateItem(${item.loopBlock})}
-$listEnd

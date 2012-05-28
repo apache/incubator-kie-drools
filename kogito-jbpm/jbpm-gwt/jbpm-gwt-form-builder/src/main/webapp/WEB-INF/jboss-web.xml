@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jboss-web>
-   <security-domain>java:jboss/jaas/jbpm-form-builder</security-domain>
-</jboss-web>

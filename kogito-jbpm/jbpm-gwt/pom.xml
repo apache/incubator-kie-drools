@@ -19,14 +19,10 @@
   <modules>
     <module>jbpm-gwt-core</module>
     <module>jbpm-gwt-shared</module>
-    <!--module>jbpm-gwt-form-api</module>
-    <module>jbpm-gwt-form-exporter-freemarker</module>
-    <module>jbpm-gwt-form-exporter-gwt</module-->
     <module>jbpm-gwt-form</module>
     <module>jbpm-gwt-graph</module>
     <module>jbpm-gwt-console</module>
     <module>jbpm-gwt-console-server</module>
-    <!--module>jbpm-gwt-form-builder</module-->
   </modules>
 
   <dependencyManagement>

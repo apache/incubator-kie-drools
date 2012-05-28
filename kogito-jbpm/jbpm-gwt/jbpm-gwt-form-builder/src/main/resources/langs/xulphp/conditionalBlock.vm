@@ -1,9 +1,0 @@
-<?php if (${item.condition}) { ?>
-#if ($item.ifBlock)
-    ${language.translateItem($item.ifBlock)}
-#end
-#if ($item.elseBlock)
-<? } else { ?>
-    ${language.translateItem($item.elseBlock)}
-#end
-<? } ?>

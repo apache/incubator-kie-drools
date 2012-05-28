@@ -1,9 +1,0 @@
-#set ($idParam = ${language.getParam("id", $item.id)})
-#set ($nameParam = ${language.getParam("name", $item.name)})
-#set ($acceptParam = ${language.getParam("accept", $item.accept)})
-#set ($width = ${language.getStyleParam("width", $item.width)})
-#set ($height = ${language.getStyleParam("height", $item.height)})
-#set ($style = "$width$height")
-#set ($styleParam = ${langauge.getParam("style", $style)})
-#set ($oneventxParam = ${language.getOnEventParams($item)})
-<input type="file" #if($oneventxParam)$oneventxParam#end#if($idParam)$idParam#end#if($nameParam)$nameParam#end#if($acceptParam)$acceptParam#end#if($styleParam)$styleParam#end />
