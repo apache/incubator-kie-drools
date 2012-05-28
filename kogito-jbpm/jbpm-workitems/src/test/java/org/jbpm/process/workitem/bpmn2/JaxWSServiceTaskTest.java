@@ -1,6 +1,7 @@
 package org.jbpm.process.workitem.bpmn2;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,11 +55,49 @@ public class JaxWSServiceTaskTest {
         ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler(ksession));
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
+        params.put("mode", "sync");
         
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTask", params);
         String variable = (String) processInstance.getVariable("s");
         assertEquals("Hello john", variable);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
+    @Test
+    public void testAsyncServiceInvocation() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john");
+        params.put("mode", "async");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTask", params);
+        System.out.println("Service invoked async...waiting to get reponse back");
+        Thread.sleep(5000);
+        String variable = (String) processInstance.getVariable("s");
+        assertEquals("Hello john", variable);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
+    @Test
+    public void testOneWayServiceInvocation() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john");
+        params.put("mode", "oneway");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTask", params);
+        System.out.println("Execution finished");
+        String variable = (String) processInstance.getVariable("s");
+        assertNull(variable);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        // uncomment sleep to see that web service was in fact invoked
+        // Thread.sleep(5000);
     }
     
     private void startWebService() {

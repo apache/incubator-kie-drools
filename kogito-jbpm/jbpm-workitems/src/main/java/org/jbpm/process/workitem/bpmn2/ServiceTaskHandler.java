@@ -22,10 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.endpoint.ClientCallback;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -46,6 +48,14 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
     private ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
     private JaxWsDynamicClientFactory dcf;
     private StatefulKnowledgeSession ksession;
+    private int asyncTimeout = 10;
+    
+    enum WSMode {
+        SYNC,
+        ASYNC,
+        ONEWAY;
+
+    }
     
     public ServiceTaskHandler() {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
@@ -55,29 +65,75 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
     }
+    
+    public ServiceTaskHandler(StatefulKnowledgeSession ksession, int timeout) {
+        this.dcf = JaxWsDynamicClientFactory.newInstance();
+        this.ksession = ksession;
+        this.asyncTimeout = timeout;
+    }
 
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
         String implementation = (String) workItem.getParameter("implementation");
         if ("##WebService".equalsIgnoreCase(implementation)) {
             String interfaceRef = (String) workItem.getParameter("interfaceImplementationRef");
             String operationRef = (String) workItem.getParameter("operationImplementationRef");
             Object parameter = workItem.getParameter("Parameter");
-            
+            WSMode mode = WSMode.valueOf(workItem.getParameter("mode") == null ? "SYNC" : ((String) workItem.getParameter("mode")).toUpperCase());
             
             try {
                  Client client = getWSClient(workItem, interfaceRef);
-                
-                 Object[] result = client.invoke(operationRef, parameter);
+                 switch (mode) {
+                case SYNC:
+                    Object[] result = client.invoke(operationRef, parameter);
+                    
+                    Map<String, Object> output = new HashMap<String, Object>();          
+   
+                    if (result == null || result.length == 0) {
+                      output.put("Result", null);
+                    } else {
+                      output.put("Result", result[0]);
+                    }
+   
+                    manager.completeWorkItem(workItem.getId(), output);
+                    break;
+                case ASYNC:
+                    final ClientCallback callback = new ClientCallback();
+                    final long workItemId = workItem.getId();
+                    client.invoke(callback, operationRef, parameter);
+                    new Thread(new Runnable() {
+                       
+                       public void run() {
+                           
+                           try {
+                              
+                               Object[] result = callback.get(asyncTimeout, TimeUnit.SECONDS);
+                               Map<String, Object> output = new HashMap<String, Object>();          
+                               if (callback.isDone()) {
+                                   if (result == null) {
+                                     output.put("Result", null);
+                                   } else {
+                                     output.put("Result", result[0]);
+                                   }
+                               }
+                               manager.completeWorkItem(workItemId, output);
+                           } catch (Exception e) {
+                              logger.error("Error encountered while invoking ws operation asynchronously ", e);
+                           }
+                           
+                           
+                       }
+                   }).start();
+                    break;
+                case ONEWAY:
+                    ClientCallback callbackFF = new ClientCallback();
+                    
+                    client.invoke(callbackFF, operationRef, parameter);
+                    manager.completeWorkItem(workItem.getId(),  new HashMap<String, Object>());
+                    break;
+                default:
+                    break;
+                }
 
-                 Map<String, Object> output = new HashMap<String, Object>();          
-
-                 if (result == null) {
-                   output.put("Result", null);
-                 } else {
-                   output.put("Result", result[0]);
-                 }
-
-                 manager.completeWorkItem(workItem.getId(), output);
              } catch (Exception e) {
                  logger.error("Error when executing work item", e);
              }
