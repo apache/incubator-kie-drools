@@ -16,6 +16,16 @@ public class DefaultUserInfo implements UserInfo {
     
     protected Map<String, Map<String, Object>> registry = new HashMap<String, Map<String,Object>>();
 
+    public DefaultUserInfo() {
+        try {
+        Properties registryProps = new Properties();
+        registryProps.load(this.getClass().getResourceAsStream("/userinfo.properties"));
+        buildRegistry(registryProps);
+        } catch (Exception e) {
+            throw new IllegalStateException("Problem loading userinfo properties", e);
+        }
+    }
+    
     /**
      * Constructs default UserInfo implementation to provide required information to the escalation handler.
      * following is the string for every organizational entity
