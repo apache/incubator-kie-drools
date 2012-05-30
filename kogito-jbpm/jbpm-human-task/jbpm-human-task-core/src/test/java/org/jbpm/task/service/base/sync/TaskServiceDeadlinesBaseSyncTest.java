@@ -261,8 +261,12 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
+        task = client.getTask(taskId);
+        assertEquals(Status.Completed, task.getTaskData().getStatus());
+        assertEquals(0, task.getDeadlines().getStartDeadlines().size());
+        assertEquals(0, task.getDeadlines().getEndDeadlines().size());
         
-        assertEquals(Status.Completed, client.getTask(taskId).getTaskData().getStatus());
+        
     }
     
     public void testDelayedEmailNotificationOnDeadlineTaskFailed() throws Exception {
@@ -333,8 +337,10 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
-        
-        assertEquals(Status.Failed, client.getTask(taskId).getTaskData().getStatus());
+        task = client.getTask(taskId);
+        assertEquals(Status.Failed, task.getTaskData().getStatus());
+        assertEquals(0, task.getDeadlines().getStartDeadlines().size());
+        assertEquals(0, task.getDeadlines().getEndDeadlines().size());
     }
 
     public void testDelayedEmailNotificationOnDeadlineTaskSkipped() throws Exception {
@@ -404,7 +410,10 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
-        assertEquals(Status.Obsolete, client.getTask(taskId).getTaskData().getStatus());
+        task = client.getTask(taskId);
+        assertEquals(Status.Obsolete, task.getTaskData().getStatus());
+        assertEquals(0, task.getDeadlines().getStartDeadlines().size());
+        assertEquals(0, task.getDeadlines().getEndDeadlines().size());
     }
          
     public void testDelayedEmailNotificationOnDeadlineTaskExited() throws Exception {
@@ -474,8 +483,10 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
-        
-        assertEquals(Status.Exited, client.getTask(taskId).getTaskData().getStatus());
+        task = client.getTask(taskId);
+        assertEquals(Status.Exited, task.getTaskData().getStatus());
+        assertEquals(0, task.getDeadlines().getStartDeadlines().size());
+        assertEquals(0, task.getDeadlines().getEndDeadlines().size());
     }
     
     //TODO: this test is not working for the local implementation and needs to be fixed  

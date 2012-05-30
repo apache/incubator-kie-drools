@@ -20,6 +20,7 @@ import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -505,7 +506,7 @@ public class TaskServiceSession {
     
     private void postTaskCompleteOperation(final Task task) {
         service.unschedule(task.getId());
-        
+        clearDeadlines(task);
         // trigger event support
         service.getEventSupport().fireTaskCompleted(task.getId(), task.getTaskData().getActualOwner().getId());
     }
@@ -519,7 +520,7 @@ public class TaskServiceSession {
     
     private void postTaskFailOperation(final Task task) {
         service.unschedule(task.getId());
-        
+        clearDeadlines(task);
     	// trigger event support
         service.getEventSupport().fireTaskFailed(task.getId(), task.getTaskData().getActualOwner().getId());
     }
@@ -530,13 +531,14 @@ public class TaskServiceSession {
 
     private void postTaskSkipOperation(final Task task, final String userId) {
         service.unschedule(task.getId());
-        
+        clearDeadlines(task);
         // trigger event support
         service.getEventSupport().fireTaskSkipped(task.getId(), userId);
     }
     
     private void postTaskExitOperation(final Task task, final String userId) {
         service.unschedule(task.getId());
+        clearDeadlines(task);
     }
     
     public Task getTask(final long taskId) {
@@ -1490,5 +1492,36 @@ public class TaskServiceSession {
         }
     }
     
+    private void clearDeadlines(final Task task) { 
+        
+        if (task.getDeadlines() == null) {
+            return;
+        }
+        try {
+            doOperationInTransaction(new TransactedOperation() {
+                public void doOperation() {
+                    Iterator<Deadline> it = null;
+                    if (task.getDeadlines().getStartDeadlines() != null) {
+                        it = task.getDeadlines().getStartDeadlines().iterator(); 
+                        while (it.hasNext()) {
+                            tpm.deleteEntity(it.next());
+                            it.remove();
+                        }
+                    }
+                    
+                    if (task.getDeadlines().getEndDeadlines() != null) {
+                        it = task.getDeadlines().getEndDeadlines().iterator(); 
+                        while (it.hasNext()) {
+                            tpm.deleteEntity(it.next());
+                            it.remove();
+                        }
+                    }
+                }
+            });
+        
+        } catch (Throwable t) {
+                logger.error("Unable to clear deadlines for task " + task.getId(), t);
+        }
+    }
 
 }
