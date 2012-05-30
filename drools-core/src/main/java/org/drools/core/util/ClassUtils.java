@@ -31,6 +31,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -287,6 +288,20 @@ public final class ClassUtils {
         } else {
             return pkg.getName();
         }
+    }
+
+    public static Class<?> findClass(String name, Collection<String> availableImports, ClassLoader cl) {
+        Class<?> clazz = null;
+        for (String imp : availableImports) {
+            try {
+                String className = imp.endsWith(name) ? imp : imp + "." + name;
+                clazz = Class.forName(className, false, cl);
+            } catch (ClassNotFoundException e) {
+                continue;
+            }
+            break;
+        }
+        return clazz;
     }
 
     public static List<String> getSettableProperties(Class<?> clazz) {

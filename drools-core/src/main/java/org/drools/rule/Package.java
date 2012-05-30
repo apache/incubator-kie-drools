@@ -331,7 +331,7 @@ public class Package
     }
 
     public FactTemplate getFactTemplate( final String name ) {
-        return (FactTemplate) this.factTemplates.get( name );
+        return this.factTemplates.get( name );
     }
 
     public void addFactTemplate( final FactTemplate factTemplate ) {

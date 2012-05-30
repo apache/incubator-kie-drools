@@ -16,18 +16,6 @@
 
 package org.drools.rule;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.drools.WorkingMemory;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
@@ -36,11 +24,23 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
+import org.drools.spi.Constraint;
 import org.drools.spi.Enabled;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 import org.drools.spi.Wireable;
 import org.drools.time.impl.Timer;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
@@ -130,6 +130,8 @@ public class Rule
     
     protected String                 activationListener;
 
+    private ConsequenceMetaData      consequenceMetaData = new ConsequenceMetaData();
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( pkg );
         out.writeObject( name );
@@ -165,6 +167,7 @@ public class Rule
         out.writeObject( enabled );
         out.writeObject( resource );
         out.writeObject( activationListener );
+        out.writeObject( consequenceMetaData );
     }
 
     @SuppressWarnings("unchecked")
@@ -200,6 +203,7 @@ public class Rule
         enabled = (Enabled) in.readObject();
         resource = (Resource) in.readObject();
         activationListener = ( String ) in.readObject();
+        consequenceMetaData = ( ConsequenceMetaData ) in.readObject();
     }
 
     // ------------------------------------------------------------
@@ -305,11 +309,7 @@ public class Rule
         //    return false;
         //}
 
-        if ( this.consequence == null || !isSemanticallyValid() ) {
-            return false;
-        }
-
-        return true;
+        return !(this.consequence == null || !isSemanticallyValid());
     }
 
     public String getPackage() {
@@ -445,8 +445,7 @@ public class Rule
     @SuppressWarnings("unchecked")
     public Declaration getDeclaration(final String identifier) {
         if ( this.dirty || (this.declarations == null) ) {
-            this.declarations = (Map<String, Declaration>) this.getExtendedLhs( this,
-                                                                                null ).getOuterDeclarations();
+            this.declarations = this.getExtendedLhs( this, null ).getOuterDeclarations();
             this.dirty = false;
         }
         return this.declarations.get( identifier );
@@ -491,8 +490,7 @@ public class Rule
     @SuppressWarnings("unchecked")
     public Map<String, Declaration> getDeclarations() {
         if ( this.dirty || (this.declarations == null) ) {
-            this.declarations = (Map<String, Declaration>) this.getExtendedLhs( this,
-                                                                                null ).getOuterDeclarations();
+            this.declarations = this.getExtendedLhs( this, null ).getOuterDeclarations();
             this.dirty = false;
         }
         return this.declarations;
@@ -568,12 +566,11 @@ public class Rule
 
     private int getSpecifity(final GroupElement ce) {
         int specificity = 0;
-        for ( final Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof Pattern ) {
-                specificity += getSpecifity( (Pattern) object );
-            } else if ( object instanceof GroupElement ) {
-                specificity += getSpecifity( (GroupElement) object );
+        for (final RuleConditionElement object : ce.getChildren()) {
+            if (object instanceof Pattern) {
+                specificity += getSpecifity((Pattern) object);
+            } else if (object instanceof GroupElement) {
+                specificity += getSpecifity((GroupElement) object);
             }
         }
         return specificity;
@@ -581,8 +578,8 @@ public class Rule
 
     private int getSpecifity(final Pattern pattern) {
         int specificity = 0;
-        for ( final Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
-            if ( !(it.next() instanceof Declaration) ) {
+        for (Constraint constraint : pattern.getConstraints()) {
+            if (!(constraint instanceof Declaration)) {
                 specificity++;
             }
         }
@@ -821,4 +818,7 @@ public class Rule
         return getName();
     }
 
+    public ConsequenceMetaData getConsequenceMetaData() {
+        return consequenceMetaData;
+    }
 }

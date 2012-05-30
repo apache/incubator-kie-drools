@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,9 +15,13 @@ import org.drools.base.ClassObjectType;
 import org.drools.commons.jci.readers.*;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.ConsequenceMetaData;
 import org.drools.rule.Declaration;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
@@ -44,9 +50,11 @@ import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.core.util.ClassUtils.findClass;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.core.util.StringUtils.splitArgumentsList;
 
 public final class DialectUtil {
 
@@ -584,34 +592,36 @@ public final class DialectUtil {
            if ( d instanceof JavaModifyBlockDescr ) {
                rewriteModifyDescr( context, d, originalBlock, consequence, declr, obj );
            } else if ( d instanceof JavaUpdateBlockDescr ) {
-               rewriteUpdateDescr( d, originalBlock, consequence, declr, obj );
+               rewriteUpdateDescr( context, d, originalBlock, consequence, declr, obj );
            } else if ( d instanceof JavaRetractBlockDescr ) {
-               rewriteRetractDescr( d, originalBlock, consequence, declr, obj );
+               rewriteRetractDescr( context, d, originalBlock, consequence, declr, obj );
            }
 
            return declr != null;
     }
 
-    private static void rewriteModifyDescr(final RuleBuildContext context,
-                                              JavaBlockDescr d,
-                                              String originalBlock,
-                                              StringBuilder consequence,
-                                              Declaration declr,
-                                              String obj) {
-        boolean isInternalFact = declr != null && !declr.isInternalFact();
-        boolean isPropertySpecific = false;
-        TypeDeclaration typeDeclaration = null;
+    private static void rewriteModifyDescr( RuleBuildContext context,
+                                            JavaBlockDescr d,
+                                            String originalBlock,
+                                            StringBuilder consequence,
+                                            Declaration declr,
+                                            String obj ) {
         List<String> settableProperties = null;
-        if (isInternalFact) {
-            Class<?> typeClass = ((ClassObjectType) declr.getPattern().getObjectType()).getClassType();
-            typeDeclaration = context.getPackageBuilder().getTypeDeclaration(typeClass);
-            if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
-                isPropertySpecific = true;
-                typeDeclaration.setTypeClass(typeClass);
-                settableProperties = typeDeclaration.getSettableProperties();
-            }
+
+        Class<?> typeClass = findModifiedClass(context, d, declr);
+        TypeDeclaration typeDeclaration = typeClass == null ? null : context.getPackageBuilder().getTypeDeclaration(typeClass);
+        boolean isPropertyReactive = typeDeclaration != null && typeDeclaration.isPropertyReactive();
+        if (isPropertyReactive) {
+            typeDeclaration.setTypeClass(typeClass);
+            settableProperties = typeDeclaration.getSettableProperties();
         }
-        long modificationMask = isPropertySpecific ? 0 : Long.MAX_VALUE;
+
+        ConsequenceMetaData.Statement statement = null;
+        if (typeDeclaration != null) {
+            statement = new ConsequenceMetaData.Statement(ConsequenceMetaData.Statement.Type.MODIFY, typeClass);
+            context.getRule().getConsequenceMetaData().addStatement(statement);
+        }
+        long modificationMask = isPropertyReactive ? 0 : Long.MAX_VALUE;
 
         int end = originalBlock.indexOf("{");
         if (end == -1) {
@@ -635,40 +645,15 @@ public final class DialectUtil {
             consequence.append("; ");
             start = end + exprStr.length();
 
-            if (isPropertySpecific) {
-                int endMethodName = exprStr.indexOf('(');
-                if (endMethodName >= 0) {
-                    String methodName = exprStr.substring(0, endMethodName).trim();
-                    String propertyName = setter2property(methodName);
-                    if (propertyName != null) {
-                        int pos = settableProperties.indexOf(propertyName);
-                        if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
-                    }
-
-                    String methodParams = exprStr.substring(endMethodName+1, exprStr.indexOf(')'));
-                    int argsNr = methodParams.trim().length() == 0 ? 0 : methodParams.split(",").length;
-
-                    String methodWithArgsNr = methodName + "_" + argsNr;
-                    List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(methodWithArgsNr);
-                    if (modifiedProps != null) {
-                        for (String modifiedProp : modifiedProps) {
-                            int pos = settableProperties.indexOf(modifiedProp);
-                            if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
-                        }
-                    }
-                } else {
-                    String propertyName = extractFirstIdentifier(exprStr, 0);
-                    if (propertyName != null) {
-                        int pos = settableProperties.indexOf(propertyName);
-                        if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
-                    }
-                }
+            if (typeDeclaration != null) {
+                modificationMask = parseModifiedProperties(statement, settableProperties, typeDeclaration, isPropertyReactive, modificationMask, exprStr);
             }
         }
 
         // adding the modifyInsert call:
         addLineBreaks(consequence, originalBlock.substring(end));
 
+        boolean isInternalFact = declr != null && !declr.isInternalFact();
         consequence
                 .append("drools.update( ")
                 .append(obj)
@@ -677,11 +662,132 @@ public final class DialectUtil {
                 .append("L ); }");
     }
 
-    private static boolean rewriteUpdateDescr(JavaBlockDescr d,
+    private static long parseModifiedProperties(ConsequenceMetaData.Statement statement,
+                                                List<String> settableProperties,
+                                                TypeDeclaration typeDeclaration,
+                                                boolean propertyReactive,
+                                                long modificationMask,
+                                                String exprStr) {
+        int endMethodName = exprStr.indexOf('(');
+        if (endMethodName >= 0) {
+            String methodName = exprStr.substring(0, endMethodName).trim();
+            String propertyName = setter2property(methodName);
+
+            String methodParams = exprStr.substring(endMethodName+1, exprStr.indexOf(')')).trim();
+            List<String> args = splitArgumentsList(methodParams);
+            int argsNr = args.size();
+
+            if (propertyName != null) {
+                modificationMask = updateModificationMask(settableProperties, propertyReactive, modificationMask, propertyName);
+                statement.addField(propertyName, argsNr > 0 ? args.get(0) : null);
+            }
+
+            String methodWithArgsNr = methodName + "_" + argsNr;
+            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(methodWithArgsNr);
+            if (modifiedProps != null) {
+                for (String modifiedProp : modifiedProps) {
+                    modificationMask = updateModificationMask(settableProperties, propertyReactive, modificationMask, modifiedProp);
+                    statement.addField(modifiedProp, argsNr > 0 ? args.get(0) : null);
+                }
+            }
+        } else {
+            String propertyName = extractFirstIdentifier(exprStr, 0);
+            if (propertyName != null) {
+                modificationMask = updateModificationMask(settableProperties, propertyReactive, modificationMask, propertyName);
+                int equalPos = exprStr.indexOf('=');
+                if (equalPos >= 0) {
+                    String value = exprStr.substring(equalPos+1).trim();
+                    statement.addField(propertyName, value);
+                }
+            }
+        }
+        return modificationMask;
+    }
+
+    private static long updateModificationMask(List<String> settableProperties,
+                                               boolean propertyReactive,
+                                               long modificationMask,
+                                               String propertyName) {
+        if (propertyReactive) {
+            int pos = settableProperties.indexOf(propertyName);
+            if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+        }
+        return modificationMask;
+    }
+
+    private static Class<?> findModifiedClass(RuleBuildContext context,
+                                              JavaBlockDescr d,
+                                              Declaration declr) {
+        if (declr != null) {
+            return ((ClassObjectType) declr.getPattern().getObjectType()).getClassType();
+        }
+
+        String targetId = d.getTargetExpression();
+        if (targetId.charAt(0) == '(') {
+            targetId = targetId.substring(1, targetId.length()-1).trim();
+        }
+
+        List<JavaLocalDeclarationDescr> localDeclarationDescrs = d.getInScopeLocalVars();
+        if (localDeclarationDescrs == null) {
+            return null;
+        }
+
+        String className = null;
+        for (JavaLocalDeclarationDescr localDeclr : localDeclarationDescrs) {
+            for (IdentifierDescr idDescr : localDeclr.getIdentifiers()) {
+                if (targetId.equals(idDescr.getIdentifier())) {
+                    className = localDeclr.getType();
+                    break;
+                }
+            }
+            if (className != null) {
+                break;
+            }
+        }
+
+        if (className == null) {
+            return null;
+        }
+
+        String namespace = context.getRuleDescr().getNamespace();
+        PackageBuilder packageBuilder = context.getPackageBuilder();
+
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName(namespace + "." + className, false, packageBuilder.getRootClassLoader());
+        } catch (ClassNotFoundException e) { }
+
+        if (clazz != null) {
+            return clazz;
+        }
+
+        Set<String> imports = new HashSet<String>();
+        List<PackageDescr> pkgDescrs = packageBuilder.getPackageDescrs(namespace);
+        if (pkgDescrs == null) {
+            return null;
+        }
+        for (PackageDescr pkgDescr : pkgDescrs) {
+            for (ImportDescr importDescr : pkgDescr.getImports()) {
+                imports.add(importDescr.getTarget());
+            }
+        }
+        return findClass(className, imports, packageBuilder.getRootClassLoader());
+    }
+
+    private static boolean rewriteUpdateDescr(RuleBuildContext context,
+                                              JavaBlockDescr d,
                                               String originalBlock,
                                               StringBuilder consequence,
                                               Declaration declr,
                                               String obj) {
+        Class<?> typeClass = findModifiedClass(context, d, declr);
+        if (typeClass != null) {
+            ConsequenceMetaData.Statement statement = new ConsequenceMetaData.Statement(ConsequenceMetaData.Statement.Type.MODIFY, typeClass);
+            context.getRule().getConsequenceMetaData().addStatement(statement);
+        }
+
+        // TODO: infer modified properties
+
         if (declr != null && !declr.isInternalFact()) {
             consequence.append("drools.update( " + obj + "__Handle__ ); }");
         } else {
@@ -691,11 +797,18 @@ public final class DialectUtil {
         return declr != null;
     }
 
-    private static boolean rewriteRetractDescr(JavaBlockDescr d,
+    private static boolean rewriteRetractDescr(RuleBuildContext context,
+                                               JavaBlockDescr d,
                                                String originalBlock,
                                                StringBuilder consequence,
                                                Declaration declr,
                                                String obj) {
+        Class<?> typeClass = findModifiedClass(context, d, declr);
+        if (typeClass != null) {
+            ConsequenceMetaData.Statement statement = new ConsequenceMetaData.Statement(ConsequenceMetaData.Statement.Type.RETRACT, typeClass);
+            context.getRule().getConsequenceMetaData().addStatement(statement);
+        }
+
         if (declr != null && !declr.isInternalFact()) {
             consequence.append("drools.retract( " + obj + "__Handle__ ); }");
         } else {
