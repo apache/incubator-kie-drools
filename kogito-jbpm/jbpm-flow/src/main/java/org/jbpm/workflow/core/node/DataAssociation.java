@@ -17,7 +17,7 @@
 package org.jbpm.workflow.core.node;
 
 import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataAssociation implements Serializable {
@@ -40,10 +40,16 @@ public class DataAssociation implements Serializable {
 		this.transformation = transformation;
 	}
 
-	@SuppressWarnings("serial")
 	public DataAssociation(final String source, String target,
 			List<Assignment> assignments, Transformation transformation) {
-		this(new LinkedList<String>(){{add(source);}}, target, assignments, transformation);
+		if(transformation != null) {
+			throw new UnsupportedOperationException("Transformations are not supported");
+		}
+		this.sources = new ArrayList<String>();
+		this.sources.add(source);
+		this.target = target;
+		this.assignments = assignments;
+		this.transformation = transformation;
 	}
 
 	public List<String> getSources() {
