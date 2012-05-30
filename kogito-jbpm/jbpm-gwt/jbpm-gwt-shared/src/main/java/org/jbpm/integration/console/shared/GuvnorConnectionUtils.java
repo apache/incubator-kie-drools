@@ -447,7 +447,7 @@ public class GuvnorConnectionUtils {
                             if ("format".equals(reader.getLocalName())) {
                                 reader.next();
                                 String pname = reader.getElementText();
-                                if ("flt".equalsIgnoreCase(pname)) {
+                                if ("flt".equalsIgnoreCase(pname) || "ftl".equalsIgnoreCase(pname)) {
                                     foundFormFormat = true;
                                     break;
                                 }
