@@ -13,551 +13,552 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class DRLContextTest {
-//
-//    @Before
-//    public void setUp() throws Exception {
-//        // initializes pluggable operators
-//        new EvaluatorRegistry();
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT1()
-//            throws DroolsParserException, RecognitionException {
-//        String input = "rule MyRule when Class ( property memberOf collection ";
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT2()
-//            throws DroolsParserException, RecognitionException {
-//        String input = "rule MyRule when Class ( property not memberOf collection";
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_COMPOSITE_OPERATOR1()
-//            throws DroolsParserException, RecognitionException {
-//        String input = "rule MyRule when Class ( property in ( ";
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION1()
-//            throws DroolsParserException, RecognitionException {
-//        String input = "rule MyRule \n" + "	when \n" + "		";
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION2() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class( condition == true ) \n" + "		";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION3() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		class: Class( condition == true, condition2 == null ) \n"
-//                + "		";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION4() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Cl";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION5() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class( condition == true ) \n" + "		Cl";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION6() {
-//        String input = "rule MyRule \n" + "	when \n" + "		class: Cl";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION7() {
-//        String input = "rule MyRule \n" + "	when \n" + "		class:Cl";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    /** Inside of condition: start */
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START1() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class (";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START2() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class ( na";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START3() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( name.subProperty['test'].subsu";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START4() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( condition == true, ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START5() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( condition == true, na";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START6() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class ( \n" + "			";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START7() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( condition == true, \n" + "			";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START8() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( c: condition, \n" + "			";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        DroolsToken token = (DroolsToken) parser.getEditorInterface().get(0)
-//                .getContent().get(8);
-//
-//        assertEquals(DroolsEditorType.IDENTIFIER_VARIABLE, token
-//                .getEditorType());
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9a() {
-//        String input = "rule MyRule \n" + "   when \n" + "       Class ( name:";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9b() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class ( name: ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START10() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class ( name:";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    /** Inside of condition: Operator */
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR1() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class ( property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR2() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class(property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR3() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( name : property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR4() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class (name:property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR5() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class (name:property   ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR6() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( name1 : property1, name : property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR7() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( name1 : property1 == \"value\", name : property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR8() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( name1 : property1 == \"value\",property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR9() {
-//        String input = "rule MyRule \n" + "	when \n"
-//                + "		Class ( name1 : property1, \n" + "			name : property ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    /** Inside of condition: argument */
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT1() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class ( property == ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
-//
-//    @Test(timeout=10*1000)
-//    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT2() {
-//        String input = "rule MyRule \n" + "	when \n" + "		Class ( property== ";
-//
-//        DRLParser parser = getParser(input);
-//        parser.enableEditorInterface();
-//        try {
-//            parser.compilationUnit();
-//        } catch (Exception ex) {
-//        }
-//
-//        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-//                getLastIntegerValue(parser.getEditorInterface().get(0)
-//                        .getContent()));
-//    }
+
+    @Before
+    public void setUp() throws Exception {
+        // initializes pluggable operators
+        new EvaluatorRegistry();
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT1()
+            throws DroolsParserException, RecognitionException {
+        String input = "rule MyRule when Class ( property memberOf collection ";
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT2()
+            throws DroolsParserException, RecognitionException {
+        String input = "rule MyRule when Class ( property not memberOf collection";
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_COMPOSITE_OPERATOR1()
+            throws DroolsParserException, RecognitionException {
+        String input = "rule MyRule when Class ( property in ( ";
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION1()
+            throws DroolsParserException, RecognitionException {
+        String input = "rule MyRule \n" + "	when \n" + "		";
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION2() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class( condition == true ) \n" + "		";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION3() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		class: Class( condition == true, condition2 == null ) \n"
+                + "		";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION4() {
+        String input = "rule MyRule \n" + "	when \n" + "		Cl";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION5() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class( condition == true ) \n" + "		Cl";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION6() {
+        String input = "rule MyRule \n" + "	when \n" + "		class: Cl";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION7() {
+        String input = "rule MyRule \n" + "	when \n" + "		class:Cl";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    /** Inside of condition: start */
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START1() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class (";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START2() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class ( na";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START3() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( name.subProperty['test'].subsu";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START4() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( condition == true, ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START5() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( condition == true, na";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START6() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class ( \n" + "			";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START7() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( condition == true, \n" + "			";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START8() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( c: condition, \n" + "			";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        DroolsToken token = (DroolsToken) parser.getEditorInterface().get(0)
+                .getContent().get(11);
+
+        assertEquals("c",
+                     token.getText() );
+        assertEquals(DroolsEditorType.IDENTIFIER_VARIABLE, token
+                .getEditorType());
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9a() {
+        String input = "rule MyRule \n" + "   when \n" + "       Class ( name:";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9b() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class ( name: ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START10() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class ( name:";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    /** Inside of condition: Operator */
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR1() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class ( property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR2() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class(property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR3() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( name : property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR4() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class (name:property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR5() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class (name:property   ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR6() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( name1 : property1, name : property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR7() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( name1 : property1 == \"value\", name : property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR8() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( name1 : property1 == \"value\",property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR9() {
+        String input = "rule MyRule \n" + "	when \n"
+                + "		Class ( name1 : property1, \n" + "			name : property ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    /** Inside of condition: argument */
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT1() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class ( property == ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
+
+    @Test(timeout=10*1000)
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT2() {
+        String input = "rule MyRule \n" + "	when \n" + "		Class ( property== ";
+
+        DRLParser parser = getParser(input);
+        parser.enableEditorInterface();
+        try {
+            parser.compilationUnit();
+        } catch (Exception ex) {
+        }
+
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
+                getLastIntegerValue(parser.getEditorInterface().get(0)
+                        .getContent()));
+    }
 //
 //    @Test(timeout=10*1000)
 //    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT3() {
@@ -3183,37 +3184,37 @@ public class DRLContextTest {
 //                getLastIntegerValue(parser.getEditorInterface().get(0)
 //                        .getContent()));
 //    }
-//
-//    @SuppressWarnings("unchecked")
-//    private int getLastIntegerValue(LinkedList list) {
-//        //System.out.println(list.toString());
-//        int lastIntergerValue = -1;
-//        for (Object object : list) {
-//            if (object instanceof Integer) {
-//                lastIntergerValue = (Integer) object;
-//            }
-//        }
-//        return lastIntergerValue;
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    private DroolsToken getLastTokenOnList(LinkedList list) {
-//        DroolsToken lastToken = null;
-//        for (Object object : list) {
-//            if (object instanceof DroolsToken) {
-//                lastToken = (DroolsToken) object;
-//            }
-//        }
-//        return lastToken;
-//    }
-//
-//    /**
-//     * @return An instance of a RuleParser should you need one (most folks will
-//     *         not).
-//     */
-//    private DRLParser getParser(final String text) {
-//        DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
-//                new ANTLRStringStream(text))));
-//        return parser;
-//    }
+
+    @SuppressWarnings("unchecked")
+    private int getLastIntegerValue(LinkedList list) {
+        //System.out.println(list.toString());
+        int lastIntergerValue = -1;
+        for (Object object : list) {
+            if (object instanceof Integer) {
+                lastIntergerValue = (Integer) object;
+            }
+        }
+        return lastIntergerValue;
+    }
+
+    @SuppressWarnings("unchecked")
+    private DroolsToken getLastTokenOnList(LinkedList list) {
+        DroolsToken lastToken = null;
+        for (Object object : list) {
+            if (object instanceof DroolsToken) {
+                lastToken = (DroolsToken) object;
+            }
+        }
+        return lastToken;
+    }
+
+    /**
+     * @return An instance of a RuleParser should you need one (most folks will
+     *         not).
+     */
+    private DRLParser getParser(final String text) {
+        DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
+                new ANTLRStringStream(text))));
+        return parser;
+    }
 }

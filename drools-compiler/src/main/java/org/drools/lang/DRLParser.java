@@ -16,6 +16,7 @@ package org.drools.lang;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.MismatchedTokenException;
@@ -2774,6 +2775,10 @@ public class DRLParser {
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.FROM ) ) {
             patternSource( pattern );
         }
+        
+        if ( state.backtracking == 0 ) {
+            helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+        }
     }
 
     /**
@@ -2906,10 +2911,28 @@ public class DRLParser {
 
         int first = input.index();
         exprParser.getHelper().setHasOperator( false ); // resetting
-        exprParser.conditionalOrExpression();
-        if ( state.backtracking == 0 ) {
-            if ( input.LA( 1 ) != DRLLexer.EOF || input.get( input.index() - 1 ).getType() == DRLLexer.WS ) {
-                helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
+        try {
+            exprParser.conditionalOrExpression();
+        } finally {
+            if ( state.backtracking == 0 ) {
+                if ( input.LA( 1 ) != DRLLexer.EOF ) {
+                    helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
+                } else if( lastTokenWasWhiteSpace() ) {
+                    int location = getCurrentLocation();
+                    if( location == Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR && exprParser.getHelper().getHasOperator() ) {
+                        // this is necessary because the DFA might have failed prediction before accepting the operator
+                        helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT );
+    //                } else {
+    //                    helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
+                    }
+                } else {
+                    int location = getCurrentLocation();
+                    if( location == Location.LOCATION_LHS_INSIDE_CONDITION_END ) {
+                        helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT );
+                    } else {
+                        helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_START );
+                    }
+                }
             }
         }
         if ( state.failed ) return;
@@ -2930,6 +2953,38 @@ public class DRLParser {
             constrDescr.setEndCharacter( ((CommonToken)input.get( last )).getStopIndex() );
         }
     }
+
+    private boolean lastTokenWasWhiteSpace() {
+        int index = input.index();
+        while( index >= 0 ) {
+            int type = input.get( index ).getType();
+            switch( type ) {
+                case DRLLexer.EOF:
+                    index--;
+                    break;
+                case DRLLexer.WS:
+                    return true;
+                default:
+                    return false;
+           }
+        }
+        return false;
+    }
+    
+    private int getCurrentLocation() {
+        LinkedList<DroolsSentence> ei = helper.getEditorInterface();
+        LinkedList<?> content = ei.getLast().getContent();
+        // the following call is efficient as it points to the tail of the list
+        ListIterator<?> listIterator = content.listIterator( content.size() );
+        while( listIterator.hasPrevious() ) {
+            Object previous = listIterator.previous();
+            if (previous instanceof Integer) {
+                return ((Integer) previous).intValue();
+            }
+        }
+        return Location.LOCATION_UNKNOWN;
+    }
+    
 
     /**
      * patternFilter :=   OVER filterDef 
@@ -3986,7 +4041,7 @@ public class DRLParser {
             int nests = 0;
             first = input.index();
 
-            while ( input.LA( 1 ) != DRLLexer.EOF && input.LA( 1 ) != rightDelimiter || nests > 0 ) {
+            while ( input.LA( 1 ) != DRLLexer.EOF && ( input.LA( 1 ) != rightDelimiter || nests > 0 ) ) {
                 if ( input.LA( 1 ) == rightDelimiter ) {
                     nests--;
                 } else if ( input.LA( 1 ) == leftDelimiter ) {
