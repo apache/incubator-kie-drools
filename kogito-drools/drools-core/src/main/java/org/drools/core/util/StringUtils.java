@@ -1296,4 +1296,44 @@ public class StringUtils {
         }
         return i;
     }
+
+    public static List<String> splitArgumentsList(String string) {
+        List<String> args = new ArrayList<String>();
+        int lastStart = 0;
+        int nestedParam = 0;
+        boolean isQuoted = false;
+        for (int i = 0; i < string.length(); i++) {
+            switch (string.charAt(i)) {
+                case ',':
+                    if (!isQuoted && nestedParam == 0) {
+                        args.add(string.substring(lastStart, i).trim());
+                        lastStart = i+1;
+                    }
+                    break;
+                case '(':
+                case '[':
+                case '{':
+                    nestedParam++;
+                    break;
+                case ')':
+                case ']':
+                case '}':
+                    nestedParam--;
+                    break;
+                case '"':
+                    isQuoted = !isQuoted;
+                    break;
+                case '\\':
+                    if (i+1 < string.length() && string.charAt(i+1) == '"') {
+                        i++;
+                    }
+                    break;
+            }
+        }
+        String lastArg = string.substring(lastStart, string.length()).trim();
+        if (lastArg.length() > 0) {
+            args.add(lastArg);
+        }
+        return args;
+    }
 }
