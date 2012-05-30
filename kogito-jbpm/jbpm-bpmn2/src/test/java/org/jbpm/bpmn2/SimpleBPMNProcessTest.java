@@ -67,6 +67,8 @@ import org.jbpm.process.instance.impl.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.instance.node.DynamicNodeInstance;
+import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -1244,6 +1246,200 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
 
+	public void testAdHocSubProcessAutoCompleteDynamicTask() throws Exception {
+		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory
+				.newKnowledgeBuilderConfiguration();
+		((PackageBuilderConfiguration) conf).initSemanticModules();
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNDISemanticModule());
+		// ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
+		XmlProcessReader processReader = new XmlProcessReader(
+				((PackageBuilderConfiguration) conf).getSemanticModules(),
+				getClass().getClassLoader());
+		List<Process> processes = processReader
+				.read(SimpleBPMNProcessTest.class
+						.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.bpmn2"));
+		assertNotNull(processes);
+		assertEquals(1, processes.size());
+		RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder(conf);
+		// logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
+				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory
+				.newClassPathResource("BPMN2-AdHocSubProcess.drl"),
+				ResourceType.DRL);
+		if (!kbuilder.getErrors().isEmpty()) {
+			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+				logger.error(error.toString());
+			}
+			throw new IllegalArgumentException(
+					"Errors while parsing knowledge base");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
+				workItemHandler2);
+		ProcessInstance processInstance = ksession
+				.startProcess("AdHocSubProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+		DynamicNodeInstance dynamicContext = (DynamicNodeInstance)
+			((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
+		DynamicUtils.addDynamicWorkItem(dynamicContext, ksession, "OtherTask", new HashMap<String, Object>());
+		WorkItem workItem = workItemHandler.getWorkItem();
+		assertNull(workItem);
+		ksession = restoreSession(ksession, true);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		ksession.fireAllRules();
+		workItem = workItemHandler.getWorkItem();
+		assertNotNull(workItem);
+		ksession = restoreSession(ksession, true);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		workItem = workItemHandler2.getWorkItem();
+		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+	}
+	
+	public void testAdHocSubProcessAutoCompleteDynamicSubProcess() throws Exception {
+		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory
+				.newKnowledgeBuilderConfiguration();
+		((PackageBuilderConfiguration) conf).initSemanticModules();
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNDISemanticModule());
+		// ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
+		XmlProcessReader processReader = new XmlProcessReader(
+				((PackageBuilderConfiguration) conf).getSemanticModules(),
+				getClass().getClassLoader());
+		List<Process> processes = processReader
+				.read(SimpleBPMNProcessTest.class
+						.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.bpmn2"));
+		assertNotNull(processes);
+		assertEquals(1, processes.size());
+		RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder(conf);
+		// logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
+				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory
+				.newClassPathResource("BPMN2-AdHocSubProcess.drl"),
+				ResourceType.DRL);
+		kbuilder.add(ResourceFactory
+				.newClassPathResource("BPMN2-MinimalProcess.bpmn2"),
+				ResourceType.BPMN2);
+		if (!kbuilder.getErrors().isEmpty()) {
+			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+				logger.error(error.toString());
+			}
+			throw new IllegalArgumentException(
+					"Errors while parsing knowledge base");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
+				workItemHandler2);
+		ProcessInstance processInstance = ksession
+				.startProcess("AdHocSubProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+		ksession.fireAllRules();
+		DynamicNodeInstance dynamicContext = (DynamicNodeInstance)
+			((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
+		DynamicUtils.addDynamicSubProcess(dynamicContext, ksession, "Minimal", new HashMap<String, Object>());
+		ksession = restoreSession(ksession, true);
+		WorkItem workItem = workItemHandler.getWorkItem();
+		assertNotNull(workItem);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+//		assertProcessInstanceActive(processInstance.getId(), ksession);
+//		workItem = workItemHandler2.getWorkItem();
+//		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+	}
+	
+	public void testAdHocSubProcessAutoCompleteDynamicSubProcess2() throws Exception {
+		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory
+				.newKnowledgeBuilderConfiguration();
+		((PackageBuilderConfiguration) conf).initSemanticModules();
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNDISemanticModule());
+		// ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
+		XmlProcessReader processReader = new XmlProcessReader(
+				((PackageBuilderConfiguration) conf).getSemanticModules(),
+				getClass().getClassLoader());
+		List<Process> processes = processReader
+				.read(SimpleBPMNProcessTest.class
+						.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.bpmn2"));
+		assertNotNull(processes);
+		assertEquals(1, processes.size());
+		RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder(conf);
+		// logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
+				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory
+				.newClassPathResource("BPMN2-AdHocSubProcess.drl"),
+				ResourceType.DRL);
+		kbuilder.add(ResourceFactory
+				.newClassPathResource("BPMN2-ServiceProcess.bpmn2"),
+				ResourceType.BPMN2);
+		if (!kbuilder.getErrors().isEmpty()) {
+			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+				logger.error(error.toString());
+			}
+			throw new IllegalArgumentException(
+					"Errors while parsing knowledge base");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+				workItemHandler2);
+		ProcessInstance processInstance = ksession
+				.startProcess("AdHocSubProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+		ksession.fireAllRules();
+		DynamicNodeInstance dynamicContext = (DynamicNodeInstance)
+			((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
+		DynamicUtils.addDynamicSubProcess(dynamicContext, ksession, "ServiceProcess", new HashMap<String, Object>());
+		ksession = restoreSession(ksession, true);
+		WorkItem workItem = workItemHandler.getWorkItem();
+		assertNotNull(workItem);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		workItem = workItemHandler2.getWorkItem();
+		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+	}
+	
 	public void testAdHocProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-AdHocProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -1255,6 +1451,55 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		logger.debug("Triggering node");
 		ksession.signalEvent("Task1", null, processInstance.getId());
 		assertProcessInstanceActive(processInstance.getId(), ksession);
+		ksession.signalEvent("User1", null, processInstance.getId());
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		ksession.insert(new Person());
+		ksession.signalEvent("Task3", null, processInstance.getId());
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+	}
+
+	public void testAdHocProcessDynamicTask() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-AdHocProcess.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+		ksession = restoreSession(ksession, true);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				new DoNothingWorkItemHandler());
+		logger.debug("Triggering node");
+		ksession.signalEvent("Task1", null, processInstance.getId());
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
+				workItemHandler2);
+		DynamicUtils.addDynamicWorkItem(processInstance, ksession, "OtherTask", new HashMap<String, Object>());
+		WorkItem workItem = workItemHandler2.getWorkItem();
+		assertNotNull(workItem);
+		ksession = restoreSession(ksession, true);
+		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		ksession.signalEvent("User1", null, processInstance.getId());
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		ksession.insert(new Person());
+		ksession.signalEvent("Task3", null, processInstance.getId());
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+	}
+
+	public void testAdHocProcessDynamicSubProcess() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-AdHocProcess.bpmn2", "BPMN2-MinimalProcess.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+		ksession = restoreSession(ksession, true);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				new DoNothingWorkItemHandler());
+		logger.debug("Triggering node");
+		ksession.signalEvent("Task1", null, processInstance.getId());
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
+				workItemHandler2);
+		DynamicUtils.addDynamicSubProcess(processInstance, ksession, "Minimal", new HashMap<String, Object>());
+		ksession = restoreSession(ksession, true);
 		ksession.signalEvent("User1", null, processInstance.getId());
 		assertProcessInstanceActive(processInstance.getId(), ksession);
 		ksession.insert(new Person());

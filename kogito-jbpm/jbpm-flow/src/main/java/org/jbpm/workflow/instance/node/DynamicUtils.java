@@ -18,47 +18,143 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.Map;
 
+import org.drools.command.CommandService;
+import org.drools.command.Context;
+import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.WorkItem;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 public class DynamicUtils {
 	
 	public static void addDynamicWorkItem(
-			DynamicNodeInstance dynamicContext, KnowledgeRuntime ksession,
+			final DynamicNodeInstance dynamicContext, KnowledgeRuntime ksession,
 			String workItemName, Map<String, Object> parameters) {
-		WorkflowProcessInstance processInstance = dynamicContext.getProcessInstance();
-		WorkItemImpl workItem = new WorkItemImpl();
+		final WorkflowProcessInstance processInstance = dynamicContext.getProcessInstance();
+		internalAddDynamicWorkItem(processInstance, dynamicContext, ksession, workItemName, parameters);
+	}
+	
+	public static void addDynamicWorkItem(
+			final org.drools.runtime.process.ProcessInstance dynamicProcessInstance, KnowledgeRuntime ksession,
+			String workItemName, Map<String, Object> parameters) {
+		internalAddDynamicWorkItem((WorkflowProcessInstance) dynamicProcessInstance, null, ksession, workItemName, parameters);
+	}
+	
+	private static void internalAddDynamicWorkItem(
+			final WorkflowProcessInstance processInstance, final DynamicNodeInstance dynamicContext, 
+			KnowledgeRuntime ksession, String workItemName, Map<String, Object> parameters) {
+		final WorkItemImpl workItem = new WorkItemImpl();
 		workItem.setState(WorkItem.ACTIVE);
 		workItem.setProcessInstanceId(processInstance.getId());
 		workItem.setName(workItemName);
 		workItem.setParameters(parameters);
-		WorkItemNodeInstance workItemNodeInstance = new WorkItemNodeInstance();
-    	workItemNodeInstance.setNodeInstanceContainer(dynamicContext);
+		final WorkItemNodeInstance workItemNodeInstance = new WorkItemNodeInstance();
+    	workItemNodeInstance.setNodeInstanceContainer(dynamicContext == null ? processInstance : dynamicContext);
 		workItemNodeInstance.setProcessInstance(processInstance);
 		workItemNodeInstance.internalSetWorkItem(workItem);
     	workItemNodeInstance.addEventListeners();
+    	if (ksession instanceof StatefulKnowledgeSessionImpl) {
+    		executeWorkItem((StatefulKnowledgeSessionImpl) ksession, workItem, workItemNodeInstance);
+		} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
+    		CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+    		commandService.execute(new GenericCommand<Void>() {
+				private static final long serialVersionUID = 5L;
+				public Void execute(Context context) {
+                    StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+                    WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstance.getId());
+                    workItemNodeInstance.setProcessInstance(realProcessInstance);
+                    if (dynamicContext == null) {
+                    	workItemNodeInstance.setNodeInstanceContainer(realProcessInstance);
+                    } else {
+                    	DynamicNodeInstance realDynamicContext = findDynamicContext(realProcessInstance, dynamicContext.getUniqueId());
+                    	workItemNodeInstance.setNodeInstanceContainer(realDynamicContext);
+                    }
+                    executeWorkItem((StatefulKnowledgeSessionImpl) ksession, workItem, workItemNodeInstance);
+                    return null;
+                }
+            });
+    	} else {
+    		throw new IllegalArgumentException("Unsupported ksession: " + ksession == null ? "null" : ksession.getClass().getName());
+    	}
+	}
+	
+	private static void executeWorkItem(StatefulKnowledgeSessionImpl ksession, WorkItemImpl workItem, WorkItemNodeInstance workItemNodeInstance) {
 		ProcessEventSupport eventSupport = ((InternalProcessRuntime)
-			((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();
+			ksession.getProcessRuntime()).getProcessEventSupport();
 		eventSupport.fireBeforeNodeTriggered(workItemNodeInstance, ksession);
 		((WorkItemManager) ksession.getWorkItemManager()).internalExecuteWorkItem(workItem);
+		workItemNodeInstance.internalSetWorkItemId(workItem.getId());
 		eventSupport.fireAfterNodeTriggered(workItemNodeInstance, ksession);
+	}
+	
+	private static DynamicNodeInstance findDynamicContext(WorkflowProcessInstance processInstance, String uniqueId) {
+		for (NodeInstance nodeInstance: ((WorkflowProcessInstanceImpl) processInstance).getNodeInstances(true)) {
+			if (uniqueId.equals(((NodeInstanceImpl) nodeInstance).getUniqueId())) {
+				return (DynamicNodeInstance) nodeInstance;
+			}
+		}
+		throw new IllegalArgumentException("Could not find node instance " + uniqueId);
 	}
 
 	public static void addDynamicSubProcess(
-			DynamicNodeInstance dynamicContext, KnowledgeRuntime ksession,
-			String processId, Map<String, Object> parameters) {
-		WorkflowProcessInstance processInstance = dynamicContext.getProcessInstance();
-		SubProcessNodeInstance subProcessNodeInstance = new SubProcessNodeInstance();
-    	subProcessNodeInstance.setNodeInstanceContainer(dynamicContext);
+			final DynamicNodeInstance dynamicContext, KnowledgeRuntime ksession,
+			final String processId, final Map<String, Object> parameters) {
+		final WorkflowProcessInstance processInstance = dynamicContext.getProcessInstance();
+		internalAddDynamicSubProcess(processInstance, dynamicContext, ksession, processId, parameters);
+	}
+	
+	public static void addDynamicSubProcess(
+			final org.drools.runtime.process.ProcessInstance processInstance, KnowledgeRuntime ksession,
+			final String processId, final Map<String, Object> parameters) {
+		internalAddDynamicSubProcess((WorkflowProcessInstance) processInstance, null, ksession, processId, parameters);
+	}
+	
+	public static void internalAddDynamicSubProcess(
+			final WorkflowProcessInstance processInstance, final DynamicNodeInstance dynamicContext,
+			KnowledgeRuntime ksession, final String processId, final Map<String, Object> parameters) {
+		final SubProcessNodeInstance subProcessNodeInstance = new SubProcessNodeInstance();
+    	subProcessNodeInstance.setNodeInstanceContainer(dynamicContext == null ? processInstance : dynamicContext);
 		subProcessNodeInstance.setProcessInstance(processInstance);
+    	if (ksession instanceof StatefulKnowledgeSessionImpl) {
+    		executeSubProcess((StatefulKnowledgeSessionImpl) ksession, processId, parameters, processInstance, subProcessNodeInstance);
+    	} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
+    		CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+    		commandService.execute(new GenericCommand<Void>() {
+				private static final long serialVersionUID = 5L;
+				public Void execute(Context context) {
+                    StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+                    WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstance.getId());
+                    subProcessNodeInstance.setProcessInstance(realProcessInstance);
+                    if (dynamicContext == null) {
+                    	subProcessNodeInstance.setNodeInstanceContainer(realProcessInstance);
+                    } else {
+	                    DynamicNodeInstance realDynamicContext = findDynamicContext(realProcessInstance, dynamicContext.getUniqueId());
+	                    subProcessNodeInstance.setNodeInstanceContainer(realDynamicContext);
+                    }
+                    executeSubProcess((StatefulKnowledgeSessionImpl) ksession, processId, parameters, processInstance, subProcessNodeInstance);
+                    return null;
+                }
+            });
+    	} else {
+    		throw new IllegalArgumentException("Unsupported ksession: " + ksession == null ? "null" : ksession.getClass().getName());
+    	}
+	}
+	
+	private static void executeSubProcess(StatefulKnowledgeSessionImpl ksession, String processId, Map<String, Object> parameters, ProcessInstance processInstance, SubProcessNodeInstance subProcessNodeInstance) {
 		Process process = ksession.getKnowledgeBase().getProcess(processId);
         if (process == null) {
         	System.err.println("Could not find process " + processId);

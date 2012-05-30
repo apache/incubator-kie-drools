@@ -270,8 +270,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		unregisterExternalEventNodeListeners();
 		
 		for (NodeInstance nodeInstance : nodeInstances) {
-			if (nodeInstance instanceof StateBasedNodeInstance) {
-				((StateBasedNodeInstance) nodeInstance).removeEventListeners();
+			if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
+				((EventBasedNodeInstanceInterface) nodeInstance).removeEventListeners();
 			}
 		}
 		super.disconnect();
