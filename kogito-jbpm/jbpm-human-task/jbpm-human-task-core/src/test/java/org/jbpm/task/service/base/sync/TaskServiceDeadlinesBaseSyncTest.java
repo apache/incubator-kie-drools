@@ -35,9 +35,11 @@ import org.jbpm.task.BaseTest;
 import org.jbpm.task.Content;
 import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
+import org.jbpm.task.User;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
 import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.ContentData;
@@ -190,8 +192,291 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
 
     }
+    
+    public void testDelayedEmailNotificationOnDeadlineTaskCompleted() throws Exception {
+        Map vars = new HashMap();
+        vars.put("users", users);
+        vars.put("groups", groups);
+        vars.put("now", new Date());
 
-            
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        notificationHandler.setManager(manager);
+
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
+        userInfo.getEmails().put(users.get("darth"), "darth@domain.com");
+
+        userInfo.getLanguages().put(users.get("tony"), "en-UK");
+        userInfo.getLanguages().put(users.get("darth"), "en-UK");
+        notificationHandler.setUserInfo(userInfo);
+
+        taskService.setEscalatedDeadlineHandler(notificationHandler);
+
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+        Task task = (Task) eval(reader, vars);
+        
+        task.getTaskData().setSkipable(true);
+        PeopleAssignments assignments = new PeopleAssignments();
+        List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
+        ba.add(new User("Administrator"));
+        assignments.setBusinessAdministrators(ba);
+        
+        List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
+        po.add(new User("Administrator"));
+        assignments.setPotentialOwners(po);
+        
+        task.setPeopleAssignments(assignments);
+        client.addTask(task, null);
+        long taskId = task.getId();
+
+        Content content = new Content();
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("subject", "My Subject");
+        params.put("body", "My Body");
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        content.setContent(marshalledObject.getContent());
+        client.setDocumentContent(taskId, content);
+        long contentId = content.getId();
+        
+        content = client.getContent(contentId);
+        Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        
+        client.start(taskId, "Administrator");
+        client.complete(taskId, "Administrator", null);
+        // emails should not be set yet
+        assertEquals(0, getWiser().getMessages().size());
+        Thread.sleep(100);
+
+        // nor yet
+        assertEquals(0, getWiser().getMessages().size());
+
+        long time = 0;
+        while (getWiser().getMessages().size() != 2 && time < 15000) {
+            Thread.sleep(500);
+            time += 500;
+        }
+
+        // no email should ne sent as task was completed before deadline was triggered
+        assertEquals(0, getWiser().getMessages().size());
+        
+        assertEquals(Status.Completed, client.getTask(taskId).getTaskData().getStatus());
+    }
+    
+    public void testDelayedEmailNotificationOnDeadlineTaskFailed() throws Exception {
+        Map vars = new HashMap();
+        vars.put("users", users);
+        vars.put("groups", groups);
+        vars.put("now", new Date());
+
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        notificationHandler.setManager(manager);
+
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
+        userInfo.getEmails().put(users.get("darth"), "darth@domain.com");
+
+        userInfo.getLanguages().put(users.get("tony"), "en-UK");
+        userInfo.getLanguages().put(users.get("darth"), "en-UK");
+        notificationHandler.setUserInfo(userInfo);
+
+        taskService.setEscalatedDeadlineHandler(notificationHandler);
+
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+        Task task = (Task) eval(reader, vars);
+        
+        task.getTaskData().setSkipable(true);
+        PeopleAssignments assignments = new PeopleAssignments();
+        List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
+        ba.add(new User("Administrator"));
+        assignments.setBusinessAdministrators(ba);
+        
+        List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
+        po.add(new User("Administrator"));
+        assignments.setPotentialOwners(po);
+        
+        task.setPeopleAssignments(assignments);
+        client.addTask(task, null);
+        long taskId = task.getId();
+
+        Content content = new Content();
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("subject", "My Subject");
+        params.put("body", "My Body");
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        content.setContent(marshalledObject.getContent());
+        client.setDocumentContent(taskId, content);
+        long contentId = content.getId();
+        
+        content = client.getContent(contentId);
+        Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        
+        client.start(taskId, "Administrator");
+        client.fail(taskId, "Administrator", null);
+        // emails should not be set yet
+        assertEquals(0, getWiser().getMessages().size());
+        Thread.sleep(100);
+
+        // nor yet
+        assertEquals(0, getWiser().getMessages().size());
+
+        long time = 0;
+        while (getWiser().getMessages().size() != 2 && time < 15000) {
+            Thread.sleep(500);
+            time += 500;
+        }
+
+        // no email should ne sent as task was completed before deadline was triggered
+        assertEquals(0, getWiser().getMessages().size());
+        
+        assertEquals(Status.Failed, client.getTask(taskId).getTaskData().getStatus());
+    }
+
+    public void testDelayedEmailNotificationOnDeadlineTaskSkipped() throws Exception {
+        Map vars = new HashMap();
+        vars.put("users", users);
+        vars.put("groups", groups);
+        vars.put("now", new Date());
+
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        notificationHandler.setManager(manager);
+
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
+        userInfo.getEmails().put(users.get("darth"), "darth@domain.com");
+
+        userInfo.getLanguages().put(users.get("tony"), "en-UK");
+        userInfo.getLanguages().put(users.get("darth"), "en-UK");
+        notificationHandler.setUserInfo(userInfo);
+
+        taskService.setEscalatedDeadlineHandler(notificationHandler);
+
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+        Task task = (Task) eval(reader, vars);
+        
+        task.getTaskData().setSkipable(true);
+        PeopleAssignments assignments = new PeopleAssignments();
+        List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
+        ba.add(new User("Administrator"));
+        assignments.setBusinessAdministrators(ba);
+        
+        List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
+        po.add(new User("Administrator"));
+        assignments.setPotentialOwners(po);
+        
+        task.setPeopleAssignments(assignments);
+        client.addTask(task, null);
+        long taskId = task.getId();
+
+        Content content = new Content();
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("subject", "My Subject");
+        params.put("body", "My Body");
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        content.setContent(marshalledObject.getContent());
+        client.setDocumentContent(taskId, content);
+        long contentId = content.getId();
+        
+        content = client.getContent(contentId);
+        Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        
+        client.skip(taskId, "Administrator");
+        // emails should not be set yet
+        assertEquals(0, getWiser().getMessages().size());
+        Thread.sleep(100);
+
+        // nor yet
+        assertEquals(0, getWiser().getMessages().size());
+
+        long time = 0;
+        while (getWiser().getMessages().size() != 2 && time < 15000) {
+            Thread.sleep(500);
+            time += 500;
+        }
+
+        // no email should ne sent as task was completed before deadline was triggered
+        assertEquals(0, getWiser().getMessages().size());
+        assertEquals(Status.Obsolete, client.getTask(taskId).getTaskData().getStatus());
+    }
+         
+    public void testDelayedEmailNotificationOnDeadlineTaskExited() throws Exception {
+        Map vars = new HashMap();
+        vars.put("users", users);
+        vars.put("groups", groups);
+        vars.put("now", new Date());
+
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        notificationHandler.setManager(manager);
+
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
+        userInfo.getEmails().put(users.get("darth"), "darth@domain.com");
+
+        userInfo.getLanguages().put(users.get("tony"), "en-UK");
+        userInfo.getLanguages().put(users.get("darth"), "en-UK");
+        notificationHandler.setUserInfo(userInfo);
+
+        taskService.setEscalatedDeadlineHandler(notificationHandler);
+
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+        Task task = (Task) eval(reader, vars);
+        
+        task.getTaskData().setSkipable(true);
+        PeopleAssignments assignments = new PeopleAssignments();
+        List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
+        ba.add(new User("Administrator"));
+        assignments.setBusinessAdministrators(ba);
+        
+        List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
+        po.add(new User("Administrator"));
+        assignments.setPotentialOwners(po);
+        
+        task.setPeopleAssignments(assignments);
+        client.addTask(task, null);
+        long taskId = task.getId();
+
+        Content content = new Content();
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("subject", "My Subject");
+        params.put("body", "My Body");
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        content.setContent(marshalledObject.getContent());
+        client.setDocumentContent(taskId, content);
+        long contentId = content.getId();
+        
+        content = client.getContent(contentId);
+        Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        
+        client.exit(taskId, "Administrator");
+        // emails should not be set yet
+        assertEquals(0, getWiser().getMessages().size());
+        Thread.sleep(100);
+
+        // nor yet
+        assertEquals(0, getWiser().getMessages().size());
+
+        long time = 0;
+        while (getWiser().getMessages().size() != 2 && time < 15000) {
+            Thread.sleep(500);
+            time += 500;
+        }
+
+        // no email should ne sent as task was completed before deadline was triggered
+        assertEquals(0, getWiser().getMessages().size());
+        
+        assertEquals(Status.Exited, client.getTask(taskId).getTaskData().getStatus());
+    }
     
     //TODO: this test is not working for the local implementation and needs to be fixed  
     public void FIXtestDelayedReassignmentOnDeadline() throws Exception {

@@ -22,9 +22,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -68,6 +73,9 @@ public class TaskService {
     private SystemEventListener systemEventListener;
 
     private Map<Operation, List<OperationCommand>> operations;
+    
+    private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> scheduledTaskDeadlines 
+                                                        = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
 
     /**
      * Constructor in which no EscalatedDeadlineHandler is given. 
@@ -170,9 +178,35 @@ public class TaskService {
 
     public void schedule(ScheduledTaskDeadline deadline,
                          long delay) {
-        scheduler.schedule(deadline,
+        ScheduledFuture<ScheduledTaskDeadline> scheduled = scheduler.schedule(deadline,
                 delay,
                 TimeUnit.MILLISECONDS);
+        List<ScheduledFuture<ScheduledTaskDeadline>> knownFeatures = scheduledTaskDeadlines.get(deadline.getTaskId());
+        if (knownFeatures == null) {
+            knownFeatures = new CopyOnWriteArrayList<ScheduledFuture<ScheduledTaskDeadline>>();
+        }
+        knownFeatures.add(scheduled);
+        
+        this.scheduledTaskDeadlines.put(deadline.getTaskId(), knownFeatures);
+    }
+    
+    public void unschedule(long taskId) {
+        List<ScheduledFuture<ScheduledTaskDeadline>> knownFeatures = scheduledTaskDeadlines.remove(taskId);
+        if (knownFeatures == null) {
+            return;
+        }
+        Iterator<ScheduledFuture<ScheduledTaskDeadline>> it = knownFeatures.iterator();
+        while (it.hasNext()) {
+            ScheduledFuture<ScheduledTaskDeadline> scheduled = it.next();
+            try {
+                if (!scheduled.isDone() && !scheduled.isCancelled()) {
+                    scheduled.cancel(true);
+                }
+                
+            } catch (Exception e) {
+                logger.error("Error while cancelling scheduled deadline task for Task with id " + taskId, e);
+            }
+        }       
     }
 
     public Map<Operation, List<OperationCommand>> getOperations() {

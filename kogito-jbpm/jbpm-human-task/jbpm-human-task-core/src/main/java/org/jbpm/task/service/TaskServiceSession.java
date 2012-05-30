@@ -478,6 +478,10 @@ public class TaskServiceSession {
                 postTaskSkipOperation(task, userId);
                 break;
             }
+            case Exit: {
+                postTaskExitOperation(task, userId);
+                break;
+            }
         }
 
     }
@@ -500,6 +504,8 @@ public class TaskServiceSession {
     }
     
     private void postTaskCompleteOperation(final Task task) {
+        service.unschedule(task.getId());
+        
         // trigger event support
         service.getEventSupport().fireTaskCompleted(task.getId(), task.getTaskData().getActualOwner().getId());
     }
@@ -512,6 +518,8 @@ public class TaskServiceSession {
     }
     
     private void postTaskFailOperation(final Task task) {
+        service.unschedule(task.getId());
+        
     	// trigger event support
         service.getEventSupport().fireTaskFailed(task.getId(), task.getTaskData().getActualOwner().getId());
     }
@@ -521,8 +529,14 @@ public class TaskServiceSession {
     }
 
     private void postTaskSkipOperation(final Task task, final String userId) {
+        service.unschedule(task.getId());
+        
         // trigger event support
         service.getEventSupport().fireTaskSkipped(task.getId(), userId);
+    }
+    
+    private void postTaskExitOperation(final Task task, final String userId) {
+        service.unschedule(task.getId());
     }
     
     public Task getTask(final long taskId) {

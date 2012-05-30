@@ -69,6 +69,8 @@ public class DefaultEscalatedDeadlineHandler
     
     private ClassLoader  classLoader;
     
+    protected List<Status> validStatuses = new ArrayList<Status>(); 
+    
     public DefaultEscalatedDeadlineHandler(Properties properties) {
         handler = new EmailWorkItemHandler();
         
@@ -81,6 +83,7 @@ public class DefaultEscalatedDeadlineHandler
         replyTo = properties.getProperty( "replyTo", null );
         
         handler.setConnection( host, port, user, password );
+        setValidStatuses();
     }
     
     public DefaultEscalatedDeadlineHandler(Properties properties, ClassLoader classLoader) {
@@ -96,6 +99,7 @@ public class DefaultEscalatedDeadlineHandler
         
         handler.setConnection( host, port, user, password );
         this.classLoader = classLoader;
+        setValidStatuses();
     }
     
     public DefaultEscalatedDeadlineHandler() {
@@ -111,7 +115,7 @@ public class DefaultEscalatedDeadlineHandler
         replyTo = conf.getProperty( "replyTo", null );
         
         handler.setConnection( host, port, user, password );
- 
+        setValidStatuses();
     }
     
     public UserInfo getUserInfo() {
@@ -168,10 +172,10 @@ public class DefaultEscalatedDeadlineHandler
                                          Deadline deadline,
                                          Content content,
                                          TaskService service) {
-        if ( deadline == null || deadline.getEscalations() == null ) {
+        if ( deadline == null || deadline.getEscalations() == null || !isInValidStatus(task) ) {
             return;
         }
-
+        
         for ( Escalation escalation : deadline.getEscalations() ) {
 
             // we won't impl constraints for now
@@ -336,6 +340,23 @@ public class DefaultEscalatedDeadlineHandler
                      list );
         }
         list.add( user );
+    }
+
+    protected void setValidStatuses() {
+        validStatuses.add(Status.Created);
+        validStatuses.add(Status.Ready);
+        validStatuses.add(Status.Reserved);
+        validStatuses.add(Status.InProgress);
+        validStatuses.add(Status.Suspended);
+    }
+    
+    protected boolean isInValidStatus(Task task) {
+        
+        if (this.validStatuses.contains(task.getTaskData().getStatus())) {
+            return true;
+        }
+        return false;
+        
     }
 
 }
