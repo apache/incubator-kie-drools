@@ -49,6 +49,30 @@ public class Operator
                                                                                          false );
     public static final Operator               GREATER_OR_EQUAL = addOperatorToRegistry( ">=",
                                                                                          false );
+    
+    // Some operators are supported by the runtime and no longer require Drools specific implementations,
+    // so we are adding them directly to the cache:
+    public static final Operator  CONTAINS      = Operator.addOperatorToRegistry( "contains",
+                                                                                  false );
+    public static final Operator  NOT_CONTAINS  = Operator.addOperatorToRegistry( "contains",
+                                                                                  true );
+    public static final Operator  EXCLUDES      = Operator.addOperatorToRegistry( "excludes",
+                                                                                  false );
+    public static final Operator  NOT_EXCLUDES  = Operator.addOperatorToRegistry( "excludes",
+                                                                                  true );
+    public static final Operator  MEMBEROF      = Operator.addOperatorToRegistry( "memberOf",
+                                                                                  false );
+    public static final Operator  NOT_MEMBEROF  = Operator.addOperatorToRegistry( "memberOf",
+                                                                                  true );
+    public static final Operator  MATCHES       = Operator.addOperatorToRegistry( "matches",
+                                                                                  false );
+    public static final Operator  NOT_MATCHES   = Operator.addOperatorToRegistry( "matches",
+                                                                                  true );
+    public static final Operator  SOUNDSLIKE       = Operator.addOperatorToRegistry( "soundslike",
+                                                                                     false );
+    public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
+                                                                                     true );
+
 
     /**
      * Creates a new Operator instance for the given parameters,

@@ -256,7 +256,9 @@ inExpression returns [BaseDescr result]
           leftDescr = $left.result;
       }
     }
-    ((not_key in_key)=> not_key in=in_key LEFT_PAREN e1=expression 
+    ((not_key in_key)=> not_key in=in_key LEFT_PAREN 
+        {   helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+        e1=expression 
         {   descr = ConstraintConnectiveDescr.newAnd();
             RelationalExprDescr rel = new RelationalExprDescr( "!=", false, null, leftDescr, $e1.result );
             descr.addOrMerge( rel );
@@ -267,7 +269,9 @@ inExpression returns [BaseDescr result]
             descr.addOrMerge( rel );
         }
       )* RIGHT_PAREN
-    | in=in_key LEFT_PAREN e1=expression 
+    | in=in_key LEFT_PAREN 
+        {   helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+        e1=expression 
         {   descr = ConstraintConnectiveDescr.newOr();
             RelationalExprDescr rel = new RelationalExprDescr( "==", false, null, leftDescr, $e1.result );
             descr.addOrMerge( rel );
@@ -293,6 +297,7 @@ scope { BaseDescr lsd; }
                     new AtomicExprDescr( $left.text ) ; 
           $relationalExpression::lsd = $result;
       } 
+      helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
     }
   ( (orRestriction)=> right=orRestriction
          { if( buildDescr  ) {
@@ -329,7 +334,9 @@ andRestriction returns [BaseDescr result]
   ;    
   
 singleRestriction returns [BaseDescr result]
-  :  op=operator value=shiftExpression
+  :  op=operator 
+         { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+     value=shiftExpression
          { if( buildDescr  ) {
                BaseDescr descr = ( $value.result != null && 
                                  ( (!($value.result instanceof AtomicExprDescr)) || 
@@ -341,6 +348,7 @@ singleRestriction returns [BaseDescr result]
 	           $relationalExpression::lsd = new AtomicExprDescr( ((BindingDescr)$relationalExpression::lsd).getExpression() );
 	       }
            }
+           helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
          }
   |  LEFT_PAREN or=orRestriction RIGHT_PAREN  { $result = $or.result; }
   ;  
@@ -395,9 +403,9 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     |   (castExpression)=>castExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
         ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.COLON}? (var=ID COLON 
-                { hasBindings = true; if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
+                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
         | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.UNIFY}? (var=ID UNIFY 
-                { hasBindings = true; if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
+                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
         )?
         left=primary { if( buildDescr ) { $result = $left.result; } }
         ((selector)=>selector)* 
