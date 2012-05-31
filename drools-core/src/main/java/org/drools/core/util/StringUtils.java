@@ -513,7 +513,7 @@ public class StringUtils {
         if ( len == 0 ) {
             return EMPTY_STRING_ARRAY;
         }
-        final List list = new ArrayList();
+        final List<String> list = new ArrayList<String>();
         int i = 0, start = 0;
         boolean match = false;
         boolean lastMatch = false;
@@ -537,7 +537,7 @@ public class StringUtils {
             list.add( str.substring( start,
                                      i ) );
         }
-        return (String[]) list.toArray( new String[list.size()] );
+        return list.toArray( new String[list.size()] );
     }
 
     /**
@@ -655,7 +655,7 @@ public class StringUtils {
         if ( len == 0 ) {
             return EMPTY_STRING_ARRAY;
         }
-        final List list = new ArrayList();
+        final List<String> list = new ArrayList<String>();
         int sizePlus1 = 1;
         int i = 0, start = 0;
         boolean match = false;
@@ -732,7 +732,7 @@ public class StringUtils {
             list.add( str.substring( start,
                                      i ) );
         }
-        return (String[]) list.toArray( new String[list.size()] );
+        return list.toArray( new String[list.size()] );
     }
 
     /**
@@ -1089,15 +1089,13 @@ public class StringUtils {
     }
     
     public static String escapeXmlString(String string) {
-        StringBuffer sb = new StringBuffer(string.length());
+        StringBuilder sb = new StringBuilder(string.length());
         // true if last char was blank
         boolean lastWasBlankChar = false;
         int len = string.length();
-        char c;
 
-        for (int i = 0; i < len; i++)
-            {
-            c = string.charAt(i);
+        for (int i = 0; i < len; i++) {
+            char c = string.charAt(i);
             if (c == ' ') {
                 sb.append(' ');
             } else {
@@ -1114,18 +1112,18 @@ public class StringUtils {
                     sb.append("&gt;");
                 else {
                     int ci = 0xffff & c;
-                    if (ci < 160 )
+                    if (ci < 160 ) {
                         // nothing special only 7 Bit
                         sb.append(c);
-                    else {
+                    } else {
                         // Not 7 Bit use the unicode system
                         sb.append("&#");
                         sb.append(Integer.valueOf(ci).toString());
                         sb.append(';');
-                        }
                     }
                 }
             }
+        }
         return sb.toString();
     }    
     
@@ -1297,40 +1295,50 @@ public class StringUtils {
         return i;
     }
 
-    public static List<String> splitArgumentsList(String string) {
+    public static List<String> splitStatements(CharSequence string) {
+        return codeAwareSplitOnChar(string, ';');
+    }
+
+    public static List<String> splitArgumentsList(CharSequence string) {
+        return codeAwareSplitOnChar(string, ',');
+    }
+
+    private static List<String> codeAwareSplitOnChar(CharSequence string, char ch) {
         List<String> args = new ArrayList<String>();
         int lastStart = 0;
         int nestedParam = 0;
         boolean isQuoted = false;
         for (int i = 0; i < string.length(); i++) {
-            switch (string.charAt(i)) {
-                case ',':
-                    if (!isQuoted && nestedParam == 0) {
-                        args.add(string.substring(lastStart, i).trim());
-                        lastStart = i+1;
-                    }
-                    break;
-                case '(':
-                case '[':
-                case '{':
-                    nestedParam++;
-                    break;
-                case ')':
-                case ']':
-                case '}':
-                    nestedParam--;
-                    break;
-                case '"':
-                    isQuoted = !isQuoted;
-                    break;
-                case '\\':
-                    if (i+1 < string.length() && string.charAt(i+1) == '"') {
-                        i++;
-                    }
-                    break;
+            if (string.charAt(i) == ch) {
+                if (!isQuoted && nestedParam == 0) {
+                    args.add(string.subSequence(lastStart, i).toString().trim());
+                    lastStart = i+1;
+                }
+            } else {
+                switch (string.charAt(i)) {
+                    case '(':
+                    case '[':
+                    case '{':
+                        nestedParam++;
+                        break;
+                    case ')':
+                    case ']':
+                    case '}':
+                        nestedParam--;
+                        break;
+                    case '"':
+                        isQuoted = !isQuoted;
+                        break;
+                    case '\\':
+                        if (i+1 < string.length() && string.charAt(i+1) == '"') {
+                            i++;
+                        }
+                        break;
+
+                }
             }
         }
-        String lastArg = string.substring(lastStart, string.length()).trim();
+        String lastArg = string.subSequence(lastStart, string.length()).toString().trim();
         if (lastArg.length() > 0) {
             args.add(lastArg);
         }

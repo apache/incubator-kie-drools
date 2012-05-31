@@ -96,7 +96,7 @@ public class JavaAccumulateBuilder
         Map<String, Declaration> declsInScope = context.getDeclarationResolver().getDeclarations( context.getRule() );
         Map<String, Class< ? >> declCls = DeclarationScopeResolver.getDeclarationClasses( declsInScope );
 
-        Accumulate accumulate = null;
+        Accumulate accumulate;
         if ( accumDescr.isExternalFunction() ) {
             // if it uses 1+ external function, build methods for them
             accumulate = buildExternalFunctionCall( context,
@@ -124,12 +124,10 @@ public class JavaAccumulateBuilder
                                                   Map<String, Declaration> declsInScope,
                                                   Map<String, Class< ? >> declCls,
                                                   final boolean readLocalsFromTuple) {
-        Accumulate accumulate = null;
-
         // list of functions to build
         final List<AccumulateFunctionCallDescr> funcCalls = accumDescr.getFunctions();
         // list of available source declarations
-        final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
+        final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[0] );
         Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
 
         // the accumulator array
@@ -195,12 +193,11 @@ public class JavaAccumulateBuilder
                                                                       previousDeclarations,
                                                                       readLocalsFromTuple );
         }
-        
-        accumulate = new Accumulate( source,
-                                     requiredDecl.toArray( new Declaration[requiredDecl.size()] ),
-                                     accumulators,
-                                     accumDescr.isMultiFunction() );
-        return accumulate;
+
+        return new Accumulate(source,
+                requiredDecl.toArray(new Declaration[requiredDecl.size()]),
+                accumulators,
+                accumDescr.isMultiFunction());
     }
 
     private Declaration[] collectRequiredDeclarations( Map<String, Declaration> declsInScope,
@@ -270,7 +267,6 @@ public class JavaAccumulateBuilder
                                               Map<String, Declaration> decls,
                                               Map<String, Class< ? >> declCls,
                                               final boolean readLocalsFromTuple) {
-        Accumulate accumulate;
         // ELSE, if it is not an external function, build it using the regular java builder
         final String className = "Accumulate" + context.getNextId();
         accumDescr.setClassName( className );
@@ -314,7 +310,7 @@ public class JavaAccumulateBuilder
         for ( Iterator<String> it = requiredDeclarations.iterator(); it.hasNext(); i++ ) {
             declarations[i] = decls.get( it.next() );
         }
-        final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
+        final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[0] );
         Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
 
         final Map<String, Object> map = createVariableContext( className,
@@ -370,10 +366,9 @@ public class JavaAccumulateBuilder
         }
 
         map.put( "hashCode",
-                 new Integer( actionCode.hashCode() ) );
+                actionCode.hashCode());
 
-        accumulate = new Accumulate( source,
-                                     declarations );
+        Accumulate accumulate = new Accumulate(source, declarations);
 
         generateTemplates("accumulateInnerClass",
                 "accumulateInvoker",

@@ -108,7 +108,7 @@ public final class JavaRuleBuilderHelper {
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             indexes[i] = i;
             notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? Boolean.FALSE : Boolean.TRUE ;
-            if ( (indexes[i]).intValue() == -1 ) {
+            if (indexes[i] == -1 ) {
                 context.addError( new DescrBuildError( context.getParentDescr(),
                                                               context.getRuleDescr(),
                                                               null,
@@ -152,7 +152,7 @@ public final class JavaRuleBuilderHelper {
                      text );
 
             map.put( "hashCode",
-                     new Integer( text.hashCode() ) );
+                    text.hashCode());
         }
 
         map.put( "declarations",
@@ -197,10 +197,10 @@ public final class JavaRuleBuilderHelper {
     public static void generateMethodTemplate(final String ruleTemplate, final RuleBuildContext context, final Map vars) {
         TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
 
-        context.getMethods().add( TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
-                                                           null,
-                                                           new MapVariableResolverFactory( vars ),
-                                                           registry ) );
+        context.getMethods().add(TemplateRuntime.execute(registry.getNamedTemplate(ruleTemplate),
+                null,
+                new MapVariableResolverFactory(vars),
+                registry));
     }
 
     public static void generateInvokerTemplate(final String invokerTemplate,

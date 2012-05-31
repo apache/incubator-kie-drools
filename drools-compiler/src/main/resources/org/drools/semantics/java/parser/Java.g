@@ -735,7 +735,7 @@ statement
     | 'break' Identifier? ';'
     | 'continue' Identifier? ';'
     // adding support to drools modify block
-    | modifyStatement    | updateStatement    | retractStatement
+    | modifyStatement | updateStatement | retractStatement | insertStatement
     | ';'
     | statementExpression ';'
     | Identifier ':' statement
@@ -931,14 +931,11 @@ modifyStatement
     ;
 
 updateStatement
-    @init {
-        JavaUpdateBlockDescr d = null;
-    }
     : s='update' '('
     expression
     c = ')'
         {
-        d = new JavaUpdateBlockDescr( $expression.text );
+        JavaStatementBlockDescr d = new JavaStatementBlockDescr( $expression.text, JavaBlockDescr.BlockType.UPDATE );
         d.setStart( ((CommonToken)$s).getStartIndex() );
         this.addBlockDescr( d );
         d.setEnd( ((CommonToken)$c).getStopIndex() ); 
@@ -946,18 +943,26 @@ updateStatement
     ;
     
 retractStatement
-    @init {
-        JavaRetractBlockDescr d = null;
-    }
     : s='retract' '('
     expression
     c = ')'
         {	
-        d = new JavaRetractBlockDescr( $expression.text );
+        JavaStatementBlockDescr d = new JavaStatementBlockDescr( $expression.text, JavaBlockDescr.BlockType.RETRACT );
         d.setStart( ((CommonToken)$s).getStartIndex() );
         this.addBlockDescr( d );
         d.setEnd( ((CommonToken)$c).getStopIndex() );
+    }
+    ;
 
+insertStatement
+    : s='insert' '('
+    expression
+    c = ')'
+        {
+        JavaStatementBlockDescr d = new JavaStatementBlockDescr( $expression.text, JavaBlockDescr.BlockType.INSERT );
+        d.setStart( ((CommonToken)$s).getStartIndex() );
+        this.addBlockDescr( d );
+        d.setEnd( ((CommonToken)$c).getStopIndex() );
     }
     ;
 
@@ -1196,12 +1201,16 @@ primary
         (explicitGenericInvocationSuffix | 'this' arguments)
     |   'this' ('.' Identifier)* (identifierSuffix)?
     |   'super' superSuffix
-    |   epStatement ('.' Identifier)* (identifierSuffix)?
+    |   epStatement ('.' methodName)* (identifierSuffix)?
     |   literal
     |   'new' creator
-    |   i=Identifier { if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( $i.text );  } ('.' Identifier)* (identifierSuffix)?
+    |   i=Identifier { if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( $i.text );  } ('.' methodName)* (identifierSuffix)?
     |   primitiveType ('[' ']')* '.' 'class'
     |   'void' '.' 'class'
+    ;
+
+methodName
+    : Identifier | 'insert' | 'update' | 'modify' | 'retract'
     ;
 
 identifierSuffix

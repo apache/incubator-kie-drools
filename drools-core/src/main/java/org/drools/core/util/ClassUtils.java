@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class ClassUtils {
-    private static Map          classes = Collections.synchronizedMap( new HashMap() );
+    private static Map<String, Class<?>> classes = Collections.synchronizedMap( new HashMap() );
 
     private static final String STAR    = "*";
 
@@ -51,8 +51,7 @@ public final class ClassUtils {
      * org/my/Class.xxx -> org.my.Class
      */
     public static String convertResourceToClassName(final String pResourceName) {
-        return ClassUtils.stripExtension( pResourceName ).replace( '/',
-                                                                   '.' );
+        return stripExtension(pResourceName).replace( '/', '.' );
     }
 
     /**
@@ -125,7 +124,7 @@ public final class ClassUtils {
      */
     public static Object instantiateObject(String className,
                                            ClassLoader classLoader) {
-        Class cls = (Class) ClassUtils.classes.get( className );
+        Class cls = (Class) classes.get( className );
         if ( cls == null ) {
             try {
                 cls = Class.forName( className );
@@ -167,8 +166,7 @@ public final class ClassUtils {
             }
 
             if ( cls != null ) {
-                ClassUtils.classes.put( className,
-                                        cls );
+                classes.put( className, cls );
             } else {
                 throw new RuntimeException( "Unable to load class '" + className + "'" );
             }
@@ -207,18 +205,16 @@ public final class ClassUtils {
                             STAR);
                 } else {
                     // create a new list and add it
-                    List list = new ArrayList();
+                    List<String> list = new ArrayList<String>();
                     list.add(name);
-                    patterns.put(qualifiedNamespace,
-                            list);
+                    patterns.put(qualifiedNamespace, list);
                 }
             } else if (name.equals(STAR)) {
                 // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
-                patterns.put(qualifiedNamespace,
-                        STAR);
+                patterns.put(qualifiedNamespace, STAR);
             } else {
                 // its a list so add it if it doesn't already exist
-                List list = (List) object;
+                List<String> list = (List<String>) object;
                 if (!list.contains(name)) {
                     list.add(name);
                 }
@@ -293,11 +289,17 @@ public final class ClassUtils {
     public static Class<?> findClass(String name, Collection<String> availableImports, ClassLoader cl) {
         Class<?> clazz = null;
         for (String imp : availableImports) {
+            String className = imp.endsWith(name) ? imp : imp + "." + name;
             try {
-                String className = imp.endsWith(name) ? imp : imp + "." + name;
                 clazz = Class.forName(className, false, cl);
             } catch (ClassNotFoundException e) {
-                continue;
+                int lastDot = className.lastIndexOf('.');
+                className = className.substring(0, lastDot) + "$" + className.substring(lastDot+1);
+                try {
+                    clazz = Class.forName(className, false, cl);
+                } catch (ClassNotFoundException e1) {
+                    continue;
+                }
             }
             break;
         }
@@ -364,7 +366,7 @@ public final class ClassUtils {
         }
     }
 
-    public static final Class<?> convertFromPrimitiveType(Class<?> type) {
+    public static Class<?> convertFromPrimitiveType(Class<?> type) {
         if (!type.isPrimitive()) return type;
         if (type == int.class) return Integer.class;
         if (type == long.class) return Long.class;

@@ -16,13 +16,6 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -33,6 +26,12 @@ import org.drools.compiler.BoundIdentifiers;
 import org.drools.rule.builder.dialect.java.parser.JavaLexer;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaParser;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Expression analyzer.
@@ -90,9 +89,8 @@ public class JavaExprAnalyzer {
         result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
         if( parser.getRootBlockDescr().getInScopeLocalVars() != null ) {
             for( JavaLocalDeclarationDescr descr : parser.getRootBlockDescr().getInScopeLocalVars() ) {
-                for( Iterator<?> identIt = descr.getIdentifiers().iterator(); identIt.hasNext(); ) {
-                    JavaLocalDeclarationDescr.IdentifierDescr ident = (JavaLocalDeclarationDescr.IdentifierDescr) identIt.next();
-                    result.addLocalVariable( ident.getIdentifier(), descr );
+                for (JavaLocalDeclarationDescr.IdentifierDescr ident : descr.getIdentifiers()) {
+                    result.addLocalVariable(ident.getIdentifier(), descr);
                 }
             }
         }
@@ -150,7 +148,7 @@ public class JavaExprAnalyzer {
         for ( Map.Entry<String, EvaluatorWrapper> op : availableIdentifiers.getOperators().entrySet() ) {
             if ( identifiers.contains( op.getKey() ) ) {
                 usedOperators.put( op.getKey(), op.getValue() );
-                notBound.remove( op );
+                notBound.remove( op.getKey() );
             }
         }
 

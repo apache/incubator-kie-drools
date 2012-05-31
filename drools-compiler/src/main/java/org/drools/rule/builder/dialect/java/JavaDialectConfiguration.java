@@ -104,11 +104,11 @@ public class JavaDialectConfiguration
         }
         
         switch ( compiler ) {
-            case JavaDialectConfiguration.ECLIPSE :
-                this.compiler = JavaDialectConfiguration.ECLIPSE;
+            case ECLIPSE :
+                this.compiler = ECLIPSE;
                 break;
-            case JavaDialectConfiguration.JANINO :
-                this.compiler = JavaDialectConfiguration.JANINO;
+            case JANINO :
+                this.compiler = JANINO;
                 break;
             default :
                 throw new RuntimeDroolsException( "value '" + compiler + "' is not a valid compiler" );
@@ -129,16 +129,16 @@ public class JavaDialectConfiguration
             final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY,
                                                                               "ECLIPSE" );
             if ( prop.equals( "ECLIPSE".intern() ) ) {
-                return JavaDialectConfiguration.ECLIPSE;
+                return ECLIPSE;
             } else if ( prop.equals( "JANINO" ) ) {
-                return JavaDialectConfiguration.JANINO;
+                return JANINO;
             } else {
                 System.err.println( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
-                return JavaDialectConfiguration.ECLIPSE;
+                return ECLIPSE;
             }
         } catch ( final SecurityException e ) {
             System.err.println( "Drools config: unable to read the drools.compiler property. Using default." );
-            return JavaDialectConfiguration.ECLIPSE;
+            return ECLIPSE;
         }
     }
 

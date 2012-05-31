@@ -1245,7 +1245,33 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "when\n" +
                 "    $c : C(s == \"test\")\n" +
                 "then\n" +
-                "    modify($c) { turnOn() }\n" +
+                "    modify($c) { setOn(true) }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        C c = new C();
+        c.setOn(false);
+        c.setS("test");
+        ksession.insert( c );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        assertEquals(true, c.isOn());
+        ksession.dispose();
+    }
+
+    @Test(timeout = 5000)
+    public void testPropertySpecificWithUpdate() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.C\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $c : C(s == \"test\")\n" +
+                "then\n" +
+                "   $c.setOn(true);\n" +
+                "   update($c);\n" +
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );

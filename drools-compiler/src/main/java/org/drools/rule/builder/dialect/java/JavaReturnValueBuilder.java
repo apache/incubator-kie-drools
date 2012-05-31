@@ -24,7 +24,7 @@ public class JavaReturnValueBuilder
         final String className = "returnValue" + context.getNextId();
         returnValueRestrictionDescr.setClassMethodName( className );
 
-        final Map map = createVariableContext( className,
+        final Map<String, Object> map = createVariableContext( className,
                                                (String) returnValueRestrictionDescr.getContent(),
                                                context,
                                                previousDeclarations,

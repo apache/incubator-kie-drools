@@ -17,17 +17,14 @@
  */
 package org.drools.rule.builder.dialect.java;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
-import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An analysis result implementation for the java dialect
