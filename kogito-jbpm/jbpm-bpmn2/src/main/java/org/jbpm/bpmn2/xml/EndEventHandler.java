@@ -102,6 +102,22 @@ public class EndEventHandler extends AbstractNodeHandler {
     public void handleTerminateNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         ((EndNode) node).setTerminate(true);
+        
+        EndNode endNode = (EndNode) node;
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("terminateEventDefinition".equals(nodeName)) {
+                
+                String scope = ((Element) xmlNode).getAttribute("scope");
+                if ("process".equalsIgnoreCase(scope)) {
+                    endNode.setScope(EndNode.PROCESS_SCOPE);
+                } else {
+                    endNode.setScope(EndNode.CONTAINER_SCOPE);
+                }
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
     }
     
     public void handleSignalNode(final Node node, final Element element, final String uri, 

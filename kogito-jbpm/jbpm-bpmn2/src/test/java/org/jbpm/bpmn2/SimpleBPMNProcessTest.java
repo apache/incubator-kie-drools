@@ -881,6 +881,21 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertEquals(7, list.size());
     }
+	
+	public void testSubProcessWithTerminateEndEventProcessScope() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcessWithTerminateEndEventProcessScope.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List<String> list = new ArrayList<String>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+     
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                list.add(event.getNodeInstance().getNodeName());
+            }
+        });
+        ProcessInstance processInstance = ksession.startProcess("SubProcessTerminate");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertEquals(5, list.size());
+    }
 
 	public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");

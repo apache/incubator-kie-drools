@@ -25,6 +25,9 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class EndNode extends ExtendedNodeImpl {
+    
+    public static final int CONTAINER_SCOPE = 0;
+    public static final int PROCESS_SCOPE = 1;
 
 	private static final String[] EVENT_TYPES =
 		new String[] { EVENT_NODE_ENTER };
@@ -32,6 +35,7 @@ public class EndNode extends ExtendedNodeImpl {
     private static final long serialVersionUID = 510l;
     
     private boolean terminate = true;
+    private int scope = CONTAINER_SCOPE;
 
     public boolean isTerminate() {
 		return terminate;
@@ -65,5 +69,13 @@ public class EndNode extends ExtendedNodeImpl {
     public void validateRemoveOutgoingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
             "An end node does not have an outgoing connection!");
+    }
+
+    public void setScope(int scope) {
+        this.scope = scope;
+    }
+
+    public int getScope() {
+        return scope;
     }
 }

@@ -41,7 +41,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		writeNode("endEvent", endNode, xmlDump, metaDataType);
 		if (endNode.isTerminate()) {
     		xmlDump.append(">" + EOL);
-            xmlDump.append("        <terminateEventDefinition/>" + EOL);
+            xmlDump.append("        <terminateEventDefinition " + (endNode.getScope() == EndNode.PROCESS_SCOPE ? "tns:scope=\"process\"" : "") + "/>" + EOL);
     		endNode("endEvent", xmlDump);
 		} else {
 		    List<DroolsAction> actions = endNode.getActions(EndNode.EVENT_NODE_ENTER);
