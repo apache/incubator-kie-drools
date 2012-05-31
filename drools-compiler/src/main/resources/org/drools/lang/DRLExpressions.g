@@ -155,7 +155,9 @@ finally { ternOp--; }
 
 conditionalOrExpression returns [BaseDescr result]
   : left=conditionalAndExpression  { if( buildDescr  ) { $result = $left.result; } }
-  ( DOUBLE_PIPE right=conditionalAndExpression 
+  ( DOUBLE_PIPE
+        {  helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );  }
+        right=conditionalAndExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr(); 
                descr.addOrMerge( $result );  
@@ -168,7 +170,9 @@ conditionalOrExpression returns [BaseDescr result]
 
 conditionalAndExpression returns [BaseDescr result]
   : left=inclusiveOrExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( DOUBLE_AMPER right=inclusiveOrExpression 
+  ( DOUBLE_AMPER
+        {helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );}
+        right=inclusiveOrExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd(); 
                descr.addOrMerge( $result );  
@@ -256,9 +260,9 @@ inExpression returns [BaseDescr result]
           leftDescr = $left.result;
       }
     }
-    ((not_key in_key)=> not_key in=in_key LEFT_PAREN 
+    ((not_key in_key)=> not_key in=in_key LEFT_PAREN
         {   helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
-        e1=expression 
+        e1=expression
         {   descr = ConstraintConnectiveDescr.newAnd();
             RelationalExprDescr rel = new RelationalExprDescr( "!=", false, null, leftDescr, $e1.result );
             descr.addOrMerge( rel );
@@ -269,9 +273,10 @@ inExpression returns [BaseDescr result]
             descr.addOrMerge( rel );
         }
       )* RIGHT_PAREN
-    | in=in_key LEFT_PAREN 
+    { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END ); }
+    | in=in_key LEFT_PAREN
         {   helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
-        e1=expression 
+        e1=expression
         {   descr = ConstraintConnectiveDescr.newOr();
             RelationalExprDescr rel = new RelationalExprDescr( "==", false, null, leftDescr, $e1.result );
             descr.addOrMerge( rel );
@@ -281,7 +286,8 @@ inExpression returns [BaseDescr result]
         {   RelationalExprDescr rel = new RelationalExprDescr( "==", false, null, leftDescr, $e2.result );
             descr.addOrMerge( rel );
         }
-      )* RIGHT_PAREN 
+      )* RIGHT_PAREN
+    { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END ); }
     )?
   ;
 
@@ -299,7 +305,7 @@ scope { BaseDescr lsd; }
       } 
       helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
     }
-  ( (orRestriction)=> right=orRestriction
+  ( ( operator | LEFT_PAREN )=> right=orRestriction
          { if( buildDescr  ) {
                $result = $right.result;
            }
@@ -309,7 +315,7 @@ scope { BaseDescr lsd; }
 
 orRestriction returns [BaseDescr result]
   : left=andRestriction { if( buildDescr  ) { $result = $left.result; } }
-    ( (DOUBLE_PIPE andRestriction)=>lop=DOUBLE_PIPE right=andRestriction 
+    ( (DOUBLE_PIPE andRestriction)=>lop=DOUBLE_PIPE right=andRestriction
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr(); 
                descr.addOrMerge( $result );  
@@ -322,7 +328,9 @@ orRestriction returns [BaseDescr result]
 
 andRestriction returns [BaseDescr result]
   : left=singleRestriction { if( buildDescr  ) { $result = $left.result; } }
-  ( (DOUBLE_AMPER singleRestriction)=>lop=DOUBLE_AMPER right=singleRestriction
+  ( (DOUBLE_AMPER operator)=>lop=DOUBLE_AMPER
+        {helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );}
+        right=singleRestriction
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd(); 
                descr.addOrMerge( $result );  
