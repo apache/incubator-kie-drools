@@ -121,7 +121,8 @@ public class ConsequenceMetaData implements Externalizable {
         }
 
         public boolean isLiteral() {
-            return value != null && value.length() > 0 && ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' );
+            return value != null && value.length() > 0 &&
+                    ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) );
         }
 
         @Override

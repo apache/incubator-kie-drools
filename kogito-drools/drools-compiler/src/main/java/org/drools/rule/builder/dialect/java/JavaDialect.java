@@ -128,18 +128,18 @@ public class JavaDialect
     //
     private static final JavaExprAnalyzer            analyzer                      = new JavaExprAnalyzer();
 
-    private JavaDialectConfiguration                 configuration;
+    private final JavaDialectConfiguration           configuration;
 
-    private Package                                  pkg;
     private JavaCompiler                             compiler;
-    private List<String>                             generatedClassList;
-    private MemoryResourceReader                     src;
-    private PackageStore                             packageStoreWrapper;
-    private Map<String, ErrorHandler>                errorHandlers;
-    private List<KnowledgeBuilderResult>             results;
-    private PackageBuilder                           packageBuilder;
+    private final Package                            pkg;
+    private final List<String>                       generatedClassList;
+    private final MemoryResourceReader               src;
+    private final PackageStore                       packageStoreWrapper;
+    private final Map<String, ErrorHandler>          errorHandlers;
+    private final List<KnowledgeBuilderResult>       results;
+    private final PackageBuilder                     packageBuilder;
 
-    private PackageRegistry                          packageRegistry;
+    private final PackageRegistry                    packageRegistry;
 
     public JavaDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
@@ -157,7 +157,7 @@ public class JavaDialect
 
         this.generatedClassList = new ArrayList<String>();
 
-        JavaDialectRuntimeData data = null;
+        JavaDialectRuntimeData data;
 
         // initialie the dialect runtime data if it doesn't already exist
         if ( pkg.getDialectRuntimeRegistry().getDialectData( ID ) == null ) {
@@ -492,15 +492,13 @@ public class JavaDialect
                             final TypeResolver typeResolver,
                             final Resource resource) {
 
-        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( ID );
         //System.out.println( functionDescr + " : " + typeResolver );
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
 
         this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
 
-        Function function = new Function( functionDescr.getNamespace(), functionDescr.getName(),
-                                          this.ID );
+        Function function = new Function( functionDescr.getNamespace(), functionDescr.getName(), ID );
         if ( resource != null && ((InternalResource) resource).hasURL() ) {
             function.setResource( resource );
         }

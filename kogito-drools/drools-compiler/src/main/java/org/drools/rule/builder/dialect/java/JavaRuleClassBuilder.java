@@ -16,8 +16,6 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import java.util.Iterator;
-
 import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.RuleBuildContext;
@@ -39,32 +37,32 @@ public class JavaRuleClassBuilder
         final String lineSeparator = System.getProperty( "line.separator" );
 
         final StringBuilder buffer = new StringBuilder();
-        buffer.append( "package " + context.getPkg().getName() + ";" + lineSeparator );
+        buffer.append("package ").append(context.getPkg().getName()).append(";").append(lineSeparator);
 
-        for ( final Iterator it = context.getPkg().getImports().keySet().iterator(); it.hasNext(); ) {
-            buffer.append( "import " + it.next() + ";");
+        for (String s : context.getPkg().getImports().keySet()) {
+            buffer.append("import ").append(s).append(";");
         }
 
-        for ( final Iterator it = context.getPkg().getStaticImports().iterator(); it.hasNext(); ) {
-            buffer.append( "import static " + it.next() + ";");
+        for (String s : context.getPkg().getStaticImports()) {
+            buffer.append("import static ").append(s).append(";");
         }
         
         buffer.append( lineSeparator );
 
         final RuleDescr ruleDescr = context.getRuleDescr();
         
-        buffer.append( "public class " + StringUtils.ucFirst( ruleDescr.getClassName() ) + " {" + lineSeparator );
-        buffer.append( "    private static final long serialVersionUID = 510l;" + lineSeparator );
+        buffer.append("public class ").append(StringUtils.ucFirst(ruleDescr.getClassName())).append(" {").append(lineSeparator);
+        buffer.append("    private static final long serialVersionUID = 510l;").append(lineSeparator);
 
         for ( int i = 0, size = context.getMethods().size() - 1; i < size; i++ ) {
-            buffer.append( context.getMethods().get( i ) + lineSeparator );
+            buffer.append(context.getMethods().get(i)).append(lineSeparator);
         }
 
         final String[] lines = buffer.toString().split( lineSeparator, -1 );
 
         ruleDescr.setConsequenceOffset( lines.length );
 
-        buffer.append( context.getMethods().get( context.getMethods().size() - 1 ) + lineSeparator );
+        buffer.append(context.getMethods().get(context.getMethods().size() - 1)).append(lineSeparator);
         buffer.append( "}" );
 
         return buffer.toString();

@@ -235,22 +235,20 @@ public class ClassDefinition
 
     public Map<String, Object> getAsMap(Object bean) {
         Map<String, Object> m = new HashMap<String, Object>( fields.size() );
-        for ( Iterator<Map.Entry<String, FieldDefinition>> iterator = this.fields.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<String, FieldDefinition> ent = iterator.next();
-            Object val = ent.getValue().getFieldAccessor().getValue( bean );
-            m.put( ent.getKey(),
-                   val );
+        for (Map.Entry<String, FieldDefinition> ent : this.fields.entrySet()) {
+            Object val = ent.getValue().getFieldAccessor().getValue(bean);
+            m.put(ent.getKey(),
+                    val);
         }
         return m;
     }
 
     public void setFromMap(Object bean,
                            Map<String, Object> data) {
-        for ( Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<String, Object> ent = iterator.next();
-            set( bean,
-                 ent.getKey(),
-                 ent.getValue() );
+        for (Map.Entry<String, Object> ent : data.entrySet()) {
+            set(bean,
+                    ent.getKey(),
+                    ent.getValue());
         }
     }
 

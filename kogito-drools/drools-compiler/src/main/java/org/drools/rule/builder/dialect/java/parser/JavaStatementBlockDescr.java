@@ -1,21 +1,17 @@
 package org.drools.rule.builder.dialect.java.parser;
 
-import java.util.ArrayList;
-import java.util.List;
+public class JavaStatementBlockDescr extends AbstractJavaBlockDescr implements JavaBlockDescr {
 
-/**
- * A helper class used during java code parsing to identify
- * and handle update() blocks
- */
-public class JavaUpdateBlockDescr extends AbstractJavaBlockDescr implements JavaBlockDescr {
     private int start;
     private int end;
     private String targetExpression;
-    
-    public JavaUpdateBlockDescr( String targetExpression ) {
+    private final BlockType type;
+
+    public JavaStatementBlockDescr( String targetExpression, BlockType type ) {
         this.targetExpression = targetExpression;
+        this.type = type;
     }
-    
+
     public int getStart() {
         return start;
     }
@@ -31,17 +27,16 @@ public class JavaUpdateBlockDescr extends AbstractJavaBlockDescr implements Java
     public String getTargetExpression() {
         return targetExpression;
     }
-    
+
     public void setTargetExpression(String targetExpression) {
         this.targetExpression = targetExpression;
     }
-    
+
     public String toString() {
-        return "UpdateBlock( start="+start+" end="+end+" expression="+targetExpression+" )";
+        return type + "( start="+start+" end="+end+" expression="+targetExpression+" )";
     }
 
     public BlockType getType() {
-        return BlockType.MODIFY;
+        return type;
     }
-
 }

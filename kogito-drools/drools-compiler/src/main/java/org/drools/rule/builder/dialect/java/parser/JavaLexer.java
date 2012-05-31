@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/semantics/java/parser/Java.g 2011-11-21 21:09:56
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/semantics/java/parser/Java.g 2012-05-31 18:54:37
 
     package org.drools.rule.builder.dialect.java.parser;
 
@@ -106,6 +106,7 @@ public class JavaLexer extends Lexer {
     public static final int T__117=117;
     public static final int T__118=118;
     public static final int T__119=119;
+    public static final int T__120=120;
     public static final int Identifier=4;
     public static final int ENUM=5;
     public static final int FloatingPointLiteral=6;
@@ -1539,10 +1540,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__91;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:78:7: ( 'exitPoints' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:78:9: 'exitPoints'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:78:7: ( 'insert' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:78:9: 'insert'
             {
-            match("exitPoints"); 
+            match("insert"); 
 
 
             }
@@ -1560,10 +1561,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__92;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:79:7: ( 'entryPoints' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:79:9: 'entryPoints'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:79:7: ( 'exitPoints' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:79:9: 'exitPoints'
             {
-            match("entryPoints"); 
+            match("exitPoints"); 
 
 
             }
@@ -1581,10 +1582,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__93;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:80:7: ( 'channels' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:80:9: 'channels'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:80:7: ( 'entryPoints' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:80:9: 'entryPoints'
             {
-            match("channels"); 
+            match("entryPoints"); 
 
 
             }
@@ -1602,10 +1603,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__94;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:81:7: ( 'case' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:81:9: 'case'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:81:7: ( 'channels' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:81:9: 'channels'
             {
-            match("case"); 
+            match("channels"); 
 
 
             }
@@ -1623,10 +1624,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__95;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:82:7: ( '+=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:82:9: '+='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:82:7: ( 'case' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:82:9: 'case'
             {
-            match("+="); 
+            match("case"); 
 
 
             }
@@ -1644,10 +1645,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__96;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:83:7: ( '-=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:83:9: '-='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:83:7: ( '+=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:83:9: '+='
             {
-            match("-="); 
+            match("+="); 
 
 
             }
@@ -1665,10 +1666,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__97;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:84:7: ( '*=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:84:9: '*='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:84:7: ( '-=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:84:9: '-='
             {
-            match("*="); 
+            match("-="); 
 
 
             }
@@ -1686,10 +1687,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__98;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:85:7: ( '/=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:85:9: '/='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:85:7: ( '*=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:85:9: '*='
             {
-            match("/="); 
+            match("*="); 
 
 
             }
@@ -1707,10 +1708,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__99;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:86:7: ( '&=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:86:9: '&='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:86:7: ( '/=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:86:9: '/='
             {
-            match("&="); 
+            match("/="); 
 
 
             }
@@ -1728,10 +1729,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__100;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:87:8: ( '|=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:87:10: '|='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:87:8: ( '&=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:87:10: '&='
             {
-            match("|="); 
+            match("&="); 
 
 
             }
@@ -1749,10 +1750,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__101;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:88:8: ( '^=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:88:10: '^='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:88:8: ( '|=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:88:10: '|='
             {
-            match("^="); 
+            match("|="); 
 
 
             }
@@ -1770,10 +1771,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__102;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:89:8: ( '%=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:89:10: '%='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:89:8: ( '^=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:89:10: '^='
             {
-            match("%="); 
+            match("^="); 
 
 
             }
@@ -1791,10 +1792,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__103;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:90:8: ( '||' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:90:10: '||'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:90:8: ( '%=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:90:10: '%='
             {
-            match("||"); 
+            match("%="); 
 
 
             }
@@ -1812,10 +1813,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__104;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:91:8: ( '&&' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:91:10: '&&'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:91:8: ( '||' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:91:10: '||'
             {
-            match("&&"); 
+            match("||"); 
 
 
             }
@@ -1833,10 +1834,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__105;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:92:8: ( '|' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:92:10: '|'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:92:8: ( '&&' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:92:10: '&&'
             {
-            match('|'); 
+            match("&&"); 
+
 
             }
 
@@ -1853,10 +1855,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__106;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:93:8: ( '^' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:93:10: '^'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:93:8: ( '|' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:93:10: '|'
             {
-            match('^'); 
+            match('|'); 
 
             }
 
@@ -1873,11 +1875,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__107;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:94:8: ( '==' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:94:10: '=='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:94:8: ( '^' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:94:10: '^'
             {
-            match("=="); 
-
+            match('^'); 
 
             }
 
@@ -1894,10 +1895,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__108;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:95:8: ( '!=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:95:10: '!='
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:95:8: ( '==' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:95:10: '=='
             {
-            match("!="); 
+            match("=="); 
 
 
             }
@@ -1915,10 +1916,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__109;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:96:8: ( 'instanceof' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:96:10: 'instanceof'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:96:8: ( '!=' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:96:10: '!='
             {
-            match("instanceof"); 
+            match("!="); 
 
 
             }
@@ -1936,10 +1937,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__110;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:97:8: ( '+' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:97:10: '+'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:97:8: ( 'instanceof' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:97:10: 'instanceof'
             {
-            match('+'); 
+            match("instanceof"); 
+
 
             }
 
@@ -1956,10 +1958,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__111;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:98:8: ( '-' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:98:10: '-'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:98:8: ( '+' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:98:10: '+'
             {
-            match('-'); 
+            match('+'); 
 
             }
 
@@ -1976,10 +1978,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__112;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:99:8: ( '/' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:99:10: '/'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:99:8: ( '-' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:99:10: '-'
             {
-            match('/'); 
+            match('-'); 
 
             }
 
@@ -1996,10 +1998,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__113;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:100:8: ( '%' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:100:10: '%'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:100:8: ( '/' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:100:10: '/'
             {
-            match('%'); 
+            match('/'); 
 
             }
 
@@ -2016,11 +2018,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__114;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:101:8: ( '++' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:101:10: '++'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:101:8: ( '%' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:101:10: '%'
             {
-            match("++"); 
-
+            match('%'); 
 
             }
 
@@ -2037,10 +2038,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__115;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:102:8: ( '--' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:102:10: '--'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:102:8: ( '++' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:102:10: '++'
             {
-            match("--"); 
+            match("++"); 
 
 
             }
@@ -2058,10 +2059,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__116;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:103:8: ( '~' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:103:10: '~'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:103:8: ( '--' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:103:10: '--'
             {
-            match('~'); 
+            match("--"); 
+
 
             }
 
@@ -2078,10 +2080,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__117;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:104:8: ( '!' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:104:10: '!'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:104:8: ( '~' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:104:10: '~'
             {
-            match('!'); 
+            match('~'); 
 
             }
 
@@ -2098,11 +2100,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__118;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:105:8: ( 'this' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:105:10: 'this'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:105:8: ( '!' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:105:10: '!'
             {
-            match("this"); 
-
+            match('!'); 
 
             }
 
@@ -2119,10 +2120,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__119;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:106:8: ( 'new' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:106:10: 'new'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:106:8: ( 'this' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:106:10: 'this'
             {
-            match("new"); 
+            match("this"); 
 
 
             }
@@ -2135,13 +2136,34 @@ public class JavaLexer extends Lexer {
     }
     // $ANTLR end "T__119"
 
+    // $ANTLR start "T__120"
+    public final void mT__120() throws RecognitionException {
+        try {
+            int _type = T__120;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:107:8: ( 'new' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:107:10: 'new'
+            {
+            match("new"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__120"
+
     // $ANTLR start "HexLiteral"
     public final void mHexLiteral() throws RecognitionException {
         try {
             int _type = HexLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1276:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1276:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1285:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1285:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -2153,7 +2175,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1276:28: ( HexDigit )+
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1285:28: ( HexDigit )+
             int cnt1=0;
             loop1:
             do {
@@ -2167,7 +2189,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1276:28: HexDigit
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1285:28: HexDigit
             	    {
             	    mHexDigit(); 
 
@@ -2183,7 +2205,7 @@ public class JavaLexer extends Lexer {
                 cnt1++;
             } while (true);
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1276:38: ( IntegerTypeSuffix )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1285:38: ( IntegerTypeSuffix )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -2192,7 +2214,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1276:38: IntegerTypeSuffix
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1285:38: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2217,10 +2239,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = DecimalLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:16: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:16: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
             {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -2238,17 +2260,17 @@ public class JavaLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:19: '0'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:19: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:25: '1' .. '9' ( '0' .. '9' )*
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:25: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:34: ( '0' .. '9' )*
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:34: ( '0' .. '9' )*
                     loop3:
                     do {
                         int alt3=2;
@@ -2261,7 +2283,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:34: '0' .. '9'
+                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:34: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2279,7 +2301,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:45: ( IntegerTypeSuffix )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:45: ( IntegerTypeSuffix )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -2288,7 +2310,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1278:45: IntegerTypeSuffix
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1287:45: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2313,11 +2335,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = OctalLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1280:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1280:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1280:20: ( '0' .. '7' )+
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:20: ( '0' .. '7' )+
             int cnt6=0;
             loop6:
             do {
@@ -2331,7 +2353,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1280:21: '0' .. '7'
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:21: '0' .. '7'
             	    {
             	    matchRange('0','7'); 
 
@@ -2347,7 +2369,7 @@ public class JavaLexer extends Lexer {
                 cnt6++;
             } while (true);
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1280:32: ( IntegerTypeSuffix )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:32: ( IntegerTypeSuffix )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -2356,7 +2378,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1280:32: IntegerTypeSuffix
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:32: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2379,8 +2401,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1283:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1283:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1292:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1292:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -2403,8 +2425,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "IntegerTypeSuffix"
     public final void mIntegerTypeSuffix() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1286:19: ( ( 'l' | 'L' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1286:21: ( 'l' | 'L' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1295:19: ( ( 'l' | 'L' ) )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1295:21: ( 'l' | 'L' )
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
@@ -2429,14 +2451,14 @@ public class JavaLexer extends Lexer {
         try {
             int _type = FloatingPointLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
             int alt19=4;
             alt19 = dfa19.predict(input);
             switch (alt19) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
                     {
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:9: ( '0' .. '9' )+
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:9: ( '0' .. '9' )+
                     int cnt8=0;
                     loop8:
                     do {
@@ -2450,7 +2472,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:10: '0' .. '9'
+                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2467,7 +2489,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:25: ( '0' .. '9' )*
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:25: ( '0' .. '9' )*
                     loop9:
                     do {
                         int alt9=2;
@@ -2480,7 +2502,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:26: '0' .. '9'
+                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2492,7 +2514,7 @@ public class JavaLexer extends Lexer {
                         }
                     } while (true);
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:37: ( Exponent )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:37: ( Exponent )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -2501,7 +2523,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:37: Exponent
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:37: Exponent
                             {
                             mExponent(); 
 
@@ -2510,7 +2532,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:47: ( FloatTypeSuffix )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:47: ( FloatTypeSuffix )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -2519,7 +2541,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt11) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1289:47: FloatTypeSuffix
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1298:47: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2532,10 +2554,10 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1290:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
                     {
                     match('.'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1290:13: ( '0' .. '9' )+
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:13: ( '0' .. '9' )+
                     int cnt12=0;
                     loop12:
                     do {
@@ -2549,7 +2571,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt12) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1290:14: '0' .. '9'
+                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:14: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2565,7 +2587,7 @@ public class JavaLexer extends Lexer {
                         cnt12++;
                     } while (true);
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1290:25: ( Exponent )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:25: ( Exponent )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -2574,7 +2596,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt13) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1290:25: Exponent
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:25: Exponent
                             {
                             mExponent(); 
 
@@ -2583,7 +2605,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1290:35: ( FloatTypeSuffix )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:35: ( FloatTypeSuffix )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -2592,7 +2614,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt14) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1290:35: FloatTypeSuffix
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:35: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2605,9 +2627,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1291:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1300:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
                     {
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1291:9: ( '0' .. '9' )+
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1300:9: ( '0' .. '9' )+
                     int cnt15=0;
                     loop15:
                     do {
@@ -2621,7 +2643,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1291:10: '0' .. '9'
+                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1300:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2638,7 +2660,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     mExponent(); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1291:30: ( FloatTypeSuffix )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1300:30: ( FloatTypeSuffix )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
 
@@ -2647,7 +2669,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt16) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1291:30: FloatTypeSuffix
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1300:30: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2660,9 +2682,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1292:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1301:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
                     {
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1292:9: ( '0' .. '9' )+
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1301:9: ( '0' .. '9' )+
                     int cnt17=0;
                     loop17:
                     do {
@@ -2676,7 +2698,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt17) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1292:10: '0' .. '9'
+                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1301:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2692,7 +2714,7 @@ public class JavaLexer extends Lexer {
                         cnt17++;
                     } while (true);
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1292:21: ( Exponent )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1301:21: ( Exponent )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -2701,7 +2723,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt18) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1292:21: Exponent
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1301:21: Exponent
                             {
                             mExponent(); 
 
@@ -2727,8 +2749,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1296:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1296:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1305:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1305:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -2739,7 +2761,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1296:22: ( '+' | '-' )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1305:22: ( '+' | '-' )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -2765,7 +2787,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1296:33: ( '0' .. '9' )+
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1305:33: ( '0' .. '9' )+
             int cnt21=0;
             loop21:
             do {
@@ -2779,7 +2801,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt21) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1296:34: '0' .. '9'
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1305:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -2807,8 +2829,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "FloatTypeSuffix"
     public final void mFloatTypeSuffix() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1299:19: ( 'f' | 'F' | 'd' | 'D' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1308:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1308:19: ( 'f' | 'F' | 'd' | 'D' )
             {
             if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
                 input.consume();
@@ -2833,11 +2855,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = CharacterLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1302:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1302:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1311:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1311:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
             {
             match('\''); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1302:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1311:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2855,14 +2877,14 @@ public class JavaLexer extends Lexer {
             }
             switch (alt22) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1302:16: EscapeSequence
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1311:16: EscapeSequence
                     {
                     mEscapeSequence(); 
 
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1302:33: ~ ( '\\'' | '\\\\' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1311:33: ~ ( '\\'' | '\\\\' )
                     {
                     if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                         input.consume();
@@ -2896,11 +2918,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = StringLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1306:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1306:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1315:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1315:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1306:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1315:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
             loop23:
             do {
                 int alt23=3;
@@ -2916,14 +2938,14 @@ public class JavaLexer extends Lexer {
 
                 switch (alt23) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1306:14: EscapeSequence
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1315:14: EscapeSequence
             	    {
             	    mEscapeSequence(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1306:31: ~ ( '\\\\' | '\"' )
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1315:31: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -2958,7 +2980,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "EscapeSequence"
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1311:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1320:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
             int alt24=3;
             int LA24_0 = input.LA(1);
 
@@ -3009,7 +3031,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt24) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1311:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1320:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -3025,14 +3047,14 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1312:9: UnicodeEscape
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1321:9: UnicodeEscape
                     {
                     mUnicodeEscape(); 
 
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1313:9: OctalEscape
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1322:9: OctalEscape
                     {
                     mOctalEscape(); 
 
@@ -3049,7 +3071,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "OctalEscape"
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt25=3;
             int LA25_0 = input.LA(1);
 
@@ -3095,25 +3117,25 @@ public class JavaLexer extends Lexer {
             }
             switch (alt25) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:14: ( '0' .. '3' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:15: '0' .. '3'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:14: ( '0' .. '3' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:15: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:25: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:26: '0' .. '7'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:25: ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:36: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1318:37: '0' .. '7'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:36: ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1327:37: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -3123,18 +3145,18 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1319:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1328:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1319:14: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1319:15: '0' .. '7'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1328:14: ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1328:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1319:25: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1319:26: '0' .. '7'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1328:25: ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1328:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -3144,11 +3166,11 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1320:9: '\\\\' ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1329:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1320:14: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1320:15: '0' .. '7'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1329:14: ( '0' .. '7' )
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1329:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -3168,8 +3190,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "UnicodeEscape"
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1325:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1325:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1334:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1334:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -3191,8 +3213,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = ENUM;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1328:5: ( 'enum' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1328:7: 'enum'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1337:5: ( 'enum' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1337:7: 'enum'
             {
             match("enum"); 
 
@@ -3213,11 +3235,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = Identifier;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1332:5: ( Letter ( Letter | JavaIDDigit )* )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1332:9: Letter ( Letter | JavaIDDigit )*
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1341:5: ( Letter ( Letter | JavaIDDigit )* )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1341:9: Letter ( Letter | JavaIDDigit )*
             {
             mLetter(); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1332:16: ( Letter | JavaIDDigit )*
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1341:16: ( Letter | JavaIDDigit )*
             loop26:
             do {
                 int alt26=2;
@@ -3264,7 +3286,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "Letter"
     public final void mLetter() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1340:5: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1349:5: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
             // src/main/resources/org/drools/semantics/java/parser/Java.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF') ) {
@@ -3288,7 +3310,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "JavaIDDigit"
     public final void mJavaIDDigit() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1357:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' | '\\uff10' .. '\\uff19' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1366:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' | '\\uff10' .. '\\uff19' )
             // src/main/resources/org/drools/semantics/java/parser/Java.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='\u0660' && input.LA(1)<='\u0669')||(input.LA(1)>='\u06F0' && input.LA(1)<='\u06F9')||(input.LA(1)>='\u0966' && input.LA(1)<='\u096F')||(input.LA(1)>='\u09E6' && input.LA(1)<='\u09EF')||(input.LA(1)>='\u0A66' && input.LA(1)<='\u0A6F')||(input.LA(1)>='\u0AE6' && input.LA(1)<='\u0AEF')||(input.LA(1)>='\u0B66' && input.LA(1)<='\u0B6F')||(input.LA(1)>='\u0BE7' && input.LA(1)<='\u0BEF')||(input.LA(1)>='\u0C66' && input.LA(1)<='\u0C6F')||(input.LA(1)>='\u0CE6' && input.LA(1)<='\u0CEF')||(input.LA(1)>='\u0D66' && input.LA(1)<='\u0D6F')||(input.LA(1)>='\u0E50' && input.LA(1)<='\u0E59')||(input.LA(1)>='\u0ED0' && input.LA(1)<='\u0ED9')||(input.LA(1)>='\u1040' && input.LA(1)<='\u1049')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19') ) {
@@ -3314,8 +3336,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1375:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1375:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1384:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1384:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -3343,12 +3365,12 @@ public class JavaLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1379:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1379:9: '/*' ( options {greedy=false; } : . )* '*/'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1388:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1388:9: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1379:14: ( options {greedy=false; } : . )*
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1388:14: ( options {greedy=false; } : . )*
             loop27:
             do {
                 int alt27=2;
@@ -3373,7 +3395,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt27) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1379:42: .
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1388:42: .
             	    {
             	    matchAny(); 
 
@@ -3404,12 +3426,12 @@ public class JavaLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1383:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1383:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1392:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1392:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1383:12: (~ ( '\\n' | '\\r' ) )*
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1392:12: (~ ( '\\n' | '\\r' ) )*
             loop28:
             do {
                 int alt28=2;
@@ -3422,7 +3444,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt28) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1383:12: ~ ( '\\n' | '\\r' )
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1392:12: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -3442,7 +3464,7 @@ public class JavaLexer extends Lexer {
                 }
             } while (true);
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1383:26: ( '\\r' )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1392:26: ( '\\r' )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -3451,7 +3473,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt29) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1383:26: '\\r'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1392:26: '\\r'
                     {
                     match('\r'); 
 
@@ -3474,8 +3496,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR end "LINE_COMMENT"
 
     public void mTokens() throws RecognitionException {
-        // src/main/resources/org/drools/semantics/java/parser/Java.g:1:8: ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
-        int alt30=107;
+        // src/main/resources/org/drools/semantics/java/parser/Java.g:1:8: ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | T__120 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
+        int alt30=108;
         alt30 = dfa30.predict(input);
         switch (alt30) {
             case 1 :
@@ -4151,77 +4173,84 @@ public class JavaLexer extends Lexer {
                 }
                 break;
             case 97 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:606: HexLiteral
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:606: T__120
+                {
+                mT__120(); 
+
+                }
+                break;
+            case 98 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:613: HexLiteral
                 {
                 mHexLiteral(); 
 
                 }
                 break;
-            case 98 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:617: DecimalLiteral
+            case 99 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:624: DecimalLiteral
                 {
                 mDecimalLiteral(); 
 
                 }
                 break;
-            case 99 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:632: OctalLiteral
+            case 100 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:639: OctalLiteral
                 {
                 mOctalLiteral(); 
 
                 }
                 break;
-            case 100 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:645: FloatingPointLiteral
+            case 101 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:652: FloatingPointLiteral
                 {
                 mFloatingPointLiteral(); 
 
                 }
                 break;
-            case 101 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:666: CharacterLiteral
+            case 102 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:673: CharacterLiteral
                 {
                 mCharacterLiteral(); 
 
                 }
                 break;
-            case 102 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:683: StringLiteral
+            case 103 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:690: StringLiteral
                 {
                 mStringLiteral(); 
 
                 }
                 break;
-            case 103 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:697: ENUM
+            case 104 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:704: ENUM
                 {
                 mENUM(); 
 
                 }
                 break;
-            case 104 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:702: Identifier
+            case 105 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:709: Identifier
                 {
                 mIdentifier(); 
 
                 }
                 break;
-            case 105 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:713: WS
+            case 106 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:720: WS
                 {
                 mWS(); 
 
                 }
                 break;
-            case 106 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:716: COMMENT
+            case 107 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:723: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
-            case 107 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:724: LINE_COMMENT
+            case 108 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:731: LINE_COMMENT
                 {
                 mLINE_COMMENT(); 
 
@@ -4290,7 +4319,7 @@ public class JavaLexer extends Lexer {
             this.transition = DFA19_transition;
         }
         public String getDescription() {
-            return "1288:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
+            return "1297:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
         }
     }
     static final String DFA30_eotS =
@@ -4298,25 +4327,26 @@ public class JavaLexer extends Lexer {
         "\1\57\2\uffff\1\57\1\117\6\57\5\uffff\4\57\1\145\1\150\1\154\1\157"+
         "\1\161\1\163\1\165\1\uffff\2\167\4\uffff\5\57\1\u0081\5\57\5\uffff"+
         "\7\57\3\uffff\3\57\2\uffff\15\57\1\u00a7\5\57\25\uffff\1\u00ad\1"+
-        "\167\5\57\1\u00b5\1\57\1\uffff\26\57\1\u00ce\5\57\1\u00d4\2\57\1"+
-        "\u00d7\5\57\1\uffff\5\57\1\uffff\7\57\1\uffff\10\57\1\u00f2\3\57"+
-        "\1\u00f6\2\57\1\u00f9\1\57\1\u00fb\1\u00fc\2\57\1\u00ff\1\57\1\u0101"+
-        "\1\uffff\5\57\1\uffff\1\57\1\u0108\1\uffff\1\57\1\u010a\1\57\1\u010c"+
-        "\22\57\1\u011f\1\u0120\1\57\1\u0122\1\uffff\2\57\1\u0125\1\uffff"+
-        "\2\57\1\uffff\1\57\2\uffff\1\57\1\u012b\1\uffff\1\57\1\uffff\2\57"+
-        "\1\u0130\1\u0131\1\u0132\1\57\1\uffff\1\57\1\uffff\1\u0135\1\uffff"+
-        "\2\57\1\u0138\5\57\1\u013e\2\57\1\u0141\3\57\1\u0145\2\57\2\uffff"+
-        "\1\u0148\1\uffff\2\57\1\uffff\4\57\1\u014f\1\uffff\2\57\1\u0152"+
-        "\1\57\3\uffff\1\u0154\1\57\1\uffff\1\u0156\1\57\1\uffff\1\u0158"+
-        "\1\57\1\u015a\1\u015b\1\u015c\1\uffff\1\57\1\u015e\1\uffff\3\57"+
-        "\1\uffff\2\57\1\uffff\2\57\1\u0166\3\57\1\uffff\2\57\1\uffff\1\u016c"+
-        "\1\uffff\1\u016d\1\uffff\1\u016e\1\uffff\1\u016f\3\uffff\1\57\1"+
-        "\uffff\3\57\1\u0174\1\57\1\u0176\1\u0177\1\uffff\2\57\1\u017a\1"+
-        "\57\1\u017c\4\uffff\1\u017d\1\57\1\u017f\1\57\1\uffff\1\57\2\uffff"+
-        "\2\57\1\uffff\1\u0184\2\uffff\1\u0185\1\uffff\1\u0186\1\57\1\u0188"+
-        "\1\57\3\uffff\1\57\1\uffff\1\u018b\1\u018c\2\uffff";
+        "\167\5\57\1\u00b5\1\57\1\uffff\26\57\1\u00cf\5\57\1\u00d5\2\57\1"+
+        "\u00d8\5\57\1\uffff\5\57\1\uffff\7\57\1\uffff\11\57\1\u00f4\3\57"+
+        "\1\u00f8\2\57\1\u00fb\1\57\1\u00fd\1\u00fe\2\57\1\u0101\1\57\1\u0103"+
+        "\1\uffff\5\57\1\uffff\1\57\1\u010a\1\uffff\1\57\1\u010c\1\57\1\u010e"+
+        "\23\57\1\u0122\1\u0123\1\57\1\u0125\1\uffff\2\57\1\u0128\1\uffff"+
+        "\2\57\1\uffff\1\57\2\uffff\1\57\1\u012e\1\uffff\1\57\1\uffff\2\57"+
+        "\1\u0133\1\u0134\1\u0135\1\57\1\uffff\1\57\1\uffff\1\u0138\1\uffff"+
+        "\2\57\1\u013b\5\57\1\u0141\2\57\1\u0144\2\57\1\u0147\1\57\1\u0149"+
+        "\2\57\2\uffff\1\u014c\1\uffff\2\57\1\uffff\4\57\1\u0153\1\uffff"+
+        "\2\57\1\u0156\1\57\3\uffff\1\u0158\1\57\1\uffff\1\u015a\1\57\1\uffff"+
+        "\1\u015c\1\57\1\u015e\1\u015f\1\u0160\1\uffff\1\57\1\u0162\1\uffff"+
+        "\2\57\1\uffff\1\57\1\uffff\2\57\1\uffff\2\57\1\u016a\3\57\1\uffff"+
+        "\2\57\1\uffff\1\u0170\1\uffff\1\u0171\1\uffff\1\u0172\1\uffff\1"+
+        "\u0173\3\uffff\1\57\1\uffff\3\57\1\u0178\1\57\1\u017a\1\u017b\1"+
+        "\uffff\2\57\1\u017e\1\57\1\u0180\4\uffff\1\u0181\1\57\1\u0183\1"+
+        "\57\1\uffff\1\57\2\uffff\2\57\1\uffff\1\u0188\2\uffff\1\u0189\1"+
+        "\uffff\1\u018a\1\57\1\u018c\1\57\3\uffff\1\57\1\uffff\1\u018f\1"+
+        "\u0190\2\uffff";
     static final String DFA30_eofS =
-        "\u018d\uffff";
+        "\u0191\uffff";
     static final String DFA30_minS =
         "\1\11\1\141\1\uffff\1\146\1\150\1\56\1\75\1\141\1\154\3\uffff\1"+
         "\46\2\uffff\1\157\2\uffff\1\150\1\75\1\142\2\141\2\157\1\145\5\uffff"+
@@ -4325,30 +4355,30 @@ public class JavaLexer extends Lexer {
         "\5\uffff\2\141\1\156\1\163\1\151\1\163\1\164\3\uffff\2\151\1\141"+
         "\2\uffff\2\163\1\156\1\157\1\154\1\162\1\164\1\154\1\167\1\157\1"+
         "\164\1\145\1\156\1\44\1\146\1\151\1\164\2\144\25\uffff\2\56\1\153"+
-        "\1\154\1\164\1\166\1\154\1\44\1\164\1\uffff\1\164\1\151\1\143\1"+
+        "\1\154\1\164\1\166\1\154\1\44\1\145\1\uffff\1\164\1\151\1\143\1"+
         "\162\1\145\1\164\1\163\1\156\1\164\1\143\2\145\1\164\1\145\1\162"+
         "\1\155\1\144\1\141\1\157\1\163\1\156\1\145\1\44\1\164\1\145\2\141"+
         "\1\163\1\44\1\151\1\154\1\44\1\154\1\145\1\141\1\147\1\142\1\uffff"+
         "\1\141\1\154\1\162\1\151\1\141\1\uffff\1\141\1\151\1\145\1\141\1"+
-        "\162\1\145\1\162\1\uffff\1\141\1\151\1\143\1\150\1\164\1\162\1\143"+
-        "\1\163\1\44\1\156\1\151\1\150\1\44\1\156\1\120\1\44\1\171\2\44\1"+
-        "\164\1\167\1\44\1\163\1\44\1\uffff\2\162\1\154\1\164\1\145\1\uffff"+
-        "\1\166\1\44\1\uffff\1\145\1\44\1\153\1\44\1\154\1\165\1\145\1\162"+
-        "\1\141\1\146\1\164\1\147\2\143\2\164\1\155\1\146\1\156\1\143\1\164"+
-        "\1\162\2\44\1\150\1\44\1\uffff\1\145\1\156\1\44\1\uffff\1\144\1"+
-        "\157\1\uffff\1\120\2\uffff\1\151\1\44\1\uffff\1\151\1\uffff\1\141"+
-        "\1\164\3\44\1\145\1\uffff\1\141\1\uffff\1\44\1\uffff\1\145\1\154"+
-        "\1\44\1\156\1\143\1\171\2\145\1\44\1\164\1\145\1\44\1\145\1\141"+
-        "\1\143\1\44\1\146\1\157\2\uffff\1\44\1\uffff\1\154\1\165\1\uffff"+
-        "\1\163\1\151\1\157\1\154\1\44\1\uffff\1\145\1\143\1\44\1\171\3\uffff"+
-        "\1\44\1\156\1\uffff\1\44\1\164\1\uffff\1\44\1\164\3\44\1\uffff\1"+
-        "\145\1\44\1\uffff\1\156\1\143\1\145\1\uffff\1\160\1\156\1\uffff"+
-        "\1\163\1\145\1\44\1\156\1\151\1\145\1\uffff\1\156\1\164\1\uffff"+
-        "\1\44\1\uffff\1\44\1\uffff\1\44\1\uffff\1\44\3\uffff\1\144\1\uffff"+
-        "\1\164\1\145\1\157\1\44\1\151\2\44\1\uffff\1\164\1\156\1\44\1\164"+
-        "\1\44\4\uffff\1\44\1\163\1\44\1\146\1\uffff\1\172\2\uffff\1\163"+
-        "\1\164\1\uffff\1\44\2\uffff\1\44\1\uffff\1\44\1\145\1\44\1\163\3"+
-        "\uffff\1\144\1\uffff\2\44\2\uffff";
+        "\162\1\145\1\162\1\uffff\1\162\1\141\1\151\1\143\1\150\1\164\1\162"+
+        "\1\143\1\163\1\44\1\156\1\151\1\150\1\44\1\156\1\120\1\44\1\171"+
+        "\2\44\1\164\1\167\1\44\1\163\1\44\1\uffff\2\162\1\154\1\164\1\145"+
+        "\1\uffff\1\166\1\44\1\uffff\1\145\1\44\1\153\1\44\1\154\1\165\1"+
+        "\145\1\162\1\141\1\146\1\164\1\147\2\143\2\164\1\155\1\146\1\164"+
+        "\1\156\1\143\1\164\1\162\2\44\1\150\1\44\1\uffff\1\145\1\156\1\44"+
+        "\1\uffff\1\144\1\157\1\uffff\1\120\2\uffff\1\151\1\44\1\uffff\1"+
+        "\151\1\uffff\1\141\1\164\3\44\1\145\1\uffff\1\141\1\uffff\1\44\1"+
+        "\uffff\1\145\1\154\1\44\1\156\1\143\1\171\2\145\1\44\1\164\1\145"+
+        "\1\44\1\145\1\141\1\44\1\143\1\44\1\146\1\157\2\uffff\1\44\1\uffff"+
+        "\1\154\1\165\1\uffff\1\163\1\151\1\157\1\154\1\44\1\uffff\1\145"+
+        "\1\143\1\44\1\171\3\uffff\1\44\1\156\1\uffff\1\44\1\164\1\uffff"+
+        "\1\44\1\164\3\44\1\uffff\1\145\1\44\1\uffff\1\156\1\143\1\uffff"+
+        "\1\145\1\uffff\1\160\1\156\1\uffff\1\163\1\145\1\44\1\156\1\151"+
+        "\1\145\1\uffff\1\156\1\164\1\uffff\1\44\1\uffff\1\44\1\uffff\1\44"+
+        "\1\uffff\1\44\3\uffff\1\144\1\uffff\1\164\1\145\1\157\1\44\1\151"+
+        "\2\44\1\uffff\1\164\1\156\1\44\1\164\1\44\4\uffff\1\44\1\163\1\44"+
+        "\1\146\1\uffff\1\172\2\uffff\1\163\1\164\1\uffff\1\44\2\uffff\1"+
+        "\44\1\uffff\1\44\1\145\1\44\1\163\3\uffff\1\144\1\uffff\2\44\2\uffff";
     static final String DFA30_maxS =
         "\1\ufaff\1\165\1\uffff\1\156\1\171\1\71\1\75\1\157\1\170\3\uffff"+
         "\1\75\2\uffff\1\157\2\uffff\1\162\1\75\1\163\1\157\1\165\1\171\2"+
@@ -4362,46 +4392,47 @@ public class JavaLexer extends Lexer {
         "\1\164\1\145\1\162\1\155\1\144\1\141\1\157\1\163\1\156\1\145\1\uff19"+
         "\1\164\1\145\2\141\1\163\1\uff19\1\151\1\154\1\uff19\1\154\1\145"+
         "\1\141\1\147\1\142\1\uffff\1\141\1\154\1\165\1\151\1\141\1\uffff"+
-        "\1\141\1\151\1\145\1\141\1\162\1\145\1\162\1\uffff\1\141\1\151\1"+
-        "\143\1\150\1\164\1\162\1\143\1\163\1\uff19\1\156\1\151\1\150\1\uff19"+
-        "\1\156\1\120\1\uff19\1\171\2\uff19\1\164\1\167\1\uff19\1\163\1\uff19"+
-        "\1\uffff\2\162\1\154\1\164\1\145\1\uffff\1\166\1\uff19\1\uffff\1"+
-        "\145\1\uff19\1\153\1\uff19\1\154\1\165\1\145\1\162\1\141\1\146\1"+
-        "\164\1\147\2\143\2\164\1\155\1\146\1\156\1\143\1\164\1\162\2\uff19"+
-        "\1\150\1\uff19\1\uffff\1\145\1\156\1\uff19\1\uffff\1\144\1\157\1"+
-        "\uffff\1\120\2\uffff\1\151\1\uff19\1\uffff\1\151\1\uffff\1\141\1"+
-        "\164\3\uff19\1\145\1\uffff\1\141\1\uffff\1\uff19\1\uffff\1\145\1"+
-        "\154\1\uff19\1\156\1\143\1\171\2\145\1\uff19\1\164\1\145\1\uff19"+
-        "\1\145\1\141\1\143\1\uff19\1\146\1\157\2\uffff\1\uff19\1\uffff\1"+
-        "\154\1\165\1\uffff\1\163\1\151\1\157\1\154\1\uff19\1\uffff\1\145"+
-        "\1\143\1\uff19\1\171\3\uffff\1\uff19\1\156\1\uffff\1\uff19\1\164"+
-        "\1\uffff\1\uff19\1\164\3\uff19\1\uffff\1\145\1\uff19\1\uffff\1\156"+
-        "\1\143\1\145\1\uffff\1\160\1\156\1\uffff\1\163\1\145\1\uff19\1\156"+
-        "\1\151\1\145\1\uffff\1\156\1\164\1\uffff\1\uff19\1\uffff\1\uff19"+
-        "\1\uffff\1\uff19\1\uffff\1\uff19\3\uffff\1\144\1\uffff\1\164\1\145"+
-        "\1\157\1\uff19\1\151\2\uff19\1\uffff\1\164\1\156\1\uff19\1\164\1"+
-        "\uff19\4\uffff\1\uff19\1\163\1\uff19\1\146\1\uffff\1\172\2\uffff"+
-        "\1\163\1\164\1\uffff\1\uff19\2\uffff\1\uff19\1\uffff\1\uff19\1\145"+
-        "\1\uff19\1\163\3\uffff\1\144\1\uffff\2\uff19\2\uffff";
+        "\1\141\1\151\1\145\1\141\1\162\1\145\1\162\1\uffff\1\162\1\141\1"+
+        "\151\1\143\1\150\1\164\1\162\1\143\1\163\1\uff19\1\156\1\151\1\150"+
+        "\1\uff19\1\156\1\120\1\uff19\1\171\2\uff19\1\164\1\167\1\uff19\1"+
+        "\163\1\uff19\1\uffff\2\162\1\154\1\164\1\145\1\uffff\1\166\1\uff19"+
+        "\1\uffff\1\145\1\uff19\1\153\1\uff19\1\154\1\165\1\145\1\162\1\141"+
+        "\1\146\1\164\1\147\2\143\2\164\1\155\1\146\1\164\1\156\1\143\1\164"+
+        "\1\162\2\uff19\1\150\1\uff19\1\uffff\1\145\1\156\1\uff19\1\uffff"+
+        "\1\144\1\157\1\uffff\1\120\2\uffff\1\151\1\uff19\1\uffff\1\151\1"+
+        "\uffff\1\141\1\164\3\uff19\1\145\1\uffff\1\141\1\uffff\1\uff19\1"+
+        "\uffff\1\145\1\154\1\uff19\1\156\1\143\1\171\2\145\1\uff19\1\164"+
+        "\1\145\1\uff19\1\145\1\141\1\uff19\1\143\1\uff19\1\146\1\157\2\uffff"+
+        "\1\uff19\1\uffff\1\154\1\165\1\uffff\1\163\1\151\1\157\1\154\1\uff19"+
+        "\1\uffff\1\145\1\143\1\uff19\1\171\3\uffff\1\uff19\1\156\1\uffff"+
+        "\1\uff19\1\164\1\uffff\1\uff19\1\164\3\uff19\1\uffff\1\145\1\uff19"+
+        "\1\uffff\1\156\1\143\1\uffff\1\145\1\uffff\1\160\1\156\1\uffff\1"+
+        "\163\1\145\1\uff19\1\156\1\151\1\145\1\uffff\1\156\1\164\1\uffff"+
+        "\1\uff19\1\uffff\1\uff19\1\uffff\1\uff19\1\uffff\1\uff19\3\uffff"+
+        "\1\144\1\uffff\1\164\1\145\1\157\1\uff19\1\151\2\uff19\1\uffff\1"+
+        "\164\1\156\1\uff19\1\164\1\uff19\4\uffff\1\uff19\1\163\1\uff19\1"+
+        "\146\1\uffff\1\172\2\uffff\1\163\1\164\1\uffff\1\uff19\2\uffff\1"+
+        "\uff19\1\uffff\1\uff19\1\145\1\uff19\1\163\3\uffff\1\144\1\uffff"+
+        "\2\uff19\2\uffff";
     static final String DFA30_acceptS =
         "\2\uffff\1\2\6\uffff\1\12\1\13\1\14\1\uffff\1\16\1\17\1\uffff\1"+
-        "\22\1\23\10\uffff\1\50\1\52\1\53\1\60\1\63\13\uffff\1\135\2\uffff"+
-        "\1\145\1\146\1\150\1\151\13\uffff\1\54\1\5\1\144\1\112\1\6\7\uffff"+
-        "\1\114\1\121\1\15\3\uffff\1\124\1\25\23\uffff\1\110\1\133\1\127"+
-        "\1\111\1\134\1\130\1\113\1\152\1\153\1\131\1\115\1\120\1\122\1\116"+
-        "\1\123\1\117\1\132\1\125\1\136\1\141\1\142\11\uffff\1\73\45\uffff"+
-        "\1\64\5\uffff\1\143\7\uffff\1\44\30\uffff\1\76\5\uffff\1\75\2\uffff"+
-        "\1\140\32\uffff\1\41\3\uffff\1\107\2\uffff\1\74\1\uffff\1\147\1"+
-        "\21\2\uffff\1\137\1\uffff\1\56\6\uffff\1\55\1\uffff\1\42\1\uffff"+
-        "\1\45\22\uffff\1\43\1\51\1\uffff\1\7\2\uffff\1\77\5\uffff\1\72\4"+
+        "\22\1\23\10\uffff\1\50\1\52\1\53\1\60\1\63\13\uffff\1\136\2\uffff"+
+        "\1\146\1\147\1\151\1\152\13\uffff\1\54\1\5\1\145\1\113\1\6\7\uffff"+
+        "\1\115\1\122\1\15\3\uffff\1\125\1\25\23\uffff\1\111\1\134\1\130"+
+        "\1\112\1\135\1\131\1\114\1\153\1\154\1\132\1\116\1\121\1\123\1\117"+
+        "\1\124\1\120\1\133\1\126\1\137\1\142\1\143\11\uffff\1\73\45\uffff"+
+        "\1\64\5\uffff\1\144\7\uffff\1\44\31\uffff\1\76\5\uffff\1\75\2\uffff"+
+        "\1\141\33\uffff\1\41\3\uffff\1\110\2\uffff\1\74\1\uffff\1\150\1"+
+        "\21\2\uffff\1\140\1\uffff\1\56\6\uffff\1\55\1\uffff\1\42\1\uffff"+
+        "\1\45\23\uffff\1\43\1\51\1\uffff\1\7\2\uffff\1\77\5\uffff\1\72\4"+
         "\uffff\1\32\1\46\1\57\2\uffff\1\70\2\uffff\1\65\5\uffff\1\26\2\uffff"+
-        "\1\3\3\uffff\1\4\2\uffff\1\66\6\uffff\1\24\2\uffff\1\62\1\uffff"+
-        "\1\33\1\uffff\1\47\1\uffff\1\67\1\uffff\1\101\1\102\1\1\1\uffff"+
-        "\1\30\7\uffff\1\10\5\uffff\1\100\1\40\1\61\1\103\4\uffff\1\37\1"+
-        "\uffff\1\106\1\71\2\uffff\1\36\1\uffff\1\31\1\27\1\uffff\1\20\4"+
-        "\uffff\1\35\1\11\1\126\1\uffff\1\104\2\uffff\1\105\1\34";
+        "\1\3\2\uffff\1\104\1\uffff\1\4\2\uffff\1\66\6\uffff\1\24\2\uffff"+
+        "\1\62\1\uffff\1\33\1\uffff\1\47\1\uffff\1\67\1\uffff\1\101\1\102"+
+        "\1\1\1\uffff\1\30\7\uffff\1\10\5\uffff\1\100\1\40\1\61\1\103\4\uffff"+
+        "\1\37\1\uffff\1\107\1\71\2\uffff\1\36\1\uffff\1\31\1\27\1\uffff"+
+        "\1\20\4\uffff\1\35\1\11\1\127\1\uffff\1\105\2\uffff\1\106\1\34";
     static final String DFA30_specialS =
-        "\u018d\uffff}>";
+        "\u0191\uffff}>";
     static final String[] DFA30_transitionS = {
             "\2\60\1\uffff\2\60\22\uffff\1\60\1\51\1\56\1\uffff\1\57\1\50"+
             "\1\14\1\55\1\33\1\34\1\6\1\43\1\12\1\44\1\5\1\45\1\53\11\54"+
@@ -4550,17 +4581,16 @@ public class JavaLexer extends Lexer {
             "\u1040\uffff\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e"+
             "\57\u10d2\uffff\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12"+
             "\57",
-            "\1\u00b6",
+            "\1\u00b6\16\uffff\1\u00b7",
             "",
-            "\1\u00b7",
             "\1\u00b8",
             "\1\u00b9",
             "\1\u00ba",
             "\1\u00bb",
             "\1\u00bc",
             "\1\u00bd",
-            "\1\u00bf\3\uffff\1\u00be",
-            "\1\u00c0",
+            "\1\u00be",
+            "\1\u00c0\3\uffff\1\u00bf",
             "\1\u00c1",
             "\1\u00c2",
             "\1\u00c3",
@@ -4574,46 +4604,46 @@ public class JavaLexer extends Lexer {
             "\1\u00cb",
             "\1\u00cc",
             "\1\u00cd",
+            "\1\u00ce",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u00cf",
             "\1\u00d0",
             "\1\u00d1",
             "\1\u00d2",
             "\1\u00d3",
+            "\1\u00d4",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u00d5",
             "\1\u00d6",
+            "\1\u00d7",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u00d8",
             "\1\u00d9",
             "\1\u00da",
             "\1\u00db",
             "\1\u00dc",
-            "",
             "\1\u00dd",
-            "\1\u00de",
-            "\1\u00e0\2\uffff\1\u00df",
-            "\1\u00e1",
-            "\1\u00e2",
             "",
+            "\1\u00de",
+            "\1\u00df",
+            "\1\u00e1\2\uffff\1\u00e0",
+            "\1\u00e2",
             "\1\u00e3",
+            "",
             "\1\u00e4",
             "\1\u00e5",
             "\1\u00e6",
             "\1\u00e7",
             "\1\u00e8",
             "\1\u00e9",
-            "",
             "\1\u00ea",
+            "",
             "\1\u00eb",
             "\1\u00ec",
             "\1\u00ed",
@@ -4621,68 +4651,68 @@ public class JavaLexer extends Lexer {
             "\1\u00ef",
             "\1\u00f0",
             "\1\u00f1",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u00f2",
             "\1\u00f3",
-            "\1\u00f4",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u00f5",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u00f6",
             "\1\u00f7",
-            "\1\u00f8",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u00f9",
             "\1\u00fa",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u00fc",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u00fd",
-            "\1\u00fe",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u00ff",
             "\1\u0100",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "",
             "\1\u0102",
-            "\1\u0103",
-            "\1\u0104",
-            "\1\u0105",
-            "\1\u0106",
-            "",
-            "\1\u0107",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "",
+            "\1\u0104",
+            "\1\u0105",
+            "\1\u0106",
+            "\1\u0107",
+            "\1\u0108",
             "",
             "\1\u0109",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "",
             "\1\u010b",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u010d",
-            "\1\u010e",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u010f",
             "\1\u0110",
             "\1\u0111",
@@ -4699,21 +4729,17 @@ public class JavaLexer extends Lexer {
             "\1\u011c",
             "\1\u011d",
             "\1\u011e",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u011f",
+            "\1\u0120",
             "\1\u0121",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "",
-            "\1\u0123",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u0124",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
@@ -4722,23 +4748,30 @@ public class JavaLexer extends Lexer {
             "",
             "\1\u0126",
             "\1\u0127",
-            "",
-            "\1\u0128",
-            "",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "",
             "\1\u0129",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\22"+
-            "\57\1\u012a\7\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08"+
-            "\57\u1040\uffff\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e"+
-            "\57\u10d2\uffff\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12"+
-            "\57",
+            "\1\u012a",
+            "",
+            "\1\u012b",
+            "",
             "",
             "\1\u012c",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\22"+
+            "\57\1\u012d\7\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08"+
+            "\57\u1040\uffff\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e"+
+            "\57\u10d2\uffff\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12"+
+            "\57",
             "",
-            "\1\u012d",
-            "\1\u012e",
+            "\1\u012f",
+            "",
+            "\1\u0130",
+            "\1\u0131",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\13"+
-            "\57\1\u012f\16\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08"+
+            "\57\1\u0132\16\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08"+
             "\57\u1040\uffff\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e"+
             "\57\u10d2\uffff\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12"+
             "\57",
@@ -4750,30 +4783,24 @@ public class JavaLexer extends Lexer {
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u0133",
-            "",
-            "\1\u0134",
-            "",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "",
             "\1\u0136",
+            "",
             "\1\u0137",
+            "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "",
             "\1\u0139",
             "\1\u013a",
-            "\1\u013b",
-            "\1\u013c",
-            "\1\u013d",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u013c",
+            "\1\u013d",
+            "\1\u013e",
             "\1\u013f",
             "\1\u0140",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
@@ -4782,13 +4809,23 @@ public class JavaLexer extends Lexer {
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u0142",
             "\1\u0143",
-            "\1\u0144",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u0145",
             "\1\u0146",
-            "\1\u0147",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u0148",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u014a",
+            "\1\u014b",
             "",
             "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
@@ -4796,83 +4833,84 @@ public class JavaLexer extends Lexer {
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "",
-            "\1\u0149",
-            "\1\u014a",
-            "",
-            "\1\u014b",
-            "\1\u014c",
             "\1\u014d",
             "\1\u014e",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "",
+            "\1\u014f",
             "\1\u0150",
             "\1\u0151",
+            "\1\u0152",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u0153",
             "",
-            "",
-            "",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u0154",
             "\1\u0155",
-            "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u0157",
             "",
+            "",
+            "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u0159",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u015b",
+            "",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u015d",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "",
-            "\1\u015f",
-            "\1\u0160",
-            "\1\u0161",
-            "",
-            "\1\u0162",
-            "\1\u0163",
-            "",
-            "\1\u0164",
-            "\1\u0165",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "",
+            "\1\u0161",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "",
+            "\1\u0163",
+            "\1\u0164",
+            "",
+            "\1\u0165",
+            "",
+            "\1\u0166",
             "\1\u0167",
+            "",
             "\1\u0168",
             "\1\u0169",
-            "",
-            "\1\u016a",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u016b",
+            "\1\u016c",
+            "\1\u016d",
+            "",
+            "\1\u016e",
+            "\1\u016f",
             "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
@@ -4896,32 +4934,32 @@ public class JavaLexer extends Lexer {
             "",
             "",
             "",
-            "\1\u0170",
+            "\1\u0174",
             "",
-            "\1\u0171",
-            "\1\u0172",
-            "\1\u0173",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
             "\1\u0175",
+            "\1\u0176",
+            "\1\u0177",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "",
-            "\1\u0178",
             "\1\u0179",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u017b",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "",
+            "\1\u017c",
+            "\1\u017d",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u017f",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
@@ -4934,44 +4972,44 @@ public class JavaLexer extends Lexer {
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u017e",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u0180",
-            "",
-            "\1\u0181",
-            "",
-            "",
             "\1\u0182",
-            "\1\u0183",
-            "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u0184",
+            "",
+            "\1\u0185",
             "",
             "",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "",
-            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
-            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
-            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
-            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u0186",
             "\1\u0187",
+            "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
             "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
             "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
-            "\1\u0189",
+            "",
+            "",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u018b",
+            "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
+            "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
+            "\u0150\57\u0170\uffff\u0080\57\u0080\uffff\u092e\57\u10d2\uffff"+
+            "\u5200\57\u5900\uffff\u0200\57\u0410\uffff\12\57",
+            "\1\u018d",
             "",
             "",
             "",
-            "\1\u018a",
+            "\1\u018e",
             "",
             "\1\57\13\uffff\12\57\7\uffff\32\57\4\uffff\1\57\1\uffff\32"+
             "\57\105\uffff\27\57\1\uffff\37\57\1\uffff\u1f08\57\u1040\uffff"+
@@ -5015,7 +5053,7 @@ public class JavaLexer extends Lexer {
             this.transition = DFA30_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT );";
+            return "1:1: Tokens : ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | T__120 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT );";
         }
     }
  
