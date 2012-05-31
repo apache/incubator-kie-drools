@@ -158,7 +158,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         	}
         	for (Map.Entry<org.jbpm.workflow.instance.NodeInstance, String> nodeInstance: nodeInstances.entrySet()) {
 	        	// stop if this process instance has been aborted / completed
-	        	if (getProcessInstance().getState() != ProcessInstance.STATE_ACTIVE) {
+	        	if (((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).getState() != ProcessInstance.STATE_ACTIVE) {
 	        		return;
 	        	}
 	    		triggerNodeInstance(nodeInstance.getKey(), nodeInstance.getValue());

@@ -40,5 +40,9 @@ public interface NodeInstanceContainer extends org.drools.runtime.process.NodeIn
     NodeContainer getNodeContainer();
     
     void nodeInstanceCompleted(NodeInstance nodeInstance, String outType);
+    
+    int getState();
+    
+    void setState(int state);
 
 }

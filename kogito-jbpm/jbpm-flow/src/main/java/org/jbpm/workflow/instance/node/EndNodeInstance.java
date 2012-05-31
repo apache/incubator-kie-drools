@@ -60,9 +60,9 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
         	    ((CompositeNodeInstance) getNodeInstanceContainer()).cancel();
         	    
         	    ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
-        	} else {
-        	    ((ProcessInstance) getProcessInstance()).setState( ProcessInstance.STATE_COMPLETED );    
-        	}
+        	} 
+        	
+        	((NodeInstanceContainer) getNodeInstanceContainer()).setState( ProcessInstance.STATE_COMPLETED );    
         	
         } else {
             ((NodeInstanceContainer) getNodeInstanceContainer())

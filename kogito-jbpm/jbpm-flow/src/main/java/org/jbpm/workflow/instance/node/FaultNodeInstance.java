@@ -53,6 +53,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
         nodeInstanceContainer.removeNodeInstance(this);
         if (getFaultNode().isTerminateParent()) {
             if (nodeInstanceContainer instanceof CompositeNodeInstance) {
+
                 ((CompositeNodeInstance) nodeInstanceContainer).cancel();
             } else if (nodeInstanceContainer instanceof WorkflowProcessInstance) {
                 Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstance) nodeInstanceContainer).getNodeInstances();
@@ -64,7 +65,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
         if (exceptionScopeInstance != null) {
         	handleException(faultName, exceptionScopeInstance);
         } else {
-        	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
+            nodeInstanceContainer.setState(ProcessInstance.STATE_ABORTED);
         }
     }
     
