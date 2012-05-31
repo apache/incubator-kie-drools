@@ -143,4 +143,27 @@ public class ReloadSessionTest {
         assertEquals( 1, list.size() );
     }
 
+    /**
+     * Reproducer.
+     * https://bugzilla.redhat.com/show_bug.cgi?id=826952
+     * 
+     * Registered listeners are lost after reloading knowledge session.
+     */
+    @Test
+    public void testListenersAfterSessionReload() {
+        Environment env = createEnvironment(context);
+        KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        
+        ksession.addEventListener(new org.drools.event.rule.DefaultAgendaEventListener());
+        ksession.addEventListener(new org.drools.event.rule.DefaultWorkingMemoryEventListener());
+        
+        assertEquals(1, ksession.getWorkingMemoryEventListeners().size());
+        assertEquals(1, ksession.getAgendaEventListeners().size());
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+        
+        assertEquals(1, ksession.getWorkingMemoryEventListeners().size());
+        assertEquals(1, ksession.getAgendaEventListeners().size());
+    }
 }
