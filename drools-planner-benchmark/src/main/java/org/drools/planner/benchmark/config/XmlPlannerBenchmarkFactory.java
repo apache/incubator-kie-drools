@@ -74,12 +74,13 @@ public class XmlPlannerBenchmarkFactory {
         }
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream in) {
-        return this.configureFromTemplate(in, null);
+    public XmlPlannerBenchmarkFactory configure(Reader reader) {
+        plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
+        return this;
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader) {
-        return this.configureFromTemplate(reader, null);
+    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream in) {
+        return this.configureFromTemplate(in, null);
     }
 
     public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream in, Object model) {
@@ -95,26 +96,19 @@ public class XmlPlannerBenchmarkFactory {
         }
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader, Object model) {
-        Configuration cfg = new Configuration();
-        cfg.setObjectWrapper(new DefaultObjectWrapper());
-        cfg.setNumberFormat("computer"); // don't do any Freemarker magic to numbers
-        try {
-            return this.configureFromTemplate(new Template("benchmarkTemplate.ftl", reader, cfg, "UTF-8"), model);
-        } catch (IOException e) {
-            throw new IllegalStateException("The template for a benchmark cannot be read.", e);
-        }
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader) {
+        return this.configureFromTemplate(reader, null);
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(Template template, Object model) {
-        StringWriter out = new StringWriter();
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader, Object model) {
+        Configuration freemarkerCfg = new Configuration();
+        freemarkerCfg.setDefaultEncoding("UTF-8");
+        freemarkerCfg.setNumberFormat("computer"); // don't do any Freemarker magic to numbers
         try {
-            template.process(model, out);
-            return this.configure(new StringReader(out.toString()));
-        } catch (TemplateException e) {
-            throw new IllegalStateException("There was a problem with the benchmark template.", e);
+            Template template = new Template("benchmarkTemplate.ftl", reader, freemarkerCfg, "UTF-8");
+            return this.configureFromTemplate(template, model);
         } catch (IOException e) {
-            throw new IllegalStateException("There was a problem writing the benchmark config from the template.", e);
+            throw new IllegalStateException("The template for a benchmark cannot be read.", e);
         }
     }
 
@@ -122,9 +116,16 @@ public class XmlPlannerBenchmarkFactory {
         return this.configureFromTemplate(template, null);
     }
 
-    public XmlPlannerBenchmarkFactory configure(Reader reader) {
-        plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
-        return this;
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Template template, Object model) {
+        StringWriter out = new StringWriter();
+        try {
+            template.process(model, out);
+            return this.configure(new StringReader(out.toString()));
+        } catch (IOException e) {
+            throw new IllegalStateException("There was a problem writing the benchmark config from the template.", e);
+        } catch (TemplateException e) {
+            throw new IllegalStateException("There was a problem with the benchmark template.", e);
+        }
     }
 
     public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
