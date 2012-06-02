@@ -103,7 +103,14 @@ public class XmlPlannerBenchmarkFactory {
     public XmlPlannerBenchmarkFactory configureFromTemplate(Reader templateReader, Object model) {
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");
-        freemarkerCfg.setNumberFormat("computer"); // don't do any Freemarker magic to numbers
+        // Write each number according to Java language spec (as expected by XStream), so not formatted by locale
+        freemarkerCfg.setNumberFormat("computer");
+        // Write each date according to OSI standard (as expected by XStream)
+        freemarkerCfg.setDateFormat("yyyy-mm-dd");
+        // Write each datetime in format expected by XStream
+        freemarkerCfg.setDateTimeFormat("yyyy-mm-dd HH:mm:ss.SSS z");
+        // Write each time in format expected by XStream
+        freemarkerCfg.setTimeFormat("HH:mm:ss.SSS");
         String templateFilename = "benchmarkTemplate.ftl";
         Template template;
         try {
