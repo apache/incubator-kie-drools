@@ -20,7 +20,7 @@
   </section>
 
   <section>
-    <title>Building a benchmarker</title>
+    <title>Doing a benchmark</title>
 
     <section>
       <title>Adding the extra dependency</title>
@@ -43,7 +43,7 @@
     </section>
 
     <section>
-      <title>Building a <literal>PlannerBenchmark</literal></title>
+      <title>Building and running a <literal>PlannerBenchmark</literal></title>
 
       <para>You can build a <literal>PlannerBenchmark</literal> instance with the
       <literal>XmlPlannerBenchmarkFactory</literal>. Configure it with a benchmark configuration xml file:</para>
@@ -150,7 +150,7 @@
       instead are added to the tail of the solver phases list.</para>
 
       <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). The best
-      solution of each <literal>Solver</literal> run and a handy overview HTML file will be written in that
+      solution of each <literal>Solver</literal> run and a handy overview report will be written in that
       directory.</para>
 
       <note>
@@ -216,6 +216,218 @@
     </section>
 
     <section>
+      <title>Warming up the HotSpot compiler</title>
+
+      <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
+      reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
+      too).</para>
+
+      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
+      before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>Benchmark report</title>
+
+    <section>
+      <title>HTML report</title>
+
+      <para>After the running a benchmark, a HTML report will be written in the <literal>benchmarkDirectory</literal>
+      with the filename <filename>index.html</filename>. Open it in your browser. It has a nice overview of your
+      benchmark including:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Summary statistics: graphs and tables</para>
+        </listitem>
+
+        <listitem>
+          <para>Problem statistics per <literal>inputSolutionFile</literal></para>
+        </listitem>
+
+        <listitem>
+          <para>Each solver configuration (ranked): easy to copy and paste.</para>
+        </listitem>
+
+        <listitem>
+          <para>Benchmark information</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Summary statistics</title>
+
+      <section>
+        <title>Best score summary</title>
+
+        <para>Shows the best score per <literal>inputSolutionFile</literal> and solver configuration.</para>
+
+        <figure>
+          <title>Best score summary statistic</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+    </section>
+
+    <section>
+      <title>Statistic per data set (graph and CSV)</title>
+
+      <section>
+        <title>Enabling a problem statistic</title>
+
+        <para>The benchmarker supports outputting problem statistics as graphs and CSV (comma separated values) files to
+        the <literal>benchmarkDirectory</literal>.</para>
+
+        <para>To configure graph and CSV output of a statistic, just add a <literal>problemStatisticType</literal>
+        line:</para>
+
+        <programlisting language="xml">&lt;plannerBenchmark&gt;
+  &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
+  &lt;inheritedSolverBenchmark&gt;
+    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/problemStatisticType&gt;
+      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;
+    ...
+  &lt;/inheritedSolverBenchmark&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+
+        <para>Multiple <literal>problemStatisticType</literal> elements are allowed. Some statistic types might
+        influence performance and benchmark results noticeably. The following types are supported:</para>
+      </section>
+
+      <section>
+        <title>Best score over time statistic (graph and CSV)</title>
+
+        <para>To see how the best score evolves over time, add <literal>BEST_SOLUTION_CHANGED</literal> as <literal>a
+        problemStatisticType</literal>.</para>
+
+        <figure>
+          <title>Best score over time statistic</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionChangedStatistic.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as
+        score traps.</emphasis></para>
+
+        <note>
+          <para>Don't be fooled by the simulated annealing line in this graph. If you give simulated annealing only 5
+          minutes, it might still be better than 5 minutes of tabu search. That's because this simulated annealing
+          implementation automatically determines its velocity based on the amount of time that can be spend. On the
+          other hand, for the tabu search, what you see is what you'd get.</para>
+        </note>
+      </section>
+
+      <section>
+        <title>Calculate count per second statistic (graph and CSV)</title>
+
+        <para>To see how fast the scores are calculated, add <literal>CALCULATE_COUNT_PER_SECOND</literal> as a
+        <literal>problemStatisticType</literal>.</para>
+
+        <figure>
+          <title>Calculate count per second statistic</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <note>
+          <para>The initial high calculate count is typical during solution initialization. In this example, it's far
+          easier to calculate the score of a solution if only a handful exams have been added, in contrast to all of
+          them. After those few seconds of initialization, the calculate count is relatively stable, apart from an
+          occasional stop-the-world garbage collector disruption.</para>
+        </note>
+      </section>
+
+      <section>
+        <title>Memory use statistic (graph and CSV)</title>
+
+        <para>To see how much memory is used, add <literal>MEMORY_USE</literal> as <literal>a
+        problemStatisticType</literal>.</para>
+
+        <figure>
+          <title>Memory use statistic</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+    </section>
+
+    <section>
+      <title>Ranking the <literal>Solver</literal>s</title>
+
+      <para>The benchmark report automatically ranks the solvers. It's recommended to use the winning
+      <literal>Solver</literal> (which has rank 0) in production.</para>
+
+      <para>However, there are different ways of ranking the solvers. You can configure how:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;solverBenchmarkRankingType&gt;TOTAL_SCORE&lt;/solverBenchmarkRankingType&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+
+      <para>The following <literal>solverBenchmarkRankingType</literal>s are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>TOTAL_SCORE</literal>: Maximize the overall score, so minimize the overall cost if all
+          solutions would be executed. This is the default.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>WORST_SCORE</literal>: Minimize the worst case scenario.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>TOTAL_RANKING</literal>: Maximize the overall ranking. Use this if your datasets differ greatly
+          in size or difficulty, producing a difference in <literal>Score</literal> magnitude.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can also use a custom ranking, by implementing a <literal>Comparator</literal>:</para>
+
+      <programlisting language="xml">  &lt;solverBenchmarkRankingComparatorClass&gt;...TotalScoreSolverBenchmarkRankingComparator&lt;/solverBenchmarkRankingComparatorClass&gt;</programlisting>
+
+      <para>Or a weight factory:</para>
+
+      <programlisting language="xml">  &lt;solverBenchmarkRankingWeightFactoryClass&gt;...TotalRankSolverBenchmarkRankingWeightFactory&lt;/solverBenchmarkRankingWeightFactoryClass&gt;</programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>Advanced benchmarking</title>
+
+    <section>
       <title>Parallel benchmarking on multiple threads</title>
 
       <para>If you have multiple processors available on your computer, you can run multiple benchmarks in parallel on
@@ -274,177 +486,57 @@
     </section>
 
     <section>
-      <title>Warming up the HotSpot compiler</title>
+      <title>Template based benchmarking and matrix benchmarking</title>
 
-      <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
-      reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
-      too).</para>
+      <para>Matrix benchmarking is benchmarking a combination of value sets. For example: benchmark 4
+      <literal>planningEntityTabuSize</literal> values (<literal>5</literal>, <literal>7</literal>,
+      <literal>11</literal> and <literal>13</literal>) combined with 3 <literal>minimalAcceptedSelection</literal>
+      values (<literal>500</literal>, <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver
+      configurations.</para>
 
-      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
-      before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
-
-      <programlisting language="xml">&lt;plannerBenchmark&gt;
-  ...
-  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
-  ...
-&lt;/plannerBenchmark&gt;</programlisting>
-    </section>
-
-    <section>
-      <title>Ranking the <literal>Solver</literal>s</title>
-
-      <para>The benchmarker automatically ranks the solvers. It's recommended to use the winning
-      <literal>Solver</literal> (which has rank 0) in production.</para>
-
-      <para>However, there are different ways of ranking the solvers.</para>
+      <para>To reduce the verbosity of such a benchmark configuration, you can use a <link
+      xlink:href="http://freemarker.sourceforge.net/">Freemarker</link> template for the benchmark configuration
+      instead:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
-  &lt;solverBenchmarkRankingType&gt;TOTAL_SCORE&lt;/solverBenchmarkRankingType&gt;
-  ...
-&lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>The following <literal>solverBenchmarkRankingType</literal>s are supported:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para><literal>TOTAL_SCORE</literal>: Maximize the overall score, so minimize the overall cost if all
-          solutions would be executed. This is the default.</para>
-        </listitem>
-
-        <listitem>
-          <para><literal>WORST_SCORE</literal>: Minimize the worst case scenario.</para>
-        </listitem>
-
-        <listitem>
-          <para><literal>TOTAL_RANKING</literal>: Maximize the overall ranking. Use this if your datasets differ greatly
-          in size or difficulty, producing a difference in <literal>Score</literal> magnitude.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>You can also use a custom ranking, by implementing a <literal>Comparator</literal>:</para>
-
-      <programlisting language="xml">  &lt;solverBenchmarkRankingComparatorClass&gt;...TotalScoreSolverBenchmarkRankingComparator&lt;/solverBenchmarkRankingComparatorClass&gt;</programlisting>
-
-      <para>Or a weight factory:</para>
-
-      <programlisting language="xml">  &lt;solverBenchmarkRankingWeightFactoryClass&gt;...TotalRankSolverBenchmarkRankingWeightFactory&lt;/solverBenchmarkRankingWeightFactoryClass&gt;</programlisting>
-    </section>
-  </section>
-
-  <section>
-    <title>Summary statistics</title>
-
-    <section>
-      <title>Best score summary</title>
-
-      <para>Several summary statistics of the <literal>PlannerBenchmark</literal> run will be written in the
-      <literal>benchmarkDirectory</literal>. Here is an example of a summary statistic:</para>
-
-      <figure>
-        <title>Best score summary statistic</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-    </section>
-  </section>
-
-  <section>
-    <title>Statistics per data set (graph and CSV)</title>
-
-    <para>The benchmarker supports outputting statistics as graphs and CSV (comma separated values) files to the
-    <literal>benchmarkDirectory</literal>.</para>
-
-    <para>To configure graph and CSV output of a statistic, just add a <literal>problemStatisticType</literal>
-    line:</para>
-
-    <programlisting language="xml">&lt;plannerBenchmark&gt;
-  &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
   &lt;inheritedSolverBenchmark&gt;
-    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/problemStatisticType&gt;
-      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;
     ...
   &lt;/inheritedSolverBenchmark&gt;
-  ...
+
+&lt;#list [5, 7, 11, 13] as planningEntityTabuSize&gt;
+&lt;#list [500, 1000, 2000] as minimalAcceptedSelection&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;entityTabu ${planningEntityTabuSize} acceptedSelection ${minimalAcceptedSelection}&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;selector&gt;
+            &lt;moveFactoryClass&gt;org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory&lt;/moveFactoryClass&gt;
+          &lt;/selector&gt;
+          &lt;selector&gt;
+            &lt;moveFactoryClass&gt;org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory&lt;/moveFactoryClass&gt;
+          &lt;/selector&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;planningEntityTabuSize&gt;${planningEntityTabuSize}&lt;/planningEntityTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;minimalAcceptedSelection&gt;${minimalAcceptedSelection}&lt;/minimalAcceptedSelection&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
+&lt;/#list&gt;
+&lt;/#list&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
-    <para>Multiple <literal>problemStatisticType</literal> elements are allowed. Some statistic types might influence
-    performance noticeably. The following types are supported:</para>
+      <para>And configure it with the method <literal>configureFromTemplate</literal>:</para>
 
-    <section>
-      <title>Best score over time statistic (graph and CSV)</title>
-
-      <para>To see how the best score evolves over time, add <literal>BEST_SOLUTION_CHANGED</literal> as <literal>a
-      problemStatisticType</literal>.</para>
-
-      <figure>
-        <title>Best score over time statistic</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionChangedStatistic.png" format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as
-      score traps.</emphasis></para>
-
-      <note>
-        <para>Don't be fooled by the simulated annealing line in this graph. If you give simulated annealing only 5
-        minutes, it might still be better than 5 minutes of tabu search. That's because this simulated annealing
-        implementation automatically determines its velocity based on the amount of time that can be spend. On the other
-        hand, for the tabu search, what you see is what you'd get.</para>
-      </note>
-    </section>
-
-    <section>
-      <title>Calculate count per second statistic (graph and CSV)</title>
-
-      <para>To see how fast the scores are calculated, add <literal>CALCULATE_COUNT_PER_SECOND</literal> as a
-      <literal>problemStatisticType</literal>.</para>
-
-      <figure>
-        <title>Calculate count per second statistic</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"
-                       format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <note>
-        <para>The initial high calculate count is typical during solution initialization. In this example, it's far
-        easier to calculate the score of a solution if only a handful exams have been added, in contrast to all of them.
-        After those few seconds of initialization, the calculate count is relatively stable, apart from an occasional
-        stop-the-world garbage collector disruption.</para>
-      </note>
-    </section>
-
-    <section>
-      <title>Memory use statistic (graph and CSV)</title>
-
-      <para>To see how much memory is used, add <literal>MEMORY_USE</literal> as <literal>a
-      problemStatisticType</literal>.</para>
-
-      <figure>
-        <title>Memory use statistic</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
+      <programlisting language="java">    XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory();
+    plannerBenchmarkFactory.configureFromTemplate("/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
+    PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
     </section>
   </section>
 </chapter>
