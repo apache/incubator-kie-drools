@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/cloudbalancing</benchmarkDirectory>
+  <benchmarkDirectory>local/data/cloudbalancing/template</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
@@ -27,17 +27,18 @@
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
       </termination>
-    </solver>
-  </inheritedSolverBenchmark>
-
-<#list [5, 7, 11, 13] as i>
-  <solverBenchmark>
-    <name>planningEntityTabuSize ${i}</name>
-    <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
+    </solver>
+  </inheritedSolverBenchmark>
+
+<#list [5, 7, 11, 13] as planningEntityTabuSize>
+<#list [500, 1000, 2000] as minimalAcceptedSelection>
+  <solverBenchmark>
+    <name>entityTabu ${planningEntityTabuSize} acceptedSelection ${minimalAcceptedSelection}</name>
+    <solver>
       <localSearch>
         <selector>
           <selector>
@@ -48,13 +49,14 @@
           </selector>
         </selector>
         <acceptor>
-          <planningEntityTabuSize>${i}</planningEntityTabuSize>
+          <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
+</#list>
 </#list>
 </plannerBenchmark>
