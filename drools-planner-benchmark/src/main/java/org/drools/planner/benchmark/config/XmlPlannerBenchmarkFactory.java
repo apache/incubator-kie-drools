@@ -45,13 +45,13 @@ public class XmlPlannerBenchmarkFactory {
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
     }
 
+    // ************************************************************************
+    // Configure methods
+    // ************************************************************************
+
     public void addXstreamAnnotations(Class... xstreamAnnotations) {
         xStream.processAnnotations(xstreamAnnotations);
     }
-
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
 
     public XmlPlannerBenchmarkFactory configure(String resource) {
         InputStream in = getClass().getResourceAsStream(resource);
@@ -79,37 +79,39 @@ public class XmlPlannerBenchmarkFactory {
         return this;
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream in) {
-        return this.configureFromTemplate(in, null);
+    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream templateIn) {
+        return this.configureFromTemplate(templateIn, null);
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream in, Object model) {
+    public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream templateIn, Object model) {
         Reader reader = null;
         try {
-            reader = new InputStreamReader(in, "UTF-8");
+            reader = new InputStreamReader(templateIn, "UTF-8");
             return configureFromTemplate(reader, model);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support UTF-8 encoding.", e);
         } finally {
             IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(templateIn);
         }
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader) {
-        return this.configureFromTemplate(reader, null);
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader templateReader) {
+        return this.configureFromTemplate(templateReader, null);
     }
 
-    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader reader, Object model) {
+    public XmlPlannerBenchmarkFactory configureFromTemplate(Reader templateReader, Object model) {
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");
         freemarkerCfg.setNumberFormat("computer"); // don't do any Freemarker magic to numbers
+        String templateFilename = "benchmarkTemplate.ftl";
+        Template template;
         try {
-            Template template = new Template("benchmarkTemplate.ftl", reader, freemarkerCfg, "UTF-8");
-            return this.configureFromTemplate(template, model);
+            template = new Template(templateFilename, templateReader, freemarkerCfg, "UTF-8");
         } catch (IOException e) {
-            throw new IllegalStateException("The template for a benchmark cannot be read.", e);
+            throw new IllegalStateException("Can not read template (" + templateFilename + ") from templateReader.", e);
         }
+        return this.configureFromTemplate(template, model);
     }
 
     public XmlPlannerBenchmarkFactory configureFromTemplate(Template template) {
@@ -117,16 +119,23 @@ public class XmlPlannerBenchmarkFactory {
     }
 
     public XmlPlannerBenchmarkFactory configureFromTemplate(Template template, Object model) {
-        StringWriter out = new StringWriter();
+        StringWriter configWriter = new StringWriter();
         try {
-            template.process(model, out);
-            return this.configure(new StringReader(out.toString()));
+            template.process(model, configWriter);
         } catch (IOException e) {
-            throw new IllegalStateException("There was a problem writing the benchmark config from the template.", e);
+            throw new IllegalArgumentException("Can not write to configWriter.", e);
         } catch (TemplateException e) {
-            throw new IllegalStateException("There was a problem with the benchmark template.", e);
+            throw new IllegalArgumentException("Can not process Freemarker template to configWriter.", e);
+        } finally {
+            IOUtils.closeQuietly(configWriter);
         }
+        StringReader configReader = new StringReader(configWriter.toString());
+        return this.configure(configReader);
     }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
         if (plannerBenchmarkConfig == null) {
