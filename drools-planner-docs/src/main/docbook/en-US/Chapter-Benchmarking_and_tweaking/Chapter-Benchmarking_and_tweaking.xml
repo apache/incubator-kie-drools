@@ -138,20 +138,26 @@
       <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (1 move tabu, 1 entity tabu and 1 value
       tabu) on 2 data sets (32 and 64 queens), so it will run 6 solvers.</para>
 
-      <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example with a local
+      <para>Every <literal>solverBenchmark</literal> element contains a solver configuration (for example with a local
       search solver phase) and one or more <literal>inputSolutionFile</literal> elements. It will run the solver
       configuration on each of those unsolved solution files. A <literal>name</literal> is optional and generated if
       absent.</para>
 
-      <para>The common part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
-      <literal>inheritedSolverBenchmark</literal> entity, but that can still be overwritten per
-      <literal>solverBenchmark</literal> entity. Note that inherited solver phases such as
+      <para>To lower verbosity, the common part of multiple <literal>solverBenchmark</literal> entities can be extracted
+      to the <literal>inheritedSolverBenchmark</literal> element. Yet, every element can still be overwritten per
+      <literal>solverBenchmark</literal> element. Note that inherited solver phases such as
       <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
-      instead are added to the head of the solver phases list.</para>
+      instead are added to the tail of the solver phases list.</para>
 
       <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). The best
       solution of each <literal>Solver</literal> run and a handy overview HTML file will be written in that
       directory.</para>
+
+      <note>
+        <para>It's recommended that the <literal>benchmarkDirectory</literal> is a directory not committed to source
+        control and not cleaned by your build system. This way the generated files are not bloating your source control
+        and they aren't lost when doing a build. Usually that directory is called <literal>local</literal>.</para>
+      </note>
     </section>
 
     <section>
