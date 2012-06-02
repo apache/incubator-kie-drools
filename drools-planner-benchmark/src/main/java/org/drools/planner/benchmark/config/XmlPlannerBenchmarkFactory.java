@@ -56,7 +56,7 @@ public class XmlPlannerBenchmarkFactory {
     public XmlPlannerBenchmarkFactory configure(String resource) {
         InputStream in = getClass().getResourceAsStream(resource);
         if (in == null) {
-            throw new IllegalArgumentException("Could not found resource (" + resource + ").");
+            throw new IllegalArgumentException("Could not find resource (" + resource + ").");
         }
         return configure(in);
     }
@@ -86,7 +86,7 @@ public class XmlPlannerBenchmarkFactory {
     public XmlPlannerBenchmarkFactory configureFromTemplate(String templateResource, Object model) {
         InputStream templateIn = getClass().getResourceAsStream(templateResource);
         if (templateIn == null) {
-            throw new IllegalArgumentException("Could not found templateResource (" + templateResource + ").");
+            throw new IllegalArgumentException("Could not find templateResource (" + templateResource + ").");
         }
         return this.configureFromTemplate(templateIn, null);
     }
