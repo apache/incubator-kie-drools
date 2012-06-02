@@ -38,11 +38,7 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new VehicleRoutingBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public VehicleRoutingBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new VehicleRoutingBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

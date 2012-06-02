@@ -41,11 +41,7 @@ public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = BENCHMARK_CONFIG;
         }
-        new SmartTravelingTournamentBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public SmartTravelingTournamentBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new SmartTravelingTournamentBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

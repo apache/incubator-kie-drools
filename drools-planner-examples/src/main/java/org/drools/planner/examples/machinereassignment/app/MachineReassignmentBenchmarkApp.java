@@ -42,11 +42,7 @@ public class MachineReassignmentBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new MachineReassignmentBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public MachineReassignmentBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new MachineReassignmentBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

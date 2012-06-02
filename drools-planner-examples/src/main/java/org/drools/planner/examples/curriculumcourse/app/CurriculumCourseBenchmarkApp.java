@@ -38,11 +38,7 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new CurriculumCourseBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public CurriculumCourseBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new CurriculumCourseBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

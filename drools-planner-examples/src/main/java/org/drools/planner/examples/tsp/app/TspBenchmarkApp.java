@@ -34,11 +34,7 @@ public class TspBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new TspBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public TspBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new TspBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

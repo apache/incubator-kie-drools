@@ -24,6 +24,8 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml";
     public static final String SCORE_DIRECTOR_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingScoreDirectorBenchmarkConfig.xml";
+    public static final String TEMPLATE_BENCHMARK_CONFIG_TEMPLATE
+            = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl";
 
     public static void main(String[] args) {
         String benchmarkConfig;
@@ -32,17 +34,17 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
                 benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
             } else if (args[0].equals("scoreDirector")) {
                 benchmarkConfig = SCORE_DIRECTOR_BENCHMARK_CONFIG;
+            } else if (args[0].equals("template")) {
+                benchmarkConfig = TEMPLATE_BENCHMARK_CONFIG_TEMPLATE;
+                new CloudBalancingBenchmarkApp().buildFromTemplateAndBenchmark(benchmarkConfig);
+                return;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new CloudBalancingBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public CloudBalancingBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new CloudBalancingBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

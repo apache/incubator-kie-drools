@@ -25,11 +25,7 @@ public class GeneralDroolsPlannerBenchmarkApp extends CommonBenchmarkApp {
 
     public static void main(String[] args) {
         String benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-        new GeneralDroolsPlannerBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public GeneralDroolsPlannerBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new GeneralDroolsPlannerBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

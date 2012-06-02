@@ -42,11 +42,7 @@ public class NQueensBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new NQueensBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public NQueensBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new NQueensBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

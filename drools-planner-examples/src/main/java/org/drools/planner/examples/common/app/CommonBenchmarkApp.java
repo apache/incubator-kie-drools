@@ -21,13 +21,16 @@ import org.drools.planner.benchmark.config.XmlPlannerBenchmarkFactory;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
 
-    protected XmlPlannerBenchmarkFactory plannerBenchmarkFactory;
-
-    protected CommonBenchmarkApp(String benchmarkConfig) {
-        plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory().configure(benchmarkConfig);
+    public void buildAndBenchmark(String benchmarkConfig) {
+        XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
+                .configure(benchmarkConfig);
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        plannerBenchmark.benchmark();
     }
 
-    public void process() {
+    public void buildFromTemplateAndBenchmark(String benchmarkConfigTemplate) {
+        XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
+                .configureFromTemplate(benchmarkConfigTemplate);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();
     }

@@ -46,11 +46,7 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = MEDIUM_BENCHMARK_CONFIG;
         }
-        new NurseRosteringBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public NurseRosteringBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new NurseRosteringBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

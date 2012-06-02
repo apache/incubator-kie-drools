@@ -24,11 +24,7 @@ public class PatientAdmissionScheduleBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/pas/benchmark/patientAdmissionScheduleBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleBenchmarkApp(DEFAULT_BENCHMARK_CONFIG).process();
-    }
-
-    public PatientAdmissionScheduleBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new PatientAdmissionScheduleBenchmarkApp().buildAndBenchmark(DEFAULT_BENCHMARK_CONFIG);
     }
 
 }

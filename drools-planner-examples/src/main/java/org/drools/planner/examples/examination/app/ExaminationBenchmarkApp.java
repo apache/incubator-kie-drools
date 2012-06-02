@@ -38,11 +38,7 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new ExaminationBenchmarkApp(benchmarkConfig).process();
-    }
-
-    public ExaminationBenchmarkApp(String benchmarkConfig) {
-        super(benchmarkConfig);
+        new ExaminationBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }
