@@ -37,6 +37,8 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
             int memoryUsage = 0;
             int networkBandwidthUsage = 0;
             boolean used = false;
+
+            // Calculate usage
             for (CloudProcess process : cloudBalance.getProcessList()) {
                 if (computer.equals(process.getComputer())) {
                     cpuPowerUsage += process.getRequiredCpuPower();
@@ -45,6 +47,8 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
                     used = true;
                 }
             }
+
+            // Hard constraints
             int cpuPowerAvailable = computer.getCpuPower() - cpuPowerUsage;
             if (cpuPowerAvailable < 0) {
                 hardScore += cpuPowerAvailable;
@@ -57,6 +61,8 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
             if (networkBandwidthAvailable < 0) {
                 hardScore += networkBandwidthAvailable;
             }
+
+            // Soft constraints
             if (used) {
                 softScore -= computer.getCost();
             }
