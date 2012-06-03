@@ -515,7 +515,7 @@ public class CloudProcess ... {
         <literal>DefaultHardAndSoftScore</literal> instance.</para>
 
         <example>
-          <title>CloudBalance.java</title>
+          <title>CloudBalancingSimpleScoreCalculator.java</title>
 
           <programlisting language="java">public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculator&lt;CloudBalance&gt; {
 
