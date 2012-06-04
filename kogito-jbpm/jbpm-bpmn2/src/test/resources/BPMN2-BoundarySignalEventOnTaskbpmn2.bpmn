@@ -33,6 +33,7 @@
           <dataInputRefs>_DataInput_6</dataInputRefs>
           <dataInputRefs>_DataInput_7</dataInputRefs>
         </inputSet>
+        <outputSet/>
       </ioSpecification>
       <dataInputAssociation id="_DataInputAssociation_2">
         <targetRef>_DataInput_2</targetRef>
@@ -79,16 +80,6 @@
       <terminateEventDefinition id="TerminateEventDefinition_2"/>
     </endEvent>
     <userTask id="UserTask_2" name="User Task2">
-      <extensionElements>
-        <tns:onEntry-script tns:scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onEntry-script>
-      </extensionElements>
-      <extensionElements>
-        <tns:onExit-script tns:scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onExit-script>
-      </extensionElements>
       <incoming>SequenceFlow_2</incoming>
       <outgoing>SequenceFlow_3</outgoing>
       <ioSpecification id="_InputOutputSpecification_3">
@@ -106,6 +97,7 @@
           <dataInputRefs>_DataInput_12</dataInputRefs>
           <dataInputRefs>_DataInput_13</dataInputRefs>
         </inputSet>
+        <outputSet/>
       </ioSpecification>
       <dataInputAssociation id="_DataInputAssociation_8">
         <targetRef>_DataInput_8</targetRef>
@@ -125,9 +117,9 @@
       <dataInputAssociation id="_DataInputAssociation_13">
         <targetRef>_DataInput_13</targetRef>
       </dataInputAssociation>
-      <potentialOwner id="PotentialOwner_1" name="john">
-        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
-          <formalExpression id="FormalExpression_1">john</formalExpression>
+      <potentialOwner id="PotentialOwner_2" name="john">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_2">
+          <formalExpression id="FormalExpression_2">john</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>

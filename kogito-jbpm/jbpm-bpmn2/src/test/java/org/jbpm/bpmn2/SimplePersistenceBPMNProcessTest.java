@@ -52,7 +52,7 @@ public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
            
         });
         ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
-        ksession.signalEvent("MyMessage", "hello");
+        ksession.signalEvent("MySignal", "hello");
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "Boundary event", "Signal received", "End2");
     }
