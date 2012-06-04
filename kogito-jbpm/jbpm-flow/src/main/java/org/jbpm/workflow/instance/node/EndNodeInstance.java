@@ -59,11 +59,7 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
                     getProcessInstance().setState( ProcessInstance.STATE_COMPLETED );
                 } else {
         	    
-            	    // handle composite nodes such as embedded sub process
-            	    // deactivate all node instances of this composite node instance
-            	    ((CompositeNodeInstance) getNodeInstanceContainer()).cancel();
-            	    
-            	    ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
+                    ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
             	    
                 }
         	} else {
