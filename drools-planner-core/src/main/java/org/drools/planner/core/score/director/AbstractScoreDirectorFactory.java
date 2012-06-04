@@ -17,7 +17,9 @@
 package org.drools.planner.core.score.director;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,5 +53,17 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public void assertScore(Solution solution) {
+        ScoreDirector uncorruptedScoreDirector = buildScoreDirector();
+        uncorruptedScoreDirector.setWorkingSolution(solution);
+        Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
+        uncorruptedScoreDirector.dispose();
+        if (!solution.getScore().equals(uncorruptedScore)) {
+            throw new IllegalStateException(
+                    "Score corruption: the solution's score (" + solution.getScore() + ") is not the uncorruptedScore ("
+                            + uncorruptedScore + ").");
+        }
+    }
 
 }

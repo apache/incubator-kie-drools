@@ -36,7 +36,13 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected boolean assertBestSolutionIsUnmodified = false;
+
     protected SolverEventSupport solverEventSupport;
+
+    public void setAssertBestSolutionIsUnmodified(boolean assertBestSolutionIsUnmodified) {
+        this.assertBestSolutionIsUnmodified = assertBestSolutionIsUnmodified;
+    }
 
     public void setSolverEventSupport(SolverEventSupport solverEventSupport) {
         this.solverEventSupport = solverEventSupport;
@@ -70,7 +76,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         AbstractSolverPhaseScope solverPhaseScope = stepScope.getSolverPhaseScope();
         DefaultSolverScope solverScope = solverPhaseScope.getSolverScope();
         Score newScore = stepScope.getScore();
-        Score bestScore = solverPhaseScope.getBestScore();
+        Score bestScore = solverScope.getBestScore();
         boolean bestScoreImproved;
         if (bestScore == null) {
             bestScoreImproved = true;
@@ -83,6 +89,8 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
             solverPhaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution newBestSolution = stepScope.createOrGetClonedSolution();
             updateBestSolution(solverScope, newBestSolution);
+        } else if (assertBestSolutionIsUnmodified) {
+            solverScope.assertScore(solverScope.getBestSolution());
         }
     }
 

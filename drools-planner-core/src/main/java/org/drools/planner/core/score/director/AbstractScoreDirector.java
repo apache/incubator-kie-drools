@@ -66,6 +66,10 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
         }
     }
 
+    public F getScoreDirectorFactory() {
+        return scoreDirectorFactory;
+    }
+
     public SolutionDescriptor getSolutionDescriptor() {
         return scoreDirectorFactory.getSolutionDescriptor();
     }

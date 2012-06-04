@@ -33,6 +33,11 @@ public interface ScoreDirector {
     /**
      * @return never null
      */
+    ScoreDirectorFactory getScoreDirectorFactory();
+
+    /**
+     * @return never null
+     */
     SolutionDescriptor getSolutionDescriptor();
 
     /**
@@ -119,7 +124,12 @@ public interface ScoreDirector {
     Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
     /**
+     * Asserts that if the {@link Score} is calculated for the current workingSolution,
+     * it would be equal to the parameter workingScore.
+     * <p/>
+     * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
      * @param workingScore never null
+     * @see ScoreDirectorFactory#assertScore(Solution)
      */
     void assertWorkingScore(Score workingScore);
 

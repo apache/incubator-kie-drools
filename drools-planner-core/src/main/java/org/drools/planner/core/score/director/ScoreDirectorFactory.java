@@ -17,7 +17,9 @@
 package org.drools.planner.core.score.director;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.solution.Solution;
 
 /**
  * Builds a {@link ScoreDirector}.
@@ -39,5 +41,13 @@ public interface ScoreDirectorFactory {
      * @return never null
      */
     ScoreDirector buildScoreDirector();
+
+    /**
+     * Asserts that if the {@link Score} is calculated for the parameter solution,
+     * it would be equal to the {@link Solution#getScore()} of that parameter.
+     * @param solution never null
+     * @see ScoreDirector#assertWorkingScore(Score)
+     */
+    void assertScore(Solution solution);
 
 }

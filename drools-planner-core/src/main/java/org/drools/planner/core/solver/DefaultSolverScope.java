@@ -96,6 +96,10 @@ public class DefaultSolverScope {
         scoreDirector.assertWorkingScore(workingScore);
     }
 
+    public void assertScore(Solution solution) {
+        scoreDirector.getScoreDirectorFactory().assertScore(solution);
+    }
+
     public Random getWorkingRandom() {
         return workingRandom;
     }
