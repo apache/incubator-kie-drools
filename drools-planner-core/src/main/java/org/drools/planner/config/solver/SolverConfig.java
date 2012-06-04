@@ -153,7 +153,7 @@ public class SolverConfig {
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Termination termination = terminationConfig.buildTermination(scoreDefinition, basicPlumbingTermination);
         solver.setTermination(termination);
-        BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
+        BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller();
         solver.setBestSolutionRecaller(bestSolutionRecaller);
         if (solverPhaseConfigList == null || solverPhaseConfigList.isEmpty()) {
             throw new IllegalArgumentException(
@@ -170,7 +170,15 @@ public class SolverConfig {
         return solver;
     }
 
-    private SolutionDescriptor buildSolutionDescriptor() {
+    protected BestSolutionRecaller buildBestSolutionRecaller() {
+        BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
+        if (environmentMode == EnvironmentMode.TRACE) {
+            bestSolutionRecaller.setAssertBestSolutionIsUnmodified(true);
+        }
+        return bestSolutionRecaller;
+    }
+
+    protected SolutionDescriptor buildSolutionDescriptor() {
         if (solutionClass == null) {
             throw new IllegalArgumentException("Configure a <solutionClass> in the solver configuration.");
         }
