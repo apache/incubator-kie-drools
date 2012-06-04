@@ -55,13 +55,15 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
     // ************************************************************************
 
     public void assertScore(Solution solution) {
+        // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
+        Score score = solution.getScore();
         ScoreDirector uncorruptedScoreDirector = buildScoreDirector();
         uncorruptedScoreDirector.setWorkingSolution(solution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         uncorruptedScoreDirector.dispose();
-        if (!solution.getScore().equals(uncorruptedScore)) {
+        if (!score.equals(uncorruptedScore)) {
             throw new IllegalStateException(
-                    "Score corruption: the solution's score (" + solution.getScore() + ") is not the uncorruptedScore ("
+                    "Score corruption: the solution's score (" + score + ") is not the uncorruptedScore ("
                             + uncorruptedScore + ").");
         }
     }
