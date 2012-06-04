@@ -16,7 +16,7 @@ import org.jbpm.task.Group;
 import org.jbpm.task.User;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
-import org.jbpm.task.service.UserGroupCallbackManager;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
 public class DemoTaskService {
