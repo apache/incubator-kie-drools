@@ -1996,3 +1996,11 @@ Before in *SolutionRecaller.java:
     public void extractBestSolution(AbstractStepScope stepScope) {...}
 Before in *SolutionRecaller.java:
     public void stepEnded(AbstractStepScope stepScope) {...}
+
+[MINOR] ProblemIO has moved from the package org.drools.planner.benchmark.api
+to the package org.drools.planner.core.solution.
+Before in *.java:
+    import org.drools.planner.benchmark.api.ProblemIO;
+After in *.java:
+    import org.drools.planner.core.solution.ProblemIO;
+
