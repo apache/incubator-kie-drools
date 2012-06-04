@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.drools.planner.benchmark.api.ProblemIO;
+import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;

@@ -18,7 +18,7 @@ package org.drools.planner.examples.machinereassignment.persistence;
 
 import java.io.File;
 
-import org.drools.planner.benchmark.api.ProblemIO;
+import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.core.solution.Solution;
 
 public class MachineReassignmentProblemIO implements ProblemIO {

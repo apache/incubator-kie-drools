@@ -19,7 +19,7 @@ package org.drools.planner.benchmark.core;
 import java.io.File;
 import java.util.List;
 
-import org.drools.planner.benchmark.api.ProblemIO;
+import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;

@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.api;
+package org.drools.planner.core.solution;
 
 import java.io.File;
 
-import org.drools.planner.core.solution.Solution;
-
 /**
- * Reads or writes a {@link Solution} from or to a {@link File}.<
+ * Reads or writes a {@link Solution} from or to a {@link File}.
  * <p/>
- * This class is thread-safe.
+ * Every implementation must be thread-safe.
  */
 public interface ProblemIO {
 
