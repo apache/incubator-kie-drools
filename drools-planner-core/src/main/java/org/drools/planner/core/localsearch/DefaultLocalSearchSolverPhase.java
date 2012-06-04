@@ -32,6 +32,10 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     protected Decider decider;
 
     protected boolean assertStepScoreIsUncorrupted = false;
+    
+    public Decider getDecider() {
+        return this.decider;
+    }
 
     public void setDecider(Decider decider) {
         this.decider = decider;
