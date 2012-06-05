@@ -51,6 +51,7 @@
     <module>drools-planner-core</module>
     <module>drools-planner-benchmark</module>
     <module>drools-planner-examples</module>
+    <module>drools-planner-webexamples</module>
   </modules>
 
   <profiles>
