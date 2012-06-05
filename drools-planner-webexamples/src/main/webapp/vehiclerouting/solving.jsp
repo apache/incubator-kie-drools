@@ -1,7 +1,4 @@
 <%@ page import="org.planner.webexamples.vehiclerouting.VrpWebSetup" %>
-<%
-  new VrpWebSetup().setup(session);
-%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +13,9 @@
   <!--[if lt IE 9]>
   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+
+  <!-- HACK to refresh this page automatically every 2 seconds -->
+  <meta http-equiv="REFRESH" content="2;url=<%=application.getContextPath()%>/vehiclerouting/solving.jsp"/>
 </head>
 <body onload="prettyPrint()">
 
@@ -31,7 +31,7 @@
     <h1>Vehicle routing</h1>
   </header>
   <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
-  <p>A dataset has been loaded. <a href="solve.jsp">Solve this planning problem!</a></p>
+  <p>Solving...</p>
   <img src="showSchedule.png"/>
 </div>
 </div>

@@ -17,15 +17,21 @@
 package org.planner.webexamples.vehiclerouting;
 
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.servlet.http.HttpSession;
 
 import org.drools.planner.config.SolverFactory;
 import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.event.BestSolutionChangedEvent;
+import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
 import org.drools.planner.examples.vehiclerouting.persistence.VehicleRoutingSolutionImporter;
 
 public class VrpWebSetup {
+
+    private static ExecutorService solvingExecutor = Executors.newFixedThreadPool(4);
 
     public void setup(HttpSession session) {
         SolverFactory solverFactory = new XmlSolverFactory(
@@ -37,6 +43,25 @@ public class VrpWebSetup {
         VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingSolutionImporter()
                 .readSolution(unsolvedSolutionURL);
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
+    }
+
+
+    public void solve(final HttpSession session) {
+        final Solver solver = (Solver) session.getAttribute(VrpSessionAttributeName.SOLVER);
+        VrpSchedule unsolvedSolution = (VrpSchedule) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
+
+        solver.setPlanningProblem(unsolvedSolution);
+        solver.addEventListener(new SolverEventListener() {
+            public void bestSolutionChanged(BestSolutionChangedEvent event) {
+                VrpSchedule bestSolution = (VrpSchedule) event.getNewBestSolution();
+                session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, bestSolution);
+            }
+        });
+        solvingExecutor.submit(new Runnable() {
+            public void run() {
+                solver.solve();
+            }
+        });
     }
 
 }

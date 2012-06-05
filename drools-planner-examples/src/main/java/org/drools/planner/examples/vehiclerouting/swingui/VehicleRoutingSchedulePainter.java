@@ -188,7 +188,7 @@ public class VehicleRoutingSchedulePainter {
         }
     }
 
-    private Graphics createCanvas(double width, double height) {
+    public Graphics createCanvas(double width, double height) {
         int canvasWidth = (int) Math.ceil(width) + 1;
         int canvasHeight = (int) Math.ceil(height) + 1;
         canvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);

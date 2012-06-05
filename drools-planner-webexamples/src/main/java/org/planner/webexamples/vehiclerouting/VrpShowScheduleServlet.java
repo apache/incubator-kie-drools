@@ -42,15 +42,15 @@ public class VrpShowScheduleServlet extends HttpServlet {
         HttpSession session = req.getSession();
         VrpSchedule shownSolution = (VrpSchedule) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
         Dimension size = new Dimension(800, 600);
+        BufferedImage image;
         if (shownSolution == null) {
-
+            schedulePainter.createCanvas(size.width, size.height);
         } else {
             schedulePainter.reset(shownSolution, size, null);
-            BufferedImage image = schedulePainter.getCanvas();
-            resp.setContentType("image/png");
-            ImageIO.write(image, "png", resp.getOutputStream());
         }
-
+        image = schedulePainter.getCanvas();
+        resp.setContentType("image/png");
+        ImageIO.write(image, "png", resp.getOutputStream());
     }
 
 }
