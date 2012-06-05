@@ -93,6 +93,16 @@
       <artifactId>drools-planner-examples</artifactId>
       <classifier>sources</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-webexamples</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-webexamples</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
 
     <!-- Documentation -->
     <dependency>
