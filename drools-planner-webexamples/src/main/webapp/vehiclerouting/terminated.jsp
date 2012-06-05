@@ -1,9 +1,10 @@
+<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebSetup" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drools Planner webexamples</title>
+  <title>Drools Planner webexamples: vehicle routing</title>
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap.css" rel="stylesheet">
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
   <link href="<%=application.getContextPath()%>/website/css/droolsPlannerWebexamples.css" rel="stylesheet">
@@ -18,17 +19,16 @@
 <div class="row-fluid">
 <div class="span2">
   <div class="benchmark-report-nav">
-    <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
+    <a href="http://www.jboss.org/drools/drools-planner"><img src="../website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
   </div>
 </div>
 <div class="span10">
   <header class="main-page-header">
-    <h1>Drools Planner web examples</h1>
+    <h1>Vehicle routing</h1>
   </header>
-  <p>Which example do you want to see?</p>
-  <ul>
-    <li><a href="vehiclerouting/loaded.jsp">Vehicle routing</a></li>
-  </ul>
+  <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
+  <p>The solver has been terminated. Below is the final solution. <a href="loaded.jsp">Start again!</a></p>
+  <img src="showSchedule.png"/>
 </div>
 </div>
 </div>

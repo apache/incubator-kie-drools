@@ -7,7 +7,6 @@
   <title>Drools Planner webexamples: vehicle routing</title>
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap.css" rel="stylesheet">
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-  <link href="<%=application.getContextPath()%>/twitterbootstrap/css/prettify.css" rel="stylesheet" />
   <link href="<%=application.getContextPath()%>/website/css/droolsPlannerWebexamples.css" rel="stylesheet">
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -15,9 +14,10 @@
   <![endif]-->
 
   <!-- HACK to refresh this page automatically every 2 seconds -->
+  <!-- TODO: it should only refresh the image -->
   <meta http-equiv="REFRESH" content="2;url=<%=application.getContextPath()%>/vehiclerouting/solving.jsp"/>
 </head>
-<body onload="prettyPrint()">
+<body>
 
 <div class="container-fluid">
 <div class="row-fluid">
@@ -31,14 +31,13 @@
     <h1>Vehicle routing</h1>
   </header>
   <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
-  <p>Solving...</p>
-  <img src="showSchedule.png"/>
+  <p>Solving... Below is a temporary solution, refreshed every 2 seconds. <a href="terminateEarly.jsp">Terminate early!</a></p>
+  <img id="showSchedule" src="showSchedule.png"/>
 </div>
 </div>
 </div>
 
 <script src="<%=application.getContextPath()%>/twitterbootstrap/js/jquery.js"></script>
 <script src="<%=application.getContextPath()%>/twitterbootstrap/js/bootstrap.js"></script>
-<script src="<%=application.getContextPath()%>/twitterbootstrap/js/prettify.js"></script>
 </body>
 </html>

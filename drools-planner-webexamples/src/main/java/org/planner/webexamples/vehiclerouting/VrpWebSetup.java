@@ -64,4 +64,9 @@ public class VrpWebSetup {
         });
     }
 
+    public void terminateEarly(HttpSession session) {
+        final Solver solver = (Solver) session.getAttribute(VrpSessionAttributeName.SOLVER);
+        solver.terminateEarly();
+    }
+
 }
