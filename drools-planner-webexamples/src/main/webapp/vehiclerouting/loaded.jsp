@@ -1,3 +1,7 @@
+<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebSetup" %>
+<%
+  new VrpWebSetup().setup(session);
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,17 +23,15 @@
 <div class="row-fluid">
 <div class="span2">
   <div class="benchmark-report-nav">
-    <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
+    <a href="http://www.jboss.org/drools/drools-planner"><img src="../website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
   </div>
 </div>
 <div class="span10">
   <header class="main-page-header">
-    <h1>Drools Planner web examples</h1>
+    <h1>Vehicle routing</h1>
   </header>
-  <p>Which example do you want to see?</p>
-  <ul>
-    <li><a href="vehiclerouting/loaded.jsp">Vehicle routing</a></li>
-  </ul>
+  <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
+  <img src="<%=application.getContextPath()%>/vehiclerouting/showSchedule.png"/>
 </div>
 </div>
 </div>

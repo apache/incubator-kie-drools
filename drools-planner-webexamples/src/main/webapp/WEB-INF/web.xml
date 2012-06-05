@@ -9,4 +9,13 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
+  <servlet>
+    <servlet-name>VrpShowScheduleServlet</servlet-name>
+    <servlet-class>org.planner.webexamples.vehiclerouting.VrpShowScheduleServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VrpShowScheduleServlet</servlet-name>
+    <url-pattern>/vehiclerouting/showSchedule.png</url-pattern>
+  </servlet-mapping>
+
 </web-app>

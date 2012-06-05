@@ -21,9 +21,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
+import org.bouncycastle.util.encoders.UrlBase64;
 import org.drools.planner.core.solution.Solution;
 
 public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImporter {
@@ -56,6 +59,27 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
+        } finally {
+            IOUtils.closeQuietly(bufferedReader);
+        }
+    }
+
+    public Solution readSolution(URL inputURL) {
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(inputURL.openStream(), "UTF-8"));
+            TxtInputBuilder txtInputBuilder = createTxtInputBuilder();
+            txtInputBuilder.setInputFile(new File(inputURL.getFile()));
+            txtInputBuilder.setBufferedReader(bufferedReader);
+            try {
+                return txtInputBuilder.readSolution();
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Exception in inputURL (" + inputURL + ")", e);
+            } catch (IllegalStateException e) {
+                throw new IllegalStateException("Exception in inputURL (" + inputURL + ")", e);
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read the inputURL (" + inputURL + ").", e);
         } finally {
             IOUtils.closeQuietly(bufferedReader);
         }

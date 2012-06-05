@@ -43,32 +43,13 @@ import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
  * TODO this code is highly unoptimized
  */
 public class VehicleRoutingWorldPanel extends JPanel {
-
-    private static final int TEXT_SIZE = 12;
-    private static final String IMAGE_PATH_PREFIX = "/org/drools/planner/examples/vehiclerouting/swingui/";
-
-    private ImageIcon depotImageIcon;
-    private ImageIcon[] vehicleImageIcons;
-    private NumberFormat numberFormat = NumberFormat.getInstance();
     private final VehicleRoutingPanel vehicleRoutingPanel;
 
-    private BufferedImage canvas = null;
-    private LatitudeLongitudeTranslator translator = null;
+    private VehicleRoutingSchedulePainter schedulePainter = new VehicleRoutingSchedulePainter();
 
     public VehicleRoutingWorldPanel(VehicleRoutingPanel vehicleRoutingPanel) {
         this.vehicleRoutingPanel = vehicleRoutingPanel;
-        depotImageIcon = new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "depot.png"));
-        vehicleImageIcons = new ImageIcon[] {
-                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleChameleon.png")),
-                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleButter.png")),
-                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleSkyBlue.png")),
-                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleChocolate.png")),
-                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehiclePlum.png")),
-        };
-        if (vehicleImageIcons.length != TangoColors.SEQUENCE_1.length) {
-            throw new IllegalStateException("The vehicleImageIcons length (" + vehicleImageIcons.length
-                    + ") should be equal to the TangoColors.SEQUENCE length (" + TangoColors.SEQUENCE_1.length + ").");
-        }
+        schedulePainter = new VehicleRoutingSchedulePainter();
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -82,6 +63,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                LatitudeLongitudeTranslator translator = schedulePainter.getTranslator();
                 if (translator != null) {
                     double longitude = translator.translateXToLongitude(e.getX());
                     double latitude = translator.translateYToLatitude(e.getY());
@@ -92,121 +74,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
     }
 
     public void resetPanel(VrpSchedule schedule) {
-        translator = new LatitudeLongitudeTranslator();
-        for (VrpLocation location : schedule.getLocationList()) {
-            translator.addCoordinates(location.getLatitude(), location.getLongitude());
-        }
-
-        Dimension size = getSize();
-        double width = size.getWidth();
-        double height = size.getHeight();
-        translator.prepareFor(width, height);
-
-        Graphics g = createCanvas(width, height);
-        g.setColor(TangoColors.ORANGE_2);
-        g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
-        for (VrpCustomer customer : schedule.getCustomerList()) {
-            VrpLocation location = customer.getLocation();
-            int x = translator.translateLongitudeToX(location.getLongitude());
-            int y = translator.translateLatitudeToY(location.getLatitude());
-            g.fillRect(x - 1, y - 1, 3, 3);
-            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
-        }
-        g.setColor(TangoColors.ALUMINIUM_4);
-        for (VrpDepot depot : schedule.getDepotList()) {
-            int x = translator.translateLongitudeToX(depot.getLocation().getLongitude());
-            int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
-            g.fillRect(x - 2, y - 2, 5, 5);
-            g.drawImage(depotImageIcon.getImage(),
-                    x - depotImageIcon.getIconWidth() / 2, y - 2 - depotImageIcon.getIconHeight(), this);
-        }
-        int colorIndex = 0;
-        // TODO Too many nested for loops
-        for (VrpVehicle vehicle : schedule.getVehicleList()) {
-            g.setColor(TangoColors.SEQUENCE_2[colorIndex]);
-            VrpCustomer vehicleInfoCustomer = null;
-            int longestNonDepotDistance = -1;
-            int load = 0;
-            for (VrpCustomer customer : schedule.getCustomerList()) {
-                if (customer.getPreviousAppearance() != null && customer.getVehicle() == vehicle) {
-                    load += customer.getDemand();
-                    VrpLocation previousLocation = customer.getPreviousAppearance().getLocation();
-                    int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
-                    int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
-                    VrpLocation location = customer.getLocation();
-                    int x = translator.translateLongitudeToX(location.getLongitude());
-                    int y = translator.translateLatitudeToY(location.getLatitude());
-                    g.drawLine(previousX, previousY, x, y);
-                    // Determine where to draw the vehicle info
-                    int distance = customer.getDistanceToPreviousAppearance();
-                    if (customer.getPreviousAppearance() instanceof VrpCustomer) {
-                        if (longestNonDepotDistance < distance) {
-                            longestNonDepotDistance = distance;
-                            vehicleInfoCustomer = customer;
-                        }
-                    } else if (vehicleInfoCustomer == null) {
-                        // If there is only 1 customer in this chain, draw it on a line to the Depot anyway
-                        vehicleInfoCustomer = customer;
-                    }
-                    // Line back to the vehicle depot
-                    boolean needsBackToVehicleLineDraw = true;
-                    for (VrpCustomer trailingCustomer : schedule.getCustomerList()) {
-                        if (trailingCustomer.getPreviousAppearance() == customer) {
-                            needsBackToVehicleLineDraw = false;
-                            break;
-                        }
-                    }
-                    if (needsBackToVehicleLineDraw) {
-                        VrpLocation vehicleLocation = vehicle.getLocation();
-                        int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
-                        int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
-                        g.drawLine(x, y,vehicleX, vehicleY);
-                    }
-                }
-            }
-            // Draw vehicle info
-            if (vehicleInfoCustomer != null) {
-                if (load > vehicle.getCapacity()) {
-                    g.setColor(TangoColors.SCARLET_2);
-                }
-                VrpLocation previousLocation = vehicleInfoCustomer.getPreviousAppearance().getLocation();
-                VrpLocation location = vehicleInfoCustomer.getLocation();
-                double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
-                int x = translator.translateLongitudeToX(longitude);
-                double latitude = (previousLocation.getLatitude() + location.getLatitude()) / 2.0;
-                int y = translator.translateLatitudeToY(latitude);
-                boolean ascending = (previousLocation.getLongitude() < location.getLongitude())
-                        ^ (previousLocation.getLatitude() < location.getLatitude());
-
-                ImageIcon vehicleImageIcon = vehicleImageIcons[colorIndex];
-                int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
-                g.drawImage(vehicleImageIcon.getImage(), x + 1, (ascending ? y - vehicleInfoHeight - 1 : y + 1), this);
-                g.drawString(load + " / " + vehicle.getCapacity(), x + 1, (ascending ? y - 1 : y + vehicleInfoHeight + 1));
-            }
-            colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_2.length;
-        }
-
-        // Legend
-        g.setColor(TangoColors.ALUMINIUM_4);
-        g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
-        g.drawString("Depot", 15, (int) height - 10 - TEXT_SIZE);
-        g.setColor(TangoColors.ORANGE_2);
-        g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
-        g.drawString("Customer demand", 15, (int) height - 5);
-        // Show soft score
-        g.setColor(TangoColors.SCARLET_2);
-        HardAndSoftScore score = schedule.getScore();
-        if (score != null) {
-            String totalDistanceString;
-            if (!score.isFeasible()) {
-                totalDistanceString = "Not feasible";
-            } else {
-                totalDistanceString = numberFormat.format(- score.getSoftScore()) + " fuel";
-            }
-            g.setFont( g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
-            g.drawString(totalDistanceString,
-                    (int) width - g.getFontMetrics().stringWidth(totalDistanceString) - 10, (int) height - 10);
-        }
+        schedulePainter.reset(schedule, getSize(), this);
         repaint();
     }
 
@@ -214,19 +82,10 @@ public class VehicleRoutingWorldPanel extends JPanel {
         resetPanel(schedule);
     }
 
-    private Graphics createCanvas(double width, double height) {
-        int canvasWidth = (int) Math.ceil(width) + 1;
-        int canvasHeight = (int) Math.ceil(height) + 1;
-        canvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics g = canvas.getGraphics();
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, canvasWidth, canvasHeight);
-        return g;
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        BufferedImage canvas = schedulePainter.getCanvas();
         if (canvas != null) {
             g.drawImage(canvas, 0, 0, this);
         }
