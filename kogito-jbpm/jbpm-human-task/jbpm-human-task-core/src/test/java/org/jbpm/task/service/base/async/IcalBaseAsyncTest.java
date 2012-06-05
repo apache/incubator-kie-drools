@@ -18,8 +18,12 @@ package org.jbpm.task.service.base.async;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.BodyPart;
@@ -124,7 +128,16 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
         assertEqualsIgnoreWhitespace(subject + description, content);
 
         messageBodyPart = multiPart.getBodyPart(1);
-        assertEquals("text/calendar; charset=UTF8; name=ical-Start-1.ics", messageBodyPart.getDataHandler().getContentType());
+        List<String> expectedContentType = new ArrayList<String>();
+        expectedContentType.add("text/calendar");
+        expectedContentType.add("charset=UTF8");
+        expectedContentType.add("name=ical-Start-1.ics");
+        Collections.sort(expectedContentType);
+        
+        List<String> actualtContentType = Arrays.asList(messageBodyPart.getDataHandler().getContentType().split("; "));
+        Collections.sort(actualtContentType);
+
+        assertEquals(expectedContentType, actualtContentType);
         content = new String(getBytes(messageBodyPart.getDataHandler().getInputStream()));
         assertEqualsIgnoreWhitespace("BEGIN:VCALENDARPRODID:-//iCal4j 1.0//ENCALSCALE:GREGORIANVERSION:2.0METHOD:REQUESTBEGIN:VEVENTDTSTART;TZID=UTC:", content.substring(0, 123));
         assertEqualsIgnoreWhitespace("SUMMARY:\"Task Start : This is my task subject\"DESCRIPTION:\"This is my task description\"PRIORITY:55END:VEVENTEND:VCALENDAR", content.substring(content.length() - 131, content.length()));
@@ -152,8 +165,16 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
         assertEqualsIgnoreWhitespace(subject + description, content);
 
         messageBodyPart = multiPart.getBodyPart(1);
-        assertEquals("text/calendar; charset=UTF8; name=ical-End-1.ics", messageBodyPart.getDataHandler().getContentType());
-        content = new String(getBytes(messageBodyPart.getDataHandler().getInputStream()));
+        expectedContentType = new ArrayList<String>();
+        expectedContentType.add("text/calendar");
+        expectedContentType.add("charset=UTF8");
+        expectedContentType.add("name=ical-End-1.ics");
+        Collections.sort(expectedContentType);
+        
+        actualtContentType = Arrays.asList(messageBodyPart.getDataHandler().getContentType().split("; "));
+        Collections.sort(actualtContentType);
+
+        assertEquals(expectedContentType, actualtContentType);        content = new String(getBytes(messageBodyPart.getDataHandler().getInputStream()));
         assertEqualsIgnoreWhitespace("BEGIN:VCALENDARPRODID:-//iCal4j 1.0//ENCALSCALE:GREGORIANVERSION:2.0METHOD:REQUESTBEGIN:VEVENTDTSTART;TZID=UTC:", content.substring(0, 123));
         assertEqualsIgnoreWhitespace("SUMMARY:\"Task End : This is my task subject\"DESCRIPTION:\"This is my task description\"PRIORITY:55END:VEVENTEND:VCALENDAR", content.substring(content.length() - 131, content.length()));
     }
@@ -231,8 +252,16 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
         assertEqualsIgnoreWhitespace(subject + description, content);
 
         messageBodyPart = multiPart.getBodyPart(1);
-        assertEquals("text/calendar; charset=UTF8; name=ical-Start-1.ics", messageBodyPart.getDataHandler().getContentType());
-        content = new String(getBytes(messageBodyPart.getDataHandler().getInputStream()));
+        List<String> expectedContentType = new ArrayList<String>();
+        expectedContentType.add("text/calendar");
+        expectedContentType.add("charset=UTF8");
+        expectedContentType.add("name=ical-Start-1.ics");
+        Collections.sort(expectedContentType);
+        
+        List<String> actualtContentType = Arrays.asList(messageBodyPart.getDataHandler().getContentType().split("; "));
+        Collections.sort(actualtContentType);
+
+        assertEquals(expectedContentType, actualtContentType);        content = new String(getBytes(messageBodyPart.getDataHandler().getInputStream()));
         assertEqualsIgnoreWhitespace("BEGIN:VCALENDARPRODID:-//iCal4j 1.0//ENCALSCALE:GREGORIANVERSION:2.0METHOD:REQUESTBEGIN:VEVENTDTSTART;TZID=UTC:", content.substring(0, 123));
         assertEqualsIgnoreWhitespace("SUMMARY:\"Task Start : This is my task subject\"DESCRIPTION:\"This is my task description\"PRIORITY:55END:VEVENTEND:VCALENDAR", content.substring(content.length() - 131, content.length()));
     }
@@ -311,7 +340,16 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
         assertEqualsIgnoreWhitespace(subject + description, content);
 
         messageBodyPart = multiPart.getBodyPart(1);
-        assertEquals("text/calendar; charset=UTF8; name=ical-End-1.ics", messageBodyPart.getDataHandler().getContentType());
+        List<String> expectedContentType = new ArrayList<String>();
+        expectedContentType.add("text/calendar");
+        expectedContentType.add("charset=UTF8");
+        expectedContentType.add("name=ical-End-1.ics");
+        Collections.sort(expectedContentType);
+        
+        List<String> actualtContentType = Arrays.asList(messageBodyPart.getDataHandler().getContentType().split("; "));
+        Collections.sort(actualtContentType);
+
+        assertEquals(expectedContentType, actualtContentType);
         content = new String(getBytes(messageBodyPart.getDataHandler().getInputStream()));
         assertEqualsIgnoreWhitespace("BEGIN:VCALENDARPRODID:-//iCal4j 1.0//ENCALSCALE:GREGORIANVERSION:2.0METHOD:REQUESTBEGIN:VEVENTDTSTART;TZID=UTC:", content.substring(0, 123));
         assertEqualsIgnoreWhitespace("SUMMARY:\"Task End : This is my task subject\"DESCRIPTION:\"This is my task description\"PRIORITY:55END:VEVENTEND:VCALENDAR", content.substring(content.length() - 131, content.length()));
