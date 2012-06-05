@@ -19,13 +19,11 @@ package org.drools.planner.core.bestsolution;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
-import org.drools.planner.core.solver.event.SolverLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +34,12 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected boolean assertBestSolutionIsUnmodified = false;
+    protected boolean assertBestScoreIsUnmodified = false;
 
     protected SolverEventSupport solverEventSupport;
 
-    public void setAssertBestSolutionIsUnmodified(boolean assertBestSolutionIsUnmodified) {
-        this.assertBestSolutionIsUnmodified = assertBestSolutionIsUnmodified;
+    public void setAssertBestScoreIsUnmodified(boolean assertBestScoreIsUnmodified) {
+        this.assertBestScoreIsUnmodified = assertBestScoreIsUnmodified;
     }
 
     public void setSolverEventSupport(SolverEventSupport solverEventSupport) {
@@ -89,7 +87,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
             solverPhaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution newBestSolution = stepScope.createOrGetClonedSolution();
             updateBestSolution(solverScope, newBestSolution);
-        } else if (assertBestSolutionIsUnmodified) {
+        } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScore(solverScope.getBestSolution());
         }
     }
