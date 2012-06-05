@@ -1,6 +1,6 @@
-<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebSetup" %>
+<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
-  new VrpWebSetup().solve(session);
+  new VrpWebAction().solve(session);
 %>
 <!DOCTYPE html>
 <html lang="en">

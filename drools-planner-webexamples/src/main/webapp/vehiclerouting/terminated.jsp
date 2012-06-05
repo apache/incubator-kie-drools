@@ -1,4 +1,4 @@
-<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebSetup" %>
+<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebAction" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +27,10 @@
     <h1>Vehicle routing</h1>
   </header>
   <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
-  <p>The solver has been terminated. Below is the final solution. <a href="loaded.jsp">Start again!</a></p>
+  <p>The solver has been terminated. Below is the final solution.</p>
+  <div>
+    <button class="btn" onclick="window.location.href='loaded.jsp'"><i class="icon-fast-backward"></i> Start again</button>
+  </div>
   <img src="showSchedule.png"/>
 </div>
 </div>

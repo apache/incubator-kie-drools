@@ -1,6 +1,6 @@
-<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebSetup" %>
+<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
-  new VrpWebSetup().setup(session);
+  new VrpWebAction().setup(session);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +30,10 @@
     <h1>Vehicle routing</h1>
   </header>
   <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
-  <p>A dataset has been loaded. <a href="solve.jsp">Solve this planning problem!</a></p>
+  <p>A dataset has been loaded.</p>
+  <div>
+    <button class="btn" onclick="window.location.href='solve.jsp'"><i class="icon-play"></i> Solve this planning problem</button>
+  </div>
   <img src="showSchedule.png"/>
 </div>
 </div>

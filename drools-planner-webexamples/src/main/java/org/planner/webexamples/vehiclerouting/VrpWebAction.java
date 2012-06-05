@@ -29,7 +29,7 @@ import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
 import org.drools.planner.examples.vehiclerouting.persistence.VehicleRoutingSolutionImporter;
 
-public class VrpWebSetup {
+public class VrpWebAction {
 
     private static ExecutorService solvingExecutor = Executors.newFixedThreadPool(4);
 

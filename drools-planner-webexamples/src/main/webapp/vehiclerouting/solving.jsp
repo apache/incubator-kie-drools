@@ -1,4 +1,4 @@
-<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebSetup" %>
+<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebAction" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +31,10 @@
     <h1>Vehicle routing</h1>
   </header>
   <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
-  <p>Solving... Below is a temporary solution, refreshed every 2 seconds. <a href="terminateEarly.jsp">Terminate early!</a></p>
+  <p>Solving... Below is a temporary solution, refreshed every 2 seconds.</p>
+  <div>
+    <button class="btn" onclick="window.location.href='terminateEarly.jsp'"><i class="icon-stop"></i> Terminate early</button>
+  </div>
   <img id="showSchedule" src="showSchedule.png"/>
 </div>
 </div>
