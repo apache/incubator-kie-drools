@@ -33,6 +33,7 @@ import org.jbpm.task.Content;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
  * @author Kris Verlaenen
@@ -69,18 +70,7 @@ public class TaskFormDispatcher extends AbstractFormDispatcher {
             Content content = null;
             
             content = service.getContent(contentId);
-            
-            ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
-            ObjectInputStream in;
-            try {
-                in = new ObjectInputStream(bis);
-                input = in.readObject();
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            input = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         }
 
         // check if a template exists
