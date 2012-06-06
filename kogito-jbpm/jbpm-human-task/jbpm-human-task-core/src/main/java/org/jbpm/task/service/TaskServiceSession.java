@@ -1041,7 +1041,7 @@ public class TaskServiceSession {
                                          "groupIds", groupIds,
                                          "language", language,
                                          "status", status);
-        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatusByGroup", params);
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatusWithGroups", params);
     }
 
     private interface TransactedOperation {
