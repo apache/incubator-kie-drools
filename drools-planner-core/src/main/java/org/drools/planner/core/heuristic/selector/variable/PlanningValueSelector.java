@@ -32,6 +32,7 @@ import org.drools.planner.core.score.director.ScoreDirector;
 /**
  * Determines the order in which the planning values of 1 planning entity class are selected for an algorithm
  */
+@Deprecated
 public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
     private PlanningVariableDescriptor planningVariableDescriptor;

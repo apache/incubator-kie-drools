@@ -20,11 +20,12 @@ import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.variable.ValueSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 
 /**
- * General interface for {@link MoveSelector}, {@link EntitySelector}
+ * General interface for {@link MoveSelector}, {@link EntitySelector} and {@link ValueSelector}
  * which generates {@link Move}s or parts of them.
  */
 public interface Selector extends SolverPhaseLifecycleListener {
