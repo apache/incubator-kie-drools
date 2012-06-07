@@ -154,6 +154,8 @@ import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
@@ -168,6 +170,7 @@ import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.Globals;
@@ -11066,6 +11069,59 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testLowerCaseFrom() {
+    	
+    	try{
+	        String str = "package com.sample\n"+
+	        		 
+	        		"import com.sample.DroolsTest.Message;\n"+
+	        		"import java.util.Map;\n"+
+	        		"dialect \"mvel\"\n"+
+	        		"rule \"LowerCaseFrom\"\n"+
+	        		    "when\n"+
+	        		    	"Map($valOne : this['keyOne'] !=null)\n"+
+	        		    	"$lowerValue : String() from $valOne.toLowerCase()\n"+
+	        		        
+	        		    "then\n"+
+	        		        "System.out.println( $valOne.toLowerCase() );\n"+
+	        		"end\n";
+	        
+	        PackageBuilderConfiguration pkgBuilderCfg = new PackageBuilderConfiguration();
+	        MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
+	        mvelConf.setStrict(false);
+	        mvelConf.setLangLevel(5);
+	        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pkgBuilderCfg);
+	        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                    ResourceType.DRL );
+	        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+	        if (errors.size() > 0) {
+	            for (KnowledgeBuilderError error: errors) {
+	                System.err.println(error);
+	            }
+	            fail("Could not parse knowledge");
+	            
+	        }
+	        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+	        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+	        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+	        
+	        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+	        // go !
+	       
+	        
+	        Map<String,String> testMap = new HashMap<String,String>();
+	        testMap.put("keyOne", "valone");
+	        testMap.put("valTwo", "valTwo");
+	        ksession.insert(testMap);
+	        ksession.fireAllRules();
+	        ksession.dispose();
+    	}catch(Exception e){
+    		e.printStackTrace();
+    		fail(e.getMessage());
+    	}
+    }
+    
     public static class MapContainerBean {
         private final Map<Integer, String> map = new HashMap<Integer, String>();
 
