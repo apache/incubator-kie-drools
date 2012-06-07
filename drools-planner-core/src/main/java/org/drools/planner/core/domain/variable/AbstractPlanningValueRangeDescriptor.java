@@ -38,7 +38,7 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         if (excludeUninitializedPlanningEntity) {
             Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
             Set<Class<?>> entityClassSet = variableDescriptor.getPlanningEntityDescriptor().getSolutionDescriptor()
-                    .getPlanningEntityImplementationClassSet();
+                    .getPlanningEntityClassSet();
             boolean assignableFrom = false;
             for (Class<?> entityClass : entityClassSet) {
                 if (variablePropertyType.isAssignableFrom(entityClass)) {

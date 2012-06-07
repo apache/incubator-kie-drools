@@ -83,11 +83,11 @@ public class UnionMoveSelectorTest {
         moveSelector.setRandomSelection(true);
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
         childMoveSelectorList.add(new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")),
-                1000L));
+                Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"))));
+                // TODO probabilityWeight = 1000L
         childMoveSelectorList.add(new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5")),
-                20L));
+                Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5"))));
+                // TODO probabilityWeight = 20L
         moveSelector.setChildMoveSelectorList(childMoveSelectorList);
 
         Random workingRandom = mock(Random.class);

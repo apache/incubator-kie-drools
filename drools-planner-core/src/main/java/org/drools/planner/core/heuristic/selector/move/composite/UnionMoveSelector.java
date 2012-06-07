@@ -17,7 +17,6 @@
 package org.drools.planner.core.heuristic.selector.move.composite;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -87,7 +86,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
         protected final NavigableMap<Long, Iterator<Move>> moveIteratorMap;
         protected final Map<Iterator<Move>, MoveSelector> moveSelectorMap;
-        protected long randomProbabilityWeightTotal;
+        protected long probabilityWeightTotal;
 
         public RandomUnionMoveIterator() {
             moveIteratorMap = new TreeMap<Long, Iterator<Move>>();
@@ -106,9 +105,9 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         }
 
         public Move next() {
-            long randomProbability = RandomUtils.nextLong(workingRandom, randomProbabilityWeightTotal);
-            Map.Entry<Long, Iterator<Move>> entry = moveIteratorMap.floorEntry(randomProbability);
-            // entry is never null because randomProbability < randomProbabilityWeightTotal
+            long randomOffset = RandomUtils.nextLong(workingRandom, probabilityWeightTotal);
+            Map.Entry<Long, Iterator<Move>> entry = moveIteratorMap.floorEntry(randomOffset);
+            // entry is never null because randomOffset < probabilityWeightTotal
             Iterator<Move> moveIterator = entry.getValue();
             Move next = moveIterator.next();
             if (!moveIterator.hasNext()) {
@@ -120,14 +119,16 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
         private void refreshMoveIteratorMap() {
             moveIteratorMap.clear();
-            long randomProbabilityWeightOffset = 0L;
+            long probabilityWeightOffset = 0L;
             for (Map.Entry<Iterator<Move>, MoveSelector> moveSelectorEntry : moveSelectorMap.entrySet()) {
                 Iterator<Move> moveIterator = moveSelectorEntry.getKey();
                 MoveSelector moveSelector = moveSelectorEntry.getValue();
-                moveIteratorMap.put(randomProbabilityWeightOffset, moveIterator);
-                randomProbabilityWeightOffset += moveSelector.getRandomProbabilityWeight();
+                moveIteratorMap.put(probabilityWeightOffset, moveIterator);
+                throw new UnsupportedOperationException();
+                // TODO FIXME
+                // probabilityWeightOffset += moveSelector.getRandomProbabilityWeight();
             }
-            randomProbabilityWeightTotal = randomProbabilityWeightOffset;
+            probabilityWeightTotal = probabilityWeightOffset;
         }
 
         public void remove() {

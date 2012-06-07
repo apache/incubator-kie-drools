@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.planner.core.heuristic.selector.common.SelectorCacheType;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
 import org.drools.planner.core.move.Move;
@@ -32,27 +32,26 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class CachingMoveSelectorTest {
 
     @Test
     public void cacheTypeSolver() {
-        runCacheType(SelectorCacheType.SOLVER, 1);
+        runCacheType(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
     public void cacheTypePhase() {
-        runCacheType(SelectorCacheType.PHASE, 2);
+        runCacheType(SelectionCacheType.PHASE, 2);
     }
 
     @Test
     public void cacheTypeStep() {
-        runCacheType(SelectorCacheType.STEP, 5);
+        runCacheType(SelectionCacheType.STEP, 5);
     }
 
-    public void runCacheType(SelectorCacheType cacheType, int timesCalled) {
+    public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
         CachingMoveSelector moveSelector = new CachingMoveSelector(cacheType);
         MoveSelector childMoveSelector = mock(MoveSelector.class);
         final List<Move> moveList = Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
@@ -64,7 +63,6 @@ public class CachingMoveSelectorTest {
         when(childMoveSelector.isContinuous()).thenReturn(false);
         when(childMoveSelector.isNeverEnding()).thenReturn(false);
         when(childMoveSelector.getSize()).thenReturn((long) moveList.size());
-        when(childMoveSelector.getRandomProbabilityWeight()).thenReturn(7L);
         moveSelector.setChildMoveSelector(childMoveSelector);
         verify(childMoveSelector, times(1)).isNeverEnding();
 
@@ -117,7 +115,6 @@ public class CachingMoveSelectorTest {
 
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
-        verify(childMoveSelector, times(timesCalled)).getRandomProbabilityWeight();
     }
 
     private void runAsserts(CachingMoveSelector moveSelector) {
@@ -133,7 +130,6 @@ public class CachingMoveSelectorTest {
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(false, moveSelector.isNeverEnding());
         assertEquals(3L, moveSelector.getSize());
-        assertEquals(7L, moveSelector.getRandomProbabilityWeight());
     }
 
 }

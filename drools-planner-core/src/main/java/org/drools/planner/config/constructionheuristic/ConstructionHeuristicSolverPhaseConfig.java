@@ -98,16 +98,16 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector(SolutionDescriptor solutionDescriptor) {
         GreedyPlanningEntitySelector greedyPlanningEntitySelector = new GreedyPlanningEntitySelector();
 
-        Set<Class<?>> planningEntityImplementationClassSet = solutionDescriptor.getPlanningEntityImplementationClassSet();
-        if (planningEntityImplementationClassSet.size() != 1) {
+        Set<Class<?>> planningEntityClassSet = solutionDescriptor.getPlanningEntityClassSet();
+        if (planningEntityClassSet.size() != 1) {
             // TODO Multiple MUST BE SUPPORTED TOO
             throw new UnsupportedOperationException("Currently the greedyFit implementation only supports " +
-                    "1 planningEntityImplementationClass.");
+                    "1 planningEntityClass.");
         }
-        Class<?> planningEntityImplementationClass = planningEntityImplementationClassSet.iterator().next();
+        Class<?> planningEntityClass = planningEntityClassSet.iterator().next();
         List<PlanningEntitySelector> planningEntitySelectorList = new ArrayList<PlanningEntitySelector>(1);
         PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(
-                solutionDescriptor.getPlanningEntityDescriptor(planningEntityImplementationClass));
+                solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass));
         planningEntitySelector.setSelectionOrder(determinePlanningEntitySelectionOrder());
         planningEntitySelector.setResetInitializedPlanningEntities(false);
         planningEntitySelectorList.add(planningEntitySelector);
@@ -118,14 +118,14 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     private GreedyDecider buildGreedyDecider(SolutionDescriptor solutionDescriptor, EnvironmentMode environmentMode) {
         DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
 
-        Set<Class<?>> planningEntityImplementationClassSet = solutionDescriptor.getPlanningEntityImplementationClassSet();
-        if (planningEntityImplementationClassSet.size() != 1) {
+        Set<Class<?>> planningEntityClassSet = solutionDescriptor.getPlanningEntityClassSet();
+        if (planningEntityClassSet.size() != 1) {
             // TODO Multiple MUST BE SUPPORTED TOO
             throw new UnsupportedOperationException("Currently the greedyFit implementation only supports " +
-                    "1 planningEntityImplementationClass.");
+                    "1 planningEntityClass.");
         }
-        Class<?> planningEntityImplementationClass = planningEntityImplementationClassSet.iterator().next();
-        PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityImplementationClass);
+        Class<?> planningEntityClass = planningEntityClassSet.iterator().next();
+        PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
         PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(planningEntityDescriptor);
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
         for (PlanningVariableDescriptor planningVariableDescriptor

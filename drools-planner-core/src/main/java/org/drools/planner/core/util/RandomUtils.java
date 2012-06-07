@@ -45,6 +45,21 @@ public class RandomUtils {
         return val;
     }
 
+    /**
+     * Mimics {@link Random#nextInt(int)} for doubles.
+     * @param random never null
+     * @param n > 0.0
+     * @return like {@link Random#nextInt(int)} but for a double
+     * @see Random#nextInt(int)
+     */
+    public static double nextDouble(Random random, double n) {
+        // This code is based on java.util.Random#nextInt(int)'s javadoc.
+        if (n <= 0.0) {
+            throw new IllegalArgumentException("n must be positive");
+        }
+        return random.nextDouble() * n;
+    }
+
     private RandomUtils() {
     }
 

@@ -22,7 +22,10 @@ import java.util.Random;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.RandomIterator;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * This is the common {@link EntitySelector} implementation.
@@ -31,59 +34,112 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     protected PlanningEntityDescriptor entityDescriptor;
     protected boolean randomSelection = false;
-    protected long randomProbabilityWeight = 1L;
+    protected final SelectionCacheType cacheType;
 
     protected Random workingRandom = null;
 
-    protected List<Object> entityList = null;
+    protected List<Object> cachedEntityList = null;
 
-    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor) {
+    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor, boolean randomSelection,
+            SelectionCacheType cacheType) {
         this.entityDescriptor = entityDescriptor;
+        this.randomSelection = randomSelection;
+        this.cacheType = cacheType;
+        if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
+                && cacheType != SelectionCacheType.STEP) {
+            throw new IllegalArgumentException("The cacheType (" + cacheType
+                    + ") is not supported on the class (" + getClass().getName() + ").");
+        }
     }
 
     public PlanningEntityDescriptor getEntityDescriptor() {
         return entityDescriptor;
     }
 
-    public boolean isRandomSelection() {
-        return randomSelection;
+    // ************************************************************************
+    // Cache lifecycle methods
+    // ************************************************************************
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        if (cacheType == SelectionCacheType.SOLVER) {
+            constructCache(solverScope);
+        }
     }
 
-    public void setRandomSelection(boolean randomSelection) {
-        this.randomSelection = randomSelection;
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+        super.phaseStarted(solverPhaseScope);
+        if (cacheType == SelectionCacheType.PHASE) {
+            constructCache(solverPhaseScope.getSolverScope());
+        }
+        workingRandom = solverPhaseScope.getWorkingRandom();
     }
 
-    public long getRandomProbabilityWeight() {
-        return randomProbabilityWeight;
+    @Override
+    public void stepStarted(AbstractStepScope stepScope) {
+        super.stepStarted(stepScope);
+        if (cacheType == SelectionCacheType.STEP) {
+            constructCache(stepScope.getSolverPhaseScope().getSolverScope());
+        }
     }
 
-    public void setRandomProbabilityWeight(long randomProbabilityWeight) {
-        this.randomProbabilityWeight = randomProbabilityWeight;
+    @Override
+    public void stepEnded(AbstractStepScope stepScope) {
+        super.stepEnded(stepScope);
+        if (cacheType == SelectionCacheType.STEP) {
+            disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
+        }
+    }
+
+    @Override
+    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+        super.phaseEnded(solverPhaseScope);
+        if (cacheType == SelectionCacheType.PHASE) {
+            disposeCache(solverPhaseScope.getSolverScope());
+        }
+        workingRandom = null;
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        if (cacheType == SelectionCacheType.SOLVER) {
+            disposeCache(solverScope);
+        }
+    }
+
+    protected void constructCache(DefaultSolverScope solverScope) {
+        cachedEntityList = entityDescriptor.extractEntities(solverScope.getWorkingSolution());
+    }
+
+    protected void disposeCache(DefaultSolverScope solverScope) {
+        cachedEntityList = null;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        workingRandom = solverPhaseScope.getWorkingRandom();
-        // TODO if entities are added and removed by moves, then this caching is broken
-        entityList = entityDescriptor.extractEntities(solverPhaseScope.getWorkingSolution());
-    }
-
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
-        entityList = null;
-    }
-
     public Iterator<Object> iterator() {
         if (!randomSelection) {
-            return entityList.iterator();
+            return cachedEntityList.iterator(); // TODO Bugged if going from PHASE parent to STEP caching
         } else {
-            return new RandomIterator<Object>(entityList, workingRandom);
+            return new Iterator<Object>() {
+                public boolean hasNext() {
+                    return true;
+                }
+
+                public Object next() {
+                    int index = workingRandom.nextInt(cachedEntityList.size());
+                    return cachedEntityList.get(index);
+                }
+
+                public void remove() {
+                    throw new UnsupportedOperationException("Remove is not supported.");
+                }
+            };
         }
     }
 
@@ -96,7 +152,8 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public long getSize() {
-        return (long) entityList.size();
+        // TODO what if entityList is still null?
+        return (long) cachedEntityList.size();
     }
 
 }

@@ -50,7 +50,7 @@ public class GenericSwapPillarMoveFactory extends AbstractMoveFactory {
     public List<Move> createMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
         List<Object> globalEntityList = solutionDescriptor.getPlanningEntityList(solution);
-        for (Class<?> entityClass : solutionDescriptor.getPlanningEntityImplementationClassSet()) {
+        for (Class<?> entityClass : solutionDescriptor.getPlanningEntityClassSet()) {
             PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(entityClass);
             Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
             for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {

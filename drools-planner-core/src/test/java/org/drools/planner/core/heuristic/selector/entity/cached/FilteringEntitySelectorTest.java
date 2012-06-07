@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.planner.core.heuristic.selector.common.SelectorCacheType;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -34,25 +34,25 @@ import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class CachingEntitySelectorTest {
+public class FilteringEntitySelectorTest {
 
     @Test
     public void cacheTypeSolver() {
-        runCacheType(SelectorCacheType.SOLVER, 1);
+        runCacheType(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
     public void cacheTypePhase() {
-        runCacheType(SelectorCacheType.PHASE, 2);
+        runCacheType(SelectionCacheType.PHASE, 2);
     }
 
     @Test
     public void cacheTypeStep() {
-        runCacheType(SelectorCacheType.STEP, 5);
+        runCacheType(SelectionCacheType.STEP, 5);
     }
 
-    public void runCacheType(SelectorCacheType cacheType, int timesCalled) {
-        CachingEntitySelector entitySelector = new CachingEntitySelector(cacheType);
+    public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
+        FilteringEntitySelector entitySelector = new FilteringEntitySelector(cacheType);
         EntitySelector childEntitySelector = mock(EntitySelector.class);
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
@@ -64,7 +64,6 @@ public class CachingEntitySelectorTest {
         when(childEntitySelector.isContinuous()).thenReturn(false);
         when(childEntitySelector.isNeverEnding()).thenReturn(false);
         when(childEntitySelector.getSize()).thenReturn((long) entityList.size());
-        when(childEntitySelector.getRandomProbabilityWeight()).thenReturn(7L);
         entitySelector.setChildEntitySelector(childEntitySelector);
         verify(childEntitySelector, times(1)).isNeverEnding();
 
@@ -117,10 +116,9 @@ public class CachingEntitySelectorTest {
 
         verify(childEntitySelector, times(timesCalled)).iterator();
         verify(childEntitySelector, times(timesCalled)).getSize();
-        verify(childEntitySelector, times(timesCalled)).getRandomProbabilityWeight();
     }
 
-    private void runAsserts(CachingEntitySelector entitySelector) {
+    private void runAsserts(FilteringEntitySelector entitySelector) {
         Iterator<Object> iterator = entitySelector.iterator();
         assertNotNull(iterator);
         assertTrue(iterator.hasNext());
@@ -133,7 +131,6 @@ public class CachingEntitySelectorTest {
         assertEquals(false, entitySelector.isContinuous());
         assertEquals(false, entitySelector.isNeverEnding());
         assertEquals(3L, entitySelector.getSize());
-        assertEquals(7L, entitySelector.getRandomProbabilityWeight());
     }
 
 }

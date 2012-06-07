@@ -52,13 +52,4 @@ public interface Selector extends SolverPhaseLifecycleListener {
      */
     long getSize();
 
-    /**
-     * If this {@link Selector} is unionized with other {@link Selector}s with random selection,
-     * this weight represents the chance that this {@link Selector} will be chosen.
-     * <p/>
-     * Only applies if this {@link Selector} is the child of another {@link Selector}.
-     * @return always >= 0
-     */
-    long getRandomProbabilityWeight();
-
 }

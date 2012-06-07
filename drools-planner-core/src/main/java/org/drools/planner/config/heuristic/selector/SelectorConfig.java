@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.common;
+package org.drools.planner.config.heuristic.selector;
 
-public enum SelectorCacheType {
-    NEVER,
-    STEP,
-    PHASE,
-    SOLVER
+/**
+ * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.
+ */
+public abstract class SelectorConfig {
+
 }

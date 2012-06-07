@@ -100,14 +100,14 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = (this.constructionHeuristicPickEarlyType == null)
                 ? ConstructionHeuristicPickEarlyType.NEVER : this.constructionHeuristicPickEarlyType;
 
-        Set<Class<?>> planningEntityImplementationClassSet = solutionDescriptor.getPlanningEntityImplementationClassSet();
-        if (planningEntityImplementationClassSet.size() != 1) {
+        Set<Class<?>> planningEntityClassSet = solutionDescriptor.getPlanningEntityClassSet();
+        if (planningEntityClassSet.size() != 1) {
             // TODO Multiple MUST BE SUPPORTED TOO
             throw new UnsupportedOperationException("Currently the greedyFit implementation only supports " +
-                    "1 planningEntityImplementationClass.");
+                    "1 planningEntityClass.");
         }
-        Class<?> planningEntityImplementationClass = planningEntityImplementationClassSet.iterator().next();
-        PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityImplementationClass);
+        Class<?> planningEntityClass = planningEntityClassSet.iterator().next();
+        PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
         PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(planningEntityDescriptor);
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
         for (PlanningVariableDescriptor planningVariableDescriptor

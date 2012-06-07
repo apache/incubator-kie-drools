@@ -24,19 +24,9 @@ import org.drools.planner.core.move.Move;
 public class DummyMoveSelector extends AbstractMoveSelector {
 
     private List<Move> moveList;
-    private long randomProbabilityWeight;
 
     public DummyMoveSelector(List<Move> moveList) {
-        this(moveList, 1L);
-    }
-
-    public DummyMoveSelector(List<Move> moveList, long randomProbabilityWeight) {
         this.moveList = moveList;
-        this.randomProbabilityWeight = randomProbabilityWeight;
-    }
-
-    public long getRandomProbabilityWeight() {
-        return randomProbabilityWeight;
     }
 
     // ************************************************************************

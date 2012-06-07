@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectorCacheType;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.cached.CachingMoveSelector;
@@ -35,19 +35,15 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  * <p/>
  * Keep this code in sync with {@link CachingMoveSelector}.
  */
-public class CachingEntitySelector extends AbstractEntitySelector {
+public abstract class CachingEntitySelector extends AbstractEntitySelector {
 
-    protected final SelectorCacheType cacheType;
+    protected final SelectionCacheType cacheType;
     protected EntitySelector childEntitySelector;
 
-    protected long cachedSize = -1L;
-    protected List<Object> cachedEntityList = null;
-    protected long cachedRandomProbabilityWeight = -1L;
-
-    public CachingEntitySelector(SelectorCacheType cacheType) {
+    public CachingEntitySelector(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
-        if (cacheType != SelectorCacheType.SOLVER && cacheType != SelectorCacheType.PHASE
-                && cacheType != SelectorCacheType.STEP) {
+        if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
+                && cacheType != SelectionCacheType.STEP) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
@@ -72,7 +68,7 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
-        if (cacheType == SelectorCacheType.SOLVER) {
+        if (cacheType == SelectionCacheType.SOLVER) {
             constructCache(solverScope);
         }
     }
@@ -80,7 +76,7 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseStarted(solverPhaseScope);
-        if (cacheType == SelectorCacheType.PHASE) {
+        if (cacheType == SelectionCacheType.PHASE) {
             constructCache(solverPhaseScope.getSolverScope());
         }
     }
@@ -88,7 +84,7 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     @Override
     public void stepStarted(AbstractStepScope stepScope) {
         super.stepStarted(stepScope);
-        if (cacheType == SelectorCacheType.STEP) {
+        if (cacheType == SelectionCacheType.STEP) {
             constructCache(stepScope.getSolverPhaseScope().getSolverScope());
         }
     }
@@ -96,7 +92,7 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
         super.stepEnded(stepScope);
-        if (cacheType == SelectorCacheType.STEP) {
+        if (cacheType == SelectionCacheType.STEP) {
             disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
         }
     }
@@ -104,7 +100,7 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     @Override
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseEnded(solverPhaseScope);
-        if (cacheType == SelectorCacheType.PHASE) {
+        if (cacheType == SelectionCacheType.PHASE) {
             disposeCache(solverPhaseScope.getSolverScope());
         }
     }
@@ -112,33 +108,14 @@ public class CachingEntitySelector extends AbstractEntitySelector {
     @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         super.solvingEnded(solverScope);
-        if (cacheType == SelectorCacheType.SOLVER) {
+        if (cacheType == SelectionCacheType.SOLVER) {
             disposeCache(solverScope);
         }
     }
 
-    protected void constructCache(DefaultSolverScope solverScope) {
-        cachedSize = childEntitySelector.getSize();
-        if (cachedSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The entitySelector (" + this + ") has a childEntitySelector ("
-                    + childEntitySelector + ") with cachedSize (" + cachedSize
-                    + ") which is higher then Integer.MAX_VALUE.");
-        }
-        cachedEntityList = new ArrayList<Object>((int)cachedSize);
-        CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
-        cachedRandomProbabilityWeight = childEntitySelector.getRandomProbabilityWeight();
-        orderCache(solverScope);
-    }
+    protected abstract void constructCache(DefaultSolverScope solverScope);
 
-    protected void orderCache(DefaultSolverScope solverScope) {
-        // Hook method
-    }
-
-    protected void disposeCache(DefaultSolverScope solverScope) {
-        cachedSize = -1L;
-        cachedEntityList = null;
-        cachedRandomProbabilityWeight = -1L;
-    }
+    protected abstract void disposeCache(DefaultSolverScope solverScope);
 
     // ************************************************************************
     // Worker methods
@@ -148,24 +125,12 @@ public class CachingEntitySelector extends AbstractEntitySelector {
         return childEntitySelector.getEntityDescriptor();
     }
 
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
-    }
-
     public boolean isContinuous() {
         return false;
     }
 
     public boolean isNeverEnding() {
         return false;
-    }
-
-    public long getSize() {
-        return cachedSize;
-    }
-
-    public long getRandomProbabilityWeight() {
-        return cachedRandomProbabilityWeight;
     }
 
     @Override

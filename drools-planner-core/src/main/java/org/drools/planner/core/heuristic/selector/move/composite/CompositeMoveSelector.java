@@ -31,7 +31,6 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
 
     protected List<MoveSelector> childMoveSelectorList;
     protected boolean randomSelection = false;
-    protected long randomProbabilityWeight = 1L;
 
     protected Random workingRandom = null;
 
@@ -49,14 +48,6 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
 
     public void setRandomSelection(boolean randomSelection) {
         this.randomSelection = randomSelection;
-    }
-
-    public long getRandomProbabilityWeight() {
-        return randomProbabilityWeight;
-    }
-
-    public void setRandomProbabilityWeight(long randomProbabilityWeight) {
-        this.randomProbabilityWeight = randomProbabilityWeight;
     }
 
     // ************************************************************************

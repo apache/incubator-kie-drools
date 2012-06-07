@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.core.heuristic.selector.common.SelectorCacheType;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.cached.CachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
@@ -37,17 +37,16 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  */
 public class CachingMoveSelector extends AbstractMoveSelector {
 
-    protected final SelectorCacheType cacheType;
+    protected final SelectionCacheType cacheType;
     protected MoveSelector childMoveSelector;
 
     protected long cachedSize = -1L;
     protected List<Move> cachedMoveList = null;
-    protected long cachedRandomProbabilityWeight = -1L;
 
-    public CachingMoveSelector(SelectorCacheType cacheType) {
+    public CachingMoveSelector(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
-        if (cacheType != SelectorCacheType.SOLVER && cacheType != SelectorCacheType.PHASE
-                && cacheType != SelectorCacheType.STEP) {
+        if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
+                && cacheType != SelectionCacheType.STEP) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
@@ -72,7 +71,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
-        if (cacheType == SelectorCacheType.SOLVER) {
+        if (cacheType == SelectionCacheType.SOLVER) {
             constructCache(solverScope);
         }
     }
@@ -80,7 +79,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseStarted(solverPhaseScope);
-        if (cacheType == SelectorCacheType.PHASE) {
+        if (cacheType == SelectionCacheType.PHASE) {
             constructCache(solverPhaseScope.getSolverScope());
         }
     }
@@ -88,7 +87,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     @Override
     public void stepStarted(AbstractStepScope stepScope) {
         super.stepStarted(stepScope);
-        if (cacheType == SelectorCacheType.STEP) {
+        if (cacheType == SelectionCacheType.STEP) {
             constructCache(stepScope.getSolverPhaseScope().getSolverScope());
         }
     }
@@ -96,7 +95,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
         super.stepEnded(stepScope);
-        if (cacheType == SelectorCacheType.STEP) {
+        if (cacheType == SelectionCacheType.STEP) {
             disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
         }
     }
@@ -104,7 +103,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     @Override
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseEnded(solverPhaseScope);
-        if (cacheType == SelectorCacheType.PHASE) {
+        if (cacheType == SelectionCacheType.PHASE) {
             disposeCache(solverPhaseScope.getSolverScope());
         }
     }
@@ -112,7 +111,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         super.solvingEnded(solverScope);
-        if (cacheType == SelectorCacheType.SOLVER) {
+        if (cacheType == SelectionCacheType.SOLVER) {
             disposeCache(solverScope);
         }
     }
@@ -126,7 +125,6 @@ public class CachingMoveSelector extends AbstractMoveSelector {
         }
         cachedMoveList = new ArrayList<Move>((int)cachedSize);
         CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
-        cachedRandomProbabilityWeight = childMoveSelector.getRandomProbabilityWeight();
         orderCache(solverScope);
     }
 
@@ -137,7 +135,6 @@ public class CachingMoveSelector extends AbstractMoveSelector {
     protected void disposeCache(DefaultSolverScope solverScope) {
         cachedSize = -1L;
         cachedMoveList = null;
-        cachedRandomProbabilityWeight = -1L;
     }
 
     // ************************************************************************
@@ -158,10 +155,6 @@ public class CachingMoveSelector extends AbstractMoveSelector {
 
     public long getSize() {
         return cachedSize;
-    }
-
-    public long getRandomProbabilityWeight() {
-        return cachedRandomProbabilityWeight;
     }
 
     @Override

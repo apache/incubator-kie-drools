@@ -62,14 +62,14 @@ public class GreedyFitPlanningEntityConfig {
         if (planningEntityClass != null) {
             resolvedEntityClass = planningEntityClass;
         } else {
-            Set<Class<?>> planningEntityImplementationClassSet
-                    = solutionDescriptor.getPlanningEntityImplementationClassSet();
-            if (planningEntityImplementationClassSet.size() != 1) {
+            Set<Class<?>> planningEntityClassSet
+                    = solutionDescriptor.getPlanningEntityClassSet();
+            if (planningEntityClassSet.size() != 1) {
                 throw new IllegalArgumentException(
                         "The greedyFitPlanningEntity has no planningEntityClass but there are multiple ("
-                                + planningEntityImplementationClassSet.size() + ") planningEntityClasses.");
+                                + planningEntityClassSet.size() + ") planningEntityClasses.");
             }
-            resolvedEntityClass = planningEntityImplementationClassSet.iterator().next();
+            resolvedEntityClass = planningEntityClassSet.iterator().next();
         }
         if (!solutionDescriptor.hasPlanningEntityDescriptor(planningEntityClass)) {
             throw new IllegalArgumentException("The greedyFitPlanningEntity has a planningEntityClass ("

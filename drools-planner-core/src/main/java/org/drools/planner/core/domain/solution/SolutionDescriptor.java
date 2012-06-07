@@ -92,19 +92,23 @@ public class SolutionDescriptor {
         }
     }
 
+    public void addPlanningEntityDescriptor(PlanningEntityDescriptor planningEntityDescriptor) {
+        planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
+    }
+
     public Class<? extends Solution> getSolutionClass() {
         return solutionClass;
     }
+
+    // ************************************************************************
+    // Model methods
+    // ************************************************************************
 
     public PropertyDescriptor getPropertyDescriptor(String propertyName) {
         return propertyDescriptorMap.get(propertyName);
     }
 
-    public void addPlanningEntityDescriptor(PlanningEntityDescriptor planningEntityDescriptor) {
-        planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
-    }
-
-    public Set<Class<?>> getPlanningEntityImplementationClassSet() {
+    public Set<Class<?>> getPlanningEntityClassSet() {
         return planningEntityDescriptorMap.keySet();
     }
 
@@ -112,9 +116,17 @@ public class SolutionDescriptor {
         return planningEntityDescriptorMap.values();
     }
 
-    public boolean hasPlanningEntityDescriptor(Class<?> planningEntityImplementationClass) {
+    public boolean hasPlanningEntityDescriptorStrict(Class<?> planningEntityClass) {
+        return planningEntityDescriptorMap.containsKey(planningEntityClass);
+    }
+
+    public PlanningEntityDescriptor getPlanningEntityDescriptorStrict(Class<?> planningEntityClass) {
+        return planningEntityDescriptorMap.get(planningEntityClass);
+    }
+
+    public boolean hasPlanningEntityDescriptor(Class<?> planningEntitySubclass) {
         PlanningEntityDescriptor planningEntityDescriptor = null;
-        Class<?> planningEntityClass = planningEntityImplementationClass;
+        Class<?> planningEntityClass = planningEntitySubclass;
         while (planningEntityClass != null) {
             planningEntityDescriptor = planningEntityDescriptorMap.get(planningEntityClass);
             if (planningEntityDescriptor != null) {
@@ -125,9 +137,9 @@ public class SolutionDescriptor {
         return false;
     }
 
-    public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntityImplementationClass) {
+    public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntitySubclass) {
         PlanningEntityDescriptor planningEntityDescriptor = null;
-        Class<?> planningEntityClass = planningEntityImplementationClass;
+        Class<?> planningEntityClass = planningEntitySubclass;
         while (planningEntityClass != null) {
             planningEntityDescriptor = planningEntityDescriptorMap.get(planningEntityClass);
             if (planningEntityDescriptor != null) {
@@ -135,10 +147,12 @@ public class SolutionDescriptor {
             }
             planningEntityClass = planningEntityClass.getSuperclass();
         }
-        throw new IllegalArgumentException("A planningEntity is an instance of a planningEntityImplementationClass ("
-                + planningEntityImplementationClass + ") that is not configured as a planningEntity.\n" +
-                "If that class (" + planningEntityImplementationClass.getSimpleName() + ") is not a " +
-                "planningEntityClass (or subclass thereof), check your Solution implementation's annotated methods.\n" +
+        // TODO move this into the client methods
+        throw new IllegalArgumentException("A planningEntity is an instance of a planningEntitySubclass ("
+                + planningEntitySubclass + ") that is not configured as a planningEntity.\n" +
+                "If that class (" + planningEntitySubclass.getSimpleName() + ") (or superclass thereof) is not a " +
+                "planningEntityClass (" + getPlanningEntityClassSet()
+                + "), check your Solution implementation's annotated methods.\n" +
                 "If it is, check your solver configuration.");
     }
     
@@ -154,6 +168,10 @@ public class SolutionDescriptor {
         }
         return chainedVariableDescriptors;
     }
+
+    // ************************************************************************
+    // Extraction methods
+    // ************************************************************************
 
     public Collection<Object> getAllFacts(Solution solution) {
         Collection<Object> facts = new ArrayList<Object>();
