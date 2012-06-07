@@ -60,7 +60,8 @@ public class DefaultExpander
                                                                  Pattern.compile( ruleOrQuery,
                                                                                   Pattern.DOTALL | Pattern.MULTILINE | Pattern.COMMENTS );
 
-    private static final Pattern        comments     = Pattern.compile( "(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)" );
+    private static final Pattern        comments1     = Pattern.compile( "(?:/\\*(?:[^*])*\\*+/)" );
+    private static final Pattern        comments2     = Pattern.compile( "(?:/\\*(?:\\*+[^*/])*\\*+/)" );
 
     // This pattern finds a statement's modify body
     private static final Pattern        modifyFinder = Pattern.compile( "\\{(.*?)\\}" );
@@ -321,7 +322,8 @@ public class DefaultExpander
     //    }
 
     private String removeComments(String drl) {
-        return comments.matcher(drl).replaceAll("");
+        drl = comments1.matcher(drl).replaceAll("");
+        return comments2.matcher(drl).replaceAll("");
     }
 
     /**
