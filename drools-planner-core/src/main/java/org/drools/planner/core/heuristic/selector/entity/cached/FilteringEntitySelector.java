@@ -51,10 +51,6 @@ public class FilteringEntitySelector extends CachingEntitySelector {
     // Worker methods
     // ************************************************************************
 
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
-    }
-
     public long getSize() {
         return cachedEntityList.size();
     }
@@ -62,6 +58,10 @@ public class FilteringEntitySelector extends CachingEntitySelector {
     @Override
     public String toString() {
         return "Filtering(" + childEntitySelector + ")";
+    }
+
+    public Iterator<Object> iterator() {
+        return cachedEntityList.iterator();
     }
 
 }

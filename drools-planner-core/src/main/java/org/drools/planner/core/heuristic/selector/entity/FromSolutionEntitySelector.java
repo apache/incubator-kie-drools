@@ -32,8 +32,8 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  */
 public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
-    protected PlanningEntityDescriptor entityDescriptor;
-    protected boolean randomSelection = false;
+    protected final PlanningEntityDescriptor entityDescriptor;
+    protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
 
     protected Random workingRandom = null;
@@ -122,6 +122,19 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     // Worker methods
     // ************************************************************************
 
+    public boolean isContinuous() {
+        return false;
+    }
+
+    public boolean isNeverEnding() {
+        return randomSelection;
+    }
+
+    public long getSize() {
+        // TODO what if entityList is still null?
+        return (long) cachedEntityList.size();
+    }
+
     public Iterator<Object> iterator() {
         if (!randomSelection) {
             return cachedEntityList.iterator();
@@ -141,19 +154,6 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
                 }
             };
         }
-    }
-
-    public boolean isContinuous() {
-        return false;
-    }
-
-    public boolean isNeverEnding() {
-        return randomSelection;
-    }
-
-    public long getSize() {
-        // TODO what if entityList is still null?
-        return (long) cachedEntityList.size();
     }
 
 }

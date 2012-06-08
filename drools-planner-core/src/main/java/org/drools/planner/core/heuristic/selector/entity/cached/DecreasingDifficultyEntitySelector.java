@@ -65,12 +65,12 @@ public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
         cachedEntityList = null;
     }
 
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
-    }
-
     public long getSize() {
         return cachedEntityList.size();
+    }
+
+    public Iterator<Object> iterator() {
+        return cachedEntityList.iterator();
     }
 
 }

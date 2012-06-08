@@ -32,9 +32,9 @@ public enum SelectionOrder {
      */
     RANDOM,
     /**
-     * Select in the elements in natural order.
+     * Select in the elements in original order.
      */
-    NATURAL;
+    ORIGINAL;
 
     public static SelectionOrder resolveSelectionOrder(SelectionOrder selectionOrder,
             SelectionOrder inheritedResolvedSelectionOrder) {

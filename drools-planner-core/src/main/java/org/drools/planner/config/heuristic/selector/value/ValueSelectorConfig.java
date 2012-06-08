@@ -103,14 +103,12 @@ public class ValueSelectorConfig extends SelectorConfig {
             }
             variableDescriptor = planningVariableDescriptors.iterator().next();
         }
-        ValueSelector valueSelector;
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
                 inheritedResolvedSelectionOrder);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && selectionProbabilityWeightFactoryClass == null;
-        // cacheType defaults to SelectionCacheType.STEP because JIT is pointless and an entity can be added in a step
-        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.STEP : cacheType;
-        valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
+        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.JUST_IN_TIME : cacheType;
+        ValueSelector valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
                 resolvedCacheType);
 
         // TODO filterclass

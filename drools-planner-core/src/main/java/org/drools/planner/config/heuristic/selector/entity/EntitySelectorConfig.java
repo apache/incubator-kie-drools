@@ -101,14 +101,13 @@ public class EntitySelectorConfig extends SelectorConfig {
             }
             entityDescriptor = planningEntityDescriptors.iterator().next();
         }
-        EntitySelector entitySelector;
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
                 inheritedResolvedSelectionOrder);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && selectionProbabilityWeightFactoryClass == null;
         // cacheType defaults to SelectionCacheType.STEP because JIT is pointless and an entity can be added in a step
         SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.STEP : cacheType;
-        entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
+        EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
                 resolvedCacheType);
 
         // TODO filterclass

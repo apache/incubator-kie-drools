@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.config.heuristic.selector;
+package org.drools.planner.config.heuristic.selector.move;
 
-import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
-import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 
 /**
- * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.
+ * General superclass for {@link ChangeMoveSelectorConfig}, etc.
  */
-public abstract class SelectorConfig {
+public abstract class MoveSelectorConfig {
 
 }

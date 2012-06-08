@@ -74,6 +74,20 @@ public class ProbabilityValueSelector extends CachingValueSelector {
         probabilityWeightTotal = -1.0;
     }
 
+    @Override
+    public boolean isNeverEnding() {
+        return true;
+    }
+
+    public long getSize() {
+        return cachedEntityMap.size();
+    }
+
+    @Override
+    public String toString() {
+        return "Probability(" + childValueSelector + ")";
+    }
+
     public ValueIterator iterator() {
         return new EntityIgnoringValueIterator() {
             public boolean hasNext() {
@@ -87,20 +101,6 @@ public class ProbabilityValueSelector extends CachingValueSelector {
                 return entry.getValue();
             }
         };
-    }
-
-    @Override
-    public boolean isNeverEnding() {
-        return true;
-    }
-
-    public long getSize() {
-        return cachedEntityMap.size();
-    }
-
-    @Override
-    public String toString() {
-        return "Probability(" + childValueSelector + ")";
     }
 
 }

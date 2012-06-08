@@ -72,6 +72,15 @@ public class ProbabilityEntitySelector extends CachingEntitySelector {
         probabilityWeightTotal = -1.0;
     }
 
+    @Override
+    public boolean isNeverEnding() {
+        return true;
+    }
+
+    public long getSize() {
+        return cachedEntityMap.size();
+    }
+
     public Iterator<Object> iterator() {
         return new Iterator<Object>() {
             public boolean hasNext() {
@@ -89,15 +98,6 @@ public class ProbabilityEntitySelector extends CachingEntitySelector {
                 throw new UnsupportedOperationException("Remove is not supported.");
             }
         };
-    }
-
-    @Override
-    public boolean isNeverEnding() {
-        return true;
-    }
-
-    public long getSize() {
-        return cachedEntityMap.size();
     }
 
     @Override

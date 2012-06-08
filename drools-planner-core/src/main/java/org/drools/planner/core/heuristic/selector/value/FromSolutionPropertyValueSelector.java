@@ -31,8 +31,8 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  */
 public class FromSolutionPropertyValueSelector extends AbstractValueSelector {
 
-    protected PlanningVariableDescriptor variableDescriptor;
-    protected boolean randomSelection = false;
+    protected final PlanningVariableDescriptor variableDescriptor;
+    protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
 
     protected Random workingRandom = null;
@@ -122,6 +122,18 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector {
     // Worker methods
     // ************************************************************************
 
+    public boolean isContinuous() {
+        return variableDescriptor.isContinuous();
+    }
+
+    public boolean isNeverEnding() {
+        return randomSelection || isContinuous();
+    }
+
+    public long getSize() {
+        return (long) cachedValueList.size();
+    }
+
     public ValueIterator iterator() {
         if (!randomSelection) {
             return new IteratorToValueIteratorBridge(cachedValueList.iterator());
@@ -137,18 +149,6 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector {
                 }
             };
         }
-    }
-
-    public boolean isContinuous() {
-        return variableDescriptor.isContinuous();
-    }
-
-    public boolean isNeverEnding() {
-        return randomSelection || isContinuous();
-    }
-
-    public long getSize() {
-        return (long) cachedValueList.size();
     }
 
 }
