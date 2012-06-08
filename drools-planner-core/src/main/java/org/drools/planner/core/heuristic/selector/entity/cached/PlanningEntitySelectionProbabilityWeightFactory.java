@@ -16,12 +16,14 @@
 
 package org.drools.planner.core.heuristic.selector.entity.cached;
 
+import org.drools.planner.core.heuristic.selector.value.cached.PlanningValueSelectionProbabilityWeightFactory;
 import org.drools.planner.core.solution.Solution;
 
 /**
  * Create a selectionProbabilityWeight for a PlanningEntity.
  * A selectionProbabilityWeight represents the random chance that a PlanningEntity will be selected.
- * Some use cases benefit from focusing moves more actively on some planning entities..
+ * Some use cases benefit from focusing moves more actively on some planning entities.
+ * @see PlanningValueSelectionProbabilityWeightFactory
  */
 public interface PlanningEntitySelectionProbabilityWeightFactory {
 

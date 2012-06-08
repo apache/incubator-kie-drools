@@ -192,6 +192,14 @@ public class PlanningVariableDescriptor {
         return variablePropertyDescriptor.getPropertyType();
     }
 
+    /**
+     * @return true if the value range is continuous (as in for example every double value between 1.2 and 1.4)
+     */
+    public boolean isContinuous() {
+        // TODO not yet supported
+        return false;
+    }
+
     public boolean isChained() {
         return chained;
     }

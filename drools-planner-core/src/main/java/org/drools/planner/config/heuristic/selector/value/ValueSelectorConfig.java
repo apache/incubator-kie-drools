@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.config.heuristic.selector.entity;
+package org.drools.planner.config.heuristic.selector.value;
 
 import java.util.Collection;
 
@@ -24,29 +24,30 @@ import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.PlanningEntitySelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.entity.cached.ProbabilityEntitySelector;
+import org.drools.planner.core.heuristic.selector.value.cached.ProbabilityValueSelector;
+import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
+import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.heuristic.selector.value.cached.PlanningValueSelectionProbabilityWeightFactory;
 
-@XStreamAlias("entitySelector")
-public class EntitySelectorConfig extends SelectorConfig {
+@XStreamAlias("valueSelector")
+public class ValueSelectorConfig extends SelectorConfig {
 
-    private Class<?> planningEntityClass = null;
+    private String planningVariableName = null;
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
     // TODO filterClass
-    private Class<? extends PlanningEntitySelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass
+    private Class<? extends PlanningValueSelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass
             = null;
-    // TODO sorterClass, decreasingDifficulty
+    // TODO sorterClass, increasingStrength
 
-    public Class<?> getPlanningEntityClass() {
-        return planningEntityClass;
+    public String getPlanningVariableName() {
+        return planningVariableName;
     }
 
-    public void setPlanningEntityClass(Class<?> planningEntityClass) {
-        this.planningEntityClass = planningEntityClass;
+    public void setPlanningVariableName(String planningVariableName) {
+        this.planningVariableName = planningVariableName;
     }
 
     public SelectionOrder getSelectionOrder() {
@@ -65,11 +66,11 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.cacheType = cacheType;
     }
 
-    public Class<? extends PlanningEntitySelectionProbabilityWeightFactory> getSelectionProbabilityWeightFactoryClass() {
+    public Class<? extends PlanningValueSelectionProbabilityWeightFactory> getSelectionProbabilityWeightFactoryClass() {
         return selectionProbabilityWeightFactoryClass;
     }
 
-    public void setSelectionProbabilityWeightFactoryClass(Class<? extends PlanningEntitySelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass) {
+    public void setSelectionProbabilityWeightFactoryClass(Class<? extends PlanningValueSelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass) {
         this.selectionProbabilityWeightFactoryClass = selectionProbabilityWeightFactoryClass;
     }
 
@@ -77,49 +78,50 @@ public class EntitySelectorConfig extends SelectorConfig {
     // Builder methods
     // ************************************************************************
 
-    public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedResolvedSelectionOrder) {
-        PlanningEntityDescriptor entityDescriptor;
-        if (planningEntityClass != null) {
-            entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
-            if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The entitySelector has a planningEntityClass ("
-                        + planningEntityClass + ") that is not configured as a planningEntity.\n" +
-                        "If that class (" + planningEntityClass.getSimpleName() + ") is not a " +
-                        "planningEntityClass (" + solutionDescriptor.getPlanningEntityClassSet()
-                        + "), check your Solution implementation's annotated methods.\n" +
-                        "If it is, check your solver configuration.");
+    public ValueSelector buildValueSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            SelectionOrder inheritedResolvedSelectionOrder, PlanningEntityDescriptor entityDescriptor) {
+        PlanningVariableDescriptor variableDescriptor;
+        if (planningVariableName != null) {
+            variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(planningVariableName);
+            if (variableDescriptor == null) {
+                throw new IllegalArgumentException("The variableSelector has a planningVariableName ("
+                        + planningVariableName + ") for planningEntityClass ("
+                        + entityDescriptor.getPlanningEntityClass()
+                        + ") that is not annotated as a planningVariable.\n" +
+                        "Check your planningEntity implementation's annotated methods.");
             }
         } else {
-            Collection<PlanningEntityDescriptor> planningEntityDescriptors = solutionDescriptor
-                    .getPlanningEntityDescriptors();
-            if (planningEntityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The entitySelector has no configured planningEntityClass ("
-                        + planningEntityClass + ") and because there are multiple in the planningEntityClassSet ("
-                        + solutionDescriptor.getPlanningEntityClassSet()
+            Collection<PlanningVariableDescriptor> planningVariableDescriptors = entityDescriptor
+                    .getPlanningVariableDescriptors();
+            if (planningVariableDescriptors.size() != 1) {
+                throw new IllegalArgumentException("The variableSelector has no configured planningVariableName ("
+                        + planningVariableName + ") for planningEntityClass ("
+                        + entityDescriptor.getPlanningEntityClass()
+                        + ") and because there are multiple in the planningVariableNameSet ("
+                        + entityDescriptor.getPlanningVariableNameSet()
                         + "), it can not be deducted automatically.");
             }
-            entityDescriptor = planningEntityDescriptors.iterator().next();
+            variableDescriptor = planningVariableDescriptors.iterator().next();
         }
-        EntitySelector entitySelector;
+        ValueSelector valueSelector;
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
                 inheritedResolvedSelectionOrder);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && selectionProbabilityWeightFactoryClass == null;
         // cacheType defaults to SelectionCacheType.STEP because JIT is pointless and an entity can be added in a step
         SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.STEP : cacheType;
-        entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
+        valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
                 resolvedCacheType);
 
         // TODO filterclass
 
         if (selectionProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                throw new IllegalArgumentException("The entitySelector with selectionProbabilityWeightFactoryClass ("
+                throw new IllegalArgumentException("The valueSelector with selectionProbabilityWeightFactoryClass ("
                         + selectionProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            PlanningEntitySelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+            PlanningValueSelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
             try {
                 selectionProbabilityWeightFactory = selectionProbabilityWeightFactoryClass.newInstance();
             } catch (InstantiationException e) {
@@ -131,17 +133,17 @@ public class EntitySelectorConfig extends SelectorConfig {
                         + selectionProbabilityWeightFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
-            ProbabilityEntitySelector probabilityEntitySelector = new ProbabilityEntitySelector(resolvedCacheType,
+            ProbabilityValueSelector probabilityValueSelector = new ProbabilityValueSelector(resolvedCacheType,
                     selectionProbabilityWeightFactory);
-            probabilityEntitySelector.setChildEntitySelector(entitySelector);
-            entitySelector = probabilityEntitySelector;
+            probabilityValueSelector.setChildValueSelector(valueSelector);
+            valueSelector = probabilityValueSelector;
         }
-        return entitySelector;
+        return valueSelector;
     }
 
-    public void inherit(EntitySelectorConfig inheritedConfig) {
-        if (planningEntityClass == null) {
-            planningEntityClass = inheritedConfig.getPlanningEntityClass();
+    public void inherit(ValueSelectorConfig inheritedConfig) {
+        if (planningVariableName == null) {
+            planningVariableName = inheritedConfig.getPlanningVariableName();
         }
         if (selectionOrder == null) {
             selectionOrder = inheritedConfig.getSelectionOrder();

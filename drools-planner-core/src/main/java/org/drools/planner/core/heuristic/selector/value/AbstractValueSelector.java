@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.variable;
+package org.drools.planner.core.heuristic.selector.value;
 
-import java.util.Iterator;
-
-import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.heuristic.selector.AbstractSelector;
 
 /**
- * Selects {@link PlanningVariable} annotated properties.
- * @see AbstractValueSelector
+ * Abstract superclass for {@link ValueSelector}.
+ * @see ValueSelector
  */
-public interface ValueSelector extends Selector {
-
-    Iterator<Object> iterator(Object entity);
+public abstract class AbstractValueSelector extends AbstractSelector implements ValueSelector {
 
 }

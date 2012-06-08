@@ -21,6 +21,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -198,6 +199,9 @@ public class PlanningEntityDescriptor {
             }
         }
         return null;
+    }
+    public Collection<String> getPlanningVariableNameSet() {
+        return planningVariableDescriptorMap.keySet();
     }
 
     public Collection<PlanningVariableDescriptor> getPlanningVariableDescriptors() {

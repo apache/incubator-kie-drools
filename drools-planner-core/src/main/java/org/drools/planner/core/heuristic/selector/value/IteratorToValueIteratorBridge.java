@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.variable;
+package org.drools.planner.core.heuristic.selector.value;
 
-import org.drools.planner.core.heuristic.selector.AbstractSelector;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import java.util.Iterator;
 
-/**
- * Abstract superclass for {@link ValueSelector}.
- * @see ValueSelector
- */
-public abstract class AbstractValueSelector extends AbstractSelector implements ValueSelector {
+public class IteratorToValueIteratorBridge extends EntityIgnoringValueIterator {
+
+    private final Iterator<Object> iterator;
+
+    public IteratorToValueIteratorBridge(Iterator<Object> iterator) {
+        this.iterator = iterator;
+    }
+
+    public boolean hasNext() {
+        return iterator.hasNext();
+    }
+
+    public Object next() {
+        return iterator.next();
+    }
 
 }
