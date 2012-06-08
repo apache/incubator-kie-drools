@@ -107,7 +107,8 @@ public class ValueSelectorConfig extends SelectorConfig {
                 inheritedResolvedSelectionOrder);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && selectionProbabilityWeightFactoryClass == null;
-        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.JUST_IN_TIME : cacheType;
+        // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.PHASE : cacheType;
         ValueSelector valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
                 resolvedCacheType);
 
