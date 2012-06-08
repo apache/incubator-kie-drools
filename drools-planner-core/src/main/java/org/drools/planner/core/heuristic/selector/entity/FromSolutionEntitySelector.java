@@ -124,7 +124,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     public Iterator<Object> iterator() {
         if (!randomSelection) {
-            return cachedEntityList.iterator(); // TODO Bugged if going from PHASE parent to STEP caching
+            return cachedEntityList.iterator();
         } else {
             return new Iterator<Object>() {
                 public boolean hasNext() {
