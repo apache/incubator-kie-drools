@@ -26,6 +26,9 @@ import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.generic.GenericChangeMove;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class ChangeMoveSelector extends GenericMoveSelector {
 
@@ -50,6 +53,52 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         if (cacheType != SelectionCacheType.JUST_IN_TIME) {
             throw new UnsupportedOperationException(); // TODO FIXME
         }
+    }
+
+    // ************************************************************************
+    // Cache lifecycle methods
+    // ************************************************************************
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        entitySelector.solvingStarted(solverScope);
+        valueSelector.solvingStarted(solverScope);
+    }
+
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+        super.phaseStarted(solverPhaseScope);
+        entitySelector.phaseStarted(solverPhaseScope);
+        valueSelector.phaseStarted(solverPhaseScope);
+    }
+
+    @Override
+    public void stepStarted(AbstractStepScope stepScope) {
+        super.stepStarted(stepScope);
+        entitySelector.stepStarted(stepScope);
+        valueSelector.stepStarted(stepScope);
+    }
+
+    @Override
+    public void stepEnded(AbstractStepScope stepScope) {
+        super.stepEnded(stepScope);
+        entitySelector.stepEnded(stepScope);
+        valueSelector.stepEnded(stepScope);
+    }
+
+    @Override
+    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+        super.phaseEnded(solverPhaseScope);
+        entitySelector.phaseEnded(solverPhaseScope);
+        valueSelector.phaseEnded(solverPhaseScope);
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        entitySelector.solvingEnded(solverScope);
+        valueSelector.solvingEnded(solverScope);
     }
 
     // ************************************************************************
@@ -88,7 +137,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             entityIterator = entitySelector.iterator();
             valueIterator = valueSelector.iterator();
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
-            if (!entityIterator.hasNext() || valueIterator.hasNext()) {
+            if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingMove = null;
             } else {
                 entity = entityIterator.next();
@@ -138,7 +187,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             entityIterator = entitySelector.iterator();
             valueIterator = valueSelector.iterator();
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
-            if (!entityIterator.hasNext() || valueIterator.hasNext()) {
+            if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingMove = null;
             } else {
                 createUpcomingMove();
