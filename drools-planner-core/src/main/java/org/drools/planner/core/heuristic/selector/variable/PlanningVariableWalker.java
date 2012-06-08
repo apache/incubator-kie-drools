@@ -159,7 +159,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
                     moveIteratorIsFirst = false;
                 } else {
                     if (!moveIterator.hasNext()) {
-                        // TODO the algorithms should be able to cope with that. Mind the use of ..walkerList.get(j)
+                        // TODO the algorithms should be able to cope with that. Mind the use of .walkerList.get(j)
                         throw new IllegalStateException("The planning entity class ("
                                 + planningEntityDescriptor.getPlanningEntityClass() + ") for planning variable ("
                                 + planningValueWalker.getPlanningVariableDescriptor().getVariableName()
