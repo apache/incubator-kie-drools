@@ -38,14 +38,13 @@ public class UnionMoveSelectorTest {
 
     @Test
     public void originSelection() {
-        UnionMoveSelector moveSelector = new UnionMoveSelector();
-        moveSelector.setRandomSelection(false);
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
         childMoveSelectorList.add(new DummyMoveSelector(
                 Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"))));
         childMoveSelectorList.add(new DummyMoveSelector(
                 Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5"))));
-        moveSelector.setChildMoveSelectorList(childMoveSelectorList);
+        UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList);
+        moveSelector.setRandomSelection(false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
@@ -79,8 +78,6 @@ public class UnionMoveSelectorTest {
 
     @Test
     public void randomSelection() {
-        UnionMoveSelector moveSelector = new UnionMoveSelector();
-        moveSelector.setRandomSelection(true);
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
         childMoveSelectorList.add(new DummyMoveSelector(
                 Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"))));
@@ -88,7 +85,8 @@ public class UnionMoveSelectorTest {
         childMoveSelectorList.add(new DummyMoveSelector(
                 Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5"))));
                 // TODO probabilityWeight = 20L
-        moveSelector.setChildMoveSelectorList(childMoveSelectorList);
+        UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList);
+        moveSelector.setRandomSelection(true);
 
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextInt(1020)).thenReturn(1, 1019, 1000, 0, 999);

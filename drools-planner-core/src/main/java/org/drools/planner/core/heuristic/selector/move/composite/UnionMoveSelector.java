@@ -39,6 +39,10 @@ import org.drools.planner.core.util.RandomUtils;
  */
 public class UnionMoveSelector extends CompositeMoveSelector {
 
+    public UnionMoveSelector(List<MoveSelector> childMoveSelectorList) {
+        super(childMoveSelectorList);
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

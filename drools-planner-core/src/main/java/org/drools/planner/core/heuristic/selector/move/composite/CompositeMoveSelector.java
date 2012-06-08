@@ -29,16 +29,12 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
  */
 public abstract class CompositeMoveSelector extends AbstractMoveSelector {
 
-    protected List<MoveSelector> childMoveSelectorList;
+    protected final List<MoveSelector> childMoveSelectorList;
     protected boolean randomSelection = false;
 
     protected Random workingRandom = null;
 
-    public List<MoveSelector> getChildMoveSelectorList() {
-        return childMoveSelectorList;
-    }
-
-    public void setChildMoveSelectorList(List<MoveSelector> childMoveSelectorList) {
+    protected CompositeMoveSelector(List<MoveSelector> childMoveSelectorList) {
         this.childMoveSelectorList = childMoveSelectorList;
     }
 
