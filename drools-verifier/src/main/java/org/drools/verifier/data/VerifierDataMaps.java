@@ -28,17 +28,17 @@ class VerifierDataMaps
 
     private Map<VerifierComponentType, Map<String, VerifierComponent>> all = new TreeMap<VerifierComponentType, Map<String, VerifierComponent>>();
 
-    private Map<String, RulePackage> packagesByName = new TreeMap<String, RulePackage>();
-    private Map<String, ObjectType> objectTypesByFullName = new TreeMap<String, ObjectType>();
-    private Map<String, Field> fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>();
+    private Map<String, RulePackage> packagesByName = new TreeMap<String, RulePackage>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, ObjectType> objectTypesByFullName = new TreeMap<String, ObjectType>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, Field> fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>(STRING_NULL_SAFE_COMPARATOR);
     private Multimap<String, Field> fieldsByObjectTypeId = TreeMultimap.create();
     private Multimap<String, Pattern> patternsByObjectTypeId = TreeMultimap.create();
     private Multimap<String, Pattern> patternsByRuleName = TreeMultimap.create();
     private Multimap<String, Restriction> restrictionsByFieldId = TreeMultimap.create();
-    private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<String, Variable>();
-    private Map<String, EntryPoint> entryPointsByEntryId = new TreeMap<String, EntryPoint>();
-    private Map<String, VerifierRule> rulesByName = new TreeMap<String, VerifierRule>();
-    private Map<String, Import> importsByName = new TreeMap<String, Import>();
+    private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<String, Variable>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, EntryPoint> entryPointsByEntryId = new TreeMap<String, EntryPoint>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, VerifierRule> rulesByName = new TreeMap<String, VerifierRule>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, Import> importsByName = new TreeMap<String, Import>(STRING_NULL_SAFE_COMPARATOR);
     private Multimap<String, VerifierRule> rulesByCategory = TreeMultimap.create();
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
@@ -232,5 +232,13 @@ class VerifierDataMaps
         }
 
         return null;
+    }
+
+    private static final NullSafeComparator<String> STRING_NULL_SAFE_COMPARATOR = new NullSafeComparator<String>();
+
+    public static class NullSafeComparator<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T o1, T o2) {
+            return o1 == null ? (o2 == null ? 0 : -1) : (o2 == null ? 1 : o1.compareTo(o2));
+        }
     }
 }
