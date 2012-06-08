@@ -117,6 +117,10 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 		this.action = action;
 	}
 
+    public void setSession(KnowledgeRuntime session) {
+    	this.session = session;
+    }
+    
     public void connect() {
     	if (!initialized) {
 	        if (client == null) {
