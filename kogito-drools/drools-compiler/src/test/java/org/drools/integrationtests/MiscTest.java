@@ -168,6 +168,7 @@ import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.Globals;
@@ -11082,5 +11083,54 @@ public class MiscTest extends CommonTestMethodBase {
         public int get3() {
             return 3;
         }
+    }
+
+    @Test
+    public void testFromWithStrictModeOff() {
+        // JBRULES-3533
+        String str =
+                "import java.util.Map;\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"LowerCaseFrom\"\n" +
+                "when\n"+
+                "   Map($valOne : this['keyOne'] !=null)\n" +
+                "   $lowerValue : String() from $valOne.toLowerCase()\n" +
+                "then\n" +
+                "   System.out.println( $valOne.toLowerCase() );\n" +
+                "end\n";
+
+        PackageBuilderConfiguration pkgBuilderCfg = new PackageBuilderConfiguration();
+        MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
+        mvelConf.setStrict(false);
+        mvelConf.setLangLevel(5);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(pkgBuilderCfg, str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Map<String,String> testMap = new HashMap<String,String>();
+        testMap.put("keyOne", "valone");
+        testMap.put("valTwo", "valTwo");
+        ksession.insert(testMap);
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testFromWithStrictModeOn() {
+        // JBRULES-3533
+        String str =
+                "import java.util.Map;\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"LowerCaseFrom\"\n" +
+                "when\n"+
+                "   Map($valOne : this['keyOne'] !=null)\n" +
+                "   $lowerValue : String() from $valOne.toLowerCase()\n" +
+                "then\n" +
+                "   System.out.println( $valOne.toLowerCase() );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        assertTrue( kbuilder.hasErrors() );
     }
 }
