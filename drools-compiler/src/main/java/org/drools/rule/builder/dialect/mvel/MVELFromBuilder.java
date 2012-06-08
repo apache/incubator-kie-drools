@@ -59,14 +59,18 @@ public class MVELFromBuilder
     public RuleConditionElement build(final RuleBuildContext context,
                                       final BaseDescr descr,
                                       final Pattern prefixPattern) {
+        // This builder is re-usable in other dialects, so specify by name
+        MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
+        boolean typeSafe = context.isTypesafe();
+        if (!dialect.isStrictMode()) {
+            context.setTypesafe(false);
+        }
+
         final FromDescr fromDescr = (FromDescr) descr;
 
         final MVELExprDescr expr = (MVELExprDescr) fromDescr.getDataSource();
         From from = null;
         try {
-            // This builder is re-usable in other dialects, so specify by name
-            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-            
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
 
             String text = (String) expr.getText();
@@ -116,6 +120,9 @@ public class MVELFromBuilder
                                                           null,
                                                           "Unable to build expression for 'from' : " + e.getMessage() + " '" + expr.getText() + "'" ) );
             return null;
+
+        } finally {
+            context.setTypesafe( typeSafe );
         }
 
         return from;
