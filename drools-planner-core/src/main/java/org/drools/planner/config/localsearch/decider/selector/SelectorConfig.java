@@ -29,6 +29,7 @@ import org.drools.planner.core.move.factory.MoveFactory;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("selector")
+@Deprecated
 public class SelectorConfig {
 
     @XStreamImplicit(itemFieldName = "selector")
