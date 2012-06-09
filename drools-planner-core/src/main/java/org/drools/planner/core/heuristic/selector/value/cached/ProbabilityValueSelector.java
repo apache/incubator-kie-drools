@@ -16,13 +16,12 @@
 
 package org.drools.planner.core.heuristic.selector.value.cached;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
@@ -55,8 +54,7 @@ public class ProbabilityValueSelector extends CachingValueSelector {
         workingRandom = solverPhaseScope.getWorkingRandom();
     }
 
-    @Override
-    protected void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityMap = new TreeMap<Double, Object>();
         Solution solution = solverScope.getWorkingSolution();
         double probabilityWeightOffset = 0L;
@@ -69,8 +67,7 @@ public class ProbabilityValueSelector extends CachingValueSelector {
         probabilityWeightTotal = probabilityWeightOffset;
     }
 
-    @Override
-    protected void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(DefaultSolverScope solverScope) {
         probabilityWeightTotal = -1.0;
     }
 

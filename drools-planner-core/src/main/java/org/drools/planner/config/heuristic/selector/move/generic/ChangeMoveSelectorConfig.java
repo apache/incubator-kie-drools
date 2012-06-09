@@ -16,22 +16,15 @@
 
 package org.drools.planner.config.heuristic.selector.move.generic;
 
-import java.util.Collection;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
-import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.PlanningEntitySelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.entity.cached.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;

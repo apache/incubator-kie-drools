@@ -18,7 +18,7 @@ package org.drools.planner.core.heuristic.selector.move.cached;
 
 import java.util.Collections;
 
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class ShufflingMoveSelector extends CachingMoveSelector {

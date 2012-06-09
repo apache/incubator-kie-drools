@@ -21,7 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.cached.CachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
@@ -35,7 +37,7 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  * <p/>
  * Keep this code in sync with {@link CachingEntitySelector}.
  */
-public class CachingMoveSelector extends AbstractMoveSelector {
+public class CachingMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {
 
     protected final SelectionCacheType cacheType;
     protected MoveSelector childMoveSelector;
@@ -50,6 +52,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
+        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     public MoveSelector getChildMoveSelector() {
@@ -64,59 +67,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
         }
     }
 
-    // ************************************************************************
-    // Cache lifecycle methods
-    // ************************************************************************
-
-    @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
-        super.solvingStarted(solverScope);
-        if (cacheType == SelectionCacheType.SOLVER) {
-            constructCache(solverScope);
-        }
-    }
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        if (cacheType == SelectionCacheType.PHASE) {
-            constructCache(solverPhaseScope.getSolverScope());
-        }
-    }
-
-    @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        if (cacheType == SelectionCacheType.STEP) {
-            constructCache(stepScope.getSolverPhaseScope().getSolverScope());
-        }
-    }
-
-    @Override
-    public void stepEnded(AbstractStepScope stepScope) {
-        super.stepEnded(stepScope);
-        if (cacheType == SelectionCacheType.STEP) {
-            disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
-        }
-    }
-
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
-        if (cacheType == SelectionCacheType.PHASE) {
-            disposeCache(solverPhaseScope.getSolverScope());
-        }
-    }
-
-    @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
-        super.solvingEnded(solverScope);
-        if (cacheType == SelectionCacheType.SOLVER) {
-            disposeCache(solverScope);
-        }
-    }
-
-    protected void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(DefaultSolverScope solverScope) {
         cachedSize = childMoveSelector.getSize();
         if (cachedSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The moveSelector (" + this + ") has a childMoveSelector ("
@@ -132,7 +83,7 @@ public class CachingMoveSelector extends AbstractMoveSelector {
         // Hook method
     }
 
-    protected void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(DefaultSolverScope solverScope) {
         cachedSize = -1L;
         cachedMoveList = null;
     }

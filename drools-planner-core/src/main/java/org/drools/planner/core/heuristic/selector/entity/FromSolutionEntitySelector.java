@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -29,7 +31,7 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 /**
  * This is the common {@link EntitySelector} implementation.
  */
-public class FromSolutionEntitySelector extends AbstractEntitySelector {
+public class FromSolutionEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
 
     protected final PlanningEntityDescriptor entityDescriptor;
     protected final boolean randomSelection;
@@ -49,6 +51,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
+        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     public PlanningEntityDescriptor getEntityDescriptor() {
@@ -60,60 +63,22 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
-        super.solvingStarted(solverScope);
-        if (cacheType == SelectionCacheType.SOLVER) {
-            constructCache(solverScope);
-        }
-    }
-
-    @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseStarted(solverPhaseScope);
-        if (cacheType == SelectionCacheType.PHASE) {
-            constructCache(solverPhaseScope.getSolverScope());
-        }
         workingRandom = solverPhaseScope.getWorkingRandom();
-    }
-
-    @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        if (cacheType == SelectionCacheType.STEP) {
-            constructCache(stepScope.getSolverPhaseScope().getSolverScope());
-        }
-    }
-
-    @Override
-    public void stepEnded(AbstractStepScope stepScope) {
-        super.stepEnded(stepScope);
-        if (cacheType == SelectionCacheType.STEP) {
-            disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
-        }
     }
 
     @Override
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseEnded(solverPhaseScope);
-        if (cacheType == SelectionCacheType.PHASE) {
-            disposeCache(solverPhaseScope.getSolverScope());
-        }
         workingRandom = null;
     }
 
-    @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
-        super.solvingEnded(solverScope);
-        if (cacheType == SelectionCacheType.SOLVER) {
-            disposeCache(solverScope);
-        }
-    }
-
-    protected void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityList = entityDescriptor.extractEntities(solverScope.getWorkingSolution());
     }
 
-    protected void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(DefaultSolverScope solverScope) {
         cachedEntityList = null;
     }
 

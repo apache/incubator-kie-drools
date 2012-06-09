@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.common;
+package org.drools.planner.core.heuristic.selector.cached;
 
 public enum SelectionCacheType {
     JUST_IN_TIME,

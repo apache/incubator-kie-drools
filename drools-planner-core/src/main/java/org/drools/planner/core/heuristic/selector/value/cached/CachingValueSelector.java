@@ -17,7 +17,9 @@
 package org.drools.planner.core.heuristic.selector.value.cached;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.cached.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
@@ -30,7 +32,7 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  * <p/>
  * Keep this code in sync with {@link CachingMoveSelector}.
  */
-public abstract class CachingValueSelector extends AbstractValueSelector {
+public abstract class CachingValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
 
     protected final SelectionCacheType cacheType;
     protected ValueSelector childValueSelector;
@@ -42,6 +44,7 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
+        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     public ValueSelector getChildValueSelector() {
@@ -56,62 +59,6 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
         }
         solverPhaseLifecycleSupport.addEventListener(childValueSelector);
     }
-
-    // ************************************************************************
-    // Cache lifecycle methods
-    // ************************************************************************
-
-    @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
-        super.solvingStarted(solverScope);
-        if (cacheType == SelectionCacheType.SOLVER) {
-            constructCache(solverScope);
-        }
-    }
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        if (cacheType == SelectionCacheType.PHASE) {
-            constructCache(solverPhaseScope.getSolverScope());
-        }
-    }
-
-    @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        if (cacheType == SelectionCacheType.STEP) {
-            constructCache(stepScope.getSolverPhaseScope().getSolverScope());
-        }
-    }
-
-    @Override
-    public void stepEnded(AbstractStepScope stepScope) {
-        super.stepEnded(stepScope);
-        if (cacheType == SelectionCacheType.STEP) {
-            disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
-        }
-    }
-
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
-        if (cacheType == SelectionCacheType.PHASE) {
-            disposeCache(solverPhaseScope.getSolverScope());
-        }
-    }
-
-    @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
-        super.solvingEnded(solverScope);
-        if (cacheType == SelectionCacheType.SOLVER) {
-            disposeCache(solverScope);
-        }
-    }
-
-    protected abstract void constructCache(DefaultSolverScope solverScope);
-
-    protected abstract void disposeCache(DefaultSolverScope solverScope);
 
     // ************************************************************************
     // Worker methods

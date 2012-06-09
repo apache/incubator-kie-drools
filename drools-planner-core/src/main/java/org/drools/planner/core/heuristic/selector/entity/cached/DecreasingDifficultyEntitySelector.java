@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.entity.PlanningEntitySorter;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 // TODO Refactor to general purpose SortingEntitySelector
@@ -52,16 +52,14 @@ public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
     // Worker methods
     // ************************************************************************
 
-    @Override
-    protected void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childEntitySelector.getSize();
         cachedEntityList = new ArrayList<Object>((int) childSize);
         CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
         planningEntitySorter.sortDifficultyDescending(solverScope.getWorkingSolution(), cachedEntityList);
     }
 
-    @Override
-    protected void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(DefaultSolverScope solverScope) {
         cachedEntityList = null;
     }
 

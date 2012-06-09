@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class FilteringEntitySelector extends CachingEntitySelector {
@@ -37,13 +37,13 @@ public class FilteringEntitySelector extends CachingEntitySelector {
     // Cache lifecycle methods
     // ************************************************************************
 
-    protected void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childEntitySelector.getSize();
         cachedEntityList = new ArrayList<Object>((int) childSize);
         CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
     }
 
-    protected void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(DefaultSolverScope solverScope) {
         cachedEntityList = null;
     }
 

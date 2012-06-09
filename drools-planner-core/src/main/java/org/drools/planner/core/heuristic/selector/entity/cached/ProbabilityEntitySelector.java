@@ -22,7 +22,7 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -53,8 +53,7 @@ public class ProbabilityEntitySelector extends CachingEntitySelector {
         workingRandom = solverPhaseScope.getWorkingRandom();
     }
 
-    @Override
-    protected void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityMap = new TreeMap<Double, Object>();
         Solution solution = solverScope.getWorkingSolution();
         double probabilityWeightOffset = 0L;
@@ -67,8 +66,7 @@ public class ProbabilityEntitySelector extends CachingEntitySelector {
         probabilityWeightTotal = probabilityWeightOffset;
     }
 
-    @Override
-    protected void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(DefaultSolverScope solverScope) {
         probabilityWeightTotal = -1.0;
     }
 
