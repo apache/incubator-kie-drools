@@ -53,52 +53,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         if (cacheType != SelectionCacheType.JUST_IN_TIME) {
             throw new UnsupportedOperationException(); // TODO FIXME
         }
-    }
-
-    // ************************************************************************
-    // Cache lifecycle methods
-    // ************************************************************************
-
-    @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
-        super.solvingStarted(solverScope);
-        entitySelector.solvingStarted(solverScope);
-        valueSelector.solvingStarted(solverScope);
-    }
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        entitySelector.phaseStarted(solverPhaseScope);
-        valueSelector.phaseStarted(solverPhaseScope);
-    }
-
-    @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        entitySelector.stepStarted(stepScope);
-        valueSelector.stepStarted(stepScope);
-    }
-
-    @Override
-    public void stepEnded(AbstractStepScope stepScope) {
-        super.stepEnded(stepScope);
-        entitySelector.stepEnded(stepScope);
-        valueSelector.stepEnded(stepScope);
-    }
-
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
-        entitySelector.phaseEnded(solverPhaseScope);
-        valueSelector.phaseEnded(solverPhaseScope);
-    }
-
-    @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
-        super.solvingEnded(solverScope);
-        entitySelector.solvingEnded(solverScope);
-        valueSelector.solvingEnded(solverScope);
+        solverPhaseLifecycleSupport.addEventListener(entitySelector);
+        solverPhaseLifecycleSupport.addEventListener(valueSelector);
     }
 
     // ************************************************************************

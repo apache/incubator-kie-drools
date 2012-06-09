@@ -54,6 +54,7 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
             throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") has neverEnding ("
                     + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
         }
+        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     // ************************************************************************
@@ -63,7 +64,6 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
-        childValueSelector.solvingStarted(solverScope);
         if (cacheType == SelectionCacheType.SOLVER) {
             constructCache(solverScope);
         }
@@ -72,7 +72,6 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseStarted(solverPhaseScope);
-        childValueSelector.phaseStarted(solverPhaseScope);
         if (cacheType == SelectionCacheType.PHASE) {
             constructCache(solverPhaseScope.getSolverScope());
         }
@@ -81,7 +80,6 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
     @Override
     public void stepStarted(AbstractStepScope stepScope) {
         super.stepStarted(stepScope);
-        childValueSelector.stepStarted(stepScope);
         if (cacheType == SelectionCacheType.STEP) {
             constructCache(stepScope.getSolverPhaseScope().getSolverScope());
         }
@@ -90,7 +88,6 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
         super.stepEnded(stepScope);
-        childValueSelector.stepEnded(stepScope);
         if (cacheType == SelectionCacheType.STEP) {
             disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
         }
@@ -99,7 +96,6 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
     @Override
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         super.phaseEnded(solverPhaseScope);
-        childValueSelector.phaseEnded(solverPhaseScope);
         if (cacheType == SelectionCacheType.PHASE) {
             disposeCache(solverPhaseScope.getSolverScope());
         }
@@ -108,7 +104,6 @@ public abstract class CachingValueSelector extends AbstractValueSelector {
     @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         super.solvingEnded(solverScope);
-        childValueSelector.solvingEnded(solverScope);
         if (cacheType == SelectionCacheType.SOLVER) {
             disposeCache(solverScope);
         }

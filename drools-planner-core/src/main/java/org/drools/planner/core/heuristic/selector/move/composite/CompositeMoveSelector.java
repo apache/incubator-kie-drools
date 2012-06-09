@@ -36,6 +36,9 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
 
     protected CompositeMoveSelector(List<MoveSelector> childMoveSelectorList) {
         this.childMoveSelectorList = childMoveSelectorList;
+        for (MoveSelector childMoveSelector : childMoveSelectorList) {
+            solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
+        }
     }
 
     public boolean isRandomSelection() {

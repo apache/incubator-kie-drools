@@ -16,12 +16,41 @@
 
 package org.drools.planner.core.heuristic.selector;
 
-import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
+import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * Abstract superclass for {@link Selector}.
  * @see Selector
  */
-public abstract class AbstractSelector extends SolverPhaseLifecycleListenerAdapter implements Selector {
+public abstract class AbstractSelector implements Selector {
+
+    protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
+
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
+    }
+
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
+    }
+
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+        solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
+    }
+
+    public void stepStarted(AbstractStepScope stepScope) {
+        solverPhaseLifecycleSupport.fireStepStarted(stepScope);
+    }
+
+    public void stepEnded(AbstractStepScope stepScope) {
+        solverPhaseLifecycleSupport.fireStepEnded(stepScope);
+    }
+
+    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+        solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
+    }
 
 }
