@@ -42,6 +42,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         this.cacheType = cacheType;
         PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         if (variableDescriptor.isChained()) {
+            // TODO support chained
             throw new UnsupportedOperationException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ")'s planningVariableDescriptor (" + variableDescriptor.getVariableName()
