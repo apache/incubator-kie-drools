@@ -30,37 +30,16 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 public abstract class CompositeMoveSelector extends AbstractMoveSelector {
 
     protected final List<MoveSelector> childMoveSelectorList;
-    protected boolean randomSelection = false;
+    protected final boolean randomSelection;
 
     protected Random workingRandom = null;
 
-    protected CompositeMoveSelector(List<MoveSelector> childMoveSelectorList) {
+    protected CompositeMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
         this.childMoveSelectorList = childMoveSelectorList;
+        this.randomSelection = randomSelection;
         for (MoveSelector childMoveSelector : childMoveSelectorList) {
             solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
         }
-    }
-
-    public boolean isRandomSelection() {
-        return randomSelection;
-    }
-
-    public void setRandomSelection(boolean randomSelection) {
-        this.randomSelection = randomSelection;
-    }
-
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        validate();
-        workingRandom = solverPhaseScope.getWorkingRandom();
-    }
-
-    protected void validate() {
         if (!randomSelection && !childMoveSelectorList.isEmpty()) {
             // Only the last childMoveSelector can be neverEnding
             for (MoveSelector childMoveSelector : childMoveSelectorList.subList(0, childMoveSelectorList.size() - 1)) {
@@ -72,6 +51,16 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
                 }
             }
         }
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+        super.phaseStarted(solverPhaseScope);
+        workingRandom = solverPhaseScope.getWorkingRandom();
     }
 
     public boolean isContinuous() {

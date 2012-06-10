@@ -40,8 +40,8 @@ import org.drools.planner.core.util.RandomUtils;
  */
 public class CartesianProductMoveSelector extends CompositeMoveSelector {
 
-    public CartesianProductMoveSelector(List<MoveSelector> childMoveSelectorList) {
-        super(childMoveSelectorList);
+    public CartesianProductMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
+        super(childMoveSelectorList, randomSelection);
     }
 
     // ************************************************************************

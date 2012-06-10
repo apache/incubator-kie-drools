@@ -39,8 +39,8 @@ import org.drools.planner.core.util.RandomUtils;
  */
 public class UnionMoveSelector extends CompositeMoveSelector {
 
-    public UnionMoveSelector(List<MoveSelector> childMoveSelectorList) {
-        super(childMoveSelectorList);
+    public UnionMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
+        super(childMoveSelectorList, randomSelection);
     }
 
     // ************************************************************************
@@ -128,9 +128,8 @@ public class UnionMoveSelector extends CompositeMoveSelector {
                 Iterator<Move> moveIterator = moveSelectorEntry.getKey();
                 MoveSelector moveSelector = moveSelectorEntry.getValue();
                 moveIteratorMap.put(probabilityWeightOffset, moveIterator);
-                throw new UnsupportedOperationException();
-                // TODO FIXME
-                // probabilityWeightOffset += moveSelector.getRandomProbabilityWeight();
+                // TODO FIXME, use += moveSelector.getRandomProbabilityWeight();
+                probabilityWeightOffset += 1L;
             }
             probabilityWeightTotal = probabilityWeightOffset;
         }
