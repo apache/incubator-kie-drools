@@ -11122,6 +11122,45 @@ public class MiscTest extends CommonTestMethodBase {
     	}
     }
     
+    @Test
+    public void testRHSClone() {
+    	
+    	try{
+	        String str = "package com.sample\n"+
+	        		 
+	        		"import com.sample.DroolsTest.Message;\n"+
+	        		"import java.util.Map;\n"+
+	        		"dialect \"mvel\"\n"+
+	        		"rule \"RHSClone\"\n"+
+	        		    "when\n"+
+	        		    	"Map($valOne : this['keyOne'] !=null)\n"+
+	        		    	
+	        		    "then\n"+
+	        		        "System.out.println( $valOne.clone() );\n"+
+	        		"end\n";
+	        
+	        PackageBuilderConfiguration pkgBuilderCfg = new PackageBuilderConfiguration();
+	        MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
+	        mvelConf.setStrict(false);
+	        mvelConf.setLangLevel(5);
+	        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pkgBuilderCfg);
+	        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),ResourceType.DRL );
+	        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+	        if (errors.size() > 0) {
+	            for (KnowledgeBuilderError error: errors) {
+	                System.err.println(error);
+	            }
+	            fail("Could not parse knowledge");
+	            
+	        }
+	       
+	        assert(true);
+    	}catch(Exception e){
+    		e.printStackTrace();
+    		fail(e.getMessage());
+    	}
+    }
+    
     public static class MapContainerBean {
         private final Map<Integer, String> map = new HashMap<Integer, String>();
 
