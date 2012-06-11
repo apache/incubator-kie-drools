@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskServiceSession;
