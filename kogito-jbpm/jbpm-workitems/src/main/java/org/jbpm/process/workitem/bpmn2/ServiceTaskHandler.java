@@ -115,7 +115,7 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
                                      output.put("Result", result[0]);
                                    }
                                }
-                               manager.completeWorkItem(workItemId, output);
+                               ksession.getWorkItemManager().completeWorkItem(workItemId, output);
                            } catch (Exception e) {
                               logger.error("Error encountered while invoking ws operation asynchronously ", e);
                            }
