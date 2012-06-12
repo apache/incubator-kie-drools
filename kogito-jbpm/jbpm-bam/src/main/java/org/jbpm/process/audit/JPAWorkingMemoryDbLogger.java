@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.NotSupportedException;
@@ -187,7 +188,15 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         boolean newTx = false;
         UserTransaction ut = null;
         try { 
-            ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        	InitialContext ctx = new InitialContext();
+        	try {
+        		ut = (UserTransaction) ctx.lookup( "java:comp/UserTransaction" );
+        	} catch (NameNotFoundException e) {
+        		// java:comp/UserTransaction is not available on JbossAS 7 for threads that are not managed by server
+        		// for instance when task is completed (as that creates a application thread on response)
+        		// so try to use the one that is globally accessible
+        		ut = (UserTransaction) ctx.lookup( "java:jboss/UserTransaction" );
+			}
             if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
                 ut.begin();
                 newTx = true;
