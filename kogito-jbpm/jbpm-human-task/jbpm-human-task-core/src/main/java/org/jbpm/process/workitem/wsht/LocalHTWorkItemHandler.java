@@ -22,29 +22,38 @@ import org.jbpm.task.utils.OnErrorAction;
 
 public class LocalHTWorkItemHandler extends GenericHTWorkItemHandler{
 
+    private boolean registeredTaskEvents = false;
     public LocalHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
+        this.setLocal(true);
     }
     
     public LocalHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
         super(client, session, null);
+        this.setLocal(true);
     }
 
     public LocalHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
+        this.setLocal(true);
     }
     
     public LocalHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action) {
         super(client, session, action);
+        this.setLocal(true);
     }
     
     public LocalHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
         super(client, session, action, classLoader);
+        this.setLocal(true);
     }
   
     @Override
     public void connect(){
-        registerTaskEvents();
+        if(!registeredTaskEvents){
+            registerTaskEvents();
+            this.registeredTaskEvents = true;
+        }
     }
     
 }

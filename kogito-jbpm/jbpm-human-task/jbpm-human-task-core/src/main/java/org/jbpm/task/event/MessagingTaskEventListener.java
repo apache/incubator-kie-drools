@@ -16,6 +16,7 @@
 
 package org.jbpm.task.event;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,9 +35,11 @@ public class MessagingTaskEventListener implements TaskEventListener {
     
     public void taskClaimed(TaskClaimedEvent event) {        
         EventKey key = new TaskEventKey(TaskClaimedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = keys.getTargets( key );
-        if ( targets == null ){
+        List<EventTriggerTransport> targets = null;
+        if(keys.getTargets( key ) == null){
             return;
+        }else{
+            targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key )); 
         }
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
@@ -53,19 +56,24 @@ public class MessagingTaskEventListener implements TaskEventListener {
 
     public void taskCompleted(TaskCompletedEvent event) {
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = keys.getTargets( key );
-        if ( targets == null ){
+        List<EventTriggerTransport> targets = null;
+        if ( keys.getTargets( key ) == null ){
         	key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        	targets = keys.getTargets( key );
-        	if (targets == null) {
+                if(keys.getTargets( key ) != null){
+                    targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+                    if (targets == null) {
         		return;
-        	}
+                    }
+                }
         } else {
-        	key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        	List<EventTriggerTransport> additionalTargets = keys.getTargets( key );
-        	if (additionalTargets != null) {
-        		targets.addAll(additionalTargets);
-        	}
+        	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+                key = new TaskEventKey(TaskCompletedEvent.class, -1);
+                if(keys.getTargets( key ) != null){
+                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+                    if (additionalTargets != null) {
+                            targets.addAll(additionalTargets);
+                    }
+                }
         }
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
@@ -80,21 +88,26 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }   
     }
 
-	public void taskFailed(TaskFailedEvent event) {
+    public void taskFailed(TaskFailedEvent event) {
         EventKey key = new TaskEventKey(TaskFailedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = keys.getTargets( key );
-        if ( targets == null ){
+        List<EventTriggerTransport> targets = null;
+        if ( keys.getTargets( key ) == null ){
         	key = new TaskEventKey(TaskFailedEvent.class, -1);
-        	targets = keys.getTargets( key );
-        	if (targets == null) {
-        		return;
-        	}
+                if(keys.getTargets( key ) != null){
+                    targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+                    if (targets == null) {
+                            return;
+                    }
+                }
         } else {
+                targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
         	key = new TaskEventKey(TaskFailedEvent.class, -1);
-        	List<EventTriggerTransport> additionalTargets = keys.getTargets( key );
-        	if (additionalTargets != null) {
-        		targets.addAll(additionalTargets);
-        	}
+                if(keys.getTargets( key ) != null){
+                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+                    if (additionalTargets != null) {
+                            targets.addAll(additionalTargets);
+                    }
+                }
         }
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
@@ -109,21 +122,26 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }
 	}
 
-	public void taskSkipped(TaskSkippedEvent event) {
+    public void taskSkipped(TaskSkippedEvent event) {
         EventKey key = new TaskEventKey(TaskSkippedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = keys.getTargets( key );
-        if ( targets == null ){
+        List<EventTriggerTransport> targets = null;
+        if ( keys.getTargets( key ) == null ){
         	key = new TaskEventKey(TaskSkippedEvent.class, -1);
-        	targets = keys.getTargets( key );
-        	if (targets == null) {
-        		return;
-        	}
+                if(keys.getTargets( key ) != null){
+                    targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+                    if (targets == null) {
+                            return;
+                    }
+                }
         } else {
+                targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
         	key = new TaskEventKey(TaskSkippedEvent.class, -1);
-        	List<EventTriggerTransport> additionalTargets = keys.getTargets( key );
-        	if (additionalTargets != null) {
-        		targets.addAll(additionalTargets);
-        	}
+                if(keys.getTargets( key ) != null){
+                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+                    if (additionalTargets != null) {
+                            targets.addAll(additionalTargets);
+                    }
+                }
         }
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
