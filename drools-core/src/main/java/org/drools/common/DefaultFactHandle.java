@@ -192,6 +192,10 @@ public class DefaultFactHandle
     public String getExternalForm() {
         return toExternalForm();
     }
+
+    public void setExternalForm(String externalForm) {
+        createFromExternalFormat(externalForm);
+    }
     
     /**
      * @see Object
