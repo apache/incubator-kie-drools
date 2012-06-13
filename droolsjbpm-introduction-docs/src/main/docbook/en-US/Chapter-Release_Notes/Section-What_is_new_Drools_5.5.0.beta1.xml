@@ -89,6 +89,31 @@
         </mediaobject>
       </figure>
     </section>
+  
+    <section>
+        <title>Valid indicator for assets</title>
+        <para>A valid indicator has now been added to the asset lists as well as the asset editors. 
+        The indicator shows whether an asset is valid, invalid or if the validity of the asset is undetermined. 
+        For already existing assets the validity of the asset will remain undetermined until the next time either validation is run on the asset or the asset has been saved again</para>
+    
+        <figure>
+            <title>Indicator in asset list</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata align="center" fileref="images/Chapter-Release_Notes/valid_indicator.png" format="PNG"></imagedata>
+                </imageobject>
+            </mediaobject>
+        </figure>
+    
+        <figure>
+            <title>Toolbar indicator</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata align="center" fileref="images/Chapter-Release_Notes/toolbar_valid_indicator.png" format="PNG"></imagedata>
+                </imageobject>
+            </mediaobject>
+        </figure>
+    </section>
   </section>
 
   <section xml:id="releaseNotes_5.5.0.beta1_Planner">
