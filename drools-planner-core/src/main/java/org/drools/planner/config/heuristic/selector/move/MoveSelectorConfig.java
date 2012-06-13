@@ -34,8 +34,4 @@ public abstract class MoveSelectorConfig {
     public abstract MoveSelector buildMoveSelector(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, SelectionOrder inheritedResolvedSelectionOrder);
 
-    public void inherit(MoveSelectorConfig inheritedConfig) {
-        throw new UnsupportedOperationException(); // TODO FIXME
-    }
-
 }
