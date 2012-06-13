@@ -28,6 +28,7 @@ import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
+@Deprecated
 public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     private final PlanningVariableDescriptor planningVariableDescriptor;
