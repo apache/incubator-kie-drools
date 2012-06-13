@@ -27,6 +27,10 @@ import org.drools.planner.core.heuristic.selector.move.MoveSelector;
  */
 public abstract class MoveSelectorConfig {
 
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
     public abstract MoveSelector buildMoveSelector(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, SelectionOrder inheritedResolvedSelectionOrder);
 

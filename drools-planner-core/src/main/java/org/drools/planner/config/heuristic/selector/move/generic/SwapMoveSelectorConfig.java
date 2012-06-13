@@ -119,4 +119,9 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + leftEntitySelectorConfig + ", " + rightEntitySelectorConfig + ")";
+    }
+
 }

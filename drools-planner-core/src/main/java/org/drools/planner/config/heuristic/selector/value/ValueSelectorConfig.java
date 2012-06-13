@@ -155,4 +155,9 @@ public class ValueSelectorConfig extends SelectorConfig {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + planningVariableName + ")";
+    }
+
 }

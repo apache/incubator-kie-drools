@@ -25,4 +25,9 @@ import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
  */
 public abstract class SelectorConfig {
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "()";
+    }
+
 }

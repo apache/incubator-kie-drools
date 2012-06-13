@@ -153,4 +153,9 @@ public class EntitySelectorConfig extends SelectorConfig {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + planningEntityClass + ")";
+    }
+
 }

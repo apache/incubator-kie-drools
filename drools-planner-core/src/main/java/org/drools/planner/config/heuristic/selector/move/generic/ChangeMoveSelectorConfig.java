@@ -118,4 +118,9 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + entitySelectorConfig + ", " + valueSelectorConfig + ")";
+    }
+
 }
