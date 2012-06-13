@@ -37,8 +37,6 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
     protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
 
-    protected Random workingRandom = null;
-
     protected List<Object> cachedEntityList = null;
 
     public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor, boolean randomSelection,
@@ -61,18 +59,6 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        workingRandom = solverPhaseScope.getWorkingRandom();
-    }
-
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
-        workingRandom = null;
-    }
 
     public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityList = entityDescriptor.extractEntities(solverScope.getWorkingSolution());

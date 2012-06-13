@@ -37,8 +37,6 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
     protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
 
-    protected Random workingRandom = null;
-
     protected List<Object> cachedValueList = null;
 
     public FromSolutionPropertyValueSelector(PlanningVariableDescriptor variableDescriptor, boolean randomSelection,
@@ -61,18 +59,6 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        workingRandom = solverPhaseScope.getWorkingRandom();
-    }
-
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
-        workingRandom = null;
-    }
 
     public void constructCache(DefaultSolverScope solverScope) {
         cachedValueList = new ArrayList<Object>(

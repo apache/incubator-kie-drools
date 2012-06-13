@@ -32,8 +32,6 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
     protected final List<MoveSelector> childMoveSelectorList;
     protected final boolean randomSelection;
 
-    protected Random workingRandom = null;
-
     protected CompositeMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
         this.childMoveSelectorList = childMoveSelectorList;
         this.randomSelection = randomSelection;
@@ -56,12 +54,6 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        workingRandom = solverPhaseScope.getWorkingRandom();
-    }
 
     public boolean isContinuous() {
         for (MoveSelector moveSelector : childMoveSelectorList) {

@@ -16,6 +16,8 @@
 
 package org.drools.planner.core.heuristic.selector;
 
+import java.util.Random;
+
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -29,12 +31,16 @@ public abstract class AbstractSelector implements Selector {
 
     protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
 
+    protected Random workingRandom = null;
+
     public void solvingStarted(DefaultSolverScope solverScope) {
+        workingRandom = solverScope.getWorkingRandom();
         solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
         solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
+        workingRandom = null;
     }
 
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {

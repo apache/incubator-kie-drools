@@ -36,8 +36,6 @@ public class ProbabilityValueSelector extends CachingValueSelector {
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
-    protected Random workingRandom = null;
-
     public ProbabilityValueSelector(SelectionCacheType cacheType,
             PlanningValueSelectionProbabilityWeightFactory selectionProbabilityWeightFactory) {
         super(cacheType);
@@ -47,12 +45,6 @@ public class ProbabilityValueSelector extends CachingValueSelector {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        workingRandom = solverPhaseScope.getWorkingRandom();
-    }
 
     public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityMap = new TreeMap<Double, Object>();
