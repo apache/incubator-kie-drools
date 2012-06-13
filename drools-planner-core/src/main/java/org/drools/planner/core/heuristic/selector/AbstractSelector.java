@@ -38,11 +38,6 @@ public abstract class AbstractSelector implements Selector {
         solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
-    public void solvingEnded(DefaultSolverScope solverScope) {
-        solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
-        workingRandom = null;
-    }
-
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
     }
@@ -57,6 +52,11 @@ public abstract class AbstractSelector implements Selector {
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
+    }
+
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        solverPhaseLifecycleSupport.fireSolvingEnded(solverScope);
+        workingRandom = null;
     }
 
 }
