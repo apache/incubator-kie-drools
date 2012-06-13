@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>jbpm-gwt</artifactId>
+    <groupId>org.jbpm</groupId>
+    <version>5.4.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbpm-gwt-console-tomcat-integration</artifactId>
+  <name>jBPM :: Tomcat integration</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.apache.tomcat</groupId>
+  		<artifactId>catalina</artifactId>
+  		<version>6.0.32</version>
+  		<scope>provided</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>javax.security</groupId>
+  		<artifactId>jacc</artifactId>
+  		<version>1.0</version>
+  		<scope>provided</scope>
+  	</dependency>
+  </dependencies>
+</project>

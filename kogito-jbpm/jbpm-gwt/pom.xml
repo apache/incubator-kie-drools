@@ -23,6 +23,7 @@
     <module>jbpm-gwt-graph</module>
     <module>jbpm-gwt-console</module>
     <module>jbpm-gwt-console-server</module>
+    <module>jbpm-gwt-console-tomcat-integration</module>
   </modules>
 
   <dependencyManagement>
