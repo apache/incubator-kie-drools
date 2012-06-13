@@ -59,12 +59,11 @@ public class MessagingTaskEventListener implements TaskEventListener {
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
         	key = new TaskEventKey(TaskCompletedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (targets == null) {
-        		return;
-                    }
-                }
+        	if(keys.getTargets( key ) == null){
+            	return;
+            } else {
+            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+            }
         } else {
         	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
                 key = new TaskEventKey(TaskCompletedEvent.class, -1);
@@ -93,12 +92,11 @@ public class MessagingTaskEventListener implements TaskEventListener {
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
         	key = new TaskEventKey(TaskFailedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (targets == null) {
-                            return;
-                    }
-                }
+        	if(keys.getTargets( key ) == null){
+            	return;
+            } else {
+            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+            }
         } else {
                 targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
         	key = new TaskEventKey(TaskFailedEvent.class, -1);
@@ -127,12 +125,11 @@ public class MessagingTaskEventListener implements TaskEventListener {
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
         	key = new TaskEventKey(TaskSkippedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (targets == null) {
-                            return;
-                    }
-                }
+        	if(keys.getTargets( key ) == null){
+            	return;
+            } else {
+            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
+            }
         } else {
                 targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
         	key = new TaskEventKey(TaskSkippedEvent.class, -1);
