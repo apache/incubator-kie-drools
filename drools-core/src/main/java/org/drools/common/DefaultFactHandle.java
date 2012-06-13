@@ -203,6 +203,10 @@ public class DefaultFactHandle
         return toExternalForm();
     }
 
+    public void setExternalForm(String externalForm) {
+        createFromExternalFormat(externalForm);
+    }
+
     /**
      * @see Object
      */
