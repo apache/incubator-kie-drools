@@ -18,12 +18,11 @@ package org.jbpm.process.instance.impl;
 
 import org.drools.definition.process.Connection;
 import org.jbpm.workflow.core.Constraint;
-import org.jbpm.workflow.instance.node.SplitInstance;
+import org.jbpm.workflow.instance.NodeInstance;
 
 public interface ConstraintEvaluator extends Constraint {
     
-    // TODO: make this work for more than only splits
-    public boolean evaluate(SplitInstance instance,
+    public boolean evaluate(NodeInstance instance,
                             Connection connection,
                             Constraint constraint);
 }

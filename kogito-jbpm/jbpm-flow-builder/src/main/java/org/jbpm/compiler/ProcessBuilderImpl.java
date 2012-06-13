@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.compiler.ProcessLoadError;
+import org.drools.compiler.ReturnValueDescr;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
@@ -49,6 +51,7 @@ import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
+import org.jbpm.process.builder.MultiConditionalSequenceFlowNodeBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessNodeBuilder;
 import org.jbpm.process.builder.ProcessNodeBuilderRegistry;
@@ -62,11 +65,15 @@ import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
+import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.jbpm.process.instance.impl.RuleConstraintEvaluator;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ConstraintTrigger;
 import org.jbpm.workflow.core.node.EventNode;
@@ -225,6 +232,13 @@ public class ProcessBuilderImpl implements ProcessBuilder {
             if ( node instanceof ContextContainer ) {
                 buildContexts( (ContextContainer) node,
                                context );
+            }
+            
+            if (System.getProperty("jbpm.enable.multi.con") != null) {
+            	builder = ProcessNodeBuilderRegistry.INSTANCE.getNodeBuilder( NodeImpl.class );
+            	if (builder != null) {
+            		builder.build(process, processDescr, context, node);
+            	}
             }
         }
     }

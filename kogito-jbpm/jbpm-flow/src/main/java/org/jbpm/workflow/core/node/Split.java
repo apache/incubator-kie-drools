@@ -61,7 +61,7 @@ public class Split extends NodeImpl implements Constrainable {
     private static final long serialVersionUID = 510l;
 
     private int type;
-    private Map<ConnectionRef, Constraint> constraints = new HashMap<ConnectionRef, Constraint>();
+//    private Map<ConnectionRef, Constraint> constraints = new HashMap<ConnectionRef, Constraint>();
 
     public Split() {
         this.type = TYPE_UNDEFINED;

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.definition.process.Node;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.EndNode;
@@ -53,6 +54,8 @@ public class ProcessNodeBuilderRegistry {
                   new EventBasedNodeBuilder() );
         register( StateNode.class,
                   new EventBasedNodeBuilder() );
+        register( NodeImpl.class,
+                new MultiConditionalSequenceFlowNodeBuilder() );
     }
 
     public void register(Class< ? extends Node> cls,
@@ -63,5 +66,9 @@ public class ProcessNodeBuilderRegistry {
 
     public ProcessNodeBuilder getNodeBuilder(Node node) {
         return this.registry.get( node.getClass() );
+    }
+    
+    public ProcessNodeBuilder getNodeBuilder(Class< ? extends Node> cls) {
+        return this.registry.get( cls );
     }
 }

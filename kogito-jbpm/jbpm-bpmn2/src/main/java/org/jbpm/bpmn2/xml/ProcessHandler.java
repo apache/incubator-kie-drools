@@ -298,30 +298,18 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					target, NodeImpl.CONNECTION_DEFAULT_TYPE);
 				result.setMetaData("bendpoints", connection.getBendpoints());
 				result.setMetaData("UniqueId", connection.getId());
-				if (source instanceof Split) {
+				
+				if (System.getProperty("jbpm.enable.multi.con") != null){
+					NodeImpl nodeImpl = (NodeImpl) source;
+					Constraint constraint = buildConstraint(connection, nodeImpl);
+					if (constraint != null) {
+						nodeImpl.addConstraint(new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
+								constraint);
+					}
+					
+				} else if (source instanceof Split) {
 					Split split = (Split) source;
-					Constraint constraint = new ConstraintImpl();
-					String defaultConnection = (String) split.getMetaData("Default");
-					if (defaultConnection != null && defaultConnection.equals(connection.getId())) {
-						constraint.setDefault(true);
-					}
-					if (connection.getName() != null) {
-						constraint.setName(connection.getName());
-					} else {
-						constraint.setName("");
-					}
-					if (connection.getType() != null) {
-						constraint.setType(connection.getType());
-					} else {
-						constraint.setType("code");
-					}
-					if (connection.getLanguage() != null) {
-						constraint.setDialect(connection.getLanguage());
-					}
-					if (connection.getExpression() != null) {
-						constraint.setConstraint(connection.getExpression());
-					}
-					constraint.setPriority(connection.getPriority());
+					Constraint constraint = buildConstraint(connection, split);
 					split.addConstraint(
 						new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
 						constraint);
@@ -631,6 +619,37 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	            assignLanes((NodeContainer) node, laneMapping);
 	        }
 	    }
+	}
+	
+	private static Constraint buildConstraint(SequenceFlow connection, NodeImpl node) {
+		if (connection.getExpression() == null) {
+			return null;
+		}
+		
+		Constraint constraint = new ConstraintImpl();
+		String defaultConnection = (String) node.getMetaData("Default");
+		if (defaultConnection != null && defaultConnection.equals(connection.getId())) {
+			constraint.setDefault(true);
+		}
+		if (connection.getName() != null) {
+			constraint.setName(connection.getName());
+		} else {
+			constraint.setName("");
+		}
+		if (connection.getType() != null) {
+			constraint.setType(connection.getType());
+		} else {
+			constraint.setType("code");
+		}
+		if (connection.getLanguage() != null) {
+			constraint.setDialect(connection.getLanguage());
+		}
+		if (connection.getExpression() != null) {
+			constraint.setConstraint(connection.getExpression());
+		}
+		constraint.setPriority(connection.getPriority());
+		
+		return constraint;
 	}
 
 }

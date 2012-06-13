@@ -209,18 +209,4 @@ public class SplitInstance extends NodeInstanceImpl {
         }
     }
     
-    private class NodeInstanceTrigger {
-    	private org.jbpm.workflow.instance.NodeInstance nodeInstance;
-    	private String toType;
-    	public NodeInstanceTrigger(org.jbpm.workflow.instance.NodeInstance nodeInstance, String toType) {
-    		this.nodeInstance = nodeInstance;
-    		this.toType = toType;
-    	}
-    	public org.jbpm.workflow.instance.NodeInstance getNodeInstance() {
-    		return nodeInstance;
-    	}
-    	public String getToType() {
-    		return toType;
-    	}
-    }
 }

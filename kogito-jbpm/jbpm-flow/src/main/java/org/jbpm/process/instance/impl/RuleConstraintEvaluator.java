@@ -24,6 +24,7 @@ import org.drools.runtime.rule.impl.InternalAgenda;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.SplitInstance;
 
 /**
@@ -95,7 +96,7 @@ public class RuleConstraintEvaluator implements Constraint,
 		this.isDefault = isDefault;
 	}
 
-	public boolean evaluate(SplitInstance instance,
+	public boolean evaluate(NodeInstance instance,
                             Connection connection,
                             Constraint constraint) {
         WorkflowProcessInstance processInstance = instance.getProcessInstance();

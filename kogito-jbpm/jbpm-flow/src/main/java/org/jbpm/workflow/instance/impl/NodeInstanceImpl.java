@@ -19,6 +19,7 @@ package org.jbpm.workflow.instance.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.ConstraintEvaluator;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
@@ -145,7 +147,64 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         Node node = getNode();
         List<Connection> connections = null;
         if (node != null) {
-        	connections = node.getOutgoingConnections(type);
+        	if (System.getProperty("jbpm.enable.multi.con") != null && ((NodeImpl) node).getConstraints().size() > 0) {
+        		int priority = Integer.MAX_VALUE;
+        		connections = ((NodeImpl)node).getDefaultOutgoingConnections();
+                boolean found = false;
+            	List<NodeInstanceTrigger> nodeInstances = 
+            		new ArrayList<NodeInstanceTrigger>();
+                List<Connection> outgoingCopy = new ArrayList<Connection>(connections);
+                while (!outgoingCopy.isEmpty()) {
+                    priority = Integer.MAX_VALUE;
+                    Connection selectedConnection = null;
+                    ConstraintEvaluator selectedConstraint = null;
+                    for ( final Iterator<Connection> iterator = outgoingCopy.iterator(); iterator.hasNext(); ) {
+                        final Connection connection = (Connection) iterator.next();
+                        ConstraintEvaluator constraint = (ConstraintEvaluator) ((NodeImpl)node).getConstraint( connection );
+    
+                        if ( constraint != null  
+                                && constraint.getPriority() < priority
+                                && !constraint.isDefault() ) {
+                            priority = constraint.getPriority();
+                            selectedConnection = connection;
+                            selectedConstraint = constraint;
+                        }
+                    }
+                    if (selectedConstraint == null) {
+                    	break;
+                    }
+                    if (selectedConstraint.evaluate( this,
+                                                     selectedConnection,
+                                                     selectedConstraint ) ) {
+                        nodeInstances.add(new NodeInstanceTrigger(followConnection(selectedConnection), selectedConnection.getToType()));
+                        found = true;
+                    }
+                    outgoingCopy.remove(selectedConnection);
+                }
+                for (NodeInstanceTrigger nodeInstance: nodeInstances) {
+    	        	// stop if this process instance has been aborted / completed
+                	if (((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).getState() != ProcessInstance.STATE_ACTIVE) {
+    	        		return;
+    	        	}
+    	    		triggerNodeInstance(nodeInstance.getNodeInstance(), nodeInstance.getToType());
+    	        }
+                if ( !found ) {
+                	for ( final Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
+                        final Connection connection = (Connection) iterator.next();
+                        ConstraintEvaluator constraint = (ConstraintEvaluator) ((NodeImpl)node).getConstraint( connection );
+                        if ( constraint.isDefault() ) {
+                        	triggerConnection(connection);
+                        	found = true;
+                            break;
+                        }
+                    }
+                }
+                if ( !found ) {
+                    throw new IllegalArgumentException( "Uncontrolled flow node could not find at least one valid outgoing connection " + getNode().getName() );
+                }     
+        	} else {
+        		connections = node.getOutgoingConnections(type);
+        	}
         }
         if (connections == null || connections.isEmpty()) {
         	((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
@@ -307,6 +366,21 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     public void setMetaData(String name, Object data) {
         this.metaData.put(name, data);
+    }
+    
+    protected class NodeInstanceTrigger {
+    	private org.jbpm.workflow.instance.NodeInstance nodeInstance;
+    	private String toType;
+    	public NodeInstanceTrigger(org.jbpm.workflow.instance.NodeInstance nodeInstance, String toType) {
+    		this.nodeInstance = nodeInstance;
+    		this.toType = toType;
+    	}
+    	public org.jbpm.workflow.instance.NodeInstance getNodeInstance() {
+    		return nodeInstance;
+    	}
+    	public String getToType() {
+    		return toType;
+    	}
     }
     
 }

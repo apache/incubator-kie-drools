@@ -2533,6 +2533,25 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         System.clearProperty("jbpm.enable.multi.con");
     }
     
+    /**
+    * Conditional sequence flow is supported in Guvnor BPMN designer (even in minimal perspective), but jBPM engine cannot
+    * parse this definition:
+    * "This type of node cannot have more than one outgoing connection!"
+    */
+    public void testConditionalFlow() throws Exception {
+    	System.setProperty("jbpm.enable.multi.con", "true");
+        String processId = "designer.conditional-flow";
+        
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ConditionalFlowWithoutGateway.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        
+        WorkflowProcessInstance wpi = (WorkflowProcessInstance) ksession.startProcess(processId);
+
+        assertProcessInstanceCompleted(wpi.getId(), ksession);
+        assertNodeTriggered(wpi.getId(), "start", "script", "end1");
+        System.clearProperty("jbpm.enable.multi.con");
+    }
+    
     public void testMultipleInOutgoingSequenceFlowsDisable() throws Exception {
 
     	try {

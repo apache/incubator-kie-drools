@@ -25,7 +25,9 @@ import org.drools.definition.process.Connection;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ProcessContext;
 import org.drools.spi.Wireable;
+import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.SplitInstance;
 
 /**
@@ -118,12 +120,12 @@ public class ReturnValueConstraintEvaluator
         return this.evaluator;
     }
 
-    public boolean evaluate(SplitInstance instance,
+    public boolean evaluate(NodeInstance instance,
                             Connection connection,
                             Constraint constraint) {
         Object value;
         try {
-            ProcessContext context = new ProcessContext(instance.getProcessInstance().getKnowledgeRuntime());
+            ProcessContext context = new ProcessContext(((ProcessInstance)instance.getProcessInstance()).getKnowledgeRuntime());
             context.setNodeInstance( instance );
             value = this.evaluator.evaluate( context );
         } catch ( Exception e ) {
