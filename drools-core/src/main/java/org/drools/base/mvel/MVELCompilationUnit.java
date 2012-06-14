@@ -301,7 +301,7 @@ public class MVELCompilationUnit
         int varLength = inputIdentifiers.length;
 
         int i = 0;
-        if ( rightObject != null ) {
+        if ( "this".equals( inputIdentifiers[0] ) ) {
             factory.getIndexedVariableResolver( i++ ).setValue( rightObject );
         }
         factory.getIndexedVariableResolver( i++ ).setValue( knowledgeHelper );
