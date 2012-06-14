@@ -198,4 +198,9 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         }
     }
 
+    @Override
+    public String toString() {
+        return "ChangeMoveSelector(" + entitySelector + ", " + valueSelector + ")";
+    }
+
 }

@@ -19,27 +19,25 @@ package org.drools.planner.core.heuristic.selector.entity.cached;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Random;
 import java.util.TreeMap;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
 public class ProbabilityEntitySelector extends CachingEntitySelector {
 
-    protected final SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
     public ProbabilityEntitySelector(SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory) {
+            SelectionProbabilityWeightFactory entityProbabilityWeightFactory) {
         super(cacheType);
-        this.selectionProbabilityWeightFactory = selectionProbabilityWeightFactory;
+        this.entityProbabilityWeightFactory = entityProbabilityWeightFactory;
     }
 
     // ************************************************************************
@@ -51,7 +49,7 @@ public class ProbabilityEntitySelector extends CachingEntitySelector {
         Solution solution = solverScope.getWorkingSolution();
         double probabilityWeightOffset = 0L;
         for (Object entity : childEntitySelector) {
-            double probabilityWeight = selectionProbabilityWeightFactory.createSelectionProbabilityWeight(
+            double probabilityWeight = entityProbabilityWeightFactory.createProbabilityWeight(
                     solution, entity);
             cachedEntityMap.put(probabilityWeightOffset, entity);
             probabilityWeightOffset += probabilityWeight;

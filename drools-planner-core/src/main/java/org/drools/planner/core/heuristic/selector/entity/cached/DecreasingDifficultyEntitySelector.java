@@ -71,4 +71,9 @@ public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
         return cachedEntityList.iterator();
     }
 
+    @Override
+    public String toString() {
+        return "Sorting(" + childEntitySelector + ")";
+    }
+
 }

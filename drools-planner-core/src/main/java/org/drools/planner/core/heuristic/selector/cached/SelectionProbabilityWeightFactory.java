@@ -22,9 +22,9 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * Create a selectionProbabilityWeight for a selection
+ * Create a probabilityWeight for a selection
  * (which is a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}).
- * A selectionProbabilityWeight represents the random chance that a selection will be selected.
+ * A probabilityWeight represents the random chance that a selection will be selected.
  * Some use cases benefit from focusing moves more actively on specific selections.
  */
 public interface SelectionProbabilityWeightFactory<T> {
@@ -32,9 +32,9 @@ public interface SelectionProbabilityWeightFactory<T> {
     /**
      * @param solution never null, the {@link Solution} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
-     * to create the selectionProbabilityWeight for
+     * to create the probabilityWeight for
      * @return 0.0 <= returnValue < {@link Double#POSITIVE_INFINITY}
      */
-    double createSelectionProbabilityWeight(Solution solution, T selection);
+    double createProbabilityWeight(Solution solution, T selection);
 
 }

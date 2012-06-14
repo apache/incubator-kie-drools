@@ -42,7 +42,7 @@ import org.drools.planner.core.util.RandomUtils;
  */
 public class UnionMoveSelector extends CompositeMoveSelector {
 
-    protected final SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
 
     protected Solution workingSolution;
 
@@ -51,21 +51,21 @@ public class UnionMoveSelector extends CompositeMoveSelector {
     }
 
     public UnionMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection,
-            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory) {
+            SelectionProbabilityWeightFactory selectorProbabilityWeightFactory) {
         super(childMoveSelectorList, randomSelection);
-        this.selectionProbabilityWeightFactory = selectionProbabilityWeightFactory;
+        this.selectorProbabilityWeightFactory = selectorProbabilityWeightFactory;
         if (!randomSelection) {
-            if (selectionProbabilityWeightFactory != null) {
+            if (selectorProbabilityWeightFactory != null) {
                 throw new IllegalArgumentException("The compositeMoveSelector (" + this
                         + ") with randomSelection (" + randomSelection
-                        + ") cannot have a selectionProbabilityWeightFactory (" + selectionProbabilityWeightFactory
+                        + ") cannot have a selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
                         + ")");
             }
         } else {
-            if (selectionProbabilityWeightFactory == null) {
+            if (selectorProbabilityWeightFactory == null) {
                 throw new IllegalArgumentException("The compositeMoveSelector (" + this
                         + ") with randomSelection (" + randomSelection
-                        + ") needs a selectionProbabilityWeightFactory ("  + selectionProbabilityWeightFactory
+                        + ") requires a electorProbabilityWeightFactory ("  + selectorProbabilityWeightFactory
                         + ")");
             }
         }
@@ -141,8 +141,8 @@ public class UnionMoveSelector extends CompositeMoveSelector {
                     ProbabilityItem probabilityItem = new ProbabilityItem();
                     probabilityItem.moveSelector = moveSelector;
                     probabilityItem.moveIterator = moveIterator;
-                    probabilityItem.probabilityWeight= selectionProbabilityWeightFactory
-                            .createSelectionProbabilityWeight(workingSolution, moveSelector);
+                    probabilityItem.probabilityWeight= selectorProbabilityWeightFactory
+                            .createProbabilityWeight(workingSolution, moveSelector);
                     probabilityItemMap.put(moveIterator, probabilityItem);
                 }
             }
@@ -188,6 +188,11 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         protected Iterator<Move> moveIterator;
         protected double probabilityWeight;
 
+    }
+
+    @Override
+    public String toString() {
+        return "Union(" + childMoveSelectorList + ")";
     }
 
 }

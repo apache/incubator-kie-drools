@@ -102,4 +102,9 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
         }
     }
 
+    @Override
+    public String toString() {
+        return "FromSolutionPropertyValueSelector(" + variableDescriptor.getVariableName() + ")";
+    }
+
 }

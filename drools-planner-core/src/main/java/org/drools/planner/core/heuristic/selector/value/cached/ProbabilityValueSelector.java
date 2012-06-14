@@ -18,29 +18,27 @@ package org.drools.planner.core.heuristic.selector.value.cached;
 
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Random;
 import java.util.TreeMap;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
 public class ProbabilityValueSelector extends CachingValueSelector {
 
-    protected final SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory valueProbabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
     public ProbabilityValueSelector(SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory) {
+            SelectionProbabilityWeightFactory valueProbabilityWeightFactory) {
         super(cacheType);
-        this.selectionProbabilityWeightFactory = selectionProbabilityWeightFactory;
+        this.valueProbabilityWeightFactory = valueProbabilityWeightFactory;
     }
 
     // ************************************************************************
@@ -52,7 +50,7 @@ public class ProbabilityValueSelector extends CachingValueSelector {
         Solution solution = solverScope.getWorkingSolution();
         double probabilityWeightOffset = 0L;
         for (Object value : childValueSelector) {
-            double probabilityWeight = selectionProbabilityWeightFactory.createSelectionProbabilityWeight(
+            double probabilityWeight = valueProbabilityWeightFactory.createProbabilityWeight(
                     solution, value);
             cachedEntityMap.put(probabilityWeightOffset, value);
             probabilityWeightOffset += probabilityWeight;
@@ -73,11 +71,6 @@ public class ProbabilityValueSelector extends CachingValueSelector {
         return cachedEntityMap.size();
     }
 
-    @Override
-    public String toString() {
-        return "Probability(" + childValueSelector + ")";
-    }
-
     public ValueIterator iterator() {
         return new EntityIgnoringValueIterator() {
             public boolean hasNext() {
@@ -91,6 +84,11 @@ public class ProbabilityValueSelector extends CachingValueSelector {
                 return entry.getValue();
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return "Probability(" + childValueSelector + ")";
     }
 
 }

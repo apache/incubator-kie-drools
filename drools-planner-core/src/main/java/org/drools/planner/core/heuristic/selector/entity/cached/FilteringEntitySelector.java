@@ -55,13 +55,13 @@ public class FilteringEntitySelector extends CachingEntitySelector {
         return cachedEntityList.size();
     }
 
+    public Iterator<Object> iterator() {
+        return cachedEntityList.iterator();
+    }
+
     @Override
     public String toString() {
         return "Filtering(" + childEntitySelector + ")";
-    }
-
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
     }
 
 }

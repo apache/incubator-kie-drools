@@ -194,4 +194,9 @@ public class SwapMoveSelector extends GenericMoveSelector {
         }
     }
 
+    @Override
+    public String toString() {
+        return "SwapMoveSelector(" + leftEntitySelector + ", " + rightEntitySelector + ")";
+    }
+
 }

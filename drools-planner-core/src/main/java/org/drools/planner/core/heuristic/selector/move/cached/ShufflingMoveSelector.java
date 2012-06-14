@@ -36,4 +36,9 @@ public class ShufflingMoveSelector extends CachingMoveSelector {
         Collections.shuffle(cachedMoveList, solverScope.getWorkingRandom());
     }
 
+    @Override
+    public String toString() {
+        return "Shuffling(" + childMoveSelector + ")";
+    }
+
 }

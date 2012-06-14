@@ -28,11 +28,28 @@ import org.drools.planner.core.heuristic.selector.move.MoveSelector;
  */
 public abstract class MoveSelectorConfig extends SelectorConfig {
 
+    private Double fixedProbabilityWeight = null;
+
+    public Double getFixedProbabilityWeight() {
+        return fixedProbabilityWeight;
+    }
+
+    public void setFixedProbabilityWeight(Double fixedProbabilityWeight) {
+        this.fixedProbabilityWeight = fixedProbabilityWeight;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
     public abstract MoveSelector buildMoveSelector(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, SelectionOrder inheritedResolvedSelectionOrder);
+
+    protected void inherit(MoveSelectorConfig inheritedConfig) {
+        super.inherit(inheritedConfig);
+        if (fixedProbabilityWeight == null) {
+            fixedProbabilityWeight = inheritedConfig.getFixedProbabilityWeight();
+        }
+    }
 
 }

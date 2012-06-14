@@ -38,8 +38,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
     // TODO filterClass
-    private Class<? extends SelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass
-            = null;
+    private Class<? extends SelectionProbabilityWeightFactory> valueProbabilityWeightFactoryClass = null;
     // TODO sorterClass, increasingStrength
 
     public String getPlanningVariableName() {
@@ -66,12 +65,12 @@ public class ValueSelectorConfig extends SelectorConfig {
         this.cacheType = cacheType;
     }
 
-    public Class<? extends SelectionProbabilityWeightFactory> getSelectionProbabilityWeightFactoryClass() {
-        return selectionProbabilityWeightFactoryClass;
+    public Class<? extends SelectionProbabilityWeightFactory> getValueProbabilityWeightFactoryClass() {
+        return valueProbabilityWeightFactoryClass;
     }
 
-    public void setSelectionProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass) {
-        this.selectionProbabilityWeightFactoryClass = selectionProbabilityWeightFactoryClass;
+    public void setValueProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> valueProbabilityWeightFactoryClass) {
+        this.valueProbabilityWeightFactoryClass = valueProbabilityWeightFactoryClass;
     }
 
     // ************************************************************************
@@ -84,7 +83,8 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (planningVariableName != null) {
             variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(planningVariableName);
             if (variableDescriptor == null) {
-                throw new IllegalArgumentException("The variableSelector has a planningVariableName ("
+                throw new IllegalArgumentException("The variableSelectorConfig (" + this
+                        + ") has a planningVariableName ("
                         + planningVariableName + ") for planningEntityClass ("
                         + entityDescriptor.getPlanningEntityClass()
                         + ") that is not annotated as a planningVariable.\n" +
@@ -94,7 +94,8 @@ public class ValueSelectorConfig extends SelectorConfig {
             Collection<PlanningVariableDescriptor> planningVariableDescriptors = entityDescriptor
                     .getPlanningVariableDescriptors();
             if (planningVariableDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The variableSelector has no configured planningVariableName ("
+                throw new IllegalArgumentException("The variableSelectorConfig (" + this
+                        + ") has no configured planningVariableName ("
                         + planningVariableName + ") for planningEntityClass ("
                         + entityDescriptor.getPlanningEntityClass()
                         + ") and because there are multiple in the planningVariableNameSet ("
@@ -106,7 +107,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
                 inheritedResolvedSelectionOrder);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
-                && selectionProbabilityWeightFactoryClass == null;
+                && valueProbabilityWeightFactoryClass == null;
         // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
         SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.PHASE : cacheType;
         ValueSelector valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
@@ -114,26 +115,27 @@ public class ValueSelectorConfig extends SelectorConfig {
 
         // TODO filterclass
 
-        if (selectionProbabilityWeightFactoryClass != null) {
+        if (valueProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                throw new IllegalArgumentException("The valueSelector with selectionProbabilityWeightFactoryClass ("
-                        + selectionProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
+                throw new IllegalArgumentException("The variableSelectorConfig (" + this
+                        + ") with valueProbabilityWeightFactoryClass ("
+                        + valueProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+            SelectionProbabilityWeightFactory valueProbabilityWeightFactory;
             try {
-                selectionProbabilityWeightFactory = selectionProbabilityWeightFactoryClass.newInstance();
+                valueProbabilityWeightFactory = valueProbabilityWeightFactoryClass.newInstance();
             } catch (InstantiationException e) {
-                throw new IllegalArgumentException("selectionProbabilityWeightFactoryClass ("
-                        + selectionProbabilityWeightFactoryClass.getName()
+                throw new IllegalArgumentException("valueProbabilityWeightFactoryClass ("
+                        + valueProbabilityWeightFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);
             } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("selectionProbabilityWeightFactoryClass ("
-                        + selectionProbabilityWeightFactoryClass.getName()
+                throw new IllegalArgumentException("valueProbabilityWeightFactoryClass ("
+                        + valueProbabilityWeightFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
             ProbabilityValueSelector probabilityValueSelector = new ProbabilityValueSelector(resolvedCacheType,
-                    selectionProbabilityWeightFactory);
+                    valueProbabilityWeightFactory);
             probabilityValueSelector.setChildValueSelector(valueSelector);
             valueSelector = probabilityValueSelector;
         }
@@ -151,8 +153,8 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (cacheType == null) {
             cacheType = inheritedConfig.getCacheType();
         }
-        if (selectionProbabilityWeightFactoryClass == null) {
-            selectionProbabilityWeightFactoryClass = inheritedConfig.getSelectionProbabilityWeightFactoryClass();
+        if (valueProbabilityWeightFactoryClass == null) {
+            valueProbabilityWeightFactoryClass = inheritedConfig.getValueProbabilityWeightFactoryClass();
         }
     }
 

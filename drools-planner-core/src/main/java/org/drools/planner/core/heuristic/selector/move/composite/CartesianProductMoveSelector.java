@@ -119,4 +119,9 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
 
     }
 
+    @Override
+    public String toString() {
+        return "CartesianProduct(" + childMoveSelectorList + ")";
+    }
+
 }

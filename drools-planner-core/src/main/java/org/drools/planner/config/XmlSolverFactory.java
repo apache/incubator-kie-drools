@@ -28,6 +28,7 @@ import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
+import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
@@ -51,6 +52,7 @@ public class XmlSolverFactory implements SolverFactory {
         xStream.processAnnotations(ConstructionHeuristicSolverPhaseConfig.class);
         xStream.processAnnotations(LocalSearchSolverPhaseConfig.class);
         // MoveSelectorConfig
+        xStream.processAnnotations(UnionMoveSelectorConfig.class);
         xStream.processAnnotations(ChangeMoveSelectorConfig.class);
         xStream.processAnnotations(SwapMoveSelectorConfig.class);
         return xStream;

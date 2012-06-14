@@ -37,8 +37,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
     // TODO filterClass
-    private Class<? extends SelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass
-            = null;
+    private Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass = null;
     // TODO sorterClass, decreasingDifficulty
 
     public Class<?> getPlanningEntityClass() {
@@ -65,12 +64,12 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.cacheType = cacheType;
     }
 
-    public Class<? extends SelectionProbabilityWeightFactory> getSelectionProbabilityWeightFactoryClass() {
-        return selectionProbabilityWeightFactoryClass;
+    public Class<? extends SelectionProbabilityWeightFactory> getEntityProbabilityWeightFactoryClass() {
+        return entityProbabilityWeightFactoryClass;
     }
 
-    public void setSelectionProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass) {
-        this.selectionProbabilityWeightFactoryClass = selectionProbabilityWeightFactoryClass;
+    public void setEntityProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass) {
+        this.entityProbabilityWeightFactoryClass = entityProbabilityWeightFactoryClass;
     }
 
     // ************************************************************************
@@ -83,7 +82,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         if (planningEntityClass != null) {
             entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
             if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The entitySelector has a planningEntityClass ("
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this + ") has a planningEntityClass ("
                         + planningEntityClass + ") that is not configured as a planningEntity.\n" +
                         "If that class (" + planningEntityClass.getSimpleName() + ") is not a " +
                         "planningEntityClass (" + solutionDescriptor.getPlanningEntityClassSet()
@@ -94,7 +93,8 @@ public class EntitySelectorConfig extends SelectorConfig {
             Collection<PlanningEntityDescriptor> planningEntityDescriptors = solutionDescriptor
                     .getPlanningEntityDescriptors();
             if (planningEntityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The entitySelector has no configured planningEntityClass ("
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") has no configured planningEntityClass ("
                         + planningEntityClass + ") and because there are multiple in the planningEntityClassSet ("
                         + solutionDescriptor.getPlanningEntityClassSet()
                         + "), it can not be deducted automatically.");
@@ -104,7 +104,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
                 inheritedResolvedSelectionOrder);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
-                && selectionProbabilityWeightFactoryClass == null;
+                && entityProbabilityWeightFactoryClass == null;
         // cacheType defaults to SelectionCacheType.STEP because JIT is pointless and an entity can be added in a step
         SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.STEP : cacheType;
         EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
@@ -112,26 +112,27 @@ public class EntitySelectorConfig extends SelectorConfig {
 
         // TODO filterclass
 
-        if (selectionProbabilityWeightFactoryClass != null) {
+        if (entityProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                throw new IllegalArgumentException("The entitySelector with selectionProbabilityWeightFactoryClass ("
-                        + selectionProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") with entityProbabilityWeightFactoryClass ("
+                        + entityProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+            SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
             try {
-                selectionProbabilityWeightFactory = selectionProbabilityWeightFactoryClass.newInstance();
+                entityProbabilityWeightFactory = entityProbabilityWeightFactoryClass.newInstance();
             } catch (InstantiationException e) {
-                throw new IllegalArgumentException("selectionProbabilityWeightFactoryClass ("
-                        + selectionProbabilityWeightFactoryClass.getName()
+                throw new IllegalArgumentException("entityProbabilityWeightFactoryClass ("
+                        + entityProbabilityWeightFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);
             } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("selectionProbabilityWeightFactoryClass ("
-                        + selectionProbabilityWeightFactoryClass.getName()
+                throw new IllegalArgumentException("entityProbabilityWeightFactoryClass ("
+                        + entityProbabilityWeightFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
             ProbabilityEntitySelector probabilityEntitySelector = new ProbabilityEntitySelector(resolvedCacheType,
-                    selectionProbabilityWeightFactory);
+                    entityProbabilityWeightFactory);
             probabilityEntitySelector.setChildEntitySelector(entitySelector);
             entitySelector = probabilityEntitySelector;
         }
@@ -149,8 +150,8 @@ public class EntitySelectorConfig extends SelectorConfig {
         if (cacheType == null) {
             cacheType = inheritedConfig.getCacheType();
         }
-        if (selectionProbabilityWeightFactoryClass == null) {
-            selectionProbabilityWeightFactoryClass = inheritedConfig.getSelectionProbabilityWeightFactoryClass();
+        if (entityProbabilityWeightFactoryClass == null) {
+            entityProbabilityWeightFactoryClass = inheritedConfig.getEntityProbabilityWeightFactoryClass();
         }
     }
 

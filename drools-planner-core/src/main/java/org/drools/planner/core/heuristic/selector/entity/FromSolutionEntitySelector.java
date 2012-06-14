@@ -106,4 +106,9 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         }
     }
 
+    @Override
+    public String toString() {
+        return "FromSolutionEntitySelector(" + entityDescriptor.getPlanningEntityClass().getSimpleName() + ")";
+    }
+
 }
