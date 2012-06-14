@@ -25,6 +25,26 @@ import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
  */
 public abstract class SelectorConfig {
 
+    private Double fixedProbabilityWeight;
+
+    public Double getFixedProbabilityWeight() {
+        return fixedProbabilityWeight;
+    }
+
+    public void setFixedProbabilityWeight(Double fixedProbabilityWeight) {
+        this.fixedProbabilityWeight = fixedProbabilityWeight;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
+    protected void inherit(SelectorConfig inheritedConfig) {
+        if (fixedProbabilityWeight == null) {
+            fixedProbabilityWeight = inheritedConfig.getFixedProbabilityWeight();
+        }
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "()";

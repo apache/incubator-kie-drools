@@ -25,17 +25,18 @@ import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 import org.apache.commons.collections.iterators.IteratorChain;
+import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.util.RandomUtils;
 
 /**
- * A {@link CompositeMoveSelector} that unions 2 or more {@link MoveSelector}s.
+ * A {@link CompositeMoveSelector} that cartesian products 2 or more {@link MoveSelector}s.
  * <p/>
- * For example: a union of {A, B, C} and {X, Y} will result in {A, B, C, X, Y}.
+ * For example: a cartesian product of {A, B, C} and {X, Y} will result in {AX, AY, BX, BY, CX, CY}.
  * <p/>
- * Warning: there is no duplicated {@link Move} check, so union of {A, B, C} and {B, D} will result in {A, B, C, B, D}.
+ * Warning: there is no duplicated {@link Move} check, so union of {A, B} and {B} will result in {AB, BB}.
  * @see CompositeMoveSelector
  */
 public class CartesianProductMoveSelector extends CompositeMoveSelector {
@@ -61,11 +62,8 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
             return true;
         } else {
             // Only the last childMoveSelector can be neverEnding
-            if (!childMoveSelectorList.isEmpty()
-                    && childMoveSelectorList.get(childMoveSelectorList.size() - 1).isNeverEnding()) {
-                return true;
-            }
-            return false;
+            return !childMoveSelectorList.isEmpty()
+                    && childMoveSelectorList.get(childMoveSelectorList.size() - 1).isNeverEnding();
         }
     }
 

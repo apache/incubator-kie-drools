@@ -17,6 +17,7 @@
 package org.drools.planner.config.heuristic.selector.move;
 
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -25,7 +26,7 @@ import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
  */
-public abstract class MoveSelectorConfig {
+public abstract class MoveSelectorConfig extends SelectorConfig {
 
     // ************************************************************************
     // Builder methods

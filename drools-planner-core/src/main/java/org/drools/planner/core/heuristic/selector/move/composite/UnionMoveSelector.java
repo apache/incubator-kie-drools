@@ -25,8 +25,11 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import org.apache.commons.collections.iterators.IteratorChain;
+import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.util.RandomUtils;
 
 /**
@@ -39,8 +42,45 @@ import org.drools.planner.core.util.RandomUtils;
  */
 public class UnionMoveSelector extends CompositeMoveSelector {
 
+    protected final SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+
+    protected Solution workingSolution;
+
     public UnionMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
+        this(childMoveSelectorList, randomSelection, null);
+    }
+
+    public UnionMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection,
+            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory) {
         super(childMoveSelectorList, randomSelection);
+        this.selectionProbabilityWeightFactory = selectionProbabilityWeightFactory;
+        if (!randomSelection) {
+            if (selectionProbabilityWeightFactory != null) {
+                throw new IllegalArgumentException("The compositeMoveSelector (" + this
+                        + ") with randomSelection (" + randomSelection
+                        + ") cannot have a selectionProbabilityWeightFactory (" + selectionProbabilityWeightFactory
+                        + ")");
+            }
+        } else {
+            if (selectionProbabilityWeightFactory == null) {
+                throw new IllegalArgumentException("The compositeMoveSelector (" + this
+                        + ") with randomSelection (" + randomSelection
+                        + ") needs a selectionProbabilityWeightFactory ("  + selectionProbabilityWeightFactory
+                        + ")");
+            }
+        }
+    }
+
+    @Override
+    public void stepStarted(AbstractStepScope stepScope) {
+        workingSolution = stepScope.getWorkingSolution();
+        super.stepStarted(stepScope);
+    }
+
+    @Override
+    public void stepEnded(AbstractStepScope stepScope) {
+        super.stepEnded(stepScope);
+        workingSolution = null;
     }
 
     // ************************************************************************
@@ -88,17 +128,22 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
     public class RandomUnionMoveIterator implements Iterator<Move> {
 
-        protected final NavigableMap<Long, Iterator<Move>> moveIteratorMap;
-        protected final Map<Iterator<Move>, MoveSelector> moveSelectorMap;
-        protected long probabilityWeightTotal;
+        protected final NavigableMap<Double, Iterator<Move>> moveIteratorMap;
+        protected final Map<Iterator<Move>, ProbabilityItem> probabilityItemMap;
+        protected double probabilityWeightTotal;
 
         public RandomUnionMoveIterator() {
-            moveIteratorMap = new TreeMap<Long, Iterator<Move>>();
-            moveSelectorMap = new LinkedHashMap<Iterator<Move>, MoveSelector>(childMoveSelectorList.size());
+            moveIteratorMap = new TreeMap<Double, Iterator<Move>>();
+            probabilityItemMap = new LinkedHashMap<Iterator<Move>, ProbabilityItem>(childMoveSelectorList.size());
             for (MoveSelector moveSelector : childMoveSelectorList) {
                 Iterator<Move> moveIterator = moveSelector.iterator();
                 if (moveIterator.hasNext()) {
-                    moveSelectorMap.put(moveIterator, moveSelector);
+                    ProbabilityItem probabilityItem = new ProbabilityItem();
+                    probabilityItem.moveSelector = moveSelector;
+                    probabilityItem.moveIterator = moveIterator;
+                    probabilityItem.probabilityWeight= selectionProbabilityWeightFactory
+                            .createSelectionProbabilityWeight(workingSolution, moveSelector);
+                    probabilityItemMap.put(moveIterator, probabilityItem);
                 }
             }
             refreshMoveIteratorMap();
@@ -109,13 +154,13 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         }
 
         public Move next() {
-            long randomOffset = RandomUtils.nextLong(workingRandom, probabilityWeightTotal);
-            Map.Entry<Long, Iterator<Move>> entry = moveIteratorMap.floorEntry(randomOffset);
+            double randomOffset = RandomUtils.nextDouble(workingRandom, probabilityWeightTotal);
+            Map.Entry<Double, Iterator<Move>> entry = moveIteratorMap.floorEntry(randomOffset);
             // entry is never null because randomOffset < probabilityWeightTotal
             Iterator<Move> moveIterator = entry.getValue();
             Move next = moveIterator.next();
             if (!moveIterator.hasNext()) {
-                moveSelectorMap.remove(moveIterator);
+                probabilityItemMap.remove(moveIterator);
                 refreshMoveIteratorMap();
             }
             return next;
@@ -123,13 +168,10 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
         private void refreshMoveIteratorMap() {
             moveIteratorMap.clear();
-            long probabilityWeightOffset = 0L;
-            for (Map.Entry<Iterator<Move>, MoveSelector> moveSelectorEntry : moveSelectorMap.entrySet()) {
-                Iterator<Move> moveIterator = moveSelectorEntry.getKey();
-                MoveSelector moveSelector = moveSelectorEntry.getValue();
-                moveIteratorMap.put(probabilityWeightOffset, moveIterator);
-                // TODO FIXME, use += moveSelector.getRandomProbabilityWeight();
-                probabilityWeightOffset += 1L;
+            double probabilityWeightOffset = 0.0;
+            for (ProbabilityItem probabilityItem : probabilityItemMap.values()) {
+                moveIteratorMap.put(probabilityWeightOffset, probabilityItem.moveIterator);
+                probabilityWeightOffset += probabilityItem.probabilityWeight;
             }
             probabilityWeightTotal = probabilityWeightOffset;
         }
@@ -137,6 +179,14 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         public void remove() {
             throw new UnsupportedOperationException("Remove is not supported.");
         }
+
+    }
+
+    private static class ProbabilityItem {
+
+        protected MoveSelector moveSelector;
+        protected Iterator<Move> moveIterator;
+        protected double probabilityWeight;
 
     }
 

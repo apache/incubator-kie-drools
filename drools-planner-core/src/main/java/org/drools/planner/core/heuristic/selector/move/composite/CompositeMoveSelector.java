@@ -19,6 +19,7 @@ package org.drools.planner.core.heuristic.selector.move.composite;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
@@ -38,14 +39,17 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
         for (MoveSelector childMoveSelector : childMoveSelectorList) {
             solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
         }
-        if (!randomSelection && !childMoveSelectorList.isEmpty()) {
+        if (!randomSelection) {
             // Only the last childMoveSelector can be neverEnding
-            for (MoveSelector childMoveSelector : childMoveSelectorList.subList(0, childMoveSelectorList.size() - 1)) {
-                if (childMoveSelector.isNeverEnding()) {
-                    throw new IllegalStateException("The non-last childMoveSelector (" + childMoveSelector
-                            + ") has neverEnding (" + childMoveSelector.isNeverEnding()
-                            + ") on a class (" + getClass().getName()  + ") instance with randomSelection ("
-                            + randomSelection + ").");
+            if (!childMoveSelectorList.isEmpty()) {
+                for (MoveSelector childMoveSelector
+                        : childMoveSelectorList.subList(0, childMoveSelectorList.size() - 1)) {
+                    if (childMoveSelector.isNeverEnding()) {
+                        throw new IllegalStateException("The non-last childMoveSelector (" + childMoveSelector
+                                + ") has neverEnding (" + childMoveSelector.isNeverEnding()
+                                + ") on a class (" + getClass().getName()  + ") instance with randomSelection ("
+                                + randomSelection + ").");
+                    }
                 }
             }
         }
@@ -62,6 +66,11 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + childMoveSelectorList + ")";
     }
 
 }

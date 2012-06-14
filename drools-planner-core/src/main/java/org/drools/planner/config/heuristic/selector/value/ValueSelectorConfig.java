@@ -141,6 +141,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     }
 
     public void inherit(ValueSelectorConfig inheritedConfig) {
+        super.inherit(inheritedConfig);
         if (planningVariableName == null) {
             planningVariableName = inheritedConfig.getPlanningVariableName();
         }

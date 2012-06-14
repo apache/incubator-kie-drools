@@ -139,6 +139,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     }
 
     public void inherit(EntitySelectorConfig inheritedConfig) {
+        super.inherit(inheritedConfig);
         if (planningEntityClass == null) {
             planningEntityClass = inheritedConfig.getPlanningEntityClass();
         }

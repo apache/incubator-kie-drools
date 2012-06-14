@@ -101,6 +101,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
     }
 
     public void inherit(SwapMoveSelectorConfig inheritedConfig) {
+        super.inherit(inheritedConfig);
         if (leftEntitySelectorConfig == null) {
             leftEntitySelectorConfig = inheritedConfig.getLeftEntitySelectorConfig();
         } else if (inheritedConfig.getLeftEntitySelectorConfig() != null) {

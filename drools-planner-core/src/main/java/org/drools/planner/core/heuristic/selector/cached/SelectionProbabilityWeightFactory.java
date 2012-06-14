@@ -17,23 +17,24 @@
 package org.drools.planner.core.heuristic.selector.cached;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * Create a selectionProbabilityWeight for a selectorObject
- * (which is a {@link PlanningEntity}, a planningValue or a {@link Move}).
- * A selectionProbabilityWeight represents the random chance that a selectorObject will be selected.
- * Some use cases benefit from focusing moves more actively on specific selectorObjects.
+ * Create a selectionProbabilityWeight for a selection
+ * (which is a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}).
+ * A selectionProbabilityWeight represents the random chance that a selection will be selected.
+ * Some use cases benefit from focusing moves more actively on specific selections.
  */
 public interface SelectionProbabilityWeightFactory<T> {
 
     /**
-     * @param solution never null, the {@link Solution} to which the selectorObject belongs or applies to
-     * @param selectorObject never null, the @link PlanningEntity}, a planningValue or a {@link Move}
+     * @param solution never null, the {@link Solution} to which the selection belongs or applies to
+     * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * to create the selectionProbabilityWeight for
      * @return 0.0 <= returnValue < {@link Double#POSITIVE_INFINITY}
      */
-    double createSelectionProbabilityWeight(Solution solution, T selectorObject);
+    double createSelectionProbabilityWeight(Solution solution, T selection);
 
 }

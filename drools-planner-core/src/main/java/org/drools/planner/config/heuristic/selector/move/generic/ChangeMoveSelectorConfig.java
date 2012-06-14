@@ -100,6 +100,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     }
 
     public void inherit(ChangeMoveSelectorConfig inheritedConfig) {
+        super.inherit(inheritedConfig);
         if (entitySelectorConfig == null) {
             entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
         } else if (inheritedConfig.getEntitySelectorConfig() != null) {
