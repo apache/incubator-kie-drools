@@ -25,9 +25,9 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.PlanningEntitySelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.cached.ProbabilityEntitySelector;
 
 @XStreamAlias("entitySelector")
@@ -37,7 +37,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
     // TODO filterClass
-    private Class<? extends PlanningEntitySelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass
+    private Class<? extends SelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass
             = null;
     // TODO sorterClass, decreasingDifficulty
 
@@ -65,11 +65,11 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.cacheType = cacheType;
     }
 
-    public Class<? extends PlanningEntitySelectionProbabilityWeightFactory> getSelectionProbabilityWeightFactoryClass() {
+    public Class<? extends SelectionProbabilityWeightFactory> getSelectionProbabilityWeightFactoryClass() {
         return selectionProbabilityWeightFactoryClass;
     }
 
-    public void setSelectionProbabilityWeightFactoryClass(Class<? extends PlanningEntitySelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass) {
+    public void setSelectionProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> selectionProbabilityWeightFactoryClass) {
         this.selectionProbabilityWeightFactoryClass = selectionProbabilityWeightFactoryClass;
     }
 
@@ -118,7 +118,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                         + selectionProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            PlanningEntitySelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
             try {
                 selectionProbabilityWeightFactory = selectionProbabilityWeightFactoryClass.newInstance();
             } catch (InstantiationException e) {

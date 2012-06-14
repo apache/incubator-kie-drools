@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
@@ -31,13 +32,13 @@ import org.drools.planner.core.util.RandomUtils;
 
 public class ProbabilityValueSelector extends CachingValueSelector {
 
-    protected final PlanningValueSelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory selectionProbabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
     public ProbabilityValueSelector(SelectionCacheType cacheType,
-            PlanningValueSelectionProbabilityWeightFactory selectionProbabilityWeightFactory) {
+            SelectionProbabilityWeightFactory selectionProbabilityWeightFactory) {
         super(cacheType);
         this.selectionProbabilityWeightFactory = selectionProbabilityWeightFactory;
     }
