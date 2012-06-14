@@ -202,8 +202,7 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
                 newTx = true;
             }
         } catch(Exception e) { 
-            logger.error("Unable to find or open a transaction: " + e.getMessage());
-            e.printStackTrace();
+            logger.warn("Unable to find or open a transaction: " + e.getMessage(), e);
         }
         
         em.joinTransaction(); 

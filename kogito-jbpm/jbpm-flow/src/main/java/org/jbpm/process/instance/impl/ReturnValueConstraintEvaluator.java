@@ -129,11 +129,11 @@ public class ReturnValueConstraintEvaluator
             context.setNodeInstance( instance );
             value = this.evaluator.evaluate( context );
         } catch ( Exception e ) {
-            throw new RuntimeException( "unable to execute ReturnValueEvaluator",
+            throw new RuntimeException( "unable to execute ReturnValueEvaluator: ",
                                         e );
         }
         if ( !(value instanceof Boolean) ) {
-            throw new RuntimeException( "Constraints must return boolean values" );
+            throw new RuntimeException( "Constraints must return boolean values: " + value + " for expression " + constraint);
         }
         return ((Boolean) value).booleanValue();
     }
