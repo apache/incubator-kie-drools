@@ -18,9 +18,13 @@ package org.drools.planner.core.heuristic.selector.move.composite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
+import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.heuristic.selector.cached.FixedSelectorProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.DummyMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
@@ -76,23 +80,27 @@ public class UnionMoveSelectorTest {
         moveSelector.solvingEnded(solverScope);
     }
 
-    @Test @Ignore("FIXME")
+    @Test
     public void randomSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
-        childMoveSelectorList.add(new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"))));
-                // TODO probabilityWeight = 1000L
-        childMoveSelectorList.add(new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5"))));
-                // TODO probabilityWeight = 20L
-        UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true);
+        Map<Selector, Double> fixedProbabilityWeightMap = new HashMap<Selector, Double>();
+        DummyMoveSelector moveSelector1 = new DummyMoveSelector(
+                Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
+        childMoveSelectorList.add(moveSelector1);
+        fixedProbabilityWeightMap.put(moveSelector1, 1000.0);
+        DummyMoveSelector moveSelector2 = new DummyMoveSelector(
+                Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5")));
+        childMoveSelectorList.add(moveSelector2);
+        fixedProbabilityWeightMap.put(moveSelector2, 20.0);
+        UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
+                new FixedSelectorProbabilityWeightFactory(fixedProbabilityWeightMap));
 
         Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(1020)).thenReturn(1, 1019, 1000, 0, 999);
+        when(workingRandom.nextDouble()).thenReturn(1.0 / 1020.0, 1019.0 / 1020.0, 1000.0 / 1020.0, 0.0, 999.0 / 1020.0);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
-        moveSelector.solvingStarted(solverScope);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.solvingStarted(solverScope);
         AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
