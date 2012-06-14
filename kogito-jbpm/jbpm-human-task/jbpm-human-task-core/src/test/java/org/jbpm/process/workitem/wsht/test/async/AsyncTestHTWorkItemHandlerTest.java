@@ -18,11 +18,10 @@ package org.jbpm.process.workitem.wsht.test.async;
 import static org.jbpm.task.service.test.impl.TestServerUtil.startAsyncServer;
 
 import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.test.impl.AsyncTestHTWorkItemHandler;
 
-public class AsyncTestQHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseAsyncTest {
+public class AsyncTestHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseAsyncTest {
 
     private TaskServer server;
 
@@ -33,7 +32,7 @@ public class AsyncTestQHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseAsync
         while (!server.isRunning()) {
             Thread.sleep(50);
         }
-        AsyncTestHTWorkItemHandler handler = new AsyncTestHTWorkItemHandler(new TestStatefulKnowledgeSession(), server);
+        AsyncTestHTWorkItemHandler handler = new AsyncTestHTWorkItemHandler(ksession, server);
         setClient(handler.getClient());
         setHandler(handler);
     }

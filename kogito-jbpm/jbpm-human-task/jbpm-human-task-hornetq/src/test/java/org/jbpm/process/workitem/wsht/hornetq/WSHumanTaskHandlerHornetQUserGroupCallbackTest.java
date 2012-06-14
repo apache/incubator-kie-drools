@@ -16,10 +16,8 @@
 
 package org.jbpm.process.workitem.wsht.hornetq;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.WSHumanTaskHandlerBaseUserGroupCallbackTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
@@ -38,7 +36,7 @@ public class WSHumanTaskHandlerHornetQUserGroupCallbackTest extends WSHumanTaskH
             System.out.print(".");
             Thread.sleep( 50 );
         }
-        AsyncHornetQHTWorkItemHandler handler = new AsyncHornetQHTWorkItemHandler(new TestStatefulKnowledgeSession());
+        AsyncHornetQHTWorkItemHandler handler = new AsyncHornetQHTWorkItemHandler(ksession);
         setClient(handler.getClient());
         setHandler(handler);
     }

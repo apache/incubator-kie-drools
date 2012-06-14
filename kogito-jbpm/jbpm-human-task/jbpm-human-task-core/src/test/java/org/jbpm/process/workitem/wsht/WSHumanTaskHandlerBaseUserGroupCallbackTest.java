@@ -58,6 +58,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
     public void testTaskGroupActors() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -102,6 +103,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
     public void testTaskFail() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -140,6 +142,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
     public void testTaskSkip() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -172,6 +175,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
     public void testTaskAbortSkippable() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -194,6 +198,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
     public void testTaskAbortNotSkippable() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -222,6 +227,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
     
     public void testTaskExit() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -257,6 +263,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
     public void testTaskData() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -315,8 +322,9 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         assertEquals("This is the result", results.get("Result"));
     }
 
-        public void testTaskDataAutomaticMapping() throws Exception {
+    public void testTaskDataAutomaticMapping() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -384,6 +392,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
     public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {
 
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         //Create the parent task
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
@@ -529,6 +538,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
     public void TODOtestOnParentAbortAllSubTasksEndStrategy() throws Exception {
 
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         //Create the parent task
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");

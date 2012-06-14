@@ -22,6 +22,7 @@ import org.drools.runtime.Environment;
 
 import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.service.ContentData;
@@ -45,16 +46,15 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private AsyncTaskService client;
     private String ipAddress;
     private int port;
-    private WorkItemManager manager;
     private boolean local = false;
     private boolean connected = false;
     private ClassLoader classLoader;
-    
+
     public AsyncGenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
         super(session, action);
         this.classLoader = classLoader;
     }
-    
+
     public AsyncGenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
     }
@@ -106,9 +106,9 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
-    
+
     private void registerTaskEvents() {
-        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, session.getEnvironment(),  client, classLoader);
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(client, classLoader);
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
         eventHandlers.put(key, eventResponseHandler);
@@ -128,7 +128,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
             throw new IllegalStateException("You must set the IP and Port to the work item to work");
         }
         if (client != null) {
-            if(!connected){
+            if (!connected) {
                 connected = client.connect(ipAddress, port);
                 if (!connected) {
                     throw new IllegalArgumentException("Could not connect task client");
@@ -151,13 +151,12 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        this.manager = manager;
         Task task = createTaskBasedOnWorkItemParams(workItem);
         ContentData content = createTaskContentBasedOnWorkItemParams(workItem);
         connect();
         client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
 
-        
+
     }
 
     @Override
@@ -168,53 +167,51 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     private class TaskAddedHandler extends AbstractBaseResponseHandler implements TaskClientHandler.AddTaskResponseHandler {
 
-		private long workItemId;
-		
-		public TaskAddedHandler(long workItemId) {
-			this.workItemId = workItemId;
-		}
-		public void execute(long taskId) {
-			
-		}
+        private long workItemId;
 
-		@Override
-		public synchronized void setError(RuntimeException error) {		
-			super.setError(error);
-			
-			if (action.equals(OnErrorAction.ABORT)) {
-				manager.abortWorkItem(workItemId);
-				
-			} else if (action.equals(OnErrorAction.RETHROW)) {
-				throw getError();
-				
-			} else if (action.equals(OnErrorAction.LOG)) {
-				StringBuffer logMsg = new StringBuffer();
-				logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
-				logMsg.append(". Error reported by task server: " + getError().getMessage() );
-				logger.error(logMsg.toString(), getError());
-			}
-		}
-	
+        public TaskAddedHandler(long workItemId) {
+            this.workItemId = workItemId;
+        }
+
+        public void execute(long taskId) {
+        }
+
+        @Override
+        public synchronized void setError(RuntimeException error) {
+            super.setError(error);
+
+            if (action.equals(OnErrorAction.ABORT)) {
+                session.getWorkItemManager().abortWorkItem(workItemId);
+
+            } else if (action.equals(OnErrorAction.RETHROW)) {
+                throw getError();
+
+            } else if (action.equals(OnErrorAction.LOG)) {
+                StringBuffer logMsg = new StringBuffer();
+                logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
+                logMsg.append(". Error reported by task server: " + getError().getMessage());
+                logger.error(logMsg.toString(), getError());
+            }
+        }
     }
 
-    private static class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
+    private class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
 
-        private WorkItemManager manager;
         private AsyncTaskService client;
-        private Environment env;
         private ClassLoader classLoader;
-        public TaskCompletedHandler(WorkItemManager manager, Environment env,  AsyncTaskService client, ClassLoader classLoader) {
-            this.manager = manager;
+
+        public TaskCompletedHandler(AsyncTaskService client, ClassLoader classLoader) {
+
             this.client = client;
-            this.env = env;
             this.classLoader = classLoader;
+
         }
 
         public void execute(Payload payload) {
             TaskEvent event = (TaskEvent) payload.get();
             long taskId = event.getTaskId();
             TaskClientHandler.GetTaskResponseHandler getTaskResponseHandler =
-                    new GetCompletedTaskResponseHandler(manager, env, client, classLoader);
+                    new GetCompletedTaskResponseHandler(client, classLoader);
             client.getTask(taskId, getTaskResponseHandler);
         }
 
@@ -223,16 +220,13 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         }
     }
 
-    private static class GetCompletedTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
+    private class GetCompletedTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
 
-        private WorkItemManager manager;
         private AsyncTaskService client;
-        private Environment env;
         private ClassLoader classLoader;
-        public GetCompletedTaskResponseHandler(WorkItemManager manager, Environment env, AsyncTaskService client, ClassLoader classLoader) {
-            this.manager = manager;
+
+        public GetCompletedTaskResponseHandler(AsyncTaskService client, ClassLoader classLoader) {
             this.client = client;
-            this.env = env;
             this.classLoader = classLoader;
         }
 
@@ -245,49 +239,46 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 long contentId = task.getTaskData().getOutputContentId();
                 if (contentId != -1) {
                     TaskClientHandler.GetContentResponseHandler getContentResponseHandler =
-                            new GetResultContentResponseHandler(manager, env, task, results, classLoader);
+                            new GetResultContentResponseHandler(task, results, classLoader);
                     client.getContent(contentId, getContentResponseHandler);
                 } else {
-                    manager.completeWorkItem(workItemId, results);
+                    session.getWorkItemManager().completeWorkItem(workItemId, results);
                 }
             } else {
-                manager.abortWorkItem(workItemId);
+                session.getWorkItemManager().abortWorkItem(workItemId);
             }
         }
     }
 
-    private static class GetResultContentResponseHandler extends AbstractBaseResponseHandler implements GetContentResponseHandler {
+    private class GetResultContentResponseHandler extends AbstractBaseResponseHandler implements GetContentResponseHandler {
 
-        private WorkItemManager manager;
         private Task task;
         private Map<String, Object> results;
-        private Environment env;
         private ClassLoader classLoader;
-        public GetResultContentResponseHandler(WorkItemManager manager,  Environment env, Task task, Map<String, Object> results, ClassLoader classLoader) {
-            this.manager = manager;
+
+        public GetResultContentResponseHandler(Task task, Map<String, Object> results, ClassLoader classLoader) {
             this.task = task;
             this.results = results;
-            this.env = env;
             this.classLoader = classLoader;
         }
 
         public void execute(Content content) {
-                Object result = ContentMarshallerHelper.unmarshall( content.getContent(), env, classLoader);
-                results.put("Result", result);
-                if (result instanceof Map) {
-                    @SuppressWarnings("rawtypes")
-					Map<?, ?> map = (Map) result;
-                    for (Map.Entry<?, ?> entry : map.entrySet()) {
-                        if (entry.getKey() instanceof String) {
-                            results.put((String) entry.getKey(), entry.getValue());
-                        }
+            Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment(), classLoader);
+            results.put("Result", result);
+            if (result instanceof Map) {
+                @SuppressWarnings("rawtypes")
+                Map<?, ?> map = (Map) result;
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+                    if (entry.getKey() instanceof String) {
+                        results.put((String) entry.getKey(), entry.getValue());
                     }
                 }
-                manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+            }
+            session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
         }
     }
 
-    private static class AbortTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
+    private class AbortTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
 
         private AsyncTaskService client;
 

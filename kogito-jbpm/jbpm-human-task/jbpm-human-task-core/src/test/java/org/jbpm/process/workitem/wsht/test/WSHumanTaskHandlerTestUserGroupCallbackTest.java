@@ -34,7 +34,7 @@ public class WSHumanTaskHandlerTestUserGroupCallbackTest extends WSHumanTaskHand
         while (!server.isRunning()) {
             Thread.sleep(50);
         }
-        AsyncTestHTWorkItemHandler handler = new AsyncTestHTWorkItemHandler(new TestStatefulKnowledgeSession(), server);
+        AsyncTestHTWorkItemHandler handler = new AsyncTestHTWorkItemHandler(ksession, server);
         setClient(handler.getClient());
         setHandler(handler);
     }

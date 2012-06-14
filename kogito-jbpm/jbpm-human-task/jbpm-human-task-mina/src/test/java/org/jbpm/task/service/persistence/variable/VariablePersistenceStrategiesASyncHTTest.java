@@ -54,6 +54,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.jbpm.task.utils.OnErrorAction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,7 +89,6 @@ public class VariablePersistenceStrategiesASyncHTTest extends BaseTest {
         
 
         
-         super.setUp();
         server = new MinaTaskServer(taskService);
         Thread thread = new Thread(server);
         thread.start();
@@ -101,7 +101,7 @@ public class VariablePersistenceStrategiesASyncHTTest extends BaseTest {
         
         
         
-        AsyncMinaHTWorkItemHandler asyncWSHumanTaskHandler = new AsyncMinaHTWorkItemHandler(ksession);
+        AsyncMinaHTWorkItemHandler asyncWSHumanTaskHandler = new AsyncMinaHTWorkItemHandler("my-mina-connector", client, ksession, null);
         setClient(asyncWSHumanTaskHandler.getClient());
         setHandler(asyncWSHumanTaskHandler);
     }
