@@ -78,18 +78,18 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                               String expression,
                                               Declaration[] declarations,
                                               String leftValue,
-                                              OperatorDescr operator,
+                                              OperatorDescr operatorDescr,
                                               String rightValue,
                                               InternalReadAccessor extractor,
                                               Declaration requiredDeclaration,
                                               RelationalExprDescr relDescr) {
-        if (!isMvelOperator(operator.getOperator())) {
+        if (!isMvelOperator(operatorDescr.getOperator())) {
             EvaluatorDefinition.Target right = getRightTarget( extractor );
             EvaluatorDefinition.Target left = (requiredDeclaration.isPatternDeclaration() && !(Date.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
             final Evaluator evaluator = getEvaluator( context,
                                                       relDescr,
                                                       extractor.getValueType(),
-                                                      operator.getOperator(),
+                                                      operatorDescr.getOperator(),
                                                       relDescr.isNegated(),
                                                       relDescr.getParametersText(),
                                                       left,
@@ -97,11 +97,11 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             return new EvaluatorConstraint(new Declaration[] { requiredDeclaration }, evaluator, extractor);
         }
 
-        boolean isUnification = requiredDeclaration != null && requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && Operator.EQUAL.getOperatorString().equals( operator );
+        boolean isUnification = requiredDeclaration != null && requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && Operator.EQUAL.getOperatorString().equals( operatorDescr.getOperator() );
         if (isUnification) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
         }
-        boolean isIndexable = operator.equals("==");
+        boolean isIndexable = operatorDescr.getOperator().equals("==");
         MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression);
         return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, isIndexable, requiredDeclaration, extractor, isUnification);
     }
@@ -143,45 +143,45 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable, field, extractor);
     }
 
-    private static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {
-            // resolve ambiguity between variable and bound value with the same name in unifications
-            if (leftValue.equals(rightValue)) {
-                rightValue = rightValue + "__";
-                for (Declaration declaration : declrations) {
-                    if (declaration.getIdentifier().equals(leftValue)) {
-                        declaration.setBindingName(rightValue);
-                    }
+    protected static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {
+        // resolve ambiguity between variable and bound value with the same name in unifications
+        if (leftValue.equals(rightValue)) {
+            rightValue = rightValue + "__";
+            for (Declaration declaration : declrations) {
+                if (declaration.getIdentifier().equals(leftValue)) {
+                    declaration.setBindingName(rightValue);
                 }
-                expr = leftValue + " == " + rightValue;
             }
-            return expr;
+            expr = leftValue + " == " + rightValue;
+        }
+        return expr;
+    }
+
+    protected static String normalizeMVELLiteralExpression(ValueType vtype,
+                                                           FieldValue field,
+                                                           String expr,
+                                                           String leftValue,
+                                                           String operator,
+                                                           String rightValue,
+                                                           LiteralRestrictionDescr restrictionDescr) {
+        if (vtype == ValueType.DATE_TYPE) {
+            Date date = (Date)field.getValue();
+            return leftValue + " " + operator + (date != null ? " new java.util.Date(" + date.getTime() + ")" : " null");
+        }
+        if (operator.equals("str")) {
+            String method = restrictionDescr.getParameterText();
+            if (method.equals("length")) {
+                return leftValue + ".length()" + (restrictionDescr.isNegated() ? " != " : " == ") + rightValue;
+            }
+            return (restrictionDescr.isNegated() ? "!" : "") + leftValue + "." + method + "(" + rightValue + ")";
         }
 
-        private static String normalizeMVELLiteralExpression(ValueType vtype,
-                                                             FieldValue field,
-                                                             String expr,
-                                                             String leftValue,
-                                                             String operator,
-                                                             String rightValue,
-                                                             LiteralRestrictionDescr restrictionDescr) {
-            if (vtype == ValueType.DATE_TYPE) {
-                Date date = (Date)field.getValue();
-                return leftValue + " " + operator + (date != null ? " new java.util.Date(" + date.getTime() + ")" : " null");
-            }
-            if (operator.equals("str")) {
-                String method = restrictionDescr.getParameterText();
-                if (method.equals("length")) {
-                    return leftValue + ".length()" + (restrictionDescr.isNegated() ? " != " : " == ") + rightValue;
-                }
-                return (restrictionDescr.isNegated() ? "!" : "") + leftValue + "." + method + "(" + rightValue + ")";
-            }
-
-            // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
-            if (expr.startsWith("empty") && (operator.equals("==") || operator.equals("!="))) {
-                expr = "isEmpty()" + expr.substring(5);
-            }
-            return expr;
+        // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
+        if (expr.startsWith("empty") && (operator.equals("==") || operator.equals("!="))) {
+            expr = "isEmpty()" + expr.substring(5);
         }
+        return expr;
+    }
 
     protected static Declaration getIndexingDeclaration(Restriction restriction) {
         if (restriction instanceof ReturnValueRestriction) return null;
