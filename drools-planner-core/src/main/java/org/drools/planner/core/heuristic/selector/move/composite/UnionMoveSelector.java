@@ -65,7 +65,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
             if (selectorProbabilityWeightFactory == null) {
                 throw new IllegalArgumentException("The compositeMoveSelector (" + this
                         + ") with randomSelection (" + randomSelection
-                        + ") requires a electorProbabilityWeightFactory ("  + selectorProbabilityWeightFactory
+                        + ") requires a selectorProbabilityWeightFactory ("  + selectorProbabilityWeightFactory
                         + ")");
             }
         }
