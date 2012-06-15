@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.entity.PlanningEntitySorter;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 // TODO Refactor to general purpose SortingEntitySelector
@@ -32,8 +33,9 @@ public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
 
     protected List<Object> cachedEntityList = null;
 
-    public DecreasingDifficultyEntitySelector(SelectionCacheType cacheType, PlanningEntitySorter planningEntitySorter) {
-        super(cacheType);
+    public DecreasingDifficultyEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
+            PlanningEntitySorter planningEntitySorter) {
+        super(childEntitySelector, cacheType);
         this.planningEntitySorter = planningEntitySorter;
         if (!planningEntitySorter.isSortDifficultySupported()) {
             throw new IllegalStateException("Decreasing difficulty entity selection" +

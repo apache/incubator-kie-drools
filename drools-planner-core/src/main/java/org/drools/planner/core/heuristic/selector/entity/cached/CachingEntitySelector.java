@@ -34,30 +34,23 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  */
 public abstract class CachingEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
 
+    protected final EntitySelector childEntitySelector;
     protected final SelectionCacheType cacheType;
-    protected EntitySelector childEntitySelector;
 
-    public CachingEntitySelector(SelectionCacheType cacheType) {
+    public CachingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType) {
+        this.childEntitySelector = childEntitySelector;
         this.cacheType = cacheType;
+        if (childEntitySelector.isNeverEnding()) {
+            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
+                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+        }
+        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
         if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
                 && cacheType != SelectionCacheType.STEP) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
-    }
-
-    public EntitySelector getChildEntitySelector() {
-        return childEntitySelector;
-    }
-
-    public void setChildEntitySelector(EntitySelector childEntitySelector) {
-        this.childEntitySelector = childEntitySelector;
-        if (childEntitySelector.isNeverEnding()) {
-            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
-                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
-        }
-        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
     }
 
     // ************************************************************************

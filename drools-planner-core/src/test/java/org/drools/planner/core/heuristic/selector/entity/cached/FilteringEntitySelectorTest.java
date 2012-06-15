@@ -52,7 +52,6 @@ public class FilteringEntitySelectorTest {
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
-        FilteringEntitySelector entitySelector = new FilteringEntitySelector(cacheType);
         EntitySelector childEntitySelector = mock(EntitySelector.class);
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
@@ -64,7 +63,8 @@ public class FilteringEntitySelectorTest {
         when(childEntitySelector.isContinuous()).thenReturn(false);
         when(childEntitySelector.isNeverEnding()).thenReturn(false);
         when(childEntitySelector.getSize()).thenReturn((long) entityList.size());
-        entitySelector.setChildEntitySelector(childEntitySelector);
+
+        FilteringEntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, cacheType);
         verify(childEntitySelector, times(1)).isNeverEnding();
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

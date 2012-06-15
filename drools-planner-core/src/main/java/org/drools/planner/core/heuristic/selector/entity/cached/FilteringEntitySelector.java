@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class FilteringEntitySelector extends CachingEntitySelector {
@@ -29,8 +30,8 @@ public class FilteringEntitySelector extends CachingEntitySelector {
     protected List<Object> cachedEntityList = null;
     // TODO filter class
 
-    public FilteringEntitySelector(SelectionCacheType cacheType) {
-        super(cacheType);
+    public FilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType) {
+        super(childEntitySelector, cacheType);
     }
 
     // ************************************************************************
