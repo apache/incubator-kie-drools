@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.machinereassignment.domain;
+package org.drools.planner.examples.machinereassignment.domain.solver;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.examples.common.domain.AbstractPersistable;
+import java.io.Serializable;
 
-@XStreamAlias("MrServiceDependency")
-public class MrServiceDependency extends AbstractPersistable {
+import org.drools.planner.examples.machinereassignment.domain.MrService;
+
+public class MrServiceDependency implements Serializable {
 
     private MrService fromService;
     private MrService toService;

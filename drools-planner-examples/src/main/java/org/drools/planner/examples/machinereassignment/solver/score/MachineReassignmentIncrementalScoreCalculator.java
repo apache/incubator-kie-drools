@@ -34,9 +34,12 @@ import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
-import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<MachineReassignment> {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private MachineReassignment machineReassignment;
     private MrGlobalPenaltyInfo globalPenaltyInfo;
@@ -58,12 +61,6 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
         serviceScorePartMap = new HashMap<MrService, MrServiceScorePart>(serviceList.size());
         for (MrService service : serviceList) {
             serviceScorePartMap.put(service, new MrServiceScorePart(service));
-        }
-        for (MrServiceDependency serviceDependency : machineReassignment.getServiceDependencyList()) {
-            serviceScorePartMap.get(serviceDependency.getFromService())
-                    .initToDependencyService(serviceDependency.getToService());
-            serviceScorePartMap.get(serviceDependency.getToService())
-                    .initFromDependencyService(serviceDependency.getFromService());
         }
         movedProcessCountToServiceCount = new HashMap<Integer, Integer>(serviceList.size());
         movedProcessCountToServiceCount.put(0, serviceList.size());
@@ -145,8 +142,6 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
     private class MrServiceScorePart {
 
         private final MrService service;
-        private final List<MrService> toDependencyServiceList;
-        private final List<MrService> fromDependencyServiceList;
 
         private Map<MrLocation, Integer> locationBag;
         private Map<MrNeighborhood, Integer> neighborhoodBag;
@@ -154,8 +149,6 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
 
         private MrServiceScorePart(MrService service) {
             this.service = service;
-            toDependencyServiceList = new ArrayList<MrService>(machineReassignment.getServiceList().size());
-            fromDependencyServiceList = new ArrayList<MrService>(machineReassignment.getServiceList().size());
             locationBag = new HashMap<MrLocation, Integer>(machineReassignment.getLocationList().size());
             hardScore -= service.getLocationSpread();
             List<MrNeighborhood> neighborhoodList = machineReassignment.getNeighborhoodList();
@@ -164,22 +157,6 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 neighborhoodBag.put(neighborhood, 0);
             }
             movedProcessCount = 0;
-        }
-
-        private void initToDependencyService(MrService toDependencyService) {
-            if (toDependencyService.equals(service)) {
-                throw new IllegalStateException("The toDependencyService (" + toDependencyService
-                        + ") cannot be equal to the service (" + service + ").");
-            }
-            toDependencyServiceList.add(toDependencyService);
-        }
-
-        private void initFromDependencyService(MrService fromDependencyService) {
-            if (fromDependencyService.equals(service)) {
-                throw new IllegalStateException("The fromDependencyService (" + fromDependencyService
-                        + ") cannot be equal to the service (" + service + ").");
-            }
-            fromDependencyServiceList.add(fromDependencyService);
         }
 
         private void addProcessAssignment(MrProcessAssignment processAssignment) {
@@ -201,7 +178,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
             MrNeighborhood neighborhood = processAssignment.getNeighborhood();
             int neighborhoodProcessCount = neighborhoodBag.get(neighborhood) + 1;
             neighborhoodBag.put(neighborhood, neighborhoodProcessCount);
-            for (MrService toDependencyService : toDependencyServiceList) {
+            for (MrService toDependencyService : service.getToDependencyServiceList()) {
                 int toDependencyNeighborhoodProcessCount = serviceScorePartMap.get(toDependencyService)
                         .neighborhoodBag.get(neighborhood);
                 if (toDependencyNeighborhoodProcessCount == 0) {
@@ -209,7 +186,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 }
             }
             if (neighborhoodProcessCount == 1) {
-                for (MrService fromDependencyService : fromDependencyServiceList) {
+                for (MrService fromDependencyService : service.getFromDependencyServiceList()) {
                     int fromDependencyNeighborhoodProcessCount = serviceScorePartMap.get(fromDependencyService)
                             .neighborhoodBag.get(neighborhood);
                     hardScore += fromDependencyNeighborhoodProcessCount;
@@ -251,7 +228,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
             MrNeighborhood neighborhood = processAssignment.getNeighborhood();
             int neighborhoodProcessCount = neighborhoodBag.get(neighborhood) - 1;
             neighborhoodBag.put(neighborhood, neighborhoodProcessCount);
-            for (MrService toDependencyService : toDependencyServiceList) {
+            for (MrService toDependencyService : service.getToDependencyServiceList()) {
                 int toDependencyNeighborhoodProcessCount = serviceScorePartMap.get(toDependencyService)
                         .neighborhoodBag.get(neighborhood);
                 if (toDependencyNeighborhoodProcessCount == 0) {
@@ -259,7 +236,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 }
             }
             if (neighborhoodProcessCount == 0) {
-                for (MrService fromDependencyService : fromDependencyServiceList) {
+                for (MrService fromDependencyService : service.getFromDependencyServiceList()) {
                     int fromDependencyNeighborhoodProcessCount = serviceScorePartMap.get(fromDependencyService)
                             .neighborhoodBag.get(neighborhood);
                     hardScore -= fromDependencyNeighborhoodProcessCount;
@@ -295,11 +272,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
             for (MrMachineCapacity machineCapacity : machineCapacityList) {
                 machineCapacityScorePartList.add(new MrMachineCapacityScorePart(machineCapacity));
             }
-            List<MrService> serviceList = machineReassignment.getServiceList();
-            serviceBag = new HashMap<MrService, Integer>(serviceList.size());
-            for (MrService service : serviceList) {
-                serviceBag.put(service, 0);
-            }
+            serviceBag = new HashMap<MrService, Integer>(10);
             doBalancePenaltyCosts();
         }
 
@@ -317,7 +290,8 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
             }
             // Conflict constraints
             MrService service = processAssignment.getService();
-            int serviceProcessCount = serviceBag.get(service);
+            Integer serviceProcessCountInteger = serviceBag.get(service);
+            int serviceProcessCount = serviceProcessCountInteger == null ? 0 : serviceProcessCountInteger;
             if (serviceProcessCount > 1) {
                 hardScore += (serviceProcessCount - 1);
             }
@@ -325,7 +299,8 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
             if (serviceProcessCount > 1) {
                 hardScore -= (serviceProcessCount - 1);
             }
-            serviceBag.put(service, serviceProcessCount);
+            serviceProcessCountInteger = serviceProcessCount == 0 ? null : serviceProcessCount;
+            serviceBag.put(service, serviceProcessCountInteger);
             // Balance cost
             doBalancePenaltyCosts();
             // Move costs
@@ -343,15 +318,18 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 machineCapacityScorePart.removeProcessAssignment(processAssignment);
             }
             // Conflict constraints
-            int serviceCount = serviceBag.get(processAssignment.getService());
-            if (serviceCount > 1) {
-                hardScore += (serviceCount - 1);
+            MrService service = processAssignment.getService();
+            Integer serviceProcessCountInteger = serviceBag.get(service);
+            int serviceProcessCount = serviceProcessCountInteger == null ? 0 : serviceProcessCountInteger;
+            if (serviceProcessCount > 1) {
+                hardScore += (serviceProcessCount - 1);
             }
-            serviceCount--;
-            if (serviceCount > 1) {
-                hardScore -= (serviceCount - 1);
+            serviceProcessCount--;
+            if (serviceProcessCount > 1) {
+                hardScore -= (serviceProcessCount - 1);
             }
-            serviceBag.put(processAssignment.getService(), serviceCount);
+            serviceProcessCountInteger = serviceProcessCount == 0 ? null : serviceProcessCount;
+            serviceBag.put(service, serviceProcessCountInteger);
             doBalancePenaltyCosts();
             // Move costs
             if (processAssignment.isMoved()) {

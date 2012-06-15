@@ -27,6 +27,7 @@ import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
 @XStreamAlias("MachineReassignment")
 public class MachineReassignment extends AbstractPersistable implements Solution<HardAndSoftLongScore> {
@@ -39,7 +40,6 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     private List<MrMachineCapacity> machineCapacityList;
     private List<MrMachineMoveCost> machineMoveCostList;
     private List<MrService> serviceList;
-    private List<MrServiceDependency> serviceDependencyList;
     private List<MrProcess> processList;
     private List<MrBalancePenalty> balancePenaltyList;
 
@@ -111,14 +111,6 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.serviceList = serviceList;
     }
 
-    public List<MrServiceDependency> getServiceDependencyList() {
-        return serviceDependencyList;
-    }
-
-    public void setServiceDependencyList(List<MrServiceDependency> serviceDependencyList) {
-        this.serviceDependencyList = serviceDependencyList;
-    }
-
     public List<MrProcess> getProcessList() {
         return processList;
     }
@@ -166,11 +158,24 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         facts.addAll(machineCapacityList);
         facts.addAll(machineMoveCostList);
         facts.addAll(serviceList);
-        facts.addAll(serviceDependencyList);
+        facts.addAll(createServiceDependencyList());
         facts.addAll(processList);
         facts.addAll(balancePenaltyList);
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
+    }
+
+    private List<MrServiceDependency> createServiceDependencyList() {
+        List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceList.size() * 5);
+        for (MrService service : serviceList) {
+            for (MrService toService : service.getToDependencyServiceList()) {
+                MrServiceDependency serviceDependency = new MrServiceDependency();
+                serviceDependency.setFromService(service);
+                serviceDependency.setToService(toService);
+                serviceDependencyList.add(serviceDependency);
+            }
+        }
+        return serviceDependencyList;
     }
 
     /**
@@ -187,7 +192,6 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         clone.machineCapacityList = machineCapacityList;
         clone.machineMoveCostList = machineMoveCostList;
         clone.serviceList = serviceList;
-        clone.serviceDependencyList = serviceDependencyList;
         clone.processList = processList;
         clone.balancePenaltyList = balancePenaltyList;
         List<MrProcessAssignment> clonedProcessAssignmentList

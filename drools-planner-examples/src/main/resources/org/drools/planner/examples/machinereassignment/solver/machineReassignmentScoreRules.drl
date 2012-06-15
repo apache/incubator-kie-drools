@@ -33,9 +33,9 @@ import org.drools.planner.examples.machinereassignment.domain.MrProcess;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
-import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineTransientUsage;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
+import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
 global HardAndSoftLongScoreHolder scoreHolder;

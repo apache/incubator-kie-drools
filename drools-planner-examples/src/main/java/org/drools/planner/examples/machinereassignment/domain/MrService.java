@@ -16,13 +16,34 @@
 
 package org.drools.planner.examples.machinereassignment.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("MrService")
 public class MrService extends AbstractPersistable {
 
+    private List<MrService> toDependencyServiceList;
+    private List<MrService> fromDependencyServiceList;
+
     private int locationSpread;
+
+    public List<MrService> getToDependencyServiceList() {
+        return toDependencyServiceList;
+    }
+
+    public void setToDependencyServiceList(List<MrService> toDependencyServiceList) {
+        this.toDependencyServiceList = toDependencyServiceList;
+    }
+
+    public List<MrService> getFromDependencyServiceList() {
+        return fromDependencyServiceList;
+    }
+
+    public void setFromDependencyServiceList(List<MrService> fromDependencyServiceList) {
+        this.fromDependencyServiceList = fromDependencyServiceList;
+    }
 
     public int getLocationSpread() {
         return locationSpread;

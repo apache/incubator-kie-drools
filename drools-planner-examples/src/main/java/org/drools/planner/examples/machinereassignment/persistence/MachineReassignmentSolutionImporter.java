@@ -19,7 +19,6 @@ package org.drools.planner.examples.machinereassignment.persistence;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
@@ -45,7 +44,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignmen
 import org.drools.planner.examples.machinereassignment.domain.MrProcessRequirement;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
-import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
+import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
 public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImporter {
 
@@ -208,31 +207,32 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             for (int i = 0; i < serviceListSize; i++) {
                 MrService service = new MrService();
                 service.setId(serviceId);
+                service.setFromDependencyServiceList(new ArrayList<MrService>(5));
                 serviceList.add(service);
                 serviceId++;
             }
-            List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceListSize * 5);
-            long serviceDependencyId = 0L;
             for (int i = 0; i < serviceListSize; i++) {
                 MrService service = serviceList.get(i);
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line);
                 service.setLocationSpread(Integer.parseInt(lineTokens[0]));
                 int serviceDependencyListSize = Integer.parseInt(lineTokens[1]);
+                List<MrService> toDependencyServiceList = new ArrayList<MrService>(serviceDependencyListSize);
                 for (int j = 0; j < serviceDependencyListSize; j++) {
-                    MrServiceDependency serviceDependency = new MrServiceDependency();
-                    serviceDependency.setId(serviceDependencyId);
-                    serviceDependency.setFromService(service);
                     int toServiceIndex = Integer.parseInt(lineTokens[2 + j]);
                     if (toServiceIndex >= serviceList.size()) {
                         throw new IllegalArgumentException("Service with id (" + serviceId
                                 + ") has a non existing toServiceIndex (" + toServiceIndex + ").");
                     }
                     MrService toService = serviceList.get(toServiceIndex);
-                    serviceDependency.setToService(toService);
-                    serviceDependencyList.add(serviceDependency);
-                    serviceDependencyId++;
+                    if (toService.equals(service)) {
+                        throw new IllegalStateException("The toService (" + toService
+                                + ") cannot be equal to the service (" + service + ").");
+                    }
+                    toDependencyServiceList.add(toService);
+                    toService.getFromDependencyServiceList().add(service);
                 }
+                service.setToDependencyServiceList(toDependencyServiceList);
                 int numberOfTokens = 2 + serviceDependencyListSize;
                 if (lineTokens.length != numberOfTokens) {
                     throw new IllegalArgumentException("Read line (" + line + ") has " + lineTokens.length
@@ -240,7 +240,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 }
             }
             machineReassignment.setServiceList(serviceList);
-            machineReassignment.setServiceDependencyList(serviceDependencyList);
         }
 
         private void readProcessList() throws IOException {
