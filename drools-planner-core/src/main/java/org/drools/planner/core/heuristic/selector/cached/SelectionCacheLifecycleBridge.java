@@ -68,4 +68,8 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
         }
     }
 
+    @Override
+    public String toString() {
+        return "Bridge(" + selectionCacheLifecycleListener + ")";
+    }
 }
