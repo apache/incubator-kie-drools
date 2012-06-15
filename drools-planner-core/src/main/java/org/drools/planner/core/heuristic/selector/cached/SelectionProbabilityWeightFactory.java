@@ -27,7 +27,7 @@ import org.drools.planner.core.solution.Solution;
  * A probabilityWeight represents the random chance that a selection will be selected.
  * Some use cases benefit from focusing moves more actively on specific selections.
  */
-public interface SelectionProbabilityWeightFactory<T> {
+public interface SelectionProbabilityWeightFactory<S extends Solution, T> {
 
     /**
      * @param solution never null, the {@link Solution} to which the selection belongs or applies to
@@ -35,6 +35,6 @@ public interface SelectionProbabilityWeightFactory<T> {
      * to create the probabilityWeight for
      * @return 0.0 <= returnValue < {@link Double#POSITIVE_INFINITY}
      */
-    double createProbabilityWeight(Solution solution, T selection);
+    double createProbabilityWeight(S solution, T selection);
 
 }

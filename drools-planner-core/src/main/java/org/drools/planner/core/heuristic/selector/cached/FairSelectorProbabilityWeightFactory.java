@@ -19,7 +19,7 @@ package org.drools.planner.core.heuristic.selector.cached;
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.solution.Solution;
 
-public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Selector> {
+public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Solution, Selector> {
 
     public double createProbabilityWeight(Solution solution, Selector selector) {
         return (double) selector.getSize();

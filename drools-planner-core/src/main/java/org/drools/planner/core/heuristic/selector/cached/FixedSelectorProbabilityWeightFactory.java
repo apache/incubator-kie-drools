@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.solution.Solution;
 
-public class FixedSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Selector> {
+public class FixedSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Solution, Selector> {
 
     private final Map<Selector, Double> fixedProbabilityWeightMap;
 
