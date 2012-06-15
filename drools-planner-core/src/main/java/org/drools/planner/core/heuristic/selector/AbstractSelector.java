@@ -22,12 +22,16 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link Selector}.
  * @see Selector
  */
 public abstract class AbstractSelector implements Selector {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
 
