@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMapWalker.g 2012-07-04 10:23:09
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMapWalker.g 2012-07-06 19:05:57
 
     package org.drools.lang.dsl;
 
