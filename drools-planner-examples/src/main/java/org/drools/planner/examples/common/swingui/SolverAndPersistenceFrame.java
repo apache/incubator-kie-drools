@@ -17,6 +17,7 @@
 package org.drools.planner.examples.common.swingui;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -166,8 +167,13 @@ public class SolverAndPersistenceFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
-            solutionBusiness.openSolution(file);
-            setSolutionLoaded();
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            try {
+                solutionBusiness.openSolution(file);
+                setSolutionLoaded();
+            } finally {
+                setCursor(Cursor.getDefaultCursor());
+            }
         }
 
     }
@@ -297,8 +303,13 @@ public class SolverAndPersistenceFrame extends JFrame {
             });
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
-                solutionBusiness.openSolution(fileChooser.getSelectedFile());
-                setSolutionLoaded();
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    solutionBusiness.openSolution(fileChooser.getSelectedFile());
+                    setSolutionLoaded();
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
+                }
             }
         }
 
@@ -323,7 +334,12 @@ public class SolverAndPersistenceFrame extends JFrame {
             });
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
-                solutionBusiness.saveSolution(fileChooser.getSelectedFile());
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    solutionBusiness.saveSolution(fileChooser.getSelectedFile());
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
+                }
             }
         }
 
@@ -347,8 +363,13 @@ public class SolverAndPersistenceFrame extends JFrame {
 //            });
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
-                solutionBusiness.importSolution(fileChooser.getSelectedFile());
-                setSolutionLoaded();
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    solutionBusiness.importSolution(fileChooser.getSelectedFile());
+                    setSolutionLoaded();
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
+                }
             }
         }
 
@@ -372,7 +393,12 @@ public class SolverAndPersistenceFrame extends JFrame {
 //            });
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
-                solutionBusiness.exportSolution(fileChooser.getSelectedFile());
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    solutionBusiness.exportSolution(fileChooser.getSelectedFile());
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
+                }
             }
         }
 
