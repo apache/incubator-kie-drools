@@ -60,6 +60,7 @@ public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExport
         } finally {
             IOUtils.closeQuietly(out);
         }
+        logger.info("Exported: {}", outputFile);
     }
 
     public abstract class XmlOutputBuilder {

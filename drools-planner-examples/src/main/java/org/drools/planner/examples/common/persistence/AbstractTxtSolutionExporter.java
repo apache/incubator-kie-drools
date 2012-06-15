@@ -56,6 +56,7 @@ public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExport
         } finally {
             IOUtils.closeQuietly(bufferedWriter);
         }
+        logger.info("Exported: {}", outputFile);
     }
 
     public abstract class TxtOutputBuilder {

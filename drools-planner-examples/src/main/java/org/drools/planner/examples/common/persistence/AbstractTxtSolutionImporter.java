@@ -44,6 +44,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
     public abstract TxtInputBuilder createTxtInputBuilder();
 
     public Solution readSolution(File inputFile) {
+        Solution solution;
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF-8"));
@@ -51,7 +52,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             txtInputBuilder.setInputFile(inputFile);
             txtInputBuilder.setBufferedReader(bufferedReader);
             try {
-                return txtInputBuilder.readSolution();
+                solution = txtInputBuilder.readSolution();
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
             } catch (IllegalStateException e) {
@@ -62,6 +63,8 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         } finally {
             IOUtils.closeQuietly(bufferedReader);
         }
+        logger.info("Imported: {}", inputFile);
+        return solution;
     }
 
     public Solution readSolution(URL inputURL) {

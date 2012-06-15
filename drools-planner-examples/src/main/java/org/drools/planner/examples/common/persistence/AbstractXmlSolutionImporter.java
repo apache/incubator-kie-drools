@@ -43,6 +43,7 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
     public abstract XmlInputBuilder createXmlInputBuilder();
 
     public Solution readSolution(File inputFile) {
+        Solution solution;
         InputStream in = null;
         try {
             in = new FileInputStream(inputFile);
@@ -52,7 +53,7 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
             txtInputBuilder.setInputFile(inputFile);
             txtInputBuilder.setDocument(document);
             try {
-                return txtInputBuilder.readSolution();
+                solution = txtInputBuilder.readSolution();
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
             } catch (IllegalStateException e) {
@@ -65,6 +66,8 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
         } finally {
             IOUtils.closeQuietly(in);
         }
+        logger.info("Imported: {}", inputFile);
+        return solution;
     }
 
     public abstract class XmlInputBuilder {
