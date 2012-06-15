@@ -97,17 +97,15 @@ literal
     |   STAR          { helper.emit($STAR, DroolsEditorType.NUMERIC_CONST); } // this means "infinity" in Drools
     ;
 
-operator returns [boolean negated, String opr]
+operator returns [boolean negated, String opr, java.util.List<String> params]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
 @after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
-  : x=TILDE?
-    ( op=EQUALS        { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
-    | op=NOT_EQUALS    { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
-    | rop=relationalOp { $negated = $rop.negated; $opr=($x != null ? $x.text : "")+$rop.opr; }
+<<<<<<< HEAD
+  : ( op=EQUALS        { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL); }
+    | op=NOT_EQUALS    { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL); }
+    | rop=relationalOp { $negated = $rop.negated; $opr=$rop.opr; $params = $rop.params; }
     )
     ;
-
-
 
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
@@ -116,7 +114,23 @@ relationalOp returns [boolean negated, String opr, java.util.List<String> params
     | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | op=LESS            { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | op=GREATER         { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
-    | xop=complexOp      { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+=======
+  : x=TILDE?
+    ( op=EQUALS        { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; }
+    | op=NOT_EQUALS    { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; }
+    | rop=relationalOp { $negated = $rop.negated; $opr=($x != null ? $x.text : "")+$rop.opr; }
+    ) ((squareArguments)=> sa=squareArguments { $params = $sa.args; } )?
+    ;
+
+relationalOp returns [boolean negated, String opr]
+@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); } }
+@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
+  : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; }
+    | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; }
+    | op=LESS            { $negated = false; $opr=$op.text; }
+    | op=GREATER         { $negated = false; $opr=$op.text; }
+    | xop=complexOp      { $negated = false; $opr=$xop.opr; }
+>>>>>>> JBRULES-359 Certainty Factors
     | not_key nop=neg_operator_key { $negated = true; $opr=$nop.text;}
     | cop=operator_key  { $negated = false; $opr=$cop.text;}
     )
@@ -179,7 +193,7 @@ finally { ternOp--; }
 
 fullAnnotation [AnnotatedDescrBuilder inDescrBuilder] returns [AnnotationDescr result]
   : AT name=ID { if( buildDescr ) { $result = inDescrBuilder != null ? (AnnotationDescr) inDescrBuilder.newAnnotation( $name.text ).getDescr() : new AnnotationDescr( $name.text ); } }
-    annotationArgs[result]
+    annotationArgs[result]?
   ;
 
 annotationArgs [AnnotationDescr descr]
@@ -192,7 +206,7 @@ annotationArgs [AnnotationDescr descr]
   ;
 
 annotationElementValuePairs [AnnotationDescr descr]
-  : annotationElementValuePair[descr] ( COMMA annotationElementValuePair[descr] )*
+  : annotationElementValuePair[descr] ( COMMA annotationElementvaluePair[descr] )*
   ;
 
 annotationElementValuePair [AnnotationDescr descr]
@@ -212,8 +226,13 @@ annotationArray
 conditionalOrExpression returns [BaseDescr result]
   : left=conditionalAndExpression  { if( buildDescr ) { $result = $left.result; } }
   ( DOUBLE_PIPE
+<<<<<<< HEAD
         {  if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );  }
+        right=conditionalAndExpression
+=======
+        {  helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );  }
         args=fullAnnotation[null]? right=conditionalAndExpression
+>>>>>>> JBRULES-359 Certainty Factors
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr();
                descr.addOrMerge( $result );
@@ -228,8 +247,13 @@ conditionalOrExpression returns [BaseDescr result]
 conditionalAndExpression returns [BaseDescr result]
   : left=inclusiveOrExpression { if( buildDescr  ) { $result = $left.result; } }
   ( DOUBLE_AMPER
+<<<<<<< HEAD
          { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
+        right=inclusiveOrExpression
+=======
+        {helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );}
         args=fullAnnotation[null]? right=inclusiveOrExpression
+>>>>>>> JBRULES-359 Certainty Factors
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd();
                descr.addOrMerge( $result );
@@ -360,7 +384,12 @@ scope { BaseDescr lsd; }
                     $left.result :
                     new AtomicExprDescr( $left.text ) ;
           $relationalExpression::lsd = $result;
+<<<<<<< HEAD
       } 
+=======
+      }
+      helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
+>>>>>>> JBRULES-359 Certainty Factors
     }
   ( ( operator | LEFT_PAREN )=> right=orRestriction
          { if( buildDescr  ) {
@@ -386,9 +415,15 @@ orRestriction returns [BaseDescr result]
 
 andRestriction returns [BaseDescr result]
   : left=singleRestriction { if( buildDescr  ) { $result = $left.result; } }
-  ( (DOUBLE_AMPER fullAnnotation[null]? operator)=>lop=DOUBLE_AMPER
-  	    { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
-        args=fullAnnotation[null]?right=singleRestriction
+<<<<<<< HEAD
+  ( (DOUBLE_AMPER operator)=>lop=DOUBLE_AMPER
+        { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
+        right=singleRestriction
+=======
+  ( (DOUBLE_AMPER fullAnnotation[null]? singleRestriction)=>lop=DOUBLE_AMPER
+         {helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );}
+         args=fullAnnotation[null]?right=singleRestriction
+>>>>>>> JBRULES-359 Certainty Factors
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd();
                descr.addOrMerge( $result );
@@ -401,18 +436,16 @@ andRestriction returns [BaseDescr result]
   ;
 
 singleRestriction returns [BaseDescr result]
-  :  op=operator
+  :  op=operator 
          { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
-     ( (squareArguments shiftExpression)=> sa=squareArguments value=shiftExpression
-       | value=shiftExpression
-     )
+     value=shiftExpression
          { if( buildDescr  ) {
                BaseDescr descr = ( $value.result != null &&
                                  ( (!($value.result instanceof AtomicExprDescr)) ||
                                    ($value.text.equals(((AtomicExprDescr)$value.result).getExpression())) )) ?
 		                    $value.result :
 		                    new AtomicExprDescr( $value.text ) ;
-               $result = new RelationalExprDescr( $op.opr, $op.negated, $sa.args, $relationalExpression::lsd, descr );
+               $result = new RelationalExprDescr( $op.opr, $op.negated, $op.params, $relationalExpression::lsd, descr );
 	       if( $relationalExpression::lsd instanceof BindingDescr ) {
 	           $relationalExpression::lsd = new AtomicExprDescr( ((BindingDescr)$relationalExpression::lsd).getExpression() );
 	       }
@@ -472,7 +505,11 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     |   (castExpression)=>castExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
         ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.COLON}? (var=ID COLON
+<<<<<<< HEAD
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
+=======
+                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
+>>>>>>> JBRULES-359 Certainty Factors
         | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.UNIFY}? (var=ID UNIFY 
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
         )?
