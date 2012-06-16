@@ -46,6 +46,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        super.phaseStarted(localSearchSolverPhaseScope);
         for (double startingTemperaturePart : startingTemperature.toDoubleArray()) {
             if (startingTemperaturePart < 0.0) {
                 throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
@@ -59,6 +60,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     @Override
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        super.phaseEnded(localSearchSolverPhaseScope);
         startingTemperatureParts = null;
         temperatureParts = null;
         partsLength = -1;

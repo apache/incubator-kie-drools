@@ -66,6 +66,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        super.phaseStarted(localSearchSolverPhaseScope);
         validate();
         tabuToStepIndexMap = new HashMap<Object, Integer>(tabuSize + partialTabuSize);
         tabuSequenceList = new LinkedList<Object>();
@@ -87,6 +88,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     @Override
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        super.phaseEnded(localSearchSolverPhaseScope);
         tabuToStepIndexMap = null;
         tabuSequenceList = null;
     }
