@@ -24,6 +24,7 @@ import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
@@ -35,9 +36,9 @@ public class ProbabilityValueSelector extends CachingValueSelector {
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
-    public ProbabilityValueSelector(SelectionCacheType cacheType,
+    public ProbabilityValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType,
             SelectionProbabilityWeightFactory valueProbabilityWeightFactory) {
-        super(cacheType);
+        super(childValueSelector, cacheType);
         this.valueProbabilityWeightFactory = valueProbabilityWeightFactory;
     }
 

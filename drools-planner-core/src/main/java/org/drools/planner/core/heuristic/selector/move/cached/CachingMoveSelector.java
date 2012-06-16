@@ -39,32 +39,26 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  */
 public class CachingMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {
 
+    protected final MoveSelector childMoveSelector;
     protected final SelectionCacheType cacheType;
-    protected MoveSelector childMoveSelector;
 
     protected long cachedSize = -1L;
     protected List<Move> cachedMoveList = null;
 
-    public CachingMoveSelector(SelectionCacheType cacheType) {
+    public CachingMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType) {
+        this.childMoveSelector = childMoveSelector;
         this.cacheType = cacheType;
+        if (childMoveSelector.isNeverEnding()) {
+            throw new IllegalStateException("The childMoveSelector (" + childMoveSelector + ") has neverEnding ("
+                    + childMoveSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+        }
+        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
         if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
                 && cacheType != SelectionCacheType.STEP) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
-    }
-
-    public MoveSelector getChildMoveSelector() {
-        return childMoveSelector;
-    }
-
-    public void setChildMoveSelector(MoveSelector childMoveSelector) {
-        this.childMoveSelector = childMoveSelector;
-        if (childMoveSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childMoveSelector (" + childMoveSelector + ") has neverEnding ("
-                    + childMoveSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
-        }
     }
 
     public void constructCache(DefaultSolverScope solverScope) {

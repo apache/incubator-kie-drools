@@ -19,12 +19,13 @@ package org.drools.planner.core.heuristic.selector.move.cached;
 import java.util.Collections;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class ShufflingMoveSelector extends CachingMoveSelector {
 
-    public ShufflingMoveSelector(SelectionCacheType cacheType) {
-        super(cacheType);
+    public ShufflingMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType) {
+        super(childMoveSelector, cacheType);
     }
 
     // ************************************************************************

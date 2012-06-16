@@ -34,30 +34,23 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  */
 public abstract class CachingValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
 
+    protected final ValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
-    protected ValueSelector childValueSelector;
 
-    public CachingValueSelector(SelectionCacheType cacheType) {
+    public CachingValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType) {
+        this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
+        if (childValueSelector.isNeverEnding()) {
+            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") has neverEnding ("
+                    + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+        }
+        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
         if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
                 && cacheType != SelectionCacheType.STEP) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
-    }
-
-    public ValueSelector getChildValueSelector() {
-        return childValueSelector;
-    }
-
-    public void setChildValueSelector(ValueSelector childValueSelector) {
-        this.childValueSelector = childValueSelector;
-        if (childValueSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") has neverEnding ("
-                    + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
-        }
-        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     // ************************************************************************

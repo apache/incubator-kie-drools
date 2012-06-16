@@ -52,7 +52,6 @@ public class CachingMoveSelectorTest {
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
-        CachingMoveSelector moveSelector = new CachingMoveSelector(cacheType);
         MoveSelector childMoveSelector = mock(MoveSelector.class);
         final List<Move> moveList = Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
         when(childMoveSelector.iterator()).thenAnswer(new Answer<Object>() {
@@ -63,7 +62,8 @@ public class CachingMoveSelectorTest {
         when(childMoveSelector.isContinuous()).thenReturn(false);
         when(childMoveSelector.isNeverEnding()).thenReturn(false);
         when(childMoveSelector.getSize()).thenReturn((long) moveList.size());
-        moveSelector.setChildMoveSelector(childMoveSelector);
+
+        CachingMoveSelector moveSelector = new CachingMoveSelector(childMoveSelector, cacheType);
         verify(childMoveSelector, times(1)).isNeverEnding();
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
