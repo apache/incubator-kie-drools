@@ -170,8 +170,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     machineCapacity.setId(machineCapacityId);
                     machineCapacity.setMachine(machine);
                     machineCapacity.setResource(resourceList.get(j));
-                    machineCapacity.setMaximumCapacity(Integer.parseInt(lineTokens[2 + j]));
-                    machineCapacity.setSafetyCapacity(Integer.parseInt(lineTokens[2 + resourceListSize + j]));
+                    machineCapacity.setMaximumCapacity(Long.parseLong(lineTokens[2 + j]));
+                    machineCapacity.setSafetyCapacity(Long.parseLong(lineTokens[2 + resourceListSize + j]));
                     machineCapacityList.add(machineCapacity);
                     machineCapacityListOfMachine.add(machineCapacity);
                     machineCapacityId++;

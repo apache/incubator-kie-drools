@@ -123,7 +123,7 @@ public class MrMachinePanel extends JPanel {
         resourceListPanel = new JPanel(new GridLayout(1, resourceList.size()));
         resourceFieldMap = new LinkedHashMap<MrResource, JTextField>(resourceList.size());
         for (MrResource resource : resourceList) {
-            int maximumCapacity = machine == null ? 0 : machine.getMachineCapacity(resource).getMaximumCapacity();
+            long maximumCapacity = machine == null ? 0L : machine.getMachineCapacity(resource).getMaximumCapacity();
             JTextField resourceField  = new JTextField("0 / " + maximumCapacity);
             resourceFieldMap.put(resource, resourceField);
             resourceField.setEditable(false);
@@ -154,17 +154,17 @@ public class MrMachinePanel extends JPanel {
         machineLabel.setEnabled(used);
         for (MrResource resource : resourceList) {
             JTextField resourceField = resourceFieldMap.get(resource);
-            int maximumCapacity;
-            int safetyCapacity;
+            long maximumCapacity;
+            long safetyCapacity;
             if (machine != null) {
                 MrMachineCapacity machineCapacity = machine.getMachineCapacity(resource);
                 maximumCapacity = machineCapacity.getMaximumCapacity();
                 safetyCapacity = machineCapacity.getSafetyCapacity();
             } else {
-                maximumCapacity = 0;
-                safetyCapacity = 0;
+                maximumCapacity = 0L;
+                safetyCapacity = 0L;
             }
-            long usedTotal = 0;
+            long usedTotal = 0L;
             for (MrProcessAssignment processAssignment : processAssignmentList) {
                 usedTotal += processAssignment.getProcess().getProcessRequirement(resource).getUsage();
             }

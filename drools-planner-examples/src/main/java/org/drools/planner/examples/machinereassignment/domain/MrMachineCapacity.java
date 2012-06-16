@@ -25,8 +25,8 @@ public class MrMachineCapacity extends AbstractPersistable {
     private MrMachine machine;
     private MrResource resource;
 
-    private int maximumCapacity;
-    private int safetyCapacity;
+    private long maximumCapacity;
+    private long safetyCapacity;
 
     public MrMachine getMachine() {
         return machine;
@@ -44,19 +44,19 @@ public class MrMachineCapacity extends AbstractPersistable {
         this.resource = resource;
     }
 
-    public int getMaximumCapacity() {
+    public long getMaximumCapacity() {
         return maximumCapacity;
     }
 
-    public void setMaximumCapacity(int maximumCapacity) {
+    public void setMaximumCapacity(long maximumCapacity) {
         this.maximumCapacity = maximumCapacity;
     }
 
-    public int getSafetyCapacity() {
+    public long getSafetyCapacity() {
         return safetyCapacity;
     }
 
-    public void setSafetyCapacity(int safetyCapacity) {
+    public void setSafetyCapacity(long safetyCapacity) {
         this.safetyCapacity = safetyCapacity;
     }
 
