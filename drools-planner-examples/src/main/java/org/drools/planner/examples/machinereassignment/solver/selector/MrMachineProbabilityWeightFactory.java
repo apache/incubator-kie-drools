@@ -30,7 +30,6 @@ public class MrMachineProbabilityWeightFactory
             MrProcessAssignment processAssignment) {
         MrMachine machine = processAssignment.getMachine();
         // TODO reuse usage calculated by of the ScoreCalculator which is a delta
-        double sum = 0.0;
         long[] usage = new long[machineReassignment.getResourceList().size()];
         for (MrProcessAssignment someProcessAssignment : machineReassignment.getProcessAssignmentList()) {
             if (someProcessAssignment.getMachine() == machine) {
@@ -40,8 +39,10 @@ public class MrMachineProbabilityWeightFactory
                 }
             }
         }
+        double sum = 0.0;
         for (MrResource resource : machineReassignment.getResourceList()) {
-            long available = machine.getMachineCapacity(resource).getSafetyCapacity() - usage[resource.getIndex()];
+            double available = (double)
+                    (machine.getMachineCapacity(resource).getSafetyCapacity() - usage[resource.getIndex()]);
             sum += (available * available);
         }
         return sum + 1.0;
