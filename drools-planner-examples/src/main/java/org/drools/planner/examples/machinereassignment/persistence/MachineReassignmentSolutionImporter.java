@@ -44,7 +44,6 @@ import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignmen
 import org.drools.planner.examples.machinereassignment.domain.MrProcessRequirement;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
-import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
 public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImporter {
 
