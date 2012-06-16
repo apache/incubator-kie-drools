@@ -19,9 +19,9 @@ public class PlanningEntityTabuAcceptorTest {
 
     @Test
     public void tabuSize() {
-        PlanningEntityTabuAcceptor tabuAcceptor = new PlanningEntityTabuAcceptor();
-        tabuAcceptor.setTabuSize(2);
-        tabuAcceptor.setAspirationEnabled(true);
+        PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
+        acceptor.setTabuSize(2);
+        acceptor.setAspirationEnabled(true);
 
         TestdataEntity e0 = new TestdataEntity("e0");
         TestdataEntity e1 = new TestdataEntity("e1");
@@ -32,76 +32,76 @@ public class PlanningEntityTabuAcceptorTest {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(new DefaultSimpleScore(0));
         LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        tabuAcceptor.phaseStarted(solverPhaseScope);
+        acceptor.phaseStarted(solverPhaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(solverPhaseScope);
         stepScope0.setStepIndex(0);
         MoveScope moveScope1 = buildMoveScope(stepScope0, e1);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e0)));
-        assertEquals(true, tabuAcceptor.isAccepted(moveScope1));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e2))); // repeated call
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
+        assertEquals(true, acceptor.isAccepted(moveScope1));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2))); // repeated call
         stepScope0.setStep(moveScope1.getMove());
-        tabuAcceptor.stepEnded(stepScope0);
+        acceptor.stepEnded(stepScope0);
         
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(solverPhaseScope);
         stepScope1.setStepIndex(1);
         MoveScope moveScope2 = buildMoveScope(stepScope1, e2);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e0)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e1)));
-        assertEquals(true, tabuAcceptor.isAccepted(moveScope2));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e2))); // repeated call
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
+        assertEquals(true, acceptor.isAccepted(moveScope2));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e2))); // repeated call
         stepScope1.setStep(moveScope2.getMove());
-        tabuAcceptor.stepEnded(stepScope1);
+        acceptor.stepEnded(stepScope1);
 
         LocalSearchStepScope stepScope2 = new LocalSearchStepScope(solverPhaseScope);
         stepScope2.setStepIndex(2);
         MoveScope moveScope4 = buildMoveScope(stepScope1, e4);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e0)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e1)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(moveScope4));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e2))); // repeated call
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e0)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3)));
+        assertEquals(true, acceptor.isAccepted(moveScope4));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2))); // repeated call
         stepScope2.setStep(moveScope4.getMove());
-        tabuAcceptor.stepEnded(stepScope2);
+        acceptor.stepEnded(stepScope2);
 
         LocalSearchStepScope stepScope3 = new LocalSearchStepScope(solverPhaseScope);
         stepScope3.setStepIndex(3);
         MoveScope moveScope3 = buildMoveScope(stepScope1, e3);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e1)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(moveScope3));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e2))); // repeated call
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2)));
+        assertEquals(true, acceptor.isAccepted(moveScope3));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2))); // repeated call
         stepScope3.setStep(moveScope3.getMove());
-        tabuAcceptor.stepEnded(stepScope3);
+        acceptor.stepEnded(stepScope3);
 
         LocalSearchStepScope stepScope4 = new LocalSearchStepScope(solverPhaseScope);
         stepScope4.setStepIndex(4);
         MoveScope moveScope1Again = buildMoveScope(stepScope1, e1);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope4, e0)));
-        assertEquals(true, tabuAcceptor.isAccepted(moveScope1Again));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope4, e2)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope4, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope4, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope4, e2))); // repeated call
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e0)));
+        assertEquals(true, acceptor.isAccepted(moveScope1Again));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e2)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e2))); // repeated call
         stepScope4.setStep(moveScope1Again.getMove());
-        tabuAcceptor.stepEnded(stepScope4);
+        acceptor.stepEnded(stepScope4);
         
-        tabuAcceptor.phaseEnded(solverPhaseScope);
+        acceptor.phaseEnded(solverPhaseScope);
     }
 
     @Test
     public void tabuSizeMultipleEntitiesPerStep() {
-        PlanningEntityTabuAcceptor tabuAcceptor = new PlanningEntityTabuAcceptor();
-        tabuAcceptor.setTabuSize(2);
-        tabuAcceptor.setAspirationEnabled(true);
+        PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
+        acceptor.setTabuSize(2);
+        acceptor.setAspirationEnabled(true);
 
         TestdataEntity e0 = new TestdataEntity("e0");
         TestdataEntity e1 = new TestdataEntity("e1");
@@ -112,96 +112,96 @@ public class PlanningEntityTabuAcceptorTest {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(new DefaultSimpleScore(0));
         LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        tabuAcceptor.phaseStarted(solverPhaseScope);
+        acceptor.phaseStarted(solverPhaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(solverPhaseScope);
         stepScope0.setStepIndex(0);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e0)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e1)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e0, e1)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e0, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e0, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e0, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e1, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e1, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e1, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e2, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e2, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e3, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e1)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3, e4)));
         stepScope0.setStep(buildMoveScope(stepScope0, e0, e2).getMove());
-        tabuAcceptor.stepEnded(stepScope0);
+        acceptor.stepEnded(stepScope0);
 
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(solverPhaseScope);
         stepScope1.setStepIndex(1);
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e0)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e1)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e0, e1)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e0, e2)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e0, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e0, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e1, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e1, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e1, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e2, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e2, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, e3, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e1)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e2)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e1, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e1, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e1, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e2, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e2, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3, e4)));
         stepScope1.setStep(buildMoveScope(stepScope1, e1).getMove());
-        tabuAcceptor.stepEnded(stepScope1);
+        acceptor.stepEnded(stepScope1);
 
         LocalSearchStepScope stepScope2 = new LocalSearchStepScope(solverPhaseScope);
         stepScope2.setStepIndex(2);
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e0)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e1)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e2)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e3)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e0, e1)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e0, e2)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e0, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e0, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e1, e2)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e1, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e1, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e2, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e2, e4)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope2, e3, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e1)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e2)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1, e2)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3, e4)));
         stepScope2.setStep(buildMoveScope(stepScope2, e3, e4).getMove());
-        tabuAcceptor.stepEnded(stepScope2);
+        acceptor.stepEnded(stepScope2);
 
         LocalSearchStepScope stepScope3 = new LocalSearchStepScope(solverPhaseScope);
         stepScope3.setStepIndex(3);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e1)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e2)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0, e1)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0, e2)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e1, e2)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e1, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e1, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e2, e3)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e2, e4)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e3, e4)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e2)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e1)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e2)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1, e2)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2, e3)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2, e4)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e3, e4)));
         stepScope3.setStep(buildMoveScope(stepScope3, e0).getMove());
-        tabuAcceptor.stepEnded(stepScope3);
+        acceptor.stepEnded(stepScope3);
 
-        tabuAcceptor.phaseEnded(solverPhaseScope);
+        acceptor.phaseEnded(solverPhaseScope);
     }
 
     @Test
     public void aspiration() {
-        PlanningEntityTabuAcceptor tabuAcceptor = new PlanningEntityTabuAcceptor();
-        tabuAcceptor.setTabuSize(2);
-        tabuAcceptor.setAspirationEnabled(true);
+        PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
+        acceptor.setTabuSize(2);
+        acceptor.setAspirationEnabled(true);
 
         TestdataEntity e0 = new TestdataEntity("e0");
         TestdataEntity e1 = new TestdataEntity("e1");
@@ -209,25 +209,25 @@ public class PlanningEntityTabuAcceptorTest {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(new DefaultSimpleScore(-100));
         LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        tabuAcceptor.phaseStarted(solverPhaseScope);
+        acceptor.phaseStarted(solverPhaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(solverPhaseScope);
         stepScope0.setStepIndex(0);
         stepScope0.setStep(buildMoveScope(stepScope0, e1).getMove());
-        tabuAcceptor.stepEnded(stepScope0);
+        acceptor.stepEnded(stepScope0);
 
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(solverPhaseScope);
         stepScope1.setStepIndex(1);
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -120, e0)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -20, e0)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -120, e1)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -20, e1)));
-        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -120, e0, e1)));
-        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -20, e0, e1)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e0)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e1)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e1)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e0, e1)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0, e1)));
         stepScope1.setStep(buildMoveScope(stepScope1, -20, e1).getMove());
-        tabuAcceptor.stepEnded(stepScope1);
+        acceptor.stepEnded(stepScope1);
 
-        tabuAcceptor.phaseEnded(solverPhaseScope);
+        acceptor.phaseEnded(solverPhaseScope);
     }
 
     private MoveScope buildMoveScope(LocalSearchStepScope stepScope, TestdataEntity... entities) {

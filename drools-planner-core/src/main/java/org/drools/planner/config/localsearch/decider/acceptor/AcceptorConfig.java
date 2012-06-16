@@ -27,6 +27,7 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
@@ -58,6 +59,8 @@ public class AcceptorConfig {
 
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
     protected Double greatDelugeWaterRisingRate = null;
+
+    protected Integer lateAcceptanceSize = null;
 
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
         return acceptorClassList;
@@ -179,6 +182,14 @@ public class AcceptorConfig {
         this.greatDelugeWaterRisingRate = greatDelugeWaterRisingRate;
     }
 
+    public Integer getLateAcceptanceSize() {
+        return lateAcceptanceSize;
+    }
+
+    public void setLateAcceptanceSize(Integer lateAcceptanceSize) {
+        this.lateAcceptanceSize = lateAcceptanceSize;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -284,9 +295,11 @@ public class AcceptorConfig {
                     greatDelugeWaterRisingRate, 0.0000001);
             acceptorList.add(new GreatDelugeAcceptor(waterLevelUpperBoundRate, waterRisingRate));
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))) {
-            // TODO implement LATE_ACCEPTANCE
-            throw new UnsupportedOperationException("LATE_ACCEPTANCE not yet supported.");
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))
+                || lateAcceptanceSize != null ) {
+            LateAcceptanceAcceptor lateAcceptanceAcceptor = new LateAcceptanceAcceptor();
+            lateAcceptanceAcceptor.setLateAcceptanceSize((lateAcceptanceSize == null) ? 1000 : lateAcceptanceSize);
+            acceptorList.add(lateAcceptanceAcceptor);
         }
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
@@ -352,6 +365,9 @@ public class AcceptorConfig {
         if (greatDelugeWaterRisingRate == null) {
             greatDelugeWaterRisingRate = inheritedConfig.getGreatDelugeWaterRisingRate();
         }
+        if (lateAcceptanceSize == null) {
+            lateAcceptanceSize = inheritedConfig.getLateAcceptanceSize();
+        }
     }
 
     public static enum AcceptorType {
@@ -361,8 +377,8 @@ public class AcceptorConfig {
         UNDO_MOVE_TABU,
         SOLUTION_TABU,
         SIMULATED_ANNEALING,
-        LATE_ACCEPTANCE,
         GREAT_DELUGE,
+        LATE_ACCEPTANCE,
     }
 
 }

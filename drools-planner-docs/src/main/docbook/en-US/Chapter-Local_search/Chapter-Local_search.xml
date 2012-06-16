@@ -55,6 +55,16 @@
   </section>
 
   <section>
+    <title>Late acceptance</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>See Late Acceptance acceptor below.</para>
+    </section>
+  </section>
+
+  <section>
     <title>About neighborhoods, moves and steps</title>
 
     <section>
@@ -659,6 +669,20 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <para>This differs from phasing, another powerful technique, where first simulated annealing is used, followed
         by tabu search.</para>
+      </section>
+
+      <section>
+        <title>Late acceptance acceptor</title>
+
+        <para>Late acceptance accepts any move that has a score which is higher then the best score of a number of
+        steps ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
+
+        <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;lateAcceptanceSize&gt;500&lt;/lateAcceptanceSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+        &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
+    &lt;/forager&gt;</programlisting>
       </section>
     </section>
 
