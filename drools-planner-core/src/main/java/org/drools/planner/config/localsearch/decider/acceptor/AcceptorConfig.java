@@ -308,12 +308,12 @@ public class AcceptorConfig {
             compositeAcceptor.setAcceptorList(acceptorList);
             return compositeAcceptor;
         } else {
-            SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
-            solutionTabuAcceptor.setTabuSize(1500); // TODO number pulled out of thin air
+            PlanningEntityTabuAcceptor planningEntityTabuAcceptor = new PlanningEntityTabuAcceptor();
+            planningEntityTabuAcceptor.setTabuSize(5); // TODO number pulled out of thin air
             if (environmentMode == EnvironmentMode.TRACE) {
-                solutionTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+                planningEntityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
-            return solutionTabuAcceptor;
+            return planningEntityTabuAcceptor;
         }
     }
 
