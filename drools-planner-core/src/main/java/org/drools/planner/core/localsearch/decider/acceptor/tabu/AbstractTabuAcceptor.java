@@ -71,6 +71,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         tabuSequenceList = new LinkedList<Object>();
     }
 
+    @Override
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        tabuToStepIndexMap = null;
+        tabuSequenceList = null;
+    }
+
     private void validate() {
         if (tabuSize < 0) {
             throw new IllegalArgumentException("The tabuSize (" + tabuSize
