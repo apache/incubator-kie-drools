@@ -44,10 +44,6 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     protected Map<Object, Integer> tabuToStepIndexMap;
     protected List<Object> tabuSequenceList;
 
-    public int getTabuSize() {
-        return tabuSize;
-    }
-
     public void setTabuSize(int tabuSize) {
         this.tabuSize = tabuSize;
     }
