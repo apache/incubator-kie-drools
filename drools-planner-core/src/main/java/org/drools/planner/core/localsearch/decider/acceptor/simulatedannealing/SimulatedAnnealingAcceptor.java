@@ -29,7 +29,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     protected Score startingTemperature;
 
-    protected int partsLength;
+    protected int partsLength = -1;
     protected double[] startingTemperatureParts;
     // No protected Score temperature do avoid rounding errors when using Score.multiply(double)
     protected double[] temperatureParts;
@@ -55,6 +55,13 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         startingTemperatureParts = startingTemperature.toDoubleArray();
         temperatureParts = startingTemperatureParts;
         partsLength = startingTemperatureParts.length;
+    }
+
+    @Override
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        startingTemperatureParts = null;
+        temperatureParts = null;
+        partsLength = -1;
     }
 
     public boolean isAccepted(MoveScope moveScope) {
