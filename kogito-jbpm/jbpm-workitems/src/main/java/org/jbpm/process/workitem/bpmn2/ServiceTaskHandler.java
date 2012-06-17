@@ -49,8 +49,9 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
     private JaxWsDynamicClientFactory dcf;
     private StatefulKnowledgeSession ksession;
     private int asyncTimeout = 10;
-    
-    enum WSMode {
+    private ClassLoader classLoader;
+
+	enum WSMode {
         SYNC,
         ASYNC,
         ONEWAY;
@@ -59,17 +60,26 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
     
     public ServiceTaskHandler() {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
+        this.classLoader = this.getClass().getClassLoader();
     }
     
     public ServiceTaskHandler(StatefulKnowledgeSession ksession) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
+        this.classLoader = this.getClass().getClassLoader();
+    }
+    
+    public ServiceTaskHandler(StatefulKnowledgeSession ksession, ClassLoader classloader) {
+        this.dcf = JaxWsDynamicClientFactory.newInstance();
+        this.ksession = ksession;
+        this.classLoader = classloader;
     }
     
     public ServiceTaskHandler(StatefulKnowledgeSession ksession, int timeout) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.asyncTimeout = timeout;
+        this.classLoader = this.getClass().getClassLoader();
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
@@ -162,7 +172,7 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
                 
                 if (WSDL_IMPORT_TYPE.equalsIgnoreCase(importObj.getType())) {
                 
-                    client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef));
+                    client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), classLoader, null);
                     clients.put(interfaceRef, client);
                     
                     return client;
@@ -180,13 +190,13 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
         String parameterType = (String) workItem.getParameter("ParameterType");
         Object parameter = workItem.getParameter("Parameter");
         try {
-            Class<?> c = Class.forName(i);
+            Class<?> c = Class.forName(i, true, classLoader);
             Object instance = c.newInstance();
             Class<?>[] classes = null;
             Object[] params = null;
             if (parameterType != null) {
                 classes = new Class<?>[] {
-                    Class.forName(parameterType)
+                    Class.forName(parameterType, true, classLoader)
                 };
                 params = new Object[] {
                     parameter
@@ -213,5 +223,12 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
         // Do nothing, cannot be aborted
     }
+    
+    public ClassLoader getClassLoader() {
+		return classLoader;
+	}
 
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
 }
