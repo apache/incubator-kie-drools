@@ -73,7 +73,7 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     @Override
     public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         super.stepEnded(localSearchStepScope);
-        previousScores[lateScoreIndex] = localSearchStepScope.getLocalSearchSolverPhaseScope().getBestScore();
+        previousScores[lateScoreIndex] = localSearchStepScope.getScore();
         lateScoreIndex = (lateScoreIndex + 1) % lateAcceptanceSize;
     }
 

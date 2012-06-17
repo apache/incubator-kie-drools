@@ -55,6 +55,7 @@ public class LateAcceptanceAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -1000)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
         stepScope0.setStep(moveScope1.getMove());
+        stepScope0.setScore(moveScope1.getScore());
         solverScope.setBestScore(moveScope1.getScore());
         acceptor.stepEnded(stepScope0);
 
@@ -69,6 +70,7 @@ public class LateAcceptanceAcceptorTest {
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -1001)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
         stepScope1.setStep(moveScope2.getMove());
+        stepScope1.setScore(moveScope2.getScore());
         // bestScore unchanged
         acceptor.stepEnded(stepScope1);
 
@@ -83,6 +85,7 @@ public class LateAcceptanceAcceptorTest {
         assertEquals(true, acceptor.isAccepted(moveScope4));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
         stepScope2.setStep(moveScope4.getMove());
+        stepScope2.setScore(moveScope4.getScore());
         solverScope.setBestScore(moveScope4.getScore());
         acceptor.stepEnded(stepScope2);
 
@@ -97,20 +100,22 @@ public class LateAcceptanceAcceptorTest {
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, -2000)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
         stepScope3.setStep(moveScope3.getMove());
+        stepScope3.setScore(moveScope3.getScore());
         solverScope.setBestScore(moveScope3.getScore());
         acceptor.stepEnded(stepScope3);
 
-        // lateScore = -500 (not -700!)
+        // lateScore = -700 (not the best score of -500!)
         LocalSearchStepScope stepScope4 = new LocalSearchStepScope(solverPhaseScope);
         stepScope4.setStepIndex(4);
         MoveScope moveScope1Again = buildMoveScope(stepScope1, -300);
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, -501)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, -700)));
         assertEquals(true, acceptor.isAccepted(moveScope1Again));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, -500)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, -2000)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, -600)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, -701)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -700))); // Repeated call
         stepScope4.setStep(moveScope1Again.getMove());
+        stepScope4.setScore(moveScope1Again.getScore());
         // bestScore unchanged
         acceptor.stepEnded(stepScope4);
 
@@ -123,8 +128,9 @@ public class LateAcceptanceAcceptorTest {
         assertEquals(true, acceptor.isAccepted(moveScope2Again));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope5, -2000)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope5, -600)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -401))); // Repeated call
         stepScope5.setStep(moveScope2Again.getMove());
+        stepScope5.setScore(moveScope2Again.getScore());
         // bestScore unchanged
         acceptor.stepEnded(stepScope5);
         
