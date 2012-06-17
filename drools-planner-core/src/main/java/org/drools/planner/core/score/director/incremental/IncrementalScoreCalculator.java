@@ -52,5 +52,11 @@ public interface IncrementalScoreCalculator<Sol extends Solution> {
      * @return never null
      */
     Score calculateScore();
-    
+
+    /**
+     * @param uncorruptedIncrementalScoreCalculator never null
+     * @return null if this {@link IncrementalScoreCalculator} implementation does not support this.
+     */
+    String buildScoreCorruptionAnalysis(IncrementalScoreCalculator uncorruptedIncrementalScoreCalculator);
+
 }

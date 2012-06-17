@@ -17,13 +17,17 @@
 package org.drools.planner.examples.machinereassignment.solver.score;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore;
 import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.drools.planner.core.score.director.incremental.IncrementalScoreCalculator;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
 import org.drools.planner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
@@ -217,7 +221,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 if (service.getLocationSpread() > locationBag.size()) { // TODO optimize me
                     hardScore += (service.getLocationSpread() - locationBag.size());
                 }
-                locationBag.put(location, null);
+                locationBag.remove(location);
                 if (service.getLocationSpread() > locationBag.size()) {
                     hardScore -= (service.getLocationSpread() - locationBag.size());
                 }
@@ -435,6 +439,51 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
             return balanceAvailable;
         }
 
+    }
+
+    @Override
+    public String buildScoreCorruptionAnalysis(IncrementalScoreCalculator uncorruptedIncrementalScoreCalculator) {
+        MachineReassignmentIncrementalScoreCalculator other
+                = (MachineReassignmentIncrementalScoreCalculator) uncorruptedIncrementalScoreCalculator;
+        StringBuilder analysis = new StringBuilder();
+        if (!serviceScorePartMap.keySet().equals(other.serviceScorePartMap.keySet())) {
+            Collection excess = CollectionUtils.subtract(serviceScorePartMap.keySet(),
+                    other.serviceScorePartMap.keySet());
+            Collection lacking = CollectionUtils.subtract(other.serviceScorePartMap.keySet(),
+                    serviceScorePartMap.keySet());
+            analysis.append("  The serviceScorePartMap has in excess (")
+                    .append(excess).append(") and is lacking (").append(lacking).append(").\n");
+        } else {
+            for (Map.Entry<MrService, MrServiceScorePart> entry : serviceScorePartMap.entrySet()) {
+                MrService service = entry.getKey();
+                MrServiceScorePart part = entry.getValue();
+                MrServiceScorePart otherPart = other.serviceScorePartMap.get(service);
+                if (!part.locationBag.equals(otherPart.locationBag)) {
+                    Collection excess = CollectionUtils.subtract(part.locationBag.values(),
+                            otherPart.locationBag.values());
+                    Collection lacking = CollectionUtils.subtract(otherPart.locationBag.values(),
+                            part.locationBag.values());
+                    analysis.append("  On service (").append(service).append(") the locationBag has in excess (")
+                            .append(excess).append(") and is lacking (").append(lacking).append(").\n");
+                }
+                if (!part.neighborhoodBag.equals(otherPart.neighborhoodBag)) {
+                    Collection excess = CollectionUtils.subtract(part.neighborhoodBag.values(),
+                            otherPart.neighborhoodBag.values());
+                    Collection lacking = CollectionUtils.subtract(otherPart.neighborhoodBag.values(),
+                            part.neighborhoodBag.values());
+                    analysis.append("  On service (").append(service).append(") the neighborhoodBag has in excess (")
+                            .append(excess).append(") and is lacking (").append(lacking).append(").\n");
+                }
+                if (part.movedProcessCount != otherPart.movedProcessCount) {
+                    analysis.append("  On service (").append(service).append(") the movedProcessCount (")
+                            .append(part.movedProcessCount).append(") is not correct (")
+                            .append(otherPart.movedProcessCount).append(").\n");
+                }
+            }
+        }
+        // TODO implement analysis for other parts too
+
+        return analysis.toString();
     }
 
 }

@@ -2004,3 +2004,6 @@ Before in *.java:
 After in *.java:
     import org.drools.planner.core.solution.ProblemIO;
 
+[MINOR] Interface IncrementalScoreCalculator has gotten a new method buildScoreCorruptionAnalysis(...)
+It has a dummy implementation in AbstractIncrementalScoreCalculator, so no changes are needed normally.
+See manual to optionally implement this method to help you analyze score corruption during environmentMode TRACE.

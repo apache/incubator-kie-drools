@@ -24,4 +24,8 @@ import org.drools.planner.core.solution.Solution;
  */
 public abstract class AbstractIncrementalScoreCalculator<Sol extends Solution> implements IncrementalScoreCalculator<Sol> {
 
+    public String buildScoreCorruptionAnalysis(IncrementalScoreCalculator uncorruptedIncrementalScoreCalculator) {
+        return null;
+    }
+
 }

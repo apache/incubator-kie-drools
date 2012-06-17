@@ -77,6 +77,16 @@
     </section>
 
     <section>
+      <title>Multi-objective pareto scoring</title>
+
+      <para>Less common use cases use multi-objective scoring or pareto scoring. In pareto scoring, some score
+      constraints are in the same score level, yet they are not weighted against each other. When 2 score are compared,
+      each of the score constraints are compared individually and the score with the most dominating score constraints
+      wins. Scores are considered equal far more often and it's left up to a user to chose the better out of a set of
+      best solutions (with equal scores) found by planner.</para>
+    </section>
+
+    <section>
       <title>The <literal>Score</literal> interface</title>
 
       <para>A score is represented by the <literal>Score</literal> interface, which naturally extends
@@ -348,7 +358,8 @@
         </listitem>
       </itemizedlist>
 
-      <para>Implement all the methods of the interface <literal>IncrementalScoreCalculator</literal>:</para>
+      <para>Implement all the methods of the interface <literal>IncrementalScoreCalculator</literal> and extend the
+      class <literal>AbstractIncrementalScoreCalculator</literal>:</para>
 
       <programlisting language="java">public interface IncrementalScoreCalculator&lt;Sol extends Solution&gt; {
 
@@ -479,6 +490,11 @@
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;incrementalScoreCalculatorClass&gt;org.drools.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator&lt;/incrementalScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
+
+      <para>Optionally, to get better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
+      <literal>environmentMode</literal> <literal>DEBUG</literal> or <literal>TRACE</literal>, you can overwrite the
+      method <literal>buildScoreCorruptionAnalysis</literal> from
+      <literal>AbstractIncrementalScoreCalculator</literal>.</para>
     </section>
 
     <section>

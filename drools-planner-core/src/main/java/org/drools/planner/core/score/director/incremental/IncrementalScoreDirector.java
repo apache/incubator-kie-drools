@@ -134,4 +134,12 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         return score;
     }
 
+    @Override
+    protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
+        IncrementalScoreDirector uncorruptedIncrementalScoreDirector
+                = (IncrementalScoreDirector) uncorruptedScoreDirector;
+        return incrementalScoreCalculator.buildScoreCorruptionAnalysis(
+                uncorruptedIncrementalScoreDirector.incrementalScoreCalculator);
+    }
+
 }

@@ -26,6 +26,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.drools.planner.core.score.director.incremental.IncrementalScoreCalculator;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
