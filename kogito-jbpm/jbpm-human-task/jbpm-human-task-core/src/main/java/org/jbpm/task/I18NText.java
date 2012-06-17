@@ -49,7 +49,13 @@ public class I18NText implements Externalizable {
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
+        if( language == null ) { 
+            language = "";
+        }
         out.writeUTF( language );
+        if( text == null ) { 
+            text = "";
+        }
         out.writeUTF( text );        
     }
     

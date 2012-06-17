@@ -39,8 +39,11 @@ public abstract class OrganizationalEntity implements Externalizable {
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
+        // id should never be "", given that it's the only field here!
+        if( id == null ) { 
+            id = "";
+        }
         out.writeUTF( id );
-        
     } 
     
     public void readExternal(ObjectInput in) throws IOException,

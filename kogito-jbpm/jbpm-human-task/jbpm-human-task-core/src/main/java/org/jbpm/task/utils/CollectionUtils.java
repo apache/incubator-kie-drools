@@ -147,6 +147,7 @@ public class CollectionUtils {
     public static void writeNotificationList(List<Notification> list, ObjectOutput out) throws IOException {
         out.writeInt( list.size() );
         for( Notification item : list ) {
+            // item.getNotificationType().toString() is never null
             out.writeUTF( item.getNotificationType().toString() );
             item.writeExternal( out );
         }

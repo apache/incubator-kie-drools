@@ -112,7 +112,7 @@ public abstract class BaseTest extends TestCase {
         taskSession = taskService.createSession();
     }
     
-    private Properties loadDataSourceProperties() { 
+    protected Properties loadDataSourceProperties() { 
         String propertiesNotFoundMessage = "Unable to load datasource properties [" + DATASOURCE_PROPERTIES + "]";
 
         InputStream propsInputStream = getClass().getResourceAsStream(DATASOURCE_PROPERTIES);

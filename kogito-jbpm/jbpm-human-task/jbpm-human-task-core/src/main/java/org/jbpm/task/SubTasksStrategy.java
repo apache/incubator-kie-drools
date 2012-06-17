@@ -64,6 +64,9 @@ public abstract class SubTasksStrategy implements Externalizable {
 
      public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
+        if( name == null ) { 
+            name = "";
+        }
         out.writeUTF( name );
      }
       public void readExternal(ObjectInput in) throws IOException,

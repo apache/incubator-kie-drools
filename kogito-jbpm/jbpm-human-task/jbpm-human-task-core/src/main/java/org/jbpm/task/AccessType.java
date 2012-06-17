@@ -20,5 +20,5 @@
 package org.jbpm.task;
 
 public enum AccessType {
-    Inline, Url
+    Inline, Url, Unknown
 }

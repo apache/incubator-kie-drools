@@ -51,9 +51,17 @@ public class Comment implements Externalizable  {
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
+        if( text == null ) { 
+            text = "";
+        }
         out.writeUTF( text );
-        addedBy.writeExternal( out );        
-        out.writeLong( addedAt.getTime() );        
+        // There are no guarantees that addedBy is not null = potential bug
+        addedBy.writeExternal( out );    
+        long addedAtTime = 0;
+        if( addedAt != null ) { 
+            addedAtTime = addedAt.getTime();
+        }
+        out.writeLong( addedAtTime );
     }    
     
     public void readExternal(ObjectInput in) throws IOException,

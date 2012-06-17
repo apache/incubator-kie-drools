@@ -16,15 +16,14 @@
 
 package org.jbpm.task;
 
-/**
- *
- *
- */
-public  class SubTasksStrategyFactory  {
+import org.jbpm.task.service.IllegalTaskStateException;
+
+public class SubTasksStrategyFactory  {
 
     public SubTasksStrategyFactory() {
 
     }
+    
     public static SubTasksStrategy newStrategy(String type){
         if(type!= null && !type.equals("")){
             if(type.equals("OnParentAbortAllSubTasksEnd")){
@@ -33,9 +32,8 @@ public  class SubTasksStrategyFactory  {
              if(type.equals("OnAllSubTasksEndParentEnd")){
                 return new OnAllSubTasksEndParentEndStrategy("OnAllSubTasksEndParentEnd");
             }
-        
+            throw new IllegalTaskStateException("Unknown " + SubTasksStrategy.class.getSimpleName() + " type: " + type);
         }
-
 
         return null;
     }

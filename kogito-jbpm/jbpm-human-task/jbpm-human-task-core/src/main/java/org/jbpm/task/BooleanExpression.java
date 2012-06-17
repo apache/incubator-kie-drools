@@ -47,7 +47,13 @@ public class BooleanExpression implements Externalizable {
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
+        if( type == null ) { 
+            type = "";
+        }
         out.writeUTF( type );
+        if( expression == null ) { 
+            expression = "";
+        }
         out.writeUTF( expression );        
     }
     
