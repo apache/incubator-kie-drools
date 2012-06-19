@@ -74,6 +74,7 @@ public class LocalTaskService implements TaskService {
         session.taskOperation(Operation.Claim, taskId, userId, null, null, null);
     }
 
+    @Deprecated
     public void claim(long taskId, String userId, List<String> groupIds) {
         session.taskOperation(Operation.Claim, taskId, userId, null, null, groupIds);
     }
@@ -175,15 +176,15 @@ public class LocalTaskService implements TaskService {
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language) {
         return session.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
     }
-
+    @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
         return session.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
     }
-
+    @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language) {
         return session.getTasksAssignedAsPotentialOwner(userId, groupIds, language);
     }
-
+    @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult) {
         return session.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResult);
     }
@@ -291,7 +292,7 @@ public class LocalTaskService implements TaskService {
         session.claimNextAvailable(userId, language);
 
     }
-
+    @Deprecated
     public void claimNextAvailable(String userId, List<String> groupIds, String language) {
         session.claimNextAvailable(userId, groupIds, language);
     }

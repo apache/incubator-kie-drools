@@ -401,7 +401,7 @@ from
 where
     t.archived = 0 and
     t.taskData.parentId = :parentId and
-    potentialOwners.id = :userId and
+    (potentialOwners.id = :userId or potentialOwners.id in (:groupIds)) and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
     (

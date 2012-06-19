@@ -50,10 +50,12 @@ public interface AsyncTaskService {
 
     void claim(long taskId, String userId, TaskOperationResponseHandler responseHandler);
 
+    @Deprecated
     void claim(long taskId, String userId, List<String> groupIds, TaskOperationResponseHandler responseHandler);
     
     void claimNextAvailable( String userId, String language, TaskOperationResponseHandler responseHandler);
 
+    @Deprecated
     void claimNextAvailable( String userId, List<String> groupIds, String language, TaskOperationResponseHandler responseHandler);
     
     void complete(long taskId, String userId, ContentData outputData, TaskOperationResponseHandler responseHandler);
@@ -98,8 +100,10 @@ public interface AsyncTaskService {
 
     void getTasksAssignedAsPotentialOwner(String userId, String language, TaskSummaryResponseHandler responseHandler);
 
+    @Deprecated
     void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, TaskSummaryResponseHandler responseHandler);
 
+    @Deprecated
     void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult, TaskSummaryResponseHandler responseHandler);
 
     void getTasksAssignedAsRecipient(String userId, String language, TaskSummaryResponseHandler responseHandler);
@@ -169,5 +173,6 @@ public interface AsyncTaskService {
 
     public void getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language, BlockingTaskSummaryResponseHandler responseHandler);
     
+    @Deprecated
     public void getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language, BlockingTaskSummaryResponseHandler responseHandler);
 }

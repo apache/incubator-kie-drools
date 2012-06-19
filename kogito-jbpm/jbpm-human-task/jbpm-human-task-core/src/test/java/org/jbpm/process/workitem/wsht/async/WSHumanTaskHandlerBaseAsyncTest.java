@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
@@ -32,6 +33,8 @@ import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TestStatefulKnowledgeSession;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
@@ -153,6 +156,12 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskGroupActors() throws Exception {
+    	Properties userGroups = new Properties();
+        userGroups.setProperty("Luke", "Crusaders");
+        userGroups.setProperty("Darth Vader", "");
+        
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -166,9 +175,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         Thread.sleep(500);
 
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-        List<String> groupIds = new ArrayList<String>();
-        groupIds.add("Crusaders");
-        getClient().getTasksAssignedAsPotentialOwner(null, groupIds, "en-UK", responseHandler);
+        
+        getClient().getTasksAssignedAsPotentialOwner("Luke", "en-UK", responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
@@ -198,6 +206,10 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void FIXME_testTaskSingleAndGroupActors() throws Exception {
+    	Properties userGroups = new Properties();
+        userGroups.setProperty("Darth Vader", "Crusaders");
+        
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -221,9 +233,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         Thread.sleep(500);
 
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-        List<String> groupIds = new ArrayList<String>();
-        groupIds.add("Crusaders");
-        getClient().getTasksAssignedAsPotentialOwner("Darth Vader", groupIds, "en-UK", responseHandler);
+
+        getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(2, tasks.size());
     }

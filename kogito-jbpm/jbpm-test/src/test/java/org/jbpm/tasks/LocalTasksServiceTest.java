@@ -39,6 +39,7 @@ import org.jbpm.persistence.objects.MockUserInfo;
 
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.*;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
@@ -146,6 +147,12 @@ public class LocalTasksServiceTest {
     @Test
     public void groupTaskQueryTest() throws Exception {
 
+    	Properties userGroups = new Properties();
+        userGroups.setProperty("salaboy", "");
+        userGroups.setProperty("john", "PM");
+        userGroups.setProperty("mary", "HR");
+        
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
 
         Environment env = createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase("Evaluation2.bpmn");
@@ -171,38 +178,15 @@ public class LocalTasksServiceTest {
         this.localTaskService.start(salaboysTasks.get(0).getId(), "salaboy");
 
         this.localTaskService.complete(salaboysTasks.get(0).getId(), "salaboy", null);
-        List<String> pms = new ArrayList<String>();
-        pms.add("PM");
-        List<TaskSummary> pmsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner(null, pms, "en-UK");
+
+        List<TaskSummary> pmsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
 
         Assert.assertEquals(1, pmsTasks.size());
 
-        pmsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("", pms, "en-UK");
 
-        Assert.assertEquals(1, pmsTasks.size());
-
-        pmsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("john", pms, "en-UK");
-
-        Assert.assertEquals(1, pmsTasks.size());
-
-        List<String> hrs = new ArrayList<String>();
-        hrs.add("HR");
-        List<TaskSummary> hrsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner(null, hrs, "en-UK");
+        List<TaskSummary> hrsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
 
         Assert.assertEquals(1, hrsTasks.size());
-
-        hrsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("", hrs, "en-UK");
-
-        Assert.assertEquals(1, hrsTasks.size());
-
-        hrsTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("mary", hrs, "en-UK");
-
-        Assert.assertEquals(1, hrsTasks.size());
-
-
-
-
-
 
     }
 

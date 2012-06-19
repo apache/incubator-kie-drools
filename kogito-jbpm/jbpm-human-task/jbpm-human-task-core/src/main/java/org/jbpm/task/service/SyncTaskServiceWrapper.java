@@ -135,6 +135,7 @@ public class SyncTaskServiceWrapper implements TaskService {
         }
     }
 
+    @Deprecated
     public void claim(long taskId, String userId, List<String> groupIds) {
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         taskService.claim(taskId, userId, groupIds, responseHandler);
@@ -410,6 +411,7 @@ public class SyncTaskServiceWrapper implements TaskService {
         return responseHandler.getResults();
     }
 
+    @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language) {
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
         taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, language, responseHandler);
@@ -423,6 +425,7 @@ public class SyncTaskServiceWrapper implements TaskService {
         return responseHandler.getResults();
     }
     
+    @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult) {
     	BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
         taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResult, responseHandler);
@@ -744,6 +747,7 @@ public class SyncTaskServiceWrapper implements TaskService {
         }
     }
 
+    @Deprecated
     public void claimNextAvailable(String userId, List<String> groupIds, String language) {
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         taskService.claimNextAvailable(userId, groupIds, language, responseHandler);
@@ -772,6 +776,7 @@ public class SyncTaskServiceWrapper implements TaskService {
         return responseHandler.getResults();
     }
 
+    @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
         taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language, responseHandler);

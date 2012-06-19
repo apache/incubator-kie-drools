@@ -39,7 +39,6 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
 public class TaskManagement extends SessionInitializer implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
@@ -76,12 +75,8 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 		if (idRef == null) {
 			service.release(taskId, userId);
 		} else if (idRef.equals(userId)) {
-			List<String> roles = getCallerRoles();
-			if (roles == null) {
-				service.claim(taskId, idRef);
-			} else {
-				service.claim(taskId, idRef, roles);
-			}
+			
+			service.claim(taskId, idRef);
 		} else {
 
 			service.delegate(taskId, userId, idRef);
@@ -154,16 +149,11 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
         List<TaskRef> result = new ArrayList<TaskRef>();
 		try {
             
-			List<String> roles = getCallerRoles();
 			List<TaskSummary> tasks = null;
 			List<Status> onlyReady = Collections.singletonList(Status.Ready);
-			if (roles == null) {
-				tasks = service.getTasksAssignedAsPotentialOwnerByStatus(idRef, onlyReady, "en-UK");
-			} else {
-				tasks = service.getTasksAssignedAsPotentialOwnerByStatusByGroup(idRef, roles, onlyReady, "en-UK");
-			}
-			
-			
+
+			tasks = service.getTasksAssignedAsPotentialOwnerByStatus(idRef, onlyReady, "en-UK");
+						
 	        for (TaskSummary task: tasks) {
 	        	result.add(Transform.task(task));
 	        }

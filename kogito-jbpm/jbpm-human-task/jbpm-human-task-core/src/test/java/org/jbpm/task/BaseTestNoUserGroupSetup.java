@@ -40,6 +40,7 @@ public abstract class BaseTestNoUserGroupSetup extends BaseTest {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        UserGroupCallbackManager.getInstance().setCallback(null);
     }
     
     @Override

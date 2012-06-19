@@ -208,6 +208,7 @@ public class TaskClient implements AsyncTaskService{
         connector.write( cmd );
     }
 
+    @Deprecated
     public void claim(long taskId,
 		  		      String userId,
 		  		      List<String> groupIds,
@@ -514,12 +515,14 @@ public class TaskClient implements AsyncTaskService{
         connector.write( cmd );
     }
 
+    @Deprecated
     public void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,
                                                  String language,
                                                  TaskSummaryResponseHandler responseHandler) {
     	getTasksAssignedAsPotentialOwner(userId, groupIds, language, -1, -1, responseHandler);
     }
     
+    @Deprecated
     public void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,
                                                  String language, int firstResult, int maxResult,
                                                  TaskSummaryResponseHandler responseHandler) {
@@ -858,6 +861,7 @@ public class TaskClient implements AsyncTaskService{
         connector.write( cmd );
     }
 
+    @Deprecated
     public void claimNextAvailable(String userId, List<String> groupIds, String language, TaskOperationResponseHandler responseHandler) {
         List<Object> args = new ArrayList<Object>( 3 );
         args.add( userId );
@@ -883,6 +887,8 @@ public class TaskClient implements AsyncTaskService{
                                     responseHandler );
         connector.write( cmd );
     }
+    
+    @Deprecated
     public void getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language, BlockingTaskSummaryResponseHandler responseHandler) {
         List<Object> args = new ArrayList<Object>( 2 );
         args.add( userId );

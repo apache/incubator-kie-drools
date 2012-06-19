@@ -39,10 +39,12 @@ public interface TaskService {
 
     void claim(long taskId, String userId);
 
+    @Deprecated
     void claim(long taskId, String userId, List<String> groupIds);
     
     void claimNextAvailable(String userId, String language);
     
+    @Deprecated
     void claimNextAvailable(String userId, List<String> groupIds, String language);
 
     void complete(long taskId, String userId, ContentData outputData);
@@ -87,8 +89,10 @@ public interface TaskService {
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language);
 
+    @Deprecated
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
 
+    @Deprecated
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult);
     
     List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language);
@@ -158,6 +162,7 @@ public interface TaskService {
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language);
     
+    @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
 
 }

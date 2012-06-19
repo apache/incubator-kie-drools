@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
@@ -31,6 +32,8 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.TestStatefulKnowledgeSession;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
@@ -113,7 +116,13 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     }
 
     public void testTaskGroupActors() throws Exception {
-        TestWorkItemManager manager = new TestWorkItemManager();
+    	Properties userGroups = new Properties();
+        userGroups.setProperty("Luke", "Crusaders");
+        userGroups.setProperty("Darth Vader", "");
+        
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
+        
+    	TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
@@ -123,11 +132,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         workItem.setParameter("GroupId", "Crusaders");
         getHandler().executeWorkItem(workItem, manager);
 
-        
-        List<String> groupIds = new ArrayList<String>();
-        groupIds.add("Crusaders");
-        
-        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner(null, groupIds, "en-UK");
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Luke", "en-UK");
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
         assertEquals("TaskName", taskSummary.getName());
@@ -152,6 +157,10 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     }
 
     public void testTaskSingleAndGroupActors() throws Exception {
+    	Properties userGroups = new Properties();
+        userGroups.setProperty("Darth Vader", "Crusaders");
+        
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -170,12 +179,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
         getHandler().executeWorkItem(workItem, manager);
-
         
-        List<String> groupIds = new ArrayList<String>();
-        groupIds.add("Crusaders");
-        
-        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", groupIds, "en-UK");
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
         assertEquals(2, tasks.size());
     }
 

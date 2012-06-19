@@ -18,6 +18,7 @@ package org.jbpm.task.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
@@ -29,10 +30,13 @@ import org.jbpm.task.BaseTest;
 import org.jbpm.task.Group;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.User;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 
 /**
  * Thanks to jbride for development of the test.
@@ -98,23 +102,24 @@ public abstract class ClaimTaskTwiceTest extends BaseTest {
         taskId = task.getId();
         logger.info("setUp() taskId = " + taskId);
 
+        Properties userGroups = new Properties();
         // Setup user/group stuff
         User[] userArray = new User[clientCount];
         String[] userNames = { "krisv", "john", "mary" };
         for (int t = 0; t < clientCount; t++) {
             User user = new User(userNames[t]);
             userArray[t] = user;
+            userGroups.setProperty(user.getId(), GROUP_NAME);
         }
-
-        List<String> groupList = new ArrayList<String>();
-        groupList.add(GROUP_NAME);
+        // set callback with configured user groups
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
 
         try {
             execObj = Executors.newScheduledThreadPool(clientCount);
 
             for (int t = 0; t < clientCount; t++) {
                 delay = delay + (t * delay);
-                Runnable siClient = new TaskOperationThread(userArray[t].getId(), groupList);
+                Runnable siClient = new TaskOperationThread(userArray[t].getId());
                 execObj.schedule(siClient, delay, TimeUnit.MILLISECONDS);
             }
 
@@ -124,7 +129,8 @@ public abstract class ClaimTaskTwiceTest extends BaseTest {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-
+        Status status = taskSession.getTask(taskId).getTaskData().getStatus();
+        assertTrue(status == Status.Reserved);
         assertTrue("Task with task id " + taskId + " has been claimed twice!", !taskClaimedTwice);
     }
 
@@ -134,9 +140,8 @@ public abstract class ClaimTaskTwiceTest extends BaseTest {
         TaskService threadClient = null;
         final String threadName;
         String userId;
-        List<String> groupList;
     
-        public TaskOperationThread(String userId, List<String> groupList) {
+        public TaskOperationThread(String userId) {
             threadName = "thread-" + threadIdGenerator.incrementAndGet();
             try { 
                 threadClient = createClient(threadName);
@@ -145,7 +150,6 @@ public abstract class ClaimTaskTwiceTest extends BaseTest {
                 logger.error("Could not initialize thread client: " + e.getClass().getSimpleName() + " [" + e.getMessage() + "]");
             }
             this.userId = userId;
-            this.groupList = groupList;
         }
     
         public void run() {
@@ -153,7 +157,7 @@ public abstract class ClaimTaskTwiceTest extends BaseTest {
                 for(int i = 0; i < 2 && ! taskClaimedTwice; ++i ) { 
                     
                     try { 
-                        threadClient.claim(taskId, userId, groupList);
+                        threadClient.claim(taskId, userId);
                     } catch (PermissionDeniedException pde) {
                         logger.debug("run() userId = " + userId + " : taskId = " + taskId + " : claimed by other user already!");
                         continue;

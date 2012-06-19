@@ -70,9 +70,8 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         Thread.sleep(500);
 
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-        List<String> groupIds = new ArrayList<String>();
-        groupIds.add("Crusaders");
-        getClient().getTasksAssignedAsPotentialOwner("Darth Vader", groupIds, "en-UK", responseHandler);
+
+        getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);

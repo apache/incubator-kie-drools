@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.jbpm.task.AccessType;
 import org.jbpm.task.BaseTest;
@@ -30,6 +31,8 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
@@ -181,11 +184,16 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
     }
 
     public void testClaimWithGroupAssignee() throws Exception {
+    	Properties userGroups = new Properties();
+    	
+    	userGroups.setProperty(users.get( "darth" ).getId(), "Knights Templer, Dummy Group");
+    	UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
+    	
         Map <String, Object> vars = fillVariables();
         
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [groups['knightsTempler' ]], }),";                        
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [groups['knightsTempler' ]], businessAdministrators = [ new User('Administrator') ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         
@@ -199,12 +207,8 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         
         Task task1 = client.getTask( taskId );
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );     
-        
-        
-        List<String> groupIds = new ArrayList<String>();
-        groupIds.add("Dummy Group");
-        groupIds.add("Knights Templer");
-        client.claim( taskId, users.get( "darth" ).getId(), groupIds );        
+
+        client.claim( taskId, users.get( "darth" ).getId());        
         
         
         
