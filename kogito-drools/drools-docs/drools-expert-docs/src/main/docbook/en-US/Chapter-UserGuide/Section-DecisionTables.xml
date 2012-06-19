@@ -208,6 +208,10 @@ end
       constraints, to be added to the respective ObjectType in the cell above. If the cells above were spanned, then
       there could be multiple constraints on one "column".</para>
     </note>
+
+    <warning>
+      <para>Very large decision tables may have very large memory requirements depending upon their complexity.</para>
+    </warning>
   </section>
 
   <section>
