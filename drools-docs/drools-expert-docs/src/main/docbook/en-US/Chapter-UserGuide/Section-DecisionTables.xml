@@ -210,7 +210,7 @@ end
     </note>
 
     <warning>
-      <para>Very large decision tables may have very large memory requirements depending upon their complexity.</para>
+      <para>Very large decision tables may have very large memory requirements.</para>
     </warning>
   </section>
 
