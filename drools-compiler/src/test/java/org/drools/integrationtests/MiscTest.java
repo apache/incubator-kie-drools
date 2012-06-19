@@ -11132,4 +11132,26 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
     }
+
+    @Test
+    public void testConstraintValueInParenthesis() {
+        // JBRULES-3550
+        String str =
+                "package org.drools\n" +
+                "declare Bean\n" +
+                "    company : String\n" +
+                "end\n" +
+                "rule X\n" +
+                "when\n"+
+                "   $s1 : Bean( )\n" +
+                "   $s2 : Bean( company == ( $s1.company ) )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
 }

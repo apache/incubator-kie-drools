@@ -1437,16 +1437,6 @@ public class PatternBuilder
                                                                                           requiredGlobals,
                                                                                           evaluator );
 
-        final ReturnValueBuilder builder = context.getDialect().getReturnValueBuilder();
-
-        builder.build( context,
-                       usedIdentifiers,
-                       previousDeclarations,
-                       localDeclarations,
-                       returnValueRestriction,
-                       returnValueRestrictionDescr,
-                       analysis );
-
         return returnValueRestriction;
     }
 
