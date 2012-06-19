@@ -10687,7 +10687,7 @@ public class MiscTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		
+
 		FactType typeA = kbase.getFactType( "org.drools.test", "A" );
         Object a = typeA.newInstance();
         typeA.set( a, "field", "12" );
@@ -11132,5 +11132,39 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
+    }
+
+    @Test
+    public void testEntryPointWithVarIN() {
+        String str = "package org.drools.test;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"In\"\n" +
+                "when\n" +
+                "   $x : Integer()\n " +
+                "then\n" +
+                "   drools.getEntryPoint(\"inX\").insert( $x );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Out\"\n" +
+                "when\n" +
+                "   $i : Integer() from entry-point \"inX\"\n" +
+                "then\n" +
+                "   list.add( $i );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( 10 );
+
+        List res = new ArrayList();
+        ksession.setGlobal( "list", res );
+
+        ksession.fireAllRules();
+        ksession.dispose();
+        assertTrue( res.contains( 10 ) );
+
     }
 }

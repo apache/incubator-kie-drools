@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/semantics/java/parser/Java.g 2012-06-01 16:16:19
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/semantics/java/parser/Java.g 2012-06-19 22:33:16
 
     package org.drools.rule.builder.dialect.java.parser;
     import java.util.Iterator;
@@ -10441,22 +10441,17 @@ public class JavaParser extends Parser {
 
 
     // $ANTLR start "selector"
-    // src/main/resources/org/drools/semantics/java/parser/Java.g:1266:1: selector : ( '.' Identifier ( arguments )? | '.' 'this' | '.' 'super' superSuffix | '.' 'new' ( nonWildcardTypeArguments )? innerCreator | '[' expression ']' );
+    // src/main/resources/org/drools/semantics/java/parser/Java.g:1266:1: selector : ( '.' methodName ( arguments )? | '.' 'this' | '.' 'super' superSuffix | '.' 'new' ( nonWildcardTypeArguments )? innerCreator | '[' expression ']' );
     public final void selector() throws RecognitionException {
         int selector_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 137) ) { return ; }
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1267:5: ( '.' Identifier ( arguments )? | '.' 'this' | '.' 'super' superSuffix | '.' 'new' ( nonWildcardTypeArguments )? innerCreator | '[' expression ']' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1267:5: ( '.' methodName ( arguments )? | '.' 'this' | '.' 'super' superSuffix | '.' 'new' ( nonWildcardTypeArguments )? innerCreator | '[' expression ']' )
             int alt189=5;
             int LA189_0 = input.LA(1);
 
             if ( (LA189_0==28) ) {
                 switch ( input.LA(2) ) {
-                case Identifier:
-                    {
-                    alt189=1;
-                    }
-                    break;
                 case 119:
                     {
                     alt189=2;
@@ -10470,6 +10465,15 @@ public class JavaParser extends Parser {
                 case 120:
                     {
                     alt189=4;
+                    }
+                    break;
+                case Identifier:
+                case 88:
+                case 89:
+                case 90:
+                case 91:
+                    {
+                    alt189=1;
                     }
                     break;
                 default:
@@ -10493,10 +10497,14 @@ public class JavaParser extends Parser {
             }
             switch (alt189) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1267:7: '.' Identifier ( arguments )?
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1267:7: '.' methodName ( arguments )?
                     {
                     match(input,28,FOLLOW_28_in_selector6215); if (state.failed) return ;
-                    match(input,Identifier,FOLLOW_Identifier_in_selector6217); if (state.failed) return ;
+                    pushFollow(FOLLOW_methodName_in_selector6217);
+                    methodName();
+
+                    state._fsp--;
+                    if (state.failed) return ;
                     // src/main/resources/org/drools/semantics/java/parser/Java.g:1267:22: ( arguments )?
                     int alt187=2;
                     alt187 = dfa187.predict(input);
@@ -20899,23 +20907,24 @@ public class JavaParser extends Parser {
         }
     }
     static final String DFA163_eotS =
-        "\50\uffff";
+        "\51\uffff";
     static final String DFA163_eofS =
-        "\1\1\47\uffff";
+        "\1\1\50\uffff";
     static final String DFA163_minS =
-        "\1\31\2\uffff\1\4\41\uffff\1\0\2\uffff";
+        "\1\31\2\uffff\1\4\41\uffff\1\0\3\uffff";
     static final String DFA163_maxS =
-        "\1\164\2\uffff\1\170\41\uffff\1\0\2\uffff";
+        "\1\164\2\uffff\1\170\41\uffff\1\0\3\uffff";
     static final String DFA163_acceptS =
-        "\1\uffff\1\2\45\uffff\1\1";
+        "\1\uffff\1\2\46\uffff\1\1";
     static final String DFA163_specialS =
-        "\45\uffff\1\0\2\uffff}>";
+        "\45\uffff\1\0\3\uffff}>";
     static final String[] DFA163_transitionS = {
             "\1\1\2\uffff\1\3\1\1\3\uffff\4\1\1\uffff\1\1\2\uffff\2\1\1\uffff"+
             "\1\1\22\uffff\1\1\1\uffff\2\1\7\uffff\1\1\25\uffff\25\1",
             "",
             "",
-            "\1\45\31\uffff\1\1\2\uffff\1\1\36\uffff\1\1\66\uffff\2\1",
+            "\1\45\31\uffff\1\1\2\uffff\1\1\36\uffff\1\1\27\uffff\4\1\33"+
+            "\uffff\2\1",
             "",
             "",
             "",
@@ -20950,6 +20959,7 @@ public class JavaParser extends Parser {
             "",
             "",
             "\1\uffff",
+            "",
             "",
             ""
     };
@@ -20997,7 +21007,7 @@ public class JavaParser extends Parser {
                         int index163_37 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred248_Java()) ) {s = 39;}
+                        if ( (synpred248_Java()) ) {s = 40;}
 
                         else if ( (true) ) {s = 1;}
 
@@ -21036,8 +21046,8 @@ public class JavaParser extends Parser {
             "\63\25\uffff\1\54\1\55\1\56\20\uffff\1\42\1\43\2\uffff\1\44"+
             "\1\45\1\46\1\47\1\52\1\65",
             "",
-            "\1\4\31\uffff\1\2\2\uffff\1\2\36\uffff\1\73\66\uffff\1\72\1"+
-            "\74",
+            "\1\4\31\uffff\1\2\2\uffff\1\2\36\uffff\1\73\27\uffff\4\4\33"+
+            "\uffff\1\72\1\74",
             "",
             "",
             "",
@@ -21538,19 +21548,19 @@ public class JavaParser extends Parser {
     static final String DFA165_eofS =
         "\1\1\47\uffff";
     static final String DFA165_minS =
-        "\1\31\2\uffff\1\4\41\uffff\1\0\2\uffff";
+        "\1\31\2\uffff\1\4\42\uffff\1\0\1\uffff";
     static final String DFA165_maxS =
-        "\1\164\2\uffff\1\170\41\uffff\1\0\2\uffff";
+        "\1\164\2\uffff\1\170\42\uffff\1\0\1\uffff";
     static final String DFA165_acceptS =
         "\1\uffff\1\2\45\uffff\1\1";
     static final String DFA165_specialS =
-        "\45\uffff\1\0\2\uffff}>";
+        "\46\uffff\1\0\1\uffff}>";
     static final String[] DFA165_transitionS = {
             "\1\1\2\uffff\1\3\1\1\3\uffff\4\1\1\uffff\1\1\2\uffff\2\1\1\uffff"+
             "\1\1\22\uffff\1\1\1\uffff\2\1\7\uffff\1\1\25\uffff\25\1",
             "",
             "",
-            "\1\45\31\uffff\1\1\2\uffff\1\1\36\uffff\1\1\27\uffff\4\47\33"+
+            "\1\46\31\uffff\1\1\2\uffff\1\1\36\uffff\1\1\27\uffff\4\46\33"+
             "\uffff\2\1",
             "",
             "",
@@ -21585,8 +21595,8 @@ public class JavaParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "",
+            "\1\uffff",
             ""
     };
 
@@ -21627,10 +21637,10 @@ public class JavaParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA165_37 = input.LA(1);
+                        int LA165_38 = input.LA(1);
 
                          
-                        int index165_37 = input.index();
+                        int index165_38 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred252_Java()) ) {s = 39;}
@@ -21638,7 +21648,7 @@ public class JavaParser extends Parser {
                         else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index165_37);
+                        input.seek(index165_38);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -21672,8 +21682,8 @@ public class JavaParser extends Parser {
             "\63\25\uffff\1\54\1\55\1\56\20\uffff\1\42\1\43\2\uffff\1\44"+
             "\1\45\1\46\1\47\1\52\1\65",
             "",
-            "\1\4\31\uffff\1\2\2\uffff\1\2\36\uffff\1\73\66\uffff\1\72\1"+
-            "\74",
+            "\1\4\31\uffff\1\2\2\uffff\1\2\36\uffff\1\73\27\uffff\4\4\33"+
+            "\uffff\1\72\1\74",
             "",
             "",
             "",
@@ -22174,19 +22184,19 @@ public class JavaParser extends Parser {
     static final String DFA167_eofS =
         "\1\1\47\uffff";
     static final String DFA167_minS =
-        "\1\31\2\uffff\1\4\41\uffff\1\0\2\uffff";
+        "\1\31\2\uffff\1\4\42\uffff\1\0\1\uffff";
     static final String DFA167_maxS =
-        "\1\164\2\uffff\1\170\41\uffff\1\0\2\uffff";
+        "\1\164\2\uffff\1\170\42\uffff\1\0\1\uffff";
     static final String DFA167_acceptS =
         "\1\uffff\1\2\45\uffff\1\1";
     static final String DFA167_specialS =
-        "\45\uffff\1\0\2\uffff}>";
+        "\46\uffff\1\0\1\uffff}>";
     static final String[] DFA167_transitionS = {
             "\1\1\2\uffff\1\3\1\1\3\uffff\4\1\1\uffff\1\1\2\uffff\2\1\1\uffff"+
             "\1\1\22\uffff\1\1\1\uffff\2\1\7\uffff\1\1\25\uffff\25\1",
             "",
             "",
-            "\1\45\31\uffff\1\1\2\uffff\1\1\36\uffff\1\1\27\uffff\4\47\33"+
+            "\1\46\31\uffff\1\1\2\uffff\1\1\36\uffff\1\1\27\uffff\4\46\33"+
             "\uffff\2\1",
             "",
             "",
@@ -22221,8 +22231,8 @@ public class JavaParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "",
+            "\1\uffff",
             ""
     };
 
@@ -22263,10 +22273,10 @@ public class JavaParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA167_37 = input.LA(1);
+                        int LA167_38 = input.LA(1);
 
                          
-                        int index167_37 = input.index();
+                        int index167_38 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred257_Java()) ) {s = 39;}
@@ -22274,7 +22284,7 @@ public class JavaParser extends Parser {
                         else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index167_37);
+                        input.seek(index167_38);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -22308,8 +22318,8 @@ public class JavaParser extends Parser {
             "\63\25\uffff\1\54\1\55\1\56\20\uffff\1\42\1\43\2\uffff\1\44"+
             "\1\45\1\46\1\47\1\52\1\65",
             "",
-            "\1\4\31\uffff\1\2\2\uffff\1\2\36\uffff\1\73\66\uffff\1\72\1"+
-            "\74",
+            "\1\4\31\uffff\1\2\2\uffff\1\2\36\uffff\1\73\27\uffff\4\4\33"+
+            "\uffff\1\72\1\74",
             "",
             "",
             "",
@@ -25104,8 +25114,8 @@ public class JavaParser extends Parser {
     public static final BitSet FOLLOW_superSuffix_in_explicitGenericInvocationSuffix6186 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_Identifier_in_explicitGenericInvocationSuffix6196 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
     public static final BitSet FOLLOW_arguments_in_explicitGenericInvocationSuffix6198 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_28_in_selector6215 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_selector6217 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000002L});
+    public static final BitSet FOLLOW_28_in_selector6215 = new BitSet(new long[]{0x0000000000000010L,0x000000000F000000L});
+    public static final BitSet FOLLOW_methodName_in_selector6217 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000002L});
     public static final BitSet FOLLOW_arguments_in_selector6220 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_28_in_selector6232 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
     public static final BitSet FOLLOW_119_in_selector6234 = new BitSet(new long[]{0x0000000000000002L});

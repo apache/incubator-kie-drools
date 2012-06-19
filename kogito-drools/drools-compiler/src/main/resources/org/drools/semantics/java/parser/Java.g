@@ -1264,7 +1264,7 @@ explicitGenericInvocationSuffix
     ;
 
 selector
-    :	'.' Identifier (arguments)?
+    :	'.' methodName (arguments)?
     |   '.' 'this'
     |   '.' 'super' superSuffix
     |   '.' 'new' (nonWildcardTypeArguments)? innerCreator
