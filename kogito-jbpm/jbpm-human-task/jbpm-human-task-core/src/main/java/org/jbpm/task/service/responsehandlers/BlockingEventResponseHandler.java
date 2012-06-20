@@ -21,14 +21,26 @@ package org.jbpm.task.service.responsehandlers;
 
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
+import org.jbpm.task.event.TaskEventsAdmin;
+import org.jbpm.task.event.TaskUserEvent;
 
 public class BlockingEventResponseHandler extends AbstractBlockingResponseHandler implements EventResponseHandler {
     private static final int PAYLOAD_WAIT_TIME = 10000;
-
+    private TaskEventsAdmin eventsAdmin;
     private volatile Payload payload;
 
+    public BlockingEventResponseHandler(TaskEventsAdmin eventsAdmin) {
+        this.eventsAdmin = eventsAdmin;
+    }
+
+    public BlockingEventResponseHandler() {
+    }
+    
     public synchronized void execute(Payload payload) {
         this.payload = payload;
+        if(eventsAdmin != null){
+            eventsAdmin.storeEvent((TaskUserEvent)payload.get());
+        }
         setDone(true);
     }
 
@@ -42,6 +54,14 @@ public class BlockingEventResponseHandler extends AbstractBlockingResponseHandle
         }
 
         return payload;
+    }
+
+    public TaskEventsAdmin getEventsAdmin() {
+        return eventsAdmin;
+    }
+
+    public void setEventsAdmin(TaskEventsAdmin eventsAdmin) {
+        this.eventsAdmin = eventsAdmin;
     }
     
     public boolean isRemove() {

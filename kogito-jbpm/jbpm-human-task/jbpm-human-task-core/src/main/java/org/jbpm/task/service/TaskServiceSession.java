@@ -203,7 +203,15 @@ public class TaskServiceSession {
         if (task.getDeadlines() != null) {
             scheduleTask(task);
         }
-
+        if (currentStatus == Status.Ready) {
+            // trigger event support
+            String actualOwner = "";
+            if(task.getTaskData().getActualOwner() != null){
+                actualOwner = task.getTaskData().getActualOwner().getId();
+            }
+            service.getEventSupport().fireTaskCreated(task.getId(), actualOwner);
+        }
+        
         if (currentStatus == Status.Reserved) {
             // Task was reserved so owner should get icals
             SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
@@ -463,6 +471,22 @@ public class TaskServiceSession {
         } 
 
         switch (operation) {
+            case Start: {
+                postTaskStartOperation(task);
+                break;
+            }
+            case Forward: {
+                postTaskForwardOperation(task);
+                break;
+            }
+            case Release: {
+                postTaskReleaseOperation(task);
+                break;
+            }
+            case Stop: {
+                postTaskStopOperation(task);
+                break;
+            }
             case Claim: {
                 postTaskClaimOperation(task);
                 break;
@@ -495,6 +519,34 @@ public class TaskServiceSession {
     private void postTaskClaimOperation(final Task task) {
         // trigger event support
         service.getEventSupport().fireTaskClaimed(task.getId(), task.getTaskData().getActualOwner().getId());
+    }
+    
+    private void postTaskStartOperation(final Task task) {
+        // trigger event support
+        service.getEventSupport().fireTaskStarted(task.getId(), task.getTaskData().getActualOwner().getId());
+    }
+    
+    private void postTaskForwardOperation(final Task task) {
+        // trigger event support
+        String actualOwner = "";
+        if(task.getTaskData().getActualOwner() != null){
+            actualOwner = task.getTaskData().getActualOwner().getId();
+        }
+        service.getEventSupport().fireTaskForwarded(task.getId(), actualOwner);
+    }
+    
+    private void postTaskReleaseOperation(final Task task) {
+        // trigger event support
+        String actualOwner = "";
+        if(task.getTaskData().getActualOwner() != null){
+            actualOwner = task.getTaskData().getActualOwner().getId();
+        }
+        service.getEventSupport().fireTaskReleased(task.getId(), actualOwner);
+    }
+    
+    private void postTaskStopOperation(final Task task) {
+        // trigger event support
+        service.getEventSupport().fireTaskStopped(task.getId(), task.getTaskData().getActualOwner().getId());
     }
 
     private void taskCompleteOperation(final Task task, final ContentData data) {

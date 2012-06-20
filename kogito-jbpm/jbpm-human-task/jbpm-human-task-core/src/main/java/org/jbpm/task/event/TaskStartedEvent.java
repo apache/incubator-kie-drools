@@ -19,13 +19,13 @@ package org.jbpm.task.event;
 import javax.persistence.Entity;
 
 @Entity
-public class TaskSkippedEvent extends TaskUserEvent {
-
-	public TaskSkippedEvent() {
+public class TaskStartedEvent extends TaskUserEvent {
+	
+    public TaskStartedEvent() {
     }
     
-    public TaskSkippedEvent(long taskId, String userId) {
+    public TaskStartedEvent(long taskId, String userId) {
         super( taskId, userId );
     }
-
+    
 }

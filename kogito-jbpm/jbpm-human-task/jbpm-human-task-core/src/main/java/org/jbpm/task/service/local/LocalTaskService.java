@@ -15,7 +15,9 @@
  */
 package org.jbpm.task.service.local;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.drools.runtime.Environment;
 
 import org.jbpm.eventmessaging.EventKey;
@@ -38,7 +40,7 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
  *
- * 
+ *
  */
 public class LocalTaskService implements TaskService {
 
@@ -86,7 +88,7 @@ public class LocalTaskService implements TaskService {
         }
         complete(taskId, userId, contentData);
     }
-    
+
     public boolean connect() {
         //do nothing
         return true;
@@ -120,11 +122,11 @@ public class LocalTaskService implements TaskService {
     public void disconnect() throws Exception {
         // do nothing 
     }
-    
+
     public void dispose() {
         session.dispose();
     }
-    
+
     public void exit(long taskId, String userId) {
         session.taskOperation(Operation.Exit, taskId, userId, null, null, null);
     }
@@ -168,11 +170,11 @@ public class LocalTaskService implements TaskService {
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
         return session.getTasksAssignedAsPotentialOwner(userId, language);
     }
-    
+
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language) {
         return session.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
     }
-    
+
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
         return session.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
     }
@@ -200,7 +202,7 @@ public class LocalTaskService implements TaskService {
     public List<TaskSummary> getTasksOwned(String userId, String language) {
         return session.getTasksOwned(userId, language);
     }
-    
+
     public List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language) {
         return session.getTasksOwned(userId, status, language);
     }
@@ -210,16 +212,16 @@ public class LocalTaskService implements TaskService {
     }
 
     /**
-     * This method allows the user to exercise the query of his/her choice. 
-     * This method will be deleted in future versions. 
-     * </p>
-     * Only select queries are currently supported, for obvious reasons. 
-     * 
-     * @param qlString The query string. 
-     * @param size     Maximum number of results to return.
-     * @param offset   The offset from the beginning of the result list determining the first result. 
-     * 
-     * @return         The result of the query. 
+     * This method allows the user to exercise the query of his/her choice. This
+     * method will be deleted in future versions. </p> Only select queries are
+     * currently supported, for obvious reasons.
+     *
+     * @param qlString The query string.
+     * @param size Maximum number of results to return.
+     * @param offset The offset from the beginning of the result list
+     * determining the first result.
+     *
+     * @return The result of the query.
      */
     @Deprecated
     public List<?> query(String qlString, Integer size, Integer offset) {
@@ -231,14 +233,13 @@ public class LocalTaskService implements TaskService {
     }
 
     public void registerForEvent(EventKey key, boolean remove, EventResponseHandler responseHandler) {
-        SimpleEventTransport transport = new SimpleEventTransport(session, responseHandler, remove);
-        if(!remove){
-           service.getEventKeys().register(key, transport);
-        }else{
-           service.getEventKeys().unregister(key, transport); 
+        SimpleEventTransport transport = new SimpleEventTransport(responseHandler, remove);
+        if (!remove) {
+            service.getEventKeys().register(key, transport);
+        } else {
+            service.getEventKeys().unregister(key, transport);
         }
-        
-        
+
     }
 
     public void release(long taskId, String userId) {
@@ -287,7 +288,7 @@ public class LocalTaskService implements TaskService {
 
     public void claimNextAvailable(String userId, String language) {
         session.claimNextAvailable(userId, language);
-        
+
     }
 
     public void claimNextAvailable(String userId, List<String> groupIds, String language) {
@@ -307,7 +308,7 @@ public class LocalTaskService implements TaskService {
         private boolean remove;
         private EventResponseHandler responseHandler;
 
-        public SimpleEventTransport(TaskServiceSession session, EventResponseHandler responseHandler, boolean remove) {
+        public SimpleEventTransport(EventResponseHandler responseHandler, boolean remove) {
             this.responseHandler = responseHandler;
             this.remove = remove;
         }
@@ -320,5 +321,4 @@ public class LocalTaskService implements TaskService {
             return remove;
         }
     }
-    
 }

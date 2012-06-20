@@ -16,6 +16,9 @@
 
 package org.jbpm.task.event;
 
+import javax.persistence.Entity;
+
+@Entity
 public class TaskFailedEvent extends TaskUserEvent {
 
 	public TaskFailedEvent() {

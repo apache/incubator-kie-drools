@@ -16,6 +16,7 @@
 package org.jbpm.task.service.persistence;
 
 import org.jbpm.task.admin.TasksAdmin;
+import org.jbpm.task.event.TaskEventsAdmin;
 import org.jbpm.task.service.TaskServiceSession;
 
 public interface TaskSessionFactory {
@@ -23,5 +24,7 @@ public interface TaskSessionFactory {
     public TaskServiceSession createTaskServiceSession();
     
     public TasksAdmin createTaskAdmin();
+
+    public TaskEventsAdmin createTaskEventsAdmin();
     
 }

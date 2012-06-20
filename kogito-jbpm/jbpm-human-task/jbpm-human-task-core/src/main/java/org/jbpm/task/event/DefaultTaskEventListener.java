@@ -24,10 +24,25 @@ public class DefaultTaskEventListener implements TaskEventListener {
     public void taskCompleted(TaskCompletedEvent event) {
     }
 
-	public void taskFailed(TaskFailedEvent event) {
-	}
+    public void taskFailed(TaskFailedEvent event) {
+    }
 
-	public void taskSkipped(TaskSkippedEvent event) {
-	}
+    public void taskSkipped(TaskSkippedEvent event) {
+    }
+
+    public void taskCreated(TaskCreatedEvent event) {
+    }
+
+    public void taskStarted(TaskStartedEvent event) {
+    }
+
+    public void taskStopped(TaskStoppedEvent event) {
+    }
+
+    public void taskReleased(TaskReleasedEvent event) {
+    }
+
+    public void taskForwarded(TaskForwardedEvent event) {
+    }
 
 }

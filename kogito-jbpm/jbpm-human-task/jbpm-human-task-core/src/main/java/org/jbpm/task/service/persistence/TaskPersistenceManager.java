@@ -207,6 +207,18 @@ public class TaskPersistenceManager {
         return em.createQuery(queryString);
     }
     
+    /**
+     * It is strongly suggested that you only use this method within a transaction!!
+     * </p>
+     * PostgreSQL and DB2 are 2 databases which, depending on your situation, will probably require this. 
+     * 
+     * @param queryString The Native query string to execute.
+     * @return The result of the query.
+     */
+    public Query createNewNativeQuery(String queryString ) { 
+        return em.createNativeQuery(queryString);
+    }
+    
     public boolean userExists(String userId) { 
         if( em.find(User.class, userId) == null ) { 
             return false;

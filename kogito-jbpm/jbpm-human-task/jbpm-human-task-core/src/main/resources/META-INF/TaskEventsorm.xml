@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_1_0.xsd"
+               version="1.0">
+      <named-query name="TaskEventsByTaskId">
+          <query>
+                select
+                    te
+                from
+                    TaskEvent te 
+                where
+                    te.taskId = :id
+                order by te.eventTime
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+      
+     
+       <named-query name="TaskEventsCompletedByTaskId">
+          <query>
+                select
+                    te
+                from
+                    TaskCompletedEvent te 
+                where
+                    te.taskId = :id 
+                order by te.eventTime
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      <named-query name="TaskEventsCreatedByTaskId">
+          <query>
+                select
+                    te
+                from
+                    TaskCreatedEvent te 
+                where
+                    te.taskId = :id 
+                order by te.eventTime
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+       
+      <named-query name="TaskEventsClaimedByTaskId">
+          <query>
+                select
+                    te
+                from
+                    TaskClaimedEvent te 
+                where
+                    te.taskId = :id 
+                order by te.eventTime
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+      
+     <named-query name="TaskEventsFailedByTaskId">
+          <query>
+                select
+                    te
+                from
+                    TaskFailedEvent te 
+                where
+                    te.taskId = :id 
+                order by te.eventTime
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+     
+     <named-query name="TaskEventsReleasedByTaskId">
+          <query>
+                select
+                    te
+                from
+                    TaskReleasedEvent te 
+                where
+                    te.taskId = :id 
+                order by te.eventTime
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+      <named-query name="TaskEventsForwardedByTaskId">
+          <query>
+                select
+                    te
+                from
+                    TaskForwardedEvent te 
+                where
+                    te.taskId = :id 
+                order by te.eventTime
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+</entity-mappings>

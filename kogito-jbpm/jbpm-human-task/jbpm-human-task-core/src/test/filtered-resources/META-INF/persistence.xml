@@ -71,4 +71,67 @@
         -->
     </properties>
   </persistence-unit>
+  
+  <persistence-unit name="org.jbpm.task.events"
+    transaction-type="${maven.tx.type}">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    ${maven.data.source}
+    <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    <mapping-file>META-INF/TaskEventsorm.xml</mapping-file>
+    <class>org.jbpm.task.Attachment</class>
+    <class>org.jbpm.task.Content</class>
+    <class>org.jbpm.task.BooleanExpression</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Delegation</class>
+    <class>org.jbpm.task.Escalation</class>
+    <class>org.jbpm.task.Group</class>
+    <class>org.jbpm.task.I18NText</class>
+    <class>org.jbpm.task.Notification</class>
+    <class>org.jbpm.task.EmailNotification</class>
+    <class>org.jbpm.task.EmailNotificationHeader</class>
+    <class>org.jbpm.task.PeopleAssignments</class>
+    <class>org.jbpm.task.Reassignment</class>
+    <class>org.jbpm.task.Status</class>
+    <class>org.jbpm.task.Task</class>
+    <class>org.jbpm.task.TaskData</class>
+    <class>org.jbpm.task.SubTasksStrategy</class>
+    <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
+    <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
+    <class>org.jbpm.task.User</class>
+    <!-- Event Classes -->
+    <class>org.jbpm.task.event.TaskClaimedEvent</class>
+    <class>org.jbpm.task.event.TaskCompletedEvent</class>
+    <class>org.jbpm.task.event.TaskCreatedEvent</class>
+    <class>org.jbpm.task.event.TaskFailedEvent</class>
+    <class>org.jbpm.task.event.TaskForwardedEvent</class>
+    <class>org.jbpm.task.event.TaskReleasedEvent</class>
+    <class>org.jbpm.task.event.TaskSkippedEvent</class>
+    <class>org.jbpm.task.event.TaskStartedEvent</class>
+    <class>org.jbpm.task.event.TaskStoppedEvent</class>
+    <class>org.jbpm.task.event.TaskUserEvent</class>
+    <class>org.jbpm.task.event.TaskEvent</class>
+    
+    <properties>
+      <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
+      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
+      <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
+      <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
+      <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+
+      <property name="hibernate.connection.autocommit" value="false" />
+
+      <property name="hibernate.max_fetch_depth" value="3" />
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+      <property name="hibernate.show_sql" value="true" />
+
+      <!-- needed for JTA testing 
+      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" /> 
+        -->
+    </properties>
+  </persistence-unit>
+  
+  
 </persistence>

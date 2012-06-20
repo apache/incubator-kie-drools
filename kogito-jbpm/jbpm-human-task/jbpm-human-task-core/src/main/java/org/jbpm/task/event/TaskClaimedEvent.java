@@ -16,9 +16,12 @@
 
 package org.jbpm.task.event;
 
+import javax.persistence.Entity;
+
+@Entity
 public class TaskClaimedEvent extends TaskUserEvent {
 
-	public TaskClaimedEvent() {
+    public TaskClaimedEvent() {
     }
     
     public TaskClaimedEvent(long taskId, String userId) {

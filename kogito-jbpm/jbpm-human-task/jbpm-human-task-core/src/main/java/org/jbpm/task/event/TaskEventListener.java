@@ -17,15 +17,70 @@
 package org.jbpm.task.event;
 
 import java.util.EventListener;
-
+/* 
+ * Events Defined by the WS-HT Specification 1.1 Page 61
+ */
 public interface TaskEventListener extends EventListener {
-	
-	void taskClaimed(TaskClaimedEvent event);
-    
+    /* 
+     * State Changed : Yes
+     * Owner Changed : Maybe
+     */ 
+    void taskCreated(TaskCreatedEvent event);
+    /* 
+     * State Changed : Yes
+     * Owner Changed : Yes
+     */ 
+    void taskClaimed(TaskClaimedEvent event);
+    /*
+     * State Changed : Yes
+     * Owner Changed : Maybe
+     */
+    void taskStarted(TaskStartedEvent event);
+    /* 
+     * State Changed : Yes 
+     */ 
+    void taskStopped(TaskStoppedEvent event);
+    /* 
+     * State Changed : Yes 
+     * Owner Changed : Yes
+     */
+    void taskReleased(TaskReleasedEvent event);
+    /* 
+     * State Changed : Yes 
+     */
     void taskCompleted(TaskCompletedEvent event);
-    
+    /* 
+     * State Changed : Yes 
+     */
     void taskFailed(TaskFailedEvent event);
-    
+    /* 
+     * State Changed : Yes 
+     */
     void taskSkipped(TaskSkippedEvent event);
+    /* 
+     * State Changed : Yes 
+     * Owner Changed : Maybe
+     */
+    void taskForwarded(TaskForwardedEvent event);
     
+    // void taskSuspended(TaskSuspendedEvent event);
+    // void taskSuspendedUntil(TaskSuspendedUntilEvent event);
+    // void taskResumed(TaskResumedEvent event);   
+    // void taskRemoved(TaskRemovedEvent event); 
+    // void taskPrioritySet(TaskPrioritySetEvent event); 
+    // void taskAddedAttachment(TaskAddedAttachmentEvent event); 
+    // void taskDeletededAttachment(TaskDeletedAttachmentEvent event);
+    // void taskAddedComment(TaskAddedCommentEvent event);
+    // void taskDeletedComment(TaskDeletedCommentEvent event);
+    // void taskDeleageted(TaskDelegatedEvent event);
+    // void taskOutputSet(TaskOutputSetEvent event);
+    // void taskDeletedOutput(TaskDeletedOutputEvent event);
+    // void taskFaultSet(TaskFaultSetEvent event);
+    // void taskDeletedFault(TaskDeletedFaultEvent event);
+    // void taskActivated(TaskActivatedEvent event);
+    // void taskNominated(TaskNominatedEvent event);
+    // void taskGenericHumanRoleSet(TaskGenericHumanRoleSetEvent event); ??
+    // void taskExpired(TaskExpiredEvent event);
+    // void taskEscalated(TaskEscalatedEvent event);
+    // void taskCanceled(TaskCanceledEvent event);
 }

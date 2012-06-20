@@ -20,9 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
+import javax.persistence.Entity;
+@Entity
 public class TaskUserEvent extends TaskEvent implements Externalizable {
-	
     private String userId;
     
     public TaskUserEvent() {

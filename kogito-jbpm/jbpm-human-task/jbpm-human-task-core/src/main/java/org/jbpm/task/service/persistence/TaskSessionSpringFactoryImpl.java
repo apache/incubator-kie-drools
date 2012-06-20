@@ -21,6 +21,8 @@ import javax.persistence.EntityManagerFactory;
 import org.drools.persistence.TransactionManager;
 import org.jbpm.task.admin.TasksAdmin;
 import org.jbpm.task.admin.TasksAdminImpl;
+import org.jbpm.task.event.TaskEventsAdmin;
+import org.jbpm.task.event.TaskEventsAdminImpl;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 
@@ -100,6 +102,16 @@ public class TaskSessionSpringFactoryImpl implements TaskSessionFactory {
     public void initialize() { 
         this.taskService.setTaskSessionFactory(this);
         this.taskService.initialize();
+    }
+
+    public TaskEventsAdmin createTaskEventsAdmin() {
+        TaskPersistenceManager tpm;
+        if (useEMF) {
+            tpm = new TaskPersistenceManager(emf.createEntityManager());
+        } else {
+            tpm = new TaskPersistenceManager(springEM);
+        }
+        return new TaskEventsAdminImpl(tpm);
     }
     
 }

@@ -42,6 +42,7 @@ import org.jbpm.task.admin.TasksAdmin;
 import org.jbpm.task.event.MessagingTaskEventListener;
 import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.event.TaskEventSupport;
+import org.jbpm.task.event.TaskEventsAdmin;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.persistence.TaskSessionFactory;
@@ -174,6 +175,10 @@ public class TaskService {
 
     public TasksAdmin createTaskAdmin() {
         return sessionFactory.createTaskAdmin();
+    }
+    
+    public TaskEventsAdmin createTaskEventsAdmin() {
+        return sessionFactory.createTaskEventsAdmin();
     }
 
     public void schedule(ScheduledTaskDeadline deadline,

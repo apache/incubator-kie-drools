@@ -20,6 +20,8 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.task.admin.TasksAdmin;
 import org.jbpm.task.admin.TasksAdminImpl;
+import org.jbpm.task.event.TaskEventsAdmin;
+import org.jbpm.task.event.TaskEventsAdminImpl;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 
@@ -90,5 +92,17 @@ public class TaskSessionFactoryImpl implements TaskSessionFactory {
         }
         return new TasksAdminImpl(tpm);
     }
+    
+    public TaskEventsAdmin createTaskEventsAdmin() {
+        TaskPersistenceManager tpm;
+        if( useJTA ) { 
+            tpm = new TaskPersistenceManager(emf.createEntityManager(), new TaskJTATransactionManager());
+        }
+        else { 
+            tpm = new TaskPersistenceManager(emf.createEntityManager());
+        }
+        return new TaskEventsAdminImpl(tpm);
+    }
 
+    
 }

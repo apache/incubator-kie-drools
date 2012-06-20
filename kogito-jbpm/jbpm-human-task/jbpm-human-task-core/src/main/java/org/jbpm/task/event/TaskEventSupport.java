@@ -72,6 +72,66 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         }
     }
 
+    public void fireTaskCreated(final long taskId, final String userId) {
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final TaskCreatedEvent event = new TaskCreatedEvent(taskId, userId);
+
+            do {
+                iter.next().taskCreated(event);
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireTaskForwarded(final long taskId, final String userId) {
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final TaskForwardedEvent event = new TaskForwardedEvent(taskId, userId);
+
+            do {
+                iter.next().taskForwarded(event);
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireTaskStarted(final long taskId, final String userId) {
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final TaskStartedEvent event = new TaskStartedEvent(taskId, userId);
+
+            do {
+                iter.next().taskStarted(event);
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireTaskReleased(final long taskId, final String userId) {
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final TaskReleasedEvent event = new TaskReleasedEvent(taskId, userId);
+
+            do {
+                iter.next().taskReleased(event);
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireTaskStopped(final long taskId, final String userId) {
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final TaskStoppedEvent event = new TaskStoppedEvent(taskId, userId);
+
+            do {
+                iter.next().taskStopped(event);
+            } while (iter.hasNext());
+        }
+    }
+    
     public void reset() {
         this.clear();
     }

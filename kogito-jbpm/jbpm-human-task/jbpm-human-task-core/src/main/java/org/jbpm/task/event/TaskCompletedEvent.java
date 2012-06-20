@@ -16,7 +16,9 @@
 
 package org.jbpm.task.event;
 
+import javax.persistence.Entity;
 
+@Entity
 public class TaskCompletedEvent extends TaskUserEvent {
 	
     public TaskCompletedEvent() {
