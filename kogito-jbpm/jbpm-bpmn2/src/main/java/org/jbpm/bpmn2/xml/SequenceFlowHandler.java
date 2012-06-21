@@ -130,6 +130,9 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 					String language = languageNode.getNodeValue();
 					if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
 						sequenceFlow.setLanguage("java");
+					} else if (XmlBPMNProcessDumper.MVEL_LANGUAGE
+							.equals(language)) {
+						sequenceFlow.setLanguage("mvel");
 					} else if (XmlBPMNProcessDumper.RULE_LANGUAGE
 							.equals(language)) {
 						sequenceFlow.setType("rule");

@@ -61,6 +61,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 public class XmlBPMNProcessDumper {
 	
 	public static final String JAVA_LANGUAGE = "http://www.java.com/java";
+	public static final String MVEL_LANGUAGE = "http://www.mvel.org/2.0";
 	public static final String RULE_LANGUAGE = "http://www.jboss.org/drools/rule";
     public static final String XPATH_LANGUAGE = "http://www.w3.org/1999/XPath";
     
