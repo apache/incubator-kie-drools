@@ -64,7 +64,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private String plannerVersion;
     private ExecutorService executorService;
     private Integer failureCount;
-    private Throwable firstFailureThrowable;
+    private SingleBenchmark firstFailureSingleBenchmark;
     private SolverBenchmark winningSolverBenchmark;
 
     public File getBenchmarkDirectory() {
@@ -169,7 +169,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         executorService = Executors.newFixedThreadPool(parallelBenchmarkCount);
         failureCount = 0;
-        firstFailureThrowable = null;
+        firstFailureSingleBenchmark = null;
         winningSolverBenchmark = null;
         logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount ({}).",
                 solverBenchmarkList.size(), parallelBenchmarkCount);
@@ -245,8 +245,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 singleBenchmark.setSucceeded(false);
                 singleBenchmark.setFailureThrowable(failureThrowable);
                 failureCount++;
-                if (firstFailureThrowable == null) {
-                    firstFailureThrowable = failureThrowable;
+                if (firstFailureSingleBenchmark == null) {
+                    firstFailureSingleBenchmark = singleBenchmark;
                 }
             }
         }
@@ -270,8 +270,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             logger.info("Benchmarking failed: failureCount ({}), statistic html overview ({}).",
                     failureCount, plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
             throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
-                    " The first exception is chained.",
-                    firstFailureThrowable);
+                    " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
+                    + ") is chained.",
+                    firstFailureSingleBenchmark.getFailureThrowable());
         }
     }
 
