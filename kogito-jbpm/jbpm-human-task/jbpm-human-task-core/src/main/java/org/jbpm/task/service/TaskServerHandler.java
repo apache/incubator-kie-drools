@@ -253,7 +253,7 @@ public class TaskServerHandler {
                 }
                 case QueryTaskByWorkItemId: {
                     // prepare
-                    response = CommandName.QueryTaskSummaryResponse;
+                    response = CommandName.QueryTaskByWorkItemIdResponse;
                     // execute
                     Task result = taskSession.getTaskByWorkItemId((Long) cmd.getArguments().get(0));
 

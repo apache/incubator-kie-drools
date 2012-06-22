@@ -76,7 +76,7 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
             //throw new RuntimeException(" + Server Exception with class " + getClass() + " using port " + port, e);
             logger.error(" + Server Exception with class " + getClass() + " using port " + port + " E: " + e.getMessage());
         }
-        while (running) {
+        while (running && !consumer.isClosed()) {
 
             try {
                 ClientMessage clientMessage = consumer.receive();
@@ -88,15 +88,14 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
             } catch (HornetQException e) {
                 switch (e.getCode()) {
                     case HornetQException.OBJECT_CLOSED:
-                        logger.info(" ++ " + e.getMessage());
+                    	logger.warn("TaskServer: HornetQ object closed error encountered: " + getClass() + " using port " + port, e);
                         break;
                     default:
                         logger.error(" +++ " + e.getMessage());
                         break;
                 }
             } catch (Exception e) {
-                logger.error(" + Server Exception with class " + getClass() + " using port " + port + " E: " + e.getMessage());
-                throw new RuntimeException(" + Server Exception with class " + getClass() + " using port " + port, e);
+                logger.error("Server Exception with class " + getClass() + " using port " + port + " E: " + e.getMessage(), e);
                 
             }
         }
@@ -112,9 +111,9 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
             ObjectInputStream ois = new ObjectInputStream(bais);
             return ois.readObject();
         } catch (IOException e) {
-            throw new IOException("Error reading message");
+            throw new IOException("Error reading message", e);
         } catch (ClassNotFoundException e) {
-            throw new IOException("Error creating message");
+            throw new IOException("Error creating message", e);
         }
     }
 
