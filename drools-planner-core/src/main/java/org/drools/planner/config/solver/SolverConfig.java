@@ -128,6 +128,8 @@ public class SolverConfig {
         DefaultSolver solver = new DefaultSolver();
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination();
         solver.setBasicPlumbingTermination(basicPlumbingTermination);
+        EnvironmentMode environmentMode = this.environmentMode == null ? EnvironmentMode.REPRODUCIBLE
+                : this.environmentMode;
         if (environmentMode != EnvironmentMode.PRODUCTION) {
             if (randomSeed != null) {
                 solver.setRandomSeed(randomSeed);
@@ -137,12 +139,12 @@ public class SolverConfig {
         }
         SolutionDescriptor solutionDescriptor = buildSolutionDescriptor();
         ScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig.buildScoreDirectorFactory(
-                solutionDescriptor);
+                environmentMode, solutionDescriptor);
         solver.setScoreDirectorFactory(scoreDirectorFactory);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Termination termination = terminationConfig.buildTermination(scoreDefinition, basicPlumbingTermination);
         solver.setTermination(termination);
-        BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller();
+        BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
         if (solverPhaseConfigList == null || solverPhaseConfigList.isEmpty()) {
             throw new IllegalArgumentException(
@@ -159,7 +161,7 @@ public class SolverConfig {
         return solver;
     }
 
-    protected BestSolutionRecaller buildBestSolutionRecaller() {
+    protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
         if (environmentMode == EnvironmentMode.TRACE) {
             bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);

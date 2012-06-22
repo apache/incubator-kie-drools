@@ -136,6 +136,10 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
+        if (!(uncorruptedScoreDirector instanceof IncrementalScoreDirector)) {
+            return "Unable to analyze: the uncorruptedScoreDirector class (" + uncorruptedScoreDirector.getClass()
+                    + ") is not an instance of the scoreDirector class (" + IncrementalScoreDirector.class + ").";
+        }
         IncrementalScoreDirector uncorruptedIncrementalScoreDirector
                 = (IncrementalScoreDirector) uncorruptedScoreDirector;
         return incrementalScoreCalculator.buildScoreCorruptionAnalysis(

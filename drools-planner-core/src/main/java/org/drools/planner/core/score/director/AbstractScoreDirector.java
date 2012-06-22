@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * @see ScoreDirector
  */
-public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> implements ScoreDirector {
+public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFactory> implements ScoreDirector {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -235,7 +235,12 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
     }
 
     public void assertWorkingScore(Score workingScore) {
-        ScoreDirector uncorruptedScoreDirector = scoreDirectorFactory.buildScoreDirector();
+        ScoreDirectorFactory assertionScoreDirectorFactory
+                = scoreDirectorFactory.getAssertionScoreDirectorFactory();
+        if (assertionScoreDirectorFactory == null) {
+            assertionScoreDirectorFactory = scoreDirectorFactory;
+        }
+        ScoreDirector uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector();
         uncorruptedScoreDirector.setWorkingSolution(workingSolution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         if (!workingScore.equals(uncorruptedScore)) {

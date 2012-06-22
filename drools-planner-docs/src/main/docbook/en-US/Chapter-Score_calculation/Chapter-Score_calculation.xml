@@ -606,8 +606,8 @@
           your score rules <filename>*.drl</filename> file in the solver configuration:</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-     &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
+    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
           <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed, but normally you 'll define
@@ -754,6 +754,32 @@ rule "softConstraintsBroken"
 end</programlisting>
       </section>
     </section>
+
+    <section>
+      <title>Detecting invalid scores</title>
+
+      <para>Put the <literal>environmentMode</literal> in <literal>TRACE</literal> (or <literal>DEBUG</literal>) to
+      detect corruption in the <link linkend="incrementalScoreCalculation">incremental score calculation</link>. On the
+      difference between <literal>TRACE</literal> and <literal>DEBUG</literal>, <link linkend="environmentMode">see the
+      section about <literal>environmentMode</literal></link>. However, that will not detect if your score calculator
+      implements your score constraints as your business desires.</para>
+
+      <para>A piece of incremental score calculator code can be difficult to write and to review. You can assert its
+      correctness by using a different implementation (for example a <literal>SimpleScoreCalculator</literal>) to do the
+      assertions trigged by the <literal>environmentMode</literal>. Just configure it as
+      <literal>assertionScoreDirectorFactory</literal>:</para>
+
+      <programlisting language="xml">  &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
+  ...
+  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
+    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;assertionScoreDirectorFactory&gt;
+      &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
+      &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+    &lt;/assertionScoreDirectorFactory&gt;
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+    </section>
   </section>
 
   <section>
@@ -763,13 +789,29 @@ end</programlisting>
       <title>Overview</title>
 
       <para>The <literal>Solver</literal> will normally spend most of its execution time running the score calculation
-      (which is called in its deepest loops). Faster score calculation will return the same solution in less time, which
-      normally means a better solution in equal time.</para>
+      (which is called in its deepest loops). Faster score calculation will return the same solution in less time with
+      the same algorithm, which normally means a better solution in equal time.</para>
+    </section>
 
-      <para>After solving a problem, the <literal>Solver</literal> will log the average calculation count per second.
-      This is a good measurement of Score calculation performance, but it depends on the problem scale. Normally, even
-      for high scale problems, it is higher than <literal>1000</literal>, unless you're using
+    <section>
+      <title>Average calculation count per second</title>
+
+      <para>After solving a problem, the <literal>Solver</literal> will log the <emphasis>average calculation count per
+      second</emphasis>. This is a good measurement of Score calculation performance, despite that it is affected by non
+      score calculation execution time. It depends on the problem scale of the problem dataset. Normally, even for high
+      scale problems, it is higher than <literal>1000</literal>, except when you're using
       <literal>SimpleScoreCalculator</literal>.</para>
+
+      <important>
+        <para>When improving your score calculation, focus on maximizing the average calculation count per second,
+        instead of maximizing the best score. A big improvement in score calculation can sometimes yield little or no
+        best score improvement, for example when the algorithm is stuck in a local or global optima. If you're watching
+        the calculation count instead, score calculation improvements are far more visible.</para>
+
+        <para>Furthermore, watching the calculation count, allows you to remove or add score constraints, and still
+        compare it with the original calculation count. Comparing the best score with the original would be wrong,
+        because it's comparing apples and oranges.</para>
+      </important>
     </section>
 
     <section xml:id="incrementalScoreCalculation">
@@ -805,7 +847,7 @@ end</programlisting>
 
       <para>Do not call remote services in your score calculation (except if you're bridging
       <literal>SimpleScoreCalculator</literal> to a legacy system). The network latency will kill your score calculation
-      performance. Cache the results of those remote services if possible</para>
+      performance. Cache the results of those remote services if possible.</para>
 
       <para>If some parts of a constraint can be calculated once, when the <literal>Solver</literal> starts, and never
       change during solving, then turn them into <link linkend="cachedProblemFact">cached problem facts</link>.</para>
@@ -898,8 +940,8 @@ end</programlisting>
       <title>stepLimit benchmark</title>
 
       <para>Not all score constraints have the same performance cost. Sometimes one score constraint can kill the score
-      calculation performance outright. Use the benchmarker to do a 1 minute run and check what happens if you comment
-      out all but a few of the score constraints.</para>
+      calculation performance outright. Use the benchmarker to do a 1 minute run and check what happens to the average
+      calculation count per second if you comment out all but 1 of the score constraints.</para>
     </section>
   </section>
 

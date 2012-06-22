@@ -30,6 +30,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
@@ -41,10 +42,8 @@ import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.drools.planner.core.score.director.incremental.IncrementalScoreCalculator;
-import org.drools.planner.core.score.director.incremental.IncrementalScoreDirector;
 import org.drools.planner.core.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
-import org.drools.planner.core.score.director.simple.SimpleScoreDirector;
 import org.drools.planner.core.score.director.simple.SimpleScoreDirectorFactory;
 
 @XStreamAlias("scoreDirectorFactory")
@@ -64,6 +63,9 @@ public class ScoreDirectorFactoryConfig {
     protected RuleBase ruleBase = null;
     @XStreamImplicit(itemFieldName = "scoreDrl")
     protected List<String> scoreDrlList = null;
+
+    @XStreamAlias("assertionScoreDirectorFactory")
+    protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
 
     public ScoreDefinition getScoreDefinition() {
         return scoreDefinition;
@@ -129,11 +131,20 @@ public class ScoreDirectorFactoryConfig {
         this.scoreDrlList = scoreDrlList;
     }
 
+    public ScoreDirectorFactoryConfig getAssertionScoreDirectorFactory() {
+        return assertionScoreDirectorFactory;
+    }
+
+    public void setAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig assertionScoreDirectorFactory) {
+        this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
-    public ScoreDirectorFactory buildScoreDirectorFactory(SolutionDescriptor solutionDescriptor) {
+    public ScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
+            SolutionDescriptor solutionDescriptor) {
         ScoreDefinition scoreDefinition = buildScoreDefinition();
         AbstractScoreDirectorFactory scoreDirectorFactory;
         // TODO this should fail-fast if multiple scoreDirectorFactory's are configured
@@ -146,6 +157,21 @@ public class ScoreDirectorFactoryConfig {
         }
         scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
         scoreDirectorFactory.setScoreDefinition(scoreDefinition);
+        if (assertionScoreDirectorFactory != null) {
+            if (assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() != null) {
+                throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory + ") cannot have a non-null assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() + ").");
+            }
+            if (environmentMode.compareTo(EnvironmentMode.DEBUG) > 0) {
+                throw new IllegalArgumentException("A non-null assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory + ") requires an environmentMode ("
+                        + environmentMode + ") of " + EnvironmentMode.DEBUG + " or lower.");
+            }
+            scoreDirectorFactory.setAssertionScoreDirectorFactory(
+                    assertionScoreDirectorFactory.buildScoreDirectorFactory(
+                            EnvironmentMode.PRODUCTION, solutionDescriptor));
+        }
         return scoreDirectorFactory;
     }
 
@@ -271,6 +297,9 @@ public class ScoreDirectorFactoryConfig {
         }
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
+        if (assertionScoreDirectorFactory == null) {
+            assertionScoreDirectorFactory = inheritedConfig.getAssertionScoreDirectorFactory();
+        }
     }
 
     public static enum ScoreDefinitionType {

@@ -180,6 +180,10 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     }
 
     protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
+        if (!(uncorruptedScoreDirector instanceof DroolsScoreDirector)) {
+            return "Unable to analyze: the uncorruptedScoreDirector class (" + uncorruptedScoreDirector.getClass()
+                    + ") is not an instance of the scoreDirector class (" + DroolsScoreDirector.class + ").";
+        }
         DroolsScoreDirector uncorruptedDroolsScoreDirector = (DroolsScoreDirector) uncorruptedScoreDirector;
         Set<ConstraintOccurrence> workingConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>();
         Iterator<ConstraintOccurrence> workingIt = (Iterator<ConstraintOccurrence>)

@@ -34,6 +34,8 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
     protected SolutionDescriptor solutionDescriptor;
     protected ScoreDefinition scoreDefinition;
 
+    protected ScoreDirectorFactory assertionScoreDirectorFactory = null;
+
     public SolutionDescriptor getSolutionDescriptor() {
         return solutionDescriptor;
     }
@@ -48,6 +50,14 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
 
     public void setScoreDefinition(ScoreDefinition scoreDefinition) {
         this.scoreDefinition = scoreDefinition;
+    }
+
+    public ScoreDirectorFactory getAssertionScoreDirectorFactory() {
+        return assertionScoreDirectorFactory;
+    }
+
+    public void setAssertionScoreDirectorFactory(ScoreDirectorFactory assertionScoreDirectorFactory) {
+        this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
     }
 
     // ************************************************************************
