@@ -70,11 +70,6 @@ public class CachingMoveSelector extends AbstractMoveSelector implements Selecti
         }
         cachedMoveList = new ArrayList<Move>((int)cachedSize);
         CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
-        orderCache(solverScope);
-    }
-
-    protected void orderCache(DefaultSolverScope solverScope) {
-        // Hook method
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {

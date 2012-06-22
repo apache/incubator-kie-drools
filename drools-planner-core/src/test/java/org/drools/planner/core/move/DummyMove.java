@@ -60,4 +60,9 @@ public class DummyMove implements Move, CodeAssertable {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return code;
+    }
+
 }

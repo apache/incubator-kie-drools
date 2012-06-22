@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class ShufflingMoveSelector extends CachingMoveSelector {
@@ -33,8 +34,9 @@ public class ShufflingMoveSelector extends CachingMoveSelector {
     // ************************************************************************
 
     @Override
-    protected void orderCache(DefaultSolverScope solverScope) {
-        Collections.shuffle(cachedMoveList, solverScope.getWorkingRandom());
+    public void stepStarted(AbstractStepScope stepScope) {
+        super.stepStarted(stepScope);
+        Collections.shuffle(cachedMoveList, stepScope.getWorkingRandom());
     }
 
     @Override

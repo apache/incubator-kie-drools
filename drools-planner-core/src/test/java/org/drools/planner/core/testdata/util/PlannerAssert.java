@@ -20,13 +20,13 @@ import org.junit.Assert;
 
 public class PlannerAssert extends Assert {
 
-    public static void assertCode(String code, Object o) {
+    public static void assertCode(String expectedCode, Object o) {
         assertTrue(o instanceof  CodeAssertable);
-        assertCode(code, (CodeAssertable) o);
+        assertCode(expectedCode, (CodeAssertable) o);
     }
 
-    public static void assertCode(String code, CodeAssertable codeAssertable) {
-        assertEquals(code, codeAssertable.getCode());
+    public static void assertCode(String expectedCode, CodeAssertable codeAssertable) {
+        assertEquals(expectedCode, codeAssertable.getCode());
     }
 
     private PlannerAssert() {
