@@ -17,22 +17,33 @@
 package org.jbpm.task.service.mina;
 
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.service.TaskService;
 
 
 public class MinaTaskServer extends BaseMinaTaskServer {
+    private TaskService service;
     public MinaTaskServer(TaskService service) {
         super( new MinaTaskServerHandler( service, SystemEventListenerFactory.getSystemEventListener() ),
                9123 );
+        this.service = service;
     }
     
     public MinaTaskServer(TaskService service, int port) {
         super( new MinaTaskServerHandler( service, SystemEventListenerFactory.getSystemEventListener() ),
                port, "127.0.0.1" );
+        this.service = service;
     }
 
     public MinaTaskServer(TaskService service, int port, String localInterface) {
         super( new MinaTaskServerHandler( service, SystemEventListenerFactory.getSystemEventListener() ),
                port, localInterface );
+        this.service = service;
+        
+    }
+
+    @Override
+    public void addEventListener(TaskEventListener listener) {
+        this.service.addEventListener(listener);
     }
 }

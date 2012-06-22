@@ -16,10 +16,14 @@
 
 package org.jbpm.task.service;
 
+import org.jbpm.task.event.TaskEventListener;
+
 public abstract class TaskServer implements Runnable {
 	
 	public abstract void start() throws Exception;
 	public abstract void stop() throws Exception;
 	public abstract boolean isRunning();
+        public abstract void addEventListener(TaskEventListener listener);
+        
 
 }

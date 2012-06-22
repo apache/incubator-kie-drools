@@ -29,7 +29,7 @@ import org.jbpm.task.service.TaskServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BaseTestTaskServer extends TaskServer {
+public abstract class BaseTestTaskServer extends TaskServer {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskServer.class);
 

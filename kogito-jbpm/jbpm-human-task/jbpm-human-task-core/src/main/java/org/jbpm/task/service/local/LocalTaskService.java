@@ -31,6 +31,7 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
+import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
@@ -320,5 +321,9 @@ public class LocalTaskService implements TaskService {
         public boolean isRemove() {
             return remove;
         }
+    }
+    
+    public void addEventListener(final TaskEventListener listener) {
+        service.addEventListener(listener);
     }
 }

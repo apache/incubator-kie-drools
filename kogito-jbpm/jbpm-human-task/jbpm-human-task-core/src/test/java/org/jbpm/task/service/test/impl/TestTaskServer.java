@@ -17,16 +17,25 @@
 package org.jbpm.task.service.test.impl;
 
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.service.TaskService;
 
 public class TestTaskServer extends BaseTestTaskServer implements Runnable {
 
+    private TaskService service;
 	TestTaskServer(TaskService service) {
 		super(new TestTaskServerHandler(service, SystemEventListenerFactory.getSystemEventListener()));
+                this.service = service;
 	}
 	
 	TestTaskServer(TaskService service, boolean sequentialOperation) {
 		super(new TestTaskServerHandler(service, SystemEventListenerFactory.getSystemEventListener()), sequentialOperation);
+                this.service = service;
 	}
+
+    @Override
+    public void addEventListener(TaskEventListener listener) {
+        this.service.addEventListener(listener);
+    }
 
 }

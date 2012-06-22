@@ -28,7 +28,7 @@ import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.jbpm.task.service.TaskServer;
 
-public class BaseMinaTaskServer extends TaskServer {
+public abstract class BaseMinaTaskServer extends TaskServer {
     private final int port;
 
     IoHandlerAdapter  handler;
