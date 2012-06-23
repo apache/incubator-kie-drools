@@ -128,7 +128,11 @@ public class TraitRegistry {
         int j = 0;
         long bitmask = 0;
         for ( FactField field : traitDef.getFields() ) {
-            FieldDefinition concreteField = traitableDef.getField( field.getName() );
+            FieldDefinition fdef = (FieldDefinition) field;
+            boolean isAliased = fdef.hasAlias();
+            String alias = ((FieldDefinition) field).resolveAlias( traitableDef );
+            
+            FieldDefinition concreteField = traitableDef.getField( alias );
             Class concreteType = concreteField != null ? concreteField.getType() : null;
             Class virtualType = field.getType();
 

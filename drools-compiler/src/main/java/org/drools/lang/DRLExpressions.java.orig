@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DRLExpressions.g 2012-07-06 19:05:55
+=======
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DRLExpressions.g 2012-06-23 15:19:21
+>>>>>>> merge upstream
 
     package org.drools.lang;
 
@@ -8052,8 +8056,11 @@ public class DRLExpressions extends Parser {
                         int index35_2 = input.index();
                         input.rewind();
                         s = -1;
-
+<<<<<<< HEAD
                         if ( (((synpred8_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.NOT))))||(synpred8_DRLExpressions()&&((helper.isPluggableEvaluator(false)))))) ) {s = 31;}
+=======
+                        if ( (((synpred8_DRLExpressions()&&((helper.isPluggableEvaluator(false))))||(synpred8_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.NOT)))))) ) {s = 31;}
+>>>>>>> merge upstream
 
                         else if ( (true) ) {s = 1;}
 

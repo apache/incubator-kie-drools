@@ -25,6 +25,7 @@ import java.util.List;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.core.util.StringUtils;
 import org.drools.definition.type.FactField;
+import org.drools.factmodel.traits.Alias;
 import org.mvel2.MVEL;
 
 /**
@@ -426,5 +427,41 @@ public class FieldDefinition
                 ", annotations=" + annotations +
                 ", accessor=" + accessor +
                 '}';
+    }
+
+    public String resolveAlias( ClassDefinition cdef ) {
+        if ( getAnnotations() != null ) {
+            for ( AnnotationDefinition def : getAnnotations() ) {
+                if ( def.getName().equals( Alias.class.getName() ) ) {
+                    String alias =  (String) def.getValues().get( "value" ).getValue();
+                    return cdef.getField( alias ) != null ? alias : getName();
+                }
+            }
+        }
+        return getName();
+    }
+
+    public String getAlias() {
+        if ( getAnnotations() != null ) {
+            for ( AnnotationDefinition def : getAnnotations() ) {
+                if ( def.getName().equals( Alias.class.getName() ) ) {
+                    return (String) def.getValues().get( "value" ).getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public boolean hasAlias() {
+        if ( getAnnotations() == null ) {
+            return false;
+        }
+        for ( AnnotationDefinition def : getAnnotations() ) {
+            if ( def.getName().equals( Alias.class.getName() ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 }
