@@ -16,7 +16,6 @@
 
 package org.drools.factmodel.traits;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,7 +38,6 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.definition.type.FactType;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
@@ -51,7 +49,6 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -110,8 +107,21 @@ public class TraitTest extends CommonTestMethodBase {
         return session;
     }
 
-    @Test
-    public void testTraitWrapper_GetAndSet() {
+    private StatelessKnowledgeSession getStatelessSessionFromString( String drl ) {
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
+                ResourceType.DRL );
+        if (knowledgeBuilder.hasErrors()) {
+            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+
+        return kbase.newStatelessKnowledgeSession();
+    }
+
+    public void traitWrapGetAndSet() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -166,7 +176,29 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitShed() {
+    public void testTraitWrapper_GetAndSetTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitWrapGetAndSet();
+    }
+
+    @Test
+    public void testTraitWrapper_GetAndSetMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitWrapGetAndSet();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    public void traitShed() {
         String source = "org/drools/factmodel/traits/testTraitShed.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -201,8 +233,28 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
     @Test
-    public void testTraitDon() {
+    public void testTraitShedTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitShed();
+    }
+
+    @Test
+    public void testTraitShedMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitShed();
+    }
+
+
+
+
+
+
+
+
+
+    public void traitDon() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -223,7 +275,22 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testMixin() {
+    public void testTraitDonTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitDon();
+    }
+
+    @Test
+    public void testTraitDonMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitDon();
+    }
+
+
+
+
+
+    public void mixin() {
         String source = "org/drools/factmodel/traits/testTraitMixin.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -238,7 +305,24 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitMethodsWithObjects() {
+    public void testTraitMixinTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        mixin();
+    }
+
+    @Test
+    public void testTraitMxinMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        mixin();
+    }
+
+
+
+
+
+
+
+    public void traitMethodsWithObjects() {
         String source = "org/drools/factmodel/traits/testTraitWrapping.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -255,8 +339,24 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
     @Test
-    public void testTraitMethodsWithPrimitives() {
+    public void testTraitObjMethodsTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitMethodsWithObjects();
+    }
+
+    @Test
+    public void testTraitObjMethodsMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitMethodsWithObjects();
+    }
+
+
+
+
+
+    public void traitMethodsWithPrimitives() {
         String source = "org/drools/factmodel/traits/testTraitWrappingPrimitives.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -273,8 +373,27 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
     @Test
-    public void testTraitProxy() {
+    public void testTraitPrimMethodsTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitMethodsWithPrimitives();
+    }
+
+    @Test
+    public void testTraitPrimMethodsMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitMethodsWithPrimitives();
+    }
+
+
+
+
+
+
+
+
+    public void traitProxy() {
 
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
@@ -347,8 +466,28 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
+
     @Test
-    public void testTraitWrapper_Size() {
+    public void testTraitProxyTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitProxy();
+    }
+
+    @Test
+    public void testTraitProxyMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitProxy();
+    }
+
+
+
+
+
+
+
+
+
+    public void wrapperSize() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -471,8 +610,26 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
     @Test
-    public void testTraitWrapper_IsEmpty() {
+    public void testTraitWrapperSizeTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        wrapperSize();
+    }
+
+    @Test
+    public void testTraitWrapperSizeMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        wrapperSize();
+    }
+
+
+
+
+
+
+
+    public void wrapperEmpty() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -549,7 +706,26 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitWrapper_ContainsKey() {
+    public void testTraitWrapperEmptyTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        wrapperEmpty();
+    }
+
+    @Test
+    public void testTraitWrapperEmptyMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        wrapperEmpty();
+    }
+
+
+
+
+
+
+
+
+
+    public void wrapperContainsKey() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -670,7 +846,24 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitWrapper_keySetAndValues() {
+    public void testTraitContainskeyTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        wrapperContainsKey();
+    }
+
+    @Test
+    public void testTraitContainskeyMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        wrapperContainsKey();
+    }
+
+
+
+
+
+
+
+    public void wrapperKeySetAndValues() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -765,7 +958,24 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitWrapper_ClearAndRemove() {
+    public void testTraitWrapperKSVTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        wrapperKeySetAndValues();
+    }
+
+    @Test
+    public void testTraitWrapperKSVMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        wrapperKeySetAndValues();
+    }
+
+
+
+
+
+
+
+    public void wrapperClearAndRemove() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -884,9 +1094,25 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    // At the moment this fauils randomly: remove the @Ignore when it will be fixed
     @Test
-    public void testIsA() {
+    public void testTraitWrapperClearTriples() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        wrapperClearAndRemove();
+    }
+
+    @Test
+    public void testTraitWrapperClearMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        wrapperClearAndRemove();
+    }
+
+
+
+
+
+
+
+    public void isA() {
         String source = "org/drools/factmodel/traits/testTraitIsA.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -908,7 +1134,25 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitOverrideType() {
+    public void testISATriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        isA();
+    }
+
+    @Test
+    public void testISAMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        isA();
+    }
+
+
+
+
+
+
+
+
+    public void overrideType() {
         String source = "org/drools/factmodel/traits/testTraitOverride.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -925,7 +1169,26 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitLegacy() {
+    public void testOverrideTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        overrideType();
+    }
+
+    @Test
+    public void testOverrideMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        overrideType();
+    }
+
+
+
+
+
+
+
+
+
+    public void traitLegacy() {
         String source = "org/drools/factmodel/traits/testTraitLegacyTrait.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -954,7 +1217,25 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitCollections() {
+    public void testLegacyTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitLegacy();
+    }
+
+    @Test
+    public void testLegacyMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitLegacy();
+    }
+
+
+
+
+
+
+
+
+    public void traitCollections() {
         String source = "org/drools/factmodel/traits/testTraitCollections.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -978,8 +1259,26 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
     @Test
-    public void testTraitCore() {
+    public void testCollectionsTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitCollections();
+    }
+
+    @Test
+    public void testCollectionsMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitCollections();
+    }
+
+
+
+
+
+
+
+    public void traitCore() {
         String source = "org/drools/factmodel/traits/testTraitLegacyCore.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -1004,8 +1303,26 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
     @Test
-    public void testTraitWithEquality() {
+    public void testCoreTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitCore();
+    }
+
+    @Test
+    public void testCoreMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitCore();
+    }
+
+
+
+
+
+
+
+    public void traitWithEquality() {
         String source = "org/drools/factmodel/traits/testTraitWithEquality.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
@@ -1021,7 +1338,24 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitDeclared() {
+    public void testEqTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitWithEquality();
+    }
+
+    @Test
+    public void testEqMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitWithEquality();
+    }
+
+
+
+
+
+
+
+    public void traitDeclared() {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
         List<Integer> untrueTraits = new ArrayList<Integer>();
@@ -1042,7 +1376,24 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitPojo() {
+    public void testDeclaredTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitDeclared();
+    }
+
+    @Test
+    public void testDeclaredMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitDeclared();
+    }
+
+
+
+
+
+
+
+    public void traitPojo() {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
         List<Integer> untrueTraits = new ArrayList<Integer>();
@@ -1063,7 +1414,24 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testIsAOperator() {
+    public void testPojoTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitPojo();
+    }
+
+    @Test
+    public void testPojoMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitPojo();
+    }
+
+
+
+
+
+
+
+    public void isAOperator() {
         String source = "org/drools/factmodel/traits/testTraitIsA2.drl";
         StatefulKnowledgeSession ksession = getSession( source );
 
@@ -1090,9 +1458,23 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testISA2Triple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        isAOperator();
+    }
 
     @Test
-    public void testManyTraits() {
+    public void testISA2Map() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        isAOperator();
+    }
+
+
+
+
+
+    protected void manyTraits() {
         String source = "" +
                 "import org.drools.Message;" +
                 "" +
@@ -1135,7 +1517,6 @@ public class TraitTest extends CommonTestMethodBase {
                 "            list.add(\"OK\");\n" +
                 "    end";
         StatefulKnowledgeSession ksession = getSessionFromString( source );
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1151,7 +1532,24 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testTraitManyTimes() {
+    public void testManyTraitsTriples() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        manyTraits();
+    }
+
+    @Test
+    public void testManyTraitsMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        manyTraits();
+    }
+
+
+
+
+
+
+
+    public void traitManyTimes() {
 
         StatefulKnowledgeSession ksession = getSession( "org/drools/factmodel/traits/testTraitDonMultiple.drl" );
 
@@ -1167,10 +1565,25 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testManyTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitManyTimes();
+    }
 
     @Test
+    public void testManyMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitManyTimes();
+    }
+
+
+
+
+
+
     // BZ #748752
-    public void testTraitsInBatchExecution() {
+    public void traitsInBatchExecution() {
         String str = "package org.jboss.qa.brms.traits\n" +
                 "import org.drools.Person;\n" +
                 "import org.drools.factmodel.traits.Traitable;\n" +
@@ -1236,5 +1649,176 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 1 ) );
         assertTrue( list.contains( 2 ) );
     }
+
+    @Test
+    public void testBatchTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitsInBatchExecution();
+    }
+
+    @Test
+    public void testBatchMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        traitsInBatchExecution();
+    }
+
+
+
+
+
+
+
+    public void manyTraitsStateless() {
+        String source = "" +
+                "import org.drools.Message;" +
+                "" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare Message\n" +
+                "      @Traitable\n" +
+                "    end\n" +
+                "\n" +
+                "    declare trait NiceMessage\n" +
+                "       message : String\n" +
+                "    end\n" +
+                "" +
+                "rule \"Nice\"\n" +
+                "when\n" +
+                "  $n : NiceMessage( $m : message )\n" +
+                "then\n" +
+                "  System.out.println( $m );\n" +
+                "end" +
+                "\n" +
+                "    rule load\n" +
+                "        when\n" +
+                "\n" +
+                "        then\n" +
+                "            Message message = new Message();\n" +
+                "            message.setMessage(\"Hello World\");\n" +
+                "            insert(message);\n" +
+                "            don( message, NiceMessage.class );\n" +
+                "\n" +
+                "            Message unreadMessage = new Message();\n" +
+                "            unreadMessage.setMessage(\"unread\");\n" +
+                "            insert(unreadMessage);\n" +
+                "            don( unreadMessage, NiceMessage.class );\n" +
+                "\n" +
+                "            Message oldMessage = new Message();\n" +
+                "            oldMessage.setMessage(\"old\");\n" +
+                "            insert(oldMessage);\n" +
+                "            don( oldMessage, NiceMessage.class );" +
+
+                "            list.add(\"OK\");\n" +
+                "    end";
+        StatelessKnowledgeSession ksession = getStatelessSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.execute( CommandFactory.newFireAllRules() );
+
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "OK" ) );
+
+    }
+
+    @Test
+    public void testManyStatelessTriple() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        manyTraitsStateless();
+    }
+
+    @Test
+    public void testManyStatelessMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        manyTraitsStateless();
+    }
+
+
+
+
+
+    public void aliasing() {
+        String drl = "package org.drools.traits\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.drools.factmodel.traits.Alias;\n" +
+                "" +
+                "global java.util.List list;" +
+                "" +
+                "declare Person \n" +
+                "  @Traitable \n" +
+                "  name      : String  @key \n" +
+                "  workPlace : String \n" +
+                "  address   : String \n" +
+                "end \n" +
+                "" +
+                "declare Student\n" +
+                "  @kind(trait)" +
+                // this alias fails, should revert to the hard field
+                "  name      : String @Alias(\"nox1\") \n" +
+                // this alias works
+                "  school    : String  @Alias(\"workPlace\") \n" +
+                // this alias fails, should revert to the soft field
+                "  grade     : int @Alias(\"nox2\") \n" +
+                // this is actually a soft field, because both mapping and aliasing should fail
+                "  rank      : int @Alias(\"address\") \n" +
+                "end \n" +
+                "\n" +
+                "rule \"create student\" \n" +
+                "  when\n" +
+                "  then\n" +
+                "    Person p = new Person( \"davide\", \"UniBoh\", \"Floor84\" ); \n" +
+                "    Student s = don( p, Student.class );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"print school\"\n" +
+                "  when\n" +
+                "    $student : Student( $school : school == \"UniBoh\",  $f : fields, fields[ \"school\" ] == \"UniBoh\" )\n" +
+                "  then \n " +
+                "    $student.setRank( 99 ); \n" +
+                "    System.out.println( $student ); \n" +
+                "    $f.put( \"school\", \"Skool\" ); \n" +
+
+                "    list.add( $school );\n" +
+                "    list.add( $f.get( \"school\" ) );\n" +
+                "    list.add( $student.getSchool() );\n" +
+                "    list.add( $f.keySet() );\n" +
+                "    list.add( $f.entrySet() );\n" +
+                "    list.add( $f.values() );\n" +
+                "    list.add( $f.containsKey( \"school\" ) );\n" +
+                "    list.add( $student.getRank() );\n" +
+                "    list.add( $f.get( \"address\" ) );\n" +
+                "end";
+
+        StatefulKnowledgeSession ksession = getSessionFromString( drl );
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 9, list.size() );
+        assertTrue( list.contains( "UniBoh" ) );
+        assertTrue( list.contains( "Skool" ) );
+        assertTrue( ( (Collection) list.get(3) ).containsAll( Arrays.asList( "workPlace", "name", "grade" ) ) );
+        assertTrue( ( (Collection) list.get(5) ).containsAll( Arrays.asList( "davide", "Skool", 0 ) ) );
+        assertTrue( list.contains( true ) );
+        assertTrue( list.contains( "Floor84" ) );
+        assertTrue( list.contains( 99 ) );
+
+    }
+
+    @Test
+    public void testAliasingTriples() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        aliasing();
+    }
+
+    @Test
+    public void testAliasingMap() {
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+        aliasing();
+    }
+
 
 }
