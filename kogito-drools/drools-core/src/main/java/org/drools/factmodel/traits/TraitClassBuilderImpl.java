@@ -22,6 +22,9 @@ import org.drools.factmodel.FieldDefinition;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Type;
+
+import java.io.Serializable;
 
 public class TraitClassBuilderImpl implements TraitClassBuilder {
 
@@ -31,28 +34,28 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
         init( classDef );
 
         ClassWriter cw = new ClassWriter(0);
-        MethodVisitor mv;
 
 
         try {
             String cName = BuildUtils.getInternalType(classDef.getClassName());
             String genericTypes = BuildUtils.getGenericTypes( classDef.getInterfaces() );
-            String superType = BuildUtils.getInternalType( "java.lang.Object" );
+            String superType = Type.getInternalName( Object.class );
             String[] intfaces = null;
+            
             if ( Object.class.getName().equals( classDef.getSuperClass() ) ) {
                 String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
                 intfaces = new String[ tmp.length + 1 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
-                intfaces[ tmp.length ] = "java/io/Serializable";
+                intfaces[ tmp.length ] = Type.getInternalName( Serializable.class );
             } else {
                 String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
                 intfaces = new String[ tmp.length + 2 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
                 intfaces[ tmp.length ] = BuildUtils.getInternalType( classDef.getSuperClass() );
-                intfaces[ tmp.length +1 ] = "java/io/Serializable";
+                intfaces[ tmp.length + 1 ] = Type.getInternalName( Serializable.class );
             }
 
-            cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
+            cw.visit( V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
                     cName,
                     genericTypes,
                     superType,
@@ -60,7 +63,7 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
 
             {
                 if ( classDef.getDefinedClass() == null || classDef.getDefinedClass().getAnnotation( Trait.class ) == null ) {
-                    AnnotationVisitor av0 = cw.visitAnnotation("Lorg/drools/factmodel/traits/Trait;", true);
+                    AnnotationVisitor av0 = cw.visitAnnotation( Type.getDescriptor( Trait.class ), true);
                     av0.visitEnd();
                 }
             }
@@ -69,24 +72,24 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
                 buildField( cw, field );
             }
 
-            finalizeCreation(classDef);
+            finalizeCreation( classDef );
 
             cw.visitEnd();
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             e.printStackTrace();
         }
 
         return cw.toByteArray();
     }
 
-    protected void init(ClassDefinition classDef) {
+    protected void init( ClassDefinition classDef ) {
 
     }
 
-    private void buildField(ClassWriter cw, FieldDefinition field ) {
+    private void buildField( ClassWriter cw, FieldDefinition field ) {
 
         String name = field.getName();
-        name = name.substring(0,1).toUpperCase() + name.substring(1);
+            name = name.substring( 0,1 ).toUpperCase() + name.substring( 1 );
         String type = field.getTypeName();
 
         buildGetter( cw, field, name, type, null );
@@ -95,11 +98,10 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
 
     }
 
-    protected void buildSetter(ClassWriter cw, FieldDefinition field, String name, String type, String generic) {
-        name = name.substring(0,1).toUpperCase() + name.substring(1);
+    protected void buildSetter( ClassWriter cw, FieldDefinition field, String name, String type, String generic ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_ABSTRACT,
-                "set" + name,
+                BuildUtils.setterName( name, type ),
                 "(" + BuildUtils.getTypeDescriptor( type ) + ")V",
                 generic == null ? null :
                         "(" + BuildUtils.getTypeDescriptor( type ).replace( ";", "<" + BuildUtils.getTypeDescriptor( generic ) + ">;") + ")V",
@@ -108,12 +110,11 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
 
     }
 
-    protected void buildGetter(ClassWriter cw, FieldDefinition field, String name, String type, String generic) {
-        String prefix = BuildUtils.isBoolean( type ) ? "is" : "get";
-
-        name = name.substring(0,1).toUpperCase() + name.substring(1);
+    protected void buildGetter( ClassWriter cw, FieldDefinition field, String name, String type, String generic ) {
+        
+        name = name.substring( 0, 1 ).toUpperCase() + name.substring( 1 );
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_ABSTRACT,
-                prefix + name,
+                BuildUtils.getterName( name, type ),
                 "()" + BuildUtils.getTypeDescriptor( type ),
                 generic == null ? null :
                         "()" + BuildUtils.getTypeDescriptor( type ).replace( ";", "<" + BuildUtils.getTypeDescriptor( generic ) + ">;" ),

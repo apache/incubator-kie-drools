@@ -21,7 +21,6 @@ import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.common.AbstractRuleBase;
 import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.factmodel.BuildUtils;
@@ -266,14 +265,14 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         for ( FieldDefinition traitField : tdef.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( traitField, j++, mask );
             if ( ! isSoftField ) {
-                FieldDefinition field = cdef.getField(traitField.getName());
+                FieldDefinition field = cdef.getField( traitField.resolveAlias( cdef ) );
                 Field staticField;
                 try {
-                    staticField = proxyClass.getField(field.getName() + "_reader");
-                    staticField.set(null, field.getFieldAccessor().getReadAccessor() );
+                    staticField = proxyClass.getField( traitField.getName() + "_reader" );
+                    staticField.set( null, field.getFieldAccessor().getReadAccessor() );
 
-                    staticField = proxyClass.getField(field.getName() + "_writer");
-                    staticField.set(null, field.getFieldAccessor().getWriteAccessor() );
+                    staticField = proxyClass.getField( traitField.getName() + "_writer" );
+                    staticField.set( null, field.getFieldAccessor().getWriteAccessor() );
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 } catch (IllegalAccessException e) {

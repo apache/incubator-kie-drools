@@ -16,14 +16,25 @@
 
 package org.drools.factmodel.traits;
 
+import org.drools.core.util.Triple;
+import org.drools.core.util.TripleStore;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.WriteAccessor;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder {
 
@@ -38,6 +49,8 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         this.trait = trait;
     }
 
+    
+    private Map<String,FieldDefinition> aliases = new HashMap<String, FieldDefinition>();
 
 
     public byte[] buildClass( ClassDefinition core ) throws IOException,
@@ -66,22 +79,43 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         String internalWrapper  = BuildUtils.getInternalType(name);
         String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
 
+        
+        for ( FieldDefinition tfld : trait.getFieldsDefinitions() ) {            
+            if ( tfld.hasAlias() ) {
+                String alias = tfld.getAlias();
+                FieldDefinition coreField = core.getField( alias );
+                if ( coreField != null ) {
+                    aliases.put( tfld.getName(), coreField );
+                }
+            }            
+        }
 
 
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER,
                 internalWrapper,
                 null,
-                "org/drools/factmodel/traits/TripleBasedStruct",
-                new String[] { "java/io/Serializable" } );
+                Type.getInternalName( TripleBasedStruct.class ),
+                new String[] { Type.getInternalName( Serializable.class ) } );
 
-        cw.visitInnerClass("java/util/Map$Entry", "java/util/Map", "Entry", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
+        cw.visitInnerClass( Type.getInternalName( Map.Entry.class ),
+                            Type.getInternalName( Map.class ), 
+                            "Entry", 
+                            ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE );
 
 
 
         for ( FieldDefinition fld : core.getFieldsDefinitions() ) {
-            fv = cw.visitField(ACC_PUBLIC + ACC_STATIC, fld.getName()+"_reader", "Lorg/drools/spi/InternalReadAccessor;", null, null);
+            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, 
+                                fld.getName() + "_reader",
+                                Type.getDescriptor( InternalReadAccessor.class ),
+                                null, 
+                                null );
             fv.visitEnd();
-            fv = cw.visitField(ACC_PUBLIC + ACC_STATIC, fld.getName()+"_writer", "Lorg/drools/spi/WriteAccessor;", null, null);
+            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, 
+                                fld.getName() + "_writer", 
+                                Type.getDescriptor( WriteAccessor.class ),
+                                null, 
+                                null );
             fv.visitEnd();
         }
 
@@ -100,12 +134,15 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                     null);
 
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "<init>", "()V");
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitMethodInsn( INVOKESPECIAL, 
+                                Type.getInternalName( TripleBasedStruct.class ),
+                                "<init>", 
+                                "()V" );
 //            mv.visitVarInsn(ALOAD, 0);
 //            mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "initSoftFields", "()V");
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(1, 1);
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 1, 1 );
             mv.visitEnd();
 
 
@@ -115,34 +152,41 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         {
             mv = cw.visitMethod(ACC_PUBLIC,
                     "<init>",
-                    "(" +
-                            descrCore +
-                            "Lorg/drools/core/util/TripleStore;)V",
+                    "(" + descrCore + Type.getDescriptor( TripleStore.class ) + ")V",
                     null,
                     null);
 
 
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn( ALOAD, 0 );
 
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "<init>", "()V");
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitFieldInsn(PUTFIELD, internalWrapper, "object", descrCore );
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitFieldInsn(PUTFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
+            mv.visitMethodInsn( INVOKESPECIAL, 
+                                Type.getInternalName( TripleBasedStruct.class ),
+                                "<init>", 
+                                "()V" );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitFieldInsn( PUTFIELD, internalWrapper, "object", descrCore );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 2 );
+            mv.visitFieldInsn( PUTFIELD, internalWrapper, "store", Type.getDescriptor( TripleStore.class ) );
 
 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "getId", "()Ljava/lang/String;" );
-            mv.visitFieldInsn( PUTFIELD, internalWrapper, "storeId", "Ljava/lang/String;" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, 
+                                Type.getInternalName( TripleStore.class ),
+                                "getId", 
+                                "()" + Type.getDescriptor( String.class ) );
+            mv.visitFieldInsn( PUTFIELD, 
+                               internalWrapper, 
+                               "storeId", 
+                               Type.getDescriptor( String.class ) );
 
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "initSoftFields", "()V");
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(2, 3);
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitMethodInsn( INVOKESPECIAL, internalWrapper, "initSoftFields", "()V" );
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 2, 3 );
             mv.visitEnd();
 
 
@@ -188,34 +232,51 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
-    protected void buildRemove(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
+    protected void invokeRemove( MethodVisitor mv, String wrapperName, ClassDefinition core, String fieldName, FieldDefinition field ) {
+        mv.visitLdcInsn( fieldName );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKEVIRTUAL, 
+                            Type.getInternalName( String.class ), 
+                            "equals", 
+                            "("+ Type.getDescriptor( Object.class ) + ")Z" );
+        Label l1 = new Label();
+        mv.visitJumpInsn( IFEQ, l1 );
+
+        TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
+
+        if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
+            TraitFactory.valueOf( mv, field.getTypeName() );
+        }
+        mv.visitVarInsn(ASTORE, 2);
+
+        TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, true, 1);
+
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitInsn( ARETURN );
+        mv.visitLabel( l1 );
+    }
+    
+    
+    protected void buildRemove( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "remove", "(Ljava/lang/Object;)Ljava/lang/Object;", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
+                                           "remove", 
+                                           "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ), 
+                                           null, 
+                                           null );
         mv.visitCode();
 
         int stack = 0;
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
             stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
-            mv.visitLdcInsn( field.getName() );
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z");
-            Label l1 = new Label();
-            mv.visitJumpInsn(IFEQ, l1);
-
-            TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
-
-            if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                TraitFactory.valueOf( mv, field.getTypeName() );
-            }
-            mv.visitVarInsn(ASTORE, 2);
-
-            TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, true, 1);
-
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitInsn(ARETURN);
-            mv.visitLabel(l1);
+            invokeRemove( mv, wrapperName, core, field.getName(), field );
         }
+        for ( String alias : aliases.keySet() ) {
+            // no need to review the stack, the alias is a core field anyway!
+            invokeRemove( mv, wrapperName, core, alias, aliases.get( alias ) );
+        }
+        
 
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
@@ -224,41 +285,53 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
 
                 mv.visitLdcInsn( field.getName() );
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z");
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( String.class ), "equals", "(" + Type.getDescriptor( Object.class ) + ")Z" );
                 Label l2 = new Label();
-                mv.visitJumpInsn(IFEQ, l2);
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitFieldInsn(GETFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
-                mv.visitVarInsn(ALOAD, 0);
+                mv.visitJumpInsn( IFEQ, l2 );
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD, internalWrapper, "store", Type.getDescriptor( TripleStore.class ) );
+                mv.visitVarInsn( ALOAD, 0);
                 mv.visitLdcInsn( field.getName() );
-                mv.visitMethodInsn(INVOKEVIRTUAL, internalWrapper, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "get", "(Lorg/drools/core/util/Triple;)Lorg/drools/core/util/Triple;");
+                mv.visitMethodInsn( INVOKEVIRTUAL, 
+                                    internalWrapper, 
+                                    "propertyKey", 
+                                    "(" + Type.getDescriptor( Object.class ) + ")" +  Type.getDescriptor( Triple.class ) );
+                mv.visitMethodInsn( INVOKEVIRTUAL, 
+                                    Type.getInternalName( TripleStore.class ),
+                                    "get", 
+                                    "(" + Type.getDescriptor( Triple.class ) + ")" + Type.getDescriptor( Triple.class ) );
 
-                mv.visitVarInsn(ASTORE, 2);
-                mv.visitVarInsn(ALOAD, 0);
+                mv.visitVarInsn( ASTORE, 2 );
+                mv.visitVarInsn( ALOAD, 0 );
                 mv.visitLdcInsn( field.getName() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
 
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactory.valueOf( mv, field.getTypeName() );
                 }
-                mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
-                mv.visitInsn(POP);
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitInsn(ARETURN);
-                mv.visitLabel(l2);
+                mv.visitMethodInsn( INVOKESPECIAL, 
+                                    Type.getInternalName( TripleBasedStruct.class ),
+                                    "put", 
+                                    "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
+                mv.visitInsn( POP );
+                mv.visitVarInsn( ALOAD, 2 );
+                mv.visitInsn( ARETURN );
+                mv.visitLabel( l2 );
             }
         }
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKESPECIAL, 
+                            Type.getInternalName( TripleBasedStruct.class ),
+                            "remove", 
+                            "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
 
-        mv.visitVarInsn(ASTORE, 2);
-        mv.visitVarInsn(ALOAD, 2);
-        mv.visitInsn(ARETURN);
-        mv.visitMaxs( 2+stack, 3 );
+        mv.visitVarInsn( ASTORE, 2 );
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitInsn( ARETURN );
+        mv.visitMaxs( 2 + stack, 3 );
         mv.visitEnd();
     }
 
@@ -300,19 +373,28 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     protected int initSoftField(MethodVisitor mv, String wrapperName, FieldDefinition field ) {
         int size = 0;
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
-        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn( GETFIELD, 
+                           wrapperName, 
+                           "store", 
+                           Type.getDescriptor( TripleStore.class ) );
+        mv.visitVarInsn( ALOAD, 0);
         mv.visitLdcInsn( field.getName() );
-        mv.visitMethodInsn(INVOKEVIRTUAL, wrapperName, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
-        mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "contains", "(Lorg/drools/core/util/Triple;)Z");
+        mv.visitMethodInsn( INVOKEVIRTUAL, 
+                            wrapperName, 
+                            "propertyKey", 
+                            "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Triple.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, 
+                            Type.getInternalName(TripleStore.class),
+                            "contains", 
+                            "(" + Type.getDescriptor( Triple.class ) + ")Z" );
         Label l0 = new Label();
-        mv.visitJumpInsn(IFNE, l0);
+        mv.visitJumpInsn( IFNE, l0 );
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn(GETFIELD, wrapperName, "store", Type.getDescriptor( TripleStore.class ) );
 
-        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn( ALOAD, 0 );
         mv.visitLdcInsn( field.getName() );
 
 
@@ -327,25 +409,25 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitMethodInsn( INVOKEVIRTUAL,
                 wrapperName,
                 "property",
-                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
+                "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Triple.class ) );
         mv.visitInsn(ICONST_1);
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                "org/drools/core/util/TripleStore",
+                Type.getInternalName( TripleStore.class ),
                 "put",
-                "(Lorg/drools/core/util/Triple;Z)Z");
-        mv.visitInsn(POP);
-        mv.visitLabel(l0);
+                "(" + Type.getDescriptor( Triple.class ) + "Z)Z" );
+        mv.visitInsn( POP );
+        mv.visitLabel( l0 );
 
         return size;
     }
 
-
-    protected void buildClear(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
+    
+    protected void buildClear( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         boolean hasPrimitiveFields = false;
         boolean hasObjectFields = false;
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "clear", "()V", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "clear", "()V", null, null );
         mv.visitCode();
 
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
@@ -355,7 +437,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             } else {
                 hasObjectFields = true;
             }
-            TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, true, 1 );
+            TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, true, 1 );    
         }
 
         int stack = 2;
@@ -366,14 +448,14 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             stack++;
         }
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "clear", "()V");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedStruct.class ), "clear", "()V" );
 
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "clearSoftFields", "()V");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKESPECIAL, internalWrapper, "clearSoftFields", "()V" );
 
-        mv.visitInsn(RETURN);
+        mv.visitInsn( RETURN );
         mv.visitMaxs( stack , 1 );
         mv.visitEnd();
 
@@ -386,7 +468,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
     protected void buildClearSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, long mask ) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PRIVATE, "clearSoftFields", "()V", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PRIVATE, "clearSoftFields", "()V", null, null );
         mv.visitCode();
 
         int j = 0;
@@ -398,18 +480,18 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 stackSize = Math.max( stackSize, size );
             }
         }
-        mv.visitInsn(RETURN);
-        mv.visitMaxs(4 + stackSize, 2);
+        mv.visitInsn( RETURN );
+        mv.visitMaxs( 4 + stackSize, 2 );
         mv.visitEnd();
     }
 
     protected int clearSoftField(MethodVisitor mv, String wrapperName, FieldDefinition field ) {
         int size = 0;
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn( GETFIELD, wrapperName, "store", Type.getDescriptor( TripleStore.class ) );
 
-        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn( ALOAD, 0 );
         mv.visitLdcInsn( field.getName() );
 
 
@@ -421,16 +503,16 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         } else {
             size = 2;
         }
-        mv.visitMethodInsn(INVOKEVIRTUAL,
+        mv.visitMethodInsn( INVOKEVIRTUAL,
                 wrapperName,
                 "property",
-                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
-        mv.visitInsn(ICONST_1);
-        mv.visitMethodInsn(INVOKEVIRTUAL,
-                "org/drools/core/util/TripleStore",
+                "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Triple.class ) );
+        mv.visitInsn( ICONST_1 );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                Type.getInternalName( TripleStore.class ),
                 "put",
-                "(Lorg/drools/core/util/Triple;Z)Z");
-        mv.visitInsn(POP);
+                "(" + Type.getDescriptor( Triple.class ) + "Z)Z" );
+        mv.visitInsn( POP );
 
         return size;
     }
@@ -443,9 +525,9 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
-    protected void buildContainsValue(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
+    protected void buildContainsValue( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "containsValue", "(Ljava/lang/Object;)Z", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "containsValue", "(" + Type.getDescriptor( Object.class ) + ")Z", null, null );
         mv.visitCode();
 
         // null check
@@ -461,53 +543,74 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
                 if ( j != N ) {
                     Label l1 = new Label();
-                    mv.visitJumpInsn(IFNONNULL, l1);
-                    mv.visitInsn(ICONST_1);
-                    mv.visitInsn(IRETURN);
+                    mv.visitJumpInsn( IFNONNULL, l1 );
+                    mv.visitInsn( ICONST_1 );
+                    mv.visitInsn( IRETURN );
                     mv.visitLabel( l1 );
                 } else {
-                    mv.visitJumpInsn(IFNONNULL, l99);
-                    mv.visitInsn(ICONST_1);
-                    mv.visitInsn(IRETURN);
+                    mv.visitJumpInsn( IFNONNULL, l99 );
+                    mv.visitInsn( ICONST_1 );
+                    mv.visitInsn( IRETURN );
                     mv.visitLabel( l99 );
                 }
 
             }
         }
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "containsValue", "(Ljava/lang/Object;)Z");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKESPECIAL,
+                            Type.getInternalName( TripleBasedStruct.class ), 
+                            "containsValue", 
+                            "(" + Type.getDescriptor( Object.class ) + ")Z" );
 
-        mv.visitInsn(IRETURN);
-        mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ? 3 : 2
-                , 2);
+        mv.visitInsn( IRETURN );
+        mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ? 3 : 2, 2 );
         mv.visitEnd();
 
+    }
+    
+    
+    protected void invokeContainsKey( MethodVisitor mv, String fieldName ) {
+        mv.visitLdcInsn( fieldName );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            Type.getInternalName( String.class ),
+                            "equals", 
+                            "(" + Type.getDescriptor( Object.class ) + ")Z" );
+        Label l0 = new Label();
+        mv.visitJumpInsn( IFEQ, l0 );
+        mv.visitInsn( ICONST_1 );
+        mv.visitInsn( IRETURN );
+        mv.visitLabel( l0 );
     }
 
     protected void buildContainsKey(ClassWriter cw, String name, String className, ClassDefinition trait, ClassDefinition core, long mask) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "containsKey", "(Ljava/lang/Object;)Z", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
+                                           "containsKey", 
+                                           "(" + Type.getDescriptor( Object.class ) + ")Z", 
+                                           null, 
+                                           null );
         mv.visitCode();
 
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
-            mv.visitLdcInsn( field.getName() );
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z");
-            Label l0 = new Label();
-            mv.visitJumpInsn(IFEQ, l0);
-            mv.visitInsn(ICONST_1);
-            mv.visitInsn(IRETURN);
-            mv.visitLabel(l0);
+            invokeContainsKey( mv, field.getName() );
+        }
+        
+        for ( String alias : aliases.keySet() ) {
+            invokeContainsKey( mv, alias );
         }
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "containsKey", "(Ljava/lang/Object;)Z");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKESPECIAL, 
+                            Type.getInternalName( TripleBasedStruct.class ),
+                            "containsKey",
+                            "(" + Type.getDescriptor( Object.class ) + ")Z" );
 
-        mv.visitInsn(IRETURN);
-        mv.visitMaxs(2, 2);
+        mv.visitInsn( IRETURN );
+        mv.visitMaxs( 2, 2 );
         mv.visitEnd();
     }
 
@@ -516,13 +619,16 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "size", "()I", null, null);
         mv.visitCode();
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "size", "()I");
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKESPECIAL, 
+                            Type.getInternalName( TripleBasedStruct.class ), 
+                            "size", 
+                            "()I" );
 
         int n = core.getFieldsDefinitions().size();
         for ( int j = 0; j < n; j++ ) {
-            mv.visitInsn(ICONST_1);
-            mv.visitInsn(IADD);
+            mv.visitInsn( ICONST_1 );
+            mv.visitInsn( IADD );
         }
 
         mv.visitInsn(IRETURN);
@@ -537,17 +643,20 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
         boolean hasHardFields = core.getFieldsDefinitions().size() > 0;
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "isEmpty", "()Z", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "isEmpty", "()Z", null, null );
         mv.visitCode();
 
         if ( ! hasHardFields ) {
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn( INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "isEmpty", "()Z" );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitMethodInsn( INVOKESPECIAL,
+                                Type.getInternalName( TripleBasedStruct.class ), 
+                                "isEmpty", 
+                                "()Z" );
         } else {
             mv.visitInsn( ICONST_0 );
         }
         mv.visitInsn( IRETURN );
-        mv.visitMaxs(1, 1);
+        mv.visitMaxs( 1, 1 );
         mv.visitEnd();
     }
 
@@ -555,100 +664,129 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
+    
+    protected void invokeGet( MethodVisitor mv, String wrapperName, ClassDefinition core, String fieldName, FieldDefinition field) {
+        mv.visitLdcInsn( fieldName );
+        mv.visitVarInsn( ALOAD, 1);
+        mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/String", "equals", "(" + Type.getDescriptor( Object.class ) + ")Z" );
+        Label l0 = new Label();
+        mv.visitJumpInsn( IFEQ, l0 );
+
+        TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
+
+        if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
+            TraitFactory.valueOf( mv, field.getTypeName() );
+        }
+        mv.visitInsn( ARETURN );
+        mv.visitLabel( l0 );
+    }
 
 
 
     protected void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "get", "(Ljava/lang/Object;)Ljava/lang/Object;", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
+                                           "get",
+                                            "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ),
+                                            null, 
+                                            null );
         mv.visitCode();
 
-
-        if ( core.getFieldsDefinitions().size() > 0) {
+        if ( core.getFieldsDefinitions().size() > 0 ) {
             for ( FieldDefinition field : core.getFieldsDefinitions() ) {
-                mv.visitLdcInsn( field.getName() );
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z");
-                Label l0 = new Label();
-                mv.visitJumpInsn(IFEQ, l0);
-
-                TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
-
-                if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                    TraitFactory.valueOf( mv, field.getTypeName() );
-                }
-                mv.visitInsn(ARETURN);
-                mv.visitLabel(l0);
+                invokeGet( mv, wrapperName, core, field.getName(), field );
             }
-
         }
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+        for ( String alias : aliases.keySet() ) {
+            invokeGet( mv, wrapperName, core, alias, aliases.get( alias ) );
+        }
 
-        mv.visitInsn(ARETURN);
-        mv.visitMaxs(2, 2);
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKESPECIAL, 
+                            Type.getInternalName( TripleBasedStruct.class ),
+                            "get", 
+                            "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
+
+        mv.visitInsn( ARETURN );
+        mv.visitMaxs( 2, 2 );
         mv.visitEnd();
     }
 
 
 
+    protected void invokePut( MethodVisitor mv, String wrapperName, ClassDefinition core, String fieldName, FieldDefinition field ) {
+        mv.visitLdcInsn( fieldName );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( String.class ), "equals", "(" + Type.getDescriptor( Object.class ) + ")Z" );
+        Label l1 = new Label();
+        mv.visitJumpInsn( IFEQ, l1 );
+        
+        mv.visitVarInsn( ALOAD, 2 );
+        if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
+            TraitFactory.promote( mv, field.getTypeName() );
+            mv.visitVarInsn( BuildUtils.storeType( field.getTypeName() ), 3 );
+            TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, false, 3 );
+        } else {
+            TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, false, 2 );
+        }
+
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitInsn( ARETURN );
+        mv.visitLabel( l1 );
+    }
+    
     protected void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;", null, null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
+                                           "put", 
+                                            "(" + Type.getDescriptor( String.class) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ),
+                                            null, 
+                                            null );
         mv.visitCode();
 
         if ( core.getFieldsDefinitions().size() > 0) {
             int j = 0;
             for ( FieldDefinition field : core.getFieldsDefinitions() ) {
-                mv.visitLdcInsn( field.getName() );
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z");
-                Label l1 = new Label();
-                mv.visitJumpInsn(IFEQ, l1);
-
-
-                mv.visitVarInsn(ALOAD, 2);
-                if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                    TraitFactory.promote( mv, field.getTypeName() );
-                    mv.visitVarInsn( BuildUtils.storeType( field.getTypeName() ), 3 );
-                    TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, false, 3 );
-                } else {
-                    TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, false, 2 );
-                }
-
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitInsn(ARETURN);
-                mv.visitLabel(l1);
+                invokePut( mv, wrapperName, core, field.getName(), field );   
             }
-
         }
 
+        for ( String alias : aliases.keySet() ) {
+            invokePut( mv, wrapperName, core, alias, aliases.get( alias ) );
+        }
+        
 
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitVarInsn(ALOAD, 2);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
-        mv.visitInsn(ARETURN);
-        mv.visitMaxs(4,5);
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitMethodInsn( INVOKESPECIAL,
+                            Type.getInternalName( TripleBasedStruct.class ),
+                            "put",
+                            "(" + Type.getDescriptor( String.class) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
+        mv.visitInsn( ARETURN );
+        mv.visitMaxs( 4, 5 );
         mv.visitEnd();
     }
-
-
+    
 
 
     protected void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "entrySet", "()Ljava/util/Set;", "()Ljava/util/Set<Ljava/util/Map$Entry<Ljava/lang/String;Ljava/lang/Object;>;>;", null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
+                                           "entrySet", 
+                                           "()" + Type.getDescriptor( Set.class ),
+                                           "()Ljava/util/Set<Ljava/util/Map$Entry<Ljava/lang/String;Ljava/lang/Object;>;>;", 
+                                           null );
         mv.visitCode();
-        mv.visitTypeInsn(NEW, "java/util/HashSet");
-        mv.visitInsn(DUP);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashSet", "<init>", "()V");
-        mv.visitVarInsn(ASTORE, 1);
+        mv.visitTypeInsn( NEW, Type.getInternalName( HashSet.class ) );
+        mv.visitInsn( DUP );
+        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashSet.class ), "<init>", "()V" );
+        mv.visitVarInsn( ASTORE, 1 );
 
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
-            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn( ALOAD, 1 );
             mv.visitLdcInsn( field.getName() );
 
             TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
@@ -657,52 +795,78 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 TraitFactory.valueOf( mv, field.getTypeName() );
             }
 
-            mv.visitMethodInsn(INVOKESTATIC, "org/drools/factmodel/traits/TraitProxy", "buildEntry", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/util/Map$Entry;");
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "add", "(Ljava/lang/Object;)Z");
+            mv.visitMethodInsn( INVOKESTATIC, 
+                                Type.getInternalName( TraitProxy.class ), 
+                                "buildEntry", 
+                                "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Map.Entry.class ) );
+            mv.visitMethodInsn( INVOKEINTERFACE,
+                                Type.getInternalName( Set.class ),
+                                "add", 
+                                "(" + Type.getDescriptor( Object.class ) + ")Z" );
             mv.visitInsn(POP);
         }
 
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "entrySet", "()Ljava/util/Set;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");
-        mv.visitInsn(POP);
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKESPECIAL,
+                            Type.getInternalName( TripleBasedStruct.class ), 
+                            "entrySet", 
+                            "()" + Type.getDescriptor( Set.class ) );
+        mv.visitMethodInsn( INVOKEINTERFACE,
+                            Type.getInternalName( Set.class ),
+                            "addAll", 
+                            "(" + Type.getDescriptor( Collection.class ) + ")Z" );                       
+        mv.visitInsn( POP );
 
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitInsn(ARETURN);
-        mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ?  4 : 2,
-                2);
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitInsn( ARETURN );
+        mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ?  4 : 2, 2 );
         mv.visitEnd();
-
 
     }
 
 
     protected void buildKeyset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "keySet", "()Ljava/util/Set;", "()Ljava/util/Set<Ljava/lang/String;>;", null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
+                                           "keySet", 
+                                           "()" + Type.getDescriptor( Set.class ), 
+                                           "()Ljava/util/Set<Ljava/lang/String;>;", 
+                                           null);
         mv.visitCode();
-        mv.visitTypeInsn(NEW, "java/util/HashSet");
-        mv.visitInsn(DUP);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashSet", "<init>", "()V");
-        mv.visitVarInsn(ASTORE, 1);
+        mv.visitTypeInsn( NEW, Type.getInternalName( HashSet.class ) );
+        mv.visitInsn( DUP );
+        mv.visitMethodInsn( INVOKESPECIAL,
+                            Type.getInternalName( HashSet.class ),
+                            "<init>", 
+                             "()V" );
+        mv.visitVarInsn( ASTORE, 1 );
 
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
-            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn( ALOAD, 1 );
             mv.visitLdcInsn( field.getName() );
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "add", "(Ljava/lang/Object;)Z");
-            mv.visitInsn(POP);
+            mv.visitMethodInsn( INVOKEINTERFACE, 
+                                Type.getInternalName( Set.class ), 
+                                "add", 
+                                "(" + Type.getDescriptor( Object.class ) + ")Z" );
+            mv.visitInsn( POP );
         }
 
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "keySet", "()Ljava/util/Set;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");
-        mv.visitInsn(POP);
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKESPECIAL, 
+                            Type.getInternalName( TripleBasedStruct.class ), 
+                            "keySet", 
+                            "()" + Type.getDescriptor( Set.class ));
+        mv.visitMethodInsn( INVOKEINTERFACE,
+                            Type.getInternalName( Set.class ),
+                            "addAll", 
+                            "(" + Type.getDescriptor( Collection.class ) + ")Z" );
+        mv.visitInsn( POP );
 
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitInsn(ARETURN);
-        mv.visitMaxs(2, 2);
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitInsn( ARETURN );
+        mv.visitMaxs( 2, 2 );
         mv.visitEnd();
     }
 
@@ -713,17 +877,21 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
     protected void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "values", "()Ljava/util/Collection;", "()Ljava/util/Collection<Ljava/lang/Object;>;", null);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
+                                           "values", 
+                                           "()" + Type.getDescriptor( Collection.class ), 
+                                           "()Ljava/util/Collection<Ljava/lang/Object;>;", 
+                                           null );
         mv.visitCode();
 
-        mv.visitTypeInsn(NEW, "java/util/ArrayList");
-        mv.visitInsn(DUP);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V");
-        mv.visitVarInsn(ASTORE, 1);
+        mv.visitTypeInsn( NEW, Type.getInternalName( ArrayList.class ) );
+        mv.visitInsn( DUP );
+        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( ArrayList.class ), "<init>", "()V" );
+        mv.visitVarInsn( ASTORE, 1 );
 
 
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
-            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn( ALOAD, 1 );
 
             TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
 
@@ -731,21 +899,29 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 TraitFactory.valueOf( mv, field.getTypeName() );
             }
 
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Collection", "add", "(Ljava/lang/Object;)Z");
-            mv.visitInsn(POP);
+            mv.visitMethodInsn( INVOKEINTERFACE,
+                                Type.getInternalName( Collection.class ),
+                                "add", 
+                                "(" + Type.getDescriptor( Object.class ) + ")Z" );
+            mv.visitInsn( POP );
         }
 
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "values", "()Ljava/util/Collection;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Collection", "addAll", "(Ljava/util/Collection;)Z");
-        mv.visitInsn(POP);
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKESPECIAL, 
+                            Type.getInternalName( TripleBasedStruct.class ), 
+                            "values", 
+                            "()" + Type.getDescriptor( Collection.class ) );
+        mv.visitMethodInsn( INVOKEINTERFACE, 
+                            Type.getInternalName( Collection.class ),
+                            "addAll", 
+                            "(" + Type.getDescriptor( Collection.class ) + ")Z" );
+        mv.visitInsn( POP );
 
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitInsn(ARETURN);
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitInsn( ARETURN );
 
-        mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ? 3 : 2,
-                2);
+        mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ? 3 : 2, 2 );
         mv.visitEnd();
     }
 
@@ -773,35 +949,40 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     public void buildCommonMethods( ClassVisitor cw, String wrapper ) {
         MethodVisitor mv;
 
-
         {
-            mv = cw.visitMethod(ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
+            mv = cw.visitMethod( ACC_PUBLIC, "toString", "()" + Type.getDescriptor( String.class ), null, null );
             mv.visitCode();
-            mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
-            mv.visitInsn(DUP);
-            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V");
+            mv.visitTypeInsn( NEW, Type.getInternalName( StringBuilder.class ) );
+            mv.visitInsn( DUP );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( StringBuilder.class ), "<init>", "()V" );
             mv.visitLdcInsn("[[");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "entrySet", "()Ljava/util/Set;");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
-            mv.visitLdcInsn("]]");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(2, 1);
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( StringBuilder.class ), "append",
+                                "(" + Type.getDescriptor( String.class ) +")" + Type.getDescriptor( StringBuilder.class ) );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "entrySet", "()" + Type.getDescriptor( Set.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( StringBuilder.class ), "append",
+                                "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( StringBuilder.class ) );
+            mv.visitLdcInsn( "]]" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( StringBuilder.class ), "append",
+                                "(" + Type.getDescriptor( String.class ) +")" + Type.getDescriptor( StringBuilder.class ));
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( StringBuilder.class ), "toString", "()" + Type.getDescriptor( String.class ) );
+            mv.visitInsn( ARETURN );
+            mv.visitMaxs( 2, 1 );
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null, null);
+            mv = cw.visitMethod( ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC, "put", 
+                                "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ), 
+                                null, null);
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitTypeInsn(CHECKCAST, "java/lang/String");
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(3, 3);
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( String.class ) );
+            mv.visitVarInsn( ALOAD, 2 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "put", 
+                                "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
+            mv.visitInsn( ARETURN);
+            mv.visitMaxs( 3, 3 );
             mv.visitEnd();
         }
 
@@ -814,36 +995,39 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         MethodVisitor mv;
 
         {
-            mv = cw.visitMethod(ACC_PUBLIC, "hashCode", "()I", null, null);
+            mv = cw.visitMethod( ACC_PUBLIC, "hashCode", "()I", null, null );
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ));
-            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "getTriplesForSubject", "(Ljava/lang/Object;)Ljava/util/Collection;");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "hashCode", "()I");
-            mv.visitInsn(IRETURN);
-            mv.visitMaxs(2, 1);
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ));
+            mv.visitMethodInsn( INVOKEVIRTUAL, 
+                                BuildUtils.getInternalType( wrapper ), 
+                                "getTriplesForSubject", 
+                                "(" + Type.getDescriptor( Object.class ) + ")" +  Type.getDescriptor( Collection.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( Object.class ), "hashCode", "()I" );
+            mv.visitInsn( IRETURN );
+            mv.visitMaxs( 2, 1 );
             mv.visitEnd();
         }
 
         {
-            mv = cw.visitMethod(ACC_PROTECTED, "getObject", "()Ljava/lang/Object;", null, null);
+            mv = cw.visitMethod( ACC_PROTECTED, "getObject", "()" + Type.getDescriptor( Object.class ), null, null );
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ));
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(1, 1);
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ) );
+            mv.visitInsn( ARETURN );
+            mv.visitMaxs( 1, 1 );
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod(ACC_PUBLIC, "setObject", "(Ljava/lang/Object;)V", null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, "setObject", "(" + Type.getDescriptor( Object.class ) + ")V", null, null );
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 1 );
             mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( core.getName() ) );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ) );
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(2, 2);
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 2, 2 );
             mv.visitEnd();
         }
 
