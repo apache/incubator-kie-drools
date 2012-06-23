@@ -36,13 +36,9 @@ public enum SelectionOrder {
      */
     ORIGINAL;
 
-    public static SelectionOrder resolveSelectionOrder(SelectionOrder selectionOrder,
-            SelectionOrder inheritedResolvedSelectionOrder) {
+    public static SelectionOrder resolve(SelectionOrder selectionOrder, SelectionOrder inheritedSelectionOrder) {
         if (selectionOrder == null || selectionOrder == INHERIT) {
-            if (inheritedResolvedSelectionOrder == null) {
-                return RANDOM;
-            }
-            return inheritedResolvedSelectionOrder;
+            return inheritedSelectionOrder;
         } else {
             return selectionOrder;
         }

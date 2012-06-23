@@ -26,6 +26,7 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.move.cached.ShufflingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 
@@ -80,19 +81,34 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedResolvedSelectionOrder) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
-                inheritedResolvedSelectionOrder);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, entitySelector.getEntityDescriptor());
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
+
+        boolean randomSelection;
+        boolean shuffled;
+        if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+            randomSelection = false;
+            shuffled = false;
+        } else {
+            if (resolvedCacheType.compareTo(SelectionCacheType.STEP) >= 0) {
+                randomSelection = false;
+                shuffled = true;
+                resolvedSelectionOrder = SelectionOrder.ORIGINAL;
+            } else {
+                randomSelection = true;
+                shuffled = false;
+            }
+        }
         // TODO && selectionProbabilityWeightFactoryClass == null;
         // TODO if probability and random==true then put random=false to entity and value selectors
-        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.JUST_IN_TIME : cacheType;
-        MoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, randomSelection,
-                resolvedCacheType);
+
+        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
+                resolvedSelectionOrder, resolvedCacheType);
+        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
+                resolvedSelectionOrder, resolvedCacheType, entitySelector.getEntityDescriptor());
+        MoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, randomSelection);
 
         // TODO filterclass
         // TODO selectionProbabilityWeightFactoryClass

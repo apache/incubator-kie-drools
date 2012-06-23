@@ -17,8 +17,33 @@
 package org.drools.planner.core.heuristic.selector.cached;
 
 public enum SelectionCacheType {
+    /**
+     * Inherit the value from the parent.
+     */
+    INHERIT,
+    /**
+     * Just in time, when the move is created. This is effectively no caching.
+     */
     JUST_IN_TIME,
+    /**
+     * When the step is started.
+     */
     STEP,
+    /**
+     * When the phase is started.
+     */
     PHASE,
-    SOLVER
+    /**
+     * When the solver is started.
+     */
+    SOLVER;
+
+    public static SelectionCacheType resolve(SelectionCacheType cacheType, SelectionCacheType inheritedCacheType) {
+        if (cacheType == null || cacheType == INHERIT) {
+            return inheritedCacheType;
+        } else {
+            return cacheType;
+        }
+    }
+
 }

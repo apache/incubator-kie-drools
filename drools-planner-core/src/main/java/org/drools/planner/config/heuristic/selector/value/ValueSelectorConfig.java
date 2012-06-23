@@ -78,7 +78,8 @@ public class ValueSelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     public ValueSelector buildValueSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedResolvedSelectionOrder, PlanningEntityDescriptor entityDescriptor) {
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType,
+            PlanningEntityDescriptor entityDescriptor) {
         PlanningVariableDescriptor variableDescriptor;
         if (planningVariableName != null) {
             variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(planningVariableName);
@@ -104,12 +105,15 @@ public class ValueSelectorConfig extends SelectorConfig {
             }
             variableDescriptor = planningVariableDescriptors.iterator().next();
         }
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
-                inheritedResolvedSelectionOrder);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && valueProbabilityWeightFactoryClass == null;
-        // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.PHASE : cacheType;
+        if (resolvedCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
+            // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+            resolvedCacheType = SelectionCacheType.PHASE;
+        }
         ValueSelector valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
                 resolvedCacheType);
 

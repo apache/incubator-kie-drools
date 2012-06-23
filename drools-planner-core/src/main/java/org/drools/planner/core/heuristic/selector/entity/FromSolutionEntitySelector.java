@@ -81,7 +81,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
     }
 
     public long getSize() {
-        // TODO what if entityList is still null?
+        // cachedEntityList is never longer null because a parent's cacheType >= this.cacheType
         return (long) cachedEntityList.size();
     }
 

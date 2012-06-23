@@ -25,7 +25,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
-import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -33,11 +32,8 @@ import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.heuristic.selector.cached.FixedSelectorProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.composite.UnionMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.SwapMoveSelector;
 
 @XStreamAlias("unionMoveSelector")
 public class UnionMoveSelectorConfig extends MoveSelectorConfig {
@@ -88,20 +84,22 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedResolvedSelectionOrder) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
-                inheritedResolvedSelectionOrder);
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
+        // TODO copy logic from ChangeMoveSelectorConfig
 
         List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorList.add(
-                    moveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor, resolvedSelectionOrder));
+                    moveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
+                            resolvedSelectionOrder, resolvedCacheType));
         }
 
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
         // TODO && selectionProbabilityWeightFactoryClass == null;
         // TODO if probability and random==true then put random=false to entity and value selectors
-        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.JUST_IN_TIME : cacheType;
         SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
         if (selectorProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {

@@ -77,7 +77,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedResolvedSelectionOrder) {
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
         PlanningEntityDescriptor entityDescriptor;
         if (planningEntityClass != null) {
             entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
@@ -101,12 +101,16 @@ public class EntitySelectorConfig extends SelectorConfig {
             }
             entityDescriptor = planningEntityDescriptors.iterator().next();
         }
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
-                inheritedResolvedSelectionOrder);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && entityProbabilityWeightFactoryClass == null;
-        // cacheType defaults to SelectionCacheType.STEP because JIT is pointless and an entity can be added in a step
-        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.STEP : cacheType;
+        if (resolvedCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+            // cacheType upgrades to SelectionCacheType.STEP because JIT is pointless
+            // and an entity can be added in a step
+            resolvedCacheType = SelectionCacheType.STEP;
+        }
         EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
                 resolvedCacheType);
 

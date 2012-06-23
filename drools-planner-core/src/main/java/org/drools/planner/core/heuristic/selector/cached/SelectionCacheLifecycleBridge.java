@@ -30,6 +30,10 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
             SelectionCacheLifecycleListener selectionCacheLifecycleListener) {
         this.cacheType = cacheType;
         this.selectionCacheLifecycleListener = selectionCacheLifecycleListener;
+        if (cacheType == null || cacheType == SelectionCacheType.INHERIT) {
+            throw new IllegalArgumentException("The cacheType (" + cacheType
+                    + ") should have already been resolved.");
+        }
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {

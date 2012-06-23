@@ -21,14 +21,12 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
-import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.cached.ShufflingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.SwapMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 
 @XStreamAlias("swapMoveSelector")
 public class SwapMoveSelectorConfig extends MoveSelectorConfig {
@@ -81,17 +79,21 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedResolvedSelectionOrder) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolveSelectionOrder(selectionOrder,
-                inheritedResolvedSelectionOrder);
-        EntitySelector leftEntitySelector = leftEntitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder);
-        EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder);
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
+        // TODO copy logic from ChangeMoveSelectorConfig
+
+        EntitySelector leftEntitySelector = leftEntitySelectorConfig.buildEntitySelector(
+                environmentMode, solutionDescriptor,
+                resolvedSelectionOrder, resolvedCacheType);
+        EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
+                environmentMode, solutionDescriptor,
+                resolvedSelectionOrder, resolvedCacheType);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
         // TODO && selectionProbabilityWeightFactoryClass == null;
         // TODO if probability and random==true then put random=false to entity and value selectors
-        SelectionCacheType resolvedCacheType = cacheType == null ? SelectionCacheType.JUST_IN_TIME : cacheType;
         MoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, randomSelection,
                 resolvedCacheType);
 

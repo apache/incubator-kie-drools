@@ -32,14 +32,12 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     private final EntitySelector entitySelector;
     private final ValueSelector valueSelector;
     protected final boolean randomSelection;
-    protected final SelectionCacheType cacheType;
 
     public ChangeMoveSelector(EntitySelector entitySelector, ValueSelector valueSelector,
-            boolean randomSelection, SelectionCacheType cacheType) {
+            boolean randomSelection) {
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
-        this.cacheType = cacheType;
         PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         if (variableDescriptor.isChained()) {
             // TODO support chained
@@ -47,9 +45,6 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ")'s planningVariableDescriptor (" + variableDescriptor.getVariableName()
                     + ") is chained and can therefor not use the moveSelector (" + getClass() + ").");
-        }
-        if (cacheType != SelectionCacheType.JUST_IN_TIME) {
-            throw new UnsupportedOperationException(); // TODO FIXME
         }
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
         solverPhaseLifecycleSupport.addEventListener(valueSelector);

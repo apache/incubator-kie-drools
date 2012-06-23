@@ -21,6 +21,7 @@ import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 
 /**
@@ -42,8 +43,9 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     // Builder methods
     // ************************************************************************
 
-    public abstract MoveSelector buildMoveSelector(EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, SelectionOrder inheritedResolvedSelectionOrder);
+    public abstract MoveSelector buildMoveSelector(
+            EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType);
 
     protected void inherit(MoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
