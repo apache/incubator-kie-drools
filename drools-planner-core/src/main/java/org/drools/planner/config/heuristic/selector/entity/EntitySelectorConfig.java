@@ -111,6 +111,13 @@ public class EntitySelectorConfig extends SelectorConfig {
             // and an entity can be added in a step
             resolvedCacheType = SelectionCacheType.STEP;
         }
+        if (resolvedCacheType == SelectionCacheType.SOLVER) {
+            // TODO Solver cached entities are not compatible with DroolsScoreCalculator
+            // because between phases the entities get cloned and the WorkingMemory contains those clones afterwards
+            // https://issues.jboss.org/browse/JBRULES-3557
+            throw new IllegalArgumentException("The cacheType (" + resolvedCacheType
+                    + ") is not yet supported. Please use PHASE instead.");
+        }
         EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
                 resolvedCacheType);
 

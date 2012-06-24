@@ -78,7 +78,8 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         workingScoreHolder = getScoreDefinition().buildScoreHolder();
         workingMemory.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
-        for (Object fact : getWorkingFacts()) {
+        Collection<Object> workingFacts = getWorkingFacts();
+        for (Object fact : workingFacts) {
             workingMemory.insert(fact);
         }
     }
