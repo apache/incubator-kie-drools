@@ -47,6 +47,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -101,8 +102,7 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Memory");
-        yAxis.setAutoRangeIncludesZero(false);
-        XYItemRenderer renderer = new XYAreaRenderer2();
+        XYItemRenderer renderer = new XYLineAndShapeRenderer();
         XYPlot plot = new XYPlot(seriesCollection, xAxis, yAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " memory use statistic",
