@@ -63,7 +63,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 			+
 			"then \n"
 			+
-			"    //System.out.println(\"Rule A fired by thread \" + Thread.currentThread().getName() + \": \" + $a + \", \" + $b);\n"
+			"    System.out.println(\"Rule A fired by thread \" + Thread.currentThread().getName() + \": \" + $a + \", \" + $b);\n"
 			+
 			"end\n" +
 			"";
@@ -72,7 +72,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 			"	$a: StockTick()\n" +
 			"	not( StockTick( this after[1,10s] $a ) )\n" +
 			"then \n" +
-			"    //System.out.println(\"Rule B fired by thread \" + Thread.currentThread().getName());\n" +
+			"    System.out.println(\"Rule B fired by thread \" + Thread.currentThread().getName());\n" +
 			"end\n" +
 			"";
 
@@ -102,7 +102,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 				any(AfterActivationFiredEvent.class));
 	}
 
-	@Test(timeout = 60000)
+	@Test//(timeout = 60000)
 	public void testEvenFirePseudoClockRulesAB() throws Exception {
 
 		AgendaEventListener ael = mock(AgendaEventListener.class);
@@ -137,8 +137,10 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 				ksession.fireUntilHalt();
 			}
 		};
-		Thread fireUntilHaltThread = new Thread(fireUntilHaltRunnable);
+		Thread fireUntilHaltThread = new Thread(fireUntilHaltRunnable, "Engine's thread");
 		fireUntilHaltThread.start();
+		
+		Thread.currentThread().setName( "Feeding thread" );
 
 		for (int stIndex = 1; stIndex <= stockCount; stIndex++) {
 			clock.advanceTime(20, TimeUnit.SECONDS);
