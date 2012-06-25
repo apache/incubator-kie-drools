@@ -819,33 +819,6 @@ public class AccumulateTest {
     }
 
     @Test
-    public void testAccumulateReturningNullMVEL() throws Exception {
-
-        // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReturningNullMVEL.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
-
-        wm.setGlobal( "results",
-                      results );
-
-        try {
-            wm.insert( new Cheese( "stilton",
-                                   10 ) );
-
-            fail( "Should have raised an exception because accumulate is returning null" );
-        } catch ( RuntimeDroolsException rde ) {
-            // success, working fine
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( "Should have raised a DroolsRuntimeException instead of " + e );
-        }
-
-    }
-
-    @Test
     public void testAccumulateSumJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateSum.drl" );
     }
