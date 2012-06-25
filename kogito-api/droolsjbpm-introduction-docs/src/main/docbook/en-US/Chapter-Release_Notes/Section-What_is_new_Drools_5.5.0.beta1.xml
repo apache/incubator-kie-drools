@@ -138,6 +138,51 @@
         </mediaobject>
       </figure>
     </section>
+
+    <section>
+      <title>Guided Decision Table receives an Audit Log</title>
+
+      <para>An audit log has been added to the web-guided Decision Table editor to track additions, deletions and
+      modifications. </para>
+
+      <para>By default the audit log is not configured to record any events, however, users can easily select the events
+      in which they are interested. </para>
+
+      <para>The audit log is persisted whenever the asset is checked in.</para>
+
+      <figure>
+        <title>An empty audit log</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/audit-log1.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Once the capture of events has been enabled all susbsequent operations are recorded. Users are able to
+      perform the following:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Record an explanatory note beside each event.</para>
+        </listitem>
+
+        <listitem>
+          <para>Delete an event from the log. Event details remain in the underlying repository.</para>
+        </listitem>
+      </itemizedlist>
+
+      <figure>
+        <title> Example of audit events</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/audit-log2.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
   </section>
 
   <section xml:id="releaseNotes_5.5.0.beta1_Planner">
