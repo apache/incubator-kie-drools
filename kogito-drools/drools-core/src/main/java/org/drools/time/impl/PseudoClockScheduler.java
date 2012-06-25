@@ -51,7 +51,7 @@ public class PseudoClockScheduler
     InternalSchedulerService,
     AcceptsTimerJobFactoryManager {
 
-    private volatile long                   timer;
+    private AtomicLong                      timer;
     private PriorityQueue<Callable<Void>>   queue;
     private transient InternalWorkingMemory session;
 
@@ -64,7 +64,7 @@ public class PseudoClockScheduler
     }
 
     public PseudoClockScheduler(InternalWorkingMemory session) {
-        this.timer = 0;
+        this.timer = new AtomicLong(0);
         this.queue = new PriorityQueue<Callable<Void>>();
         this.session = session;
     }
@@ -72,7 +72,7 @@ public class PseudoClockScheduler
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        timer = in.readLong();
+        timer = new AtomicLong( in.readLong() );
         PriorityQueue<Callable<Void>> tmp = (PriorityQueue<Callable<Void>>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
@@ -81,7 +81,7 @@ public class PseudoClockScheduler
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong( timer );
+        out.writeLong( timer.get() );
         // this is a work around to a bug in the object stream code, where it raises exceptions
         // when trying to de-serialize an empty priority queue.
         out.writeObject( queue.isEmpty() ? null : queue );
@@ -100,8 +100,8 @@ public class PseudoClockScheduler
      * 
      * @see org.drools.temporal.SessionClock#getCurrentTime()
      */
-    public synchronized long getCurrentTime() {
-        return this.timer;
+    public long getCurrentTime() {
+        return this.timer.get();
     }
 
     /**
@@ -133,7 +133,9 @@ public class PseudoClockScheduler
 
     public void internalSchedule(TimerJobInstance timerJobInstance) {
         jobFactoryManager.addTimerJobInstance( timerJobInstance );
-        queue.add( ( Callable<Void> ) timerJobInstance );
+        synchronized(queue) {
+            queue.add( ( Callable<Void> ) timerJobInstance );
+        }
     }
 
     /**
@@ -144,21 +146,21 @@ public class PseudoClockScheduler
     public boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel( true );
         jobFactoryManager.removeTimerJobInstance( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
-        return this.queue.remove( (Callable<Void>) ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
+        synchronized( queue ) {
+            return this.queue.remove( (Callable<Void>) ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
+        }
     }
 
     /**
      * @inheritDoc
      */
-    public synchronized long advanceTime(long amount,
-                                         TimeUnit unit) {
-        this.timer += unit.toMillis( amount );
-        this.runCallBacks();
-        return this.timer;
+    public long advanceTime(long amount,
+                            TimeUnit unit) {
+        return this.runCallBacksAndIncreaseTimer( unit.toMillis( amount ) );
     }
 
-    public synchronized void setStartupTime(long i) {
-        this.timer = i;
+    public void setStartupTime(long i) {
+        this.timer.set( i );
     }
 
     /**
@@ -182,38 +184,44 @@ public class PseudoClockScheduler
         // nothing to do
     }
 
-    private void runCallBacks() {
+    @SuppressWarnings("unchecked")
+    private synchronized long runCallBacksAndIncreaseTimer( long increase ) {
+        long endTime = this.timer.get() + increase;
         TimerJobInstance item = (TimerJobInstance) queue.peek();
         long fireTime;
-        while ( item != null && ((item.getTrigger().hasNextFireTime() != null && ( ( fireTime = item.getTrigger().hasNextFireTime().getTime()) <= this.timer) ) )  ) {
+        while ( item != null && ((item.getTrigger().hasNextFireTime() != null && ( ( fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime ) ) )  ) {
             // remove the head
-            queue.remove();
+            synchronized( queue ) {
+                queue.remove(item);
+            }
 
             if ( item.getJobHandle().isCancel() ) {
                 // do not call it, do not reschedule it
                 continue;
             }
             
-            // save the current timer because we are going to override to to the job's trigger time
-            long savedTimer = this.timer;
             try {
                 // set the clock back to the trigger's fire time
-                this.timer = fireTime;
+                this.timer.getAndSet( fireTime );
                 // execute the call
                 ((Callable<Void>) item).call();
             } catch ( Exception e ) {
                 SystemEventListenerFactory.getSystemEventListener().exception( e );
-            } finally {
-                this.timer = savedTimer;
             }
             // get next head
-            item = (TimerJobInstance) queue.peek();
+            synchronized( queue ) {
+                item = (TimerJobInstance) queue.peek();
+            }
         }
+        this.timer.set( endTime );
+        return this.timer.get(); 
     }
 
-    public synchronized long getTimeToNextJob() {
-        TimerJobInstance item = (TimerJobInstance) queue.peek();
-        return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer : -1;
+    public long getTimeToNextJob() {
+        synchronized( queue ) {
+            TimerJobInstance item = (TimerJobInstance) queue.peek();
+            return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
+        }
     }
 
     public Collection<TimerJobInstance> getTimerJobInstances() {
