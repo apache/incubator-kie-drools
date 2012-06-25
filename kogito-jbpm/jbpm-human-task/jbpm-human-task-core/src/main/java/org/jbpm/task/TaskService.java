@@ -120,8 +120,20 @@ public interface TaskService {
 
     void register(long taskId, String userId);
 
+    /**
+     * This method registers for an event key a handler to notify the task life cycle events 
+     * @param key
+     * @param remove The remove boolean is used to remove the handler after firing a notification
+     * @param responseHandler 
+     */
     void registerForEvent(EventKey key, boolean remove, EventResponseHandler responseHandler);
 
+    /**
+     * This method removes all the handlers associated with an EventKey
+     * @param key 
+     */
+    void unregisterForEvent(EventKey key);
+    
     void release(long taskId, String userId);
 
     void remove(long taskId, String userId);

@@ -140,7 +140,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     public void dispose() throws Exception {
         for (TaskEventKey key : eventHandlers.keySet()) {
-            client.registerForEvent(key, true, eventHandlers.get(key));
+            client.unregisterForEvent(key);
         }
         eventHandlers.clear();
         if (client != null) {

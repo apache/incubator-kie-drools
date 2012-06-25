@@ -235,14 +235,14 @@ public class LocalTaskService implements TaskService {
 
     public void registerForEvent(EventKey key, boolean remove, EventResponseHandler responseHandler) {
         SimpleEventTransport transport = new SimpleEventTransport(responseHandler, remove);
-        if (!remove) {
-            service.getEventKeys().register(key, transport);
-        } else {
-            service.getEventKeys().unregister(key, transport);
-        }
-
+        service.getEventKeys().register(key, transport);
+        
     }
 
+    public void unregisterForEvent(EventKey key) {
+        service.getEventKeys().removeKey(key);
+    }
+    
     public void release(long taskId, String userId) {
         session.taskOperation(Operation.Release, taskId, userId, null, null, null);
     }
@@ -303,6 +303,8 @@ public class LocalTaskService implements TaskService {
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+
+    
 
     private static class SimpleEventTransport implements EventTriggerTransport {
 

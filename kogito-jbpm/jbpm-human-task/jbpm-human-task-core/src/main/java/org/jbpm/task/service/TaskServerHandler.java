@@ -517,19 +517,28 @@ public class TaskServerHandler {
 									                            cmd.getId(),
 									                            clients,
 									                            remove);
-                    if(!remove){
-                         service.getEventKeys().register(key, transport);
-                    }else{
-                        service.getEventKeys().unregister(key, transport); 
-                    }
+                    service.getEventKeys().register(key, transport);
+                    
                     
                     break;
                 }
+                case UnRegisterForEventRequest: {
+                    
+                    EventKey key = (EventKey) cmd.getArguments().get(0);
+                    String uuid = (String) cmd.getArguments().get(1);
+                    
+                    // execute
+                    clients.put(uuid, session);
+                    
+                    service.getEventKeys().removeKey(key);
+
+                    break;
+                }    
                 case RegisterClient: {
                     // prepare
                     response = CommandName.RegisterClient;
                     String uuid = (String) cmd.getArguments().get(0);
-                    
+
                     // execute
                     clients.put(uuid, session);
                     break;

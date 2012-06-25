@@ -97,6 +97,7 @@ public enum CommandName {
     QueryTaskByWorkItemIdResponse,
     
     RegisterForEventRequest,
+    UnRegisterForEventRequest,
     EventTriggerResponse,
     
     RegisterClient,

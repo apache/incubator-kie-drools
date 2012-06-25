@@ -620,6 +620,17 @@ public class TaskClient implements AsyncTaskService{
         connector.write( cmd );
     }
     
+    public void unregisterForEvent(EventKey key) {
+        List<Object> args = new ArrayList<Object>( 3 );
+        args.add( key );
+        args.add( this.name );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.UnRegisterForEventRequest,
+                                   args );
+       
+        connector.write( cmd );
+    }
+    
     /**
      * This method allows the user to exercise a query of his/her choice. 
      * This method will be deleted in future versions. 
@@ -885,5 +896,5 @@ public class TaskClient implements AsyncTaskService{
                                     responseHandler );
         connector.write( cmd );
     }
-    
+ 
 }

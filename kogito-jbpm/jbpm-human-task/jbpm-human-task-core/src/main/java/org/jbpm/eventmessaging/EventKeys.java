@@ -37,13 +37,6 @@ public class EventKeys {
         list.add( target );
     }
     
-    public void unregister(EventKey key, EventTriggerTransport target) {
-        List<EventTriggerTransport> list = keys.get( key);
-        if ( list != null ) {
-            list.remove( target );
-        }
-    }
-    
     public List<EventTriggerTransport> getTargets(EventKey key) {
         return keys.get(  key  );
     }

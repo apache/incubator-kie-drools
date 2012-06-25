@@ -562,6 +562,10 @@ public class SyncTaskServiceWrapper implements TaskService {
 
     }
 
+    public void unregisterForEvent(EventKey key) {
+        taskService.unregisterForEvent(key);
+    }
+    
     public void release(long taskId, String userId) {
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         taskService.release(taskId, userId, responseHandler);
