@@ -86,7 +86,11 @@ public class CreateProcessInstanceCommand implements GenericCommand<ProcessInsta
     }
 
     public void setParameters(Map<String, Object> parameters) {
-        this.parameters = new HashMap<String, Object>(parameters);
+	if (parameters != null) {
+        	this.parameters = new HashMap<String, Object>(parameters);
+	} else {
+        	this.parameters = new HashMap<String, Object>();
+	}
     }
 
     public void putParameter(String key, Object value) {
