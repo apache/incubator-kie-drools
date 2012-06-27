@@ -121,7 +121,7 @@ public class JtaTransactionManager
             logger.debug( "No UserTransaction found at JNDI location [{}]",
                           DEFAULT_USER_TRANSACTION_NAME,
                           ex );
-            return null;
+            throw new IllegalStateException("Unable to find transaction: " + ex.getMessage(), ex);
         }
     }
 
