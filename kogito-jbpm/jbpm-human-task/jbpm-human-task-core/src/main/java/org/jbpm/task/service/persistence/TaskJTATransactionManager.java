@@ -15,17 +15,26 @@
  */
 package org.jbpm.task.service.persistence;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jta.JtaTransactionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class TaskJTATransactionManager implements TaskTransactionManager {
 
+	private static final Logger logger = LoggerFactory.getLogger(TaskJTATransactionManager.class);
+	
+	private static final String[] KNOWN_UT_JNDI_KEYS = new String[] {"UserTransaction", "java:jboss/UserTransaction", System.getProperty("jbpm.ut.jndi.lookup")};
+	
     private org.drools.persistence.TransactionManager tm;
 
     TaskJTATransactionManager() {
-        this.tm = new JtaTransactionManager(null, null, null);
+        this.tm = new JtaTransactionManager(findUserTransaction(), null, null);
     }
 
     public void attachPersistenceContext(EntityManager em) { 
@@ -67,4 +76,26 @@ class TaskJTATransactionManager implements TaskTransactionManager {
         tm = null;
     }
     
+    protected UserTransaction findUserTransaction() {
+    	InitialContext context = null;
+    	try {
+            context = new InitialContext();
+            return (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME );
+        } catch ( NamingException ex ) {
+        	
+        	for (String utLookup : KNOWN_UT_JNDI_KEYS) {
+        		if (utLookup != null) {
+		        	try {
+		        		UserTransaction ut = (UserTransaction) context.lookup(utLookup);
+		        		return ut;
+					} catch (NamingException e) {
+						logger.debug("User Transaction not found in JNDI under " + utLookup);
+						
+					}
+        		}
+        	}
+        	logger.warn("No user transaction found under known names");
+        	return null;
+        }
+    }
 }
