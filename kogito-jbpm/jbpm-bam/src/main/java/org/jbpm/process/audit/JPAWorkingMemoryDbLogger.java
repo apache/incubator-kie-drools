@@ -20,9 +20,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TransactionRequiredException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
@@ -41,12 +42,10 @@ import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeRuntime;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.jbpm.process.audit.event.ExtendedRuleFlowLogEvent;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -56,6 +55,8 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
 
     private static Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLogger.class);
+    
+    private static final String[] KNOWN_UT_JNDI_KEYS = new String[] {"UserTransaction", "java:jboss/UserTransaction", System.getProperty("jbpm.ut.jndi.lookup")};
     
     protected Environment env;
 
@@ -187,25 +188,26 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
     private static UserTransaction joinTransaction(EntityManager em) {
         boolean newTx = false;
         UserTransaction ut = null;
-        try { 
-        	InitialContext ctx = new InitialContext();
-        	try {
-        		ut = (UserTransaction) ctx.lookup( "java:comp/UserTransaction" );
-        	} catch (NameNotFoundException e) {
-        		// java:comp/UserTransaction is not available on JbossAS 7 for threads that are not managed by server
-        		// for instance when task is completed (as that creates a application thread on response)
-        		// so try to use the one that is globally accessible
-        		ut = (UserTransaction) ctx.lookup( "java:jboss/UserTransaction" );
-			}
-            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
-                ut.begin();
-                newTx = true;
-            }
-        } catch(Exception e) { 
-            logger.warn("Unable to find or open a transaction: " + e.getMessage(), e);
-        }
         
-        em.joinTransaction(); 
+        try {
+        	em.joinTransaction();
+        
+        } catch (TransactionRequiredException e) {
+			ut = findUserTransaction();
+			try {
+				if( ut != null && ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
+	                ut.begin();
+	                newTx = true;
+	            } 
+			} catch(Exception ex) {
+				logger.warn("Unable to find or open a transaction: " + ex.getMessage(), ex);
+			}
+			
+			if (!newTx) {
+            	// rethrow TransactionRequiredException if UserTransaction was not found or started
+            	throw e;
+            }
+		}
        
         if( newTx ) { 
             return ut;
@@ -271,4 +273,26 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         logEventCreated( logEvent );
     }
 
+    protected static UserTransaction findUserTransaction() {
+    	InitialContext context = null;
+    	try {
+            context = new InitialContext();
+            return (UserTransaction) context.lookup( "java:comp/UserTransaction" );
+        } catch ( NamingException ex ) {
+        	
+        	for (String utLookup : KNOWN_UT_JNDI_KEYS) {
+        		if (utLookup != null) {
+		        	try {
+		        		UserTransaction ut = (UserTransaction) context.lookup(utLookup);
+		        		return ut;
+					} catch (NamingException e) {
+						logger.debug("User Transaction not found in JNDI under " + utLookup);
+						
+					}
+        		}
+        	}
+        	logger.warn("No user transaction found under known names");
+        	return null;
+        }
+    }
 }
