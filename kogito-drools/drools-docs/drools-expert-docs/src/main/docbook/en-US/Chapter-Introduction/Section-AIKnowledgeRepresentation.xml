@@ -112,13 +112,13 @@
 
     <para>KRR is about how we represent our knowledge in symbolic form, i.e.
     how we describe something. Reasoning is about how we go about the act of
-    thinking using this knowledge. System based/Object-Oriented languages, like C++/Java/C#,
+    thinking using this knowledge. System based/object oriented languages, like C++/Java/C#,
     have classification systems, called Classes, to be able to describe
-    things. In Java we calls exemplars of these things beans or instances. However those
+    things. In Java we call exemplars of these things beans or instances. However those
     classification systems are limited to ensure computational efficiency.
     Over the years researchers have developed increasingly sophisticated ways
     to represent our world. Many of you may already have heard of OWL (Web
-    Ontology Language). There is always a gap between what we can be
+    Ontology Language). There is always a gap between what can be
     theoretically represented and what can be used computationally in
     practically timely manner, which is why OWL has different sub-languages
     from Lite to Full. It is not believed that any reasoning system can
@@ -189,7 +189,7 @@
     <para>The term "rules engine" is quite ambiguous in that it can be any system
     that uses rules, in any form, that can be applied to data to produce
     outcomes. This includes simple systems like form validation and dynamic
-    expression engines. The book "How to Build a Business Rules Engine (2004)"
+    expression engines. The book "How to Build a Business Rules Engine" (2004)
     by Malcolm Chisholm exemplifies this ambiguity. The book is actually about
     how to build and alter a database schema to hold validation rules. The
     book then shows how to generate VB code from those validation rules to
@@ -199,7 +199,7 @@
     <para>Drools started life as a specific type of rule engine called a
     production rule system (PRS) and was based around the Rete algorithm
     (usually pronounced as two syllables, e.g., REH-te or RAY-tay). The
-    Rete algorithm, developed by Charles Forgey in 1979, forms the brain of a
+    Rete algorithm, developed by Charles Forgey in 1974, forms the brain of a
     Production Rules System and is able to scale to a large number of rules
     and facts. A Production Rule is a two-part structure: the engine matches
     facts and data against Production Rules - also called Productions or just
@@ -236,7 +236,7 @@ then
     Drools has an enhanced and optimized implementation of the Rete algorithm
     for object oriented systems. Our more recent work goes well beyond Rete.
     Other Rete based engines also have marketing terms for their proprietary
-    enhancements to Rete, like RetePlus and Rete III. Th e most common
+    enhancements to Rete, like RetePlus and Rete III. The most common
     enhancements are covered in "Production Matching for Large Learning
     Systems (Rete/UL)" (1995) by Robert B. Doorenbos. "Leaps" used to be
     provided, but was retired as it became unmaintained. The good news is that our

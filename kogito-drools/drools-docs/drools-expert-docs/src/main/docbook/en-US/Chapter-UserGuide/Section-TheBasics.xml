@@ -12,7 +12,7 @@
   <section>
     <title>Stateless Knowledge Session</title>
 
-    <para>So where do we get started, there are so many use cases and so much
+    <para>So where do we get started? There are so many use cases and so much
     functionality in a rule engine such as Drools that it becomes beguiling.
     Have no fear my intrepid adventurer, the complexity is layered and you can
     ease yourself into with simple use cases.</para>
@@ -71,7 +71,7 @@
 </programlisting>
 
     <para>Now that we have our data model we can write our first rule. We
-    assume that the application uses rules to refute invalid applications. As
+    assume that the application uses rules to reject invalid applications. As
     this is a simple validation use case we will add a single rule to
     disqualify any applicant younger than 18.</para>
 
@@ -110,8 +110,8 @@ end</programlisting>
     KnowledgeBuilderFactory and KnowledgeBaseFactory.</para>
 
     <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.add( ResourceFactory.newClassPathResource( "licenseApplication.drl", getClass() ),
-              ResourceType.DRL );
+kbuilder.add( ResourceFactory.newClassPathResource( "licenseApplication.drl", 
+              getClass() ), ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
     System.err.println( kbuilder.getErrors().toString() );
 }
