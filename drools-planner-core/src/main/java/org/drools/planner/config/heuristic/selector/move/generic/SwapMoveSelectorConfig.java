@@ -39,7 +39,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
     // TODO filterClass
-    // TODO selectionProbabilityWeightFactoryClass
+    // TODO moveProbabilityWeightFactoryClass
     // TODO sorterClass
 
     public EntitySelectorConfig getLeftEntitySelectorConfig() {
@@ -80,10 +80,12 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
-                inheritedSelectionOrder);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
         // TODO copy logic from ChangeMoveSelectorConfig
+        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
+        // TODO && moveProbabilityWeightFactoryClass == null;
+        // TODO if probability and random==true then put random=false to entity and value selectors
 
         EntitySelector leftEntitySelector = leftEntitySelectorConfig.buildEntitySelector(
                 environmentMode, solutionDescriptor,
@@ -91,14 +93,11 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
                 environmentMode, solutionDescriptor,
                 resolvedSelectionOrder, resolvedCacheType);
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
-        // TODO && selectionProbabilityWeightFactoryClass == null;
-        // TODO if probability and random==true then put random=false to entity and value selectors
         MoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, randomSelection,
                 resolvedCacheType);
 
         // TODO filterclass
-        // TODO selectionProbabilityWeightFactoryClass
+        // TODO moveProbabilityWeightFactoryClass
         return moveSelector;
     }
 

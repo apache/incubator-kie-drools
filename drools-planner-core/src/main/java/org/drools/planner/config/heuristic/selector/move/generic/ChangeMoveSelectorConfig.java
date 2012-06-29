@@ -41,7 +41,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
     // TODO filterClass
-    // TODO selectionProbabilityWeightFactoryClass
+    // TODO moveProbabilityWeightFactoryClass
     // TODO sorterClass
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -82,8 +82,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
-                inheritedSelectionOrder);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
 
         boolean randomSelection;
@@ -101,7 +100,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
                 shuffled = false;
             }
         }
-        // TODO && selectionProbabilityWeightFactoryClass == null;
+        // TODO && moveProbabilityWeightFactoryClass == null;
         // TODO if probability and random==true then put random=false to entity and value selectors
 
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
@@ -111,7 +110,10 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
         MoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, randomSelection);
 
         // TODO filterclass
-        // TODO selectionProbabilityWeightFactoryClass
+        // TODO moveProbabilityWeightFactoryClass
+        if (shuffled) {
+            moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
+        }
         return moveSelector;
     }
 

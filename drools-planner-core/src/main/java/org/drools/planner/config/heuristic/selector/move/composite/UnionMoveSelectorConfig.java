@@ -85,8 +85,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
-                inheritedSelectionOrder);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
         // TODO copy logic from ChangeMoveSelectorConfig
 
