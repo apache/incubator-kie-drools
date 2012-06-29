@@ -31,8 +31,6 @@ public class FilteringEntitySelector extends CachingEntitySelector {
 
     protected final SelectionFilter entityFilter;
 
-    protected List<Object> cachedEntityList = null;
-
     public FilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
             SelectionFilter entityFilter) {
         super(childEntitySelector, cacheType);
@@ -43,6 +41,7 @@ public class FilteringEntitySelector extends CachingEntitySelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         Solution workingSolution = solverScope.getWorkingSolution();
         long childSize = childEntitySelector.getSize();
@@ -57,18 +56,6 @@ public class FilteringEntitySelector extends CachingEntitySelector {
                 cachedEntityList.add(entity);
             }
         }
-    }
-
-    public void disposeCache(DefaultSolverScope solverScope) {
-        cachedEntityList = null;
-    }
-
-    public long getSize() {
-        return cachedEntityList.size();
-    }
-
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
     }
 
     @Override

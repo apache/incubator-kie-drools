@@ -31,8 +31,6 @@ public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
 
     protected final PlanningEntitySorter planningEntitySorter;
 
-    protected List<Object> cachedEntityList = null;
-
     public DecreasingDifficultyEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
             PlanningEntitySorter planningEntitySorter) {
         super(childEntitySelector, cacheType);
@@ -54,23 +52,12 @@ public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childEntitySelector.getSize();
         cachedEntityList = new ArrayList<Object>((int) childSize);
         CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
         planningEntitySorter.sortDifficultyDescending(solverScope.getWorkingSolution(), cachedEntityList);
-    }
-
-    public void disposeCache(DefaultSolverScope solverScope) {
-        cachedEntityList = null;
-    }
-
-    public long getSize() {
-        return cachedEntityList.size();
-    }
-
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
     }
 
     @Override

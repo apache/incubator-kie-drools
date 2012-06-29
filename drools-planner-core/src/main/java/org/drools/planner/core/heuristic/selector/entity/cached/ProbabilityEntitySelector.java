@@ -21,15 +21,21 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
-public class ProbabilityEntitySelector extends CachingEntitySelector {
+public class ProbabilityEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
 
+    protected final EntitySelector childEntitySelector;
+    protected final SelectionCacheType cacheType;
     protected final SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
@@ -37,8 +43,20 @@ public class ProbabilityEntitySelector extends CachingEntitySelector {
 
     public ProbabilityEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
             SelectionProbabilityWeightFactory entityProbabilityWeightFactory) {
-        super(childEntitySelector, cacheType);
+        this.childEntitySelector = childEntitySelector;
+        this.cacheType = cacheType;
         this.entityProbabilityWeightFactory = entityProbabilityWeightFactory;
+        if (childEntitySelector.isNeverEnding()) {
+            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
+                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+        }
+        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
+        if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
+                && cacheType != SelectionCacheType.STEP) {
+            throw new IllegalArgumentException("The cacheType (" + cacheType
+                    + ") is not supported on the class (" + getClass().getName() + ").");
+        }
+        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     // ************************************************************************
@@ -62,9 +80,16 @@ public class ProbabilityEntitySelector extends CachingEntitySelector {
         probabilityWeightTotal = -1.0;
     }
 
-    @Override
+    public PlanningEntityDescriptor getEntityDescriptor() {
+        return childEntitySelector.getEntityDescriptor();
+    }
+
+    public boolean isContinuous() {
+        return false;
+    }
+
     public boolean isNeverEnding() {
-        return true;
+        return false;
     }
 
     public long getSize() {

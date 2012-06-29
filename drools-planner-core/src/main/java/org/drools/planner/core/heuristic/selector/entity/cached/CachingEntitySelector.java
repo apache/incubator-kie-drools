@@ -16,6 +16,11 @@
 
 package org.drools.planner.core.heuristic.selector.entity.cached;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
@@ -25,6 +30,7 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.cached.CachingMoveSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
@@ -32,10 +38,12 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  * <p/>
  * Keep this code in sync with {@link CachingMoveSelector}.
  */
-public abstract class CachingEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
+public class CachingEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
 
     protected final EntitySelector childEntitySelector;
     protected final SelectionCacheType cacheType;
+
+    protected List<Object> cachedEntityList = null;
 
     public CachingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType) {
         this.childEntitySelector = childEntitySelector;
@@ -57,6 +65,21 @@ public abstract class CachingEntitySelector extends AbstractEntitySelector imple
     // Worker methods
     // ************************************************************************
 
+    public void constructCache(DefaultSolverScope solverScope) {
+        long childSize = childEntitySelector.getSize();
+        if (childSize > (long) Integer.MAX_VALUE) {
+            throw new IllegalStateException("The moveSelector (" + this + ") has a childEntitySelector ("
+                    + childEntitySelector + ") with childSize (" + childSize
+                    + ") which is higher then Integer.MAX_VALUE.");
+        }
+        cachedEntityList = new ArrayList<Object>((int) childSize);
+        CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
+    }
+
+    public void disposeCache(DefaultSolverScope solverScope) {
+        cachedEntityList = null;
+    }
+
     public PlanningEntityDescriptor getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
@@ -67,6 +90,14 @@ public abstract class CachingEntitySelector extends AbstractEntitySelector imple
 
     public boolean isNeverEnding() {
         return false;
+    }
+
+    public long getSize() {
+        return cachedEntityList.size();
+    }
+
+    public Iterator<Object> iterator() {
+        return cachedEntityList.iterator();
     }
 
     @Override
