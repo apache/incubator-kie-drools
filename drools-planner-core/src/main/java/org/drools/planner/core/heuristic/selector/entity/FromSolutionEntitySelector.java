@@ -44,8 +44,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         this.entityDescriptor = entityDescriptor;
         this.randomSelection = randomSelection;
         this.cacheType = cacheType;
-        if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
-                && cacheType != SelectionCacheType.STEP) {
+        if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }

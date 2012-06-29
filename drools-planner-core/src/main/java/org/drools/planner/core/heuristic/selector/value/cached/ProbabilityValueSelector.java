@@ -53,8 +53,7 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
                     + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
         }
         solverPhaseLifecycleSupport.addEventListener(childValueSelector);
-        if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
-                && cacheType != SelectionCacheType.STEP) {
+        if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }

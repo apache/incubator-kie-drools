@@ -46,4 +46,19 @@ public enum SelectionCacheType {
         }
     }
 
+    public boolean isNotCached() {
+        switch (this) {
+            case  INHERIT:
+                throw new IllegalStateException("The cacheType (" + this + ") must be resolved at this point.");
+            case JUST_IN_TIME:
+                return true;
+            case STEP:
+            case PHASE:
+            case SOLVER:
+                return false;
+            default:
+                throw new IllegalStateException("The cacheType (" + this + ") is not implemented");
+        }
+    }
+
 }
