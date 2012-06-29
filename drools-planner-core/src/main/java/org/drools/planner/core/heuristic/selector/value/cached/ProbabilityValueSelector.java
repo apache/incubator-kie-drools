@@ -20,8 +20,13 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
 import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
@@ -29,8 +34,10 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
-public class ProbabilityValueSelector extends CachingValueSelector {
+public class ProbabilityValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
 
+    protected final ValueSelector childValueSelector;
+    protected final SelectionCacheType cacheType;
     protected final SelectionProbabilityWeightFactory valueProbabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
@@ -38,8 +45,20 @@ public class ProbabilityValueSelector extends CachingValueSelector {
 
     public ProbabilityValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType,
             SelectionProbabilityWeightFactory valueProbabilityWeightFactory) {
-        super(childValueSelector, cacheType);
+        this.childValueSelector = childValueSelector;
+        this.cacheType = cacheType;
         this.valueProbabilityWeightFactory = valueProbabilityWeightFactory;
+        if (childValueSelector.isNeverEnding()) {
+            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") has neverEnding ("
+                    + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+        }
+        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
+        if (cacheType != SelectionCacheType.SOLVER && cacheType != SelectionCacheType.PHASE
+                && cacheType != SelectionCacheType.STEP) {
+            throw new IllegalArgumentException("The cacheType (" + cacheType
+                    + ") is not supported on the class (" + getClass().getName() + ").");
+        }
+        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     // ************************************************************************
@@ -63,9 +82,16 @@ public class ProbabilityValueSelector extends CachingValueSelector {
         probabilityWeightTotal = -1.0;
     }
 
-    @Override
+    public PlanningVariableDescriptor getVariableDescriptor() {
+        return childValueSelector.getVariableDescriptor();
+    }
+
+    public boolean isContinuous() {
+        return false;
+    }
+
     public boolean isNeverEnding() {
-        return true;
+        return false;
     }
 
     public long getSize() {

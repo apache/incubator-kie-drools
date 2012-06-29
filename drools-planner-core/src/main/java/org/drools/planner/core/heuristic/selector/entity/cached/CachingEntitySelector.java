@@ -68,7 +68,7 @@ public class CachingEntitySelector extends AbstractEntitySelector implements Sel
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childEntitySelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The moveSelector (" + this + ") has a childEntitySelector ("
+            throw new IllegalStateException("The entitySelector (" + this + ") has a childEntitySelector ("
                     + childEntitySelector + ") with childSize (" + childSize
                     + ") which is higher then Integer.MAX_VALUE.");
         }

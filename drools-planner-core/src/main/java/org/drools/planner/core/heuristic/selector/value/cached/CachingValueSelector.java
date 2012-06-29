@@ -16,12 +16,19 @@
 
 package org.drools.planner.core.heuristic.selector.value.cached;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.cached.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
+import org.drools.planner.core.heuristic.selector.value.IteratorToValueIteratorBridge;
+import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -32,10 +39,12 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  * <p/>
  * Keep this code in sync with {@link CachingMoveSelector}.
  */
-public abstract class CachingValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
+public class CachingValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
 
     protected final ValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
+
+    protected List<Object> cachedValueList = null;
 
     public CachingValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType) {
         this.childValueSelector = childValueSelector;
@@ -57,6 +66,21 @@ public abstract class CachingValueSelector extends AbstractValueSelector impleme
     // Worker methods
     // ************************************************************************
 
+    public void constructCache(DefaultSolverScope solverScope) {
+        long childSize = childValueSelector.getSize();
+        if (childSize > (long) Integer.MAX_VALUE) {
+            throw new IllegalStateException("The valueSelector (" + this + ") has a childValueSelector ("
+                    + childValueSelector + ") with childSize (" + childSize
+                    + ") which is higher then Integer.MAX_VALUE.");
+        }
+        cachedValueList = new ArrayList<Object>((int) childSize);
+        CollectionUtils.addAll(cachedValueList, childValueSelector.iterator());
+    }
+
+    public void disposeCache(DefaultSolverScope solverScope) {
+        cachedValueList = null;
+    }
+
     public PlanningVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
@@ -67,6 +91,14 @@ public abstract class CachingValueSelector extends AbstractValueSelector impleme
 
     public boolean isNeverEnding() {
         return false;
+    }
+
+    public long getSize() {
+        return cachedValueList.size();
+    }
+
+    public ValueIterator iterator() {
+        return new IteratorToValueIteratorBridge(cachedValueList.iterator());
     }
 
     @Override
