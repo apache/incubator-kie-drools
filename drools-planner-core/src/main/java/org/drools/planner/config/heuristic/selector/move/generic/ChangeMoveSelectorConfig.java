@@ -22,10 +22,14 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.cached.FilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.move.cached.FilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.cached.ShufflingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
@@ -40,9 +44,9 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
-    // TODO filterClass
+    private Class<? extends SelectionFilter> moveFilterClass = null;
+    // TODO moveSorterClass
     // TODO moveProbabilityWeightFactoryClass
-    // TODO sorterClass
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -74,6 +78,14 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public void setCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
+    }
+
+    public Class<? extends SelectionFilter> getMoveFilterClass() {
+        return moveFilterClass;
+    }
+
+    public void setMoveFilterClass(Class<? extends SelectionFilter> moveFilterClass) {
+        this.moveFilterClass = moveFilterClass;
     }
 
     // ************************************************************************
@@ -109,7 +121,24 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
                 resolvedSelectionOrder, resolvedCacheType, entitySelector.getEntityDescriptor());
         MoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, randomSelection);
 
-        // TODO filterclass
+        if (moveFilterClass != null) {
+            SelectionFilter moveFilter;
+            try {
+                moveFilter = moveFilterClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("moveFilterClass ("
+                        + moveFilterClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("moveFilterClass ("
+                        + moveFilterClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+            FilteringMoveSelector filteringMoveSelector = new FilteringMoveSelector(moveSelector,
+                    resolvedCacheType, moveFilter);
+            moveSelector = filteringMoveSelector;
+        }
+        // TODO moveSorterClass
         // TODO moveProbabilityWeightFactoryClass
         if (shuffled) {
             moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
@@ -129,12 +158,10 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
         } else if (inheritedConfig.getValueSelectorConfig() != null) {
             valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
         }
-        if (selectionOrder == null) {
-            selectionOrder = inheritedConfig.getSelectionOrder();
-        }
-        if (cacheType == null) {
-            cacheType = inheritedConfig.getCacheType();
-        }
+        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
+        cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
+        moveFilterClass = ConfigUtils.inheritOverwritableProperty(
+                moveFilterClass, inheritedConfig.getMoveFilterClass());
     }
 
     @Override

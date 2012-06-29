@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -150,15 +151,10 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (planningVariableName == null) {
             planningVariableName = inheritedConfig.getPlanningVariableName();
         }
-        if (selectionOrder == null) {
-            selectionOrder = inheritedConfig.getSelectionOrder();
-        }
-        if (cacheType == null) {
-            cacheType = inheritedConfig.getCacheType();
-        }
-        if (valueProbabilityWeightFactoryClass == null) {
-            valueProbabilityWeightFactoryClass = inheritedConfig.getValueProbabilityWeightFactoryClass();
-        }
+        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
+        cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
+        valueProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                valueProbabilityWeightFactoryClass, inheritedConfig.getValueProbabilityWeightFactoryClass());
     }
 
     @Override

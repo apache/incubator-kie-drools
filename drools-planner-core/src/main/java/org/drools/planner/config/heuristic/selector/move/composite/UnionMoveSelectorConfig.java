@@ -146,12 +146,8 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(moveSelectorConfigList,
                 inheritedConfig.getMoveSelectorConfigList());
-        if (selectionOrder == null) {
-            selectionOrder = inheritedConfig.getSelectionOrder();
-        }
-        if (cacheType == null) {
-            cacheType = inheritedConfig.getCacheType();
-        }
+        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
+        cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
     }
 
     @Override

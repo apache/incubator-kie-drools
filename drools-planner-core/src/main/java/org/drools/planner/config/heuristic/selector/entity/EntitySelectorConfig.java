@@ -22,12 +22,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.cached.FilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.cached.ProbabilityEntitySelector;
 
 @XStreamAlias("entitySelector")
@@ -36,7 +39,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     private Class<?> planningEntityClass = null;
     private SelectionOrder selectionOrder = null;
     private SelectionCacheType cacheType = null;
-    // TODO filterClass
+    private Class<? extends SelectionFilter> entityFilterClass = null;
     private Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass = null;
     // TODO sorterClass, decreasingDifficulty
 
@@ -62,6 +65,14 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     public void setCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
+    }
+
+    public Class<? extends SelectionFilter> getEntityFilterClass() {
+        return entityFilterClass;
+    }
+
+    public void setEntityFilterClass(Class<? extends SelectionFilter> entityFilterClass) {
+        this.entityFilterClass = entityFilterClass;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getEntityProbabilityWeightFactoryClass() {
@@ -121,7 +132,23 @@ public class EntitySelectorConfig extends SelectorConfig {
         EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
                 resolvedCacheType);
 
-        // TODO filterclass
+        if (entityFilterClass != null) {
+            SelectionFilter entityFilter;
+            try {
+                entityFilter = entityFilterClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("entityFilterClass ("
+                        + entityFilterClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("entityFilterClass ("
+                        + entityFilterClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+            FilteringEntitySelector filteringEntitySelector = new FilteringEntitySelector(entitySelector,
+                    resolvedCacheType, entityFilter);
+            entitySelector = filteringEntitySelector;
+        }
 
         if (entityProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
@@ -154,15 +181,12 @@ public class EntitySelectorConfig extends SelectorConfig {
         if (planningEntityClass == null) {
             planningEntityClass = inheritedConfig.getPlanningEntityClass();
         }
-        if (selectionOrder == null) {
-            selectionOrder = inheritedConfig.getSelectionOrder();
-        }
-        if (cacheType == null) {
-            cacheType = inheritedConfig.getCacheType();
-        }
-        if (entityProbabilityWeightFactoryClass == null) {
-            entityProbabilityWeightFactoryClass = inheritedConfig.getEntityProbabilityWeightFactoryClass();
-        }
+        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
+        cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
+        entityFilterClass = ConfigUtils.inheritOverwritableProperty
+                (entityFilterClass, inheritedConfig.getEntityFilterClass());
+        entityProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                entityProbabilityWeightFactoryClass, inheritedConfig.getEntityProbabilityWeightFactoryClass());
     }
 
     @Override
