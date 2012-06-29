@@ -21,19 +21,19 @@
   </figure>
 
   <section>
-    <title>Building using Code</title>
+    <title>Building Using Code</title>
 
     <para>The KnowledgeBuilder is responsible for taking source files, such as
     a DRL file or an Excel file, and turning them into a Knowledge Package of
     rule and process definitions which a Knowledge Base can consume. An object
-    of the class <code>ResourceType</code> indicates the type of resource it
-    is being asked to build.</para>
+    of the class <code>ResourceType</code> indicates the type of resource the builder
+    is being asked to process.</para>
 
     <para>The <code>ResourceFactory</code> provides capabilities to load
-    resources from a number of sources, such as Reader, ClassPath, URL, File,
-    or ByteArray. Binaries, such as decision tables (Excel .xls files), should
-    not use a Reader based resource handler, which is only suitable for text
-    based resources.</para>
+    resources from a number of sources, such as a java.io.Reader, the classpath,
+    a URL, a java.io.File, or a byte array. Binary files, such as decision tables
+    (Excel's' .xls files), should not be passed in with Reader, which is only 
+    suitable for text based resources.</para>
 
     <figure>
       <title>KnowledgeBuilder</title>
@@ -86,9 +86,8 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     </example>
 
     <para>Resources of any type can be added iteratively. Below, a DRL file is
-    added. Unlike Drools 4.0 Package Builder, the Knowledge Builder can now
-    handle multiple namespaces, so you can just keep adding resources
-    regardless of namespace.</para>
+    added. The Knowledge Builder can handle multiple namespaces, so you can 
+    combine resources regardless of their namespace.</para>
 
     <example>
       <title>Adding DRL Resources</title>
@@ -98,43 +97,40 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
 </programlisting>
     </example>
 
-    <para>It is a best practice to always check the compilation results after
-    a change an addition. The KnowledgeBuilder can report compilation results
+    <para>It is a best practice to check the compilation results after
+    each resource addition. The KnowledgeBuilder can report compilation results
     of 3 different severities: ERROR, WARNING and INFO.</para>
 
-    <para>An ERROR indicates that the compilation of the resources failed and
-    you should not add more resources or retrieve the Knowledge Packages if
+    <para>An ERROR indicates that the compilation of the resource failed.
+    You should not add more resources or retrieve the Knowledge Packages if
     there are errors. <code>getKnowledgePackages()</code> returns an empty
     list if there are errors.</para>
 
     <para>WARNING and INFO results can be ignored, but are available for
-    inspection nonetheless. <code>hasErrors()</code> method after an
-    addition.</para>
+    inspection nonetheless.</para>
 
-    <para>To check and retrieve the building results for a list of severities,
-    the KnowledgeBuilder interface offers a couple methods:</para>
+    <para>To check and retrieve the build results for a list of severities,
+    the KnowledgeBuilder API offers a couple of methods:</para>
 
     <example>
       <title>KnowledgeBuilder result inspection methods</title>
 
       <programlisting>    /**
      * Return the knowledge builder results for the listed severities.
-     * 
      * @param severities
      * @return
      */
-    KnowledgeBuilderResults getResults(ResultSeverity...severities );
+    KnowledgeBuilderResults getResults(ResultSeverity... severities);
     
-        
     /**
      * Checks if the builder generated any results of the listed severities
      * @param severities
      * @return
      */
-    boolean hasResults(ResultSeverity...severities );</programlisting>
+    boolean hasResults(ResultSeverity... severities ;</programlisting>
     </example>
 
-    <para>The KnowledgeBuilder interface also has two helper methods to
+    <para>The KnowledgeBuilder API also has two helper methods to
     inspect for errors only: <code>hasErrors()</code> and
     <code>getErrors()</code>:</para>
 
@@ -149,8 +145,8 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     </example>
 
     <para>When all the resources have been added and there are no errors the
-    collection of Knowledge Packages can be retrieved. It is a Collection
-    because there is one Knowledge Package per package namespace. These
+    collection of Knowledge Packages can be retrieved. It is a java.util.Collection
+    because there is one KnowledgePackage per package namespace. These
     Knowledge Packages are serializable and often used as a unit of
     deployment.</para>
 
@@ -201,16 +197,16 @@ kbuilder.batch()
       </programlisting>
     </example>
 
-    <para>In this way it is no longer necessary to build the DRLs files in the right order (e.g. first the DRLs
+    <para>In this way it is no longer necessary to build the DRL files in the right order (e.g., first the DRLs
     containing the type declarations and then the ones with the rules using them) and it will also be possible to have
     circular references among them.</para>
 
-    <para>In the end the KnowledgeBuilder (regardless if you are using the batch mode or not) also allows to discard
-    what has been added with the last DRL(s) building. This can be useful to recover from having added a wrong DRL to
-    the KnowledgeBuilder as it follows:</para>
+    <para>Moreover, the KnowledgeBuilder (regardless if you are using the batch mode or not) also allows to discard
+    what has been added with the last DRL(s) build. This can be useful to recover from having added an
+    erroneous DRL to the KnowledgeBuilder, as shown below.</para>
 
     <example>
-      <title>Discard the building of the last added DRL</title>
+      <title>Discard the build of the last added DRL</title>
 
       <programlisting language="java">kbuilder.add( ResourceFactory.newFileResource( "/project/wrong.drl" ), ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
@@ -221,7 +217,7 @@ if ( kbuilder.hasErrors() ) {
   </section>
 
   <section>
-    <title>Building using Configuration and the ChangeSet XML</title>
+    <title>Building Using Configuration and the ChangeSet XML</title>
 
     <para>Instead of adding the resources to create definitions
     programmatically it is also possible to do it by configuration, via the
@@ -340,10 +336,10 @@ if ( kbuilder.hasErrors() ) {
 </programlisting>
     </example>
 
-    <para>ChangeSets can include any number of resources, and they even
+    <para>Change Sets can include any number of resources, and they even
     support additional configuration information, which currently is only
     needed for decision tables. Below, the example is expanded to load rules
-    from a http URL location, and an Excel decision table from the
+    via HTTP from a URL location, and an Excel decision table from the
     classpath.</para>
 
     <example>
@@ -362,7 +358,7 @@ if ( kbuilder.hasErrors() ) {
 </programlisting>
     </example>
 
-    <para>The ChangeSet is especially useful when working with a Knowledge
+    <para>The Change Set is especially useful when working with a Knowledge
     Agent, as it allows for change notification and automatic rebuilding of
     the Knowledge Base, which is covered in more detail in the section on the
     Knowledge Agent, under Deploying.</para>
@@ -389,17 +385,17 @@ if ( kbuilder.hasErrors() ) {
   </section>
 
   <section>
-    <title>Changing default building result severity</title>
+    <title>Changing the Default Build Result Severity</title>
 
     <para>In some cases, it is possible to change the default severity of a
-    type of building result. For instance, when a new rule with the same name
+    type of build result. For instance, when a new rule with the same name
     of an existing rule is added to a package, the default behavior is to
     replace the old rule by the new rule and report it as an INFO. This is
-    probably ideal for most use cases, but in some deployements, the user
+    probably ideal for most use cases, but in some deployements the user
     might want to prevent the rule update and report it as an error.</para>
 
-    <para>Changing the default severity for a result type is the same as
-    configuring any other option in Drools and can be done either by API
+    <para>Changing the default severity for a result type is configured
+    like any other option in Drools and can be done by API
     calls, system properties or configuration files. As of this version,
     Drools supports configurable result severity for rule updates and function
     updates. To configure it using system properties or configuration files,
