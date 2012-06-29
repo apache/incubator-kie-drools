@@ -120,12 +120,12 @@ public final class ProtobufMessages {
       
       // optional string name = 2;
       public static final int NAME_FIELD_NUMBER = 2;
-      private Object name_;
+      private java.lang.Object name_;
       public boolean hasName() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public String getName() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -139,7 +139,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getNameBytes() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -212,8 +212,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -484,12 +486,12 @@ public final class ProtobufMessages {
         }
         
         // optional string name = 2;
-        private Object name_ = "";
+        private java.lang.Object name_ = "";
         public boolean hasName() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         public String getName() {
-          Object ref = name_;
+          java.lang.Object ref = name_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             name_ = s;
@@ -681,8 +683,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -1537,8 +1541,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -1903,12 +1909,12 @@ public final class ProtobufMessages {
     private int bitField0_;
     // optional string key_alias = 1;
     public static final int KEY_ALIAS_FIELD_NUMBER = 1;
-    private Object keyAlias_;
+    private java.lang.Object keyAlias_;
     public boolean hasKeyAlias() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     public String getKeyAlias() {
-      Object ref = keyAlias_;
+      java.lang.Object ref = keyAlias_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -1922,7 +1928,7 @@ public final class ProtobufMessages {
       }
     }
     private com.google.protobuf.ByteString getKeyAliasBytes() {
-      Object ref = keyAlias_;
+      java.lang.Object ref = keyAlias_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -1987,8 +1993,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -2224,12 +2232,12 @@ public final class ProtobufMessages {
       private int bitField0_;
       
       // optional string key_alias = 1;
-      private Object keyAlias_ = "";
+      private java.lang.Object keyAlias_ = "";
       public boolean hasKeyAlias() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getKeyAlias() {
-        Object ref = keyAlias_;
+        java.lang.Object ref = keyAlias_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           keyAlias_ = s;
@@ -2347,12 +2355,12 @@ public final class ProtobufMessages {
     
     // optional string id = 2;
     public static final int ID_FIELD_NUMBER = 2;
-    private Object id_;
+    private java.lang.Object id_;
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     public String getId() {
-      Object ref = id_;
+      java.lang.Object ref = id_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -2366,7 +2374,7 @@ public final class ProtobufMessages {
       }
     }
     private com.google.protobuf.ByteString getIdBytes() {
-      Object ref = id_;
+      java.lang.Object ref = id_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -2430,8 +2438,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -2696,12 +2706,12 @@ public final class ProtobufMessages {
       }
       
       // optional string id = 2;
-      private Object id_ = "";
+      private java.lang.Object id_ = "";
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public String getId() {
-        Object ref = id_;
+        java.lang.Object ref = id_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           id_ = s;
@@ -2946,8 +2956,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -3889,8 +3901,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -5183,8 +5197,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -5519,12 +5535,12 @@ public final class ProtobufMessages {
       private int bitField0_;
       // optional string name = 1;
       public static final int NAME_FIELD_NUMBER = 1;
-      private Object name_;
+      private java.lang.Object name_;
       public boolean hasName() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getName() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -5538,7 +5554,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getNameBytes() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -5603,8 +5619,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -5840,12 +5858,12 @@ public final class ProtobufMessages {
         private int bitField0_;
         
         // optional string name = 1;
-        private Object name_ = "";
+        private java.lang.Object name_ = "";
         public boolean hasName() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         public String getName() {
-          Object ref = name_;
+          java.lang.Object ref = name_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             name_ = s;
@@ -5998,8 +6016,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -6409,12 +6429,12 @@ public final class ProtobufMessages {
         
         // optional string node_instance_id = 2;
         public static final int NODE_INSTANCE_ID_FIELD_NUMBER = 2;
-        private Object nodeInstanceId_;
+        private java.lang.Object nodeInstanceId_;
         public boolean hasNodeInstanceId() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         public String getNodeInstanceId() {
-          Object ref = nodeInstanceId_;
+          java.lang.Object ref = nodeInstanceId_;
           if (ref instanceof String) {
             return (String) ref;
           } else {
@@ -6428,7 +6448,7 @@ public final class ProtobufMessages {
           }
         }
         private com.google.protobuf.ByteString getNodeInstanceIdBytes() {
-          Object ref = nodeInstanceId_;
+          java.lang.Object ref = nodeInstanceId_;
           if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -6483,8 +6503,10 @@ public final class ProtobufMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -6741,12 +6763,12 @@ public final class ProtobufMessages {
           }
           
           // optional string node_instance_id = 2;
-          private Object nodeInstanceId_ = "";
+          private java.lang.Object nodeInstanceId_ = "";
           public boolean hasNodeInstanceId() {
             return ((bitField0_ & 0x00000002) == 0x00000002);
           }
           public String getNodeInstanceId() {
-            Object ref = nodeInstanceId_;
+            java.lang.Object ref = nodeInstanceId_;
             if (!(ref instanceof String)) {
               String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
               nodeInstanceId_ = s;
@@ -6790,12 +6812,12 @@ public final class ProtobufMessages {
       private int bitField0_;
       // optional string name = 1;
       public static final int NAME_FIELD_NUMBER = 1;
-      private Object name_;
+      private java.lang.Object name_;
       public boolean hasName() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getName() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -6809,7 +6831,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getNameBytes() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -6950,8 +6972,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -7297,12 +7321,12 @@ public final class ProtobufMessages {
         private int bitField0_;
         
         // optional string name = 1;
-        private Object name_ = "";
+        private java.lang.Object name_ = "";
         public boolean hasName() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         public String getName() {
-          Object ref = name_;
+          java.lang.Object ref = name_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             name_ = s;
@@ -7930,8 +7954,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -9325,8 +9351,10 @@ public final class ProtobufMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -9835,8 +9863,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -10439,8 +10469,10 @@ public final class ProtobufMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -10949,8 +10981,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -11566,8 +11600,10 @@ public final class ProtobufMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -12193,8 +12229,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -12836,8 +12874,10 @@ public final class ProtobufMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -13580,8 +13620,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -14180,8 +14222,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -14994,12 +15038,12 @@ public final class ProtobufMessages {
     private int bitField0_;
     // optional string entry_point_id = 1;
     public static final int ENTRY_POINT_ID_FIELD_NUMBER = 1;
-    private Object entryPointId_;
+    private java.lang.Object entryPointId_;
     public boolean hasEntryPointId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     public String getEntryPointId() {
-      Object ref = entryPointId_;
+      java.lang.Object ref = entryPointId_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -15013,7 +15057,7 @@ public final class ProtobufMessages {
       }
     }
     private com.google.protobuf.ByteString getEntryPointIdBytes() {
-      Object ref = entryPointId_;
+      java.lang.Object ref = entryPointId_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -15089,8 +15133,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -15360,12 +15406,12 @@ public final class ProtobufMessages {
       private int bitField0_;
       
       // optional string entry_point_id = 1;
-      private Object entryPointId_ = "";
+      private java.lang.Object entryPointId_ = "";
       public boolean hasEntryPointId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getEntryPointId() {
-        Object ref = entryPointId_;
+        java.lang.Object ref = entryPointId_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           entryPointId_ = s;
@@ -15831,12 +15877,12 @@ public final class ProtobufMessages {
     
     // optional string entry_point = 10;
     public static final int ENTRY_POINT_FIELD_NUMBER = 10;
-    private Object entryPoint_;
+    private java.lang.Object entryPoint_;
     public boolean hasEntryPoint() {
       return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     public String getEntryPoint() {
-      Object ref = entryPoint_;
+      java.lang.Object ref = entryPoint_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -15850,7 +15896,7 @@ public final class ProtobufMessages {
       }
     }
     private com.google.protobuf.ByteString getEntryPointBytes() {
-      Object ref = entryPoint_;
+      java.lang.Object ref = entryPoint_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -15969,8 +16015,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -16519,12 +16567,12 @@ public final class ProtobufMessages {
       }
       
       // optional string entry_point = 10;
-      private Object entryPoint_ = "";
+      private java.lang.Object entryPoint_ = "";
       public boolean hasEntryPoint() {
         return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       public String getEntryPoint() {
-        Object ref = entryPoint_;
+        java.lang.Object ref = entryPoint_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           entryPoint_ = s;
@@ -16656,12 +16704,12 @@ public final class ProtobufMessages {
     
     // optional string package_name = 4;
     public static final int PACKAGE_NAME_FIELD_NUMBER = 4;
-    private Object packageName_;
+    private java.lang.Object packageName_;
     public boolean hasPackageName() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     public String getPackageName() {
-      Object ref = packageName_;
+      java.lang.Object ref = packageName_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -16675,7 +16723,7 @@ public final class ProtobufMessages {
       }
     }
     private com.google.protobuf.ByteString getPackageNameBytes() {
-      Object ref = packageName_;
+      java.lang.Object ref = packageName_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -16688,12 +16736,12 @@ public final class ProtobufMessages {
     
     // optional string rule_name = 5;
     public static final int RULE_NAME_FIELD_NUMBER = 5;
-    private Object ruleName_;
+    private java.lang.Object ruleName_;
     public boolean hasRuleName() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     public String getRuleName() {
-      Object ref = ruleName_;
+      java.lang.Object ref = ruleName_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -16707,7 +16755,7 @@ public final class ProtobufMessages {
       }
     }
     private com.google.protobuf.ByteString getRuleNameBytes() {
-      Object ref = ruleName_;
+      java.lang.Object ref = ruleName_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -16720,12 +16768,12 @@ public final class ProtobufMessages {
     
     // optional string activation_group = 7;
     public static final int ACTIVATION_GROUP_FIELD_NUMBER = 7;
-    private Object activationGroup_;
+    private java.lang.Object activationGroup_;
     public boolean hasActivationGroup() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     public String getActivationGroup() {
-      Object ref = activationGroup_;
+      java.lang.Object ref = activationGroup_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -16739,7 +16787,7 @@ public final class ProtobufMessages {
       }
     }
     private com.google.protobuf.ByteString getActivationGroupBytes() {
-      Object ref = activationGroup_;
+      java.lang.Object ref = activationGroup_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -16881,8 +16929,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -17343,12 +17393,12 @@ public final class ProtobufMessages {
       }
       
       // optional string package_name = 4;
-      private Object packageName_ = "";
+      private java.lang.Object packageName_ = "";
       public boolean hasPackageName() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public String getPackageName() {
-        Object ref = packageName_;
+        java.lang.Object ref = packageName_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           packageName_ = s;
@@ -17379,12 +17429,12 @@ public final class ProtobufMessages {
       }
       
       // optional string rule_name = 5;
-      private Object ruleName_ = "";
+      private java.lang.Object ruleName_ = "";
       public boolean hasRuleName() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       public String getRuleName() {
-        Object ref = ruleName_;
+        java.lang.Object ref = ruleName_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           ruleName_ = s;
@@ -17415,12 +17465,12 @@ public final class ProtobufMessages {
       }
       
       // optional string activation_group = 7;
-      private Object activationGroup_ = "";
+      private java.lang.Object activationGroup_ = "";
       public boolean hasActivationGroup() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public String getActivationGroup() {
-        Object ref = activationGroup_;
+        java.lang.Object ref = activationGroup_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           activationGroup_ = s;
@@ -17639,8 +17689,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -18069,8 +18121,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -18890,8 +18944,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -19376,8 +19432,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -20282,8 +20340,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -21563,8 +21623,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -21855,12 +21917,12 @@ public final class ProtobufMessages {
       private int bitField0_;
       // optional string ruleflow_group = 1;
       public static final int RULEFLOW_GROUP_FIELD_NUMBER = 1;
-      private Object ruleflowGroup_;
+      private java.lang.Object ruleflowGroup_;
       public boolean hasRuleflowGroup() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getRuleflowGroup() {
-        Object ref = ruleflowGroup_;
+        java.lang.Object ref = ruleflowGroup_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -21874,7 +21936,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getRuleflowGroupBytes() {
-        Object ref = ruleflowGroup_;
+        java.lang.Object ref = ruleflowGroup_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -21921,8 +21983,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -22144,12 +22208,12 @@ public final class ProtobufMessages {
         private int bitField0_;
         
         // optional string ruleflow_group = 1;
-        private Object ruleflowGroup_ = "";
+        private java.lang.Object ruleflowGroup_ = "";
         public boolean hasRuleflowGroup() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         public String getRuleflowGroup() {
-          Object ref = ruleflowGroup_;
+          java.lang.Object ref = ruleflowGroup_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             ruleflowGroup_ = s;
@@ -22298,8 +22362,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -22751,8 +22817,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -23094,12 +23162,12 @@ public final class ProtobufMessages {
       
       // optional string origin_pkg_name = 4;
       public static final int ORIGIN_PKG_NAME_FIELD_NUMBER = 4;
-      private Object originPkgName_;
+      private java.lang.Object originPkgName_;
       public boolean hasOriginPkgName() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       public String getOriginPkgName() {
-        Object ref = originPkgName_;
+        java.lang.Object ref = originPkgName_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -23113,7 +23181,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getOriginPkgNameBytes() {
-        Object ref = originPkgName_;
+        java.lang.Object ref = originPkgName_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -23126,12 +23194,12 @@ public final class ProtobufMessages {
       
       // optional string origin_rule_name = 5;
       public static final int ORIGIN_RULE_NAME_FIELD_NUMBER = 5;
-      private Object originRuleName_;
+      private java.lang.Object originRuleName_;
       public boolean hasOriginRuleName() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public String getOriginRuleName() {
-        Object ref = originRuleName_;
+        java.lang.Object ref = originRuleName_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -23145,7 +23213,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getOriginRuleNameBytes() {
-        Object ref = originRuleName_;
+        java.lang.Object ref = originRuleName_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -23245,8 +23313,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -23614,12 +23684,12 @@ public final class ProtobufMessages {
         }
         
         // optional string origin_pkg_name = 4;
-        private Object originPkgName_ = "";
+        private java.lang.Object originPkgName_ = "";
         public boolean hasOriginPkgName() {
           return ((bitField0_ & 0x00000008) == 0x00000008);
         }
         public String getOriginPkgName() {
-          Object ref = originPkgName_;
+          java.lang.Object ref = originPkgName_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             originPkgName_ = s;
@@ -23650,12 +23720,12 @@ public final class ProtobufMessages {
         }
         
         // optional string origin_rule_name = 5;
-        private Object originRuleName_ = "";
+        private java.lang.Object originRuleName_ = "";
         public boolean hasOriginRuleName() {
           return ((bitField0_ & 0x00000010) == 0x00000010);
         }
         public String getOriginRuleName() {
-          Object ref = originRuleName_;
+          java.lang.Object ref = originRuleName_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             originRuleName_ = s;
@@ -23890,8 +23960,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -24221,12 +24293,12 @@ public final class ProtobufMessages {
       private int bitField0_;
       // optional string type = 1;
       public static final int TYPE_FIELD_NUMBER = 1;
-      private Object type_;
+      private java.lang.Object type_;
       public boolean hasType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getType() {
-        Object ref = type_;
+        java.lang.Object ref = type_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -24240,7 +24312,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getTypeBytes() {
-        Object ref = type_;
+        java.lang.Object ref = type_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -24305,8 +24377,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -24542,12 +24616,12 @@ public final class ProtobufMessages {
         private int bitField0_;
         
         // optional string type = 1;
-        private Object type_ = "";
+        private java.lang.Object type_ = "";
         public boolean hasType() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         public String getType() {
-          Object ref = type_;
+          java.lang.Object ref = type_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             type_ = s;
@@ -24658,12 +24732,12 @@ public final class ProtobufMessages {
       private int bitField0_;
       // optional string type = 1;
       public static final int TYPE_FIELD_NUMBER = 1;
-      private Object type_;
+      private java.lang.Object type_;
       public boolean hasType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getType() {
-        Object ref = type_;
+        java.lang.Object ref = type_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -24677,7 +24751,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getTypeBytes() {
-        Object ref = type_;
+        java.lang.Object ref = type_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -24760,8 +24834,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -25011,12 +25087,12 @@ public final class ProtobufMessages {
         private int bitField0_;
         
         // optional string type = 1;
-        private Object type_ = "";
+        private java.lang.Object type_ = "";
         public boolean hasType() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         public String getType() {
-          Object ref = type_;
+          java.lang.Object ref = type_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             type_ = s;
@@ -25159,8 +25235,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -25896,8 +25974,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -26575,12 +26655,12 @@ public final class ProtobufMessages {
       
       // optional string entry_point_id = 2;
       public static final int ENTRY_POINT_ID_FIELD_NUMBER = 2;
-      private Object entryPointId_;
+      private java.lang.Object entryPointId_;
       public boolean hasEntryPointId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public String getEntryPointId() {
-        Object ref = entryPointId_;
+        java.lang.Object ref = entryPointId_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -26594,7 +26674,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getEntryPointIdBytes() {
-        Object ref = entryPointId_;
+        java.lang.Object ref = entryPointId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -26607,12 +26687,12 @@ public final class ProtobufMessages {
       
       // optional string class_name = 3;
       public static final int CLASS_NAME_FIELD_NUMBER = 3;
-      private Object className_;
+      private java.lang.Object className_;
       public boolean hasClassName() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public String getClassName() {
-        Object ref = className_;
+        java.lang.Object ref = className_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -26626,7 +26706,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getClassNameBytes() {
-        Object ref = className_;
+        java.lang.Object ref = className_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -26707,8 +26787,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -26993,12 +27075,12 @@ public final class ProtobufMessages {
         }
         
         // optional string entry_point_id = 2;
-        private Object entryPointId_ = "";
+        private java.lang.Object entryPointId_ = "";
         public boolean hasEntryPointId() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         public String getEntryPointId() {
-          Object ref = entryPointId_;
+          java.lang.Object ref = entryPointId_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             entryPointId_ = s;
@@ -27029,12 +27111,12 @@ public final class ProtobufMessages {
         }
         
         // optional string class_name = 3;
-        private Object className_ = "";
+        private java.lang.Object className_ = "";
         public boolean hasClassName() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         public String getClassName() {
-          Object ref = className_;
+          java.lang.Object ref = className_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             className_ = s;
@@ -27208,8 +27290,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -27787,8 +27871,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -28174,8 +28260,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -28856,12 +28944,12 @@ public final class ProtobufMessages {
       
       // optional string cron_expression = 5;
       public static final int CRON_EXPRESSION_FIELD_NUMBER = 5;
-      private Object cronExpression_;
+      private java.lang.Object cronExpression_;
       public boolean hasCronExpression() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public String getCronExpression() {
-        Object ref = cronExpression_;
+        java.lang.Object ref = cronExpression_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -28875,7 +28963,7 @@ public final class ProtobufMessages {
         }
       }
       private com.google.protobuf.ByteString getCronExpressionBytes() {
-        Object ref = cronExpression_;
+        java.lang.Object ref = cronExpression_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -28999,8 +29087,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -29399,12 +29489,12 @@ public final class ProtobufMessages {
         }
         
         // optional string cron_expression = 5;
-        private Object cronExpression_ = "";
+        private java.lang.Object cronExpression_ = "";
         public boolean hasCronExpression() {
           return ((bitField0_ & 0x00000010) == 0x00000010);
         }
         public String getCronExpression() {
-          Object ref = cronExpression_;
+          java.lang.Object ref = cronExpression_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             cronExpression_ = s;
@@ -29746,8 +29836,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -30336,8 +30428,10 @@ public final class ProtobufMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -30700,8 +30794,10 @@ public final class ProtobufMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
