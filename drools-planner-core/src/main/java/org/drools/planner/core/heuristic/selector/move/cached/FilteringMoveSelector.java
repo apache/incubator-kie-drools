@@ -33,8 +33,6 @@ public class FilteringMoveSelector extends CachingMoveSelector {
 
     protected final SelectionFilter moveFilter;
 
-    protected List<Object> cachedEntityList = null;
-
     public FilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
             SelectionFilter moveFilter) {
         super(childMoveSelector, cacheType);
@@ -49,16 +47,12 @@ public class FilteringMoveSelector extends CachingMoveSelector {
     public void constructCache(DefaultSolverScope solverScope) {
         Solution workingSolution = solverScope.getWorkingSolution();
         long childSize = childMoveSelector.getSize();
-        cachedEntityList = new ArrayList<Object>((int) childSize);
-        for (Object move : childMoveSelector) {
+        cachedMoveList = new ArrayList<Move>((int) childSize);
+        for (Move move : childMoveSelector) {
             if (moveFilter.accept(workingSolution, move)) {
-                cachedEntityList.add(move);
+                cachedMoveList.add(move);
             }
         }
-    }
-
-    public void disposeCache(DefaultSolverScope solverScope) {
-        cachedEntityList = null;
     }
 
     @Override
