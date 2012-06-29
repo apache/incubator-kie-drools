@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import org.drools.planner.core.move.generic.GenericSwapMove;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.manners2009.domain.HobbyPractician;
@@ -39,7 +40,6 @@ import org.drools.planner.examples.manners2009.domain.Manners2009;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 import org.drools.planner.examples.manners2009.domain.Table;
-import org.drools.planner.examples.manners2009.solver.move.SeatDesignationSwapMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -148,8 +148,10 @@ public class Manners2009Panel extends SolutionPanel {
                     "Select seat designation to switch with", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 SeatDesignation switchSeatDesignation = (SeatDesignation) seatDesignationListField.getSelectedItem();
-                solutionBusiness.doMove(new SeatDesignationSwapMove(seatDesignation, switchSeatDesignation));
-                solverAndPersistenceFrame.resetScreen();
+                // TODO FIXME
+                throw new UnsupportedOperationException();
+//                solutionBusiness.doMove(new GenericSwapMove(seatDesignation, switchSeatDesignation));
+//                solverAndPersistenceFrame.resetScreen();
             }
         }
 

@@ -114,6 +114,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     return;
                 }
                 leftEntity = leftEntityIterator.next();
+                // TODO the rightEntityIterator should start from the leftEntityIterator index
                 rightEntityIterator = rightEntitySelector.iterator();
             }
             Object rightEntity = rightEntityIterator.next();
