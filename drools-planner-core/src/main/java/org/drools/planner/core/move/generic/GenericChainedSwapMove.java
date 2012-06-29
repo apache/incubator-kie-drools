@@ -30,6 +30,10 @@ public class GenericChainedSwapMove extends GenericSwapMove {
         super(planningVariableDescriptors, leftPlanningEntity, rightPlanningEntity);
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new GenericChainedSwapMove(planningVariableDescriptors,

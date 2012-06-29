@@ -50,6 +50,10 @@ public class GenericReverseChainedChangePartMove implements Move {
         lastEntity = this.entitiesSubChain.get(entitiesSubChain.size() - 1);
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true; // Done by GenericChainedChangePartMoveFactory
     }

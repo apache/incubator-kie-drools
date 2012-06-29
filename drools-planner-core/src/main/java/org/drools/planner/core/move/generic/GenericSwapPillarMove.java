@@ -45,6 +45,18 @@ public class GenericSwapPillarMove implements Move {
         this.rightPlanningEntityList = rightPlanningEntityList;
     }
 
+    public List<Object> getLeftPlanningEntityList() {
+        return leftPlanningEntityList;
+    }
+
+    public List<Object> getRightPlanningEntityList() {
+        return rightPlanningEntityList;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
             Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntityList.get(0));

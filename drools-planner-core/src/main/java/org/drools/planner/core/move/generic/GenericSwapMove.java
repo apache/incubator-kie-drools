@@ -42,6 +42,18 @@ public class GenericSwapMove implements Move {
         this.rightPlanningEntity = rightPlanningEntity;
     }
 
+    public Object getLeftPlanningEntity() {
+        return leftPlanningEntity;
+    }
+
+    public Object getRightPlanningEntity() {
+        return rightPlanningEntity;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
             Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntity);

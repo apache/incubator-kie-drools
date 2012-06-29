@@ -39,6 +39,18 @@ public class GenericChangeMove implements Move {
         this.toPlanningValue = toPlanningValue;
     }
 
+    public Object getPlanningEntity() {
+        return planningEntity;
+    }
+
+    public Object getToPlanningValue() {
+        return toPlanningValue;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
         return !ObjectUtils.equals(oldPlanningValue, toPlanningValue);

@@ -30,6 +30,10 @@ public class GenericChainedChangeMove extends GenericChangeMove {
         super(planningEntity, planningVariableDescriptor, toPlanningValue);
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return super.isMoveDoable(scoreDirector)
