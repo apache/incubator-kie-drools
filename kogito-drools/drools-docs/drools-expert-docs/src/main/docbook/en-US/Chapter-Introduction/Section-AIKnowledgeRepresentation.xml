@@ -112,9 +112,10 @@
 
     <para>KRR is about how we represent our knowledge in symbolic form, i.e.
     how we describe something. Reasoning is about how we go about the act of
-    thinking using this knowledge. System based/object oriented languages, like C++/Java/C#,
-    have classification systems, called Classes, to be able to describe
-    things. In Java we call exemplars of these things beans or instances. However those
+    thinking using this knowledge. System based object-oriented languages,
+    like C++, Java and C#, have data definitions called classes for describing
+    the composition and behaviour of modeled entities. In Java we call 
+    exemplars of these described things beans or instances. However those
     classification systems are limited to ensure computational efficiency.
     Over the years researchers have developed increasingly sophisticated ways
     to represent our world. Many of you may already have heard of OWL (Web
@@ -180,10 +181,10 @@
       </listitem>
     </itemizedlist>
 
-    <para>As previous mentioned the ontology is the representation model we
-    use for our "things". It could be simple records or Java classes or full
-    blown OWL based ontologies. The Rules do the reasoning and facilitate
-    thinking. The distinction between rules and ontologies blurs a little with
+    <para>As previously mentioned the ontology is the representation model we
+    use for our "things". It could use records or Java classes or full-blown
+    OWL based ontologies. The rules perform the reasoning, i.e., they facilitate
+    "thinking". The distinction between rules and ontologies blurs a little with
     OWL based ontologies, whose richness is rule based.</para>
 
     <para>The term "rules engine" is quite ambiguous in that it can be any system
@@ -197,10 +198,10 @@
     we are talking about.</para>
 
     <para>Drools started life as a specific type of rule engine called a
-    production rule system (PRS) and was based around the Rete algorithm
+    Production Rule System (PRS) and was based around the Rete algorithm
     (usually pronounced as two syllables, e.g., REH-te or RAY-tay). The
-    Rete algorithm, developed by Charles Forgey in 1974, forms the brain of a
-    Production Rules System and is able to scale to a large number of rules
+    Rete algorithm, developed by Charles Forgy in 1974, forms the brain of a
+    Production Rule System and is able to scale to a large number of rules
     and facts. A Production Rule is a two-part structure: the engine matches
     facts and data against Production Rules - also called Productions or just
     Rules - to infer conclusions which result in actions.</para>
@@ -238,10 +239,11 @@ then
     Other Rete based engines also have marketing terms for their proprietary
     enhancements to Rete, like RetePlus and Rete III. The most common
     enhancements are covered in "Production Matching for Large Learning
-    Systems (Rete/UL)" (1995) by Robert B. Doorenbos. "Leaps" used to be
-    provided, but was retired as it became unmaintained. The good news is that our
-    research is close to producing an algorithm that merges the benefits of
-    Leaps with Rete.</para>
+    Systems" (1995) by Robert B. Doorenbos' thesis, which presents Rete/UL.
+    A PRS using another algorithm called "Leaps" used to be provided as well,
+    but was retired as it became unmaintained. The good news is that our 
+    research is close to producing an algorithm that merges
+    the benefits of Leaps with Rete.</para>
 
     <para>The Rules are stored in the <indexterm>
         <primary>Production Memory</primary>
@@ -328,7 +330,7 @@ then
     For this reason we now prefer the term Hybrid Reasoning System when describing Drools.
     </para>
 
-    <para>Drools current provides crisp reasoning, but imperfect reasoning is
+    <para>Drools currently provides crisp reasoning, but imperfect reasoning is
     almost ready. Initially this will be imperfect reasoning with fuzzy logic;
     later we'll add support for other types of uncertainty. Work is also under
     way to bring OWL based ontological reasoning, which will integrate with
@@ -442,7 +444,7 @@ then
 
     <itemizedlist>
       <listitem>
-        <para>Production Matching for Large Learning Systems : Rete/UL
+        <para>Production Matching for Large Learning Systems: Rete/UL
         (1993)</para>
 
         <itemizedlist>
@@ -474,22 +476,22 @@ then
       </listitem>
 
       <listitem>
-        <para>The Leaps Algorithm (1990)</para>
+        <para>The Leaps Algorithm</para>
 
         <itemizedlist>
           <listitem>
-            <para>Don Battery</para>
+            <para>Don Batery (1990)</para>
           </listitem>
         </itemizedlist>
       </listitem>
 
       <listitem>
         <para>Gator: An Optimized Discrimination Network for Active Database
-        Rule Condition Testing (1993)</para>
+        Rule Condition Testing</para>
 
         <itemizedlist>
           <listitem>
-            <para>Eric Hanson , Mohammed S. Hasan</para>
+            <para>Eric Hanson , Mohammed S. Hasan (1993)</para>
           </listitem>
         </itemizedlist>
       </listitem>
