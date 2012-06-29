@@ -56,12 +56,12 @@
         <para>Your data is in your domain objects, the logic is in the rules.
         This is fundamentally breaking the OO coupling of data and logic,
         which can be an advantage or a disadvantage depending on your point of
-        view. The upshot is that the logic can be much easier to maintain as
+        view. The upshot is that the logic can be much easier to maintain when
         there are changes in the future, as the logic is all laid out in
         rules. This can be especially true if the logic is cross-domain or
         multi-domain logic. Instead of the logic being spread across many
         domain objects or controllers, it can all be organized in one or more
-        very distinct rules files.</para>
+        discrete rules files.</para>
       </listitem>
 
       <listitem>
@@ -71,8 +71,7 @@
         Drools' ReteOO, provide very efficient ways of matching
         rule patterns to your domain object data. These are especially
         efficient when you have datasets that change in small portions as the
-        rule engine can remember past matches. These algorithms are battle
-        proven.</para>
+        rule engine can remember past matches. These algorithms are battle-proven.</para>
       </listitem>
 
       <listitem>
@@ -124,7 +123,7 @@
     answer, some more explanation is required. The reason why there is no
     "traditional" approach is possibly one of the following: <itemizedlist>
         <listitem>
-          <para>The problem is just too fiddle for traditional code.</para>
+          <para>The problem is just too fiddly for traditional code.</para>
 
           <para>The problem may not be complex, but you can't see a
           non-fragile way of building a solution for it.</para>
@@ -158,8 +157,8 @@
           very logical. Rules can allow them to express the logic in their own
           terms. Of course, they still have to think critically and be capable
           of logical thinking. Many people in nontechnical positions do
-          not have training in formal logic, so be careful and work with them,
-          as by codifying business knowledge in rules, you will often expose
+          not have training in formal logic, so be careful as you work with them:
+          by codifying business knowledge in rules, you will often expose
           holes in the way the business rules and processes are currently
           understood.</para>
         </listitem>
