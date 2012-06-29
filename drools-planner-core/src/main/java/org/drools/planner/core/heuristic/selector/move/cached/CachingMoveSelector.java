@@ -42,7 +42,6 @@ public class CachingMoveSelector extends AbstractMoveSelector implements Selecti
     protected final MoveSelector childMoveSelector;
     protected final SelectionCacheType cacheType;
 
-    protected long cachedSize = -1L;
     protected List<Move> cachedMoveList = null;
 
     public CachingMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType) {
@@ -61,28 +60,23 @@ public class CachingMoveSelector extends AbstractMoveSelector implements Selecti
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
-    public void constructCache(DefaultSolverScope solverScope) {
-        cachedSize = childMoveSelector.getSize();
-        if (cachedSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The moveSelector (" + this + ") has a childMoveSelector ("
-                    + childMoveSelector + ") with cachedSize (" + cachedSize
-                    + ") which is higher then Integer.MAX_VALUE.");
-        }
-        cachedMoveList = new ArrayList<Move>((int)cachedSize);
-        CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
-    }
-
-    public void disposeCache(DefaultSolverScope solverScope) {
-        cachedSize = -1L;
-        cachedMoveList = null;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public Iterator<Move> iterator() {
-        return cachedMoveList.iterator();
+    public void constructCache(DefaultSolverScope solverScope) {
+        long childSize = childMoveSelector.getSize();
+        if (childSize > (long) Integer.MAX_VALUE) {
+            throw new IllegalStateException("The moveSelector (" + this + ") has a childMoveSelector ("
+                    + childMoveSelector + ") with childSize (" + childSize
+                    + ") which is higher then Integer.MAX_VALUE.");
+        }
+        cachedMoveList = new ArrayList<Move>((int)childSize);
+        CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
+    }
+
+    public void disposeCache(DefaultSolverScope solverScope) {
+        cachedMoveList = null;
     }
 
     public boolean isContinuous() {
@@ -94,7 +88,11 @@ public class CachingMoveSelector extends AbstractMoveSelector implements Selecti
     }
 
     public long getSize() {
-        return cachedSize;
+        return cachedMoveList.size();
+    }
+
+    public Iterator<Move> iterator() {
+        return cachedMoveList.iterator();
     }
 
     @Override

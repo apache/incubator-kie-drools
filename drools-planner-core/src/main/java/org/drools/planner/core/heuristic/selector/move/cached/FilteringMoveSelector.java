@@ -14,47 +14,45 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.cached;
+package org.drools.planner.core.heuristic.selector.move.cached;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.cached.CachingEntitySelector;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class FilteringEntitySelector extends CachingEntitySelector {
+public class FilteringMoveSelector extends CachingMoveSelector {
 
-    protected final SelectionFilter entityFilter;
+    protected final SelectionFilter moveFilter;
 
     protected List<Object> cachedEntityList = null;
 
-    public FilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
-            SelectionFilter entityFilter) {
-        super(childEntitySelector, cacheType);
-        this.entityFilter = entityFilter;
+    public FilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
+            SelectionFilter moveFilter) {
+        super(childMoveSelector, cacheType);
+        this.moveFilter = moveFilter;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         Solution workingSolution = solverScope.getWorkingSolution();
-        long childSize = childEntitySelector.getSize();
-        if (childSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The moveSelector (" + this + ") has a childEntitySelector ("
-                    + childEntitySelector + ") with childSize (" + childSize
-                    + ") which is higher then Integer.MAX_VALUE.");
-        }
+        long childSize = childMoveSelector.getSize();
         cachedEntityList = new ArrayList<Object>((int) childSize);
-        for (Object entity : childEntitySelector) {
-            if (entityFilter.accept(workingSolution, entity)) {
-                cachedEntityList.add(entity);
+        for (Object move : childMoveSelector) {
+            if (moveFilter.accept(workingSolution, move)) {
+                cachedEntityList.add(move);
             }
         }
     }
@@ -63,17 +61,9 @@ public class FilteringEntitySelector extends CachingEntitySelector {
         cachedEntityList = null;
     }
 
-    public long getSize() {
-        return cachedEntityList.size();
-    }
-
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
-    }
-
     @Override
     public String toString() {
-        return "Filtering(" + childEntitySelector + ")";
+        return "Filtering(" + childMoveSelector + ")";
     }
 
 }

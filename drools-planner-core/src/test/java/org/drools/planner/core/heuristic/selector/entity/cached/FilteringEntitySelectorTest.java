@@ -21,11 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
+import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -54,7 +56,7 @@ public class FilteringEntitySelectorTest {
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
         EntitySelector childEntitySelector = mock(EntitySelector.class);
         final List<Object> entityList = Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
         when(childEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return entityList.iterator();
@@ -64,7 +66,14 @@ public class FilteringEntitySelectorTest {
         when(childEntitySelector.isNeverEnding()).thenReturn(false);
         when(childEntitySelector.getSize()).thenReturn((long) entityList.size());
 
-        FilteringEntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, cacheType);
+        SelectionFilter<TestdataSolution, TestdataEntity> entityFilter
+                = new SelectionFilter<TestdataSolution, TestdataEntity>() {
+            public boolean accept(TestdataSolution solution, TestdataEntity entity) {
+                return !entity.getCode().equals("e3");
+            }
+        };
+        FilteringEntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, cacheType,
+                entityFilter);
         verify(childEntitySelector, times(1)).isNeverEnding();
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -126,7 +135,7 @@ public class FilteringEntitySelectorTest {
         assertTrue(iterator.hasNext());
         assertCode("e2", iterator.next());
         assertTrue(iterator.hasNext());
-        assertCode("e3", iterator.next());
+        assertCode("e4", iterator.next());
         assertFalse(iterator.hasNext());
         assertEquals(false, entitySelector.isContinuous());
         assertEquals(false, entitySelector.isNeverEnding());
