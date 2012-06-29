@@ -43,8 +43,6 @@ public class WindowBuilder {
                        utils,
                        pattern );
         context.setAttachPQN( true );
-
-        // TODO: register named window
     }
 
     /**

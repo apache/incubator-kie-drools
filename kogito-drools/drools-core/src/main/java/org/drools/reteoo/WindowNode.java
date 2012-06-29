@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
@@ -80,7 +81,8 @@ public class WindowNode extends ObjectSource
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
-        this.constraints = constraints;
+        // needs to be cloned as the list is managed externally
+        this.constraints = new ArrayList<AlphaNodeFieldConstraint>(constraints);
         this.behavior = new BehaviorManager( behaviors );
         this.entryPoint = context.getCurrentEntryPoint();
         

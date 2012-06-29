@@ -656,6 +656,45 @@ public class StreamsTest extends CommonTestMethodBase {
     }
     
     @Test
+    public void testMultipleWindows() throws Exception {
+        String drl = "package org.drools\n" +
+                     "declare StockTick\n" + 
+                     "    @role(event)\n" + 
+                     "end\n" + 
+                     "rule FaultsCoincide\n" + 
+                     "when\n" + 
+                     "   f1 : StockTick( company == \"RHT\" ) over window:length( 1 )\n" + 
+                     "   f2 : StockTick( company == \"JBW\" ) over window:length( 1 )\n" + 
+                     "then\n" + 
+                     "end";
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
+                                                          drl);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        AgendaEventListener ael = mock(AgendaEventListener.class);
+        ksession.addEventListener(ael);
+        
+        StockTick st1 = new StockTick(1, "RHT", 10, 1000);
+        ksession.insert( st1 );
+        StockTick st2 = new StockTick(2, "JBW", 10, 1000);
+        ksession.insert( st2 );
+        
+        ksession.fireAllRules();
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        verify(ael,
+               times(1)).afterActivationFired(captor.capture());
+
+        AfterActivationFiredEvent aafe = captor.getValue();
+        Assert.assertThat( (StockTick) aafe.getActivation().getDeclarationValue("f1"),
+                           is(st1));
+        Assert.assertThat( (StockTick) aafe.getActivation().getDeclarationValue("f2"),
+                           is(st2));
+    }
+    
+    @Test
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
         String str = "package org.drools.test\n" +
