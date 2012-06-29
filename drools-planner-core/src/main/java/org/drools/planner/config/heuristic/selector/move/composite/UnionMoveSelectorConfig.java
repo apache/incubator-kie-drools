@@ -41,11 +41,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
-    private SelectionOrder selectionOrder = null;
-    private SelectionCacheType cacheType = null;
-    // TODO filterClass
     private Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass = null;
-    // TODO sorterClass
 
     public List<MoveSelectorConfig> getMoveSelectorConfigList() {
         return moveSelectorConfigList;
@@ -53,22 +49,6 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
 
     public void setMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
         this.moveSelectorConfigList = moveSelectorConfigList;
-    }
-
-    public SelectionOrder getSelectionOrder() {
-        return selectionOrder;
-    }
-
-    public void setSelectionOrder(SelectionOrder selectionOrder) {
-        this.selectionOrder = selectionOrder;
-    }
-
-    public SelectionCacheType getCacheType() {
-        return cacheType;
-    }
-
-    public void setCacheType(SelectionCacheType cacheType) {
-        this.cacheType = cacheType;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getSelectorProbabilityWeightFactoryClass() {
@@ -83,12 +63,8 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
     // Builder methods
     // ************************************************************************
 
-    public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
-        // TODO copy logic from ChangeMoveSelectorConfig
-
+    public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
         List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorList.add(
@@ -97,8 +73,6 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
         }
 
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
-        // TODO && selectionProbabilityWeightFactoryClass == null;
-        // TODO if probability and random==true then put random=false to entity and value selectors
         SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
         if (selectorProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
@@ -126,6 +100,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
                 MoveSelector moveSelector = moveSelectorList.get(i);
                 Double fixedProbabilityWeight = moveSelectorConfig.getFixedProbabilityWeight();
                 if (fixedProbabilityWeight == null) {
+                    // Default to equal probability for each move type => unequal probability for each move instance
                     fixedProbabilityWeight = 1.0;
                 }
                 fixedProbabilityWeightMap.put(moveSelector, fixedProbabilityWeight);
@@ -134,20 +109,16 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
         } else {
             selectorProbabilityWeightFactory = null;
         }
-        MoveSelector moveSelector = new UnionMoveSelector(moveSelectorList, randomSelection,
+       return new UnionMoveSelector(moveSelectorList, randomSelection,
                 selectorProbabilityWeightFactory);
-
-        // TODO filterclass
-        // TODO selectionProbabilityWeightFactoryClass
-        return moveSelector;
     }
 
     public void inherit(UnionMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(moveSelectorConfigList,
-                inheritedConfig.getMoveSelectorConfigList());
-        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
-        cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
+        moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(
+                moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
+        selectorProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                selectorProbabilityWeightFactoryClass, inheritedConfig.getSelectorProbabilityWeightFactoryClass());
     }
 
     @Override

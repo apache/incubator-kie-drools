@@ -35,14 +35,12 @@ public class SwapMoveSelector extends GenericMoveSelector {
     private final EntitySelector rightEntitySelector;
     private final Collection<PlanningVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
-    protected final SelectionCacheType cacheType;
 
     public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
-            boolean randomSelection, SelectionCacheType cacheType) {
+            boolean randomSelection) {
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
         this.randomSelection = randomSelection;
-        this.cacheType = cacheType;
         PlanningEntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
         PlanningEntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
         if (!leftEntityDescriptor.getPlanningEntityClass().equals(rightEntityDescriptor.getPlanningEntityClass())) {
@@ -61,9 +59,6 @@ public class SwapMoveSelector extends GenericMoveSelector {
                         + ")'s planningVariableDescriptor (" + variableDescriptor.getVariableName()
                         + ") is chained and can therefor not use the moveSelector (" + this.getClass() + ").");
             }
-        }
-        if (cacheType != SelectionCacheType.JUST_IN_TIME) {
-            throw new UnsupportedOperationException(); // TODO FIXME
         }
         solverPhaseLifecycleSupport.addEventListener(leftEntitySelector);
         solverPhaseLifecycleSupport.addEventListener(rightEntitySelector);

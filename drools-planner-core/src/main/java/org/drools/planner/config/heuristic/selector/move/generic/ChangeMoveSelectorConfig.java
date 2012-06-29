@@ -42,11 +42,6 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
 
-    private SelectionOrder selectionOrder = null;
-    private SelectionCacheType cacheType = null;
-    private Class<? extends SelectionFilter> moveFilterClass = null;
-    // TODO moveSorterClass
-    // TODO moveProbabilityWeightFactoryClass
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -64,86 +59,17 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
-    public SelectionOrder getSelectionOrder() {
-        return selectionOrder;
-    }
-
-    public void setSelectionOrder(SelectionOrder selectionOrder) {
-        this.selectionOrder = selectionOrder;
-    }
-
-    public SelectionCacheType getCacheType() {
-        return cacheType;
-    }
-
-    public void setCacheType(SelectionCacheType cacheType) {
-        this.cacheType = cacheType;
-    }
-
-    public Class<? extends SelectionFilter> getMoveFilterClass() {
-        return moveFilterClass;
-    }
-
-    public void setMoveFilterClass(Class<? extends SelectionFilter> moveFilterClass) {
-        this.moveFilterClass = moveFilterClass;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
-    public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
-
-        boolean randomSelection;
-        boolean shuffled;
-        if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-            randomSelection = false;
-            shuffled = false;
-        } else {
-            if (resolvedCacheType.compareTo(SelectionCacheType.STEP) >= 0) {
-                randomSelection = false;
-                shuffled = true;
-                resolvedSelectionOrder = SelectionOrder.ORIGINAL;
-            } else {
-                randomSelection = true;
-                shuffled = false;
-            }
-        }
-        // TODO && moveProbabilityWeightFactoryClass == null;
-        // TODO if probability and random==true then put random=false to entity and value selectors
-
+    public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
                 resolvedSelectionOrder, resolvedCacheType);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
                 resolvedSelectionOrder, resolvedCacheType, entitySelector.getEntityDescriptor());
-        MoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, randomSelection);
-
-        if (moveFilterClass != null) {
-            SelectionFilter moveFilter;
-            try {
-                moveFilter = moveFilterClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("moveFilterClass ("
-                        + moveFilterClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("moveFilterClass ("
-                        + moveFilterClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
-            FilteringMoveSelector filteringMoveSelector = new FilteringMoveSelector(moveSelector,
-                    resolvedCacheType, moveFilter);
-            moveSelector = filteringMoveSelector;
-        }
-        // TODO moveSorterClass
-        // TODO moveProbabilityWeightFactoryClass
-        if (shuffled) {
-            moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
-        }
-        return moveSelector;
+        return new ChangeMoveSelector(entitySelector, valueSelector, resolvedSelectionOrder == SelectionOrder.RANDOM);
     }
 
     public void inherit(ChangeMoveSelectorConfig inheritedConfig) {
@@ -158,10 +84,6 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
         } else if (inheritedConfig.getValueSelectorConfig() != null) {
             valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
         }
-        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
-        cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
-        moveFilterClass = ConfigUtils.inheritOverwritableProperty(
-                moveFilterClass, inheritedConfig.getMoveFilterClass());
     }
 
     @Override

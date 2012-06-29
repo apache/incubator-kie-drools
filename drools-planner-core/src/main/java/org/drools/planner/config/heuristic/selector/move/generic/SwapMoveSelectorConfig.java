@@ -37,12 +37,6 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamAlias("rightEntitySelector")
     private EntitySelectorConfig rightEntitySelectorConfig = new EntitySelectorConfig();
 
-    private SelectionOrder selectionOrder = null;
-    private SelectionCacheType cacheType = null;
-    // TODO filterClass
-    // TODO moveProbabilityWeightFactoryClass
-    // TODO sorterClass
-
     public EntitySelectorConfig getLeftEntitySelectorConfig() {
         return leftEntitySelectorConfig;
     }
@@ -59,34 +53,12 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         this.rightEntitySelectorConfig = rightEntitySelectorConfig;
     }
 
-    public SelectionOrder getSelectionOrder() {
-        return selectionOrder;
-    }
-
-    public void setSelectionOrder(SelectionOrder selectionOrder) {
-        this.selectionOrder = selectionOrder;
-    }
-
-    public SelectionCacheType getCacheType() {
-        return cacheType;
-    }
-
-    public void setCacheType(SelectionCacheType cacheType) {
-        this.cacheType = cacheType;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
-    public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
-        // TODO copy logic from ChangeMoveSelectorConfig
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
-        // TODO && moveProbabilityWeightFactoryClass == null;
-        // TODO if probability and random==true then put random=false to entity and value selectors
+    public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
 
         EntitySelector leftEntitySelector = leftEntitySelectorConfig.buildEntitySelector(
                 environmentMode, solutionDescriptor,
@@ -94,12 +66,8 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
                 environmentMode, solutionDescriptor,
                 resolvedSelectionOrder, resolvedCacheType);
-        MoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, randomSelection,
-                resolvedCacheType);
-
-        // TODO filterclass
-        // TODO moveProbabilityWeightFactoryClass
-        return moveSelector;
+        return new SwapMoveSelector(leftEntitySelector, rightEntitySelector,
+                resolvedSelectionOrder == SelectionOrder.RANDOM);
     }
 
     public void inherit(SwapMoveSelectorConfig inheritedConfig) {
@@ -114,8 +82,6 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         } else if (inheritedConfig.getRightEntitySelectorConfig() != null) {
             rightEntitySelectorConfig.inherit(inheritedConfig.getRightEntitySelectorConfig());
         }
-        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
-        cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
     }
 
     @Override
