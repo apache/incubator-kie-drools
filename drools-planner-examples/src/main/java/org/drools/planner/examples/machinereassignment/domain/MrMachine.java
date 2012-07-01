@@ -30,7 +30,7 @@ public class MrMachine extends AbstractPersistable {
 
     // Order is equal to resourceList so resource.getIndex() can be used
     private List<MrMachineCapacity> machineCapacityList;
-    private Map<MrMachine, MrMachineMoveCost> machineMoveCostMap;
+    private Map<MrMachine, Integer> machineMoveCostMap; // key is toMachine
 
     public MrNeighborhood getNeighborhood() {
         return neighborhood;
@@ -60,11 +60,11 @@ public class MrMachine extends AbstractPersistable {
         return machineCapacityList.get(resource.getIndex());
     }
 
-    public Map<MrMachine, MrMachineMoveCost> getMachineMoveCostMap() {
+    public Map<MrMachine, Integer> getMachineMoveCostMap() {
         return machineMoveCostMap;
     }
 
-    public void setMachineMoveCostMap(Map<MrMachine, MrMachineMoveCost> machineMoveCostMap) {
+    public void setMachineMoveCostMap(Map<MrMachine, Integer> machineMoveCostMap) {
         this.machineMoveCostMap = machineMoveCostMap;
     }
 
@@ -73,7 +73,7 @@ public class MrMachine extends AbstractPersistable {
     }
 
     public int getMoveCostTo(MrMachine toMachine) {
-        return machineMoveCostMap.get(toMachine).getMoveCost();
+        return machineMoveCostMap.get(toMachine);
     }
 
 }

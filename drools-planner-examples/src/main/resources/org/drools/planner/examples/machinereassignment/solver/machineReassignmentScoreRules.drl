@@ -27,7 +27,6 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.drools.planner.examples.machinereassignment.domain.MrLocation;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
-import org.drools.planner.examples.machinereassignment.domain.MrMachineMoveCost;
 import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcess;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;

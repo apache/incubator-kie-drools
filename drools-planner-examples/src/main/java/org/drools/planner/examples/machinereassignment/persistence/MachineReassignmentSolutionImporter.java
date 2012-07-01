@@ -37,7 +37,6 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.drools.planner.examples.machinereassignment.domain.MrLocation;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
-import org.drools.planner.examples.machinereassignment.domain.MrMachineMoveCost;
 import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcess;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
@@ -130,8 +129,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             long machineId = 0L;
             List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
             long machineCapacityId = 0L;
-            List<MrMachineMoveCost> machineMoveCostList = new ArrayList<MrMachineMoveCost>(machineListSize * machineListSize);
-            long machineMoveCostId = 0L;
             // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < machineListSize; i++) {
                 MrMachine machine = new MrMachine();
@@ -176,18 +173,11 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     machineCapacityId++;
                 }
                 machine.setMachineCapacityList(machineCapacityListOfMachine);
-                Map<MrMachine, MrMachineMoveCost> machineMoveCostMap
-                        = new LinkedHashMap<MrMachine, MrMachineMoveCost>(machineListSize);
+                Map<MrMachine, Integer> machineMoveCostMap = new HashMap<MrMachine, Integer>(machineListSize);
                 for (int j = 0; j < machineListSize; j++) {
-                    MrMachineMoveCost machineMoveCost = new MrMachineMoveCost();
-                    machineMoveCost.setId(machineMoveCostId);
-                    machineMoveCost.setFromMachine(machine);
                     MrMachine toMachine = machineList.get(j);
-                    machineMoveCost.setToMachine(toMachine);
-                    machineMoveCost.setMoveCost(Integer.parseInt(lineTokens[moveCostOffset + j]));
-                    machineMoveCostList.add(machineMoveCost);
-                    machineMoveCostMap.put(toMachine, machineMoveCost);
-                    machineMoveCostId++;
+                    int moveCost = Integer.parseInt(lineTokens[moveCostOffset + j]);
+                    machineMoveCostMap.put(toMachine, moveCost);
                 }
                 machine.setMachineMoveCostMap(machineMoveCostMap);
             }
@@ -195,7 +185,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             machineReassignment.setLocationList(locationList);
             machineReassignment.setMachineList(machineList);
             machineReassignment.setMachineCapacityList(machineCapacityList);
-            machineReassignment.setMachineMoveCostList(machineMoveCostList);
         }
 
         private void readServiceList() throws IOException {
