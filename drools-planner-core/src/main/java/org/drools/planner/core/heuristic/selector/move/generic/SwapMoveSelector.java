@@ -26,15 +26,18 @@ import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.move.generic.GenericChainedSwapMove;
 import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.move.generic.GenericSwapMove;
 
 public class SwapMoveSelector extends GenericMoveSelector {
 
-    private final EntitySelector leftEntitySelector;
-    private final EntitySelector rightEntitySelector;
-    private final Collection<PlanningVariableDescriptor> variableDescriptors;
+    protected final EntitySelector leftEntitySelector;
+    protected final EntitySelector rightEntitySelector;
+    protected final Collection<PlanningVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
+
+    protected final boolean anyChained;
 
     public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
             boolean randomSelection) {
@@ -51,15 +54,13 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     + rightEntityDescriptor.getPlanningEntityClass() + ").");
         }
         variableDescriptors = leftEntityDescriptor.getPlanningVariableDescriptors();
+        boolean anyChained = false;
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
-            // TODO support chained
             if (variableDescriptor.isChained()) {
-                throw new IllegalStateException("The planningEntityClass ("
-                        + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                        + ")'s planningVariableDescriptor (" + variableDescriptor.getVariableName()
-                        + ") is chained and can therefor not use the moveSelector (" + this.getClass() + ").");
+                anyChained = true;
             }
         }
+        this.anyChained = anyChained;
         solverPhaseLifecycleSupport.addEventListener(leftEntitySelector);
         solverPhaseLifecycleSupport.addEventListener(rightEntitySelector);
     }
@@ -118,7 +119,9 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 rightEntityIterator = rightEntitySelector.iterator();
             }
             Object rightEntity = rightEntityIterator.next();
-            upcomingMove = new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
+            upcomingMove = anyChained
+                    ? new GenericChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
+                    : new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
         public boolean hasNext() {
@@ -169,7 +172,9 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 rightEntityIterator = rightEntitySelector.iterator();
             }
             Object rightEntity = rightEntityIterator.next();
-            upcomingMove = new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
+            upcomingMove = anyChained
+                    ? new GenericChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
+                    : new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
         public boolean hasNext() {

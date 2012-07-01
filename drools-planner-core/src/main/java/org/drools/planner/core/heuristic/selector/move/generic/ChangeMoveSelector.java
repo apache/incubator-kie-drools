@@ -25,13 +25,16 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.move.generic.GenericChainedChangeMove;
 import org.drools.planner.core.move.generic.GenericChangeMove;
 
 public class ChangeMoveSelector extends GenericMoveSelector {
 
-    private final EntitySelector entitySelector;
-    private final ValueSelector valueSelector;
+    protected final EntitySelector entitySelector;
+    protected final ValueSelector valueSelector;
     protected final boolean randomSelection;
+
+    protected final boolean chained;
 
     public ChangeMoveSelector(EntitySelector entitySelector, ValueSelector valueSelector,
             boolean randomSelection) {
@@ -39,13 +42,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
         PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
-        if (variableDescriptor.isChained()) {
-            // TODO support chained
-            throw new UnsupportedOperationException("The planningEntityClass ("
-                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                    + ")'s planningVariableDescriptor (" + variableDescriptor.getVariableName()
-                    + ") is chained and can therefor not use the moveSelector (" + getClass() + ").");
-        }
+        chained = variableDescriptor.isChained();
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
         solverPhaseLifecycleSupport.addEventListener(valueSelector);
     }
@@ -104,7 +101,9 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 valueIterator = valueSelector.iterator();
             }
             Object toValue = valueIterator.next(entity);
-            upcomingMove = new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
+            upcomingMove = chained
+                    ? new GenericChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
+                    : new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
         }
 
         public boolean hasNext() {
@@ -172,7 +171,9 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 }
             }
             Object toValue = valueIterator.next(entity);
-            upcomingMove = new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
+            upcomingMove = chained
+                    ? new GenericChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
+                    : new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
         }
 
         public boolean hasNext() {
