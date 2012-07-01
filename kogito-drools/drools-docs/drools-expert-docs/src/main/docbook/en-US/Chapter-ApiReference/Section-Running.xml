@@ -107,8 +107,8 @@
         <emphasis>assert</emphasis> or <emphasis>assertion</emphasis> to refer
         to facts made available to the system. However, due to "assert" being
         a keyword in most languages, we have decided to use the
-        <literal>insert</literal> keyword; so expect to hear the two used
-        interchangeably.</para>
+        <literal>insert</literal> keyword; however, expect to hear the two terms
+        used interchangeably.</para>
 
         <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
         However, when the rules are executed, they can assert new objects 
@@ -130,15 +130,16 @@ FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
 
         <para><emphasis>Identity</emphasis> means that the Working Memory uses
         an <code>IdentityHashMap</code> to store all asserted objects. New
-        instance assertions always result in the return of a new
+        instance assertions always result in the return of new
         <code>FactHandle</code>, but if an instance is asserted again then it
         returns the original fact handle, i.e., it ignores repeated insertions
-        for the same fact.</para>
+        for the same object.</para>
 
         <para><emphasis>Equality</emphasis> means that the Working Memory uses
-        a <code>HashMap</code> to store all asserted Objects. New instance
-        assertions will only return a new <code>FactHandle</code> if no equal
-        objects have been asserted.</para>
+        a <code>HashMap</code> to store all asserted objects. An object instance
+        assertion will only return a new <code>FactHandle</code> if the inserted
+        object is not equal (according to its <code>equal</code> method) to an
+        already existing fact.</para>
       </section>
 
       <section>
@@ -149,9 +150,11 @@ FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
         that are activated and dependent on that fact will be cancelled. Note
         that it is possible to have rules that depend on the nonexistence of a
         fact, in which case retracting a fact may cause a rule to activate.
-        (See the <code>not</code> and <code>exist</code> keywords.) Retraction
-        is done using the <code>FactHandle</code> that was returned by the
-        insert call.</para>
+        (See the <code>not</code> and <code>exists</code> keywords.) Retraction
+        may be done using the <code>FactHandle</code> that was returned by the
+        insert call. On the right hand side of a rule the
+        <literal>retract</literal> statement is used, which works with a simple
+        object reference.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );
@@ -169,11 +172,13 @@ ksession.retract( stiltonHandle );            </programlisting>
         themselves. Notice that <code>update()</code> always takes the
         modified object as a second parameter, which allows you to specify new
         instances for immutable objects. On the right hand side of a rule the
-        <literal>modify</literal> statement is recommended, as it makes the
-        changes and notifies the engine in a single statement. After a fact's
-        field values have changed you must call update before changing another
-        fact, or you will cause problems with the indexing within the rule
-        engine. The modify keyword avoids this problem.</para>
+        <code>modify</code> statement is recommended, as it makes the
+        changes and notifies the engine in a single statement. Alternatively,
+        after changing a fact object's field values through calls of setter
+        methods you must invoke <code>update</code> immediately, event
+        before changing another fact, or you will cause problems with the 
+        indexing within the rule engine. The modify statement avoids this
+        problem.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );
@@ -207,10 +212,12 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
         they are used in rules. Patterns may make use of optional parameters.
         Queries can be defined in the Knowledge Base, from where they are
         called up to return the matching results. While iterating over the
-        result collection, any bound identifier in the query can be accessed
-        using the get(String identifier) method and any FactHandle for that
-        identifier can be retrieved using getFactHandle(String
-        identifier).</para>
+        result collection, any identifier bound in the query can be used to
+        access the corresponding fact or fact field by calling the
+        <code>get</code> method with the binding variable's name as its
+        argument. If the binding refers to a fact object, its FactHandle can
+        be retrieved by calling <code>getFactHandle</code>, again with the
+        variable's name as the parameter.</para>
 
         <figure>
           <title>QueryResults</title>
@@ -246,17 +253,19 @@ for ( QueryResultsRow row : results ) {
       </section>
 
       <section>
-        <title>Live Querries</title>
+        <title>Live Queries</title>
 
-        <para>Drools has always had query support, but the result was returned
-        as an iterable set; this makes it hard to monitor changes over
+        <para>Invoking queries and processing the results by iterating over
+        the returned set is not a good way to monitor changes over
         time.</para>
 
-        <para>We have now complimented this with Live Querries, which has a
+        <para>To alleviate this, Drools provides Live Queries, which have a
         listener attached instead of returning an iterable result set. These
-        live querries stay open creating a view and publish change events for
-        the contents of this view. So now you can execute your query, with
-        parameters and listen to changes in the resulting view.</para>
+        live queries stay open by creating a view and publishing change events for
+        the contents of this view. To activate, you start your query with
+        parameters and listen to changes in the resulting view. The
+        <code>dispose</code> method terminates the query and discontinues this
+        reactive scenario.</para>
 
         <example>
           <title>Implementing ViewChangedEventListener</title>
@@ -285,11 +294,11 @@ LiveQuery query = ksession.openLiveQuery( "cheeses",
                                           listener );
 ...
 ...
-query.dispose() // make sure you call dispose when you want the query to close</programlisting>
+query.dispose() // calling dispose to terminate the live query</programlisting>
         </example>
 
         <para>A Drools blog article contains an example of Glazed Lists
-        integration for live queries,</para>
+        integration for live queries:</para>
 
         <para><link
         xlink:href="http://blog.athico.com/2010/07/glazed-lists-examples-for-drools-live.html">http://blog.athico.com/2010/07/glazed-lists-examples-for-drools-live.html</link></para>
@@ -301,8 +310,7 @@ query.dispose() // make sure you call dispose when you want the query to close</
 
       <para>The <code>KnowledgeRuntime</code> provides further methods that
       are applicable to both rules and processes, such as setting globals and
-      registering <code>Channels</code> (previously exit points, some
-      references may remain in docs for a while).</para>
+      registering channels. ("Exit point" is an obsolete synonym for "channel".)</para>
 
       <figure>
         <title>KnowledgeRuntime</title>
@@ -318,28 +326,32 @@ query.dispose() // make sure you call dispose when you want the query to close</
       <section>
         <title>Globals</title>
 
-        <para>Globals are named objects that can be passed to the rule engine,
-        without needing to insert them. Most often these are used for static
-        information, or for services that are used in the RHS of a rule, or
-        perhaps as a means to return objects from the rule engine. If you use
-        a global on the LHS of a rule, make sure it is immutable. A global
-        must first be declared in a rules file before it can be set on the
-        session.</para>
+        <para>Globals are named objects that are made visible to the rule engine,
+        but in a way that is fundamentally different from the one for facts:
+        changes in the object backing a global do not trigger reevaluation of
+        rules. Still, globals are useful for providing static information, 
+        as an object offering services that are used in the RHS of a rule, or
+        as a means to return objects from the rule engine. When you use
+        a global on the LHS of a rule, make sure it is immutable, or, at least,
+        don't expect changes to have any effect on the behavior of your rules.</para>
+
+        <para>A global must be declared in a rules file, and then it needs to be 
+        backed up with a Java object.</para>
 
         <programlisting>global java.util.List list</programlisting>
 
         <para>With the Knowledge Base now aware of the global identifier and
         its type, it is now possible to call <code>ksession.setGlobal()</code>
-        for any session. Failure to declare the global type and identifier
-        first will result in an exception being thrown. To set the global on
-        the session use <code>ksession.setGlobal(identifier,
-        value)</code>:</para>
+        with the global's name and an object, for any session, to associate
+        the object with the global. Failure to declare the global type and 
+        identifier in DRL code will result in an exception being thrown from
+        this call.</para>
 
         <programlisting language="java">List list = new ArrayList();
 ksession.setGlobal("list", list);           </programlisting>
 
-        <para>If a rule evaluates on a global before you set it you will get a
-        <code>NullPointerException</code>.</para>
+        <para>Make sure to set any global before it is used in the evaluation
+        of a rule. Failure to do so results in a <code>NullPointerException</code>.</para>
       </section>
     </section>
 
