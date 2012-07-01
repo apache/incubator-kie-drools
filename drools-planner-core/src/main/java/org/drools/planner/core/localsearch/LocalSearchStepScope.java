@@ -31,6 +31,7 @@ public class LocalSearchStepScope extends AbstractStepScope {
     private Move step = null;
     private String stepString = null;
     private Move undoStep = null;
+    private Long acceptedMovesSize = null;
 
     public LocalSearchStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         this.localSearchSolverPhaseScope = localSearchSolverPhaseScope;
@@ -78,6 +79,14 @@ public class LocalSearchStepScope extends AbstractStepScope {
 
     public void setUndoStep(Move undoStep) {
         this.undoStep = undoStep;
+    }
+
+    public Long getAcceptedMovesSize() {
+        return acceptedMovesSize;
+    }
+
+    public void setAcceptedMovesSize(Long acceptedMovesSize) {
+        this.acceptedMovesSize = acceptedMovesSize;
     }
 
     // ************************************************************************

@@ -164,6 +164,7 @@ public class AcceptedForager extends AbstractForager {
     @Override
     public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         deciderScoreComparatorFactory.stepEnded(localSearchStepScope);
+        localSearchStepScope.setAcceptedMovesSize((long) acceptedList.size());
     }
 
     @Override

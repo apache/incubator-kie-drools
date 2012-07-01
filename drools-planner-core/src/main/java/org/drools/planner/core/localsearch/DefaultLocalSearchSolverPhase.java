@@ -123,7 +123,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
                         localSearchStepScope.getScore(),
                         (localSearchStepScope.getBestScoreImproved() ? "new" : "   "),
                         localSearchSolverPhaseScope.getBestScore(),
-                        decider.getForager().getAcceptedMovesSize(),
+                        localSearchStepScope.getAcceptedMovesSize(),
                         localSearchStepScope.getStepString()});
     }
 
