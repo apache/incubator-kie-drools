@@ -24,6 +24,8 @@ import org.drools.planner.core.solution.Solution;
 /**
  * Decide on keeping or discarding a selection
  * (which is a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}).
+ * <p/>
+ * A filtered selection is considered as not selected, it does not count as an unaccepted selection.
  */
 public interface SelectionFilter<S extends Solution, T> {
 
