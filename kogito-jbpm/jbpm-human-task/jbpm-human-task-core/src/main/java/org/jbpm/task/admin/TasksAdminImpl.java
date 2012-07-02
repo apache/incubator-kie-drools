@@ -83,7 +83,7 @@ public class TasksAdminImpl implements TasksAdmin {
 
     public int archiveTasks(List<TaskSummary> tasks) {
         int archivedTasks = 0;
-        tpm.beginTransaction();
+        boolean txOwner = tpm.beginTransaction();
         for (TaskSummary sum : tasks) {
             long taskId = sum.getId();
             Task task = (Task) tpm.findEntity(Task.class, taskId);
@@ -92,13 +92,13 @@ public class TasksAdminImpl implements TasksAdmin {
             archivedTasks++;
 
         }
-        tpm.endTransaction(true);
+        tpm.endTransaction(txOwner);
         return archivedTasks;
     }
 
     public int removeTasks(List<TaskSummary> tasks) {
         int removedTasks = 0;
-        tpm.beginTransaction();
+        boolean txOwner = tpm.beginTransaction();
         for (TaskSummary sum : tasks) {
             long taskId = sum.getId();
             // Only remove archived tasks
@@ -111,7 +111,7 @@ public class TasksAdminImpl implements TasksAdmin {
                 logger.error(" The Task cannot be removed if it wasn't archived first !!");
             }
         }
-        tpm.endTransaction(true);
+        tpm.endTransaction(txOwner);
         return removedTasks;
     }
 
