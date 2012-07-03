@@ -77,7 +77,7 @@ public class ClassGenerator {
 
     private final String className;
     private final TypeResolver typeResolver;
-    private final InternalClassLoader classLoader;
+    private final ClassLoader classLoader;
 
     private int version = V1_5;
     private int access = ACC_PUBLIC + ACC_SUPER;
@@ -94,6 +94,17 @@ public class ClassGenerator {
     private byte[] bytecode;
     private Class<?> clazz;
 
+    private static final Method defineClassMethod;
+
+    static {
+        try {
+            defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
+            defineClassMethod.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public ClassGenerator(String className, ClassLoader classLoader) {
         this(className, classLoader, null);
     }
@@ -101,7 +112,7 @@ public class ClassGenerator {
     public ClassGenerator(String className, ClassLoader classLoader, TypeResolver typeResolver) {
         this.className = className;
         this.classDescriptor = className.replace('.', '/');
-        this.classLoader = new InternalClassLoader(classLoader);
+        this.classLoader = classLoader;
         this.typeResolver = typeResolver == null ? new InternalTypeResolver(this.classLoader) : typeResolver;
     }
 
@@ -130,9 +141,23 @@ public class ClassGenerator {
 
     private Class<?> generateClass() {
         if (clazz == null) {
-            clazz = classLoader.defineClass(className, generateBytecode());
+            byte[] bytecode = generateBytecode();
+            try {
+                clazz = (Class<?>) defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
+            } catch (Exception e) {
+                clazz = new InternalClassLoader(classLoader).defineClass(className, bytecode);
+            }
         }
         return clazz;
+    }
+
+    private static class InternalClassLoader extends ClassLoader {
+        InternalClassLoader(ClassLoader classLoader) {
+            super(classLoader);
+        }
+        Class<?> defineClass(String name, byte[] b) {
+            return defineClass(name, b, 0, b.length);
+        }
     }
 
     public void dumpGeneratedClass() {
@@ -339,12 +364,9 @@ public class ClassGenerator {
     public ClassGenerator addDefaultConstructor(final MethodBody body, Class<?>... args) {
         MethodBody constructorBody = new MethodBody() {
             public void body(MethodVisitor mv) {
-                body.setClassGenerator(getClassGenerator());
-                body.setMethodVisitor(mv);
-
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitMethodInsn(INVOKESPECIAL, getClassGenerator().getSuperClassDescriptor(), "<init>", "()V"); // super()
-                body.body(mv);
+                body.writeBody(getClassGenerator(), mv);
             }
         };
 
@@ -381,7 +403,7 @@ public class ClassGenerator {
     }
 
     private static final MethodBody EMPTY_METHOD_BODY = new MethodBody() {
-        public final void body(MethodVisitor mv) {
+        protected final void body(MethodVisitor mv) {
             mv.visitInsn(RETURN); // return
         }
     };
@@ -393,17 +415,21 @@ public class ClassGenerator {
         protected MethodVisitor mv;
         private Map<Integer, Type> storedTypes;
 
-        public abstract void body(MethodVisitor mv);
+        protected abstract void body(MethodVisitor mv);
 
-        private void setClassGenerator(ClassGenerator classGenerator) {
+        public final void writeBody(ClassGenerator classGenerator, MethodVisitor mv) {
             this.classGenerator = classGenerator;
+            this.mv = mv;
+            try {
+                body(mv);
+            } finally {
+                this.classGenerator = null;
+                this.mv = null;
+            }
         }
+
         protected ClassGenerator getClassGenerator() {
             return classGenerator;
-        }
-
-        private void setMethodVisitor (MethodVisitor mv) {
-            this.mv = mv;
         }
 
         protected final int getCodeForType(Class<?> typeClass, int opcode) {
@@ -848,11 +874,8 @@ public class ClassGenerator {
             MethodVisitor mv = cw.visitMethod(access, name, desc, signature, exceptions);
             mv.visitCode();
 
-            body.setClassGenerator(cg);
-            body.setMethodVisitor(mv);
-
             try {
-                body.body(mv);
+                body.writeBody(cg, mv);
                 mv.visitMaxs(0, 0);
             } catch (Exception e) {
                 throw new RuntimeException("Error writing method " + name, e);
@@ -872,9 +895,7 @@ public class ClassGenerator {
 
             try {
                 for (MethodBody initializerBody : initializerBodies) {
-                    initializerBody.setClassGenerator(cg);
-                    initializerBody.setMethodVisitor(mv);
-                    initializerBody.body(mv);
+                    initializerBody.writeBody(cg, mv);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error writing method static class initializer", e);
@@ -887,19 +908,6 @@ public class ClassGenerator {
 
         private void addInitializer(MethodBody initBlock) {
             initializerBodies.add(initBlock);
-        }
-    }
-
-    // InternalClassLoader
-
-    private static class InternalClassLoader extends ClassLoader {
-
-        InternalClassLoader(ClassLoader classLoader) {
-            super(classLoader);
-        }
-
-        Class<?> defineClass(String name, byte[] b) {
-            return defineClass(name, b, 0, b.length);
         }
     }
 

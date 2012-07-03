@@ -3,8 +3,8 @@ package org.drools.rule.constraint;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.ExecutorProviderFactory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
@@ -16,12 +16,19 @@ import org.drools.rule.IndexEvaluator;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.MutableTypeConstraint;
+import org.drools.rule.constraint.ConditionAnalyzer.CombinedCondition;
+import org.drools.rule.constraint.ConditionAnalyzer.Condition;
+import org.drools.rule.constraint.ConditionAnalyzer.EvaluatedExpression;
+import org.drools.rule.constraint.ConditionAnalyzer.Expression;
+import org.drools.rule.constraint.ConditionAnalyzer.FieldAccessInvocation;
+import org.drools.rule.constraint.ConditionAnalyzer.Invocation;
+import org.drools.rule.constraint.ConditionAnalyzer.MethodInvocation;
+import org.drools.rule.constraint.ConditionAnalyzer.SingleCondition;
 import org.drools.runtime.rule.Variable;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
-import org.drools.rule.constraint.ConditionAnalyzer.*;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
@@ -34,7 +41,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.drools.core.util.ClassUtils.*;
+import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
 
@@ -42,7 +49,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private static final boolean TEST_JITTING = false;
     private static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
 
-    private transient AtomicInteger invocationCounter = new AtomicInteger(1);
+    private final transient AtomicInteger invocationCounter = new AtomicInteger(1);
     private transient boolean jitted = false;
 
     private String packageName;
@@ -209,7 +216,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private void executeJitting(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
-        CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
+        CompositeClassLoader classLoader = ((InternalRuleBase) workingMemory.getRuleBase()).getRootClassLoader();
         if (analyzedCondition == null) {
             analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
         }
