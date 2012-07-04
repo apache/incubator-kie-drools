@@ -167,7 +167,7 @@ public class MVELExprAnalyzer {
                     continue;
                 }
 
-                cls = availableIdentifiers.getOperators().keySet().contains( str ) ? DroolsCompilerComponentFactory.getExpressionProcessor().getEvaluatorWrapperClass() : null;
+                cls = availableIdentifiers.getOperators().keySet().contains( str ) ? context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass() : null;
                 if ( cls != null ) {
                     parserContext2.addInput( str,
                                              cls );

@@ -182,7 +182,7 @@ public class ReteooWorkingMemoryTest {
         Rete rete = rbase.getRete();
         EntryPointNode epn = new EntryPointNode( rbase.getReteooBuilder().getIdGenerator().getNextId(),
                                                  RuleBasePartitionId.MAIN_PARTITION,
-                                                 rbase.getConfig().isMultithreadEvaluation(),
+                                                 rbase.getConfiguration().isMultithreadEvaluation(),
                                                  rete,
                                                  new EntryPoint( "xxx" ) );
         

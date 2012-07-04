@@ -31,6 +31,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
@@ -313,7 +314,8 @@ public class ReteTest extends DroolsTestCase {
         InternalWorkingMemory[] workingMemories;
 
         TestBuildContext(InternalWorkingMemory[] workingMemories) {
-            super(null, null);
+            super( workingMemories[0] != null ? (InternalRuleBase) workingMemories[0].getRuleBase() : null,
+                   null );
             this.workingMemories = workingMemories;
         }
 

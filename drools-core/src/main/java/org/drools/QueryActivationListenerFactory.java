@@ -17,7 +17,7 @@ public class QueryActivationListenerFactory implements ActivationListenerFactory
                                                  int subruleIndex,
                                                  BuildContext context,
                                                  Object... args) {
-        return ReteooComponentFactory.getNodeFactoryService().buildQueryTerminalNode( id, source, rule, subrule, subruleIndex, context );
+        return context.getComponentFactory().getNodeFactoryService().buildQueryTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
 }

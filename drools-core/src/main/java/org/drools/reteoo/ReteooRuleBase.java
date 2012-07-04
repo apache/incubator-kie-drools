@@ -125,18 +125,18 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public ReteooRuleBase( final String id,
                            final RuleBaseConfiguration config ) {
-        this( id,
-              config,
-              ReteooComponentFactory.getFactHandleFactoryService() );
+        this(id,
+                config,
+                config != null ? config.getComponentFactory().getFactHandleFactoryService() : ReteooComponentFactory.getDefaultHandleFactoryProvider() );
     }
 
     /**
      * @param config
      */
     public ReteooRuleBase( final RuleBaseConfiguration config ) {
-        this( null,
-              config,
-              ReteooComponentFactory.getFactHandleFactoryService() );
+        this(null,
+                config,
+                config != null ? config.getComponentFactory().getFactHandleFactoryService() : ReteooComponentFactory.getDefaultHandleFactoryProvider() );
     }
 
     /**
@@ -164,7 +164,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         // always add the default entry point
         EntryPointNode epn = new EntryPointNode( this.reteooBuilder.getIdGenerator().getNextId(),
                                                  RuleBasePartitionId.MAIN_PARTITION,
-                                                 this.getConfig().isMultithreadEvaluation(),
+                                                 this.getConfiguration().isMultithreadEvaluation(),
                                                  this.rete,
                                                  EntryPoint.DEFAULT );
         epn.attach();
@@ -392,11 +392,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
     StatefulSession newStatefulSession(int id,
                                               final SessionConfiguration sessionConfig,
                                               final Environment environment) {
-        if ( this.getConfig().isSequential() ) {
+        if ( this.getConfiguration().isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
 
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.getConfig().getExecutorService() );
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.getConfiguration().getExecutorService() );
         readLock();
         try {
             ReteooStatefulSession session = new ReteooStatefulSession( id,
@@ -431,7 +431,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public StatelessSession newStatelessSession() {
 
         //orders the rules
-        if ( this.getConfig().isSequential() ) {
+        if ( this.getConfiguration().isSequential() ) {
             this.reteooBuilder.order();
         }
 
@@ -470,7 +470,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public void addPackages(Collection<Package> pkgs) {
         super.addPackages( pkgs );
-        if ( this.getConfig().isSequential() ) {
+        if ( this.getConfiguration().isSequential() ) {
             this.reteooBuilder.setOrdered( false );
         }
     }

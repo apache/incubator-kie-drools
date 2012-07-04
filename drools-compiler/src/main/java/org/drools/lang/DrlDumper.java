@@ -32,8 +32,8 @@ import org.mvel2.templates.res.Node;
 public class DrlDumper  {
 
     protected final TemplateRegistry REPORT_REGISTRY = new SimpleTemplateRegistry();
-    
-    private ExpressionRewriter mvel = DroolsCompilerComponentFactory.getExpressionProcessor();
+
+    protected ExpressionRewriter mvel = new MVELDumper();
 
     public DrlDumper() {
         OptimizerFactory.setDefaultOptimizer( "reflective" );

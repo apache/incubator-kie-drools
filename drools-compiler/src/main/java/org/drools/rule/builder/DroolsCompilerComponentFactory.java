@@ -1,43 +1,59 @@
 package org.drools.rule.builder;
 
 
+import org.drools.base.FieldDataFactory;
+import org.drools.base.FieldFactory;
 import org.drools.lang.MVELDumper;
 import org.drools.lang.ExpressionRewriter;
-import org.drools.util.ServiceRegistryImpl;
 
 public class DroolsCompilerComponentFactory {
 
-    private static ConstraintBuilderFactory constraintBuilderFactory = new DefaultConstraintBuilderFactory();
+    private ConstraintBuilderFactory constraintBuilderFactory = new DefaultConstraintBuilderFactory();
 
-    public static ConstraintBuilderFactory getConstraintBuilderFactoryService() {
+    public ConstraintBuilderFactory getConstraintBuilderFactoryService() {
         return constraintBuilderFactory;
     }
 
-    public static void setConstraintBuilderFactoryProvider( ConstraintBuilderFactory provider ) {
-        DroolsCompilerComponentFactory.constraintBuilderFactory = provider;
+    public void setConstraintBuilderFactoryProvider( ConstraintBuilderFactory provider ) {
+        constraintBuilderFactory = provider;
     }
 
-    public static void setDefaultConstraintBuilderFactoryProvider() {
-        DroolsCompilerComponentFactory.constraintBuilderFactory = new DefaultConstraintBuilderFactory();
+    public void setDefaultConstraintBuilderFactoryProvider() {
+        constraintBuilderFactory = new DefaultConstraintBuilderFactory();
     }
 
 
 
 
-    private static ExpressionRewriter expressionProcessor = new MVELDumper();
+    private ExpressionRewriter expressionProcessor = new MVELDumper();
 
-    public static ExpressionRewriter getExpressionProcessor() {
+    public ExpressionRewriter getExpressionProcessor() {
         return expressionProcessor;
     }
 
-    public static void setExpressionProcessor( ExpressionRewriter provider ) {
-        DroolsCompilerComponentFactory.expressionProcessor = provider;
+    public void setExpressionProcessor( ExpressionRewriter provider ) {
+        expressionProcessor = provider;
     }
 
-    public static void setDefaultExpressionProcessor() {
-        DroolsCompilerComponentFactory.expressionProcessor = new MVELDumper();
+    public void setDefaultExpressionProcessor() {
+        expressionProcessor = new MVELDumper();
     }
 
+
+
+    private FieldDataFactory fieldFactory = FieldFactory.getInstance();
+
+    public FieldDataFactory getFieldFactory() {
+        return fieldFactory;
+    }
+
+    public void setFieldDataFactory( FieldDataFactory provider ) {
+        fieldFactory = provider;
+    }
+
+    public void setDefaultFieldDataFactory() {
+        fieldFactory = FieldFactory.getInstance();
+    }
 
 
 }

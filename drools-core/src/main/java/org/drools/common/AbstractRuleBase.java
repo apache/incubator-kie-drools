@@ -1256,6 +1256,9 @@ abstract public class AbstractRuleBase
     }
 
     public RuleBaseConfiguration getConfiguration() {
+        if ( this.config == null ) {
+            this.config = new RuleBaseConfiguration();
+        }
         return this.config;
     }
 
