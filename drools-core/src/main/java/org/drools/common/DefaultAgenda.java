@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
@@ -207,10 +208,11 @@ public class DefaultAgenda
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
-        if ( ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
-            this.knowledgeHelper = ReteooComponentFactory.getKnowledgeHelperFactory().newSequentialKnowledgeHelper( this.workingMemory );
+        RuleBaseConfiguration rbc = ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration();
+        if ( rbc.isSequential() ) {
+            this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newSequentialKnowledgeHelper( this.workingMemory );
         } else {
-            this.knowledgeHelper = ReteooComponentFactory.getKnowledgeHelperFactory().newStatefulKnowledgeHelper( this.workingMemory );
+            this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newStatefulKnowledgeHelper( this.workingMemory );
         }
     }
 

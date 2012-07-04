@@ -16,14 +16,11 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Stack;
 
-import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -32,6 +29,7 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Pattern;
 import org.drools.rule.Query;
@@ -39,7 +37,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.ObjectType;
 import org.drools.spi.RuleComponent;
 import org.drools.time.TemporalDependencyMatrix;
 
@@ -109,6 +106,8 @@ public class BuildContext {
     
     private Pattern[]                        lastBuiltPatterns;
 
+    private ReteooComponentFactory           componentFactory;
+
     private boolean attachPQN;
 
     public BuildContext(final InternalRuleBase rulebase,
@@ -140,6 +139,8 @@ public class BuildContext {
         this.ruleComponent = new Stack<RuleComponent>();
         
         this.attachPQN = true;
+
+        this.componentFactory = rulebase.getConfiguration().getComponentFactory();
     }
 
     /**
@@ -150,7 +151,7 @@ public class BuildContext {
     }
 
     /**
-     * @param currentPatternOffset the currentPatternOffset to set
+     * @param currentPatternIndex the currentPatternOffset to set
      */
     public void setCurrentPatternOffset(final int currentPatternIndex) {
         this.currentPatternOffset = currentPatternIndex;
@@ -502,6 +503,14 @@ public class BuildContext {
     
     public boolean isAttachPQN() {
         return attachPQN;
+    }
+
+    public ReteooComponentFactory getComponentFactory() {
+        return componentFactory;
+    }
+
+    public void setComponentFactory(ReteooComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
     }
 
 }

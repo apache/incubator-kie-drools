@@ -199,7 +199,7 @@ public class InputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        DefaultAgenda agenda = ReteooComponentFactory.getAgendaFactory().createAgenda( context.ruleBase, false );
+        DefaultAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
 
         readAgenda( context,
                     agenda );

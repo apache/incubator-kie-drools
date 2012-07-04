@@ -39,6 +39,7 @@ import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.StringUtils;
 import org.drools.rule.Package;
+import org.drools.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
@@ -118,6 +119,8 @@ public class PackageBuilderConfiguration
     private String                            defaultPackageName;
     
     private Map<String, ResultSeverity>       severityMap;
+
+    private DroolsCompilerComponentFactory    componentFactory = new DroolsCompilerComponentFactory();
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -620,6 +623,14 @@ public class PackageBuilderConfiguration
 
     public void setDefaultPackageName(String defaultPackageName) {
         this.defaultPackageName = defaultPackageName;
+    }
+
+    public DroolsCompilerComponentFactory getComponentFactory() {
+        return componentFactory;
+    }
+
+    public void setComponentFactory(DroolsCompilerComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
     }
 
     @SuppressWarnings("unchecked")

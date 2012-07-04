@@ -348,11 +348,11 @@ public class PatternBuilder
         for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
             context.pushRuleComponent( constraint );
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      ReteooComponentFactory.getNodeFactoryService().buildAlphaNode(
-                                                                      context.getNextId(),
-                                                                      constraint,
-                                                                      context.getObjectSource(),
-                                                                      context) ) );
+                                                                      context.getComponentFactory().getNodeFactoryService().buildAlphaNode(
+                                                                        context.getNextId(),
+                                                                        constraint,
+                                                                        context.getObjectSource(),
+                                                                        context) ) );
             context.popRuleComponent();
         }
     }
@@ -370,7 +370,7 @@ public class PatternBuilder
             }
         }
 
-        ObjectTypeNode otn = ReteooComponentFactory.getNodeFactoryService().buildObjectTypeNode( context.getNextId(),
+        ObjectTypeNode otn = context.getComponentFactory().getNodeFactoryService().buildObjectTypeNode( context.getNextId(),
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );

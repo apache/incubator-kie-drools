@@ -87,14 +87,14 @@ public class ReteooBuilder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    ReteooBuilder(final InternalRuleBase ruleBase) {
+    ReteooBuilder( final InternalRuleBase ruleBase ) {
         this.ruleBase = ruleBase;
         this.rules = new HashMap<Rule, BaseNode[]>();
         this.namedWindows = new HashMap<String, WindowNode>();
 
         //Set to 1 as Rete node is set to 0
         this.idGenerator = new IdGenerator( 1 );
-        this.ruleBuilder = ReteooComponentFactory.getRuleBuilderFactory().newRuleBuilder();
+        this.ruleBuilder = ruleBase.getConfiguration().getComponentFactory().getRuleBuilderFactory().newRuleBuilder();
     }
 
     // ------------------------------------------------------------
@@ -426,11 +426,12 @@ public class ReteooBuilder
             bytes.close();
         }
 
-        this.ruleBuilder = ReteooComponentFactory.getRuleBuilderFactory().newRuleBuilder();
     }
 
-    public void setRuleBase(ReteooRuleBase reteooRuleBase) {
+    public void setRuleBase( ReteooRuleBase reteooRuleBase ) {
         this.ruleBase = reteooRuleBase;
+
+        this.ruleBuilder = ruleBase.getConfiguration().getComponentFactory().getRuleBuilderFactory().newRuleBuilder();
     }
 
 }
