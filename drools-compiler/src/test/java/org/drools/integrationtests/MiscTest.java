@@ -5478,11 +5478,6 @@ public class MiscTest extends CommonTestMethodBase {
                       results.get( 0 ) );
     }
 
-    public static class Foo {
-        public String aValue = "";
-
-    }
-
     @Test
     public void testRuleRemovalWithJoinedRootPattern() {
         String str = "";
@@ -11153,5 +11148,41 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         ksession.dispose();
+    }
+
+    @Test
+    public void testArithmeticExpressionWithNull() {
+        // JBRULES-3568
+        String str = "import org.drools.integrationtests.MiscTest.PrimitiveBean;\n" +
+                "rule R when\n" +
+                "   PrimitiveBean(primitive/typed > 0.7)\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new PrimitiveBean(0.9, 1.1) );
+        ksession.insert( new PrimitiveBean(0.9, null) );
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    public static class PrimitiveBean {
+        public final double primitive;
+        public final Double typed;
+
+        public PrimitiveBean(double primitive, Double typed) {
+            this.primitive = primitive;
+            this.typed = typed;
+        }
+
+        public double getPrimitive() {
+            return primitive;
+        }
+
+        public Double getTyped() {
+            return typed;
+        }
     }
 }
