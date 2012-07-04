@@ -129,9 +129,11 @@ public class ParserHelper {
             if ( null == editorInterface ) {
                 editorInterface = new LinkedList<DroolsSentence>();
             }
-            DroolsSentence sentence = new DroolsSentence();
-            sentence.setType( sentenceType );
-            editorInterface.add( sentence );
+            if (editorInterface.size() == 0){
+                DroolsSentence sentence = new DroolsSentence();
+                sentence.setType( sentenceType );
+                editorInterface.add( sentence );
+            }
         }
     }
 
