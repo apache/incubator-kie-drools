@@ -11167,7 +11167,7 @@ public class MiscTest extends CommonTestMethodBase {
         // JBRULES-3568
         String str = "import org.drools.integrationtests.MiscTest.PrimitiveBean;\n" +
                 "rule R when\n" +
-                "   PrimitiveBean(0.1 + (primitive/typed) > 0.8)\n" +
+                "   PrimitiveBean(primitive/typed > 0.7)\n" +
                 "then\n" +
                 "end";
 
