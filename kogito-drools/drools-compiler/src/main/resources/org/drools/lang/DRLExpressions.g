@@ -56,6 +56,19 @@ options {
     
     public void setHasBindings( boolean value ) { this.hasBindings = value; }
     public boolean hasBindings() { return this.hasBindings; }
+
+    private boolean isNotEOF() {
+        if (state.backtracking != 0){
+            return false;
+        }
+        if (input.get( input.index() - 1 ).getType() == DRLLexer.WS){
+            return true;
+        }
+        if (input.LA(-1) == DRLLexer.LEFT_PAREN){
+            return true;
+        }
+        return input.get( input.index() ).getType() != DRLLexer.EOF;
+    }
 }
 
 // Alter code generation so catch-clauses get replace with
@@ -81,21 +94,21 @@ literal
     ;
 
 operator returns [boolean negated, String opr, java.util.List<String> params]
-@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true );} }
+@init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
 @after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
-  : ( op=EQUALS        { $negated = false; $opr=$op.text; $params = null; }
-    | op=NOT_EQUALS    { $negated = false; $opr=$op.text; $params = null; }
+  : ( op=EQUALS        { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL); }
+    | op=NOT_EQUALS    { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL); }
     | rop=relationalOp { $negated = $rop.negated; $opr=$rop.opr; $params = $rop.params; }
     )
     ;
 
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
-@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); } }
+@init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
 @after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
-  : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; $params = null; }
-    | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; }
-    | op=LESS            { $negated = false; $opr=$op.text; $params = null; }
-    | op=GREATER         { $negated = false; $opr=$op.text; $params = null; }
+  : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=LESS            { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=GREATER         { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | not_key nop=neg_operator_key { $negated = true; $opr=$nop.text;}
       ((squareArguments)=> sa=squareArguments { $params = $sa.args; } )?
     | cop=operator_key  { $negated = false; $opr=$cop.text;}
@@ -156,7 +169,7 @@ finally { ternOp--; }
 conditionalOrExpression returns [BaseDescr result]
   : left=conditionalAndExpression  { if( buildDescr  ) { $result = $left.result; } }
   ( DOUBLE_PIPE
-        {  helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );  }
+        {  if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );  }
         right=conditionalAndExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr(); 
@@ -171,7 +184,7 @@ conditionalOrExpression returns [BaseDescr result]
 conditionalAndExpression returns [BaseDescr result]
   : left=inclusiveOrExpression { if( buildDescr  ) { $result = $left.result; } }
   ( DOUBLE_AMPER
-        {helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );}
+         { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
         right=inclusiveOrExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd(); 
@@ -303,7 +316,6 @@ scope { BaseDescr lsd; }
                     new AtomicExprDescr( $left.text ) ; 
           $relationalExpression::lsd = $result;
       } 
-      helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
     }
   ( ( operator | LEFT_PAREN )=> right=orRestriction
          { if( buildDescr  ) {
@@ -329,7 +341,7 @@ orRestriction returns [BaseDescr result]
 andRestriction returns [BaseDescr result]
   : left=singleRestriction { if( buildDescr  ) { $result = $left.result; } }
   ( (DOUBLE_AMPER operator)=>lop=DOUBLE_AMPER
-        {helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );}
+        { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
         right=singleRestriction
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd(); 
@@ -410,10 +422,10 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
-        ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.COLON}? (var=ID COLON 
-                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
+        ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.COLON}? (var=ID COLON
+                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
         | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.UNIFY}? (var=ID UNIFY 
-                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
+                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
         )?
         left=primary { if( buildDescr ) { $result = $left.result; } }
         ((selector)=>selector)* 
