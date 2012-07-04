@@ -47,6 +47,8 @@ import org.drools.conf.SingleValueKnowledgeBaseOption;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.reteoo.LeftTupleSinkNode;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.runtime.rule.ConsequenceExceptionHandler;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
@@ -159,6 +161,8 @@ public class RuleBaseConfiguration
     private boolean                        advancedProcessRuleIntegration;
 
     private transient CompositeClassLoader classLoader;
+
+    private transient ReteooComponentFactory   componentFactory = new ReteooComponentFactory();
     
     private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
     
@@ -223,6 +227,7 @@ public class RuleBaseConfiguration
         classLoaderCacheEnabled = in.readBoolean();
         lrUnlinkingEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
+        componentFactory = new ReteooComponentFactory();
     }
 
     /**
@@ -912,6 +917,14 @@ public class RuleBaseConfiguration
         this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
                                                            getClass(),
                                                            isClassLoaderCacheEnabled() );
+    }
+
+    public ReteooComponentFactory getComponentFactory() {
+        return componentFactory;
+    }
+
+    public void setComponentFactory(ReteooComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
     }
 
     /**

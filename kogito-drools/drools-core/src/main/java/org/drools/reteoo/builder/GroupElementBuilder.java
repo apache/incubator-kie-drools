@@ -125,9 +125,9 @@ public class GroupElementBuilder
                     
                     // adapt it to a Tuple source                    
                     context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                                ReteooComponentFactory.getNodeFactoryService().buildLeftInputAdapterNode( context.getNextId(),
-                                                                                                                                                          context.getObjectSource(),
-                                                                                                                                                          context ) ) );
+                                                                                context.getComponentFactory().getNodeFactoryService().buildLeftInputAdapterNode( context.getNextId(),
+                                                                                                                                                                 context.getObjectSource(),
+                                                                                                                                                                 context ) ) );
 
                     context.setObjectSource( null );
                 }
@@ -140,11 +140,11 @@ public class GroupElementBuilder
                                                                                             false );
 
                     context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                                ReteooComponentFactory.getNodeFactoryService().buildJoinNode( context.getNextId(),
-                                                                                                                                              context.getTupleSource(),
-                                                                                                                                              context.getObjectSource(),
-                                                                                                                                              betaConstraints,
-                                                                                                                                              context) ) );
+                                                                                context.getComponentFactory().getNodeFactoryService().buildJoinNode( context.getNextId(),
+                                                                                                                                                     context.getTupleSource(),
+                                                                                                                                                     context.getObjectSource(),
+                                                                                                                                                     betaConstraints,
+                                                                                                                                                     context) ) );
                     context.setBetaconstraints( null );
                     context.setObjectSource( null );
                 }

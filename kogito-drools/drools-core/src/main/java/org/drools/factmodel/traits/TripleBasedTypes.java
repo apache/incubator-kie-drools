@@ -19,18 +19,16 @@ import java.util.Set;
 
 public class TripleBasedTypes extends TripleBasedStruct {
 
-    protected static TripleFactory tripleFactory = TraitFactory.tripleFactory;
-
     protected Object object;
-
 
     public TripleBasedTypes( ) { }
 
-
-    public TripleBasedTypes(Object obj, TripleStore store) {
+    public TripleBasedTypes( Object obj, TripleStore store, TripleFactory factory ) {
+        super();
         this.store = store;
         this.storeId = store.getId();
         this.object = obj;
+        this.tripleFactory = factory;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

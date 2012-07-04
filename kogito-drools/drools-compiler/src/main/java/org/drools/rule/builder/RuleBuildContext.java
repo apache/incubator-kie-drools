@@ -35,20 +35,22 @@ import org.drools.spi.DeclarationScopeResolver;
 public class RuleBuildContext extends PackageBuildContext {
 
     // current rule
-    private Rule                        rule;
+    private Rule                            rule;
 
     // a stack for the rule building used
     // for declarations resolution
-    private Stack<RuleConditionElement> buildStack;
+    private Stack<RuleConditionElement>     buildStack;
 
     // current Rule descriptor
-    private RuleDescr                   ruleDescr;
+    private RuleDescr                       ruleDescr;
 
     // available declarationResolver 
-    private DeclarationScopeResolver    declarationResolver;
+    private DeclarationScopeResolver        declarationResolver;
 
     // a simple counter for patterns
-    private int                         patternId = -1;
+    private int                             patternId = -1;
+
+    private DroolsCompilerComponentFactory  compilerFactory;
 
     /**
      * Default constructor
@@ -83,8 +85,9 @@ public class RuleBuildContext extends PackageBuildContext {
         if ( dialect != null ) {
             dialect.init( ruleDescr );
         }
-        
-      
+
+        compilerFactory = pkgBuilder.getPackageBuilderConfiguration().getComponentFactory();
+
     }
 
     /**
@@ -135,4 +138,11 @@ public class RuleBuildContext extends PackageBuildContext {
         return this.buildStack;
     }
 
+    public DroolsCompilerComponentFactory getCompilerFactory() {
+        return compilerFactory;
+    }
+
+    public void setCompilerFactory(DroolsCompilerComponentFactory compilerFactory) {
+        this.compilerFactory = compilerFactory;
+    }
 }

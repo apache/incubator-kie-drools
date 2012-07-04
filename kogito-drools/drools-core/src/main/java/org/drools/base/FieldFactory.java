@@ -39,9 +39,9 @@ public class FieldFactory implements FieldDataFactory {
     protected FieldFactory() {
     }
 
-    public FieldValue getFieldValue(String value,
-                                           ValueType valueType,
-                                           DateFormats dateFormats) {
+    public FieldValue getFieldValue( String value,
+                                     ValueType valueType,
+                                     DateFormats dateFormats) {
         FieldValue field = null;
         if ( value == null || "null".equals( value )) {
             valueType = ValueType.NULL_TYPE;

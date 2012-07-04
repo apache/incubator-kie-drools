@@ -1,6 +1,5 @@
 package org.drools.factmodel.traits;
 
-
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleImpl;
@@ -13,16 +12,17 @@ import java.io.ObjectOutput;
 
 public class TripleBasedBean extends TripleBasedStruct {
 
-    public static TripleFactory tripleFactory = TraitFactory.tripleFactory;
-
     protected Object object;
 
-    public TripleBasedBean() { }
+    public TripleBasedBean() {
+    }
 
-    public TripleBasedBean( Object o, TripleStore store ) {
+    public TripleBasedBean( Object o, TripleStore store, TripleFactory factory ) {
+        super();
         this.store = store;
         this.storeId = store.getId();
         this.object = o;
+        this.tripleFactory  = factory;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

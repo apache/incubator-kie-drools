@@ -18,6 +18,7 @@ package org.drools.factmodel.traits;
 
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
+import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 import org.drools.runtime.rule.Variable;
 import org.drools.spi.InternalReadAccessor;
@@ -26,7 +27,7 @@ import org.drools.spi.WriteAccessor;
 
 public class StudentProxy3 extends TraitProxy implements IStudent {
 
-    private static TripleFactory tripleFactory = TraitFactory.tripleFactory;
+    private  TripleFactory tripleFactory = new TripleFactoryImpl();
 
     public final Imp2 object;
     private TripleStore map;
@@ -39,16 +40,21 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
 
 
 
-    public StudentProxy3(Imp2 obj, final TripleStore m) {
+    public StudentProxy3(Imp2 obj, final TripleStore m, TripleFactory factory) {
+
 
         this.object = obj;
-        this.map = m;
+         m.getId();
+
+        setTripleFactory( factory );
 
         fields = new StudentProxyWrapper3( obj, m );
+        (( TripleBasedStruct ) fields).setTripleFactory( factory );
 
-        obj.setDynamicProperties( new TripleBasedBean(obj,m) );
 
-        obj.setTraitMap( new TripleBasedTypes(obj,m) );
+        obj.setDynamicProperties( new TripleBasedBean(obj,m,factory) );
+
+        obj.setTraitMap( new TripleBasedTypes(obj,m,factory) );
 
     }
 

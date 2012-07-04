@@ -44,7 +44,7 @@ public class QueryElementBuilder
                                         qe.getRequiredDeclarations() );
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    ReteooComponentFactory.getNodeFactoryService().buildQueryElementNode(
+                                                                    context.getComponentFactory().getNodeFactoryService().buildQueryElementNode(
                                                                                           context.getNextId(),
                                                                                           context.getTupleSource(),
                                                                                           qe,

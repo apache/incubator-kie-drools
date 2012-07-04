@@ -193,7 +193,7 @@ public class ProtobufInputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        DefaultAgenda agenda = ReteooComponentFactory.getAgendaFactory().createAgenda( context.ruleBase, false );
+        DefaultAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
         readAgenda( context,
                     _session.getRuleData(),
                     agenda );

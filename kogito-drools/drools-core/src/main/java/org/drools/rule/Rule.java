@@ -555,9 +555,9 @@ public class Rule
      * @return
      * @throws InvalidPatternException
      */
-    public GroupElement[] getTransformedLhs() throws InvalidPatternException {
+    public GroupElement[] getTransformedLhs( LogicTransformer transformer ) throws InvalidPatternException {
         //Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
-        return ReteooComponentFactory.getLogicTransformer().transform( getExtendedLhs( this,
+        return transformer.transform( getExtendedLhs( this,
                                                                        null ) );
     }    
 

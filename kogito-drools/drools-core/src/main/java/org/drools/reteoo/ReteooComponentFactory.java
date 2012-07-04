@@ -31,137 +31,168 @@ import org.drools.spi.FactHandleFactory;
 
 public class ReteooComponentFactory {
 
-    private static FactHandleFactory handleFactory = new ReteooFactHandleFactory();
+    private FactHandleFactory handleFactory = new ReteooFactHandleFactory();
 
 
-    public static FactHandleFactory getFactHandleFactoryService() {
+    public FactHandleFactory getFactHandleFactoryService() {
          return handleFactory;
     }
 
-    public static void setHandleFactoryProvider( FactHandleFactory provider ) {
-        ReteooComponentFactory.handleFactory = provider;
+    public void setHandleFactoryProvider( FactHandleFactory provider ) {
+        handleFactory = provider;
     }
 
-    public static void setDefaultHandleFactoryProvider() {
-        ReteooComponentFactory.handleFactory = new ReteooFactHandleFactory();
+    public void setDefaultHandleFactoryProvider() {
+        handleFactory = new ReteooFactHandleFactory();
+    }
+
+    public static FactHandleFactory getDefaultHandleFactoryProvider() {
+        return new ReteooFactHandleFactory();
     }
 
 
 
 
-    private static NodeFactory nodeFactory = new DefaultNodeFactory();
+    private NodeFactory nodeFactory = new DefaultNodeFactory();
 
-    public static NodeFactory getNodeFactoryService() {
+    public NodeFactory getNodeFactoryService() {
         return nodeFactory;
     }
 
-    public static void setNodeFactoryProvider( NodeFactory provider ) {
-        ReteooComponentFactory.nodeFactory = provider;
+    public void setNodeFactoryProvider( NodeFactory provider ) {
+        nodeFactory = provider;
     }
 
-    public static void setDefaultNodeFactoryProvider() {
-        ReteooComponentFactory.nodeFactory = new DefaultNodeFactory();
+    public void setDefaultNodeFactoryProvider() {
+        nodeFactory = new DefaultNodeFactory();
+    }
+
+    public static DefaultNodeFactory getDefaultNodeFactoryProvider() {
+        return new DefaultNodeFactory();
     }
 
 
-    private static RuleBuilderFactory ruleBuilderFactory = new ReteooRuleBuilderFactory();
+    private RuleBuilderFactory ruleBuilderFactory = new ReteooRuleBuilderFactory();
 
-    public static RuleBuilderFactory getRuleBuilderFactory() {
+    public RuleBuilderFactory getRuleBuilderFactory() {
         return ruleBuilderFactory;
     }
 
-    public static void setRuleBuilderProvider( RuleBuilderFactory provider ) {
-        ReteooComponentFactory.ruleBuilderFactory = provider;
+    public void setRuleBuilderProvider( RuleBuilderFactory provider ) {
+        ruleBuilderFactory = provider;
     }
 
-    public static void setDefaultRuleBuilderProvider() {
-        ReteooComponentFactory.ruleBuilderFactory = new ReteooRuleBuilderFactory();
+    public void setDefaultRuleBuilderProvider() {
+        ruleBuilderFactory = new ReteooRuleBuilderFactory();
+    }
+
+    public static RuleBuilderFactory getDefaultRuleBuilderFactory() {
+        return new ReteooRuleBuilderFactory();
     }
 
 
 
 
-    private static AgendaFactory agendaFactory = new DefaultAgendaFactory();
 
-    public static AgendaFactory getAgendaFactory() {
+    private AgendaFactory agendaFactory = new DefaultAgendaFactory();
+
+    public AgendaFactory getAgendaFactory() {
          return agendaFactory;
     }
 
-    public static void setAgendaFactory( AgendaFactory provider ) {
-        ReteooComponentFactory.agendaFactory = provider;
+    public void setAgendaFactory( AgendaFactory provider ) {
+        agendaFactory = provider;
     }
 
-    public static void setDefaultAgendaFactory() {
-        ReteooComponentFactory.agendaFactory = new DefaultAgendaFactory();
+    public void setDefaultAgendaFactory() {
+        agendaFactory = new DefaultAgendaFactory();
+    }
+
+    public static AgendaFactory getDefaultAgendaFactory() {
+        return new DefaultAgendaFactory();
     }
 
 
 
-    private static FieldDataFactory fieldFactory = FieldFactory.getInstance();
+    private FieldDataFactory fieldFactory = FieldFactory.getInstance();
 
-    public static FieldDataFactory getFieldFactory() {
+    public FieldDataFactory getFieldFactory() {
         return fieldFactory;
     }
 
-    public static void setFieldDataFactory( FieldDataFactory provider ) {
-        ReteooComponentFactory.fieldFactory = provider;
+    public void setFieldDataFactory( FieldDataFactory provider ) {
+        fieldFactory = provider;
     }
 
-    public static void setDefaultFieldFactory() {
-        ReteooComponentFactory.fieldFactory = FieldFactory.getInstance();
+    public void setDefaultFieldFactory() {
+        fieldFactory = FieldFactory.getInstance();
+    }
+
+    public static FieldDataFactory getDefaultFieldFactory() {
+        return FieldFactory.getInstance();
     }
 
 
 
+    private TripleFactory tripleFactory = new TripleFactoryImpl();
 
-    private static TripleFactory tripleFactory = new TripleFactoryImpl();
-
-    public static synchronized TripleFactory getTripleFactory() {
+    public TripleFactory getTripleFactory() {
          return tripleFactory;
     }
 
-    public static void setTripleFactory( TripleFactory provider ) {
-        ReteooComponentFactory.tripleFactory = provider;
+    public void setTripleFactory( TripleFactory provider ) {
+        tripleFactory = provider;
     }
 
-    public static void setDefaultTripleFactory() {
-        ReteooComponentFactory.tripleFactory = new TripleFactoryImpl();
+    public void setDefaultTripleFactory() {
+        tripleFactory = new TripleFactoryImpl();
+    }
+
+    public static TripleFactory getDefaultTripleFactory() {
+        return new TripleFactoryImpl();
     }
 
 
 
-    private static KnowledgeHelperFactory knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
 
-    public static KnowledgeHelperFactory getKnowledgeHelperFactory() {
+    private KnowledgeHelperFactory knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
+
+    public KnowledgeHelperFactory getKnowledgeHelperFactory() {
          return knowledgeHelperFactory;
     }
 
-    public static void setKnowledgeHelperFactory( KnowledgeHelperFactory provider ) {
-        ReteooComponentFactory.knowledgeHelperFactory = provider;
+    public void setKnowledgeHelperFactory( KnowledgeHelperFactory provider ) {
+        knowledgeHelperFactory = provider;
     }
 
-    public static void setDefaultKnowledgeHelperFactory() {
-        ReteooComponentFactory.knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
+    public void setDefaultKnowledgeHelperFactory() {
+        knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
+    }
+
+    public static KnowledgeHelperFactory getDefaultKnowledgeHelperFactory() {
+        return new DefaultKnowledgeHelperFactory();
     }
 
 
 
 
+    private LogicTransformer logicTransformer = LogicTransformer.getInstance();
 
-    private static LogicTransformer logicTransformer = LogicTransformer.getInstance();
-
-    public static LogicTransformer getLogicTransformer() {
+    public LogicTransformer getLogicTransformer() {
         return logicTransformer;
     }
 
-    public static void setLogicTransformer( LogicTransformer provider ) {
-        ReteooComponentFactory.logicTransformer = provider;
+    public void setLogicTransformer( LogicTransformer provider ) {
+        logicTransformer = provider;
     }
 
-    public static void setDefaultLogicTransformer() {
-        ReteooComponentFactory.logicTransformer = LogicTransformer.getInstance();
+    public void setDefaultLogicTransformer() {
+        logicTransformer = LogicTransformer.getInstance();
     }
 
+    public static LogicTransformer getDefaultLogicTransformer() {
+        return LogicTransformer.getInstance();
+    }
 
 
 

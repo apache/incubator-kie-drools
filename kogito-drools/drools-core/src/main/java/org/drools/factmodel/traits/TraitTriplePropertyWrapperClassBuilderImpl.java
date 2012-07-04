@@ -17,6 +17,7 @@
 package org.drools.factmodel.traits;
 
 import org.drools.core.util.Triple;
+import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
@@ -152,7 +153,11 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         {
             mv = cw.visitMethod(ACC_PUBLIC,
                     "<init>",
-                    "(" + descrCore + Type.getDescriptor( TripleStore.class ) + ")V",
+                    "(" + 
+                            descrCore + 
+                            Type.getDescriptor( TripleStore.class ) +
+                            Type.getDescriptor(TripleFactory.class ) +
+                    ")V",
                     null,
                     null);
 
@@ -171,6 +176,13 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitFieldInsn( PUTFIELD, internalWrapper, "store", Type.getDescriptor( TripleStore.class ) );
 
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 3 );
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                    Type.getInternalName( TripleBasedStruct.class ),
+                    "setTripleFactory",
+                    "(" + Type.getDescriptor( TripleFactory.class ) + ")V" );
+            
 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 2 );
@@ -186,7 +198,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKESPECIAL, internalWrapper, "initSoftFields", "()V" );
             mv.visitInsn( RETURN );
-            mv.visitMaxs( 2, 3 );
+            mv.visitMaxs( 2, 4 );
             mv.visitEnd();
 
 

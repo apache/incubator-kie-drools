@@ -23,14 +23,16 @@ import java.io.ObjectInput;
 
 public abstract class TripleBasedStruct implements Map<String, Object>, Externalizable {
 
-    protected static TripleFactory tripleFactory = TraitFactory.tripleFactory;
-
     protected transient TripleStore store;
 
     protected String storeId;
 
+    protected TripleFactory tripleFactory;
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( storeId );
+
+        out.writeObject( tripleFactory );
 
         out.writeObject( getObject() );
     }
@@ -38,6 +40,7 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         storeId = (String) in.readObject();
         store = TripleStoreRegistry.getRegistry( storeId );
+        tripleFactory = (TripleFactory) in.readObject();
 
         setObject( in.readObject() );
     }
@@ -175,5 +178,13 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
                 "store=" + store +
                 ", storeId='" + storeId + '\'' +
                 '}';
+    }
+
+    public TripleFactory getTripleFactory() {
+        return tripleFactory;
+    }
+
+    public void setTripleFactory( TripleFactory factory ) {
+        this.tripleFactory = factory;
     }
 }

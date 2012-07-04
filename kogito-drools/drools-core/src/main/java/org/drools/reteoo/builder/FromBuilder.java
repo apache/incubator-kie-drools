@@ -44,14 +44,14 @@ public class FromBuilder
         BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context, (List<BetaNodeFieldConstraint>) context.getBetaconstraints(), true );
         
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                ReteooComponentFactory.getNodeFactoryService().buildFromNode( context.getNextId(),
-                                                                              from.getDataProvider(),
-                                                                              context.getTupleSource(),
-                                                                              (AlphaNodeFieldConstraint[]) context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ),
-                                                                              betaConstraints,
-                                                                              context.isTupleMemoryEnabled(),
-                                                                              context,
-                                                                              from ) ) );
+                context.getComponentFactory().getNodeFactoryService().buildFromNode( context.getNextId(),
+                                                                                     from.getDataProvider(),
+                                                                                     context.getTupleSource(),
+                                                                                     context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ),
+                                                                                     betaConstraints,
+                                                                                     context.isTupleMemoryEnabled(),
+                                                                                     context,
+                                                                                     from ) ) );
         context.setAlphaConstraints( null );
         context.setBetaconstraints( null );
         context.popRuleComponent();

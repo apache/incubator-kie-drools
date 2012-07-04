@@ -25,7 +25,7 @@ import java.util.Map;
 
 public abstract class TraitProxy implements Externalizable {
 
-    protected static TripleFactory tripleFactory = TraitFactory.tripleFactory;
+    protected TripleFactory tripleFactory;
 
     public TraitProxy() { }
 
@@ -42,11 +42,13 @@ public abstract class TraitProxy implements Externalizable {
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( fields );
+        out.writeObject( tripleFactory );
     }
 
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         fields = (Map<String,Object>) in.readObject();
+        tripleFactory = (TripleFactory) in.readObject();
     }
 
 
@@ -95,19 +97,25 @@ public abstract class TraitProxy implements Externalizable {
 
 
     protected Triple propertyKey( String property ) {
-        return tripleFactory.newTriple( getObject(), property, Variable.v );
+        return getTripleFactory().newTriple( getObject(), property, Variable.v );
     }
 
     protected Triple property( String property, Object value ) {
-        return tripleFactory.newTriple( getObject(), property, value );
+        return getTripleFactory().newTriple( getObject(), property, value );
     }
 
     protected Triple propertyKey( Object property ) {
-        return tripleFactory.newTriple( getObject(), property.toString(), Variable.v );
+        return getTripleFactory().newTriple( getObject(), property.toString(), Variable.v );
     }
 
 
+    public TripleFactory getTripleFactory() {
+        return tripleFactory;
+    }
 
+    public void setTripleFactory( TripleFactory tripleFactory ) {
+        this.tripleFactory = tripleFactory;
+    }
 }
 
 

@@ -63,8 +63,6 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     
     public static Class proxyBaseClass = TraitProxy.class;
 
-    public static TripleFactory tripleFactory = ReteooComponentFactory.getTripleFactory();
-
     public static Class getProxyBaseClass() {
         return proxyBaseClass;
     }
@@ -78,11 +76,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         mode = newMode;
         switch ( mode ) {
             case MAP    :
-                ClassBuilderFactory.setPropertyWrapperBuilderService(new TraitMapPropertyWrapperClassBuilderImpl());
+                ClassBuilderFactory.setPropertyWrapperBuilderService( new TraitMapPropertyWrapperClassBuilderImpl() );
                 ClassBuilderFactory.setTraitProxyBuilderService( new TraitMapProxyClassBuilderImpl() );
                 break;
             case TRIPLES:
-                ClassBuilderFactory.setPropertyWrapperBuilderService(new TraitTriplePropertyWrapperClassBuilderImpl());
+                ClassBuilderFactory.setPropertyWrapperBuilderService( new TraitTriplePropertyWrapperClassBuilderImpl() );
                 ClassBuilderFactory.setTraitProxyBuilderService( new TraitTripleProxyClassBuilderImpl() );
                 break;
             default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
@@ -93,7 +91,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-    public TraitFactory(KnowledgeBase knowledgeBase) {
+    public TraitFactory( KnowledgeBase knowledgeBase ) {
         ruleBase = (AbstractRuleBase) ((KnowledgeBaseImpl) knowledgeBase).getRuleBase();
     }
 
@@ -120,10 +118,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             switch ( mode ) {
                 case MAP    :   proxy = konst.newInstance( core, core.getDynamicProperties() );
                     break;
-                case TRIPLES:   proxy = konst.newInstance( core, ruleBase.getTripleStore() );
+                case TRIPLES:   proxy = konst.newInstance( core, ruleBase.getTripleStore(), getTripleFactory() );
                     break;
                 default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
             }
+
 
             core.addTrait( traitName, proxy );
             return proxy;
@@ -154,7 +153,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             switch ( mode ) {
                 case MAP    :   konst = proxyClass.getConstructor( core.getClass(), Map.class );
                     break;
-                case TRIPLES:   konst = proxyClass.getConstructor( core.getClass(), TripleStore.class );
+                case TRIPLES:   konst = proxyClass.getConstructor( core.getClass(), TripleStore.class, TripleFactory.class );
                     break;
                 default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
             }
@@ -536,6 +535,10 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             stack += BuildUtils.sizeOf( klass.getName() );
         }
         return stack;
+    }
+
+    public TripleFactory getTripleFactory() {
+        return ruleBase.getConfiguration().getComponentFactory().getTripleFactory();
     }
 
 

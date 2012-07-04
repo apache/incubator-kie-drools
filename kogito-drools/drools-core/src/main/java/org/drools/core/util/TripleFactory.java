@@ -1,7 +1,9 @@
 package org.drools.core.util;
 
 
-public interface TripleFactory {
+import java.io.Serializable;
+
+public interface TripleFactory extends Serializable {
     
     public Triple newTriple( Object subject, String predicate, Object object );
     

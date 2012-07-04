@@ -106,7 +106,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                ruleBase.newFactHandleFactory(),
                config,
                environment );
-        this.agenda = ReteooComponentFactory.getAgendaFactory().createAgenda( ruleBase );
+        this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );
     }
 
@@ -124,7 +124,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                workingMemoryEventSupport,
                agendaEventSupport );
 
-        this.agenda = ReteooComponentFactory.getAgendaFactory().createAgenda( ruleBase );
+        this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );
     }
 

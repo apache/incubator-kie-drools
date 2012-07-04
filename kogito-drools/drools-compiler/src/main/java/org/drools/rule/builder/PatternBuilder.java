@@ -112,9 +112,6 @@ public class PatternBuilder
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(",
                                                                                                java.util.regex.Pattern.MULTILINE );
 
-    protected ConstraintBuilder getConstraintBuilder() {
-        return DroolsCompilerComponentFactory.getConstraintBuilderFactoryService().newConstraintBuilder();
-    }
 
     public PatternBuilder() {
     }
@@ -528,9 +525,9 @@ public class PatternBuilder
         }
 
         String expression = expressionBuilder.toString();
-        MVELCompilationUnit compilationUnit = getConstraintBuilder().buildCompilationUnit(context, pattern, expression);
+        MVELCompilationUnit compilationUnit = getConstraintBuilder( context ).buildCompilationUnit(context, pattern, expression);
 
-        Constraint combinedConstraint = getConstraintBuilder().buildMvelConstraint(
+        Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint(
                                                                packageName, expression,
                                                                declarations.toArray(new Declaration[declarations.size()]),
                                                                compilationUnit, false, null, null, false );
@@ -640,7 +637,7 @@ public class PatternBuilder
         }
 
         MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-        String expr = DroolsCompilerComponentFactory.getExpressionProcessor().dump( d, mvelCtx );
+        String expr = context.getCompilerFactory().getExpressionProcessor().dump( d, mvelCtx );
         Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
         Map<String, Class<?>> localTypes = mvelCtx.getLocalTypes();
 
@@ -769,7 +766,7 @@ public class PatternBuilder
         if (restrictionDescr != null) {
             FieldValue field = getFieldValue(context, vtype, restrictionDescr);
             if (field != null) {
-                Constraint constraint = getConstraintBuilder().buildLiteralConstraint(context, pattern, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
+                Constraint constraint = getConstraintBuilder( context ).buildLiteralConstraint(context, pattern, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
                 if (constraint != null) {
                     pattern.addConstraint(constraint);
                     return true;
@@ -826,7 +823,7 @@ public class PatternBuilder
             }
         }
 
-        pattern.addConstraint( getConstraintBuilder().buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr) );
+        pattern.addConstraint( getConstraintBuilder( context ).buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr) );
         return true;
     }
 
@@ -1147,7 +1144,7 @@ public class PatternBuilder
 
             pattern.addConstraint( predicateConstraint );
         } else {
-            MVELCompilationUnit compilationUnit = getConstraintBuilder().buildCompilationUnit(context,
+            MVELCompilationUnit compilationUnit = getConstraintBuilder( context ).buildCompilationUnit(context,
                     previousDeclarations,
                     localDeclarations,
                     predicateDescr,
@@ -1170,7 +1167,7 @@ public class PatternBuilder
                     (!((ClassObjectType)pattern.getObjectType()).getClassType().isArray() &&
                     !context.getPackageBuilder().getTypeDeclaration(((ClassObjectType)pattern.getObjectType()).getClassType()).isTypesafe());
 
-            Constraint constraint = getConstraintBuilder().buildMvelConstraint( context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic );
+            Constraint constraint = getConstraintBuilder( context ).buildMvelConstraint( context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic );
             pattern.addConstraint( constraint );
         }
     }
@@ -1253,7 +1250,7 @@ public class PatternBuilder
             op.setLeftIsHandle( left == Target.HANDLE );
             op.setRightIsHandle( right == Target.HANDLE );
 
-            Evaluator evaluator = DroolsCompilerComponentFactory.getConstraintBuilderFactoryService().newConstraintBuilder().getEvaluator(
+            Evaluator evaluator = getConstraintBuilder( context ).getEvaluator(
                     context,
                     predicateDescr,
                     ValueType.OBJECT_TYPE,
@@ -1262,7 +1259,7 @@ public class PatternBuilder
                     op.getParametersText(),
                     left,
                     right);
-            EvaluatorWrapper wrapper = DroolsCompilerComponentFactory.getConstraintBuilderFactoryService().newConstraintBuilder().wrapEvaluator( evaluator,
+            EvaluatorWrapper wrapper = getConstraintBuilder( context ).wrapEvaluator( evaluator,
                                                                left == Target.HANDLE ? leftDecl : null,
                                                                right == Target.HANDLE ? rightDecl : null );
             operators.put( entry.getKey(),
@@ -1289,6 +1286,11 @@ public class PatternBuilder
                               entry.getValue().getExtractor().getExtractToClass() );
         }
         return declarations;
+    }
+
+
+    protected static ConstraintBuilder getConstraintBuilder( RuleBuildContext context ) {
+        return context.getCompilerFactory().getConstraintBuilderFactoryService().newConstraintBuilder();
     }
 
     /**
@@ -1394,9 +1396,9 @@ public class PatternBuilder
                 vtype = ValueType.determineValueType( o.getClass() );
             }
 
-            field = ReteooComponentFactory.getFieldFactory().getFieldValue( o,
-                                                                            vtype,
-                                                                            context.getPackageBuilder().getDateFormats() );
+            field = context.getCompilerFactory().getFieldFactory().getFieldValue( o,
+                                                                                  vtype,
+                                                                                  context.getPackageBuilder().getDateFormats() );
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
             e.printStackTrace();

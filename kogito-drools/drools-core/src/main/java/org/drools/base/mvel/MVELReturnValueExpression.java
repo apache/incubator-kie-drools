@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooComponentFactory;
@@ -100,7 +101,8 @@ public class MVELReturnValueExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return ReteooComponentFactory.getFieldFactory().getFieldValue( MVEL.executeExpression( this.expr,
+
+        return ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getFieldFactory().getFieldValue( MVEL.executeExpression( this.expr,
                                                                                                object,
                                                                                                factory ) );
     }

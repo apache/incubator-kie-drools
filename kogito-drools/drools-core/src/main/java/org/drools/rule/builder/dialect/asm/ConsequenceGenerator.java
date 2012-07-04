@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.asm;
 
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -35,7 +36,9 @@ public class ConsequenceGenerator {
     public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
         RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
-        final boolean isOrRule = rtn.getRule().getTransformedLhs().length > 1;
+        final boolean isOrRule = rtn.getRule().getTransformedLhs(
+                ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getLogicTransformer()
+        ).length > 1;
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
