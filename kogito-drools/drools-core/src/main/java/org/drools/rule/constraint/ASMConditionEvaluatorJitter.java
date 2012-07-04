@@ -90,13 +90,13 @@ public class ASMConditionEvaluatorJitter {
             }
 
             declPositions = new int[declarations.length];
-            int decPos = ARGUMENTS;
             List<GeneratorHelper.DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarations);
 
             LeftTuple currentLeftTuple = leftTuple;
             mv.visitVarInsn(ALOAD, 3);
             store(4, LeftTuple.class);
 
+            int decPos = ARGUMENTS;
             for (GeneratorHelper.DeclarationMatcher declarationMatcher : declarationMatchers) {
                 int i = declarationMatcher.getOriginalIndex();
                 if (currentLeftTuple == null || declarationMatcher.getRootDistance() > currentLeftTuple.getIndex()) {
@@ -238,11 +238,52 @@ public class ASMConditionEvaluatorJitter {
                 mv.visitInsn(singleCondition.getOperation() == BooleanOperator.NE ? ICONST_1 : ICONST_0);
                 return;
             }
+            Label nullArg = new Label();
+            ensureNotNullArgs(left, right, nullArg);
+
             jitExpression(left, type);
             castExpressionResultToPrimitive(left, type);
             jitExpression(right, type);
             castExpressionResultToPrimitive(right, type);
             jitPrimitiveOperation(singleCondition.getOperation(), type);
+            Label nonNullArg = new Label();
+            mv.visitJumpInsn(GOTO, nonNullArg);
+
+            mv.visitLabel(nullArg);
+            mv.visitInsn(ICONST_0);
+            mv.visitLabel(nonNullArg);
+        }
+
+        private void ensureNotNullArgs(Expression left, Expression right, Label nullArg) {
+            ensureNotNullArgs(left, nullArg);
+            ensureNotNullArgs(right, nullArg);
+        }
+
+        private void ensureNotNullArgs(Expression exp, Label nullArg) {
+            if (exp instanceof FixedExpression) {
+                if (((FixedExpression) exp).canBeNull()) {
+                    mv.visitJumpInsn(GOTO, nullArg);
+                }
+            } else if (exp instanceof EvaluatedExpression) {
+                if (!exp.getType().isPrimitive()) {
+                    jitEvaluatedExpression((EvaluatedExpression) exp, true, Object.class);
+                    mv.visitJumpInsn(IFNULL, nullArg);
+                }
+            } else if (exp instanceof VariableExpression) {
+                if (!exp.getType().isPrimitive()) {
+                    jitVariableExpression((VariableExpression) exp);
+                    mv.visitJumpInsn(IFNULL, nullArg);
+                }
+            } else if (exp instanceof AritmeticExpression) {
+                ensureNotNullInAritmeticExpression((AritmeticExpression)exp, nullArg);
+            }
+        }
+
+        private void ensureNotNullInAritmeticExpression(AritmeticExpression aritmeticExpression, Label nullArg) {
+            if (!aritmeticExpression.isStringConcat()) {
+                ensureNotNullArgs(aritmeticExpression.left, nullArg);
+                ensureNotNullArgs(aritmeticExpression.right, nullArg);
+            }
         }
 
         private void castExpressionResultToPrimitive(Expression expression, Class<?> type) {
