@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DRLLexer.g 2012-06-19 22:33:10
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DRLLexer.g 2012-07-04 10:23:01
 
     package org.drools.lang;
 
