@@ -300,7 +300,31 @@ public class KnowledgeBaseConfigurationTest {
         assertEquals( "7",
                       config.getProperty( AlphaThresholdOption.PROPERTY_NAME ) );
     }
-    
+
+    @Test
+    public void testPermGenThresholdConfiguration() {
+        // setting the option using the type safe method
+        config.setOption( PermGenThresholdOption.get(85) );
+
+        // checking the type safe getOption() method
+        assertEquals( PermGenThresholdOption.get(85),
+                config.getOption( PermGenThresholdOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "85",
+                config.getProperty( PermGenThresholdOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( PermGenThresholdOption.PROPERTY_NAME,
+                "87" );
+
+        // checking the type safe getOption() method
+        assertEquals( PermGenThresholdOption.get(87),
+                config.getOption( PermGenThresholdOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "87",
+                config.getProperty( PermGenThresholdOption.PROPERTY_NAME ) );
+    }
+
     @Test
     public void testCompositeKeyDepthConfiguration() {
         // setting the option using the type safe method

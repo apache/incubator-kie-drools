@@ -9,6 +9,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.ExecutorProviderFactory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.BitMaskUtil;
+import org.drools.core.util.MemoryUtil;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -198,16 +199,34 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return mvelValue;
     }
 
-    private void jitEvaluator(final Object object, final InternalWorkingMemory workingMemory, final LeftTuple leftTuple) {
+    private void jitEvaluator(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         jitted = true;
         if (TEST_JITTING) {
             executeJitting(object, workingMemory, leftTuple);
         } else {
-            ExecutorHolder.executor.execute(new Runnable() {
-                public void run() {
-                    executeJitting(object, workingMemory, leftTuple);
-                }
-            });
+            ExecutorHolder.executor.execute(new ConditionJitter(this, object, workingMemory, leftTuple));
+        }
+    }
+
+    private static class ConditionJitter implements Runnable {
+        private MvelConstraint mvelConstraint;
+        private Object object;
+        private InternalWorkingMemory workingMemory;
+        private LeftTuple leftTuple;
+
+        private ConditionJitter(MvelConstraint mvelConstraint, Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+            this.mvelConstraint = mvelConstraint;
+            this.object = object;
+            this.workingMemory = workingMemory;
+            this.leftTuple = leftTuple;
+        }
+
+        public void run() {
+            mvelConstraint.executeJitting(object, workingMemory, leftTuple);
+            mvelConstraint = null;
+            object = null;
+            workingMemory = null;
+            leftTuple = null;
         }
     }
 
@@ -216,7 +235,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private void executeJitting(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
-        CompositeClassLoader classLoader = ((InternalRuleBase) workingMemory.getRuleBase()).getRootClassLoader();
+        InternalRuleBase ruleBase = ((InternalRuleBase) workingMemory.getRuleBase());
+        if ( MemoryUtil.permGenStats.isUsageThresholdExceeded(ruleBase.getConfiguration().getPermGenThreshold()) ) {
+            return;
+        }
+
+        CompositeClassLoader classLoader = ruleBase.getRootClassLoader();
         if (analyzedCondition == null) {
             analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
         }
