@@ -16,10 +16,6 @@
 
 package org.drools.factmodel;
 
-import org.drools.util.codec.Base64;
-import org.mvel2.MVEL;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.ParserContext;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
@@ -36,27 +32,7 @@ import java.util.List;
 /**
  * A builder to dynamically build simple Javabean(TM) classes
  */
-public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder {
-
-    protected boolean     debug  = false;
-
-    private ParserConfiguration config;
-
-    public ParserConfiguration getConfig() {
-        return config;
-    }
-
-    public void setConfig(ParserConfiguration config) {
-        this.config = config;
-    }
-
-    public DefaultEnumClassBuilder() {
-        this( "true".equalsIgnoreCase( System.getProperty( "org.drools.classbuilder.debug" ) ) );
-    }
-
-    public DefaultEnumClassBuilder(final boolean debug) {
-        this.debug = debug;
-    }
+public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Serializable {
 
 
     /**

@@ -26,7 +26,7 @@ import org.mvel2.asm.Type;
 
 import java.io.Serializable;
 
-public class TraitClassBuilderImpl implements TraitClassBuilder {
+public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
 
 
     public byte[] buildClass( ClassDefinition classDef ) {

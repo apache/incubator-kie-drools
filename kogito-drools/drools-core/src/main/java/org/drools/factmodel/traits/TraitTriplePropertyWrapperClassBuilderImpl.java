@@ -37,21 +37,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder {
+public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 
 
-    private ClassDefinition trait;
+    private transient ClassDefinition trait;
 
     protected ClassDefinition getTrait() {
         return trait;
     }
 
-    public void init(ClassDefinition trait) {
+    public void init( ClassDefinition trait ) {
         this.trait = trait;
     }
 
     
-    private Map<String,FieldDefinition> aliases = new HashMap<String, FieldDefinition>();
+    private transient Map<String,FieldDefinition> aliases = new HashMap<String, FieldDefinition>();
 
 
     public byte[] buildClass( ClassDefinition core ) throws IOException,

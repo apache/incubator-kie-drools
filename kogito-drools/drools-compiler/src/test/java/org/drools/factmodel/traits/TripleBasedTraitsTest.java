@@ -22,7 +22,9 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.AbstractRuleBase;
 import org.drools.definition.type.FactType;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.junit.*;
@@ -67,7 +69,8 @@ public class TripleBasedTraitsTest {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        TraitFactory traitBuilder = new TraitFactory( kb );
+        TraitFactory traitBuilder = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory(); 
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, kb );
 
         try {
         FactType impClass = kb.getFactType("org.test","Imp");
@@ -96,7 +99,7 @@ public class TripleBasedTraitsTest {
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail(e.getMessage());
+            fail( e.getMessage() );
         }
     }
 }

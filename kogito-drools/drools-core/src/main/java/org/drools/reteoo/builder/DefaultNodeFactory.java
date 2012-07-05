@@ -39,7 +39,9 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.ObjectType;
 
-public class DefaultNodeFactory implements NodeFactory {
+import java.io.Serializable;
+
+public class DefaultNodeFactory implements NodeFactory, Serializable {
 
 
     public AlphaNode buildAlphaNode( int id, AlphaNodeFieldConstraint constraint, ObjectSource objectSource, BuildContext context ) {

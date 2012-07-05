@@ -2553,7 +2553,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             switch ( type.getKind() ) {
                 case TRAIT :
                     try {
-                        ClassBuilder tb = ClassBuilderFactory.getTraitBuilderService();
+                        ClassBuilder tb = this.configuration.getClassBuilderFactory().getTraitBuilder();
                         byte[] d = tb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
@@ -2566,7 +2566,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     break;
                 case ENUM :
                     try {
-                        ClassBuilder eb = ClassBuilderFactory.getEnumClassBuilderService();
+                        ClassBuilder eb = this.configuration.getClassBuilderFactory().getEnumClassBuilder();
                         byte[] d = eb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
@@ -2581,7 +2581,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 case CLASS :
                 default :
                     try {
-                        ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService();
+                        ClassBuilder cb = this.configuration.getClassBuilderFactory().getBeanClassBuilder();
                         byte[] d = cb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );

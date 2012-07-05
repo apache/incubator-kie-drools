@@ -38,6 +38,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.StringUtils;
+import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.rule.Package;
 import org.drools.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.runtime.rule.AccumulateFunction;
@@ -120,7 +121,9 @@ public class PackageBuilderConfiguration
     
     private Map<String, ResultSeverity>       severityMap;
 
-    private DroolsCompilerComponentFactory    componentFactory = new DroolsCompilerComponentFactory();
+    private DroolsCompilerComponentFactory    componentFactory;
+
+    private ClassBuilderFactory               classBuilderFactory;
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -203,6 +206,10 @@ public class PackageBuilderConfiguration
         setProperty( DefaultPackageNameOption.PROPERTY_NAME,
                      this.chainedProperties.getProperty( DefaultPackageNameOption.PROPERTY_NAME,
                                                          "defaultpkg" ) );
+
+        this.componentFactory = new DroolsCompilerComponentFactory();
+
+        this.classBuilderFactory = new ClassBuilderFactory();
     }
 
     private void buildSeverityMap() {
@@ -631,6 +638,14 @@ public class PackageBuilderConfiguration
 
     public void setComponentFactory(DroolsCompilerComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
+    }
+
+    public ClassBuilderFactory getClassBuilderFactory() {
+        return classBuilderFactory;
+    }
+
+    public void setClassBuilderFactory(ClassBuilderFactory classBuilderFactory) {
+        this.classBuilderFactory = classBuilderFactory;
     }
 
     @SuppressWarnings("unchecked")

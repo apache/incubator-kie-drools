@@ -71,7 +71,7 @@ public class InstancesHashcodedTest {
         cd.addField(new FieldDefinition("issueDate", "java.util.Date", false));
         cd.addField(new FieldDefinition("cycleCode", "java.lang.String", false));
 
-        ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService();
+        ClassBuilder cb = new ClassBuilderFactory().getBeanClassBuilder();
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2006);

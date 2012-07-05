@@ -16,6 +16,7 @@
 
 package org.drools.base;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.drools.base.field.BooleanFieldImpl;
@@ -28,7 +29,7 @@ import org.drools.core.util.MathUtils;
 import org.drools.spi.FieldValue;
 import org.drools.type.DateFormats;
 
-public class FieldFactory implements FieldDataFactory {
+public class FieldFactory implements FieldDataFactory, Serializable {
     private static final FieldFactory INSTANCE = new FieldFactory();
 
 

@@ -38,9 +38,11 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
+import org.drools.common.AbstractRuleBase;
 import org.drools.definition.type.FactType;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
@@ -58,7 +60,7 @@ import static org.hamcrest.CoreMatchers.is;
 public class TraitTest extends CommonTestMethodBase {
 
     private static long t0;
-
+    
     @BeforeClass
     public static void init() {
         t0 = new Date().getTime();
@@ -107,7 +109,7 @@ public class TraitTest extends CommonTestMethodBase {
         return session;
     }
 
-    private StatelessKnowledgeSession getStatelessSessionFromString( String drl ) {
+    private KnowledgeBase getKnowledgeBaseFromString( String drl ) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
                 ResourceType.DRL );
@@ -118,10 +120,10 @@ public class TraitTest extends CommonTestMethodBase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
 
-        return kbase.newStatelessKnowledgeSession();
+        return kbase;
     }
 
-    public void traitWrapGetAndSet() {
+    public void traitWrapGetAndSet( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -133,7 +135,10 @@ public class TraitTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+            TraitFactory.setMode( mode, kb );
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.test",
@@ -141,8 +146,9 @@ public class TraitTest extends CommonTestMethodBase {
             TraitableBean imp = (TraitableBean) impClass.newInstance();
             Class trait = kb.getFactType( "org.test",
                                           "Student" ).getFactClass();
-            TraitProxy proxy = (TraitProxy) new TraitFactory( kb ).getProxy( imp,
-                                                                             trait );
+
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
+                                                               trait );
 
             Map<String, Object> virtualFields = imp.getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -177,14 +183,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitWrapper_GetAndSetTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitWrapGetAndSet();
+        traitWrapGetAndSet( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitWrapper_GetAndSetMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitWrapGetAndSet();
+        traitWrapGetAndSet( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -198,10 +202,13 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitShed() {
+    public void traitShed( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitShed.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -236,14 +243,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitShedTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitShed();
+        traitShed( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitShedMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitShed();
+        traitShed( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -254,10 +259,12 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitDon() {
+    public void traitDon( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -276,24 +283,24 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitDonTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitDon();
+        traitDon( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitDonMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitDon();
+        traitDon( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
 
 
 
-    public void mixin() {
+    public void mixin( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitMixin.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -306,14 +313,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitMixinTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        mixin();
+        mixin( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitMxinMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        mixin();
+        mixin( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -322,10 +327,12 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitMethodsWithObjects() {
+    public void traitMethodsWithObjects( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitWrapping.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
         List errors = new ArrayList();
         ks.setGlobal( "list",
                       errors );
@@ -342,24 +349,24 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitObjMethodsTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitMethodsWithObjects();
+        traitMethodsWithObjects( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitObjMethodsMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitMethodsWithObjects();
+        traitMethodsWithObjects( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
 
 
 
-    public void traitMethodsWithPrimitives() {
+    public void traitMethodsWithPrimitives( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitWrappingPrimitives.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
         List errors = new ArrayList();
         ks.setGlobal( "list",
                       errors );
@@ -376,14 +383,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitPrimMethodsTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitMethodsWithPrimitives();
+        traitMethodsWithPrimitives( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitPrimMethodsMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitMethodsWithPrimitives();
+        traitMethodsWithPrimitives( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -393,7 +398,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitProxy() {
+    public void traitProxy( TraitFactory.VirtualPropertyMode mode ) {
 
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
@@ -407,7 +412,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        TraitFactory traitBuilder = new TraitFactory( kb );
+        TraitFactory.setMode( mode, kb );
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.test",
@@ -423,7 +429,7 @@ public class TraitTest extends CommonTestMethodBase {
                                            "Role" ).getFactClass();
 
             assertNotNull( trait );
-            TraitProxy proxy = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
                                                                    trait );
             proxy.getFields().put( "field",
                                    "xyz" );
@@ -431,12 +437,12 @@ public class TraitTest extends CommonTestMethodBase {
 
             assertNotNull( proxy );
 
-            TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( imp,
                                                                     trait );
             assertSame( proxy2,
                         proxy );
 
-            TraitProxy proxy3 = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy3 = (TraitProxy) tFactory.getProxy( imp,
                                                                     trait2 );
             assertNotNull( proxy3 );
             assertEquals( "xyz",
@@ -448,7 +454,7 @@ public class TraitTest extends CommonTestMethodBase {
             impClass.set( imp2,
                           "name",
                           "aaa" );
-            TraitProxy proxy4 = (TraitProxy) traitBuilder.getProxy( imp2,
+            TraitProxy proxy4 = (TraitProxy) tFactory.getProxy( imp2,
                                                                     trait );
             //            proxy4.getFields().put("name", "aaa");
             proxy4.getFields().put( "field",
@@ -469,14 +475,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitProxyTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitProxy();
+        traitProxy( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitProxyMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitProxy();
+        traitProxy( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -487,7 +491,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void wrapperSize() {
+    public void wrapperSize( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -501,7 +505,9 @@ public class TraitTest extends CommonTestMethodBase {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        TraitFactory traitBuilder = new TraitFactory( kb );
+        TraitFactory.setMode( mode, kb );
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+
 
         try {
             FactType impClass = kb.getFactType( "org.test",
@@ -510,7 +516,7 @@ public class TraitTest extends CommonTestMethodBase {
             FactType traitClass = kb.getFactType( "org.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
                                                                    trait );
 
             Map<String, Object> virtualFields = imp.getDynamicProperties();
@@ -546,7 +552,7 @@ public class TraitTest extends CommonTestMethodBase {
             //            TraitableBean ind = (TraitableBean) indClass.newInstance();
             TraitableBean ind = new Entity();
 
-            TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy( ind,
+            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
                                                                     trait );
 
             Map virtualFields2 = ind.getDynamicProperties();
@@ -584,7 +590,7 @@ public class TraitTest extends CommonTestMethodBase {
             //            TraitableBean ind2 = (TraitableBean) indClass.newInstance();
             TraitableBean ind2 = new Entity();
 
-            TraitProxy proxy99 = (TraitProxy) traitBuilder.getProxy( ind2,
+            TraitProxy proxy99 = (TraitProxy) tFactory.getProxy( ind2,
                                                                      trait2 );
 
             proxy99.getFields().put( "surname",
@@ -597,7 +603,7 @@ public class TraitTest extends CommonTestMethodBase {
             assertEquals( 3,
                           proxy99.getFields().size() );
 
-            TraitProxy proxy100 = (TraitProxy) traitBuilder.getProxy( ind2,
+            TraitProxy proxy100 = (TraitProxy) tFactory.getProxy( ind2,
                                                                       trait );
 
             assertEquals( 4,
@@ -613,14 +619,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitWrapperSizeTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        wrapperSize();
+        wrapperSize( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitWrapperSizeMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        wrapperSize();
+        wrapperSize( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -629,7 +633,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void wrapperEmpty() {
+    public void wrapperEmpty( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -642,7 +646,9 @@ public class TraitTest extends CommonTestMethodBase {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        TraitFactory traitBuilder = new TraitFactory( kb );
+        TraitFactory.setMode( mode, kb );
+
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.test",
@@ -652,7 +658,7 @@ public class TraitTest extends CommonTestMethodBase {
             FactType studentClass = kb.getFactType( "org.test",
                                                     "Student" );
             Class trait = studentClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
                                                                    trait );
 
             Map<String, Object> virtualFields = imp.getDynamicProperties();
@@ -684,7 +690,7 @@ public class TraitTest extends CommonTestMethodBase {
             FactType RoleClass = kb.getFactType( "org.test",
                                                  "Role" );
             Class trait2 = RoleClass.getFactClass();
-            TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy( ind,
+            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
                                                                     trait2 );
 
             Map<String, Object> wrapper2 = proxy2.getFields();
@@ -707,14 +713,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitWrapperEmptyTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        wrapperEmpty();
+        wrapperEmpty( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitWrapperEmptyMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        wrapperEmpty();
+        wrapperEmpty( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -725,7 +729,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void wrapperContainsKey() {
+    public void wrapperContainsKey( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -739,7 +743,9 @@ public class TraitTest extends CommonTestMethodBase {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        TraitFactory traitBuilder = new TraitFactory( kb );
+
+        TraitFactory.setMode( mode, kb );
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.test",
@@ -752,7 +758,7 @@ public class TraitTest extends CommonTestMethodBase {
             FactType traitClass = kb.getFactType( "org.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
                                                                    trait );
 
             Map<String, Object> virtualFields = imp.getDynamicProperties();
@@ -772,7 +778,7 @@ public class TraitTest extends CommonTestMethodBase {
             //            FactType indClass = kb.getFactType("org.test","Entity");
             TraitableBean ind = new Entity();
 
-            TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy( ind,
+            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
                                                                     trait );
 
             Map virtualFields2 = ind.getDynamicProperties();
@@ -796,7 +802,7 @@ public class TraitTest extends CommonTestMethodBase {
             Class trait2 = traitClass2.getFactClass();
             TraitableBean ind2 = new Entity();
 
-            TraitProxy proxy99 = (TraitProxy) traitBuilder.getProxy( ind2,
+            TraitProxy proxy99 = (TraitProxy) tFactory.getProxy( ind2,
                                                                      trait2 );
             Map<String, Object> wrapper99 = proxy99.getFields();
 
@@ -821,7 +827,7 @@ public class TraitTest extends CommonTestMethodBase {
 
             TraitableBean ind0 = new Entity();
 
-            TraitProxy proxy100 = (TraitProxy) traitBuilder.getProxy( ind0,
+            TraitProxy proxy100 = (TraitProxy) tFactory.getProxy( ind0,
                                                                       trait2 );
             Map<String, Object> wrapper100 = proxy100.getFields();
             assertFalse( wrapper100.containsKey( "name" ) );
@@ -829,7 +835,7 @@ public class TraitTest extends CommonTestMethodBase {
             assertFalse( wrapper100.containsKey( "age" ) );
             assertFalse( wrapper100.containsKey( "surname" ) );
 
-            TraitProxy proxy101 = (TraitProxy) traitBuilder.getProxy( ind0,
+            TraitProxy proxy101 = (TraitProxy) tFactory.getProxy( ind0,
                                                                       trait );
             // object gains properties by virtue of another trait
             // so new props are accessible even using the old proxy
@@ -847,14 +853,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitContainskeyTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        wrapperContainsKey();
+        wrapperContainsKey( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitContainskeyMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        wrapperContainsKey();
+        wrapperContainsKey( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -863,7 +867,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void wrapperKeySetAndValues() {
+    public void wrapperKeySetAndValues( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -876,8 +880,9 @@ public class TraitTest extends CommonTestMethodBase {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        TraitFactory.setMode( mode, kb );
 
-        TraitFactory traitBuilder = new TraitFactory( kb );
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.test",
@@ -886,7 +891,7 @@ public class TraitTest extends CommonTestMethodBase {
             FactType traitClass = kb.getFactType( "org.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
                                                                    trait );
 
             impClass.set( imp,
@@ -959,14 +964,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitWrapperKSVTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        wrapperKeySetAndValues();
+        wrapperKeySetAndValues( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitWrapperKSVMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        wrapperKeySetAndValues();
+        wrapperKeySetAndValues( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -975,7 +978,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void wrapperClearAndRemove() {
+    public void wrapperClearAndRemove( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -988,8 +991,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        TraitFactory traitBuilder = new TraitFactory( kb );
+        TraitFactory.setMode( mode, kb );
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.test",
@@ -1001,7 +1004,7 @@ public class TraitTest extends CommonTestMethodBase {
             FactType traitClass = kb.getFactType( "org.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) traitBuilder.getProxy( imp,
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
                                                                    trait );
 
             proxy.getFields().put( "surname",
@@ -1096,14 +1099,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitWrapperClearTriples() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        wrapperClearAndRemove();
+        wrapperClearAndRemove( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitWrapperClearMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        wrapperClearAndRemove();
+        wrapperClearAndRemove( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1112,15 +1113,18 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void isA() {
+    public void isA( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitIsA.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
 
         ks.fireAllRules();
+
 
         int num = 10;
 
@@ -1135,14 +1139,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testISATriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        isA();
+        isA( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testISAMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        isA();
+        isA( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1152,10 +1154,12 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void overrideType() {
+    public void overrideType( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitOverride.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1170,14 +1174,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testOverrideTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        overrideType();
+        overrideType( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testOverrideMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        overrideType();
+        overrideType( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1188,10 +1190,13 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitLegacy() {
+    public void traitLegacy( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitLegacyTrait.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1218,14 +1223,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testLegacyTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitLegacy();
+        traitLegacy( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testLegacyMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitLegacy();
+        traitLegacy( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1235,10 +1238,13 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitCollections() {
+    public void traitCollections( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitCollections.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1262,14 +1268,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectionsTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitCollections();
+        traitCollections( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testCollectionsMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitCollections();
+        traitCollections( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1278,10 +1282,12 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitCore() {
+    public void traitCore( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitLegacyCore.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1306,14 +1312,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testCoreTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitCore();
+        traitCore( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testCoreMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitCore();
+        traitCore( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1322,10 +1326,12 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitWithEquality() {
+    public void traitWithEquality( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitWithEquality.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1339,14 +1345,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testEqTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitWithEquality();
+        traitWithEquality( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testEqMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitWithEquality();
+        traitWithEquality( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1355,19 +1359,21 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitDeclared() {
+    public void traitDeclared( TraitFactory.VirtualPropertyMode mode ) {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
         List<Integer> untrueTraits = new ArrayList<Integer>();
 
-        StatefulKnowledgeSession session = getSession( "org/drools/factmodel/traits/testDeclaredFactTrait.drl" );
-        session.setGlobal( "trueTraits",
+        StatefulKnowledgeSession ks = getSession( "org/drools/factmodel/traits/testDeclaredFactTrait.drl" );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        
+        ks.setGlobal( "trueTraits",
                            trueTraits );
-        session.setGlobal( "untrueTraits",
+        ks.setGlobal( "untrueTraits",
                            untrueTraits );
 
-        session.fireAllRules();
-        session.dispose();
+        ks.fireAllRules();
+        ks.dispose();
 
         assertTrue( trueTraits.contains( 1 ) );
         assertFalse( trueTraits.contains( 2 ) );
@@ -1377,14 +1383,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testDeclaredTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitDeclared();
+        traitDeclared( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testDeclaredMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitDeclared();
+        traitDeclared( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1393,12 +1397,14 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitPojo() {
+    public void traitPojo( TraitFactory.VirtualPropertyMode mode ) {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
         List<Integer> untrueTraits = new ArrayList<Integer>();
 
         StatefulKnowledgeSession session = getSession( "org/drools/factmodel/traits/testPojoFactTrait.drl" );
+        TraitFactory.setMode( mode, session.getKnowledgeBase() );
+        
         session.setGlobal( "trueTraits",
                            trueTraits );
         session.setGlobal( "untrueTraits",
@@ -1415,14 +1421,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testPojoTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitPojo();
+        traitPojo( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testPojoMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitPojo();
+        traitPojo( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1431,10 +1435,12 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void isAOperator() {
+    public void isAOperator( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitIsA2.drl";
         StatefulKnowledgeSession ksession = getSession( source );
-
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        
+        
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
@@ -1460,21 +1466,19 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testISA2Triple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        isAOperator();
+        isAOperator( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testISA2Map() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        isAOperator();
+        isAOperator( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
 
 
 
-    protected void manyTraits() {
+    protected void manyTraits( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
                 "import org.drools.Message;" +
                 "" +
@@ -1517,6 +1521,8 @@ public class TraitTest extends CommonTestMethodBase {
                 "            list.add(\"OK\");\n" +
                 "    end";
         StatefulKnowledgeSession ksession = getSessionFromString( source );
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1533,14 +1539,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testManyTraitsTriples() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        manyTraits();
+        manyTraits( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testManyTraitsMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        manyTraits();
+        manyTraits( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1549,9 +1553,11 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitManyTimes() {
+    public void traitManyTimes( TraitFactory.VirtualPropertyMode mode ) {
 
         StatefulKnowledgeSession ksession = getSession( "org/drools/factmodel/traits/testTraitDonMultiple.drl" );
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1567,14 +1573,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testManyTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitManyTimes();
+        traitManyTimes( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testManyMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitManyTimes();
+        traitManyTimes( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1583,7 +1587,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     // BZ #748752
-    public void traitsInBatchExecution() {
+    public void traitsInBatchExecution( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.jboss.qa.brms.traits\n" +
                 "import org.drools.Person;\n" +
                 "import org.drools.factmodel.traits.Traitable;\n" +
@@ -1632,7 +1636,11 @@ public class TraitTest extends CommonTestMethodBase {
         List list = new ArrayList();
 
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        TraitFactory.setMode( mode, kbase );
+
         StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+
+
         ksession.setGlobal( "list", list );
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -1652,14 +1660,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testBatchTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        traitsInBatchExecution();
+        traitsInBatchExecution( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testBatchMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        traitsInBatchExecution();
+        traitsInBatchExecution( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -1668,7 +1674,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void manyTraitsStateless() {
+    public void manyTraitsStateless( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
                 "import org.drools.Message;" +
                 "" +
@@ -1710,8 +1716,10 @@ public class TraitTest extends CommonTestMethodBase {
 
                 "            list.add(\"OK\");\n" +
                 "    end";
-        StatelessKnowledgeSession ksession = getStatelessSessionFromString( source );
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
+        KnowledgeBase kb = getKnowledgeBaseFromString( source );
+        TraitFactory.setMode( mode, kb );
+
+        StatelessKnowledgeSession ksession = kb.newStatelessKnowledgeSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1725,21 +1733,19 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testManyStatelessTriple() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        manyTraitsStateless();
+        manyTraitsStateless( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testManyStatelessMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        manyTraitsStateless();
+        manyTraitsStateless( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
 
 
 
-    public void aliasing() {
+    public void aliasing( TraitFactory.VirtualPropertyMode mode ) {
         String drl = "package org.drools.traits\n" +
                 "import org.drools.factmodel.traits.Traitable;\n" +
                 "import org.drools.factmodel.traits.Alias;\n" +
@@ -1792,6 +1798,8 @@ public class TraitTest extends CommonTestMethodBase {
                 "end";
 
         StatefulKnowledgeSession ksession = getSessionFromString( drl );
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -1810,14 +1818,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testAliasingTriples() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES );
-        aliasing();
+        aliasing( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testAliasingMap() {
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
-        aliasing();
+        aliasing( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 

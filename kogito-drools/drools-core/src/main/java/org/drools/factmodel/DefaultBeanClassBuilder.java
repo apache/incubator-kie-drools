@@ -21,6 +21,7 @@ import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * A builder to dynamically build simple Javabean(TM) classes
  */
-public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
+public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Serializable {
     protected boolean     debug  = false;
 
     public DefaultBeanClassBuilder() {

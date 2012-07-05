@@ -20,7 +20,9 @@ package org.drools.base;
 import org.drools.WorkingMemory;
 import org.drools.spi.KnowledgeHelper;
 
-public class DefaultKnowledgeHelperFactory implements KnowledgeHelperFactory {
+import java.io.Serializable;
+
+public class DefaultKnowledgeHelperFactory implements KnowledgeHelperFactory, Serializable {
     
     public KnowledgeHelper newSequentialKnowledgeHelper(WorkingMemory wm) {
         return new SequentialKnowledgeHelper( wm );

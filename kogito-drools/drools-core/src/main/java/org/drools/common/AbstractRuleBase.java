@@ -181,6 +181,8 @@ abstract public class AbstractRuleBase
         this.partitionIDs = new CopyOnWriteArrayList<RuleBasePartitionId>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
+
+        this.getConfiguration().getComponentFactory().getTraitFactory().setRuleBase( this );
     }
 
     private void createRulebaseId( final String id ) {
@@ -340,6 +342,8 @@ abstract public class AbstractRuleBase
         if (!isDrools) {
             droolsStream.close();
         }
+
+        this.getConfiguration().getComponentFactory().getTraitFactory().setRuleBase( this );
     }
 
     /**

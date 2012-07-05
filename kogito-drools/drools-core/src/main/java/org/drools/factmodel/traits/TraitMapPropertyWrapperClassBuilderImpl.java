@@ -35,11 +35,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder {
+public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 
-    private Map<String, FieldDefinition> aliases = new HashMap<String, FieldDefinition>();
+    private transient Map<String, FieldDefinition> aliases = new HashMap<String, FieldDefinition>();
     
-    private ClassDefinition trait;
+    private transient ClassDefinition trait;
 
     public void init( ClassDefinition trait ) {
         this.trait = trait;

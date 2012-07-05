@@ -213,12 +213,13 @@ public class JpaPersistenceTraitTest {
                 "end \n" +
                 "";
 
-        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP);
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                 ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -327,11 +328,11 @@ public class JpaPersistenceTraitTest {
         ksession2.fireAllRules();
 
 
-        Collection x = ksession2.getObjects();
-        assertEquals( 3, x.size() );
+        Collection y = ksession2.getObjects();
+        assertEquals( 3, y.size() );
 
         TraitableBean core = null;
-        for ( Object o : x ) {
+        for ( Object o : y ) {
             if ( o instanceof TraitableBean ) {
                 core = (TraitableBean) o;
                 break;
