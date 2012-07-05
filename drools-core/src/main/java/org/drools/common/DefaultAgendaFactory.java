@@ -17,7 +17,9 @@
 package org.drools.common;
 
 
-public class DefaultAgendaFactory implements AgendaFactory {
+import java.io.Serializable;
+
+public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 
     public DefaultAgenda createAgenda( InternalRuleBase ruleBase, boolean initMain ) {
         return new DefaultAgenda( ruleBase, initMain );

@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.drools.common.AbstractFactHandleFactory;
@@ -27,7 +28,7 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.FactHandleFactory;
 
-public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
+public class ReteooFactHandleFactory extends AbstractFactHandleFactory implements Serializable {
 
     private static final long serialVersionUID = 510l;
 

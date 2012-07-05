@@ -47,6 +47,7 @@ import org.drools.conf.SingleValueKnowledgeBaseOption;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.reteoo.LeftTupleSinkNode;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.runtime.rule.ConsequenceExceptionHandler;
@@ -162,8 +163,8 @@ public class RuleBaseConfiguration
 
     private transient CompositeClassLoader classLoader;
 
-    private transient ReteooComponentFactory   componentFactory = new ReteooComponentFactory();
-    
+    private ReteooComponentFactory         componentFactory;
+
     private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
     
     public static RuleBaseConfiguration getDefaultInstance() {
@@ -197,6 +198,7 @@ public class RuleBaseConfiguration
         out.writeBoolean( classLoaderCacheEnabled );
         out.writeBoolean( lrUnlinkingEnabled );
         out.writeBoolean(  declarativeAgenda );
+        out.writeObject( componentFactory );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -227,7 +229,7 @@ public class RuleBaseConfiguration
         classLoaderCacheEnabled = in.readBoolean();
         lrUnlinkingEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
-        componentFactory = new ReteooComponentFactory();
+        componentFactory = (ReteooComponentFactory) in.readObject();
     }
 
     /**
@@ -261,7 +263,7 @@ public class RuleBaseConfiguration
      * A constructor that sets the parent classloader to be used
      * while dealing with this rule base
      *
-     * @param classLoader
+     * @param classLoaders
      */
     public RuleBaseConfiguration(ClassLoader... classLoaders) {
         init( null,
@@ -390,7 +392,7 @@ public class RuleBaseConfiguration
      * of this rule base classloaders, and the properties to be used
      * as base configuration options
      *
-     * @param classLoder
+     * @param classLoaders
      * @param properties
      */
     public RuleBaseConfiguration(Properties properties,
@@ -484,6 +486,8 @@ public class RuleBaseConfiguration
                                                                                     "false" ) ) );
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
+
+        this.componentFactory = new ReteooComponentFactory();
 
     }
 
@@ -930,7 +934,7 @@ public class RuleBaseConfiguration
     /**
      * Defines if the RuleBase should expose management and monitoring MBeans
      * 
-     * @param enableMultithread true for multi-thread or 
+     * @param mbeansEnabled true for multi-thread or
      *                     false for single-thread. Default is false.
      */
     public void setMBeansEnabled(boolean mbeansEnabled) {

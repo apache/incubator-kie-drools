@@ -17,6 +17,7 @@
 package org.drools.factmodel.traits;
 
 import org.drools.KnowledgeBase;
+import org.drools.RuleBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.common.AbstractRuleBase;
@@ -34,7 +35,7 @@ import org.drools.rule.Package;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -43,47 +44,45 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes {
-
+public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
+    
 //    private static TripleStore store = new TripleStore( 500, 0.6f );
 
     public enum VirtualPropertyMode { MAP, TRIPLES }
 
-    private static VirtualPropertyMode mode = VirtualPropertyMode.TRIPLES;
+    private VirtualPropertyMode mode = VirtualPropertyMode.TRIPLES;
 
     public final static String SUFFIX = "_Trait__Extension";
 
     private static final String pack = "org.drools.factmodel.traits.";
 
-    private static Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
+    private Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
 
-    private static Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
+    private Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
 
-    private AbstractRuleBase ruleBase;
+    private transient AbstractRuleBase ruleBase;
+
     
-    public static Class proxyBaseClass = TraitProxy.class;
-
-    public static Class getProxyBaseClass() {
-        return proxyBaseClass;
-    }
-
     public static void reset() {
-        factoryCache.clear();
-        wrapperCache.clear();
+//        factoryCache.clear();
+//        wrapperCache.clear();
     }
 
-    public static void setMode( VirtualPropertyMode newMode ) {
-        mode = newMode;
-        switch ( mode ) {
+    public static void setMode( VirtualPropertyMode newMode, KnowledgeBase kBase ) {
+        RuleBase ruleBase = ((KnowledgeBaseImpl) kBase).getRuleBase();
+        ReteooComponentFactory rcf = ((AbstractRuleBase) ruleBase).getConfiguration().getComponentFactory();
+        ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
+        rcf.getTraitFactory().mode = newMode;
+        switch ( newMode ) {
             case MAP    :
-                ClassBuilderFactory.setPropertyWrapperBuilderService( new TraitMapPropertyWrapperClassBuilderImpl() );
-                ClassBuilderFactory.setTraitProxyBuilderService( new TraitMapProxyClassBuilderImpl() );
+                cbf.setPropertyWrapperBuilder( new TraitMapPropertyWrapperClassBuilderImpl() );
+                cbf.setTraitProxyBuilder( new TraitMapProxyClassBuilderImpl() );
                 break;
             case TRIPLES:
-                ClassBuilderFactory.setPropertyWrapperBuilderService( new TraitTriplePropertyWrapperClassBuilderImpl() );
-                ClassBuilderFactory.setTraitProxyBuilderService( new TraitTripleProxyClassBuilderImpl() );
+                cbf.setPropertyWrapperBuilder( new TraitTriplePropertyWrapperClassBuilderImpl() );
+                cbf.setTraitProxyBuilder( new TraitTripleProxyClassBuilderImpl() );
                 break;
-            default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+            default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + newMode );
         }
 
     }
@@ -91,10 +90,23 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-    public TraitFactory( KnowledgeBase knowledgeBase ) {
-        ruleBase = (AbstractRuleBase) ((KnowledgeBaseImpl) knowledgeBase).getRuleBase();
+    public TraitFactory( ) {
+
     }
 
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( mode );
+        out.writeObject( factoryCache );
+        out.writeObject( wrapperCache );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        mode = (VirtualPropertyMode) in.readObject();
+        factoryCache = (Map<String, Constructor>) in.readObject();
+        wrapperCache = (Map<Class, Class<? extends CoreWrapper<?>>>) in.readObject();
+    }
+    
 
 
     public T getProxy( K core, Class<?> trait ) {
@@ -114,7 +126,6 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         T proxy = null;
         try {
-
             switch ( mode ) {
                 case MAP    :   proxy = konst.newInstance( core, core.getDynamicProperties() );
                     break;
@@ -137,10 +148,13 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
 
+    public AbstractRuleBase getRuleBase() {
+        return ruleBase;
+    }
 
-
-
-
+    public void setRuleBase(AbstractRuleBase ruleBase) {
+        this.ruleBase = ruleBase;
+    }
 
 
     private Constructor<T> cacheConstructor( String key, K core, Class<?> trait ) {
@@ -194,6 +208,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         String proxyName = getProxyName( tdef, cdef );
         String wrapperName = getPropertyWrapperName( tdef, cdef );
 
+        ReteooComponentFactory rcf = ruleBase.getConfiguration().getComponentFactory();
+
 //        JavaDialectRuntimeData data = ruleBase.gett
 //
 //                ((JavaDialectRuntimeData) getPackage( tdef.getDefinedClass().getPackage().getName() ).getDialectRuntimeRegistry().
@@ -201,7 +217,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) ClassBuilderFactory.getPropertyWrapperBuilderService();
+        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();
 //        switch ( mode ) {
 //            case TRIPLES    : propWrapperBuilder = new TraitTriplePropertyWrapperClassBuilderImpl();
 //                break;
@@ -223,7 +239,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
 
 
-        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) ClassBuilderFactory.getTraitProxyBuilderService();
+        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) rcf.getClassBuilderFactory().getTraitProxyBuilder();
 //        switch ( mode ) {
 //            case TRIPLES    : proxyBuilder = new TraitTripleProxyClassBuilderImpl();
 //                break;
@@ -231,7 +247,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 //                break;
 //            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
 //        }
-        proxyBuilder.init( tdef );
+        proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass() );
         try {
             byte[] proxy = proxyBuilder.buildClass( cdef );
             ruleBase.registerAndLoadTypeDefinition( proxyName, proxy );
@@ -419,7 +435,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 //            data.onBeforeExecute();
         } catch ( Exception e ) {
-
+            e.printStackTrace();
         }
 
         Class<CoreWrapper<K>> wrapperClass = (Class<CoreWrapper<K>>) ruleBase.getRootClassLoader().loadClass( wrapperName, true );

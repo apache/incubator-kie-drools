@@ -33,7 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBuilder {
+import java.io.Serializable;
+
+public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBuilder, Serializable {
 
 
     public byte[] buildClass( ClassDefinition core ) throws IOException,
@@ -139,7 +141,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod( ACC_PROTECTED, "getTraitMap", "()" + Type.getDescriptor( Map.class ), 
+            mv = cw.visitMethod( ACC_PUBLIC, "getTraitMap", "()" + Type.getDescriptor( Map.class ),
                                  "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
@@ -273,7 +275,6 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( coreName ) );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), "core", BuildUtils.getTypeDescriptor( coreName ) );
 
-
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectInput.class ), "readObject", "()" + Type.getDescriptor( Object.class ) );
@@ -285,7 +286,6 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectInput.class ), "readObject", "()" + Type.getDescriptor( Object.class ) );
             mv.visitTypeInsn( CHECKCAST, Type.getInternalName( Map.class ) );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
-
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 3, 2 );

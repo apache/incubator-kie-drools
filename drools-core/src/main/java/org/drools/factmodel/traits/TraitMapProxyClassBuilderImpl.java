@@ -40,17 +40,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
+public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
 
-    private ClassDefinition trait;
+    private transient ClassDefinition trait;
+    
+    private transient Class<?> proxyBaseClass;
 
     protected ClassDefinition getTrait() {
         return trait;
     }
 
-    public void init( ClassDefinition trait ) {
+    public void init( ClassDefinition trait, Class<?> baseClass ) {
         this.trait = trait;
+        this.proxyBaseClass = baseClass;
     }
 
 
@@ -126,7 +129,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
         cw.visit( V1_5, ACC_PUBLIC + ACC_SUPER,
                   internalProxy,
                   null,
-                  Type.getInternalName( TraitFactory.proxyBaseClass ),
+                  Type.getInternalName( proxyBaseClass ),
                   new String[]{ internalTrait, Type.getInternalName( Serializable.class ) } );
 
         {
@@ -151,7 +154,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv.visitCode();
 
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "<init>", "()V" );
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 1, 1 );
@@ -161,7 +164,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "(" + descrCore + Type.getDescriptor( Map.class ) + ")V", "(" + descrCore + "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V", null);
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "<init>", "()V" );
             if ( mixinClass != null ) {
                 try {
                     Class actualArg = getPossibleConstructor( mixinClass, trait.getDefinedClass() );
@@ -253,7 +256,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "writeExternal", "(" + Type.getDescriptor( ObjectOutput.class ) + ")V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "writeExternal", "(" + Type.getDescriptor( ObjectOutput.class ) + ")V" );
 
 
             mv.visitInsn( RETURN );
@@ -281,7 +284,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "readExternal", "(" + Type.getDescriptor( ObjectInput.class ) + ")V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "readExternal", "(" + Type.getDescriptor( ObjectInput.class ) + ")V" );
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 3, 2 );
@@ -578,13 +581,13 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv.visitLabel( l2 );
 
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitFactory.proxyBaseClass ) );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( proxyBaseClass ) );
             mv.visitVarInsn( ASTORE, 2 );
 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, "getFields", "()" + Type.getDescriptor( Map.class ) );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "getFields", "()" + Type.getDescriptor( Map.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( proxyBaseClass ), "getFields", "()" + Type.getDescriptor( Map.class ) );
             mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( Object.class ), "equals", "(" + Type.getDescriptor( Object.class) + ")Z" );
 
             mv.visitInsn( IRETURN );

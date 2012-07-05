@@ -37,7 +37,7 @@ public class ConsequenceGenerator {
         RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
         final boolean isOrRule = rtn.getRule().getTransformedLhs(
-                ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getLogicTransformer()
+                ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer()
         ).length > 1;
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
