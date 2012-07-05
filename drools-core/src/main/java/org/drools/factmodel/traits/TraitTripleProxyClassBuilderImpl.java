@@ -43,17 +43,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder {
+import java.io.Serializable;
+
+public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
 
-    private ClassDefinition trait;
+    private transient ClassDefinition trait;
+    
+    private transient Class<?> proxyBaseClass;
 
     protected ClassDefinition getTrait() {
         return trait;
     }
 
-    public void init( ClassDefinition trait ) {
+    public void init( ClassDefinition trait, Class<?> baseClass ) {
         this.trait = trait;
+        this.proxyBaseClass = baseClass;
     }
 
 
@@ -127,7 +132,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
                   ACC_PUBLIC + ACC_SUPER,
                   internalProxy,
                   null,
-                  Type.getInternalName( TraitFactory.proxyBaseClass ),
+                  Type.getInternalName( proxyBaseClass ),
                   new String[] { internalTrait, Type.getInternalName( Externalizable.class ) } );
 
         {
@@ -156,7 +161,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitCode();
 
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "<init>", "()V" );
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 1, 1 );
@@ -236,7 +241,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "writeExternal", "(" + Type.getDescriptor( ObjectOutput.class ) + ")V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "writeExternal", "(" + Type.getDescriptor( ObjectOutput.class ) + ")V" );
 
 
             mv.visitInsn( RETURN );
@@ -270,7 +275,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "readExternal", "(" + Type.getDescriptor( ObjectInput.class ) + ")V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "readExternal", "(" + Type.getDescriptor( ObjectInput.class ) + ")V" );
 
 
             mv.visitVarInsn( ALOAD, 0);
@@ -352,7 +357,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
 
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "<init>", "()V" );
+        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "<init>", "()V" );
         if ( mixinClass != null ) {
             try {
 //                    Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
@@ -684,12 +689,12 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitInsn( IRETURN );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitFactory.proxyBaseClass ) );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( proxyBaseClass ) );
             mv.visitVarInsn( ASTORE, 2 );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, "getFields", "()" + Type.getDescriptor( Map.class ) );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "getFields", "()" + Type.getDescriptor( Map.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( proxyBaseClass ), "getFields", "()" + Type.getDescriptor( Map.class ) );
             mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( Object.class ), "equals", "(" + Type.getDescriptor( Object.class ) + ")Z" );
             Label l1 = new Label();
             mv.visitJumpInsn( IFNE, l1 );
@@ -699,7 +704,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, "getObject", "()" + Type.getDescriptor( Object.class ) );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "getObject", "()" + Type.getDescriptor( Object.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( proxyBaseClass ), "getObject", "()" + Type.getDescriptor( Object.class ) );
             mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( Object.class ), "equals", "(" + Type.getDescriptor( Object.class ) + ")Z" );
             Label l2 = new Label();
             mv.visitJumpInsn( IFNE, l2 );
@@ -715,7 +720,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "hashCode", "()I", null, null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFactory.proxyBaseClass ), "hashCode", "()I" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "hashCode", "()I" );
             mv.visitVarInsn( ISTORE, 1 );
             mv.visitIntInsn( BIPUSH, 31 );
             mv.visitVarInsn( ILOAD, 1 );

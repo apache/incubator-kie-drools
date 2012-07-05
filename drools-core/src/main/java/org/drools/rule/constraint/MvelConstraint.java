@@ -51,8 +51,8 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     protected static final boolean TEST_JITTING = false;
     protected static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
 
-    private final transient AtomicInteger invocationCounter = new AtomicInteger(1);
-    private transient boolean jitted = false;
+    protected final transient AtomicInteger invocationCounter = new AtomicInteger(1);
+    protected transient boolean jitted = false;
 
     private String packageName;
     protected String expression;

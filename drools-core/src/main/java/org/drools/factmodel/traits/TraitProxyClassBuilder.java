@@ -21,6 +21,6 @@ import org.drools.factmodel.ClassDefinition;
 
 public interface TraitProxyClassBuilder extends ClassBuilder {
 
-    public void init( ClassDefinition trait );
+    public void init( ClassDefinition trait, Class<?> proxyBaseClass );
 
 }

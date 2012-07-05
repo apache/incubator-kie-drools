@@ -24,12 +24,19 @@ import org.drools.common.AgendaFactory;
 import org.drools.common.DefaultAgendaFactory;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
+import org.drools.factmodel.ClassBuilderFactory;
+import org.drools.factmodel.traits.TraitFactory;
+import org.drools.factmodel.traits.TraitProxy;
 import org.drools.reteoo.builder.DefaultNodeFactory;
 import org.drools.reteoo.builder.NodeFactory;
+import org.drools.rule.DefaultLogicTransformerFactory;
 import org.drools.rule.LogicTransformer;
+import org.drools.rule.LogicTransformerFactory;
 import org.drools.spi.FactHandleFactory;
 
-public class ReteooComponentFactory {
+import java.io.Serializable;
+
+public class ReteooComponentFactory implements Serializable {
 
     private FactHandleFactory handleFactory = new ReteooFactHandleFactory();
 
@@ -176,24 +183,71 @@ public class ReteooComponentFactory {
 
 
 
-    private LogicTransformer logicTransformer = LogicTransformer.getInstance();
+    private LogicTransformerFactory logicTransformerFactory = new DefaultLogicTransformerFactory();
 
-    public LogicTransformer getLogicTransformer() {
-        return logicTransformer;
+    public LogicTransformerFactory getLogicTransformerFactory() {
+        return logicTransformerFactory;
     }
 
-    public void setLogicTransformer( LogicTransformer provider ) {
-        logicTransformer = provider;
+    public void setLogicTransformerFactory( LogicTransformerFactory provider ) {
+        logicTransformerFactory = provider;
     }
 
-    public void setDefaultLogicTransformer() {
-        logicTransformer = LogicTransformer.getInstance();
+    public void setDefaultLogicTransformerFactory() {
+        logicTransformerFactory = new DefaultLogicTransformerFactory();
     }
 
-    public static LogicTransformer getDefaultLogicTransformer() {
-        return LogicTransformer.getInstance();
+    public static LogicTransformerFactory getDefaultLogicTransformerFactory() {
+        return new DefaultLogicTransformerFactory();
+    }
+    
+    
+
+    private TraitFactory traitFactory = new TraitFactory();
+
+    public TraitFactory getTraitFactory() {
+        return traitFactory;
+    }
+
+    public void setTraitFactory( TraitFactory tf ) {
+        traitFactory = tf;
+    }
+
+    public void setDefaultTraitFactory() {
+        traitFactory = new TraitFactory();
+    }
+
+    public static TraitFactory getDefaultTraitFactory() {
+        return new TraitFactory();
     }
 
 
+    private ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory();
 
+    public ClassBuilderFactory getClassBuilderFactory() {
+        return classBuilderFactory;
+    }
+
+    public void setClassBuilderFactory( ClassBuilderFactory tf ) {
+        classBuilderFactory = tf;
+    }
+
+    public void setDefaultClassBuilderFactory() {
+        classBuilderFactory = new ClassBuilderFactory();
+    }
+
+    public static ClassBuilderFactory getDefaultClassBuilderFactory() {
+        return new ClassBuilderFactory();
+    }
+
+
+    private Class<?> baseTraitProxyClass = TraitProxy.class;
+
+    public Class<?> getBaseTraitProxyClass() {
+        return baseTraitProxyClass;
+    }
+
+    public void setBaseTraitProxyClass(Class<?> baseTraitProxyClass) {
+        this.baseTraitProxyClass = baseTraitProxyClass;
+    }
 }

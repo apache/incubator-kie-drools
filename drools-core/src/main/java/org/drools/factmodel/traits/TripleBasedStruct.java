@@ -3,6 +3,7 @@ package org.drools.factmodel.traits;
 
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
+import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 import org.drools.runtime.rule.Variable;
 

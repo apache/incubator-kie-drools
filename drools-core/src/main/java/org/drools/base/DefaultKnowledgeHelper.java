@@ -27,6 +27,7 @@ import java.util.Map;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.AbstractRuleBase;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
@@ -40,6 +41,7 @@ import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
@@ -514,7 +516,8 @@ public class DefaultKnowledgeHelper
     }
 
     protected <T, K> T applyTrait( K core, Class<T> trait ) {
-        TraitFactory builder = new TraitFactory( this.getKnowledgeRuntime().getKnowledgeBase() );
+        AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKnowledgeBase() ).getRuleBase();
+        TraitFactory builder = arb.getConfiguration().getComponentFactory().getTraitFactory();
 
         boolean needsWrapping = ! ( core instanceof TraitableBean );
 
