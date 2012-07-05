@@ -16,16 +16,6 @@
 
 package org.drools.compiler;
 
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -37,15 +27,16 @@ import org.drools.builder.conf.DefaultDialectOption;
 import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.builder.conf.DumpDirOption;
 import org.drools.builder.conf.EvaluatorOption;
+import org.drools.builder.conf.KBuilderSeverityOption;
 import org.drools.builder.conf.KnowledgeBuilderOption;
 import org.drools.builder.conf.MultiValueKnowledgeBuilderOption;
-import org.drools.builder.conf.KBuilderSeverityOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.builder.conf.PropertySpecificOption;
 import org.drools.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.drools.compiler.xml.RulesSemanticModule;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
+import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.StringUtils;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.AccumulateFunction;
@@ -58,6 +49,14 @@ import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
 import org.drools.xml.WrapperSemanticModule;
+
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -290,13 +289,12 @@ public class PackageBuilderConfiguration
                                               false );
         setDefaultDialect( (String) dialectProperties.remove( DefaultDialectOption.PROPERTY_NAME ) );
 
-        for ( Iterator it = dialectProperties.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
+        for (Object o : dialectProperties.entrySet()) {
+            Entry entry = (Entry) o;
             String str = (String) entry.getKey();
-            String dialectName = str.substring( str.lastIndexOf( "." ) + 1 );
+            String dialectName = str.substring(str.lastIndexOf(".") + 1);
             String dialectClass = (String) entry.getValue();
-            addDialect( dialectName,
-                        dialectClass );
+            addDialect(dialectName, dialectClass);
         }
     }
 
@@ -325,13 +323,9 @@ public class PackageBuilderConfiguration
                                                            PackageRegistry pkgRegistry,
                                                            Package pkg) {
         DialectCompiletimeRegistry registry = new DialectCompiletimeRegistry();
-        for ( Iterator it = this.dialectConfigurations.values().iterator(); it.hasNext(); ) {
-            DialectConfiguration conf = (DialectConfiguration) it.next();
-            Dialect dialect = conf.newDialect( packageBuilder,
-                                               pkgRegistry,
-                                               pkg );
-            registry.addDialect( dialect.getId(),
-                                 dialect );
+        for (DialectConfiguration conf : this.dialectConfigurations.values()) {
+            Dialect dialect = conf.newDialect(packageBuilder, pkgRegistry, pkg);
+            registry.addDialect(dialect.getId(), dialect);
         }
         return registry;
     }
@@ -345,7 +339,7 @@ public class PackageBuilderConfiguration
     }
 
     public DialectConfiguration getDialectConfiguration(String name) {
-        return (DialectConfiguration) this.dialectConfigurations.get( name );
+        return this.dialectConfigurations.get( name );
     }
 
     public void setDialectConfiguration(String name,
@@ -392,7 +386,6 @@ public class PackageBuilderConfiguration
         String locations[] = this.chainedProperties.getProperty( "semanticModules",
                                                                  "" ).split( "\\s" );
 
-        int i = 0;
         // load each SemanticModule
         for ( String moduleLocation : locations ) {
             // trim leading/trailing spaces and quotes
@@ -524,7 +517,7 @@ public class PackageBuilderConfiguration
                                                       String className) {
         try {
             Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) this.classLoader.loadClass( className );
-            return (AccumulateFunction) clazz.newInstance();
+            return clazz.newInstance();
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
                                               e );
