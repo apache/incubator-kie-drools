@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.cached;
+package org.drools.planner.core.heuristic.selector.move.cached;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -22,7 +22,9 @@ import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.move.DummyMove;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
@@ -32,11 +34,14 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
-import static org.junit.Assert.*;
+import static org.drools.planner.core.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class FilteringEntitySelectorTest {
+public class FilteringMoveSelectorTest {
 
     @Test
     public void cacheTypeSolver() {
@@ -59,80 +64,80 @@ public class FilteringEntitySelectorTest {
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
-        EntitySelector childEntitySelector = mock(EntitySelector.class);
-        final List<Object> entityList = Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
-        when(childEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
+        MoveSelector childMoveSelector = mock(MoveSelector.class);
+        final List<Move> moveList = Arrays.<Move>asList(
+                new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
+        when(childMoveSelector.iterator()).thenAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.iterator();
+                return moveList.iterator();
             }
         });
-        when(childEntitySelector.isContinuous()).thenReturn(false);
-        when(childEntitySelector.isNeverEnding()).thenReturn(false);
-        when(childEntitySelector.getSize()).thenReturn((long) entityList.size());
+        when(childMoveSelector.isContinuous()).thenReturn(false);
+        when(childMoveSelector.isNeverEnding()).thenReturn(false);
+        when(childMoveSelector.getSize()).thenReturn((long) moveList.size());
 
-        SelectionFilter<TestdataEntity> entityFilter = new SelectionFilter<TestdataEntity>() {
-            public boolean accept(ScoreDirector scoreDirector, TestdataEntity entity) {
-                return !entity.getCode().equals("e3");
+        SelectionFilter<DummyMove> entityFilter = new SelectionFilter<DummyMove>() {
+            public boolean accept(ScoreDirector scoreDirector, DummyMove move) {
+                return !move.getCode().equals("e3");
             }
         };
-        EntitySelector entitySelector = cacheType == SelectionCacheType.JUST_IN_TIME
-                ? new JustInTimeFilteringEntitySelector(childEntitySelector, cacheType, entityFilter)
-                : new CachingFilteringEntitySelector(childEntitySelector, cacheType, entityFilter);
+        MoveSelector moveSelector = cacheType == SelectionCacheType.JUST_IN_TIME
+                ? new JustInTimeFilteringMoveSelector(childMoveSelector, cacheType, entityFilter)
+                : new CachingFilteringMoveSelector(childMoveSelector, cacheType, entityFilter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
-        entitySelector.solvingStarted(solverScope);
+        moveSelector.solvingStarted(solverScope);
 
         AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        entitySelector.phaseStarted(phaseScopeA);
+        moveSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
-        entitySelector.stepStarted(stepScopeA1);
-        runAsserts(entitySelector, cacheType);
-        entitySelector.stepEnded(stepScopeA1);
+        moveSelector.stepStarted(stepScopeA1);
+        runAsserts(moveSelector, cacheType);
+        moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
-        entitySelector.stepStarted(stepScopeA2);
-        runAsserts(entitySelector, cacheType);
-        entitySelector.stepEnded(stepScopeA2);
+        moveSelector.stepStarted(stepScopeA2);
+        runAsserts(moveSelector, cacheType);
+        moveSelector.stepEnded(stepScopeA2);
 
-        entitySelector.phaseEnded(phaseScopeA);
+        moveSelector.phaseEnded(phaseScopeA);
 
         AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        entitySelector.phaseStarted(phaseScopeB);
+        moveSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB1);
-        runAsserts(entitySelector, cacheType);
-        entitySelector.stepEnded(stepScopeB1);
+        moveSelector.stepStarted(stepScopeB1);
+        runAsserts(moveSelector, cacheType);
+        moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB2);
-        runAsserts(entitySelector, cacheType);
-        entitySelector.stepEnded(stepScopeB2);
+        moveSelector.stepStarted(stepScopeB2);
+        runAsserts(moveSelector, cacheType);
+        moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB3);
-        runAsserts(entitySelector, cacheType);
-        entitySelector.stepEnded(stepScopeB3);
+        moveSelector.stepStarted(stepScopeB3);
+        runAsserts(moveSelector, cacheType);
+        moveSelector.stepEnded(stepScopeB3);
 
-        entitySelector.phaseEnded(phaseScopeB);
+        moveSelector.phaseEnded(phaseScopeB);
 
-        entitySelector.solvingEnded(solverScope);
+        moveSelector.solvingEnded(solverScope);
 
-        verify(childEntitySelector, times(timesCalled)).iterator();
-        verify(childEntitySelector, times(timesCalled)).getSize();
+        verify(childMoveSelector, times(timesCalled)).iterator();
+        verify(childMoveSelector, times(timesCalled)).getSize();
     }
 
-    private void runAsserts(EntitySelector entitySelector, SelectionCacheType cacheType) {
-        Iterator<Object> iterator = entitySelector.iterator();
+    private void runAsserts(MoveSelector moveSelector, SelectionCacheType cacheType) {
+        Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
         assertTrue(iterator.hasNext());
         assertCode("e1", iterator.next());
@@ -141,9 +146,9 @@ public class FilteringEntitySelectorTest {
         assertTrue(iterator.hasNext());
         assertCode("e4", iterator.next());
         assertFalse(iterator.hasNext());
-        assertEquals(false, entitySelector.isContinuous());
-        assertEquals(false, entitySelector.isNeverEnding());
-        assertEquals((cacheType == SelectionCacheType.JUST_IN_TIME ? 4L : 3L), entitySelector.getSize());
+        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(false, moveSelector.isNeverEnding());
+        assertEquals((cacheType == SelectionCacheType.JUST_IN_TIME ? 4L : 3L), moveSelector.getSize());
     }
 
 }

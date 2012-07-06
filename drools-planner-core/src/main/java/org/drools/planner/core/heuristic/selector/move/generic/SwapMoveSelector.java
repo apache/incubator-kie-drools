@@ -22,12 +22,10 @@ import java.util.NoSuchElementException;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.generic.GenericChainedSwapMove;
-import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.move.generic.GenericSwapMove;
 
 public class SwapMoveSelector extends GenericMoveSelector {
@@ -89,7 +87,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
         }
     }
 
-    private class OriginalSwapMoveIterator implements Iterator<Move> {
+    private class OriginalSwapMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<Object> leftEntityIterator;
         private Iterator<Object> rightEntityIterator;
@@ -104,11 +102,11 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 upcomingMove = null;
             } else {
                 leftEntity = leftEntityIterator.next();
-                createUpcomingMove();
+                createUpcomingSelection();
             }
         }
 
-        private void createUpcomingMove() {
+        protected void createUpcomingSelection() {
             if (!rightEntityIterator.hasNext()) {
                 if (!leftEntityIterator.hasNext()) {
                     upcomingMove = null;
@@ -124,42 +122,24 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     : new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
-        public boolean hasNext() {
-            return upcomingMove != null;
-        }
-
-        public Move next() {
-            if (upcomingMove == null) {
-                throw new NoSuchElementException();
-            }
-            Move move = upcomingMove;
-            createUpcomingMove();
-            return move;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Remove is not supported.");
-        }
     }
 
-    private class RandomSwapMoveIterator implements Iterator<Move> {
+    private class RandomSwapMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<Object> leftEntityIterator;
         private Iterator<Object> rightEntityIterator;
-
-        private Move upcomingMove;
 
         private RandomSwapMoveIterator() {
             leftEntityIterator = leftEntitySelector.iterator();
             rightEntityIterator = rightEntitySelector.iterator();
             if (!leftEntityIterator.hasNext() || !rightEntityIterator.hasNext()) {
-                upcomingMove = null;
+                upcomingSelection = null;
             } else {
-                createUpcomingMove();
+                createUpcomingSelection();
             }
         }
 
-        private void createUpcomingMove() {
+        protected void createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object leftEntity = leftEntityIterator.next();
             //     Object rightEntity = rightEntityIterator.next(entity);
@@ -172,27 +152,11 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 rightEntityIterator = rightEntitySelector.iterator();
             }
             Object rightEntity = rightEntityIterator.next();
-            upcomingMove = anyChained
+            upcomingSelection = anyChained
                     ? new GenericChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
                     : new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
-        public boolean hasNext() {
-            return upcomingMove != null;
-        }
-
-        public Move next() {
-            if (upcomingMove == null) {
-                throw new NoSuchElementException();
-            }
-            Move move = upcomingMove;
-            createUpcomingMove();
-            return move;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Remove is not supported.");
-        }
     }
 
     @Override

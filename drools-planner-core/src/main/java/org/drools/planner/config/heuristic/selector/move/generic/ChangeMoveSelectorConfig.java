@@ -22,15 +22,10 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
-import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.FilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.FilteringMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.ShufflingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 

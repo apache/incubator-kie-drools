@@ -18,12 +18,13 @@ package org.drools.planner.examples.manners2009.solver.move;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.move.generic.GenericSwapMove;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.manners2009.domain.Manners2009;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
-public class DifferentGenderSwapMoveFilter implements SelectionFilter<Manners2009, GenericSwapMove> {
+public class DifferentGenderSwapMoveFilter implements SelectionFilter<GenericSwapMove> {
 
-    public boolean accept(Manners2009 solution, GenericSwapMove move) {
+    public boolean accept(ScoreDirector scoreDirector, GenericSwapMove move) {
         SeatDesignation leftSeatDesignation = (SeatDesignation) move.getLeftPlanningEntity();
         SeatDesignation rightSeatDesignation = (SeatDesignation) move.getRightPlanningEntity();
         return leftSeatDesignation.getGuest().getGender()

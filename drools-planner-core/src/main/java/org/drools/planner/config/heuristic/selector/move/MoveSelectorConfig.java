@@ -24,12 +24,10 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.FilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.cached.CachingFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.cached.JustInTimeFilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.cached.ShufflingMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
@@ -116,8 +114,14 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                         + moveFilterClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
-            FilteringMoveSelector filteringMoveSelector = new FilteringMoveSelector(moveSelector,
-                    resolvedCacheType, moveFilter);
+            MoveSelector filteringMoveSelector;
+            if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
+                filteringMoveSelector = new JustInTimeFilteringMoveSelector(moveSelector,
+                        resolvedCacheType, moveFilter);
+            } else {
+                filteringMoveSelector = new CachingFilteringMoveSelector(moveSelector,
+                        resolvedCacheType, moveFilter);
+            }
             moveSelector = filteringMoveSelector;
         }
         // TODO moveSorterClass

@@ -30,8 +30,12 @@ import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.FilteringEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.cached.CachingFilteringEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.cached.JustInTimeFilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.cached.ProbabilityEntitySelector;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.move.cached.CachingFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.cached.JustInTimeFilteringMoveSelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
@@ -145,8 +149,14 @@ public class EntitySelectorConfig extends SelectorConfig {
                         + entityFilterClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
-            FilteringEntitySelector filteringEntitySelector = new FilteringEntitySelector(entitySelector,
-                    resolvedCacheType, entityFilter);
+            EntitySelector filteringEntitySelector;
+            if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
+                filteringEntitySelector = new JustInTimeFilteringEntitySelector(entitySelector,
+                        resolvedCacheType, entityFilter);
+            } else {
+                filteringEntitySelector = new CachingFilteringEntitySelector(entitySelector,
+                        resolvedCacheType, entityFilter);
+            }
             entitySelector = filteringEntitySelector;
         }
 

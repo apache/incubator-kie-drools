@@ -24,14 +24,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class FilteringEntitySelector extends CachingEntitySelector {
+public class CachingFilteringEntitySelector extends CachingEntitySelector {
 
     protected final SelectionFilter entityFilter;
 
-    public FilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
+    public CachingFilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
             SelectionFilter entityFilter) {
         super(childEntitySelector, cacheType);
         this.entityFilter = entityFilter;
@@ -43,7 +44,7 @@ public class FilteringEntitySelector extends CachingEntitySelector {
 
     @Override
     public void constructCache(DefaultSolverScope solverScope) {
-        Solution workingSolution = solverScope.getWorkingSolution();
+        ScoreDirector scoreDirector = solverScope.getScoreDirector();
         long childSize = childEntitySelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The moveSelector (" + this + ") has a childEntitySelector ("
@@ -52,7 +53,7 @@ public class FilteringEntitySelector extends CachingEntitySelector {
         }
         cachedEntityList = new ArrayList<Object>((int) childSize);
         for (Object entity : childEntitySelector) {
-            if (entityFilter.accept(workingSolution, entity)) {
+            if (entityFilter.accept(scoreDirector, entity)) {
                 cachedEntityList.add(entity);
             }
         }

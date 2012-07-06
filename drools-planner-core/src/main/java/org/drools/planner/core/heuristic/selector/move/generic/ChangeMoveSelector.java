@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
@@ -71,7 +72,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         }
     }
 
-    private class OriginalChangeMoveIterator implements Iterator<Move> {
+    private class OriginalChangeMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<Object> entityIterator;
         private ValueIterator valueIterator;
@@ -87,11 +88,11 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 upcomingMove = null;
             } else {
                 entity = entityIterator.next();
-                createUpcomingMove();
+                createUpcomingSelection();
             }
         }
 
-        private void createUpcomingMove() {
+        protected void createUpcomingSelection() {
             while (!valueIterator.hasNext(entity)) {
                 if (!entityIterator.hasNext()) {
                     upcomingMove = null;
@@ -106,25 +107,9 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                     : new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
         }
 
-        public boolean hasNext() {
-            return upcomingMove != null;
-        }
-
-        public Move next() {
-            if (upcomingMove == null) {
-                throw new NoSuchElementException();
-            }
-            Move move = upcomingMove;
-            createUpcomingMove();
-            return move;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Remove is not supported.");
-        }
     }
 
-    private class RandomChangeMoveIterator implements Iterator<Move> {
+    private class RandomChangeMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<Object> entityIterator;
         private ValueIterator valueIterator;
@@ -138,11 +123,11 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingMove = null;
             } else {
-                createUpcomingMove();
+                createUpcomingSelection();
             }
         }
 
-        private void createUpcomingMove() {
+        protected void createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object entity = entityIterator.next();
             //     Object toValue = valueIterator.next(entity);
@@ -176,22 +161,6 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                     : new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
         }
 
-        public boolean hasNext() {
-            return upcomingMove != null;
-        }
-
-        public Move next() {
-            if (upcomingMove == null) {
-                throw new NoSuchElementException();
-            }
-            Move move = upcomingMove;
-            createUpcomingMove();
-            return move;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Remove is not supported.");
-        }
     }
 
     @Override

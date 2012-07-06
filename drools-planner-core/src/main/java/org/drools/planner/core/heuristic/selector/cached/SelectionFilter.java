@@ -19,6 +19,7 @@ package org.drools.planner.core.heuristic.selector.cached;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 /**
@@ -27,14 +28,15 @@ import org.drools.planner.core.solution.Solution;
  * <p/>
  * A filtered selection is considered as not selected, it does not count as an unaccepted selection.
  */
-public interface SelectionFilter<S extends Solution, T> {
+public interface SelectionFilter<T> {
 
     /**
-     * @param solution never null, the {@link Solution} to which the selection belongs or applies to
+     * @param scoreDirector never null, the {@link ScoreDirector}
+     * which has the {@link ScoreDirector#getWorkingSolution()} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * to create the probabilityWeight for
      * @return true if the selection is accepted, false if the selection should be discarded
      */
-    boolean accept(S solution, T selection);
+    boolean accept(ScoreDirector scoreDirector, T selection);
 
 }

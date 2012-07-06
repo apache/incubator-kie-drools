@@ -26,14 +26,15 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.cached.CachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class FilteringMoveSelector extends CachingMoveSelector {
+public class CachingFilteringMoveSelector extends CachingMoveSelector {
 
     protected final SelectionFilter moveFilter;
 
-    public FilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
+    public CachingFilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
             SelectionFilter moveFilter) {
         super(childMoveSelector, cacheType);
         this.moveFilter = moveFilter;
@@ -45,11 +46,11 @@ public class FilteringMoveSelector extends CachingMoveSelector {
 
     @Override
     public void constructCache(DefaultSolverScope solverScope) {
-        Solution workingSolution = solverScope.getWorkingSolution();
+        ScoreDirector scoreDirector = solverScope.getScoreDirector();
         long childSize = childMoveSelector.getSize();
         cachedMoveList = new ArrayList<Move>((int) childSize);
         for (Move move : childMoveSelector) {
-            if (moveFilter.accept(workingSolution, move)) {
+            if (moveFilter.accept(scoreDirector, move)) {
                 cachedMoveList.add(move);
             }
         }
