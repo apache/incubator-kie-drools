@@ -93,13 +93,12 @@ public class SwapMoveSelector extends GenericMoveSelector {
         private Iterator<Object> rightEntityIterator;
 
         private Object leftEntity;
-        private Move upcomingMove;
 
         private OriginalSwapMoveIterator() {
             leftEntityIterator = leftEntitySelector.iterator();
             rightEntityIterator = rightEntitySelector.iterator();
             if (!leftEntityIterator.hasNext() || !rightEntityIterator.hasNext()) {
-                upcomingMove = null;
+                upcomingSelection = null;
             } else {
                 leftEntity = leftEntityIterator.next();
                 createUpcomingSelection();
@@ -109,7 +108,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
         protected void createUpcomingSelection() {
             if (!rightEntityIterator.hasNext()) {
                 if (!leftEntityIterator.hasNext()) {
-                    upcomingMove = null;
+                    upcomingSelection = null;
                     return;
                 }
                 leftEntity = leftEntityIterator.next();
@@ -117,7 +116,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 rightEntityIterator = rightEntitySelector.iterator();
             }
             Object rightEntity = rightEntityIterator.next();
-            upcomingMove = anyChained
+            upcomingSelection = anyChained
                     ? new GenericChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
                     : new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
         }

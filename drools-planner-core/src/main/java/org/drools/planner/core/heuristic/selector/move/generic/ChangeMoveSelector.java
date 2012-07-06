@@ -75,34 +75,33 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         private Iterator<Object> entityIterator;
         private ValueIterator valueIterator;
 
-        private Object entity;
-        private Move upcomingMove;
+        private Object upcomingEntity;
 
         private OriginalChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
             valueIterator = valueSelector.iterator();
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
             if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
-                upcomingMove = null;
+                upcomingSelection = null;
             } else {
-                entity = entityIterator.next();
+                upcomingEntity = entityIterator.next();
                 createUpcomingSelection();
             }
         }
 
         protected void createUpcomingSelection() {
-            while (!valueIterator.hasNext(entity)) {
+            while (!valueIterator.hasNext(upcomingEntity)) {
                 if (!entityIterator.hasNext()) {
-                    upcomingMove = null;
+                    upcomingSelection = null;
                     return;
                 }
-                entity = entityIterator.next();
+                upcomingEntity = entityIterator.next();
                 valueIterator = valueSelector.iterator();
             }
-            Object toValue = valueIterator.next(entity);
-            upcomingMove = chained
-                    ? new GenericChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
-                    : new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
+            Object toValue = valueIterator.next(upcomingEntity);
+            upcomingSelection = chained
+                    ? new GenericChainedChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue)
+                    : new GenericChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue);
         }
 
     }
@@ -112,14 +111,12 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         private Iterator<Object> entityIterator;
         private ValueIterator valueIterator;
 
-        private Move upcomingMove;
-
         private RandomChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
             valueIterator = valueSelector.iterator();
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
             if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
-                upcomingMove = null;
+                upcomingSelection = null;
             } else {
                 createUpcomingSelection();
             }
@@ -146,7 +143,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                         entityIteratorCreationCount++;
                         if (entityIteratorCreationCount >= 2) {
                             // All entity-value combinations have been tried (some even more than once)
-                            upcomingMove = null;
+                            upcomingSelection = null;
                             return;
                         }
                     }
@@ -154,7 +151,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 }
             }
             Object toValue = valueIterator.next(entity);
-            upcomingMove = chained
+            upcomingSelection = chained
                     ? new GenericChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
                     : new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
         }
