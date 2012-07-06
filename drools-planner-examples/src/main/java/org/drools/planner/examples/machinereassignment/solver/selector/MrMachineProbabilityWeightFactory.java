@@ -16,7 +16,7 @@
 
 package org.drools.planner.examples.machinereassignment.solver.selector;
 
-import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrProcess;

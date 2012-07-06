@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.cached;
+package org.drools.planner.core.heuristic.selector.common;
 
 public enum SelectionCacheType {
     /**

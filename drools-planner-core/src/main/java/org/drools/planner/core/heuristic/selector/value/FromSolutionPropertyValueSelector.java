@@ -18,14 +18,11 @@ package org.drools.planner.core.heuristic.selector.value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**

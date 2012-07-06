@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.cached;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.drools.planner.core.heuristic.selector.common.decorator;
 
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.solution.Solution;
 
-public class FixedSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Solution, Selector> {
-
-    private final Map<Selector, Double> fixedProbabilityWeightMap;
-
-    public FixedSelectorProbabilityWeightFactory(Map<Selector, Double> fixedProbabilityWeightMap) {
-        this.fixedProbabilityWeightMap = fixedProbabilityWeightMap;
-    }
+public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Solution, Selector> {
 
     public double createProbabilityWeight(Solution solution, Selector selector) {
-        return fixedProbabilityWeightMap.get(selector);
+        return (double) selector.getSize();
     }
 
 }

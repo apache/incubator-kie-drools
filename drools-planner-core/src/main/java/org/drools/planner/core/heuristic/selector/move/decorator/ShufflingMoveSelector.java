@@ -18,7 +18,7 @@ package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Collections;
 
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 

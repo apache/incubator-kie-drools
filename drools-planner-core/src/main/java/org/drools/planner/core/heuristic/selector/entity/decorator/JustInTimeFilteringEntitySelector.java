@@ -19,8 +19,8 @@ package org.drools.planner.core.heuristic.selector.entity.decorator;
 import java.util.Iterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;

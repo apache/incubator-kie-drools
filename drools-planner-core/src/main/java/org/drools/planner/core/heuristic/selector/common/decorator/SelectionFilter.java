@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.cached;
+package org.drools.planner.core.heuristic.selector.common.decorator;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * Create a probabilityWeight for a selection
+ * Decide on keeping or discarding a selection
  * (which is a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}).
- * A probabilityWeight represents the random chance that a selection will be selected.
- * Some use cases benefit from focusing moves more actively on specific selections.
+ * <p/>
+ * A filtered selection is considered as not selected, it does not count as an unaccepted selection.
  */
-public interface SelectionProbabilityWeightFactory<S extends Solution, T> {
+public interface SelectionFilter<T> {
 
     /**
-     * @param solution never null, the {@link Solution} to which the selection belongs or applies to
+     * @param scoreDirector never null, the {@link ScoreDirector}
+     * which has the {@link ScoreDirector#getWorkingSolution()} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * to create the probabilityWeight for
-     * @return 0.0 <= returnValue < {@link Double#POSITIVE_INFINITY}
+     * @return true if the selection is accepted, false if the selection should be discarded
      */
-    double createProbabilityWeight(S solution, T selection);
+    boolean accept(ScoreDirector scoreDirector, T selection);
 
 }

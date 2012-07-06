@@ -25,7 +25,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import org.apache.commons.collections.iterators.IteratorChain;
-import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;

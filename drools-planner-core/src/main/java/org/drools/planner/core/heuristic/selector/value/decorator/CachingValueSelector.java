@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
 import org.drools.planner.core.heuristic.selector.value.IteratorToValueIteratorBridge;

@@ -17,12 +17,9 @@
 package org.drools.planner.core.heuristic.selector.move.composite;
 
 import java.util.List;
-import java.util.Random;
 
-import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 
 /**
  * Abstract superclass for every composite {@link MoveSelector}.

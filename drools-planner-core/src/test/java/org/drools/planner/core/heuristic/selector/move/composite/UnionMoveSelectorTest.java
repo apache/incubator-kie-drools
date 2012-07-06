@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.drools.planner.core.heuristic.selector.Selector;
-import org.drools.planner.core.heuristic.selector.cached.FixedSelectorProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.DummyMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
@@ -32,11 +32,9 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class UnionMoveSelectorTest {

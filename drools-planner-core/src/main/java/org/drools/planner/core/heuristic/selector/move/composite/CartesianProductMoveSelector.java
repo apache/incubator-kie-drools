@@ -19,17 +19,11 @@ package org.drools.planner.core.heuristic.selector.move.composite;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
 import java.util.NoSuchElementException;
-import java.util.TreeMap;
 
-import org.apache.commons.collections.iterators.IteratorChain;
-import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.util.RandomUtils;
 
 /**
  * A {@link CompositeMoveSelector} that cartesian products 2 or more {@link MoveSelector}s.

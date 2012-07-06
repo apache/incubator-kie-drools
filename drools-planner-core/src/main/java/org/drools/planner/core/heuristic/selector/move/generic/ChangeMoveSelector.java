@@ -17,10 +17,8 @@
 package org.drools.planner.core.heuristic.selector.move.generic;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;

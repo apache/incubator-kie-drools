@@ -21,10 +21,10 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
-import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
 import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
