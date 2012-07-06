@@ -28,7 +28,7 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.value.cached.ProbabilityValueSelector;
+import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 

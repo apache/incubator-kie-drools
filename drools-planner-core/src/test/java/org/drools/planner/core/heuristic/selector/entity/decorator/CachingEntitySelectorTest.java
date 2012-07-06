@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.cached;
+package org.drools.planner.core.heuristic.selector.entity.decorator;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
-import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

@@ -25,9 +25,9 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.CachingFilteringMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.JustInTimeFilteringMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.ShufflingMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.CachingFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.JustInTimeFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.

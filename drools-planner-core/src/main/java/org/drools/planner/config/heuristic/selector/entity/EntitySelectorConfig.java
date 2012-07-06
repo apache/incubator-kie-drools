@@ -30,12 +30,9 @@ import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.CachingFilteringEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.JustInTimeFilteringEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.cached.ProbabilityEntitySelector;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.CachingFilteringMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.cached.JustInTimeFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.CachingFilteringEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.JustInTimeFilteringEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {

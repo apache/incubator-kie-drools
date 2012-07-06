@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.move.cached;
+package org.drools.planner.core.heuristic.selector.entity.decorator;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
-import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.move.Move;
+import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
+public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
 
-    protected final MoveSelector childMoveSelector;
+    protected final EntitySelector childEntitySelector;
 
-    protected final SelectionFilter moveFilter;
+    protected final SelectionFilter entityFilter;
 
     protected ScoreDirector scoreDirector = null;
 
-    public JustInTimeFilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
-            SelectionFilter moveFilter) {
-        this.childMoveSelector = childMoveSelector;
-        this.moveFilter = moveFilter;
+    public JustInTimeFilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
+            SelectionFilter entityFilter) {
+        this.childEntitySelector = childEntitySelector;
+        this.entityFilter = entityFilter;
         if (cacheType != SelectionCacheType.JUST_IN_TIME) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
@@ -64,40 +61,44 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
         scoreDirector = null;
     }
 
+    public PlanningEntityDescriptor getEntityDescriptor() {
+        return childEntitySelector.getEntityDescriptor();
+    }
+
     public boolean isContinuous() {
-        return childMoveSelector.isContinuous();
+        return childEntitySelector.isContinuous();
     }
 
     public boolean isNeverEnding() {
-        return childMoveSelector.isNeverEnding();
+        return childEntitySelector.isNeverEnding();
     }
 
     public long getSize() {
-        return childMoveSelector.getSize();
+        return childEntitySelector.getSize();
     }
 
-    public Iterator<Move> iterator() {
-        return new JustInTimeFilteringMoveIterator(childMoveSelector.iterator());
+    public Iterator<Object> iterator() {
+        return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator());
     }
 
-    private class JustInTimeFilteringMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class JustInTimeFilteringEntityIterator extends UpcomingSelectionIterator<Object> {
 
-        private final Iterator<Move> childMoveIterator;
+        private final Iterator<Object> childEntityIterator;
 
-        public JustInTimeFilteringMoveIterator(Iterator<Move> childMoveIterator) {
-            this.childMoveIterator = childMoveIterator;
+        public JustInTimeFilteringEntityIterator(Iterator<Object> childEntityIterator) {
+            this.childEntityIterator = childEntityIterator;
             createUpcomingSelection();
         }
 
         protected void createUpcomingSelection() {
-            Move next;
+            Object next;
             do {
-                if (!childMoveIterator.hasNext()) {
+                if (!childEntityIterator.hasNext()) {
                     upcomingSelection = null;
                     return;
                 }
-                next = childMoveIterator.next();
-            } while (!moveFilter.accept(scoreDirector, next));
+                next = childEntityIterator.next();
+            } while (!entityFilter.accept(scoreDirector, next));
             upcomingSelection = next;
         }
 
@@ -105,7 +106,7 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
 
     @Override
     public String toString() {
-        return "Filtering(" + childMoveSelector + ")";
+        return "Filtering(" + childEntitySelector + ")";
     }
 
 }

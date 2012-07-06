@@ -14,43 +14,44 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.cached;
+package org.drools.planner.core.heuristic.selector.value.decorator;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.cached.SelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
+import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
+import org.drools.planner.core.heuristic.selector.value.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
-public class ProbabilityEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
+public class ProbabilityValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
 
-    protected final EntitySelector childEntitySelector;
+    protected final ValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory valueProbabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
-    public ProbabilityEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory entityProbabilityWeightFactory) {
-        this.childEntitySelector = childEntitySelector;
+    public ProbabilityValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType,
+            SelectionProbabilityWeightFactory valueProbabilityWeightFactory) {
+        this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
-        this.entityProbabilityWeightFactory = entityProbabilityWeightFactory;
-        if (childEntitySelector.isNeverEnding()) {
-            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
-                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+        this.valueProbabilityWeightFactory = valueProbabilityWeightFactory;
+        if (childValueSelector.isNeverEnding()) {
+            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") has neverEnding ("
+                    + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
         }
-        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
+        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
@@ -66,10 +67,10 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         cachedEntityMap = new TreeMap<Double, Object>();
         Solution solution = solverScope.getWorkingSolution();
         double probabilityWeightOffset = 0L;
-        for (Object entity : childEntitySelector) {
-            double probabilityWeight = entityProbabilityWeightFactory.createProbabilityWeight(
-                    solution, entity);
-            cachedEntityMap.put(probabilityWeightOffset, entity);
+        for (Object value : childValueSelector) {
+            double probabilityWeight = valueProbabilityWeightFactory.createProbabilityWeight(
+                    solution, value);
+            cachedEntityMap.put(probabilityWeightOffset, value);
             probabilityWeightOffset += probabilityWeight;
         }
         probabilityWeightTotal = probabilityWeightOffset;
@@ -79,8 +80,8 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         probabilityWeightTotal = -1.0;
     }
 
-    public PlanningEntityDescriptor getEntityDescriptor() {
-        return childEntitySelector.getEntityDescriptor();
+    public PlanningVariableDescriptor getVariableDescriptor() {
+        return childValueSelector.getVariableDescriptor();
     }
 
     public boolean isContinuous() {
@@ -95,8 +96,8 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         return cachedEntityMap.size();
     }
 
-    public Iterator<Object> iterator() {
-        return new Iterator<Object>() {
+    public ValueIterator iterator() {
+        return new EntityIgnoringValueIterator() {
             public boolean hasNext() {
                 return true;
             }
@@ -107,16 +108,12 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
                 // entry is never null because randomOffset < probabilityWeightTotal
                 return entry.getValue();
             }
-
-            public void remove() {
-                throw new UnsupportedOperationException("Remove is not supported.");
-            }
         };
     }
 
     @Override
     public String toString() {
-        return "Probability(" + childEntitySelector + ")";
+        return "Probability(" + childValueSelector + ")";
     }
 
 }

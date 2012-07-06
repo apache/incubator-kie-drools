@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.cached;
+package org.drools.planner.core.heuristic.selector.entity.decorator;
 
 import java.util.Arrays;
 import java.util.Iterator;

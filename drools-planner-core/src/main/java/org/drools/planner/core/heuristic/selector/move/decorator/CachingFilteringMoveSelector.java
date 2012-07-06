@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.move.cached;
+package org.drools.planner.core.heuristic.selector.move.decorator;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.ArrayList;
 
 import org.drools.planner.core.heuristic.selector.cached.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.cached.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class ShufflingMoveSelector extends CachingMoveSelector {
+public class CachingFilteringMoveSelector extends CachingMoveSelector {
 
-    public ShufflingMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType) {
+    protected final SelectionFilter moveFilter;
+
+    public CachingFilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
+            SelectionFilter moveFilter) {
         super(childMoveSelector, cacheType);
+        this.moveFilter = moveFilter;
     }
 
     // ************************************************************************
@@ -36,15 +40,20 @@ public class ShufflingMoveSelector extends CachingMoveSelector {
     // ************************************************************************
 
     @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        // Shuffle every step, even if the cacheType is PHASE
-        Collections.shuffle(cachedMoveList, stepScope.getWorkingRandom());
+    public void constructCache(DefaultSolverScope solverScope) {
+        ScoreDirector scoreDirector = solverScope.getScoreDirector();
+        long childSize = childMoveSelector.getSize();
+        cachedMoveList = new ArrayList<Move>((int) childSize);
+        for (Move move : childMoveSelector) {
+            if (moveFilter.accept(scoreDirector, move)) {
+                cachedMoveList.add(move);
+            }
+        }
     }
 
     @Override
     public String toString() {
-        return "Shuffling(" + childMoveSelector + ")";
+        return "Filtering(" + childMoveSelector + ")";
     }
 
 }
