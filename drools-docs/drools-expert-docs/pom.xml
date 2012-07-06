@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-docs</artifactId>
-    <version>5.3.3.Final</version>
+    <version>5.3.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-expert-docs</artifactId>
