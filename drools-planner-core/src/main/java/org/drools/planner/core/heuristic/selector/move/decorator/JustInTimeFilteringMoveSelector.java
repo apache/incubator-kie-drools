@@ -18,6 +18,7 @@ package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Iterator;
 
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
@@ -43,6 +44,7 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
+        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
     }
 
     // ************************************************************************

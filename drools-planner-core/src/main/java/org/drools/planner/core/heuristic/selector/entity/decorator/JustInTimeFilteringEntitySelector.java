@@ -19,6 +19,7 @@ package org.drools.planner.core.heuristic.selector.entity.decorator;
 import java.util.Iterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
@@ -43,6 +44,7 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
+        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
     }
 
     // ************************************************************************
