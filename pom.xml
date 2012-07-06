@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>droolsjbpm-parent</artifactId>
-    <version>5.3.3-SNAPSHOT</version>
+    <version>5.3.3.Final</version>
     <!-- relativePath causes out-of-date problems on hudson slaves -->
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
