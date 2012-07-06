@@ -28,6 +28,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
@@ -64,11 +65,11 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
 
     public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityMap = new TreeMap<Double, Object>();
-        Solution solution = solverScope.getWorkingSolution();
+        ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Object entity : childEntitySelector) {
             double probabilityWeight = entityProbabilityWeightFactory.createProbabilityWeight(
-                    solution, entity);
+                    scoreDirector, entity);
             cachedEntityMap.put(probabilityWeightOffset, entity);
             probabilityWeightOffset += probabilityWeight;
         }

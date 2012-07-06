@@ -17,11 +17,12 @@
 package org.drools.planner.core.heuristic.selector.common.decorator;
 
 import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
-public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Solution, Selector> {
+public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Selector> {
 
-    public double createProbabilityWeight(Solution solution, Selector selector) {
+    public double createProbabilityWeight(ScoreDirector scoreDirector, Selector selector) {
         return (double) selector.getSize();
     }
 

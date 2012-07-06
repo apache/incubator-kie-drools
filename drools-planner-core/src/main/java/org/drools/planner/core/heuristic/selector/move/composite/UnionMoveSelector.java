@@ -29,6 +29,7 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProb
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.util.RandomUtils;
 
@@ -44,7 +45,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
     protected final SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
 
-    protected Solution workingSolution;
+    protected ScoreDirector scoreDirector;
 
     public UnionMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
         this(childMoveSelectorList, randomSelection, null);
@@ -73,14 +74,14 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
     @Override
     public void stepStarted(AbstractStepScope stepScope) {
-        workingSolution = stepScope.getWorkingSolution();
+        scoreDirector = stepScope.getScoreDirector();
         super.stepStarted(stepScope);
     }
 
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
         super.stepEnded(stepScope);
-        workingSolution = null;
+        scoreDirector = null;
     }
 
     // ************************************************************************
@@ -142,7 +143,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
                     probabilityItem.moveSelector = moveSelector;
                     probabilityItem.moveIterator = moveIterator;
                     probabilityItem.probabilityWeight= selectorProbabilityWeightFactory
-                            .createProbabilityWeight(workingSolution, moveSelector);
+                            .createProbabilityWeight(scoreDirector, moveSelector);
                     probabilityItemMap.put(moveIterator, probabilityItem);
                 }
             }

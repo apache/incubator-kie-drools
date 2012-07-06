@@ -29,6 +29,7 @@ import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
 import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
@@ -65,11 +66,11 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
 
     public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityMap = new TreeMap<Double, Object>();
-        Solution solution = solverScope.getWorkingSolution();
+        ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Object value : childValueSelector) {
             double probabilityWeight = valueProbabilityWeightFactory.createProbabilityWeight(
-                    solution, value);
+                    scoreDirector, value);
             cachedEntityMap.put(probabilityWeightOffset, value);
             probabilityWeightOffset += probabilityWeight;
         }
