@@ -3370,15 +3370,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
 
     private boolean nullSafeEqualityComparison( Comparable c1, Comparable c2 ){
-        if ( c1 == null && c2 == null ){
-            return true;
+        if ( c1 == null ) {
+            return c2 == null;
         }
-
-        if ( c1 != null ) {
-            return c1.compareTo( c2 ) == 0;
-        }
-
-        return false;
+        return c2 == null ? false : c1.compareTo( c2 ) == 0;
     }
 
     static class TypeDefinition {
