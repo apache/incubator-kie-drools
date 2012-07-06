@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.planner.webexamples.vehiclerouting;
+package org.drools.planner.webexamples.vehiclerouting;
 
 public class VrpSessionAttributeName {
 

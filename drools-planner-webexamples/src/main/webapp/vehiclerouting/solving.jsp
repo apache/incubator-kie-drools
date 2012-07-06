@@ -1,4 +1,4 @@
-<%@ page import="org.planner.webexamples.vehiclerouting.VrpWebAction" %>
+<%@ page import="org.drools.planner.webexamples.vehiclerouting.VrpWebAction" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>

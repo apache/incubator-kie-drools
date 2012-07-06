@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.planner.webexamples.vehiclerouting;
+package org.drools.planner.webexamples.vehiclerouting;
 
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
@@ -39,7 +39,7 @@ public class VrpWebAction {
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 
-        URL unsolvedSolutionURL = getClass().getResource("/org/planner/webexamples/vehiclerouting/A-n33-k6.vrp");
+        URL unsolvedSolutionURL = getClass().getResource("/org/drools/planner/webexamples/vehiclerouting/A-n33-k6.vrp");
         VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingSolutionImporter()
                 .readSolution(unsolvedSolutionURL);
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
