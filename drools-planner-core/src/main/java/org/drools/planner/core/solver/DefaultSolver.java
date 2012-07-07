@@ -59,6 +59,10 @@ public class DefaultSolver implements Solver {
     protected AtomicBoolean solving = new AtomicBoolean(false);
 
     protected DefaultSolverScope solverScope = new DefaultSolverScope();
+    
+    public long getRandomSeed() {
+        return this.randomSeed;
+    }
 
     public void setRandomSeed(long randomSeed) {
         this.randomSeed = randomSeed;
