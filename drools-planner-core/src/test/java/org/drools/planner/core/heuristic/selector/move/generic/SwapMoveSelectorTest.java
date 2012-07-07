@@ -40,11 +40,11 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void nonrandomLeftEqualsRight() {
-        EntitySelector entitySelector = mock(EntitySelector.class);
-        final List<Object> entityList = Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
+        EntitySelector entitySelector = mock(EntitySelector.class);
+        final List<Object> entityList = Arrays.<Object>asList(
+                new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
         when(entitySelector.iterator()).thenAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -128,16 +128,151 @@ public class SwapMoveSelectorTest {
     private void runAssertsNonrandomLeftEqualsRight(SwapMoveSelector moveSelector) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
-        assertNextSwapMove(iterator, "e1", "e2");
-        assertNextSwapMove(iterator, "e1", "e3");
-        assertNextSwapMove(iterator, "e1", "e4");
-        assertNextSwapMove(iterator, "e2", "e3");
-        assertNextSwapMove(iterator, "e2", "e4");
-        assertNextSwapMove(iterator, "e3", "e4");
+        assertNextSwapMove(iterator, "a", "b");
+        assertNextSwapMove(iterator, "a", "c");
+        assertNextSwapMove(iterator, "a", "d");
+        assertNextSwapMove(iterator, "b", "c");
+        assertNextSwapMove(iterator, "b", "d");
+        assertNextSwapMove(iterator, "c", "d");
         assertFalse(iterator.hasNext());
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(false, moveSelector.isNeverEnding());
         assertEquals(6L, moveSelector.getSize());
+    }
+
+    @Test
+    public void nonrandomLeftUnequalsRight() {
+        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+        when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
+
+        EntitySelector leftEntitySelector = mock(EntitySelector.class);
+        final List<Object> leftEntityList = Arrays.<Object>asList(
+                new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
+        when(leftEntitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
+        when(leftEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return leftEntityList.iterator();
+            }
+        });
+        when(leftEntitySelector.listIterator()).thenAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return leftEntityList.listIterator();
+            }
+        });
+        for (int i = 0; i < leftEntityList.size(); i++) {
+            final int index = i;
+            when(leftEntitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return leftEntityList.listIterator(index);
+                }
+            });
+        }
+        when(leftEntitySelector.isContinuous()).thenReturn(false);
+        when(leftEntitySelector.isNeverEnding()).thenReturn(false);
+        when(leftEntitySelector.getSize()).thenReturn((long) leftEntityList.size());
+
+        EntitySelector rightEntitySelector = mock(EntitySelector.class);
+        final List<Object> rightEntityList = Arrays.<Object>asList(
+                new TestdataEntity("x"), new TestdataEntity("y"), new TestdataEntity("z"));
+        when(rightEntitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
+        when(rightEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return rightEntityList.iterator();
+            }
+        });
+        when(rightEntitySelector.listIterator()).thenAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return rightEntityList.listIterator();
+            }
+        });
+        for (int i = 0; i < rightEntityList.size(); i++) {
+            final int index = i;
+            when(rightEntitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return rightEntityList.listIterator(index);
+                }
+            });
+        }
+        when(rightEntitySelector.isContinuous()).thenReturn(false);
+        when(rightEntitySelector.isNeverEnding()).thenReturn(false);
+        when(rightEntitySelector.getSize()).thenReturn((long) rightEntityList.size());
+
+        SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, false);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        moveSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        moveSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        moveSelector.stepStarted(stepScopeA1);
+        runAssertsNonrandomLeftUnequalsRight(moveSelector);
+        moveSelector.stepEnded(stepScopeA1);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        moveSelector.stepStarted(stepScopeA2);
+        runAssertsNonrandomLeftUnequalsRight(moveSelector);
+        moveSelector.stepEnded(stepScopeA2);
+
+        moveSelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        moveSelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        moveSelector.stepStarted(stepScopeB1);
+        runAssertsNonrandomLeftUnequalsRight(moveSelector);
+        moveSelector.stepEnded(stepScopeB1);
+
+        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
+        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        moveSelector.stepStarted(stepScopeB2);
+        runAssertsNonrandomLeftUnequalsRight(moveSelector);
+        moveSelector.stepEnded(stepScopeB2);
+
+        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
+        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        moveSelector.stepStarted(stepScopeB3);
+        runAssertsNonrandomLeftUnequalsRight(moveSelector);
+        moveSelector.stepEnded(stepScopeB3);
+
+        moveSelector.phaseEnded(phaseScopeB);
+
+        moveSelector.solvingEnded(solverScope);
+
+        verify(leftEntitySelector, times(1)).solvingStarted(solverScope);
+        verify(leftEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(leftEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(leftEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(leftEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(leftEntitySelector, times(1)).solvingEnded(solverScope);
+    }
+
+    private void runAssertsNonrandomLeftUnequalsRight(SwapMoveSelector moveSelector) {
+        Iterator<Move> iterator = moveSelector.iterator();
+        assertNotNull(iterator);
+        assertNextSwapMove(iterator, "a", "x");
+        assertNextSwapMove(iterator, "a", "y");
+        assertNextSwapMove(iterator, "a", "z");
+        assertNextSwapMove(iterator, "b", "x");
+        assertNextSwapMove(iterator, "b", "y");
+        assertNextSwapMove(iterator, "b", "z");
+        assertNextSwapMove(iterator, "c", "x");
+        assertNextSwapMove(iterator, "c", "y");
+        assertNextSwapMove(iterator, "c", "z");
+        assertNextSwapMove(iterator, "d", "x");
+        assertNextSwapMove(iterator, "d", "y");
+        assertNextSwapMove(iterator, "d", "z");
+        assertFalse(iterator.hasNext());
+        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(false, moveSelector.isNeverEnding());
+        assertEquals(12L, moveSelector.getSize());
     }
 
     private void assertNextSwapMove(Iterator<Move> iterator, String leftEntityCode, String rightEntityCode) {
