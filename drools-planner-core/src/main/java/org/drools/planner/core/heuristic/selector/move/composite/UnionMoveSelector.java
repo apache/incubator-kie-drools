@@ -122,7 +122,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
     public long getSize() {
         long size = 0L;
         for (MoveSelector moveSelector : childMoveSelectorList) {
-            size += moveSelector.getSize();
+            size += (long) moveSelector.getSize();
         }
         return size;
     }

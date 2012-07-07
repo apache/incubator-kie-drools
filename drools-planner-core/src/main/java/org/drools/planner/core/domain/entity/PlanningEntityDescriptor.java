@@ -200,6 +200,7 @@ public class PlanningEntityDescriptor {
         }
         return null;
     }
+
     public Collection<String> getPlanningVariableNameSet() {
         return planningVariableDescriptorMap.keySet();
     }

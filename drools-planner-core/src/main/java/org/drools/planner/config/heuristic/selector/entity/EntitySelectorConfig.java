@@ -150,6 +150,8 @@ public class EntitySelectorConfig extends SelectorConfig {
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringEntitySelector = new JustInTimeFilteringEntitySelector(entitySelector,
                         resolvedCacheType, entityFilter);
+                throw new IllegalStateException("Impossible situation: the resolvedCacheType (" + resolvedCacheType
+                        + ") should have already been upgraded to " + SelectionCacheType.STEP + ".");
             } else {
                 filteringEntitySelector = new CachingFilteringEntitySelector(entitySelector,
                         resolvedCacheType, entityFilter);

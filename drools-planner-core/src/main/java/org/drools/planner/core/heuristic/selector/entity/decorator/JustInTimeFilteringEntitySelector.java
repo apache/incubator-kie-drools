@@ -17,6 +17,7 @@
 package org.drools.planner.core.heuristic.selector.entity.decorator;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
@@ -28,6 +29,9 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 
+/**
+ * TODO This class isn't used because {@link EntitySelector}'s are upgraded to {@link SelectionCacheType#STEP}.
+ */
 public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
@@ -104,6 +108,16 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
             upcomingSelection = next;
         }
 
+    }
+
+    public ListIterator<Object> listIterator() {
+        // TODO Not yet implemented because this class isn't used
+        throw new UnsupportedOperationException();
+    }
+
+    public ListIterator<Object> listIterator(int index) {
+        // TODO Not yet implemented because this class isn't used
+        throw new UnsupportedOperationException();
     }
 
     @Override

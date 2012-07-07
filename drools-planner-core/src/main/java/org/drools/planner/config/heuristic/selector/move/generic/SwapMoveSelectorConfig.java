@@ -30,25 +30,25 @@ import org.drools.planner.core.heuristic.selector.move.generic.SwapMoveSelector;
 @XStreamAlias("swapMoveSelector")
 public class SwapMoveSelectorConfig extends MoveSelectorConfig {
 
-    @XStreamAlias("leftEntitySelector")
-    private EntitySelectorConfig leftEntitySelectorConfig = new EntitySelectorConfig();
-    @XStreamAlias("rightEntitySelector")
-    private EntitySelectorConfig rightEntitySelectorConfig = new EntitySelectorConfig();
+    @XStreamAlias("entitySelector")
+    private EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+    @XStreamAlias("secondaryEntitySelector")
+    private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
-    public EntitySelectorConfig getLeftEntitySelectorConfig() {
-        return leftEntitySelectorConfig;
+    public EntitySelectorConfig getEntitySelectorConfig() {
+        return entitySelectorConfig;
     }
 
-    public void setLeftEntitySelectorConfig(EntitySelectorConfig leftEntitySelectorConfig) {
-        this.leftEntitySelectorConfig = leftEntitySelectorConfig;
+    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.entitySelectorConfig = entitySelectorConfig;
     }
 
-    public EntitySelectorConfig getRightEntitySelectorConfig() {
-        return rightEntitySelectorConfig;
+    public EntitySelectorConfig getSecondaryEntitySelectorConfig() {
+        return secondaryEntitySelectorConfig;
     }
 
-    public void setRightEntitySelectorConfig(EntitySelectorConfig rightEntitySelectorConfig) {
-        this.rightEntitySelectorConfig = rightEntitySelectorConfig;
+    public void setSecondaryEntitySelectorConfig(EntitySelectorConfig secondaryEntitySelectorConfig) {
+        this.secondaryEntitySelectorConfig = secondaryEntitySelectorConfig;
     }
 
     // ************************************************************************
@@ -57,34 +57,34 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
-
-        EntitySelector leftEntitySelector = leftEntitySelectorConfig.buildEntitySelector(
-                environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, resolvedCacheType);
+        EntitySelector leftEntitySelector = entitySelectorConfig.buildEntitySelector(
+                environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType);
+        EntitySelectorConfig rightEntitySelectorConfig = secondaryEntitySelectorConfig == null
+                ? entitySelectorConfig : secondaryEntitySelectorConfig;
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
-                environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, resolvedCacheType);
+                        environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType);
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector,
                 resolvedSelectionOrder == SelectionOrder.RANDOM);
     }
 
     public void inherit(SwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (leftEntitySelectorConfig == null) {
-            leftEntitySelectorConfig = inheritedConfig.getLeftEntitySelectorConfig();
-        } else if (inheritedConfig.getLeftEntitySelectorConfig() != null) {
-            leftEntitySelectorConfig.inherit(inheritedConfig.getLeftEntitySelectorConfig());
+        if (entitySelectorConfig == null) {
+            entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
+        } else if (inheritedConfig.getEntitySelectorConfig() != null) {
+            entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
         }
-        if (rightEntitySelectorConfig == null) {
-            rightEntitySelectorConfig = inheritedConfig.getRightEntitySelectorConfig();
-        } else if (inheritedConfig.getRightEntitySelectorConfig() != null) {
-            rightEntitySelectorConfig.inherit(inheritedConfig.getRightEntitySelectorConfig());
+        if (secondaryEntitySelectorConfig == null) {
+            secondaryEntitySelectorConfig = inheritedConfig.getSecondaryEntitySelectorConfig();
+        } else if (inheritedConfig.getSecondaryEntitySelectorConfig() != null) {
+            secondaryEntitySelectorConfig.inherit(inheritedConfig.getSecondaryEntitySelectorConfig());
         }
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + leftEntitySelectorConfig + ", " + rightEntitySelectorConfig + ")";
+        return getClass().getSimpleName() + "(" + entitySelectorConfig
+                + (secondaryEntitySelectorConfig == null ? "" : ", " + secondaryEntitySelectorConfig) + ")";
     }
 
 }

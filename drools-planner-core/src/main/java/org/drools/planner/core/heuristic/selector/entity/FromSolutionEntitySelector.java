@@ -18,6 +18,7 @@ package org.drools.planner.core.heuristic.selector.entity;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
@@ -99,6 +100,24 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
                     throw new UnsupportedOperationException("Remove is not supported.");
                 }
             };
+        }
+    }
+
+    public ListIterator<Object> listIterator() {
+        if (!randomSelection) {
+            return cachedEntityList.listIterator();
+        } else {
+            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
+                    + randomSelection + ").");
+        }
+    }
+
+    public ListIterator<Object> listIterator(int index) {
+        if (!randomSelection) {
+            return cachedEntityList.listIterator(index);
+        } else {
+            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
+                    + randomSelection + ").");
         }
     }
 

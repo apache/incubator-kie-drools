@@ -17,6 +17,7 @@
 package org.drools.planner.core.heuristic.selector.entity.decorator;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -113,6 +114,14 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
                 throw new UnsupportedOperationException("Remove is not supported.");
             }
         };
+    }
+
+    public ListIterator<Object> listIterator() {
+        throw new IllegalStateException("ListIterator is not supported with randomSelection.");
+    }
+
+    public ListIterator<Object> listIterator(int index) {
+        throw new IllegalStateException("ListIterator is not supported with randomSelection.");
     }
 
     @Override

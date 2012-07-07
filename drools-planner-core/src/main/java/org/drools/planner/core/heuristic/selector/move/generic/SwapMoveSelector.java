@@ -18,8 +18,10 @@ package org.drools.planner.core.heuristic.selector.move.generic;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.ListIterator;
 
+import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections.iterators.EmptyListIterator;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
@@ -35,6 +37,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
     protected final Collection<PlanningVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
 
+    protected final boolean leftEqualsRight;
     protected final boolean anyChained;
 
     public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
@@ -42,6 +45,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
         this.randomSelection = randomSelection;
+        leftEqualsRight = (leftEntitySelector == rightEntitySelector);
         PlanningEntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
         PlanningEntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
         if (!leftEntityDescriptor.getPlanningEntityClass().equals(rightEntityDescriptor.getPlanningEntityClass())) {
@@ -76,7 +80,12 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     public long getSize() {
-        return leftEntitySelector.getSize() * rightEntitySelector.getSize();
+        if (!leftEqualsRight) {
+            return (long) leftEntitySelector.getSize() * (long) rightEntitySelector.getSize();
+        } else {
+            long leftSize = (long) leftEntitySelector.getSize();
+            return leftSize * (leftSize - 1L) / 2L;
+        }
     }
 
     public Iterator<Move> iterator() {
@@ -89,20 +98,15 @@ public class SwapMoveSelector extends GenericMoveSelector {
 
     private class OriginalSwapMoveIterator extends UpcomingSelectionIterator<Move> {
 
-        private Iterator<Object> leftEntityIterator;
-        private Iterator<Object> rightEntityIterator;
+        private ListIterator<Object> leftEntityIterator;
+        private ListIterator<Object> rightEntityIterator;
 
         private Object leftEntity;
 
         private OriginalSwapMoveIterator() {
-            leftEntityIterator = leftEntitySelector.iterator();
-            rightEntityIterator = rightEntitySelector.iterator();
-            if (!leftEntityIterator.hasNext() || !rightEntityIterator.hasNext()) {
-                upcomingSelection = null;
-            } else {
-                leftEntity = leftEntityIterator.next();
-                createUpcomingSelection();
-            }
+            leftEntityIterator = leftEntitySelector.listIterator();
+            rightEntityIterator = IteratorUtils.emptyListIterator();
+            createUpcomingSelection();
         }
 
         protected void createUpcomingSelection() {
@@ -112,8 +116,22 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     return;
                 }
                 leftEntity = leftEntityIterator.next();
-                // TODO the rightEntityIterator should start from the leftEntityIterator index
-                rightEntityIterator = rightEntitySelector.iterator();
+
+                if (!leftEqualsRight) {
+                    rightEntityIterator = rightEntitySelector.listIterator();
+                    if (!rightEntityIterator.hasNext()) {
+                        upcomingSelection = null;
+                        return;
+                    }
+                } else {
+                    // Select A-B, A-C, B-C. Do not select B-A, C-A, C-B. Do not select A-A, B-B, C-C.
+                    if (!leftEntityIterator.hasNext()) {
+                        upcomingSelection = null;
+                        return;
+                    }
+                    rightEntityIterator = rightEntitySelector.listIterator(leftEntityIterator.nextIndex());
+                    // rightEntityIterator's first hasNext() always returns true because of the nextIndex()
+                }
             }
             Object rightEntity = rightEntityIterator.next();
             upcomingSelection = anyChained

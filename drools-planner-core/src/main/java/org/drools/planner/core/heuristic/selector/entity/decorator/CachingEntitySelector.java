@@ -19,6 +19,7 @@ package org.drools.planner.core.heuristic.selector.entity.decorator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
@@ -94,6 +95,14 @@ public class CachingEntitySelector extends AbstractEntitySelector implements Sel
 
     public Iterator<Object> iterator() {
         return cachedEntityList.iterator();
+    }
+
+    public ListIterator<Object> listIterator() {
+        return cachedEntityList.listIterator();
+    }
+
+    public ListIterator<Object> listIterator(int index) {
+        return cachedEntityList.listIterator(index);
     }
 
     @Override

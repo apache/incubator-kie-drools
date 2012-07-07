@@ -64,7 +64,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
     public long getSize() {
         long size = 1L;
         for (MoveSelector moveSelector : childMoveSelectorList) {
-            size *= moveSelector.getSize();
+            size *= (long) moveSelector.getSize();
         }
         return size;
     }

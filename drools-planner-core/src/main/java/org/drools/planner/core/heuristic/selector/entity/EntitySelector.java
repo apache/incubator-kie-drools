@@ -16,6 +16,10 @@
 
 package org.drools.planner.core.heuristic.selector.entity;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.Selector;
@@ -31,5 +35,20 @@ public interface EntitySelector extends Selector, Iterable<Object> {
      * @return never null
      */
     PlanningEntityDescriptor getEntityDescriptor();
+
+    /**
+     * See {@link List#listIterator()}
+     *
+     * @return never null, see {@link List#listIterator()}.
+     */
+    ListIterator<Object> listIterator();
+
+    /**
+     * See {@link List#listIterator()}
+     *
+     * @param index lower then {@link #getSize()}, see {@link List#listIterator(int)}.
+     * @return never null, see {@link List#listIterator(int)}.
+     */
+    ListIterator<Object> listIterator(int index);
 
 }
