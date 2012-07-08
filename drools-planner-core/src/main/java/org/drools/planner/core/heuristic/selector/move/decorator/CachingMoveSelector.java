@@ -68,7 +68,7 @@ public class CachingMoveSelector extends AbstractMoveSelector implements Selecti
                     + childMoveSelector + ") with childSize (" + childSize
                     + ") which is higher then Integer.MAX_VALUE.");
         }
-        cachedMoveList = new ArrayList<Move>((int)childSize);
+        cachedMoveList = new ArrayList<Move>((int) childSize);
         CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
     }
 
