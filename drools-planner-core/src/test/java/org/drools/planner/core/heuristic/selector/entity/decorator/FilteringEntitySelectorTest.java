@@ -29,6 +29,7 @@ import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -127,6 +128,12 @@ public class FilteringEntitySelectorTest {
 
         entitySelector.solvingEnded(solverScope);
 
+        verify(childEntitySelector, times(1)).solvingStarted(solverScope);
+        verify(childEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(childEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(childEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childEntitySelector, times(1)).solvingEnded(solverScope);
         verify(childEntitySelector, times(timesCalled)).iterator();
         verify(childEntitySelector, times(timesCalled)).getSize();
     }

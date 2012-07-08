@@ -252,6 +252,12 @@ public class SwapMoveSelectorTest {
         verify(leftEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
         verify(leftEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
         verify(leftEntitySelector, times(1)).solvingEnded(solverScope);
+        verify(rightEntitySelector, times(1)).solvingStarted(solverScope);
+        verify(rightEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(rightEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(rightEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(rightEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(rightEntitySelector, times(1)).solvingEnded(solverScope);
     }
 
     private void runAssertsNonrandomLeftUnequalsRight(SwapMoveSelector moveSelector) {

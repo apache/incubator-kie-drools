@@ -30,6 +30,7 @@ import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -131,6 +132,12 @@ public class FilteringMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
+        verify(childMoveSelector, times(1)).solvingStarted(solverScope);
+        verify(childMoveSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childMoveSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(childMoveSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(childMoveSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childMoveSelector, times(1)).solvingEnded(solverScope);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
     }
