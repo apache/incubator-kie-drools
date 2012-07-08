@@ -16,11 +16,10 @@
 
 package org.drools.planner.core.heuristic.selector.move.generic;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.generic.GenericSwapMove;
@@ -30,8 +29,6 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
@@ -40,33 +37,8 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void nonrandomLeftEqualsRight() {
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
-        when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
-        EntitySelector entitySelector = mock(EntitySelector.class);
-        final List<Object> entityList = Arrays.<Object>asList(
+        EntitySelector entitySelector  = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
-        when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        when(entitySelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.iterator();
-            }
-        });
-        when(entitySelector.listIterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.listIterator();
-            }
-        });
-        for (int i = 0; i < entityList.size(); i++) {
-            final int index = i;
-            when(entitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return entityList.listIterator(index);
-                }
-            });
-        }
-        when(entitySelector.isContinuous()).thenReturn(false);
-        when(entitySelector.isNeverEnding()).thenReturn(false);
-        when(entitySelector.getSize()).thenReturn((long) entityList.size());
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector, false);
 
@@ -142,32 +114,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void emptyNonrandomLeftEqualsRight() {
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
-        when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
-        EntitySelector entitySelector = mock(EntitySelector.class);
-        final List<Object> entityList = Arrays.<Object>asList();
-        when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        when(entitySelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.iterator();
-            }
-        });
-        when(entitySelector.listIterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.listIterator();
-            }
-        });
-        for (int i = 0; i < entityList.size(); i++) {
-            final int index = i;
-            when(entitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return entityList.listIterator(index);
-                }
-            });
-        }
-        when(entitySelector.isContinuous()).thenReturn(false);
-        when(entitySelector.isNeverEnding()).thenReturn(false);
-        when(entitySelector.getSize()).thenReturn((long) entityList.size());
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector, false);
 
@@ -240,57 +187,11 @@ public class SwapMoveSelectorTest {
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
 
-        EntitySelector leftEntitySelector = mock(EntitySelector.class);
-        final List<Object> leftEntityList = Arrays.<Object>asList(
+        EntitySelector leftEntitySelector  = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
-        when(leftEntitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        when(leftEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return leftEntityList.iterator();
-            }
-        });
-        when(leftEntitySelector.listIterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return leftEntityList.listIterator();
-            }
-        });
-        for (int i = 0; i < leftEntityList.size(); i++) {
-            final int index = i;
-            when(leftEntitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return leftEntityList.listIterator(index);
-                }
-            });
-        }
-        when(leftEntitySelector.isContinuous()).thenReturn(false);
-        when(leftEntitySelector.isNeverEnding()).thenReturn(false);
-        when(leftEntitySelector.getSize()).thenReturn((long) leftEntityList.size());
 
-        EntitySelector rightEntitySelector = mock(EntitySelector.class);
-        final List<Object> rightEntityList = Arrays.<Object>asList(
+        EntitySelector rightEntitySelector  = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("x"), new TestdataEntity("y"), new TestdataEntity("z"));
-        when(rightEntitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        when(rightEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return rightEntityList.iterator();
-            }
-        });
-        when(rightEntitySelector.listIterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return rightEntityList.listIterator();
-            }
-        });
-        for (int i = 0; i < rightEntityList.size(); i++) {
-            final int index = i;
-            when(rightEntitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return rightEntityList.listIterator(index);
-                }
-            });
-        }
-        when(rightEntitySelector.isContinuous()).thenReturn(false);
-        when(rightEntitySelector.isNeverEnding()).thenReturn(false);
-        when(rightEntitySelector.getSize()).thenReturn((long) rightEntityList.size());
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, false);
 
@@ -381,56 +282,10 @@ public class SwapMoveSelectorTest {
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
 
-        EntitySelector leftEntitySelector = mock(EntitySelector.class);
-        final List<Object> leftEntityList = Arrays.<Object>asList(
+        EntitySelector leftEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
-        when(leftEntitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        when(leftEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return leftEntityList.iterator();
-            }
-        });
-        when(leftEntitySelector.listIterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return leftEntityList.listIterator();
-            }
-        });
-        for (int i = 0; i < leftEntityList.size(); i++) {
-            final int index = i;
-            when(leftEntitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return leftEntityList.listIterator(index);
-                }
-            });
-        }
-        when(leftEntitySelector.isContinuous()).thenReturn(false);
-        when(leftEntitySelector.isNeverEnding()).thenReturn(false);
-        when(leftEntitySelector.getSize()).thenReturn((long) leftEntityList.size());
 
-        EntitySelector rightEntitySelector = mock(EntitySelector.class);
-        final List<Object> rightEntityList = Arrays.<Object>asList();
-        when(rightEntitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        when(rightEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return rightEntityList.iterator();
-            }
-        });
-        when(rightEntitySelector.listIterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return rightEntityList.listIterator();
-            }
-        });
-        for (int i = 0; i < rightEntityList.size(); i++) {
-            final int index = i;
-            when(rightEntitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return rightEntityList.listIterator(index);
-                }
-            });
-        }
-        when(rightEntitySelector.isContinuous()).thenReturn(false);
-        when(rightEntitySelector.isNeverEnding()).thenReturn(false);
-        when(rightEntitySelector.getSize()).thenReturn((long) rightEntityList.size());
+        EntitySelector rightEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor);
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, false);
 
