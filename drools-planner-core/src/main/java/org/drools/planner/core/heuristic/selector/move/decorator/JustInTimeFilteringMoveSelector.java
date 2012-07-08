@@ -40,11 +40,11 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
             SelectionFilter moveFilter) {
         this.childMoveSelector = childMoveSelector;
         this.moveFilter = moveFilter;
+        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
         if (cacheType != SelectionCacheType.JUST_IN_TIME) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
     }
 
     // ************************************************************************
