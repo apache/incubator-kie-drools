@@ -18,58 +18,24 @@
 
 package org.drools.integrationtests;
 
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.runtime.rule.FactHandle;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.Cheese;
-import org.drools.Child;
-import org.drools.GrandParent;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.Order;
-import org.drools.Parent;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.StatelessSession;
 import org.drools.StockTick;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
 import org.drools.conf.EventProcessingOption;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.ObjectRetractedEvent;
-import org.drools.event.rule.WorkingMemoryEventListener;
-import org.drools.io.ResourceFactory;
-import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.mockito.Mockito;
-
-import static org.mockito.Mockito.*;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * This is a test case for multi-thred issues
@@ -164,6 +130,87 @@ public class MultithreadTest extends CommonTestMethodBase {
         public String toString() {
             return "Bean nr. " + seed;
         }
+    }
+
+    @Test(timeout = 15000)
+    public void testSlidingTimeWindows() {
+        String str = "package org.drools\n" +
+                "declare StockTick @role(event) end\n" +
+                "rule R\n" +
+                " duration(1s)" +
+                "when\n" +
+                " accumulate( $st : StockTick() over window:time(2s)\n" +
+                "             from entry-point X,\n" +
+                "             $c : count(1) )" +
+                "then\n" +
+                "    System.out.println( $c );" +
+                "end";
+
+        KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
+
+        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        final int RUN_TIME = 10000; // runs for 10 seconds
+        final int THREAD_NR = 2;
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        ecs.submit(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                try {
+                    ksession.fireUntilHalt();
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+
+        });
+        for (int i = 0; i < THREAD_NR; i++) {
+            ecs.submit(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    try {
+                        long endTS = System.currentTimeMillis() + RUN_TIME;
+                        while( System.currentTimeMillis() < endTS) {
+                            ep.insert(new StockTick());
+                            Thread.sleep(1);
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            });
+        }
+
+        boolean success = true;
+        for (int i = 0; i < THREAD_NR; i++) {
+            try {
+                success = ecs.take().get() && success;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ksession.halt();
+        try {
+            success = ecs.take().get() && success;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        assertTrue(success);
+        ksession.dispose();
     }
 
     // FIXME

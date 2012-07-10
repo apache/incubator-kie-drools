@@ -200,7 +200,7 @@ public class QueryElementNode extends LeftTupleSource
         queryObject.setAction( action ); // this is necessary as queries can be re-entrant, so we can check this before re-sheduling
                                          // another action in the modify section. Make sure it's nulled after the action is done
                                          // i.e. scheduling an insert and then an update, before the insert is executed
-        context.getQueue1().addFirst( action );
+        context.addInsertAction( action );
 
     }
 
@@ -314,7 +314,7 @@ public class QueryElementNode extends LeftTupleSource
         QueryRetractAction action = new QueryRetractAction( context,
                                                             leftTuple,
                                                             this );
-        context.getQueue1().addFirst( action );
+        context.addInsertAction( action );
     }
 
     public void modifyLeftTuple(LeftTuple leftTuple,
@@ -401,7 +401,7 @@ public class QueryElementNode extends LeftTupleSource
                                                           handle,
                                                           leftTuple,
                                                           this );
-        context.getQueue1().addFirst( action );
+        context.addInsertAction( action );
     }
 
     public LeftTupleSource getLeftTupleSource() {

@@ -62,7 +62,7 @@ public class PropagationContextImpl
     
     private boolean            shouldPropagateAll;
     
-    private LinkedList<WorkingMemoryAction> queue1; // for inserts
+    private final LinkedList<WorkingMemoryAction> queue1 = new LinkedList<WorkingMemoryAction>(); // for inserts
     
     private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
 
@@ -316,13 +316,18 @@ public class PropagationContextImpl
 
     public boolean shouldPropagateAll() {
         return this.shouldPropagateAll;
-    }          
-    
-    public LinkedList<WorkingMemoryAction> getQueue1() {
-        if ( this.queue1 == null ) {
-            this.queue1 = new LinkedList<WorkingMemoryAction>();
+    }
+
+    public void addInsertAction(WorkingMemoryAction action) {
+        synchronized (queue1) {
+            queue1.addFirst(action);
         }
-        return this.queue1; 
+    }
+
+    public void removeInsertAction(WorkingMemoryAction action) {
+        synchronized (queue1) {
+            queue1.remove(action);
+        }
     }
 
     public LinkedList<WorkingMemoryAction> getQueue2() {
@@ -339,7 +344,7 @@ public class PropagationContextImpl
         
         boolean repeat = true;
         while(repeat) {
-            if ( this.queue1 != null ) {
+            synchronized (queue1) {
                 WorkingMemoryAction action = null;                
                 while ( (action = (!queue1.isEmpty()) ? queue1.removeFirst() : null ) != null ) {
                     action.execute( workingMemory );

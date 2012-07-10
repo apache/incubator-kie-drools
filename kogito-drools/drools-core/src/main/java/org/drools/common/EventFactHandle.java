@@ -20,7 +20,7 @@ import org.drools.FactHandle;
 import org.drools.reteoo.WindowTupleList;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
-public class EventFactHandle extends DefaultFactHandle {
+public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 
     private static final long serialVersionUID = 510l;
 
@@ -209,13 +209,17 @@ public class EventFactHandle extends DefaultFactHandle {
         clone.expired = expired;
         clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
-        clone.setFirstLeftTuple( getLastLeftTuple() );
-        clone.setLastLeftTuple( getLastLeftTuple() );
-        clone.setFirstRightTuple( getFirstRightTuple() );
-        clone.setLastRightTuple( getLastRightTuple() );
-        clone.setObjectHashCode( getObjectHashCode() );
+        clone.setFirstLeftTuple(getLastLeftTuple());
+        clone.setLastLeftTuple(getLastLeftTuple());
+        clone.setFirstRightTuple(getFirstRightTuple());
+        clone.setLastRightTuple(getLastRightTuple());
+        clone.setObjectHashCode(getObjectHashCode());
         clone.firstWindowTuple = firstWindowTuple;
         clone.lastWindowTuple = lastWindowTuple;
         return clone;
+    }
+
+    public int compareTo(EventFactHandle e) {
+        return (getStartTimestamp() < e.getStartTimestamp()) ? -1 : (getStartTimestamp() == e.getStartTimestamp() ? 0 : 1);
     }
 }
