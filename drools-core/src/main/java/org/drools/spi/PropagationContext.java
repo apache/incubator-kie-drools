@@ -80,7 +80,8 @@ public interface PropagationContext
      *  because the node was unlinked. */
     ObjectHashSet getPropagationAttemptsMemory();
     
-    LinkedList<WorkingMemoryAction> getQueue1();
+    void addInsertAction(WorkingMemoryAction action);
+    void removeInsertAction(WorkingMemoryAction action);
 
     LinkedList<WorkingMemoryAction> getQueue2();
 

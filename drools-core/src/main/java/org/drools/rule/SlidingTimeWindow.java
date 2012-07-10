@@ -122,14 +122,16 @@ public class SlidingTimeWindow
                               final InternalWorkingMemory workingMemory) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
-        queue.queue.add( handle );
-        if ( queue.queue.peek() == handle ) {
-            // update next expiration time 
-            updateNextExpiration( handle,
-                                  workingMemory,
-                                  memory, 
-                                  this,
-                                  queue );
+        synchronized (queue.queue) {
+            queue.queue.add( handle );
+            if ( queue.queue.peek() == handle ) {
+                // update next expiration time
+                updateNextExpiration( handle,
+                                      workingMemory,
+                                      memory,
+                                      this,
+                                      queue );
+            }
         }
         return true;
     }
@@ -146,18 +148,20 @@ public class SlidingTimeWindow
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
         // it may be a call back to expire the tuple that is already being expired
-        if ( queue.expiringHandle != handle ) {
-            if ( queue.queue.peek() == handle ) {
-                // it was the head of the queue
-                queue.queue.poll();
-                // update next expiration time 
-                updateNextExpiration( queue.queue.peek(),
-                                      workingMemory,
-                                      memory,
-                                      this,
-                                      queue );
-            } else {
-                queue.queue.remove( handle );
+        synchronized (queue.queue) {
+            if ( queue.expiringHandle != handle ) {
+                if ( queue.queue.peek() == handle ) {
+                    // it was the head of the queue
+                    queue.queue.poll();
+                    // update next expiration time
+                    updateNextExpiration( queue.queue.peek(),
+                                          workingMemory,
+                                          memory,
+                                          this,
+                                          queue );
+                } else {
+                    queue.queue.remove( handle );
+                }
             }
         }
     }
@@ -169,28 +173,30 @@ public class SlidingTimeWindow
         long currentTime = clock.getCurrentTime();
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         EventFactHandle handle = queue.queue.peek();
-        while ( handle != null && isExpired( currentTime,
-                                             handle ) ) {
-            queue.expiringHandle = handle;
-            queue.queue.remove();
-            if( handle.isValid()) {
-                // if not expired yet, expire it
-                final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                          PropagationContext.EXPIRATION,
-                                                                                          null,
-                                                                                          null,
-                                                                                          handle );
-                WindowTupleList list = (WindowTupleList) memory.events.get( handle );
-                for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
-                    tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                                 propagationContext,
-                                                                 workingMemory );
-                    propagationContext.evaluateActionQueue( workingMemory );
-                    tuple.unlinkFromRightParent();
+        synchronized (queue.queue) {
+            while ( handle != null && isExpired( currentTime,
+                                                 handle ) ) {
+                queue.expiringHandle = handle;
+                queue.queue.remove();
+                if( handle.isValid()) {
+                    // if not expired yet, expire it
+                    final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                              PropagationContext.EXPIRATION,
+                                                                                              null,
+                                                                                              null,
+                                                                                              handle );
+                    WindowTupleList list = (WindowTupleList) memory.events.get( handle );
+                    for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+                        tuple.getRightTupleSink().retractRightTuple( tuple,
+                                                                     propagationContext,
+                                                                     workingMemory );
+                        propagationContext.evaluateActionQueue( workingMemory );
+                        tuple.unlinkFromRightParent();
+                    }
                 }
+                queue.expiringHandle = null;
+                handle = queue.queue.peek();
             }
-            queue.expiringHandle = null;
-            handle = queue.queue.peek();
         }
 
         // update next expiration time 
@@ -237,18 +243,6 @@ public class SlidingTimeWindow
         return "SlidingTimeWindow( size=" + size + " )";
     }
 
-    /**
-     * A Comparator<RightTuple> implementation for the fact queue
-     */
-    private static class SlidingTimeWindowComparator
-        implements
-        Comparator<EventFactHandle> {
-        public int compare(EventFactHandle e1,
-                           EventFactHandle e2) {
-            return (e1.getStartTimestamp() < e2.getStartTimestamp()) ? -1 : (e1.getStartTimestamp() == e2.getStartTimestamp() ? 0 : 1);
-        }
-    }
-
     public static class SlidingTimeWindowContext
         implements
         Externalizable {
@@ -257,8 +251,7 @@ public class SlidingTimeWindow
         public EventFactHandle                expiringHandle;
 
         public SlidingTimeWindowContext() {
-            this.queue = new PriorityQueue<EventFactHandle>( 16, // arbitrary size... can we improve it?
-                                                             new SlidingTimeWindowComparator() );
+            this.queue = new PriorityQueue<EventFactHandle>( 16 ); // arbitrary size... can we improve it?
         }
 
         @SuppressWarnings("unchecked")

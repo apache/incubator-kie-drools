@@ -166,6 +166,85 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
+    @Test(timeout = 15000)
+    public void testSlidingTimeWindows() {
+        String str = "package org.drools\n" +
+                "declare StockTick @role(event) end\n" +
+                "rule R\n" +
+                " duration(1s)" +
+                "when\n" +
+                " accumulate( $st : StockTick() over window:time(2s)\n" +
+                " from entry-point X,\n" +
+                " $c : count(1) )" +
+                "then\n" +
+                "end";
+
+        KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
+
+        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        final int RUN_TIME = 10000; // runs for 10 seconds
+        final int THREAD_NR = 10;
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        ecs.submit(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                try {
+                    ksession.fireUntilHalt();
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+
+        });
+        for (int i = 0; i < THREAD_NR; i++) {
+            ecs.submit(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    try {
+                        long endTS = System.currentTimeMillis() + RUN_TIME;
+                        while( System.currentTimeMillis() < endTS) {
+                            ep.insert(new StockTick());
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            });
+        }
+
+        boolean success = true;
+        for (int i = 0; i < THREAD_NR; i++) {
+            try {
+                success = ecs.take().get() && success;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ksession.halt();
+        try {
+            success = ecs.take().get() && success;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        assertTrue(success);
+        ksession.dispose();
+    }
+
     // FIXME
 //    
 //    public void testRuleBaseConcurrentCompilation() {

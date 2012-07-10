@@ -213,7 +213,7 @@ public class AccumulateNode extends BetaNode {
         final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
         if ( accctx.getAction() != null ) {
             // there is a scheduled activation, we must cancel it
-            context.getQueue1().remove( accctx.getAction() );
+            context.removeInsertAction( accctx.getAction() );
         }
         leftTuple.setObject( null );
 
@@ -292,7 +292,7 @@ public class AccumulateNode extends BetaNode {
                                                                                       true,
                                                                                       this );  
                     accctx.setAction( action );
-                    context.getQueue1().addFirst( action );
+                    context.addInsertAction( action );
                 }
             }
         }
@@ -519,7 +519,7 @@ public class AccumulateNode extends BetaNode {
                                                                                               true,
                                                                                               this );  
                             accctx.setAction( action );
-                            context.getQueue1().addFirst( action );
+                            context.addInsertAction( action );
                         }
                     }
                 }
@@ -567,7 +567,7 @@ public class AccumulateNode extends BetaNode {
                                                                                               true,
                                                                                               this );  
                             accctx.setAction( action );
-                            context.getQueue1().addFirst( action );
+                            context.addInsertAction( action );
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
 
@@ -593,7 +593,7 @@ public class AccumulateNode extends BetaNode {
                                                                                               true,
                                                                                               this );  
                             accctx.setAction( action );
-                            context.getQueue1().addFirst( action );
+                            context.addInsertAction( action );
                         }
 
                         childLeftTuple = temp;
@@ -988,7 +988,7 @@ public class AccumulateNode extends BetaNode {
                                                                                   true,
                                                                                   this );  
                 accctx.setAction( action );
-                context.getQueue1().addFirst( action );
+                context.addInsertAction( action );
             }          
             match = tmp;
         }
