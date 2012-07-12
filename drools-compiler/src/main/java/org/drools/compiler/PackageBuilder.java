@@ -1836,7 +1836,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                   "BUG: builder not found for descriptor class " + wd.getPattern().getClass() );
             }
 
-            pkgRegistry.getPackage().addWindowDeclaration( window );
+            if( context.getErrors().size() > 0 ) {
+                for( DroolsError error : context.getErrors() ) {
+                    this.results.add( error );
+                }
+            } else {
+                pkgRegistry.getPackage().addWindowDeclaration( window );
+            }
         }
     }
 
