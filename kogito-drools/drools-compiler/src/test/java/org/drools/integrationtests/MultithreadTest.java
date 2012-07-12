@@ -143,7 +143,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                 "             from entry-point X,\n" +
                 "             $c : count(1) )" +
                 "then\n" +
-                "    System.out.println( $c );" +
+                "    //System.out.println( $c );\n" +
                 "end";
 
         KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();

@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.Cheese;
 import org.drools.ClockType;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
@@ -693,6 +694,27 @@ public class StreamsTest extends CommonTestMethodBase {
         Assert.assertThat( (StockTick) aafe.getActivation().getDeclarationValue("f2"),
                            is(st2));
     }
+
+    @Test
+    public void testWindowWithEntryPoint() {
+        String str = "import org.drools.Cheese;\n" +
+                "declare window X\n" +
+                "   Cheese( type == \"gorgonzola\" ) over window:time(1m) from entry-point Z\n" +
+                "end\n" +
+                "rule R when\n" +
+                "   $c : Cheese( price < 100 ) from window X\n" +
+                "then\n" +
+                "   System.out.println($c);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "Z" );
+        ep.insert(new Cheese("gorgonzola", 12));
+        ksession.fireAllRules();
+    }
+    
     
     @Test
     public void testAtomicActivationFiring() throws Exception {
