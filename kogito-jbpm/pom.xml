@@ -93,6 +93,16 @@
     <module>jbpm-examples</module>
   </modules>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.9</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <testResources>
       <testResource>
@@ -188,24 +198,6 @@
             <artifactId>maven-replacer-plugin</artifactId>
             <version>1.4.1</version>
             <executions>
-              <execution>
-                <id>hib4-blob-user-type</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>replace</goal>
-                </goals>
-                <configuration>
-                  <ignoreMissingFile>true</ignoreMissingFile>
-                  <file>src/main/java/org/jbpm/persistence/processinstance/BlobUserType.java</file>
-                  <replacements>
-                    <!-- for BlobUserType hib4 UserType class compatibility, even though it's not used -->
-                    <replacement>
-                      <token>(/\*\*|):HIB4 REMOVE ME:(\*\*/|)</token>
-                      <value>// :HIB4 REMOVE ME:</value>
-                    </replacement>
-                  </replacements>
-                </configuration>
-              </execution>
               <execution>
                 <id>jpa2-xml-config</id>
                 <phase>process-test-resources</phase>
