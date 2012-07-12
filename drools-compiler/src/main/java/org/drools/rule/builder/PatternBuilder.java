@@ -323,7 +323,7 @@ public class PatternBuilder
                 context.addError(new DescrBuildError(context.getParentDescr(),
                         patternDescr,
                         null,
-                        "A Sliding Window behavior can only be assigned to patterns declared with @role( event ). The pattern '" + pattern.getObjectType() + "' in the rule '" + context.getRule().getName()
+                        "A Sliding Window can only be assigned to types declared with @role( event ). The type '" + pattern.getObjectType() + "' in '" + context.getRule().getName()
                                 + "' is not declared as an Event."));
             }
         }
