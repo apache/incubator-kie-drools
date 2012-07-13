@@ -674,7 +674,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       <section>
         <title>Late acceptance acceptor</title>
 
-        <para>Late acceptance accepts any move that has a score which is higher then the best score of a number of
+        <para>Late acceptance accepts any move that has a score which is higher than the best score of a number of
         steps ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
 
         <programlisting language="xml">    &lt;acceptor&gt;

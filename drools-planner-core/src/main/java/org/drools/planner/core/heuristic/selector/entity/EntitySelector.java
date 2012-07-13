@@ -46,7 +46,7 @@ public interface EntitySelector extends Selector, Iterable<Object> {
     /**
      * See {@link List#listIterator()}
      *
-     * @param index lower then {@link #getSize()}, see {@link List#listIterator(int)}.
+     * @param index lower than {@link #getSize()}, see {@link List#listIterator(int)}.
      * @return never null, see {@link List#listIterator(int)}.
      */
     ListIterator<Object> listIterator(int index);

@@ -875,7 +875,7 @@ end</programlisting>
       <literal>Course</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRange from
       Solution, the <literal>Solver</literal> will often try to assign it to <literal>Room</literal> X too (only to find
       out that it breaks a hard constraint). Switch to <link linkend="valueRangeFromPlanningEntity">ValueRange from
-      planning entity</link> to define that Course A should only be assigned a <literal>Room</literal> other then
+      planning entity</link> to define that Course A should only be assigned a <literal>Room</literal> other than
       X.</para>
 
       <para>This tends to give a good performance gain, not just because the score calculation is faster, but mainly

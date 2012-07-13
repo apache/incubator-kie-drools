@@ -66,7 +66,7 @@ public class CachingMoveSelector extends AbstractMoveSelector implements Selecti
         if (childSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The moveSelector (" + this + ") has a childMoveSelector ("
                     + childMoveSelector + ") with childSize (" + childSize
-                    + ") which is higher then Integer.MAX_VALUE.");
+                    + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedMoveList = new ArrayList<Move>((int) childSize);
         CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());

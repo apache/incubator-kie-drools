@@ -67,7 +67,7 @@ public class CachingEntitySelector extends AbstractEntitySelector implements Sel
         if (childSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The entitySelector (" + this + ") has a childEntitySelector ("
                     + childEntitySelector + ") with childSize (" + childSize
-                    + ") which is higher then Integer.MAX_VALUE.");
+                    + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedEntityList = new ArrayList<Object>((int) childSize);
         CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());

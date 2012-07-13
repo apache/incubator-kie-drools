@@ -340,7 +340,7 @@ public class PlannerBenchmarkConfig {
         if (resolvedParallelBenchmarkCount < 1) {
             throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount
                     + ") resulted in a resolvedParallelBenchmarkCount (" + resolvedParallelBenchmarkCount
-                    + ") that is lower then 1.");
+                    + ") that is lower than 1.");
         }
         if (resolvedParallelBenchmarkCount > availableProcessorCount) {
             logger.warn("Because the resolvedParallelBenchmarkCount (" + resolvedParallelBenchmarkCount

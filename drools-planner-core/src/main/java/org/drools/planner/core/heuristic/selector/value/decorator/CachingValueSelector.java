@@ -67,7 +67,7 @@ public class CachingValueSelector extends AbstractValueSelector implements Selec
         if (childSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The valueSelector (" + this + ") has a childValueSelector ("
                     + childValueSelector + ") with childSize (" + childSize
-                    + ") which is higher then Integer.MAX_VALUE.");
+                    + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedValueList = new ArrayList<Object>((int) childSize);
         CollectionUtils.addAll(cachedValueList, childValueSelector.iterator());
