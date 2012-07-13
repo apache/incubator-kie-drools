@@ -21,17 +21,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.AbstractSelector;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
-import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
-import org.drools.planner.core.heuristic.selector.value.IteratorToValueIteratorBridge;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
@@ -46,7 +42,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     protected final int minimumSubChainSize = 1;
 
-    protected List<SubChain> anchorChainList = null;
+    protected List<SubChain> anchorTrailingChainList = null;
 
     public DefaultSubChainSelector(ValueSelector valueSelector, boolean randomSelection) {
         this.valueSelector = valueSelector;
@@ -63,6 +59,10 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
         solverPhaseLifecycleSupport.addEventListener(valueSelector);
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(SelectionCacheType.STEP, this));
+        if (minimumSubChainSize < 1) {
+            throw new IllegalStateException("The minimumSubChainSize (" + minimumSubChainSize
+                    + ") must be at least 1.");
+        }
 //        if (minimumSubChainSize > maximumSubChainSize) {
 //            throw new IllegalStateException("The minimumSubChainSize (" + minimumSubChainSize
 //                    + ") must be at least maximumSubChainSize (" + maximumSubChainSize + ").");
@@ -95,7 +95,7 @@ public class DefaultSubChainSelector extends AbstractSelector
                 anchorList.add(value);
             }
         }
-        anchorChainList = new ArrayList<SubChain>(anchorList.size());
+        anchorTrailingChainList = new ArrayList<SubChain>(anchorList.size());
         int anchorChainInitialCapacity = ((int) valueSize / anchorList.size()) + 1;
         for (Object anchor : anchorList) {
             List<Object> anchorChain = new ArrayList<Object>(anchorChainInitialCapacity);
@@ -104,12 +104,12 @@ public class DefaultSubChainSelector extends AbstractSelector
                 anchorChain.add(trailingEntity);
                 trailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, trailingEntity);
             }
-            anchorChainList.add(new SubChain(anchorChain));
+            anchorTrailingChainList.add(new SubChain(anchorChain));
         }
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {
-        anchorChainList = null;
+        anchorTrailingChainList = null;
     }
 
     // ************************************************************************
@@ -126,16 +126,18 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public long getSize() {
         long size = 0L;
-        for (SubChain anchorChain : anchorChainList) {
-            long anchorChainSize = anchorChain.getValueList().size();
-            size += anchorChainSize * (anchorChainSize - 1L) / 2L;
+        for (SubChain anchorTrailingChain : anchorTrailingChainList) {
+            long n = anchorTrailingChain.getValueList().size() - (long) minimumSubChainSize + 1L;
+            if (n > 0) {
+                size += n * (n + 1L) / 2L;
+            }
         }
         return size;
     }
 
     public Iterator<SubChain> iterator() {
         if (!randomSelection) {
-            return new OriginalSubChainIterator(anchorChainList.iterator());
+            return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
         } else {
             throw new UnsupportedOperationException(""); // TODO
         }
@@ -143,15 +145,15 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     private class OriginalSubChainIterator extends UpcomingSelectionIterator<SubChain> {
 
-        private final Iterator<SubChain> anchorChainIterator;
-        private List<Object> anchorChain;
-        private int anchorChainSize;
-        private int fromIndex = 0;
-        private int toIndex = 0;
+        private final Iterator<SubChain> anchorTrailingChainIterator;
+        private List<Object> anchorTrailingChain;
+        private int anchorTrailingChainSize;
+        private int fromIndex; // Inclusive
+        private int toIndex; // Exclusive
 
-        public OriginalSubChainIterator(Iterator<SubChain> anchorChainIterator) {
-            this.anchorChainIterator = anchorChainIterator;
-            anchorChainSize = 0;
+        public OriginalSubChainIterator(Iterator<SubChain> anchorTrailingChainIterator) {
+            this.anchorTrailingChainIterator = anchorTrailingChainIterator;
+            anchorTrailingChainSize = -1;
             fromIndex = -1;
             toIndex = -1;
             createUpcomingSelection();
@@ -159,21 +161,21 @@ public class DefaultSubChainSelector extends AbstractSelector
 
         protected void createUpcomingSelection() {
             toIndex++;
-            if (toIndex >= anchorChainSize) {
+            if (toIndex > anchorTrailingChainSize) {
                 fromIndex++;
                 toIndex = fromIndex + minimumSubChainSize;
-                while (toIndex >= anchorChainSize) {
-                    if (!anchorChainIterator.hasNext()) {
+                while (toIndex > anchorTrailingChainSize) {
+                    if (!anchorTrailingChainIterator.hasNext()) {
                         upcomingSelection = null;
                         return;
                     }
-                    anchorChain = anchorChainIterator.next().getValueList();
-                    anchorChainSize = anchorChain.size();
+                    anchorTrailingChain = anchorTrailingChainIterator.next().getValueList();
+                    anchorTrailingChainSize = anchorTrailingChain.size();
                     fromIndex = 0;
                     toIndex = fromIndex + minimumSubChainSize;
                 }
             }
-            upcomingSelection = new SubChain(anchorChain.subList(fromIndex, toIndex));
+            upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
         }
 
     }
