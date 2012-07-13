@@ -57,8 +57,9 @@ public class SubChainSelectorConfig extends SelectorConfig {
     public SubChainSelector buildSubChainSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType,
             PlanningEntityDescriptor entityDescriptor) {
+        // SelectionOrder.ORIGINAL because a SubChainSelector caches the values
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
+                SelectionOrder.ORIGINAL, resolvedCacheType, entityDescriptor);
         return new DefaultSubChainSelector(valueSelector, resolvedSelectionOrder == SelectionOrder.RANDOM);
     }
 
