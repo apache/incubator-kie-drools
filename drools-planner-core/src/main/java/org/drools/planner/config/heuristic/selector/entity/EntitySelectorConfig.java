@@ -90,29 +90,7 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
-        PlanningEntityDescriptor entityDescriptor;
-        if (planningEntityClass != null) {
-            entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
-            if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this + ") has a planningEntityClass ("
-                        + planningEntityClass + ") that is not configured as a planningEntity.\n" +
-                        "If that class (" + planningEntityClass.getSimpleName() + ") is not a " +
-                        "planningEntityClass (" + solutionDescriptor.getPlanningEntityClassSet()
-                        + "), check your Solution implementation's annotated methods.\n" +
-                        "If it is, check your solver configuration.");
-            }
-        } else {
-            Collection<PlanningEntityDescriptor> planningEntityDescriptors = solutionDescriptor
-                    .getPlanningEntityDescriptors();
-            if (planningEntityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") has no configured planningEntityClass ("
-                        + planningEntityClass + ") and because there are multiple in the planningEntityClassSet ("
-                        + solutionDescriptor.getPlanningEntityClassSet()
-                        + "), it can not be deducted automatically.");
-            }
-            entityDescriptor = planningEntityDescriptors.iterator().next();
-        }
+        PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
@@ -185,11 +163,37 @@ public class EntitySelectorConfig extends SelectorConfig {
         return entitySelector;
     }
 
+    private PlanningEntityDescriptor fetchEntityDescriptor(SolutionDescriptor solutionDescriptor) {
+        PlanningEntityDescriptor entityDescriptor;
+        if (planningEntityClass != null) {
+            entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
+            if (entityDescriptor == null) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this + ") has a planningEntityClass ("
+                        + planningEntityClass + ") that is not configured as a planningEntity.\n" +
+                        "If that class (" + planningEntityClass.getSimpleName() + ") is not a " +
+                        "planningEntityClass (" + solutionDescriptor.getPlanningEntityClassSet()
+                        + "), check your Solution implementation's annotated methods.\n" +
+                        "If it is, check your solver configuration.");
+            }
+        } else {
+            Collection<PlanningEntityDescriptor> planningEntityDescriptors = solutionDescriptor
+                    .getPlanningEntityDescriptors();
+            if (planningEntityDescriptors.size() != 1) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") has no configured planningEntityClass ("
+                        + planningEntityClass + ") and because there are multiple in the planningEntityClassSet ("
+                        + solutionDescriptor.getPlanningEntityClassSet()
+                        + "), it can not be deducted automatically.");
+            }
+            entityDescriptor = planningEntityDescriptors.iterator().next();
+        }
+        return entityDescriptor;
+    }
+
     public void inherit(EntitySelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (planningEntityClass == null) {
-            planningEntityClass = inheritedConfig.getPlanningEntityClass();
-        }
+        planningEntityClass = ConfigUtils.inheritOverwritableProperty(planningEntityClass,
+                inheritedConfig.getPlanningEntityClass());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         entityFilterClass = ConfigUtils.inheritOverwritableProperty

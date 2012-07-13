@@ -19,16 +19,57 @@ package org.drools.planner.core.heuristic.selector.value.chained;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * A subList out of a single chain.
+ * <p/>
+ * Never includes an anchor.
+ */
 public class SubChain implements Serializable {
 
-    private final List<Object> valueList;
+    private final List<Object> entityList;
 
-    public SubChain(List<Object> valueList) {
-        this.valueList = valueList;
+    public SubChain(List<Object> entityList) {
+        this.entityList = entityList;
     }
 
-    public List<Object> getValueList() {
-        return valueList;
+    public List<Object> getEntityList() {
+        return entityList;
+    }
+
+    public Object getFirstEntity() {
+        if (entityList.isEmpty()) {
+            return null;
+        }
+        return entityList.get(0);
+    }
+
+    public Object getLastEntity() {
+        if (entityList.isEmpty()) {
+            return null;
+        }
+        return entityList.get(entityList.size() - 1);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof SubChain) {
+            SubChain other = (SubChain) o;
+            return entityList.equals(other.entityList);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return entityList.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return entityList.toString();
     }
 
 }

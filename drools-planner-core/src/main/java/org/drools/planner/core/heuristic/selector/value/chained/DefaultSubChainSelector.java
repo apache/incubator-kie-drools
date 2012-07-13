@@ -28,7 +28,6 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
@@ -130,7 +129,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     public long getSize() {
         long size = 0L;
         for (SubChain anchorTrailingChain : anchorTrailingChainList) {
-            long n = anchorTrailingChain.getValueList().size() - (long) minimumSubChainSize + 1L;
+            long n = anchorTrailingChain.getEntityList().size() - (long) minimumSubChainSize + 1L;
             size += n * (n + 1L) / 2L;
         }
         return size;
@@ -171,7 +170,7 @@ public class DefaultSubChainSelector extends AbstractSelector
                         upcomingSelection = null;
                         return;
                     }
-                    anchorTrailingChain = anchorTrailingChainIterator.next().getValueList();
+                    anchorTrailingChain = anchorTrailingChainIterator.next().getEntityList();
                     anchorTrailingChainSize = anchorTrailingChain.size();
                     fromIndex = 0;
                     toIndex = fromIndex + minimumSubChainSize;
@@ -196,7 +195,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         protected void createUpcomingSelection() {
             // TODO support SelectionProbabilityWeightFactory, such as FairSelectorProbabilityWeightFactory too
             int anchorTrailingChainListIndex = workingRandom.nextInt(anchorTrailingChainList.size());
-            List<Object> anchorTrailingChain = anchorTrailingChainList.get(anchorTrailingChainListIndex).getValueList();
+            List<Object> anchorTrailingChain = anchorTrailingChainList.get(anchorTrailingChainListIndex).getEntityList();
             int anchorTrailingChainSize = anchorTrailingChain.size();
             // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
             int n = anchorTrailingChainSize - minimumSubChainSize + 1;

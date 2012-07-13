@@ -31,6 +31,7 @@ import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolv
 import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.config.phase.custom.CustomSolverPhaseConfig;
 import org.drools.planner.config.solver.SolverConfig;
@@ -55,6 +56,7 @@ public class XmlSolverFactory implements SolverFactory {
         xStream.processAnnotations(UnionMoveSelectorConfig.class);
         xStream.processAnnotations(ChangeMoveSelectorConfig.class);
         xStream.processAnnotations(SwapMoveSelectorConfig.class);
+        xStream.processAnnotations(SubChainChangeMoveSelectorConfig.class);
         return xStream;
     }
 

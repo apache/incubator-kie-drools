@@ -233,15 +233,15 @@ public class DefaultSubChainSelectorTest {
         assertEquals(0L, subChainSelector.getSize());
     }
 
-    private void assertNextSubChain(Iterator<SubChain> iterator, String... valueCodes) {
+    private void assertNextSubChain(Iterator<SubChain> iterator, String... entityCodes) {
         assertTrue(iterator.hasNext());
         SubChain subChain = iterator.next();
-        List<Object> valueList = subChain.getValueList();
-        String message = "Expected valueCodes (" + Arrays.toString(valueCodes)
-                + ") but received valueList (" + valueList + ").";
-        assertEquals(message, valueCodes.length, valueList.size());
-        for (int i = 0; i < valueCodes.length; i++) {
-            assertCode(message, valueCodes[i], valueList.get(i));
+        List<Object> entityList = subChain.getEntityList();
+        String message = "Expected entityCodes (" + Arrays.toString(entityCodes)
+                + ") but received entityList (" + entityList + ").";
+        assertEquals(message, entityCodes.length, entityList.size());
+        for (int i = 0; i < entityCodes.length; i++) {
+            assertCode(message, entityCodes[i], entityList.get(i));
         }
     }
 
