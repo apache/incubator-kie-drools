@@ -18,20 +18,14 @@ public class GenericReverseChainedChangePartMoveTest {
     @Test
     public void noTrailing() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
-        a1.setChainedObject(a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2");
-        a2.setChainedObject(a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3");
-        a3.setChainedObject(a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4");
-        a4.setChainedObject(a3);
-        TestdataChainedEntity a5 = new TestdataChainedEntity("a5");
-        a5.setChainedObject(a4);
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataChainedEntity b1 = new TestdataChainedEntity("b1");
-        b1.setChainedObject(b0);
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
@@ -65,16 +59,11 @@ public class GenericReverseChainedChangePartMoveTest {
     @Test
     public void noTrailingInPlace() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
-        a1.setChainedObject(a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2");
-        a2.setChainedObject(a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3");
-        a3.setChainedObject(a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4");
-        a4.setChainedObject(a3);
-        TestdataChainedEntity a5 = new TestdataChainedEntity("a5");
-        a5.setChainedObject(a4);
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
@@ -106,20 +95,14 @@ public class GenericReverseChainedChangePartMoveTest {
     @Test
     public void oldAndNewTrailing() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
-        a1.setChainedObject(a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2");
-        a2.setChainedObject(a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3");
-        a3.setChainedObject(a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4");
-        a4.setChainedObject(a3);
-        TestdataChainedEntity a5 = new TestdataChainedEntity("a5");
-        a5.setChainedObject(a4);
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataChainedEntity b1 = new TestdataChainedEntity("b1");
-        b1.setChainedObject(b0);
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
@@ -157,16 +140,11 @@ public class GenericReverseChainedChangePartMoveTest {
     @Test
     public void oldAndNewTrailingInPlace() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
-        a1.setChainedObject(a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2");
-        a2.setChainedObject(a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3");
-        a3.setChainedObject(a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4");
-        a4.setChainedObject(a3);
-        TestdataChainedEntity a5 = new TestdataChainedEntity("a5");
-        a5.setChainedObject(a4);
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");

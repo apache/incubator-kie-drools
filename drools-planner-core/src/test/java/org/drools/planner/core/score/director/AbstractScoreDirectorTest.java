@@ -45,16 +45,12 @@ public class AbstractScoreDirectorTest {
     @Test
     public void getTrailingEntityMap() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
-        a1.setChainedObject(a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2");
-        a2.setChainedObject(a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3");
-        a3.setChainedObject(a2);
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataChainedEntity b1 = new TestdataChainedEntity("b1");
-        b1.setChainedObject(b0);
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
 
         TestdataChainedSolution solution = new TestdataChainedSolution("solution");
         solution.setChainedAnchorList(Arrays.asList(a0, b0));

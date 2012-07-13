@@ -98,6 +98,12 @@ public class ChangeMoveSelectorTest {
         verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
         verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
         verify(entitySelector, times(1)).solvingEnded(solverScope);
+        verify(valueSelector, times(1)).solvingStarted(solverScope);
+        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(1)).solvingEnded(solverScope);
     }
 
     private void runAssertsNonrandom(ChangeMoveSelector moveSelector) {
@@ -182,6 +188,12 @@ public class ChangeMoveSelectorTest {
         verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
         verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
         verify(entitySelector, times(1)).solvingEnded(solverScope);
+        verify(valueSelector, times(1)).solvingStarted(solverScope);
+        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(1)).solvingEnded(solverScope);
     }
 
     @Test
@@ -245,6 +257,12 @@ public class ChangeMoveSelectorTest {
         verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
         verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
         verify(entitySelector, times(1)).solvingEnded(solverScope);
+        verify(valueSelector, times(1)).solvingStarted(solverScope);
+        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(1)).solvingEnded(solverScope);
     }
 
     private void runAssertsEmptyNonrandom(ChangeMoveSelector moveSelector) {

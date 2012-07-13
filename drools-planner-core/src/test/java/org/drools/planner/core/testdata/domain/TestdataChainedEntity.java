@@ -28,6 +28,11 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
         super(code);
     }
 
+    public TestdataChainedEntity(String code, TestdataChainedObject chainedObject) {
+        this(code);
+        this.chainedObject = chainedObject;
+    }
+
     @PlanningVariable(chained = true)
     @ValueRange(type = ValueRangeType.UNDEFINED)
     public TestdataChainedObject getChainedObject() {
