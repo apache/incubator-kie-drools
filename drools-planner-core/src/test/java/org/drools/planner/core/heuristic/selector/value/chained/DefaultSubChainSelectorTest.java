@@ -17,28 +17,20 @@
 package org.drools.planner.core.heuristic.selector.value.chained;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
-import org.drools.planner.core.testdata.domain.TestdataChainedObject;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
@@ -87,13 +79,20 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
-        runAssertsOriginal(subChainSelector);
+        runAssertsOriginal1(subChainSelector);
         subChainSelector.stepEnded(stepScopeA1);
+
+        a4.setChainedObject(a2);
+        a3.setChainedObject(b1);
+        b2.setChainedObject(a3);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a4);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, b1)).thenReturn(a3);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a3)).thenReturn(b2);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA2);
-        runAssertsOriginal(subChainSelector);
+        runAssertsOriginal2(subChainSelector);
         subChainSelector.stepEnded(stepScopeA2);
 
         subChainSelector.phaseEnded(phaseScopeA);
@@ -105,20 +104,8 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB1);
-        runAssertsOriginal(subChainSelector);
+        runAssertsOriginal2(subChainSelector);
         subChainSelector.stepEnded(stepScopeB1);
-
-        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        subChainSelector.stepStarted(stepScopeB2);
-        runAssertsOriginal(subChainSelector);
-        subChainSelector.stepEnded(stepScopeB2);
-
-        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        subChainSelector.stepStarted(stepScopeB3);
-        runAssertsOriginal(subChainSelector);
-        subChainSelector.stepEnded(stepScopeB3);
 
         subChainSelector.phaseEnded(phaseScopeB);
 
@@ -126,13 +113,13 @@ public class DefaultSubChainSelectorTest {
 
         verify(valueSelector, times(1)).solvingStarted(solverScope);
         verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(3)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(3)).stepEnded(Matchers.<AbstractStepScope>any());
         verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
         verify(valueSelector, times(1)).solvingEnded(solverScope);
     }
 
-    private void runAssertsOriginal(DefaultSubChainSelector subChainSelector) {
+    private void runAssertsOriginal1(DefaultSubChainSelector subChainSelector) {
         Iterator<SubChain> iterator = subChainSelector.iterator();
         assertNotNull(iterator);
         assertNextSubChain(iterator, "a1");
@@ -152,6 +139,27 @@ public class DefaultSubChainSelectorTest {
         assertEquals(false, subChainSelector.isContinuous());
         assertEquals(false, subChainSelector.isNeverEnding());
         assertEquals(13L, subChainSelector.getSize());
+    }
+
+    private void runAssertsOriginal2(DefaultSubChainSelector subChainSelector) {
+        Iterator<SubChain> iterator = subChainSelector.iterator();
+        assertNotNull(iterator);
+        assertNextSubChain(iterator, "a1");
+        assertNextSubChain(iterator, "a1", "a2");
+        assertNextSubChain(iterator, "a1", "a2", "a4");
+        assertNextSubChain(iterator, "a2");
+        assertNextSubChain(iterator, "a2", "a4");
+        assertNextSubChain(iterator, "a4");
+        assertNextSubChain(iterator, "b1");
+        assertNextSubChain(iterator, "b1", "a3");
+        assertNextSubChain(iterator, "b1", "a3", "b2");
+        assertNextSubChain(iterator, "a3");
+        assertNextSubChain(iterator, "a3", "b2");
+        assertNextSubChain(iterator, "b2");
+        assertFalse(iterator.hasNext());
+        assertEquals(false, subChainSelector.isContinuous());
+        assertEquals(false, subChainSelector.isNeverEnding());
+        assertEquals(12L, subChainSelector.getSize());
     }
 
 //    @Test
