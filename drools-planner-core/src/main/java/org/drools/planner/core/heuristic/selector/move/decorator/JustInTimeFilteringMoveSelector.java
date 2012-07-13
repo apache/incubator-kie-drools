@@ -88,6 +88,7 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
             createUpcomingSelection();
         }
 
+        @Override
         protected void createUpcomingSelection() {
             Move next;
             do {

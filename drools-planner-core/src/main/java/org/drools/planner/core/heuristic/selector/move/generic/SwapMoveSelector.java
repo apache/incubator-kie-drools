@@ -109,6 +109,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
             createUpcomingSelection();
         }
 
+        @Override
         protected void createUpcomingSelection() {
             if (!rightEntityIterator.hasNext()) {
                 if (!leftEntityIterator.hasNext()) {
@@ -156,6 +157,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
             }
         }
 
+        @Override
         protected void createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object leftEntity = leftEntityIterator.next();

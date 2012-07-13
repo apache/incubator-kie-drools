@@ -89,6 +89,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             }
         }
 
+        @Override
         protected void createUpcomingSelection() {
             while (!valueIterator.hasNext(upcomingEntity)) {
                 if (!entityIterator.hasNext()) {
@@ -122,6 +123,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             }
         }
 
+        @Override
         protected void createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object entity = entityIterator.next();

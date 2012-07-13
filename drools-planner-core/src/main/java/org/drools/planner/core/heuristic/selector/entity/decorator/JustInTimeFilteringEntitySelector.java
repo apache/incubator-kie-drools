@@ -96,6 +96,7 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
             createUpcomingSelection();
         }
 
+        @Override
         protected void createUpcomingSelection() {
             Object next;
             do {

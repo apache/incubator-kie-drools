@@ -28,6 +28,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
@@ -104,7 +105,9 @@ public class DefaultSubChainSelector extends AbstractSelector
                 anchorChain.add(trailingEntity);
                 trailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, trailingEntity);
             }
-            anchorTrailingChainList.add(new SubChain(anchorChain));
+            if (anchorChain.size() >= minimumSubChainSize) {
+                anchorTrailingChainList.add(new SubChain(anchorChain));
+            }
         }
     }
 
@@ -128,9 +131,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         long size = 0L;
         for (SubChain anchorTrailingChain : anchorTrailingChainList) {
             long n = anchorTrailingChain.getValueList().size() - (long) minimumSubChainSize + 1L;
-            if (n > 0) {
-                size += n * (n + 1L) / 2L;
-            }
+            size += n * (n + 1L) / 2L;
         }
         return size;
     }
@@ -139,7 +140,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         if (!randomSelection) {
             return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
         } else {
-            throw new UnsupportedOperationException(""); // TODO
+            return new RandomSubChainIterator();
         }
     }
 
@@ -159,6 +160,7 @@ public class DefaultSubChainSelector extends AbstractSelector
             createUpcomingSelection();
         }
 
+        @Override
         protected void createUpcomingSelection() {
             toIndex++;
             if (toIndex > anchorTrailingChainSize) {
@@ -175,6 +177,39 @@ public class DefaultSubChainSelector extends AbstractSelector
                     toIndex = fromIndex + minimumSubChainSize;
                 }
             }
+            upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
+        }
+
+    }
+
+    private class RandomSubChainIterator extends UpcomingSelectionIterator<SubChain> {
+
+        private RandomSubChainIterator() {
+            if (anchorTrailingChainList.isEmpty()) {
+                upcomingSelection = null;
+            } else {
+                createUpcomingSelection();
+            }
+        }
+
+        @Override
+        protected void createUpcomingSelection() {
+            // TODO support SelectionProbabilityWeightFactory, such as FairSelectorProbabilityWeightFactory too
+            int anchorTrailingChainListIndex = workingRandom.nextInt(anchorTrailingChainList.size());
+            List<Object> anchorTrailingChain = anchorTrailingChainList.get(anchorTrailingChainListIndex).getValueList();
+            int anchorTrailingChainSize = anchorTrailingChain.size();
+            // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
+            int n = anchorTrailingChainSize - minimumSubChainSize + 1;
+            int size = n * (n + 1) / 2;
+            int sizeIndex = workingRandom.nextInt(size);
+            // Black magic to translate sizeIndex into fromIndex and toIndex
+            int fromIndex = sizeIndex;
+            int toIndex = n;
+            while (fromIndex > toIndex) {
+                fromIndex -= toIndex;
+                toIndex--;
+            }
+            toIndex += minimumSubChainSize - 1;
             upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
         }
 
