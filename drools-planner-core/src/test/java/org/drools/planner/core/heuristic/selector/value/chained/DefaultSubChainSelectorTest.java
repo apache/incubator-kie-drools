@@ -46,7 +46,7 @@ import static org.mockito.Mockito.*;
 public class DefaultSubChainSelectorTest {
 
     @Test
-    public void nonrandom() {
+    public void original() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
@@ -87,13 +87,13 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
-        runAssertsNonrandom(subChainSelector);
+        runAssertsOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA2);
-        runAssertsNonrandom(subChainSelector);
+        runAssertsOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeA2);
 
         subChainSelector.phaseEnded(phaseScopeA);
@@ -105,19 +105,19 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB1);
-        runAssertsNonrandom(subChainSelector);
+        runAssertsOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB2);
-        runAssertsNonrandom(subChainSelector);
+        runAssertsOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB3);
-        runAssertsNonrandom(subChainSelector);
+        runAssertsOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeB3);
 
         subChainSelector.phaseEnded(phaseScopeB);
@@ -132,7 +132,7 @@ public class DefaultSubChainSelectorTest {
         verify(valueSelector, times(1)).solvingEnded(solverScope);
     }
 
-    private void runAssertsNonrandom(DefaultSubChainSelector subChainSelector) {
+    private void runAssertsOriginal(DefaultSubChainSelector subChainSelector) {
         Iterator<SubChain> iterator = subChainSelector.iterator();
         assertNotNull(iterator);
         assertNextSubChain(iterator, "a1");
@@ -155,7 +155,7 @@ public class DefaultSubChainSelectorTest {
     }
 
 //    @Test
-//    public void emptySelectorNonrandom() {
+//    public void emptySelectorOriginal() {
 //        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
 //        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
 //                new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
@@ -172,13 +172,13 @@ public class DefaultSubChainSelectorTest {
 //        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
 //        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
 //        moveSelector.stepStarted(stepScopeA1);
-//        runAssertsEmptyNonrandom(moveSelector);
+//        runAssertsEmptyOriginal(moveSelector);
 //        moveSelector.stepEnded(stepScopeA1);
 //
 //        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
 //        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
 //        moveSelector.stepStarted(stepScopeA2);
-//        runAssertsEmptyNonrandom(moveSelector);
+//        runAssertsEmptyOriginal(moveSelector);
 //        moveSelector.stepEnded(stepScopeA2);
 //
 //        moveSelector.phaseEnded(phaseScopeA);
@@ -190,19 +190,19 @@ public class DefaultSubChainSelectorTest {
 //        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
 //        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
 //        moveSelector.stepStarted(stepScopeB1);
-//        runAssertsEmptyNonrandom(moveSelector);
+//        runAssertsEmptyOriginal(moveSelector);
 //        moveSelector.stepEnded(stepScopeB1);
 //
 //        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
 //        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
 //        moveSelector.stepStarted(stepScopeB2);
-//        runAssertsEmptyNonrandom(moveSelector);
+//        runAssertsEmptyOriginal(moveSelector);
 //        moveSelector.stepEnded(stepScopeB2);
 //
 //        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
 //        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
 //        moveSelector.stepStarted(stepScopeB3);
-//        runAssertsEmptyNonrandom(moveSelector);
+//        runAssertsEmptyOriginal(moveSelector);
 //        moveSelector.stepEnded(stepScopeB3);
 //
 //        moveSelector.phaseEnded(phaseScopeB);
@@ -217,7 +217,7 @@ public class DefaultSubChainSelectorTest {
 //        verify(entitySelector, times(1)).solvingEnded(solverScope);
 //    }
 //
-//    private void runAssertsEmptyNonrandom(DefaultSubChainSelector moveSelector) {
+//    private void runAssertsEmptyOriginal(DefaultSubChainSelector moveSelector) {
 //        Iterator<Move> iterator = moveSelector.iterator();
 //        assertNotNull(iterator);
 //        assertFalse(iterator.hasNext());

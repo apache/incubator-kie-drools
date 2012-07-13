@@ -40,21 +40,21 @@ import static org.mockito.Mockito.*;
 public class FromSolutionEntitySelectorTest {
 
     @Test
-    public void nonrandomAndCacheTypeSolver() {
-        runNonrandomAndCacheType(SelectionCacheType.SOLVER, 1);
+    public void originalAndCacheTypeSolver() {
+        runOriginalAndCacheType(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void nonrandomAndCacheTypePhase() {
-        runNonrandomAndCacheType(SelectionCacheType.PHASE, 2);
+    public void originalAndCacheTypePhase() {
+        runOriginalAndCacheType(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void nonrandomAndCacheTypeStep() {
-        runNonrandomAndCacheType(SelectionCacheType.STEP, 5);
+    public void originalAndCacheTypeStep() {
+        runOriginalAndCacheType(SelectionCacheType.STEP, 5);
     }
 
-    public void runNonrandomAndCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void runOriginalAndCacheType(SelectionCacheType cacheType, int timesCalled) {
         TestdataSolution workingSolution = new TestdataSolution();
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
@@ -73,13 +73,13 @@ public class FromSolutionEntitySelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
-        runNonrandomAsserts(entitySelector, "e1", "e2", "e3");
+        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
-        runNonrandomAsserts(entitySelector, "e1", "e2", "e3");
+        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA2);
 
         entitySelector.phaseEnded(phaseScopeA);
@@ -91,19 +91,19 @@ public class FromSolutionEntitySelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
-        runNonrandomAsserts(entitySelector, "e1", "e2", "e3");
+        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
-        runNonrandomAsserts(entitySelector, "e1", "e2", "e3");
+        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
-        runNonrandomAsserts(entitySelector, "e1", "e2", "e3");
+        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB3);
 
         entitySelector.phaseEnded(phaseScopeB);
@@ -113,7 +113,7 @@ public class FromSolutionEntitySelectorTest {
         verify(entityDescriptor, times(timesCalled)).extractEntities(workingSolution);
     }
 
-    private void runNonrandomAsserts(FromSolutionEntitySelector entitySelector, String... codes) {
+    private void runOriginalAsserts(FromSolutionEntitySelector entitySelector, String... codes) {
         Iterator<Object> iterator = entitySelector.iterator();
         assertNotNull(iterator);
         for (String code : codes) {

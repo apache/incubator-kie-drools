@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class ChangeMoveSelectorTest {
 
     @Test
-    public void nonrandom() {
+    public void original() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
@@ -55,13 +55,13 @@ public class ChangeMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        runAssertsNonrandom(moveSelector);
+        runAssertsOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        runAssertsNonrandom(moveSelector);
+        runAssertsOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -73,19 +73,19 @@ public class ChangeMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        runAssertsNonrandom(moveSelector);
+        runAssertsOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        runAssertsNonrandom(moveSelector);
+        runAssertsOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        runAssertsNonrandom(moveSelector);
+        runAssertsOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -106,7 +106,7 @@ public class ChangeMoveSelectorTest {
         verify(valueSelector, times(1)).solvingEnded(solverScope);
     }
 
-    private void runAssertsNonrandom(ChangeMoveSelector moveSelector) {
+    private void runAssertsOriginal(ChangeMoveSelector moveSelector) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
         assertNextChangeMove(iterator, "a", "1");
@@ -128,7 +128,7 @@ public class ChangeMoveSelectorTest {
     }
 
     @Test
-    public void emptyEntitySelectorNonrandom() {
+    public void emptyEntitySelectorOriginal() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
                 new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
@@ -145,13 +145,13 @@ public class ChangeMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -163,19 +163,19 @@ public class ChangeMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -197,7 +197,7 @@ public class ChangeMoveSelectorTest {
     }
 
     @Test
-    public void emptyValueSelectorNonrandom() {
+    public void emptyValueSelectorOriginal() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value");
@@ -214,13 +214,13 @@ public class ChangeMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -232,19 +232,19 @@ public class ChangeMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        runAssertsEmptyNonrandom(moveSelector);
+        runAssertsEmptyOriginal(moveSelector);
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -265,7 +265,7 @@ public class ChangeMoveSelectorTest {
         verify(valueSelector, times(1)).solvingEnded(solverScope);
     }
 
-    private void runAssertsEmptyNonrandom(ChangeMoveSelector moveSelector) {
+    private void runAssertsEmptyOriginal(ChangeMoveSelector moveSelector) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
         assertFalse(iterator.hasNext());
