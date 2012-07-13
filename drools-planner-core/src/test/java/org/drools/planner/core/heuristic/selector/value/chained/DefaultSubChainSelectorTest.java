@@ -162,77 +162,76 @@ public class DefaultSubChainSelectorTest {
         assertEquals(12L, subChainSelector.getSize());
     }
 
-//    @Test
-//    public void emptySelectorOriginal() {
-//        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-//        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
-//                new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
-//
-//        DefaultSubChainSelector moveSelector = new DefaultSubChainSelector(entitySelector, valueSelector, false);
-//
-//        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
-//        moveSelector.solvingStarted(solverScope);
-//
-//        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
-//        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-//        moveSelector.phaseStarted(phaseScopeA);
-//
-//        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-//        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
-//        moveSelector.stepStarted(stepScopeA1);
-//        runAssertsEmptyOriginal(moveSelector);
-//        moveSelector.stepEnded(stepScopeA1);
-//
-//        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-//        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
-//        moveSelector.stepStarted(stepScopeA2);
-//        runAssertsEmptyOriginal(moveSelector);
-//        moveSelector.stepEnded(stepScopeA2);
-//
-//        moveSelector.phaseEnded(phaseScopeA);
-//
-//        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
-//        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-//        moveSelector.phaseStarted(phaseScopeB);
-//
-//        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-//        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
-//        moveSelector.stepStarted(stepScopeB1);
-//        runAssertsEmptyOriginal(moveSelector);
-//        moveSelector.stepEnded(stepScopeB1);
-//
-//        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-//        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
-//        moveSelector.stepStarted(stepScopeB2);
-//        runAssertsEmptyOriginal(moveSelector);
-//        moveSelector.stepEnded(stepScopeB2);
-//
-//        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-//        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
-//        moveSelector.stepStarted(stepScopeB3);
-//        runAssertsEmptyOriginal(moveSelector);
-//        moveSelector.stepEnded(stepScopeB3);
-//
-//        moveSelector.phaseEnded(phaseScopeB);
-//
-//        moveSelector.solvingEnded(solverScope);
-//
-//        verify(entitySelector, times(1)).solvingStarted(solverScope);
-//        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-//        verify(entitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-//        verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-//        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-//        verify(entitySelector, times(1)).solvingEnded(solverScope);
-//    }
-//
-//    private void runAssertsEmptyOriginal(DefaultSubChainSelector moveSelector) {
-//        Iterator<Move> iterator = moveSelector.iterator();
-//        assertNotNull(iterator);
-//        assertFalse(iterator.hasNext());
-//        assertEquals(false, moveSelector.isContinuous());
-//        assertEquals(false, moveSelector.isNeverEnding());
-//        assertEquals(0L, moveSelector.getSize());
-//    }
+    @Test
+    public void emptyEntitySelectorOriginal() {
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+
+        PlanningVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
+                TestdataChainedEntity.class, "chainedObject");
+        when(variableDescriptor.isChained()).thenReturn(true);
+
+        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
+                a0, b0);
+
+        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false);
+
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(null);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(null);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
+        subChainSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        subChainSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        subChainSelector.stepStarted(stepScopeA1);
+        runAssertsEmptyOriginal(subChainSelector);
+        subChainSelector.stepEnded(stepScopeA1);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        subChainSelector.stepStarted(stepScopeA2);
+        runAssertsEmptyOriginal(subChainSelector);
+        subChainSelector.stepEnded(stepScopeA2);
+
+        subChainSelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        subChainSelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        subChainSelector.stepStarted(stepScopeB1);
+        runAssertsEmptyOriginal(subChainSelector);
+        subChainSelector.stepEnded(stepScopeB1);
+
+        subChainSelector.phaseEnded(phaseScopeB);
+
+        subChainSelector.solvingEnded(solverScope);
+
+        verify(valueSelector, times(1)).solvingStarted(solverScope);
+        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(3)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(3)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(valueSelector, times(1)).solvingEnded(solverScope);
+    }
+
+    private void runAssertsEmptyOriginal(DefaultSubChainSelector subChainSelector) {
+        Iterator<SubChain> iterator = subChainSelector.iterator();
+        assertNotNull(iterator);
+        assertFalse(iterator.hasNext());
+        assertEquals(false, subChainSelector.isContinuous());
+        assertEquals(false, subChainSelector.isNeverEnding());
+        assertEquals(0L, subChainSelector.getSize());
+    }
 
     private void assertNextSubChain(Iterator<SubChain> iterator, String... valueCodes) {
         assertTrue(iterator.hasNext());
