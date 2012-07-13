@@ -696,7 +696,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testWindowWithEntryPoint() {
+    public void testWindowWithEntryPointCompilationError() {
         String str = "import org.drools.Cheese;\n" +
                 "declare window X\n" +
                 "   Cheese( type == \"gorgonzola\" ) over window:time(1m) from entry-point Z\n" +
@@ -707,12 +707,12 @@ public class StreamsTest extends CommonTestMethodBase {
                 "   System.out.println($c);\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "Z" );
-        ep.insert(new Cheese("gorgonzola", 12));
-        ksession.fireAllRules();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
+                      ResourceType.DRL );
+        
+        assertTrue( "Should have raised a compilation error as Cheese is not declared as an event.",
+                    kbuilder.hasErrors() );
     }
     
     
