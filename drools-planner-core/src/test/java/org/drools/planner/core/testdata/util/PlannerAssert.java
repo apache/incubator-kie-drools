@@ -21,12 +21,21 @@ import org.junit.Assert;
 public class PlannerAssert extends Assert {
 
     public static void assertCode(String expectedCode, Object o) {
-        assertTrue(o instanceof  CodeAssertable);
+        assertTrue(o instanceof CodeAssertable);
         assertCode(expectedCode, (CodeAssertable) o);
+    }
+
+    public static void assertCode(String message, String expectedCode, Object o) {
+        assertTrue(o instanceof CodeAssertable);
+        assertCode(message, expectedCode, (CodeAssertable) o);
     }
 
     public static void assertCode(String expectedCode, CodeAssertable codeAssertable) {
         assertEquals(expectedCode, codeAssertable.getCode());
+    }
+
+    public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
+        assertEquals(message, expectedCode, codeAssertable.getCode());
     }
 
     private PlannerAssert() {

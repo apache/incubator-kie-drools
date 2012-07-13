@@ -34,13 +34,13 @@ import static org.mockito.Mockito.*;
 
 public class SelectorTestUtils {
 
-    private static PlanningEntityDescriptor mockEntityDescriptor(Class entityClass) {
+    public static PlanningEntityDescriptor mockEntityDescriptor(Class entityClass) {
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.getPlanningEntityClass()).thenReturn(entityClass);
         return entityDescriptor;
     }
 
-    private static PlanningVariableDescriptor mockVariableDescriptor(Class entityClass, String variableName) {
+    public static PlanningVariableDescriptor mockVariableDescriptor(Class entityClass, String variableName) {
         PlanningVariableDescriptor variableDescriptor = mock(PlanningVariableDescriptor.class);
         PlanningEntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
         when(variableDescriptor.getPlanningEntityDescriptor()).thenReturn(entityDescriptor);
