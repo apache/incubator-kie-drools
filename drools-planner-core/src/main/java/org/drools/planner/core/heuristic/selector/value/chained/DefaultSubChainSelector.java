@@ -30,6 +30,7 @@ import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterat
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.util.RandomUtils;
 
 /**
  * This is the common {@link SubChainSelector} implementation.
@@ -199,16 +200,18 @@ public class DefaultSubChainSelector extends AbstractSelector
             int anchorTrailingChainSize = anchorTrailingChain.size();
             // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
             int n = anchorTrailingChainSize - minimumSubChainSize + 1;
-            int size = n * (n + 1) / 2;
-            int sizeIndex = workingRandom.nextInt(size);
+            long size = ((long) n) * (((long) n) + 1L) / 2L;
+            long sizeIndex = RandomUtils.nextLong(workingRandom, size);
             // Black magic to translate sizeIndex into fromIndex and toIndex
-            int fromIndex = sizeIndex;
-            int toIndex = n;
-            while (fromIndex > toIndex) {
-                fromIndex -= toIndex;
-                toIndex--;
+            int fromIndex = 0;
+            long subChainSize = sizeIndex;
+            long maxSize = (long) n;
+            while (subChainSize >= maxSize) {
+                subChainSize -= maxSize;
+                fromIndex++;
+                maxSize--;
             }
-            toIndex += minimumSubChainSize - 1;
+            int toIndex = fromIndex + ((int) subChainSize) + minimumSubChainSize;
             upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
         }
 
