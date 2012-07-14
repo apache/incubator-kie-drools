@@ -19,6 +19,7 @@ package org.drools.planner.core.heuristic.selector.move.generic.chained;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -49,14 +50,16 @@ public class SubChainChangeMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
+        if (subChain.getEntityList().contains(toPlanningValue)) {
+            return false;
+        }
         Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
-        return !subChain.getEntityList().contains(toPlanningValue) && oldFirstPlanningValue != toPlanningValue;
+        return !ObjectUtils.equals(oldFirstPlanningValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
-        return new SubChainChangeMove(subChain,
-                variableDescriptor, oldFirstPlanningValue);
+        return new SubChainChangeMove(subChain, variableDescriptor, oldFirstPlanningValue);
     }
 
     public void doMove(ScoreDirector scoreDirector) {

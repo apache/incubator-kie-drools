@@ -76,8 +76,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         if (!randomSelection) {
             return new OriginalSubChainChangeMoveIterator();
         } else {
-            throw new UnsupportedOperationException(); // TODO
-//            return new RandomSubChainChangeMoveIterator();
+            return new RandomSubChainChangeMoveIterator();
         }
     }
 
@@ -86,7 +85,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         private Iterator<SubChain> subChainIterator;
         private ValueIterator valueIterator;
 
-        private SubChain upcomingSubchain;
+        private SubChain upcomingSubChain;
 
         private OriginalSubChainChangeMoveIterator() {
             subChainIterator = subChainSelector.iterator();
@@ -95,77 +94,75 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingSelection = null;
             } else {
-                upcomingSubchain = subChainIterator.next();
+                upcomingSubChain = subChainIterator.next();
                 createUpcomingSelection();
             }
         }
 
         protected void createUpcomingSelection() {
-            while (!valueIterator.hasNext(upcomingSubchain.getFirstEntity())) {
+            while (!valueIterator.hasNext(upcomingSubChain.getFirstEntity())) {
                 if (!subChainIterator.hasNext()) {
                     upcomingSelection = null;
                     return;
                 }
-                upcomingSubchain = subChainIterator.next();
+                upcomingSubChain = subChainIterator.next();
                 valueIterator = valueSelector.iterator();
             }
-            Object toValue = valueIterator.next(upcomingSubchain);
-            upcomingSelection = new SubChainChangeMove(upcomingSubchain, valueSelector.getVariableDescriptor(), toValue);
+            Object toValue = valueIterator.next(upcomingSubChain);
+            upcomingSelection = new SubChainChangeMove(upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
         }
 
     }
 
-//    private class RandomSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move> {
-//
-//        private Iterator<Object> entityIterator;
-//        private ValueIterator valueIterator;
-//
-//        private RandomSubChainChangeMoveIterator() {
-//            entityIterator = entitySelector.iterator();
-//            valueIterator = valueSelector.iterator();
-//            // valueIterator.hasNext() returns true if there is a next for any entity parameter
-//            if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
-//                upcomingSelection = null;
-//            } else {
-//                createUpcomingSelection();
-//            }
-//        }
-//
-//        protected void createUpcomingSelection() {
-//            // Ideally, this code should have read:
-//            //     Object entity = entityIterator.next();
-//            //     Object toValue = valueIterator.next(entity);
-//            // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
-//            if (!entityIterator.hasNext()) {
-//                entityIterator = entitySelector.iterator();
-//            }
-//            Object entity = entityIterator.next();
-//            int entityIteratorCreationCount = 0;
-//            // This loop is mostly only relevant when the entityIterator or valueIterator is non-random or shuffled
-//            while (!valueIterator.hasNext(entity)) {
-//                // First try to reset the valueIterator to get a next value
-//                valueIterator = valueSelector.iterator();
-//                // If that's not sufficient (that entity has an empty value list), then use the next entity
-//                if (!valueIterator.hasNext(entity)) {
-//                    if (!entityIterator.hasNext()) {
-//                        entityIterator = entitySelector.iterator();
-//                        entityIteratorCreationCount++;
-//                        if (entityIteratorCreationCount >= 2) {
-//                            // All entity-value combinations have been tried (some even more than once)
-//                            upcomingSelection = null;
-//                            return;
-//                        }
-//                    }
-//                    entity = entityIterator.next();
-//                }
-//            }
-//            Object toValue = valueIterator.next(entity);
-//            upcomingSelection = chained
-//                    ? new SubChainChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
-//                    : new GenericChangePartMove(entity, valueSelector.getVariableDescriptor(), toValue);
-//        }
-//
-//    }
+    private class RandomSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move> {
+
+        private Iterator<SubChain> subChainIterator;
+        private ValueIterator valueIterator;
+
+        private RandomSubChainChangeMoveIterator() {
+            subChainIterator = subChainSelector.iterator();
+            valueIterator = valueSelector.iterator();
+            // valueIterator.hasNext() returns true if there is a next for any subChain parameter
+            if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
+                upcomingSelection = null;
+            } else {
+                createUpcomingSelection();
+            }
+        }
+
+        protected void createUpcomingSelection() {
+            // Ideally, this code should have read:
+            //     SubChain subChain = subChainIterator.next();
+            //     Object toValue = valueIterator.next(subChain);
+            // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
+            if (!subChainIterator.hasNext()) {
+                subChainIterator = subChainSelector.iterator();
+            }
+            SubChain subChain = subChainIterator.next();
+            int subChainIteratorCreationCount = 0;
+            // This loop is mostly only relevant when the subChainIterator or valueIterator is non-random or shuffled
+            while (!valueIterator.hasNext(subChain)) {
+                // First try to reset the valueIterator to get a next value
+                valueIterator = valueSelector.iterator();
+                // If that's not sufficient (that subChain has an empty value list), then use the next subChain
+                if (!valueIterator.hasNext(subChain)) {
+                    if (!subChainIterator.hasNext()) {
+                        subChainIterator = subChainSelector.iterator();
+                        subChainIteratorCreationCount++;
+                        if (subChainIteratorCreationCount >= 2) {
+                            // All subChain-value combinations have been tried (some even more than once)
+                            upcomingSelection = null;
+                            return;
+                        }
+                    }
+                    subChain = subChainIterator.next();
+                }
+            }
+            Object toValue = valueIterator.next(subChain);
+            upcomingSelection = new SubChainChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue);
+        }
+
+    }
 
     @Override
     public String toString() {
