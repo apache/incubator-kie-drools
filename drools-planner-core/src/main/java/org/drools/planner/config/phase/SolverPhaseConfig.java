@@ -17,7 +17,12 @@
 package org.drools.planner.config.phase;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
+import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
+import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
+import org.drools.planner.config.phase.custom.CustomSolverPhaseConfig;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.phase.AbstractSolverPhase;
@@ -26,6 +31,12 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.PhaseToSolverTerminationBridge;
 import org.drools.planner.core.termination.Termination;
 
+@XStreamInclude({
+        CustomSolverPhaseConfig.class,
+        BruteForceSolverPhaseConfig.class,
+        ConstructionHeuristicSolverPhaseConfig.class,
+        LocalSearchSolverPhaseConfig.class
+})
 public abstract class SolverPhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited

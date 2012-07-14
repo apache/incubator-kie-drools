@@ -47,16 +47,6 @@ public class XmlSolverFactory implements SolverFactory {
         XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(SolverConfig.class);
-        // SolverPhaseConfig
-        xStream.processAnnotations(CustomSolverPhaseConfig.class);
-        xStream.processAnnotations(BruteForceSolverPhaseConfig.class);
-        xStream.processAnnotations(ConstructionHeuristicSolverPhaseConfig.class);
-        xStream.processAnnotations(LocalSearchSolverPhaseConfig.class);
-        // MoveSelectorConfig
-        xStream.processAnnotations(UnionMoveSelectorConfig.class);
-        xStream.processAnnotations(ChangeMoveSelectorConfig.class);
-        xStream.processAnnotations(SwapMoveSelectorConfig.class);
-        xStream.processAnnotations(SubChainChangeMoveSelectorConfig.class);
         return xStream;
     }
 

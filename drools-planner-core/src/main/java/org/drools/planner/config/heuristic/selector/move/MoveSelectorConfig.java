@@ -16,10 +16,14 @@
 
 package org.drools.planner.config.heuristic.selector.move;
 
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
+import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -32,6 +36,10 @@ import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSe
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
  */
+@XStreamInclude({
+        UnionMoveSelectorConfig.class,
+        ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class, SubChainChangeMoveSelectorConfig.class
+})
 public abstract class MoveSelectorConfig extends SelectorConfig {
 
     protected SelectionOrder selectionOrder = null;
