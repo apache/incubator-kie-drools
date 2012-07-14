@@ -17,7 +17,7 @@
     <maximumSecondsSpend>3720</maximumSecondsSpend>
   </termination>
   <customSolverPhase>
-    <!-- TODO use BEST_FIT_DECREASING instead (saves up to 10 minutes ), but deal with the extra scoreDRL problem -->
+    <!-- TODO use BEST_FIT_DECREASING instead (saves up to 10 minutes), but deal with the extra scoreDRL problem -->
     <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
