@@ -29,10 +29,10 @@
         <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveFactoryClass>
       </selector>
       <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength2MoveFactoryctory</moveFactoryClass>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
       <!--</selector>-->
       <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength3MoveFactoryctory</moveFactoryClass>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
       <!--</selector>-->
       <selector>
         <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveFactoryClass>
