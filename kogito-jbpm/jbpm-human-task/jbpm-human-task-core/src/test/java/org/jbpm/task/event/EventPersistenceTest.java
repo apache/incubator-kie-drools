@@ -46,7 +46,6 @@ public class EventPersistenceTest extends BaseTest {
     protected TaskService client;
     protected TaskEventsAdmin eventsAdmin;
     
-    @Before
     public void setUp() throws Exception {
         super.setUp();
         client = new LocalTaskService(taskService);
@@ -54,7 +53,6 @@ public class EventPersistenceTest extends BaseTest {
         
     }
 
-    @After
     public void tearDown() throws Exception {
         client.disconnect();
     }
@@ -91,8 +89,8 @@ public class EventPersistenceTest extends BaseTest {
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
         
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
-        List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
         
+        List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
         assertEquals(2, eventsByTaskId.size());
         
     }
@@ -123,7 +121,6 @@ public class EventPersistenceTest extends BaseTest {
         key = new TaskEventKey(TaskForwardedEvent.class, taskId );           
         BlockingEventResponseHandler handlerFW = new BlockingEventResponseHandler(eventsAdmin); 
         client.registerForEvent( key, false, handlerFW );
-        
         
         key = new TaskEventKey(TaskReleasedEvent.class, taskId );           
         BlockingEventResponseHandler handlerReleased = new BlockingEventResponseHandler(eventsAdmin); 

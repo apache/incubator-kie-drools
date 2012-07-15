@@ -34,7 +34,7 @@ public class TaskEventTest {
 
     @Test
     public void createSwitchStatement() {
-        boolean print = false;
+        boolean print = true;
         TaskEventType[] types = TaskEventType.values();
         TreeMap<String, TaskEventType> typeStrings = new TreeMap<String, TaskEventType>();
         for (int i = 0; i < types.length; ++i) {

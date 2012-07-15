@@ -3,14 +3,14 @@ package org.jbpm.task.event.entity;
 public enum TaskEventType {
     Create("cr"),   
     Claim("cl"), 
-    Stop("fi"),   // finished
+    Stop("st"),   // finished
     Complete("co"), 
     Fail("fa"), 
     Forward("fo"), 
     Release("re"), 
     Skipped("sk"),  
     
-    Started("st"), 
+    Started("be"),  // begun
     Suspended("ss"),  
     SuspendedUntil("su"), 
     Resume("rs"), 
@@ -97,14 +97,16 @@ public enum TaskEventType {
               return TaskEventType.SetPriority;
           case 3672:
               return TaskEventType.Skipped;
-          case 3681:
+          case 3139:
               return TaskEventType.Started;
-          case 3267:
+          case 3681:
               return TaskEventType.Stop;
           case 3680:
               return TaskEventType.Suspended;
           case 3682:
               return TaskEventType.SuspendedUntil;
+          case 3742:
+              return TaskEventType.UnknownUserEvent;
           case 3726:
               return TaskEventType.UpdatedComment;
           default:

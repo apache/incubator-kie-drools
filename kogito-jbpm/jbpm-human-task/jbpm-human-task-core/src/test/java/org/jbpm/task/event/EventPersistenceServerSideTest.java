@@ -20,23 +20,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.task.BaseTest;
+import org.jbpm.task.Group;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.event.InternalPersistentTaskEventListener;
-import org.jbpm.task.event.TaskEventsAdmin;
+import org.jbpm.task.User;
 import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.event.entity.TaskEventType;
 import org.jbpm.task.service.Operation;
+import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
-import org.junit.After;
-import org.junit.Before;
 
 public class EventPersistenceServerSideTest extends BaseTest {
+    
     protected TaskService client;
     protected TaskEventsAdmin eventsAdmin;
     
-    @Before
     public void setUp() throws Exception {
         super.setUp();
         client = new LocalTaskService(taskService);
@@ -45,51 +44,54 @@ public class EventPersistenceServerSideTest extends BaseTest {
         ((LocalTaskService)client).addEventListener(new InternalPersistentTaskEventListener(eventsAdmin));
     }
 
-    @After
     public void tearDown() throws Exception {
         client.disconnect();
     }
+    
+    public void testPersistentEventHandlers() { 
+        doTestPersistentEventHandlers(users, groups, client, taskSession, eventsAdmin);
+    }
 
-   public void testPersistentEventHandlers() throws Exception {      
+    public void testMultiplePersistentEvents() { 
+        doTestMultiplePersistentEvents(users, groups, client, taskSession, eventsAdmin);
+    }
+
+   public static void doTestPersistentEventHandlers(Map<String, User> users, Map<String, Group> groups, 
+           TaskService client, TaskServiceSession taskSession, TaskEventsAdmin eventsAdmin) { 
        
-       Map<String, Object> vars = fillVariables();            
+       Map<String, Object> vars = BaseTest.fillVariables(users, groups);
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-
         
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
         
         long taskId = task.getId();
-        
 
         // A Task with multiple potential owners moves to "Ready" state until someone claims it.
-        
-        
         Task task1 = client.getTask( taskId );
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
-
         
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
-        List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
         
+        List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
         assertEquals(2, eventsByTaskId.size());
         
     }
    
-   public void testMultiPersistentEvents() throws Exception {
+   public static void doTestMultiplePersistentEvents(Map<String, User> users, Map<String, Group> groups, 
+           TaskService client, TaskServiceSession taskSession, TaskEventsAdmin eventsAdmin) { 
        
-       Map<String, Object> vars = fillVariables();             
+       Map<String, Object> vars = fillVariables(users, groups);
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-       
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
         

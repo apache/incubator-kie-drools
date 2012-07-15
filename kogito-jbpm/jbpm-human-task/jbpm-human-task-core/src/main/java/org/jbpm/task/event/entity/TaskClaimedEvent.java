@@ -24,8 +24,6 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value="cl")
 public class TaskClaimedEvent extends TaskUserEvent {
 
-    public TaskClaimedEvent() {} 
-    
     TaskClaimedEvent(long taskId, String userId) {
         super( taskId, userId );
     }

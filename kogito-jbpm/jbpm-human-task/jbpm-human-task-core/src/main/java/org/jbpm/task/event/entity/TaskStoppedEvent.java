@@ -20,11 +20,9 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value="fi")
+@DiscriminatorValue(value="st")
 public class TaskStoppedEvent extends TaskUserEvent {
 	
-    public TaskStoppedEvent() {} 
-    
     TaskStoppedEvent(long taskId, String userId) {
         super( taskId, userId );
     }
