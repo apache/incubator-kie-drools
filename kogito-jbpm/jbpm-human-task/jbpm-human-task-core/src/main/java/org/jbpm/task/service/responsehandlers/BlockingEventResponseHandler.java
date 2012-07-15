@@ -22,7 +22,7 @@ package org.jbpm.task.service.responsehandlers;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.event.TaskEventsAdmin;
-import org.jbpm.task.event.TaskUserEvent;
+import org.jbpm.task.event.entity.TaskUserEvent;
 
 public class BlockingEventResponseHandler extends AbstractBlockingResponseHandler implements EventResponseHandler {
     private static final int PAYLOAD_WAIT_TIME = 10000;

@@ -15,7 +15,9 @@
  */
 package org.jbpm.task.event;
 
-public class InternalPersistentTaskEventListener extends DefaultTaskEventListener {
+import org.jbpm.task.event.entity.TaskUserEvent;
+
+public class InternalPersistentTaskEventListener implements TaskEventListener {
 
     private TaskEventsAdmin eventsAdmin;
 
@@ -23,48 +25,39 @@ public class InternalPersistentTaskEventListener extends DefaultTaskEventListene
         this.eventsAdmin = eventsAdmin;
     }
 
-    @Override
-    public void taskClaimed(TaskClaimedEvent event) {
+    public void taskClaimed(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskCompleted(TaskCompletedEvent event) {
+    public void taskCompleted(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskFailed(TaskFailedEvent event) {
+    public void taskFailed(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskSkipped(TaskSkippedEvent event) {
+    public void taskSkipped(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskCreated(TaskCreatedEvent event) {
+    public void taskCreated(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskStarted(TaskStartedEvent event) {
+    public void taskStarted(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskStopped(TaskStoppedEvent event) {
+    public void taskStopped(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskReleased(TaskReleasedEvent event) {
+    public void taskReleased(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 
-    @Override
-    public void taskForwarded(TaskForwardedEvent event) {
+    public void taskForwarded(TaskUserEvent event) {
         eventsAdmin.storeEvent(event);
     }
 }

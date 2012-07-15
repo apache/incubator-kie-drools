@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.event;
+package org.jbpm.task.event.entity;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
+@DiscriminatorValue(value="sk")
 public class TaskSkippedEvent extends TaskUserEvent {
 
-	public TaskSkippedEvent() {
-    }
+    public TaskSkippedEvent() {} 
     
-    public TaskSkippedEvent(long taskId, String userId) {
+    TaskSkippedEvent(long taskId, String userId) {
         super( taskId, userId );
     }
 

@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.event;
+package org.jbpm.task.event.entity;
 
+import java.io.Externalizable;
+
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
 @Entity
-public class TaskClaimedEvent extends TaskUserEvent {
+@DiscriminatorValue(value="us")
+public class TaskUserEvent extends TaskEvent implements Externalizable {
 
-    public TaskClaimedEvent() {
+    TaskUserEvent() {
+        super();
     }
     
-    public TaskClaimedEvent(long taskId, String userId) {
-        super( taskId, userId );
+    TaskUserEvent(long taskId, String userId) {
+        super( taskId );
+        this.userId = userId;
     }
-
+    
+    public String getUserId() {
+        return userId;
+    }
+    
 }

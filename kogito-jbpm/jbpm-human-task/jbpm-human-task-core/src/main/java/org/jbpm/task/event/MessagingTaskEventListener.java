@@ -24,6 +24,17 @@ import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventKeys;
 import org.jbpm.eventmessaging.EventTriggerTransport;
 import org.jbpm.eventmessaging.Payload;
+import org.jbpm.task.event.entity.TaskClaimedEvent;
+import org.jbpm.task.event.entity.TaskCompletedEvent;
+import org.jbpm.task.event.entity.TaskCreatedEvent;
+import org.jbpm.task.event.entity.TaskEvent;
+import org.jbpm.task.event.entity.TaskFailedEvent;
+import org.jbpm.task.event.entity.TaskForwardedEvent;
+import org.jbpm.task.event.entity.TaskReleasedEvent;
+import org.jbpm.task.event.entity.TaskSkippedEvent;
+import org.jbpm.task.event.entity.TaskStartedEvent;
+import org.jbpm.task.event.entity.TaskStoppedEvent;
+import org.jbpm.task.event.entity.TaskUserEvent;
 
 public class MessagingTaskEventListener implements TaskEventListener {
 	
@@ -33,7 +44,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         this.keys = keys;
     }
     
-    public void taskClaimed(TaskClaimedEvent event) {        
+    public void taskClaimed(TaskUserEvent event) {        
         EventKey key = new TaskEventKey(TaskClaimedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if(keys.getTargets( key ) == null){
@@ -54,7 +65,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }
     }
 
-    public void taskCompleted(TaskCompletedEvent event) {
+    public void taskCompleted(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
@@ -87,7 +98,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }   
     }
 
-    public void taskFailed(TaskFailedEvent event) {
+    public void taskFailed(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskFailedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
@@ -120,7 +131,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }
 	}
 
-    public void taskSkipped(TaskSkippedEvent event) {
+    public void taskSkipped(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskSkippedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
@@ -153,7 +164,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }
 	}
 
-    public void taskCreated(TaskCreatedEvent event) {
+    public void taskCreated(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskCreatedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
@@ -186,7 +197,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }   
     }
 
-    public void taskStarted(TaskStartedEvent event) {
+    public void taskStarted(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskStartedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
@@ -219,7 +230,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }   
     }
 
-    public void taskStopped(TaskStoppedEvent event) {
+    public void taskStopped(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskStoppedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
@@ -252,7 +263,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }   
     }
 
-    public void taskReleased(TaskReleasedEvent event) {
+    public void taskReleased(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskReleasedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){
@@ -285,7 +296,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }   
     }
 
-    public void taskForwarded(TaskForwardedEvent event) {
+    public void taskForwarded(TaskUserEvent event) {
         EventKey key = new TaskEventKey(TaskForwardedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = null;
         if ( keys.getTargets( key ) == null ){

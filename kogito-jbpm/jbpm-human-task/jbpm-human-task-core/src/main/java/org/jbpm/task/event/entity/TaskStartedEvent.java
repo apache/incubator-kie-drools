@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.event;
+package org.jbpm.task.event.entity;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-public class TaskCompletedEvent extends TaskUserEvent {
+@DiscriminatorValue(value="st")
+public class TaskStartedEvent extends TaskUserEvent {
 	
-    public TaskCompletedEvent() {
-    }
+    public TaskStartedEvent() {} 
     
-    public TaskCompletedEvent(long taskId, String userId) {
+    TaskStartedEvent(long taskId, String userId) {
         super( taskId, userId );
     }
     

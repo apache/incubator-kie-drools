@@ -16,33 +16,35 @@
 
 package org.jbpm.task.event;
 
+import org.jbpm.task.event.entity.TaskUserEvent;
+
 public class DefaultTaskEventListener implements TaskEventListener {
 
-    public void taskClaimed(TaskClaimedEvent event) {        
+    public void taskClaimed(TaskUserEvent event) {        
     }
 
-    public void taskCompleted(TaskCompletedEvent event) {
+    public void taskCompleted(TaskUserEvent event) {
     }
 
-    public void taskFailed(TaskFailedEvent event) {
+    public void taskFailed(TaskUserEvent event) {
     }
 
-    public void taskSkipped(TaskSkippedEvent event) {
+    public void taskSkipped(TaskUserEvent event) {
     }
 
-    public void taskCreated(TaskCreatedEvent event) {
+    public void taskCreated(TaskUserEvent event) {
     }
 
-    public void taskStarted(TaskStartedEvent event) {
+    public void taskStarted(TaskUserEvent event) {
     }
 
-    public void taskStopped(TaskStoppedEvent event) {
+    public void taskStopped(TaskUserEvent event) {
     }
 
-    public void taskReleased(TaskReleasedEvent event) {
+    public void taskReleased(TaskUserEvent event) {
     }
 
-    public void taskForwarded(TaskForwardedEvent event) {
+    public void taskForwarded(TaskUserEvent event) {
     }
 
 }

@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.jbpm.eventmessaging.Payload;
+import org.jbpm.task.event.entity.TaskEvent;
 
 public class EventPayload implements Payload, Externalizable {
     private TaskEvent event;

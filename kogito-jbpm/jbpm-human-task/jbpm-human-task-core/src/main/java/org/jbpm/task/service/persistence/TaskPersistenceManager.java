@@ -26,6 +26,7 @@ import org.jbpm.task.Group;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
+import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.IncorrectParametersException;
@@ -205,18 +206,6 @@ public class TaskPersistenceManager {
      */
     public Query createNewQuery(String queryString ) { 
         return em.createQuery(queryString);
-    }
-    
-    /**
-     * It is strongly suggested that you only use this method within a transaction!!
-     * </p>
-     * PostgreSQL and DB2 are 2 databases which, depending on your situation, will probably require this. 
-     * 
-     * @param queryString The Native query string to execute.
-     * @return The result of the query.
-     */
-    public Query createNewNativeQuery(String queryString ) { 
-        return em.createNativeQuery(queryString);
     }
     
     public boolean userExists(String userId) { 

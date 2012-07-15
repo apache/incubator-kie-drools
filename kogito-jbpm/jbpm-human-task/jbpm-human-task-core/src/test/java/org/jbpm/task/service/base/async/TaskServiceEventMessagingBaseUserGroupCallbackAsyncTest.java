@@ -27,9 +27,9 @@ import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTestNoUserGroupSetup;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.event.TaskClaimedEvent;
 import org.jbpm.task.event.TaskEventKey;
-import org.jbpm.task.event.TaskUserEvent;
+import org.jbpm.task.event.entity.TaskClaimedEvent;
+import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.Operation;
 
 import org.jbpm.task.service.TaskServer;

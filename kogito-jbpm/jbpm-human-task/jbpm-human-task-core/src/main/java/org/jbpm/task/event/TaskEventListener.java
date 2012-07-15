@@ -17,6 +17,18 @@
 package org.jbpm.task.event;
 
 import java.util.EventListener;
+
+import org.jbpm.task.event.entity.TaskClaimedEvent;
+import org.jbpm.task.event.entity.TaskCompletedEvent;
+import org.jbpm.task.event.entity.TaskCreatedEvent;
+import org.jbpm.task.event.entity.TaskEvent;
+import org.jbpm.task.event.entity.TaskFailedEvent;
+import org.jbpm.task.event.entity.TaskForwardedEvent;
+import org.jbpm.task.event.entity.TaskReleasedEvent;
+import org.jbpm.task.event.entity.TaskSkippedEvent;
+import org.jbpm.task.event.entity.TaskStartedEvent;
+import org.jbpm.task.event.entity.TaskStoppedEvent;
+import org.jbpm.task.event.entity.TaskUserEvent;
 /* 
  * Events Defined by the WS-HT Specification 1.1 Page 61
  */
@@ -25,43 +37,43 @@ public interface TaskEventListener extends EventListener {
      * State Changed : Yes
      * Owner Changed : Maybe
      */ 
-    void taskCreated(TaskCreatedEvent event);
+    void taskCreated(TaskUserEvent event);
     /* 
      * State Changed : Yes
      * Owner Changed : Yes
      */ 
-    void taskClaimed(TaskClaimedEvent event);
+    void taskClaimed(TaskUserEvent event);
     /*
      * State Changed : Yes
      * Owner Changed : Maybe
      */
-    void taskStarted(TaskStartedEvent event);
+    void taskStarted(TaskUserEvent event);
     /* 
      * State Changed : Yes 
      */ 
-    void taskStopped(TaskStoppedEvent event);
+    void taskStopped(TaskUserEvent event);
     /* 
      * State Changed : Yes 
      * Owner Changed : Yes
      */
-    void taskReleased(TaskReleasedEvent event);
+    void taskReleased(TaskUserEvent event);
     /* 
      * State Changed : Yes 
      */
-    void taskCompleted(TaskCompletedEvent event);
+    void taskCompleted(TaskUserEvent event);
     /* 
      * State Changed : Yes 
      */
-    void taskFailed(TaskFailedEvent event);
+    void taskFailed(TaskUserEvent event);
     /* 
      * State Changed : Yes 
      */
-    void taskSkipped(TaskSkippedEvent event);
+    void taskSkipped(TaskUserEvent event);
     /* 
      * State Changed : Yes 
      * Owner Changed : Maybe
      */
-    void taskForwarded(TaskForwardedEvent event);
+    void taskForwarded(TaskUserEvent event);
     
     // void taskSuspended(TaskSuspendedEvent event);
     // void taskSuspendedUntil(TaskSuspendedUntilEvent event);

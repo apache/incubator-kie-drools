@@ -4,7 +4,12 @@ import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.Attachment;
@@ -18,13 +23,16 @@ import org.jbpm.task.User;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskService;
 
-/**
- * This test requires hbm2ddl.auto to be set to "update", 
- * because the EntityManagerFactory is closed and recreated during the test. 
- */
 public class DataModelTest extends BaseTest {
 
     private final static String EMPTY_STRING = "";
+   
+    @Override
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put( "hibernate.hbm2ddl.auto", "update");
+        return Persistence.createEntityManagerFactory("org.jbpm.task", properties);
+    }
     
     public void testOracleEmptyStringNullTask() throws Exception { 
         Properties dsProps = loadDataSourceProperties();

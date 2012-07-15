@@ -15,33 +15,34 @@
  */
 package org.jbpm.task.service.test.sync;
 
-import org.jbpm.task.service.persistence.*;
+import static org.jbpm.task.service.test.impl.TestServerUtil.*;
+
 import java.io.StringReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.event.InternalPersistentTaskEventListener;
-import org.jbpm.task.event.TaskEvent;
 import org.jbpm.task.event.TaskEventsAdmin;
+import org.jbpm.task.event.entity.TaskEvent;
+import org.jbpm.task.event.entity.TaskEventType;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import static org.junit.Assert.*;
-import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 public class EventPersistenceServerSideTestTest extends BaseTest {
     protected TaskService client;
@@ -50,18 +51,7 @@ public class EventPersistenceServerSideTestTest extends BaseTest {
     
     @Override
     protected EntityManagerFactory createEntityManagerFactory() {
-        return Persistence.createEntityManagerFactory("org.jbpm.task.events");
-    }
-
-    public EventPersistenceServerSideTestTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
+        return Persistence.createEntityManagerFactory("org.jbpm.task");
     }
 
     @Before
@@ -149,19 +139,16 @@ public class EventPersistenceServerSideTestTest extends BaseTest {
         taskSession.taskOperation( Operation.Forward, taskId, users.get( "darth" ).getId(), users.get( "salaboy" ).getId(), null, null );          
         
         taskSession.taskOperation( Operation.Start, taskId, users.get( "salaboy" ).getId(), null, null, null );          
-        
+
         taskSession.taskOperation( Operation.Stop, taskId, users.get( "salaboy" ).getId(), null, null, null );          
 
         List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
-        
         assertEquals(7, eventsByTaskId.size());
     
-        List<TaskEvent> eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, "TaskClaimedEvent");
-        
+        List<TaskEvent> eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, TaskEventType.Claim );
         assertEquals(2, eventsByTypeByTaskId.size());   
-        List<TaskEvent> taskClaimedEventsByTaskId = eventsAdmin.getTaskClaimedEventsByTaskId(taskId);
         
-        
-        assertEquals(2, taskClaimedEventsByTaskId.size()); 
+        eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, TaskEventType.Release );
+        assertEquals(1, eventsByTypeByTaskId.size());   
     }
 }

@@ -18,6 +18,11 @@ package org.jbpm.task.event;
 
 
 import org.jbpm.task.Status;
+import org.jbpm.task.event.entity.TaskClaimedEvent;
+import org.jbpm.task.event.entity.TaskCompletedEvent;
+import org.jbpm.task.event.entity.TaskFailedEvent;
+import org.jbpm.task.event.entity.TaskSkippedEvent;
+import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.TaskServiceSession;
 
 public class InternalTaskEventListener extends DefaultTaskEventListener{
@@ -29,19 +34,19 @@ public class InternalTaskEventListener extends DefaultTaskEventListener{
     }
 
     @Override
-    public void taskClaimed(TaskClaimedEvent event) {
+    public void taskClaimed(TaskUserEvent event) {
     }
 
     @Override
-    public void taskCompleted(TaskCompletedEvent event) {
+    public void taskCompleted(TaskUserEvent event) {
         session.setTaskStatus(event.getTaskId(), Status.Completed);
     }
 
     @Override
-	public void taskFailed(TaskFailedEvent event) {
+	public void taskFailed(TaskUserEvent event) {
 	}
 
     @Override
-	public void taskSkipped(TaskSkippedEvent event) {
+	public void taskSkipped(TaskUserEvent event) {
 	}
 }

@@ -16,9 +16,12 @@
 
 package org.jbpm.task.event;
 
-import org.drools.event.AbstractEventSupport;
-
 import java.util.Iterator;
+
+import org.drools.event.AbstractEventSupport;
+import org.jbpm.task.event.entity.TaskEvent;
+import org.jbpm.task.event.entity.TaskEventFactory;
+import org.jbpm.task.event.entity.TaskUserEvent;
 
 /**
  */
@@ -28,7 +31,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskClaimedEvent event = new TaskClaimedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createClaimedEvent(taskId, userId);
 
             do {
                 iter.next().taskClaimed(event);
@@ -40,7 +43,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskCompletedEvent event = new TaskCompletedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createCompletedEvent(taskId, userId);
 
             do {
                 iter.next().taskCompleted(event);
@@ -52,7 +55,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskFailedEvent event = new TaskFailedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createFailedEvent(taskId, userId);
 
             do {
                 iter.next().taskFailed(event);
@@ -64,7 +67,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskSkippedEvent event = new TaskSkippedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createSkippedEvent(taskId, userId);
 
             do {
                 iter.next().taskSkipped(event);
@@ -76,7 +79,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskCreatedEvent event = new TaskCreatedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createCreatedEvent(taskId, userId);
 
             do {
                 iter.next().taskCreated(event);
@@ -88,7 +91,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskForwardedEvent event = new TaskForwardedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createForwardedEvent(taskId, userId);
 
             do {
                 iter.next().taskForwarded(event);
@@ -100,7 +103,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskStartedEvent event = new TaskStartedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createStartedEvent(taskId, userId);
 
             do {
                 iter.next().taskStarted(event);
@@ -112,7 +115,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskReleasedEvent event = new TaskReleasedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createReleasedEvent(taskId, userId);
 
             do {
                 iter.next().taskReleased(event);
@@ -124,7 +127,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
         final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final TaskStoppedEvent event = new TaskStoppedEvent(taskId, userId);
+            final TaskUserEvent event = TaskEventFactory.createStoppedEvent(taskId, userId);
 
             do {
                 iter.next().taskStopped(event);

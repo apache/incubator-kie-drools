@@ -13,62 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.service.persistence;
+package org.jbpm.task.event;
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.event.InternalPersistentTaskEventListener;
-import org.jbpm.task.event.InternalTaskEventListener;
-import org.jbpm.task.event.TaskClaimedEvent;
-import org.jbpm.task.event.TaskCreatedEvent;
-import org.jbpm.task.event.TaskEvent;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.TaskEventsAdmin;
-import org.jbpm.task.event.TaskForwardedEvent;
-import org.jbpm.task.event.TaskReleasedEvent;
-import org.jbpm.task.event.TaskStartedEvent;
-import org.jbpm.task.event.TaskStoppedEvent;
-import org.jbpm.task.event.TaskUserEvent;
+import org.jbpm.task.event.entity.TaskClaimedEvent;
+import org.jbpm.task.event.entity.TaskCreatedEvent;
+import org.jbpm.task.event.entity.TaskEvent;
+import org.jbpm.task.event.entity.TaskEventType;
+import org.jbpm.task.event.entity.TaskForwardedEvent;
+import org.jbpm.task.event.entity.TaskReleasedEvent;
+import org.jbpm.task.event.entity.TaskStartedEvent;
+import org.jbpm.task.event.entity.TaskStoppedEvent;
+import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import static org.junit.Assert.*;
 
 public class EventPersistenceTest extends BaseTest {
     protected TaskService client;
     protected TaskEventsAdmin eventsAdmin;
     
-    @Override
-    protected EntityManagerFactory createEntityManagerFactory() {
-        return Persistence.createEntityManagerFactory("org.jbpm.task.events");
-    }
-
-    public EventPersistenceTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -84,18 +61,12 @@ public class EventPersistenceTest extends BaseTest {
 
    public void testPersistentEventHandlers() throws Exception {      
         
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
-
+        Map<String, Object> vars = fillVariables();
         
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-         
-   
         
         EventKey key = new TaskEventKey(TaskCreatedEvent.class, -1 );           
         BlockingEventResponseHandler handlerCreatedLog = new BlockingEventResponseHandler(eventsAdmin); 
@@ -116,11 +87,8 @@ public class EventPersistenceTest extends BaseTest {
         client.registerForEvent( key, false, handlerClaimed );
         
         // A Task with multiple potential owners moves to "Ready" state until someone claims it.
-        
-        
         Task task1 = client.getTask( taskId );
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
-
         
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
         List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
@@ -131,10 +99,7 @@ public class EventPersistenceTest extends BaseTest {
    
    public void testMultiPersistentEvents() throws Exception {
        
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
+       Map<String, Object> vars = fillVariables();             
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
@@ -144,7 +109,6 @@ public class EventPersistenceTest extends BaseTest {
         EventKey key = new TaskEventKey(TaskCreatedEvent.class, -1 );           
         BlockingEventResponseHandler handlerCreated = new BlockingEventResponseHandler(eventsAdmin); 
         client.registerForEvent( key, false, handlerCreated );
-        
        
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
@@ -180,14 +144,9 @@ public class EventPersistenceTest extends BaseTest {
         BlockingEventResponseHandler handlerClaimed = new BlockingEventResponseHandler(eventsAdmin); 
         client.registerForEvent( key, false, handlerClaimed );
         
-        
-        
         // A Task with multiple potential owners moves to "Ready" state until someone claims it.
-        
-        
         Task task1 = client.getTask( taskId );
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
-
         
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
         
@@ -202,7 +161,6 @@ public class EventPersistenceTest extends BaseTest {
         event = ( TaskUserEvent ) payload.get();
         assertNotNull( event ); 
         assertTrue(event instanceof TaskReleasedEvent);
-        
         
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
         
@@ -225,9 +183,7 @@ public class EventPersistenceTest extends BaseTest {
         assertNotNull( event );   
         assertTrue(event instanceof TaskStartedEvent);
         
-        
         taskSession.taskOperation( Operation.Stop, taskId, users.get( "salaboy" ).getId(), null, null, null );          
-        
         
         payload = handlerStopped.getPayload();
         event = ( TaskUserEvent ) payload.get();
@@ -235,15 +191,12 @@ public class EventPersistenceTest extends BaseTest {
         assertTrue(event instanceof TaskStoppedEvent);
         
         List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
-        
         assertEquals(7, eventsByTaskId.size());
     
-        List<TaskEvent> eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, "TaskClaimedEvent");
-        
+        List<TaskEvent> eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, TaskEventType.Claim );
         assertEquals(2, eventsByTypeByTaskId.size());   
-        List<TaskEvent> taskClaimedEventsByTaskId = eventsAdmin.getTaskClaimedEventsByTaskId(taskId);
         
-        
-        assertEquals(2, taskClaimedEventsByTaskId.size()); 
+        eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, TaskEventType.Release );
+        assertEquals(1, eventsByTypeByTaskId.size());   
     }
 }

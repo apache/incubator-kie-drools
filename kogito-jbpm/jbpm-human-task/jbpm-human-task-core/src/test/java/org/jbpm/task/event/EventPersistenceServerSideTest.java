@@ -13,50 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.service.persistence;
+package org.jbpm.task.event;
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.event.InternalPersistentTaskEventListener;
-import org.jbpm.task.event.TaskEvent;
 import org.jbpm.task.event.TaskEventsAdmin;
+import org.jbpm.task.event.entity.TaskEvent;
+import org.jbpm.task.event.entity.TaskEventType;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import static org.junit.Assert.*;
 
 public class EventPersistenceServerSideTest extends BaseTest {
     protected TaskService client;
     protected TaskEventsAdmin eventsAdmin;
     
-    @Override
-    protected EntityManagerFactory createEntityManagerFactory() {
-        return Persistence.createEntityManagerFactory("org.jbpm.task.events");
-    }
-
-    public EventPersistenceServerSideTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -72,13 +51,9 @@ public class EventPersistenceServerSideTest extends BaseTest {
     }
 
    public void testPersistentEventHandlers() throws Exception {      
-        
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
+       
+       Map<String, Object> vars = fillVariables();            
 
-        
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
@@ -107,10 +82,7 @@ public class EventPersistenceServerSideTest extends BaseTest {
    
    public void testMultiPersistentEvents() throws Exception {
        
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
+       Map<String, Object> vars = fillVariables();             
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
@@ -141,15 +113,12 @@ public class EventPersistenceServerSideTest extends BaseTest {
         taskSession.taskOperation( Operation.Stop, taskId, users.get( "salaboy" ).getId(), null, null, null );          
 
         List<TaskEvent> eventsByTaskId = eventsAdmin.getEventsByTaskId(taskId);
-        
         assertEquals(7, eventsByTaskId.size());
-    
-        List<TaskEvent> eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, "TaskClaimedEvent");
         
+        List<TaskEvent> eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, TaskEventType.Claim );
         assertEquals(2, eventsByTypeByTaskId.size());   
-        List<TaskEvent> taskClaimedEventsByTaskId = eventsAdmin.getTaskClaimedEventsByTaskId(taskId);
         
-        
-        assertEquals(2, taskClaimedEventsByTaskId.size()); 
+        eventsByTypeByTaskId = eventsAdmin.getEventsByTypeByTaskId(taskId, TaskEventType.Release );
+        assertEquals(1, eventsByTypeByTaskId.size());   
     }
 }

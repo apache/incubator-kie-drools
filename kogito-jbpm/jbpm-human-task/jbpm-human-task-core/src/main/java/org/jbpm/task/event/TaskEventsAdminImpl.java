@@ -15,11 +15,17 @@
  */
 package org.jbpm.task.event;
 
+import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.persistence.Query;
-import org.jbpm.task.Status;
-import org.jbpm.task.query.TaskSummary;
+
+import org.jbpm.task.event.entity.TaskEvent;
+import org.jbpm.task.event.entity.TaskEventType;
 import org.jbpm.task.service.IncorrectParametersException;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
 import org.slf4j.Logger;
@@ -45,82 +51,9 @@ public class TaskEventsAdminImpl implements TaskEventsAdmin {
         return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsByTaskId", params);
     }
 
-    public List<TaskEvent> getEventsByTypeByTaskId(Long taskId, String type) {
-        boolean txOwner = tpm.beginTransaction();
-
-        Query query = tpm.createNewNativeQuery("select * from TaskEvent te where te.taskId = :taskId and te.DTYPE = :type");
-        query.setParameter("taskId", taskId);
-        query.setParameter("type", type);
-
-        List<TaskEvent> list = query.getResultList();
-        tpm.endTransaction(txOwner);
-
-        return (List<TaskEvent>) list;
+    public List<TaskEvent> getEventsByTypeByTaskId(Long taskId, TaskEventType type) {
+        Map<String, Object> params = addParametersToMap("taskId", taskId, "type", type.getValue());
+        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsByTypeByTaskId", params);
     }
 
-    public static HashMap<String, Object> addParametersToMap(Object... parameterValues) {
-        HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-        if (parameterValues.length % 2 != 0) {
-            throw new IncorrectParametersException("Expected an even number of parameters, not " + parameterValues.length);
-        }
-
-        for (int i = 0; i < parameterValues.length; ++i) {
-            String parameterName = null;
-            if (parameterValues[i] instanceof String) {
-                parameterName = (String) parameterValues[i];
-            } else {
-                throw new IncorrectParametersException("Expected a String as the parameter name, not a " + parameterValues[i].getClass().getSimpleName());
-            }
-            ++i;
-            parameters.put(parameterName, parameterValues[i]);
-        }
-
-        return parameters;
-    }
-
-    public List<TaskEvent> getTaskForwardedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsForwardedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskClaimedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsClaimedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskCompletedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsCompletedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskFailedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsFailedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskSkippedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsSkippedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskStartedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsStartedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskStoppedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsStoppedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskCreatedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsCreatedByTaskId", params);
-    }
-
-    public List<TaskEvent> getTaskReleasedEventsByTaskId(Long taskId) {
-        HashMap<String, Object> params = addParametersToMap("id", taskId);
-        return (List<TaskEvent>) tpm.queryWithParametersInTransaction("TaskEventsReleasedByTaskId", params);
-    }
 }
