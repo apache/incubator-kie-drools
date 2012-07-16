@@ -20,6 +20,8 @@
           <entry>jBPM</entry>
 
           <entry>Guvnor</entry>
+
+          <entry>jBPM Designer</entry>
         </row>
       </thead>
 
@@ -30,6 +32,8 @@
           <entry>5.3.0.CR1</entry>
 
           <entry>5.4.0.CR1</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
         <row>
           <entry>5.4.0.Beta2</entry>
@@ -37,6 +41,8 @@
           <entry>5.2.0.Final</entry>
 
           <entry>5.4.0.Beta2</entry>
+
+	  <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
          <row>
           <entry>5.4.0.Beta1</entry>
@@ -44,6 +50,8 @@
           <entry>5.2.0.Final</entry>
 
           <entry>5.4.0.Beta1</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
         <row>
           <entry>5.3.2.Final</entry>
@@ -51,6 +59,8 @@
           <entry>5.2.1.Final</entry>
 
           <entry>5.3.2.Final</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
         <row>
           <entry>5.3.1.Final</entry>
@@ -58,6 +68,8 @@
           <entry>5.2.0.Final</entry>
 
           <entry>5.3.1.Final</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
         <row>
           <entry>5.3.0.Final</entry>
@@ -65,6 +77,8 @@
           <entry>5.1.2.Final</entry>
 
           <entry>5.3.0.Final</entry>
+  
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
 
         <row>
@@ -73,6 +87,8 @@
           <entry>5.1.1.Final</entry>
 
           <entry>5.3.0.CR1</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
 
         <row>
@@ -81,6 +97,8 @@
           <entry>5.1.1.Final</entry>
 
           <entry>5.2.1.Final</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
 
         <row>
@@ -89,6 +107,8 @@
           <entry>5.1.0.Final</entry>
 
           <entry>5.2.0.Final</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
 
         <row>
@@ -97,6 +117,8 @@
           <entry>5.1.0.CR1</entry>
 
           <entry>5.2.0.CR1</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
 
         <row>
@@ -105,6 +127,8 @@
           <entry>5.1.0.M1</entry>
 
           <entry>5.2.0.M2</entry>
+
+          <entry>2.0.Final,2.1.Final,2.2.Final</entry>
         </row>
       </tbody>
     </tgroup>
