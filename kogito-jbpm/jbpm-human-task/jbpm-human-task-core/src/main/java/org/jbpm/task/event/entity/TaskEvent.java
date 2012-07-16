@@ -71,8 +71,8 @@ public abstract class TaskEvent implements Externalizable {
     
     public final void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong(taskId != null ? taskId : -1);
-        
-        out.writeUTF(type);
+
+        // type is a purely persistence related field and not necessary in other places
         out.writeLong(id != null ? id : -1);
         out.writeLong(eventTime != null ? eventTime.getTime() : -1);
         
@@ -87,7 +87,6 @@ public abstract class TaskEvent implements Externalizable {
         long readLong = in.readLong();
         taskId = (readLong > -1l) ? new Long(readLong) : null;
         
-        type = in.readUTF();
         readLong = in.readLong();
         id = (readLong > -1l) ? new Long(readLong) : null;
         readLong = in.readLong();

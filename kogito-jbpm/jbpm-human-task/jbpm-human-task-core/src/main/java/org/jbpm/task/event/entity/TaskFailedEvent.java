@@ -23,6 +23,11 @@ import javax.persistence.Entity;
 @DiscriminatorValue("fa")
 public class TaskFailedEvent extends TaskUserEvent {
 
+    /**
+     * Necessary for externalizable
+     */
+    public TaskFailedEvent() { }
+    
     TaskFailedEvent(long taskId, String userId) {
         super( taskId, userId );
     }

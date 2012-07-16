@@ -19,7 +19,6 @@ package org.jbpm.task.service.base.sync;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +33,15 @@ import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Content;
 import org.jbpm.task.MockUserInfo;
+import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.User;
-import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.subethamail.wiser.Wiser;
@@ -56,10 +55,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     private Wiser wiser;
 
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
         WorkItemManager manager = new DefaultWorkItemManager(null);
@@ -83,9 +79,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         Content content = new Content();
         
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("subject", "My Subject");
-        params.put("body", "My Body");
+        Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         client.setDocumentContent(taskId, content);
@@ -93,7 +87,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         
         content = client.getContent(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        checkContentSubjectAndBody(unmarshallObject);
 
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
@@ -120,8 +114,8 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
 
         MimeMessage msg = ((WiserMessage) getWiser().getMessages().get(0)).getMimeMessage();
-        assertEquals("My Body", msg.getContent());
-        assertEquals("My Subject", msg.getSubject());
+        assertEquals(myBody, msg.getContent());
+        assertEquals(mySubject, msg.getSubject());
         assertEquals("from@domain.com", ((InternetAddress) msg.getFrom()[0]).getAddress());
         assertEquals("replyTo@domain.com", ((InternetAddress) msg.getReplyTo()[0]).getAddress());
         assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
@@ -129,10 +123,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     }
     
     public void testDelayedEmailNotificationOnDeadlineContentSingleObject() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
         WorkItemManager manager = new DefaultWorkItemManager(null);
@@ -194,10 +185,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     }
     
     public void testDelayedEmailNotificationOnDeadlineTaskCompleted() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
         WorkItemManager manager = new DefaultWorkItemManager(null);
@@ -232,9 +220,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         Content content = new Content();
         
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("subject", "My Subject");
-        params.put("body", "My Body");
+        Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         client.setDocumentContent(taskId, content);
@@ -242,7 +228,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         
         content = client.getContent(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        checkContentSubjectAndBody(unmarshallObject);
         
         client.start(taskId, "Administrator");
         client.complete(taskId, "Administrator", null);
@@ -270,10 +256,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     }
     
     public void testDelayedEmailNotificationOnDeadlineTaskFailed() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
         WorkItemManager manager = new DefaultWorkItemManager(null);
@@ -308,9 +291,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         Content content = new Content();
         
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("subject", "My Subject");
-        params.put("body", "My Body");
+        Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         client.setDocumentContent(taskId, content);
@@ -318,7 +299,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         
         content = client.getContent(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        checkContentSubjectAndBody(unmarshallObject);
         
         client.start(taskId, "Administrator");
         client.fail(taskId, "Administrator", null);
@@ -344,10 +325,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     }
 
     public void testDelayedEmailNotificationOnDeadlineTaskSkipped() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
         WorkItemManager manager = new DefaultWorkItemManager(null);
@@ -382,9 +360,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         Content content = new Content();
         
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("subject", "My Subject");
-        params.put("body", "My Body");
+        Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         client.setDocumentContent(taskId, content);
@@ -392,7 +368,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         
         content = client.getContent(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        checkContentSubjectAndBody(unmarshallObject);
         
         client.skip(taskId, "Administrator");
         // emails should not be set yet
@@ -417,10 +393,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     }
          
     public void testDelayedEmailNotificationOnDeadlineTaskExited() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
         WorkItemManager manager = new DefaultWorkItemManager(null);
@@ -455,9 +428,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         Content content = new Content();
         
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("subject", "My Subject");
-        params.put("body", "My Body");
+        Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         client.setDocumentContent(taskId, content);
@@ -465,7 +436,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         
         content = client.getContent(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        assertEquals("{body=My Body, subject=My Subject}", unmarshallObject.toString());
+        checkContentSubjectAndBody(unmarshallObject);
         
         client.exit(taskId, "Administrator");
         // emails should not be set yet
@@ -491,10 +462,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     
     //TODO: this test is not working for the local implementation and needs to be fixed  
     public void FIXtestDelayedReassignmentOnDeadline() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
         WorkItemManager manager = new DefaultWorkItemManager(null);
@@ -538,12 +506,11 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
             Thread.sleep(500);
             time += 500;
         }
-
         
         task = client.getTask(taskId);
         assertEquals(Status.Ready, task.getTaskData().getStatus());
         potentialOwners = task.getPeopleAssignments().getPotentialOwners();
-        System.out.println(potentialOwners);
+
         ids = new ArrayList<String>(potentialOwners.size());
         for (OrganizationalEntity entity : potentialOwners) {
             ids.add(entity.getId());
@@ -552,13 +519,6 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         assertTrue(ids.contains(users.get("jabba").getId()));
     }
 
-//	public void setClient(TaskClient client) {
-//		this.client = client;
-//	}
-//
-//	public TaskClient getClient() {
-//		return client;
-//	}
     public void setConf(Properties conf) {
         this.conf = conf;
     }

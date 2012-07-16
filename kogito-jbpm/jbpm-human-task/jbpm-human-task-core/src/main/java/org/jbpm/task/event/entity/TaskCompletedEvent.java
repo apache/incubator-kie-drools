@@ -24,6 +24,11 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value="co")
 public class TaskCompletedEvent extends TaskUserEvent {
 	
+    /**
+     * Necessary for externalizable
+     */
+    public TaskCompletedEvent() { }
+    
     TaskCompletedEvent(long taskId, String userId) {
         super( taskId, userId );
     }

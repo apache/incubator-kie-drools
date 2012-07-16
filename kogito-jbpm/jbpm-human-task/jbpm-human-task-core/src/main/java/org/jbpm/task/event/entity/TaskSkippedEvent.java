@@ -23,6 +23,11 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value="sk")
 public class TaskSkippedEvent extends TaskUserEvent {
 
+    /**
+     * Necessary for externalizable
+     */
+    public TaskSkippedEvent() { } 
+    
     TaskSkippedEvent(long taskId, String userId) {
         super( taskId, userId );
     }

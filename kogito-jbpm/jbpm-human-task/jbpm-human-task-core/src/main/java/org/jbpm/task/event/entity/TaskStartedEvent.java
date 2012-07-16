@@ -23,6 +23,11 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value="be")
 public class TaskStartedEvent extends TaskUserEvent {
 	
+    /**
+     * Necessary for externalizable
+     */
+    public TaskStartedEvent() { } 
+    
     TaskStartedEvent(long taskId, String userId) {
         super( taskId, userId );
     }

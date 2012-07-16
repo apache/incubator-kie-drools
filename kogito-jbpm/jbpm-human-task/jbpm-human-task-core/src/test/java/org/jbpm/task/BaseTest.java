@@ -267,4 +267,25 @@ public abstract class BaseTest extends TestCase {
         }
     }
     
+    protected final static String mySubject = "My Subject";
+    protected final static String myBody = "My Body";
+    
+    protected static Map<String, String> fillMarshalSubjectAndBodyParams() { 
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("subject", mySubject);
+        params.put("body", myBody );
+        return params;
+    }
+    
+    protected static void checkContentSubjectAndBody(Object unmarshalledObject) { 
+        assertTrue("Content is null." , unmarshalledObject != null && unmarshalledObject.toString() != null);
+        String content = unmarshalledObject.toString();
+        boolean match = false;
+        if( ("{body=" + myBody + ", subject=" + mySubject + "}").equals(content)
+            || ("{subject=" + mySubject + ", body=" + myBody + "}").equals(content) ) { 
+            match = true;
+        }
+        assertTrue( "Content does not match.", match );
+    }
+    
 }
