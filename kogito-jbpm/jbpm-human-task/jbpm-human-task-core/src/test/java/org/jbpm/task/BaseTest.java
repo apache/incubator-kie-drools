@@ -288,4 +288,7 @@ public abstract class BaseTest extends TestCase {
         assertTrue( "Content does not match.", match );
     }
     
+    protected void printTestName() { 
+        System.out.println( "Running " + this.getClass().getSimpleName() + "." +  Thread.currentThread().getStackTrace()[2].getMethodName() );
+    }
 }

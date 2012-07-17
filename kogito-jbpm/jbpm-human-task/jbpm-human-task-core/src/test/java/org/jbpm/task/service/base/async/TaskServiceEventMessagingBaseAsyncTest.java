@@ -16,8 +16,8 @@
 
 package org.jbpm.task.service.base.async;
 
+import static org.jbpm.task.event.entity.TaskEventType.*;
 import java.io.StringReader;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +29,9 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.entity.TaskClaimedEvent;
+import org.jbpm.task.event.entity.TaskCompletedEvent;
 import org.jbpm.task.event.entity.TaskCreatedEvent;
+import org.jbpm.task.event.entity.TaskEventType;
 import org.jbpm.task.event.entity.TaskForwardedEvent;
 import org.jbpm.task.event.entity.TaskReleasedEvent;
 import org.jbpm.task.event.entity.TaskStartedEvent;
@@ -46,19 +48,19 @@ public abstract class TaskServiceEventMessagingBaseAsyncTest extends BaseTest {
     protected TaskServer server;
     protected AsyncTaskService client;
 
-    public void testClaimEvent() throws Exception {      
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
+    // One potential owner, should go straight to state Reserved
+    private static final String taskExpression =  "(with (new Task()) { " +
+        "priority = 55, " +
+        "taskData = (with( new TaskData()) { } ), " +
+        "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], })," +
+        "names = [ new I18NText( 'en-UK', 'This is my task name')] " +
+        "})";
 
-        // One potential owner, should go straight to state Reserved
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-            
+    public void testClaimEvent() throws Exception {      
+        Map<String, Object>  vars = fillVariables();     
+
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( new StringReader( str ), vars );
+        Task task = ( Task )  eval( new StringReader( taskExpression ), vars );
         client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
@@ -83,10 +85,83 @@ public abstract class TaskServiceEventMessagingBaseAsyncTest extends BaseTest {
     }
     
     public void testEvents() throws Exception {      
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
+        Map<String, Object>  vars = fillVariables();            
+
+        EventKey key = new TaskEventKey(TaskCreatedEvent.class, -1 );           
+        BlockingEventResponseHandler handlerCreated = new BlockingEventResponseHandler(); 
+        client.registerForEvent( key, false, handlerCreated );
+        Thread.sleep( 3000 );
+        
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( taskExpression ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        Payload payload = handlerCreated.getPayload();
+        TaskUserEvent event = ( TaskUserEvent ) payload.get();
+        assertNotNull( event );   
+        assertTrue(event instanceof TaskCreatedEvent);
+        
+        // A Task with multiple potential owners moves to "Ready" state until someone claims it.
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
+        
+        Map<TaskEventType, BlockingEventResponseHandler> handlers = registerForEvents(taskId);
+        
+        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
+        handlers.get(Claim).waitTillDone( 5000 );
+        
+        payload = handlers.get(Claim).getPayload();
+        event = ( TaskUserEvent ) payload.get();
+        assertNotNull( event );   
+        assertTrue(event instanceof TaskClaimedEvent);
+        
+        taskSession.taskOperation( Operation.Release, taskId, users.get( "darth" ).getId(), null, null, null );          
+        handlers.get(Release).waitTillDone( 5000 );
+        
+        payload = handlers.get(Release).getPayload();
+        event = ( TaskUserEvent ) payload.get();
+        assertNotNull( event ); 
+        assertTrue(event instanceof TaskReleasedEvent);
+        
+        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
+        handlers.get(Claim).waitTillDone( 5000 );
+        
+        payload = handlers.get(Claim).getPayload();
+        event = ( TaskUserEvent ) payload.get();
+        assertNotNull( event );   
+        assertTrue(event instanceof TaskClaimedEvent);
+        
+        taskSession.taskOperation( Operation.Forward, taskId, users.get( "darth" ).getId(), users.get( "salaboy" ).getId(), null, null );          
+        handlers.get(Forward).waitTillDone( 5000 );
+        
+        payload = handlers.get(Forward).getPayload();
+        event = ( TaskUserEvent ) payload.get();
+        assertNotNull( event );   
+        assertTrue(event instanceof TaskForwardedEvent);
+        
+        taskSession.taskOperation( Operation.Start, taskId, users.get( "salaboy" ).getId(), null, null, null );          
+        handlers.get(Started).waitTillDone( 5000 );
+        
+        payload = handlers.get(Started).getPayload();
+        event = ( TaskUserEvent ) payload.get();
+        assertNotNull( event );   
+        assertTrue(event instanceof TaskStartedEvent);
+        
+        taskSession.taskOperation( Operation.Stop, taskId, users.get( "salaboy" ).getId(), null, null, null );          
+        handlers.get(Stop).waitTillDone( 5000 );
+        
+        payload = handlers.get(Stop).getPayload();
+        event = ( TaskUserEvent ) payload.get();
+        assertNotNull( event );   
+        assertTrue(event instanceof TaskStoppedEvent);
+    }
+    
+    public void testMoreEvents() throws Exception {      
+        Map<String, Object>  vars = fillVariables();            
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
@@ -97,8 +172,6 @@ public abstract class TaskServiceEventMessagingBaseAsyncTest extends BaseTest {
         BlockingEventResponseHandler handlerCreated = new BlockingEventResponseHandler(); 
         client.registerForEvent( key, false, handlerCreated );
         Thread.sleep( 3000 );
-        
-       
         
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
@@ -111,92 +184,79 @@ public abstract class TaskServiceEventMessagingBaseAsyncTest extends BaseTest {
         assertNotNull( event );   
         assertTrue(event instanceof TaskCreatedEvent);
         
-        key = new TaskEventKey(TaskForwardedEvent.class, taskId );           
-        BlockingEventResponseHandler handlerFW = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, false, handlerFW );
-        Thread.sleep( 3000 );
-        
-        key = new TaskEventKey(TaskReleasedEvent.class, taskId );           
-        BlockingEventResponseHandler handlerReleased = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, false, handlerReleased );
-        Thread.sleep( 3000 );
-        
-        key = new TaskEventKey(TaskStartedEvent.class, taskId );           
-        BlockingEventResponseHandler handlerStarted = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, false, handlerStarted );
-        Thread.sleep( 3000 );
-        
-        key = new TaskEventKey(TaskStoppedEvent.class, taskId );           
-        BlockingEventResponseHandler handlerStopped = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, false, handlerStopped );
-        Thread.sleep( 3000 );
-        
-        key = new TaskEventKey(TaskClaimedEvent.class, taskId );           
-        BlockingEventResponseHandler handlerClaimed = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, false, handlerClaimed );
-        Thread.sleep( 3000 );
-        
-        
         // A Task with multiple potential owners moves to "Ready" state until someone claims it.
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
         Task task1 = getTaskResponseHandler.getTask();
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
         
-        
+        Map<TaskEventType, BlockingEventResponseHandler> handlers = registerForEvents(taskId);
         
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
-        handlerClaimed.waitTillDone( 5000 );
+        handlers.get(Claim).waitTillDone( 5000 );
         
-        payload = handlerClaimed.getPayload();
+        payload = handlers.get(Claim).getPayload();
         event = ( TaskUserEvent ) payload.get();
         assertNotNull( event );   
         assertTrue(event instanceof TaskClaimedEvent);
         
-        taskSession.taskOperation( Operation.Release, taskId, users.get( "darth" ).getId(), null, null, null );          
-        handlerReleased.waitTillDone( 5000 );
+        taskSession.taskOperation( Operation.Start, taskId, users.get( "darth" ).getId(), null, null, null );          
+        handlers.get(Started).waitTillDone( 5000 );
         
-        payload = handlerReleased.getPayload();
-        event = ( TaskUserEvent ) payload.get();
-        assertNotNull( event ); 
-        assertTrue(event instanceof TaskReleasedEvent);
-        
-        
-        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
-        handlerClaimed.waitTillDone( 5000 );
-        
-        payload = handlerClaimed.getPayload();
-        event = ( TaskUserEvent ) payload.get();
-        assertNotNull( event );   
-        assertTrue(event instanceof TaskClaimedEvent);
-        
-        
-        
-        taskSession.taskOperation( Operation.Forward, taskId, users.get( "darth" ).getId(), users.get( "salaboy" ).getId(), null, null );          
-        handlerClaimed.waitTillDone( 5000 );
-        
-        payload = handlerFW.getPayload();
-        event = ( TaskUserEvent ) payload.get();
-        assertNotNull( event );   
-        assertTrue(event instanceof TaskForwardedEvent);
-        
-        taskSession.taskOperation( Operation.Start, taskId, users.get( "salaboy" ).getId(), null, null, null );          
-        handlerStarted.waitTillDone( 5000 );
-        
-        payload = handlerStarted.getPayload();
+        payload = handlers.get(Started).getPayload();
         event = ( TaskUserEvent ) payload.get();
         assertNotNull( event );   
         assertTrue(event instanceof TaskStartedEvent);
         
+        taskSession.taskOperation( Operation.Complete, taskId, users.get( "darth" ).getId(), null, null, null );          
+        handlers.get(Complete).waitTillDone( 5000 );
         
-        taskSession.taskOperation( Operation.Stop, taskId, users.get( "salaboy" ).getId(), null, null, null );          
-        handlerClaimed.waitTillDone( 5000 );
-        
-        payload = handlerStopped.getPayload();
+        payload = handlers.get(Complete).getPayload();
         event = ( TaskUserEvent ) payload.get();
         assertNotNull( event );   
-        assertTrue(event instanceof TaskStoppedEvent);
+        assertTrue(event instanceof TaskCompletedEvent);
+    }
     
+    private Map<TaskEventType,BlockingEventResponseHandler> registerForEvents(long taskId) throws Exception { 
+        HashMap<TaskEventType, BlockingEventResponseHandler> handlers = new HashMap<TaskEventType, BlockingEventResponseHandler>();
+        
+        TaskEventKey key = new TaskEventKey(TaskForwardedEvent.class, taskId );           
+        BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
+        client.registerForEvent( key, false, handler );
+        Thread.sleep( 3000 );
+        handlers.put(Forward, handler);
+        
+        key = new TaskEventKey(TaskReleasedEvent.class, taskId );           
+        handler = new BlockingEventResponseHandler(); 
+        client.registerForEvent( key, false, handler );
+        Thread.sleep( 3000 );
+        handlers.put(Release, handler);
+        
+        key = new TaskEventKey(TaskStartedEvent.class, taskId );           
+        handler = new BlockingEventResponseHandler(); 
+        client.registerForEvent( key, false, handler );
+        Thread.sleep( 3000 );
+        handlers.put(Started, handler);
+        
+        key = new TaskEventKey(TaskStoppedEvent.class, taskId );           
+        handler = new BlockingEventResponseHandler(); 
+        client.registerForEvent( key, false, handler );
+        Thread.sleep( 3000 );
+        handlers.put(Stop, handler);
+        
+        key = new TaskEventKey(TaskClaimedEvent.class, taskId );           
+        handler = new BlockingEventResponseHandler(); 
+        client.registerForEvent( key, false, handler );
+        Thread.sleep( 3000 );
+        handlers.put(Claim, handler);
+        
+        key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
+        handler = new BlockingEventResponseHandler(); 
+        client.registerForEvent( key, false, handler );
+        Thread.sleep( 3000 );
+        handlers.put(Complete, handler);
+        
+        return handlers;
     }
 
 }

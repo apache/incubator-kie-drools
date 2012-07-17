@@ -23,7 +23,7 @@ public abstract class TaskServer implements Runnable {
 	public abstract void start() throws Exception;
 	public abstract void stop() throws Exception;
 	public abstract boolean isRunning();
-        public abstract void addEventListener(TaskEventListener listener);
+    public abstract void addEventListener(TaskEventListener listener);
         
 
 }

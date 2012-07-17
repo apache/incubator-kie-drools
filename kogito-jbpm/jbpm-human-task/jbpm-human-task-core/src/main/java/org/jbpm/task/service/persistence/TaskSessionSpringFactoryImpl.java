@@ -91,10 +91,11 @@ public class TaskSessionSpringFactoryImpl implements TaskSessionFactory {
 
     public TasksAdmin createTaskAdmin() {
         TaskPersistenceManager tpm;
+        TaskSpringTransactionManager ttxm = new TaskSpringTransactionManager(springTransactionManager, useJTA);
         if (useEMF) {
-            tpm = new TaskPersistenceManager(emf.createEntityManager());
+            tpm = new TaskPersistenceManager(emf.createEntityManager(), ttxm);
         } else {
-            tpm = new TaskPersistenceManager(springEM);
+            tpm = new TaskPersistenceManager(springEM, ttxm);
         }
         return new TasksAdminImpl(tpm);
     }
@@ -106,10 +107,11 @@ public class TaskSessionSpringFactoryImpl implements TaskSessionFactory {
 
     public TaskEventsAdmin createTaskEventsAdmin() {
         TaskPersistenceManager tpm;
+        TaskSpringTransactionManager ttxm = new TaskSpringTransactionManager(springTransactionManager, useJTA);
         if (useEMF) {
-            tpm = new TaskPersistenceManager(emf.createEntityManager());
+            tpm = new TaskPersistenceManager(emf.createEntityManager(), ttxm);
         } else {
-            tpm = new TaskPersistenceManager(springEM);
+            tpm = new TaskPersistenceManager(springEM, ttxm);
         }
         return new TaskEventsAdminImpl(tpm);
     }

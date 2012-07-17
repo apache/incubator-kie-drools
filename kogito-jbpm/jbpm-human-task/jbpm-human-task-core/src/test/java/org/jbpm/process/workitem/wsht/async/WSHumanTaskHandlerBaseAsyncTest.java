@@ -70,7 +70,10 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         return client;
     }
 
+    
     public void FIXME_testTask() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -112,6 +115,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void FIXME_testTaskMultipleActors() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -156,6 +161,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskGroupActors() throws Exception {
+        printTestName();
+        
     	Properties userGroups = new Properties();
         userGroups.setProperty("Luke", "Crusaders");
         userGroups.setProperty("Darth Vader", "");
@@ -206,6 +213,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void FIXME_testTaskSingleAndGroupActors() throws Exception {
+        printTestName();
+        
     	Properties userGroups = new Properties();
         userGroups.setProperty("Darth Vader", "Crusaders");
         
@@ -240,6 +249,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskFail() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -279,6 +290,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskSkip() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -312,6 +325,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskAbortSkippable() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -335,6 +350,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskAbortNotSkippable() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -364,6 +381,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
     
     public void testTaskExit() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -400,6 +419,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskData() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -464,6 +485,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void testTaskDataAutomaticMapping() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -539,6 +562,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
     
     public void testTaskCreateFailedWithLog() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         if (handler instanceof AsyncGenericHTWorkItemHandler) {
             ((AsyncGenericHTWorkItemHandler) handler).setAction(OnErrorAction.LOG);
@@ -559,6 +584,8 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
     
     public void testTaskCreateFailedWithAbort() throws Exception {
+        printTestName();
+        
         TestWorkItemManager manager = new TestWorkItemManager();
         if (handler instanceof AsyncGenericHTWorkItemHandler) {
             ((AsyncGenericHTWorkItemHandler) handler).setAction(OnErrorAction.ABORT);
@@ -580,6 +607,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     
 
     public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {
+        printTestName();
 
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
@@ -726,6 +754,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     }
 
     public void TODOtestOnParentAbortAllSubTasksEndStrategy() throws Exception {
+        printTestName();
 
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);

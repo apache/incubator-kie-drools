@@ -240,10 +240,10 @@ public class TaskPersistenceManager {
     }
 
     public List<TaskSummary> queryTasksWithUserIdGroupsAndLanguage(String queryName, String userId, List<String> groupIds, String language) { 
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("userId", userId);
-        params.put("groupIds", groupIds);
-        params.put("language", language);
+        HashMap<String, Object> params = addParametersToMap(
+                "userId", userId,
+                "groupIds", groupIds,
+                "language", language);
 
         return (List<TaskSummary>) queryWithParametersInTransaction(queryName, params);
     }

@@ -43,15 +43,33 @@ public class MessagingTaskEventListener implements TaskEventListener {
     public MessagingTaskEventListener(EventKeys keys) {
         this.keys = keys;
     }
+
+    // --------------------
+    // Private help methods
+    // --------------------
     
-    public void taskClaimed(TaskUserEvent event) {        
-        EventKey key = new TaskEventKey(TaskClaimedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if(keys.getTargets( key ) == null){
-            return;
-        }else{
-            targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key )); 
+    private List<EventTriggerTransport> getTargets(EventKey key, EventKey generalKey ) { 
+        List<EventTriggerTransport> targets = keys.getTargets( key );
+        if ( targets == null ){
+            targets = keys.getTargets( generalKey );
+            if (targets == null) {
+                return null;
+            } else { 
+                targets = new ArrayList<EventTriggerTransport>(targets);
+            }
+        } else {
+            targets = new ArrayList<EventTriggerTransport>(targets);
+           
+            // additional targets
+            List<EventTriggerTransport> additionalTargets = keys.getTargets( generalKey );
+            if (additionalTargets != null) {
+                targets.addAll(additionalTargets);
+            }
         }
+        return targets;
+    }
+
+    private void triggerPayload(TaskEvent event, List<EventTriggerTransport> targets) { 
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
             EventTriggerTransport target = it.next();
@@ -60,273 +78,63 @@ public class MessagingTaskEventListener implements TaskEventListener {
                 it.remove();
             }
         }
+    }
+    
+    private void handleEvent(Class<? extends TaskEvent> taskEventClass, TaskUserEvent event) {
+        EventKey key = new TaskEventKey(taskEventClass, event.getTaskId() );
+        EventKey generalKey = new TaskEventKey(taskEventClass, -1);
+        List<EventTriggerTransport> targets = getTargets(key, generalKey);
+
+        if( targets == null ) { 
+            return;
+        }
+        
+        triggerPayload(event, targets);
+        
+        // Remove key if necessary
         if ( targets.isEmpty() ) {
             keys.removeKey( key );
         }
+    }
+    
+    // ----------------
+    // Listener methods
+    // ----------------
+    
+    public void taskClaimed(TaskUserEvent event) {        
+       handleEvent(TaskClaimedEvent.class, event);
     }
 
     public void taskCompleted(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskCompletedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-        	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                key = new TaskEventKey(TaskCompletedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }   
+       handleEvent(TaskCompletedEvent.class, event);
     }
 
-    public void taskFailed(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskFailedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskFailedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-                targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-        	key = new TaskEventKey(TaskFailedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }
+	public void taskFailed(TaskUserEvent event) {
+       handleEvent(TaskFailedEvent.class, event);
 	}
 
-    public void taskSkipped(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskSkippedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskSkippedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-                targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-        	key = new TaskEventKey(TaskSkippedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }
+	public void taskSkipped(TaskUserEvent event) {
+       handleEvent(TaskSkippedEvent.class, event);
 	}
 
     public void taskCreated(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskCreatedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskCreatedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-        	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                key = new TaskEventKey(TaskCreatedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }   
+       handleEvent(TaskCreatedEvent.class, event);
     }
 
     public void taskStarted(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskStartedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskStartedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-        	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                key = new TaskEventKey(TaskStartedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }   
+       handleEvent(TaskStartedEvent.class, event);
     }
 
     public void taskStopped(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskStoppedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskStoppedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-        	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                key = new TaskEventKey(TaskStoppedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }   
+       handleEvent(TaskStoppedEvent.class, event);
     }
 
     public void taskReleased(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskReleasedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskReleasedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-        	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                key = new TaskEventKey(TaskReleasedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }   
+       handleEvent(TaskReleasedEvent.class, event);
     }
 
     public void taskForwarded(TaskUserEvent event) {
-        EventKey key = new TaskEventKey(TaskForwardedEvent.class, event.getTaskId() );
-        List<EventTriggerTransport> targets = null;
-        if ( keys.getTargets( key ) == null ){
-        	key = new TaskEventKey(TaskForwardedEvent.class, -1);
-        	if(keys.getTargets( key ) == null){
-            	return;
-            } else {
-            	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-            }
-        } else {
-        	targets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                key = new TaskEventKey(TaskForwardedEvent.class, -1);
-                if(keys.getTargets( key ) != null){
-                    List<EventTriggerTransport> additionalTargets = new ArrayList<EventTriggerTransport>(keys.getTargets( key ));
-                    if (additionalTargets != null) {
-                            targets.addAll(additionalTargets);
-                    }
-                }
-        }
-        Payload payload = new EventPayload( event );
-        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
-            EventTriggerTransport target = it.next();
-            target.trigger( payload );
-            if ( target.isRemove() ) {
-                it.remove();
-            }
-        }
-        if ( targets.isEmpty() ) {
-            keys.removeKey( key );
-        }    
+       handleEvent(TaskForwardedEvent.class, event);
     }
 
 }

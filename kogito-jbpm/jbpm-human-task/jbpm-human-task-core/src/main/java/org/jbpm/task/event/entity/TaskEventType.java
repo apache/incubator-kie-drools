@@ -3,14 +3,14 @@ package org.jbpm.task.event.entity;
 public enum TaskEventType {
     Create("cr"),   
     Claim("cl"), 
-    Stop("st"),   // finished
+    Stop("st"),
     Complete("co"), 
     Fail("fa"), 
     Forward("fo"), 
     Release("re"), 
     Skipped("sk"),  
-    
     Started("be"),  // begun
+
     Suspended("ss"),  
     SuspendedUntil("su"), 
     Resume("rs"), 
