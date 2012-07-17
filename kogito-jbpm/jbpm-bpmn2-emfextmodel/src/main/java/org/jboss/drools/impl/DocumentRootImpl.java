@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.jboss.drools.impl;
 
@@ -33,6 +29,7 @@ import org.jboss.drools.GlobalType;
 import org.jboss.drools.ImportType;
 import org.jboss.drools.OnEntryScriptType;
 import org.jboss.drools.OnExitScriptType;
+import org.jboss.drools.SimulationType;
 
 /**
  * <!-- begin-user-doc -->
@@ -48,6 +45,7 @@ import org.jboss.drools.OnExitScriptType;
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getImport <em>Import</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getOnExitScript <em>On Exit Script</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getSimulation <em>Simulation</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getPackageName <em>Package Name</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getPriority <em>Priority</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getRuleFlowGroup <em>Rule Flow Group</em>}</li>
@@ -356,6 +354,33 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public SimulationType getSimulation() {
+		return (SimulationType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__SIMULATION, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetSimulation(SimulationType newSimulation, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(DroolsPackage.Literals.DOCUMENT_ROOT__SIMULATION, newSimulation, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSimulation(SimulationType newSimulation) {
+		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__SIMULATION, newSimulation);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public String getPackageName() {
 		return packageName;
 	}
@@ -477,6 +502,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return basicSetOnEntryScript(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				return basicSetOnExitScript(null, msgs);
+			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
+				return basicSetSimulation(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -505,6 +532,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getOnEntryScript();
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				return getOnExitScript();
+			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
+				return getSimulation();
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				return getPackageName();
 			case DroolsPackage.DOCUMENT_ROOT__PRIORITY:
@@ -546,6 +575,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				setOnExitScript((OnExitScriptType)newValue);
+				return;
+			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
+				setSimulation((SimulationType)newValue);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				setPackageName((String)newValue);
@@ -594,6 +626,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				setOnExitScript((OnExitScriptType)null);
 				return;
+			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
+				setSimulation((SimulationType)null);
+				return;
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				setPackageName(PACKAGE_NAME_EDEFAULT);
 				return;
@@ -634,6 +669,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getOnEntryScript() != null;
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				return getOnExitScript() != null;
+			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
+				return getSimulation() != null;
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				return PACKAGE_NAME_EDEFAULT == null ? packageName != null : !PACKAGE_NAME_EDEFAULT.equals(packageName);
 			case DroolsPackage.DOCUMENT_ROOT__PRIORITY:

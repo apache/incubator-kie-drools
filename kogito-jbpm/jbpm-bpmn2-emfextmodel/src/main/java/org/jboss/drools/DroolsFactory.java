@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.jboss.drools;
 
@@ -69,6 +65,15 @@ public interface DroolsFactory extends EFactory {
 	 * @generated
 	 */
 	OnExitScriptType createOnExitScriptType();
+
+	/**
+	 * Returns a new object of class '<em>Simulation Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Simulation Type</em>'.
+	 * @generated
+	 */
+	SimulationType createSimulationType();
 
 	/**
 	 * Returns the package supported by this factory.

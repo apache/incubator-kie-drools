@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.jboss.drools.util;
 
@@ -109,6 +105,8 @@ public class DroolsValidator extends EObjectValidator {
 				return validateOnEntryScriptType((OnEntryScriptType)value, diagnostics, context);
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE:
 				return validateOnExitScriptType((OnExitScriptType)value, diagnostics, context);
+			case DroolsPackage.SIMULATION_TYPE:
+				return validateSimulationType((SimulationType)value, diagnostics, context);
 			case DroolsPackage.PACKAGE_NAME_TYPE:
 				return validatePackageNameType((String)value, diagnostics, context);
 			case DroolsPackage.PRIORITY_TYPE:
@@ -167,6 +165,15 @@ public class DroolsValidator extends EObjectValidator {
 	 */
 	public boolean validateOnExitScriptType(OnExitScriptType onExitScriptType, DiagnosticChain diagnostics, Map context) {
 		return validate_EveryDefaultConstraint(onExitScriptType, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateSimulationType(SimulationType simulationType, DiagnosticChain diagnostics, Map context) {
+		return validate_EveryDefaultConstraint(simulationType, diagnostics, context);
 	}
 
 	/**

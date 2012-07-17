@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.jboss.drools;
 
@@ -29,6 +25,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.jboss.drools.DocumentRoot#getImport <em>Import</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getOnExitScript <em>On Exit Script</em>}</li>
+ *   <li>{@link org.jboss.drools.DocumentRoot#getSimulation <em>Simulation</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getPackageName <em>Package Name</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getPriority <em>Priority</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getRuleFlowGroup <em>Rule Flow Group</em>}</li>
@@ -202,6 +199,33 @@ public interface DocumentRoot extends EObject {
 	 * @generated
 	 */
 	void setOnExitScript(OnExitScriptType value);
+
+	/**
+	 * Returns the value of the '<em><b>Simulation</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Simulation</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Simulation</em>' containment reference.
+	 * @see #setSimulation(SimulationType)
+	 * @see org.jboss.drools.DroolsPackage#getDocumentRoot_Simulation()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='simulation' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	SimulationType getSimulation();
+
+	/**
+	 * Sets the value of the '{@link org.jboss.drools.DocumentRoot#getSimulation <em>Simulation</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Simulation</em>' containment reference.
+	 * @see #getSimulation()
+	 * @generated
+	 */
+	void setSimulation(SimulationType value);
 
 	/**
 	 * Returns the value of the '<em><b>Package Name</b></em>' attribute.

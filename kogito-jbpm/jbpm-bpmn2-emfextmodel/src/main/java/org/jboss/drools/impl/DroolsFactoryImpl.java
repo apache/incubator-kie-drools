@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.jboss.drools.impl;
 
@@ -70,6 +66,7 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.IMPORT_TYPE: return createImportType();
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE: return createOnEntryScriptType();
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE: return createOnExitScriptType();
+			case DroolsPackage.SIMULATION_TYPE: return createSimulationType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -167,6 +164,16 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public OnExitScriptType createOnExitScriptType() {
 		OnExitScriptTypeImpl onExitScriptType = new OnExitScriptTypeImpl();
 		return onExitScriptType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimulationType createSimulationType() {
+		SimulationTypeImpl simulationType = new SimulationTypeImpl();
+		return simulationType;
 	}
 
 	/**

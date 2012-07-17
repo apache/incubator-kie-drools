@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.jboss.drools.util;
 
@@ -84,6 +80,9 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 			}
 			public Object caseOnExitScriptType(OnExitScriptType object) {
 				return createOnExitScriptTypeAdapter();
+			}
+			public Object caseSimulationType(SimulationType object) {
+				return createSimulationTypeAdapter();
 			}
 			public Object defaultCase(EObject object) {
 				return createEObjectAdapter();
@@ -170,6 +169,20 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createOnExitScriptTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.jboss.drools.SimulationType <em>Simulation Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.jboss.drools.SimulationType
+	 * @generated
+	 */
+	public Adapter createSimulationTypeAdapter() {
 		return null;
 	}
 
