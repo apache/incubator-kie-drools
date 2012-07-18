@@ -26,13 +26,13 @@ where
             </id>
             <basic name="processId" access="FIELD" />
             <basic name="startDate" access="FIELD" >
-                <temporal>DATE</temporal>
+                <temporal>TIMESTAMP</temporal>
             </basic>
             <basic name="lastReadDate" access="FIELD" >
-                <temporal>DATE</temporal>
+                <temporal>TIMESTAMP</temporal>
             </basic>
             <basic name="lastModificationDate" access="FIELD" >
-                <temporal>DATE</temporal>
+                <temporal>TIMESTAMP</temporal>
             </basic>
             <basic name="state" access="FIELD" />
             <basic name="processInstanceByteArray" access="FIELD" >
