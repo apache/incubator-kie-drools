@@ -17,19 +17,12 @@
 package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.LeftTupleIndexHashTable;
-import org.drools.core.util.LeftTupleList;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.RightTupleIndexHashTable;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.RightTupleMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.IndexableConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
@@ -48,7 +41,7 @@ public class SingleBetaConstraints
 
     private boolean                       indexed;
 
-    private RuleBaseConfiguration         conf;
+    private transient boolean             disableIndex;
 
     public SingleBetaConstraints() {
 
@@ -71,29 +64,33 @@ public class SingleBetaConstraints
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
                                  final RuleBaseConfiguration conf,
                                  final boolean disableIndex) {
-        this.conf = conf;
-        if ( (disableIndex) || (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) ) {
+        this.constraint = constraint;
+        this.disableIndex = disableIndex;
+    }
+
+    public void init(BuildContext context, BetaNode betaNode) {
+        RuleBaseConfiguration config = context.getRuleBase().getConfiguration();
+
+        if ( (disableIndex) || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
             this.indexed = false;
         } else {
-            final int depth = conf.getCompositeKeyDepth();
-            // Determine  if this constraint is indexable
-            this.indexed = depth >= 1 && DefaultBetaConstraints.isIndexable( constraint );
+            initIndexes(config.getCompositeKeyDepth(), betaNode.getType());
         }
+    }
 
-        this.constraint = constraint;
+    public void initIndexes(int depth, short betaNodeType) {
+        indexed = depth >= 1 && IndexUtil.isIndexableForNode(betaNodeType, constraint);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         constraint  = (BetaNodeFieldConstraint)in.readObject();
         indexed     = in.readBoolean();
-        conf        = (RuleBaseConfiguration)in.readObject();
 
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(constraint);
         out.writeBoolean(indexed);
-        out.writeObject(conf);
     }
 
     public ContextEntry[] createContext() {
@@ -152,35 +149,7 @@ public class SingleBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
                                        final short nodeType) {
-        BetaMemory memory;
-        if ( this.indexed ) {
-            final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint;
-            final FieldIndex index = indexableConstraint.getFieldIndex();
-            LeftTupleMemory tupleMemory;
-            if ( this.conf.isIndexLeftBetaMemory() ) {
-                tupleMemory = new LeftTupleIndexHashTable( new FieldIndex[]{index} );
-            } else {
-                tupleMemory = new LeftTupleList();
-            }
-
-            RightTupleMemory factHandleMemory;
-            if ( this.conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new RightTupleIndexHashTable( new FieldIndex[]{index} );
-            } else {
-                factHandleMemory = new RightTupleList();
-            }
-            memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
-                                     factHandleMemory,
-                                     this.createContext(),
-                                     nodeType );
-        } else {
-            memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
-                                     new RightTupleList(),
-                                     this.createContext(),
-                                     nodeType );
-        }
-
-        return memory;
+        return IndexUtil.Factory.createBetaMemory(config, nodeType, constraint);
     }
 
     public int hashCode() {
@@ -194,10 +163,8 @@ public class SingleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#getConstraints()
      */
-    public LinkedList getConstraints() {
-        final LinkedList list = new LinkedList();
-        list.add( new LinkedListEntry( this.constraint ) );
-        return list;
+    public BetaNodeFieldConstraint[] getConstraints() {
+        return new BetaNodeFieldConstraint[] { this.constraint };
     }
 
     /**

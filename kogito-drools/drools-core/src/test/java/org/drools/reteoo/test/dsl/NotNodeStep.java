@@ -142,7 +142,7 @@ public class NotNodeStep
                                            rightObjectSource,
                                            constraints,
                                            buildContext );
-            notNode.attach();
+            notNode.attach(buildContext);
             context.put( name,
                          notNode );
 

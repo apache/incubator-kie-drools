@@ -53,14 +53,14 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( -1,
                                                               ruleBase.getRete(),
                                                               context );
-        entryPoint.attach();
+        entryPoint.attach(context);
                         
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   entryPoint,
                                                                   new ClassObjectType( Object.class ),
                                                                   context );
         
-        objectTypeNode.attach();
+        objectTypeNode.attach(context);
         
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
                                                                        objectTypeNode,
@@ -72,7 +72,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         assertEquals( 0,
                       objectTypeNode.getSinkPropagator().getSinks().length );
-        liaNode.attach();
+        liaNode.attach(context);
         assertEquals( 1,
                       objectTypeNode.getSinkPropagator().getSinks().length );
     }
@@ -94,19 +94,19 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( -1,
                                                               ruleBase.getRete(),
                                                               context );
-        entryPoint.attach();
+        entryPoint.attach(context);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   entryPoint,
                                                                   new ClassObjectType( Object.class ),
                                                                   context );
 
-        objectTypeNode.attach();
+        objectTypeNode.attach(context);
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
                                                                        objectTypeNode,
                                                                        buildContext );
-        liaNode.attach();
+        liaNode.attach(context);
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );

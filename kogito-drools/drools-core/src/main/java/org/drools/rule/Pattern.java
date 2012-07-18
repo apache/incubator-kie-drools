@@ -24,6 +24,7 @@ import java.util.*;
 
 import org.drools.base.ClassObjectType;
 import org.drools.factmodel.AnnotationDefinition;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.Constraint;
@@ -228,7 +229,7 @@ public class Pattern
         if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
             this.setConstraintType( (MutableTypeConstraint) constraint );
         }
-        this.constraints.add( constraint );
+        this.constraints.add(constraint);
     }
 
     public void removeConstraint(Constraint constraint) {
@@ -236,12 +237,18 @@ public class Pattern
     }
 
     public List<MvelConstraint> getCombinableConstraints() {
+        if (constraints.size() < 2) {
+            return null;
+        }
         List<MvelConstraint> combinableConstraints = new ArrayList<MvelConstraint>();
         for (Constraint constraint : constraints) {
             if (constraint instanceof MvelConstraint &&
                     !((MvelConstraint)constraint).isUnification() &&
-                    !((MvelConstraint)constraint).isIndexable() &&
-                    constraint.getType() == ConstraintType.BETA) { // don't combine alpha nodes to allow nodes sharing
+                    // at the moment it is not possible to determine the exact type of node which this
+                    // constraint belongs to so use ExistsNode being the less restrictive in terms of index usage
+                    !((MvelConstraint)constraint).isIndexable(NodeTypeEnums.ExistsNode) &&
+                    // don't combine alpha nodes to allow nodes sharing
+                    constraint.getType() == ConstraintType.BETA) {
                 combinableConstraints.add((MvelConstraint)constraint);
             }
         }

@@ -22,10 +22,10 @@ import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
-import org.drools.core.util.LeftTupleIndexHashTable;
-import org.drools.core.util.LeftTupleList;
-import org.drools.core.util.RightTupleIndexHashTable;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.LeftTupleIndexHashTable;
+import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
@@ -38,7 +38,6 @@ import org.drools.reteoo.ObjectSinkNodeList;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.IndexableConstraint;
-import org.drools.rule.constraint.MvelConstraint;
 import org.junit.Test;
 
 
@@ -138,7 +137,7 @@ public class IndexingTest {
         assertEquals( "$name", ((IndexableConstraint)c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier() );
         assertTrue( c.isIndexed() );        
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( j2 );
-        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
+        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable);
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         c = ( SingleBetaConstraints ) j3.getRawConstraints();
@@ -202,7 +201,7 @@ public class IndexingTest {
         assertEquals("$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier());
         assertFalse( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j11 );
-        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList );
+        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList);
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );          
     }
     

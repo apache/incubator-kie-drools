@@ -19,6 +19,7 @@ package org.drools.common;
 import org.drools.Cheese;
 import org.drools.base.evaluators.Operator;
 
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +30,7 @@ import static org.junit.Assert.*;
 public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
 
     @Test
-    public void testAllNoneIndxed() {
+    public void testAllNoneIndexed() {
         BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };
@@ -37,7 +38,7 @@ public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
     }
     
     @Test
-    public void testOneIndxed() {
+    public void testOneIndexed() {
         BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };
@@ -48,9 +49,22 @@ public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };
         checkBetaConstraints( constraints, DoubleBetaConstraints.class );
     }
-    
+
     @Test
-    public void testTwoIndxed() {
+    public void testOneIndexedForComparison() {
+        BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.GREATER, "type", Cheese.class );
+        BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
+        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };
+        checkBetaConstraints( constraints, DoubleBetaConstraints.class, NodeTypeEnums.ExistsNode );
+
+        constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
+        constraint1 = getConstraint( "cheeseType1", Operator.GREATER, "type", Cheese.class );
+        constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };
+        checkBetaConstraints( constraints, DoubleBetaConstraints.class, NodeTypeEnums.ExistsNode );
+    }
+
+    @Test
+    public void testTwoIndexed() {
         BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint constraint1 = getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };

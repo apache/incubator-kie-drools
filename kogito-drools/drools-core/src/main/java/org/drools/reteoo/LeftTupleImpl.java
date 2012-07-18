@@ -20,12 +20,11 @@ import java.util.Arrays;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.LeftTupleList;
 
 public class LeftTupleImpl extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
 
-    private Object             object;
     private RightTuple         blocker;
     private LeftTuple          blockedPrevious;
     private LeftTuple          blockedNext;
@@ -115,7 +114,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.LeftTupleList)
+     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
      */
     public void setMemory(LeftTupleList memory) {
         this.memory = memory;
@@ -190,20 +189,6 @@ public class LeftTupleImpl extends BaseLeftTuple {
     public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getObject()
-     */
-    public Object getObject() {
-        return this.object;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setObject(java.lang.Object)
-     */
-    public void setObject(final Object object) {
-        this.object = object;
-    }
 
     protected String toExternalString() {
         StringBuilder builder = new StringBuilder();
@@ -216,7 +201,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
         }
         builder.append( Arrays.toString( ids ) )
                .append( " activation=" )
-               .append( this.object != null ? this.object : "null" )
+               .append( getObject() != null ? getObject() : "null" )
                .append( " sink=" )
                .append( getSink().getClass().getSimpleName() )
                .append( "(" ).append( getSink().getId() ).append( ")" );

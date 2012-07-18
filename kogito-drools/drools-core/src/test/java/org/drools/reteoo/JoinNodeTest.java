@@ -38,7 +38,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.LeftTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.EntryPoint;
@@ -129,7 +129,10 @@ public class JoinNodeTest extends DroolsTestCase {
         assertNotNull( objectSink );
         assertNotNull( tupleSink );
 
-        this.node.attach();
+        final ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+
+        this.node.attach(context);
 
         objectSink = (ObjectSinkPropagator) objectFfield.get( this.objectSource );
         tupleSink = (LeftTupleSinkPropagator) tupleField.get( this.tupleSource );
@@ -315,9 +318,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getRightTupleMemory().size() );
 
-        RightTuple rightTuple = this.memory.getRightTupleMemory().getFirst(
-                                                                            new LeftTupleImpl( f0, this.node, true ),
-                                                                            null );
+        RightTuple rightTuple = this.memory.getRightTupleMemory().getFirst( new LeftTupleImpl( f0, this.node, true ), null, null );
 
         final InternalFactHandle rf0 = rightTuple.getFactHandle();
         final InternalFactHandle rf1 = ( (RightTuple) rightTuple.getNext() )

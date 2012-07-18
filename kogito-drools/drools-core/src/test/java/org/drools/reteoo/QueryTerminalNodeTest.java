@@ -60,7 +60,7 @@ public class QueryTerminalNodeTest {
         this.entryPoint = new EntryPointNode( 0,
                                               this.ruleBase.getRete(),
                                               buildContext );
-        this.entryPoint.attach();
+        this.entryPoint.attach(buildContext);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class QueryTerminalNodeTest {
                                                                        this.entryPoint,
                                                                        queryObjectType,
                                                                        buildContext );
-        queryObjectTypeNode.attach();
+        queryObjectTypeNode.attach(buildContext);
 
         ClassFieldReader extractor = store.getReader(DroolsQuery.class,
                 "name",
@@ -84,19 +84,19 @@ public class QueryTerminalNodeTest {
                                              constraint,
                                              queryObjectTypeNode,
                                              buildContext );
-        alphaNode.attach();
+        alphaNode.attach(buildContext);
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( this.buildContext.getNextId(),
                                                                        alphaNode,
                                                                        this.buildContext );
-        liaNode.attach();
+        liaNode.attach(buildContext);
 
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( this.buildContext.getNextId(),
                                                                         this.entryPoint,
                                                                         cheeseObjectType,
                                                                         buildContext );
-        cheeseObjectTypeNode.attach();
+        cheeseObjectTypeNode.attach(buildContext);
 
         extractor = store.getReader( Cheese.class,
                                         "type",
@@ -110,7 +110,7 @@ public class QueryTerminalNodeTest {
                                    constraint,
                                    cheeseObjectTypeNode,
                                    buildContext );
-        alphaNode.attach();
+        alphaNode.attach(buildContext);
 
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
@@ -121,7 +121,7 @@ public class QueryTerminalNodeTest {
                                                 alphaNode,
                                                 EmptyBetaConstraints.getInstance(),
                                                 buildContext );
-        joinNode.attach();
+        joinNode.attach(buildContext);
 
         final Query query = new Query( "query-1" );
 
@@ -132,7 +132,7 @@ public class QueryTerminalNodeTest {
                                                                    0,
                                                                    buildContext );
 
-        queryNode.attach();
+        queryNode.attach(buildContext);
 
         final org.drools.rule.Package pkg = new org.drools.rule.Package( "com.drools.test" );
         pkg.addRule( query );

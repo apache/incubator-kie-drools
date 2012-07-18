@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleList;
 
 public class ConcurrentRightTuple extends RightTuple {
     private RightTupleList     memory;

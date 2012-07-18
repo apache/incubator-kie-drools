@@ -19,7 +19,6 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.common.NetworkNode;
-import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.LeftInputAdapterNode;
 
 public class LeftInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {

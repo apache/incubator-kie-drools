@@ -140,7 +140,7 @@ public class JoinNodeStep
                                               rightObjectSource,
                                               constraints,
                                               buildContext );
-            joinNode.attach();
+            joinNode.attach(buildContext);
             context.put( name,
                          joinNode );
 

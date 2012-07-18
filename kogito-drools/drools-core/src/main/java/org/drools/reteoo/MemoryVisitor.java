@@ -29,8 +29,8 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.core.util.RightTupleIndexHashTable;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.RightTupleList;
 
 public class MemoryVisitor extends ReflectiveVisitor
     implements

@@ -59,7 +59,7 @@ public class ReteTest extends DroolsTestCase {
         this.entryPoint = new EntryPointNode( 0,
                                               this.ruleBase.getRete(),
                                               buildContext );
-        this.entryPoint.attach();
+        this.entryPoint.attach(buildContext);
 
     }
 
@@ -76,13 +76,13 @@ public class ReteTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( Object.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
 
         final ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        stringTypeNode.attach();
+        stringTypeNode.attach(buildContext);
 
         final List<ObjectTypeNode> list = rete.getObjectTypeNodes();
 
@@ -109,7 +109,7 @@ public class ReteTest extends DroolsTestCase {
                                                             this.entryPoint,
                                                             new ClassObjectType( List.class ),
                                                             buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
@@ -117,7 +117,7 @@ public class ReteTest extends DroolsTestCase {
                                              this.entryPoint,
                                              new ClassObjectType( Collection.class ),
                                              buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
@@ -125,7 +125,7 @@ public class ReteTest extends DroolsTestCase {
                                              this.entryPoint,
                                              new ClassObjectType( ArrayList.class ),
                                              buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
@@ -175,7 +175,7 @@ public class ReteTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( List.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
 
@@ -246,7 +246,7 @@ public class ReteTest extends DroolsTestCase {
                                                            this.entryPoint,
                                                            new ClassObjectType( List.class ),
                                                            buildContext );
-        listOtn.attach();
+        listOtn.attach(buildContext);
 
         // Will automatically create an ArrayList ObjectTypeNode
         FactHandle handle = workingMemory.insert( new ArrayList() );
@@ -338,7 +338,7 @@ public class ReteTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( List.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
 
@@ -400,7 +400,7 @@ public class ReteTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( Cheese.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
 
@@ -440,7 +440,7 @@ public class ReteTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( 0,
                                                               rete,
                                                               buildContext );
-        entryPoint.attach();
+        entryPoint.attach(buildContext);
         
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   entryPoint,

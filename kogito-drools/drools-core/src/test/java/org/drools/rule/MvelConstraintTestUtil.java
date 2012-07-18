@@ -2,6 +2,7 @@ package org.drools.rule;
 
 import org.drools.Cheese;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
@@ -18,11 +19,19 @@ public class MvelConstraintTestUtil extends MvelConstraint {
     }
 
     public MvelConstraintTestUtil(String expression, FieldValue fieldValue, InternalReadAccessor extractor) {
-        super(null, expression, null, expression.contains("=="), fieldValue, extractor);
+        super(null, expression, null, findConstraintTypeForExpression(expression), fieldValue, extractor);
     }
 
     public MvelConstraintTestUtil(String expression, Declaration declaration, InternalReadAccessor extractor) {
-        super(null, expression, new Declaration[] { declaration }, null, expression.contains("=="), declaration, extractor, expression.contains(":="));
+        super(null, expression, new Declaration[] { declaration }, null, findConstraintTypeForExpression(expression), declaration, extractor, expression.contains(":="));
+    }
+
+    public MvelConstraintTestUtil(String expression, String operator, Declaration declaration, InternalReadAccessor extractor) {
+        this(expression, IndexUtil.ConstraintType.decode(operator), declaration, extractor);
+    }
+
+    public MvelConstraintTestUtil(String expression, IndexUtil.ConstraintType constraintType, Declaration declaration, InternalReadAccessor extractor) {
+        super(null, expression, new Declaration[] { declaration }, null, constraintType, declaration, extractor, expression.contains(":="));
     }
 
     @Override
@@ -30,5 +39,27 @@ public class MvelConstraintTestUtil extends MvelConstraint {
         ParserConfiguration parserConfiguration = new ParserConfiguration();
         parserConfiguration.addImport(Cheese.class);
         return parserConfiguration;
+    }
+
+    private static IndexUtil.ConstraintType findConstraintTypeForExpression(String expression) {
+        if (expression.contains("==")) {
+            return IndexUtil.ConstraintType.EQUAL;
+        }
+        if (expression.contains("!=")) {
+            return IndexUtil.ConstraintType.NOT_EQUAL;
+        }
+        if (expression.contains(">")) {
+            return IndexUtil.ConstraintType.GREATER_THAN;
+        }
+        if (expression.contains(">=")) {
+            return IndexUtil.ConstraintType.GREATER_OR_EQUAL;
+        }
+        if (expression.contains("<")) {
+            return IndexUtil.ConstraintType.LESS_THAN;
+        }
+        if (expression.contains("<=")) {
+            return IndexUtil.ConstraintType.LESS_OR_EQUAL;
+        }
+        return IndexUtil.ConstraintType.UNKNOWN;
     }
 }

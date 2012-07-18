@@ -23,19 +23,6 @@ package org.drools.core.util;
  */
 
 import java.io.Serializable;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.AbstractCollection;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.Set;
-import java.util.Map;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.common.InternalFactHandle;
@@ -44,6 +31,8 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.core.util.AbstractHashTable.TripleCompositeIndex;
+import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 

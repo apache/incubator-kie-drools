@@ -18,12 +18,10 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.LeftTupleList;
 
 public class FromNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
-
-    private Object             object;
 
     // node memory
     private LeftTupleList      memory;
@@ -89,7 +87,7 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.LeftTupleList)
+     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
      */
     public void setMemory(LeftTupleList memory) {
         this.memory = memory;
@@ -122,19 +120,4 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
     public Entry getNext() {
         return this.next;
     }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getObject()
-     */
-    public Object getObject() {
-        return this.object;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setObject(java.lang.Object)
-     */
-    public void setObject(final Object object) {
-        this.object = object;
-    }
-
 }

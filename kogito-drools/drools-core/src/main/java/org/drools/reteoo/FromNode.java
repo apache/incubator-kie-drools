@@ -39,7 +39,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.LinkedList;
 import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufInputMarshaller;

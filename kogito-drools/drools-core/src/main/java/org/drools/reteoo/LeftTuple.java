@@ -2,7 +2,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.LeftTupleList;
 import org.drools.spi.Tuple;
 
 public interface LeftTuple extends Entry, Tuple {

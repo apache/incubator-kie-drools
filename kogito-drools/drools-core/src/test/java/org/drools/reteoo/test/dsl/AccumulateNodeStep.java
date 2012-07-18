@@ -238,7 +238,7 @@ public class AccumulateNodeStep
                                                          false,
                                                          buildContext );
 
-            accNode.attach();
+            accNode.attach(buildContext);
             context.put( name,
                          accNode );
 

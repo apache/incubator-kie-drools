@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.core.util;
+package org.drools.core.util.index;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.Index;
+import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
@@ -25,7 +29,7 @@ import org.drools.reteoo.RightTupleMemory;
 public class RightTupleList
     implements
     RightTupleMemory,
-    Entry {
+        Entry {
     private static final long      serialVersionUID = 510l;
 
     public Entry                   previous;
@@ -67,7 +71,7 @@ public class RightTupleList
         this.last = p.last;
     }
 
-    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle) {
+    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle, FastIterator rightTupleIterator) {
         return this.first;
     }
     
@@ -92,6 +96,32 @@ public class RightTupleList
         } else {
             this.first = rightTuple;
             this.last = rightTuple;
+        }
+        rightTuple.setMemory( this );
+    }
+
+    public void insertAfter(RightTuple rightTuple, RightTuple previous) {
+        RightTuple next = (RightTuple) previous.getNext();
+        previous.setNext(rightTuple);
+        rightTuple.setPrevious(previous);
+        if (next != null) {
+            next.setPrevious(rightTuple);
+            rightTuple.setNext(next);
+        } else {
+            this.last = rightTuple;
+        }
+        rightTuple.setMemory( this );
+    }
+
+    public void insertBefore(RightTuple rightTuple, RightTuple next) {
+        RightTuple previous = (RightTuple) next.getPrevious();
+        next.setPrevious(rightTuple);
+        rightTuple.setNext(next);
+        if (previous != null) {
+            previous.setNext(rightTuple);
+            rightTuple.setPrevious(previous);
+        } else {
+            this.first = rightTuple;
         }
         rightTuple.setMemory( this );
     }
@@ -281,5 +311,9 @@ public class RightTupleList
         }
 
         return builder.toString();
+    }
+
+    public IndexType getIndexType() {
+        return IndexType.NONE;
     }
 }

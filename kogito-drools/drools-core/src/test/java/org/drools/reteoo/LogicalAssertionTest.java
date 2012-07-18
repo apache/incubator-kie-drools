@@ -61,7 +61,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         this.entryPoint = new EntryPointNode( 0,
                                               this.ruleBase.getRete(),
                                               buildContext );
-        this.entryPoint.attach();
+        this.entryPoint.attach(buildContext);
     }
 
     @Test
@@ -197,7 +197,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
@@ -303,7 +303,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
@@ -461,13 +461,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( 0,
                                                               rete,
                                                               buildContext );
-        entryPoint.attach();
+        entryPoint.attach(buildContext);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
@@ -571,7 +571,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
@@ -690,7 +690,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
 
         MockRightTupleSink sink = new MockRightTupleSink();
 
@@ -845,7 +845,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
@@ -962,7 +962,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),

@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleList;
 
 public class RightTuple
     implements

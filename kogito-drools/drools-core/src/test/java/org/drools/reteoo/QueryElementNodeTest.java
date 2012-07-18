@@ -83,7 +83,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       source.getAttached() );
 
-        node.attach();
+        node.attach(buildContext);
 
         assertEquals( 1,
                       source.getAttached() );
@@ -114,7 +114,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
       
         MockLeftTupleSink sink = new MockLeftTupleSink(12);
         node.addTupleSink( sink );
-        sink.attach();
+        sink.attach(buildContext);
         
         
         InternalFactHandle s1 = (InternalFactHandle) this.workingMemory.insert( "string" );

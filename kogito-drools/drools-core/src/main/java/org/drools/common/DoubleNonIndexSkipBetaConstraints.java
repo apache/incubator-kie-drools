@@ -22,10 +22,10 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -39,16 +39,21 @@ public class DoubleNonIndexSkipBetaConstraints
     private BetaNodeFieldConstraint constraint0;
     private BetaNodeFieldConstraint constraint1;
     
-    public DoubleNonIndexSkipBetaConstraints() {
+    public DoubleNonIndexSkipBetaConstraints() { }
 
-    }
-    
-    
     public DoubleNonIndexSkipBetaConstraints(DoubleBetaConstraints constraints) {
         this.constraints = constraints;
-        LinkedList list = constraints.getConstraints();
-        this.constraint0 = (BetaNodeFieldConstraint) ((LinkedListEntry)list.getFirst()).getObject();
-        this.constraint1 = (BetaNodeFieldConstraint) ((LinkedListEntry)list.getFirst().getNext()).getObject();
+        BetaNodeFieldConstraint[] constraint = constraints.getConstraints();
+        this.constraint0 = constraint[0];
+        this.constraint1 = constraint[1];
+    }
+
+    public void init(BuildContext context, BetaNode betaNode) {
+        constraints.init(context, betaNode);
+    }
+
+    public void initIndexes(int depth, short betaNodeType) {
+        constraints.initIndexes(depth, betaNodeType);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -105,7 +110,7 @@ public class DoubleNonIndexSkipBetaConstraints
         return constraints.hashCode();
     }
 
-    public LinkedList getConstraints() {
+    public BetaNodeFieldConstraint[] getConstraints() {
         return constraints.getConstraints();
     }
 

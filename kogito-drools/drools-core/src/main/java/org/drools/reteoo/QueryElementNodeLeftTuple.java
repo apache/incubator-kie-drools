@@ -21,8 +21,6 @@ import org.drools.common.InternalFactHandle;
 public class QueryElementNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
 
-    private Object             object;
-
     public QueryElementNodeLeftTuple() {
         // constructor needed for serialisation
     }
@@ -79,19 +77,4 @@ public class QueryElementNodeLeftTuple extends BaseLeftTuple {
                sink, 
                leftTupleMemoryEnabled );
     }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getObject()
-     */
-    public Object getObject() {
-        return this.object;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setObject(java.lang.Object)
-     */
-    public void setObject(final Object object) {
-        this.object = object;
-    }
-
 }

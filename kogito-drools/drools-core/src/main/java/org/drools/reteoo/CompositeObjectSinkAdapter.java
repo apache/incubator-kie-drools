@@ -111,7 +111,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             if ( fieldConstraint instanceof IndexableConstraint) {
                 final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
 
-                if ( indexableConstraint.isIndexable() && indexableConstraint.getField() != null &&
+                if ( indexableConstraint.isIndexable(NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
                         indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                         // our current implementation does not support hashing of deeply nested properties
                         !( indexableConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
@@ -158,7 +158,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
                 final FieldValue value = indexableConstraint.getField();
 
-                if ( indexableConstraint.isIndexable()  && indexableConstraint.getField() != null &&
+                if ( indexableConstraint.isIndexable(NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
                         indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                         // our current implementation does not support hashing of deeply nested properties
                         !( indexableConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {

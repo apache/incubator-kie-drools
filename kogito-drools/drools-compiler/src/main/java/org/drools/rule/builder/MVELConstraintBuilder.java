@@ -10,6 +10,7 @@ import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.lang.descr.*;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -101,9 +102,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         if (isUnification) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
         }
-        boolean isIndexable = operatorDescr.getOperator().equals("==");
+        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator());
         MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression);
-        return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, isIndexable, requiredDeclaration, extractor, isUnification);
+        return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
     }
 
     public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isDynamic) {
@@ -114,12 +115,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return new MvelConstraint( packageName, expression, declarations, compilationUnit, isDynamic );
     }
 
-    public Constraint buildMvelConstraint(String packageName, String expression, MVELCompilationUnit compilationUnit, boolean isIndexable, FieldValue fieldValue, InternalReadAccessor extractor) {
-        return new MvelConstraint( packageName, expression, compilationUnit, isIndexable, fieldValue, extractor );
-    }
-
-    public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isIndexable, Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
-        return new MvelConstraint( packageName, expression, declarations, compilationUnit, isIndexable, indexingDeclaration, extractor, isUnification );
+    public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, IndexUtil.ConstraintType constraintType, Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
+        return new MvelConstraint( packageName, expression, declarations, compilationUnit, constraintType, indexingDeclaration, extractor, isUnification );
     }
 
     public Constraint buildLiteralConstraint(RuleBuildContext context,
@@ -138,9 +135,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
-        boolean isIndexable = operator.equals("==");
+        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator);
         MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr);
-        return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable, field, extractor);
+        return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, constraintType, field, extractor);
     }
 
     protected static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {

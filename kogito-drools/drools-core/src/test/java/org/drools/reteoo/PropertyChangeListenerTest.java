@@ -40,7 +40,7 @@ public class PropertyChangeListenerTest {
         this.entryPoint = new EntryPointNode( 0,
                                               this.ruleBase.getRete(),
                                               buildContext );
-        this.entryPoint.attach();
+        this.entryPoint.attach(buildContext);
     }
     
     @Test
@@ -52,7 +52,7 @@ public class PropertyChangeListenerTest {
                                                                   new ClassObjectType( State.class ),
                                                                   buildContext );
 
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );

@@ -26,8 +26,8 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.ConcurrentHashTable;
 import org.drools.core.util.Entry;
-import org.drools.core.util.RightTupleIndexHashTable;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
@@ -618,7 +618,7 @@ public class ConcurrentRightTupleIndexHashTableTest {
 
         assertNull( map.getFirst( new LeftTupleImpl( stiltonHandle,
                                                  null,
-                                                 true ), null ) );
+                                                 true ), null, null ) );
     }
 
 

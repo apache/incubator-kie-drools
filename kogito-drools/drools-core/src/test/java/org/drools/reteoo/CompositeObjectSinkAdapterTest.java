@@ -744,8 +744,7 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public short getType() {
-            // TODO Auto-generated method stub
-            return 0;
+            return NodeTypeEnums.JoinNode;
         }
 
         public void modifyLeftTuple(LeftTuple leftTuple,
@@ -788,9 +787,5 @@ public class CompositeObjectSinkAdapterTest {
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
         }
-
-        public Memory createMemory(RuleBaseConfiguration config) {
-            return super.createMemory( config, NodeTypeEnums.JoinNode );
-        }                
     }
 }

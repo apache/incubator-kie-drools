@@ -50,7 +50,7 @@ public class ObjectTypeNodeStep
             EntryPointNode epn = new EntryPointNode( buildContext.getNextId(),
                                                      buildContext.getRuleBase().getRete(),
                                                      buildContext );
-            epn.attach();
+            epn.attach(buildContext);
 
             otn = new ObjectTypeNode( buildContext.getNextId(),
                                       epn,

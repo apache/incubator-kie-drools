@@ -34,7 +34,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
-import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -51,8 +50,7 @@ import org.drools.common.TripleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.IndexableConstraint;
@@ -147,7 +145,6 @@ public abstract class BetaNode extends LeftTupleSource
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
         }
-        setUnificationJoin();
 
         initMasks(context, leftInput);
     }
@@ -237,10 +234,10 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        LinkedList list = this.constraints.getConstraints();
-        if ( !list.isEmpty() ) {
-            BetaNodeFieldConstraint c = (BetaNodeFieldConstraint) ((LinkedListEntry) list.getFirst()).getObject();
-            if ( DefaultBetaConstraints.isIndexable( c ) && ((IndexableConstraint) c).isUnification() ) {
+        BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
+        if ( betaCconstraints.length > 0 ) {
+            BetaNodeFieldConstraint c = betaCconstraints[0];
+            if ( IndexUtil.isIndexable(c, getType()) && ((IndexableConstraint) c).isUnification() ) {
                 this.constraints = this.constraints.getOriginalConstraint();
             }
         }
@@ -260,13 +257,13 @@ public abstract class BetaNode extends LeftTupleSource
         super.writeExternal( out );
     }
 
-    public void setUnificationJoin() {
+    private void setUnificationJoin() {
         // If this join uses a indexed, ==, constraint on a query parameter then set indexedUnificationJoin to true
         // This ensure we get the correct iterator
-        LinkedList list = this.constraints.getConstraints();
-        if ( !list.isEmpty() ) {
-            BetaNodeFieldConstraint c = (BetaNodeFieldConstraint) ((LinkedListEntry) list.getFirst()).getObject();
-            if ( DefaultBetaConstraints.isIndexable( c ) && ((IndexableConstraint) c).isUnification() ) {
+        BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
+        if ( betaCconstraints.length > 0 ) {
+            BetaNodeFieldConstraint c = betaCconstraints[0];
+            if ( IndexUtil.isIndexable(c, getType()) && ((IndexableConstraint) c).isUnification() ) {
                 if ( this.constraints instanceof SingleBetaConstraints ) {
                     this.constraints = new SingleNonIndexSkipBetaConstraints( (SingleBetaConstraints) this.constraints );
                 } else if ( this.constraints instanceof DoubleBetaConstraints ) {
@@ -303,8 +300,7 @@ public abstract class BetaNode extends LeftTupleSource
                                          final PropagationContext context,
                                          final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
-            return memory.getFirst( leftTuple,
-                                    (InternalFactHandle) context.getFactHandle() );
+            return memory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), it );
         } else {
             return (RightTuple) it.next( null );
         }
@@ -324,7 +320,7 @@ public abstract class BetaNode extends LeftTupleSource
     public static RightTuple getFirstRightTuple(final RightTupleMemory memory,
                                                 final FastIterator it) {
         if ( !memory.isIndexed() ) {
-            return memory.getFirst( null, null );
+            return memory.getFirst( null, null, it );
         } else {
             return (RightTuple) it.next( null );
         }
@@ -340,14 +336,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public BetaNodeFieldConstraint[] getConstraints() {
-        final LinkedList constraints = this.constraints.getConstraints();
-
-        final BetaNodeFieldConstraint[] array = new BetaNodeFieldConstraint[constraints.size()];
-        int i = 0;
-        for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-            array[i++] = (BetaNodeFieldConstraint) entry.getObject();
-        }
-        return array;
+        return constraints.getConstraints();
     }
 
     public BetaConstraints getRawConstraints() {
@@ -390,6 +379,9 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public void attach(BuildContext context) {
+        constraints.init(context, this);
+        setUnificationJoin();
+
         this.rightInput.addObjectSink( this );
         this.leftInput.addTupleSink( this, context );
 
@@ -622,13 +614,8 @@ public abstract class BetaNode extends LeftTupleSource
                 areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties);
     }
 
-    /**
-     * Creates a BetaMemory for the BetaNode's memory.
-     */
-    protected Memory createMemory(final RuleBaseConfiguration config,
-                                  final short nodeType ) {
-        return constraints.createBetaMemory( config,
-                                             nodeType );
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return constraints.createBetaMemory(config, getType());
     }
 
     /**

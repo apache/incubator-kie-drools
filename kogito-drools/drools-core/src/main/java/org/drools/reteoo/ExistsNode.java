@@ -16,15 +16,13 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.PropagationContext;
@@ -437,9 +435,11 @@ public class ExistsNode extends BetaNode {
         }
 
         if ( firstBlocked != null ) {
+            boolean useComparisonIndex = memory.getRightTupleMemory().getIndexType().isComparison();
+
             // now process existing blocks, we only process existing and not new from above loop
             FastIterator rightIt = getRightIterator( memory.getRightTupleMemory() );
-            RightTuple rootBlocker = (RightTuple) rightIt.next(rightTuple);
+            RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) rightIt.next(rightTuple);
           
             RightTupleList list = rightTuple.getMemory();
             
@@ -447,7 +447,7 @@ public class ExistsNode extends BetaNode {
             // We add to the end to give an opportunity to re-match if in same bucket
             memory.getRightTupleMemory().removeAdd( rightTuple );
 
-            if ( rootBlocker == null && list == rightTuple.getMemory() ) {
+            if ( !useComparisonIndex && rootBlocker == null && list == rightTuple.getMemory() ) {
                 // we are at the end of the list, but still in same bucket, so set to self, to give self a chance to rematch
                 rootBlocker = rightTuple;
             }  
@@ -464,6 +464,10 @@ public class ExistsNode extends BetaNode {
                 this.constraints.updateFromTuple( memory.getContext(),
                                                   workingMemory,
                                                   leftTuple );
+
+                if (useComparisonIndex) {
+                    rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), context, rightIt );
+                }
 
                 // we know that older tuples have been checked so continue next
                 for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next( newBlocker ) ) {
@@ -560,10 +564,4 @@ public class ExistsNode extends BetaNode {
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
-
-    public Memory createMemory(RuleBaseConfiguration config) {
-        return super.createMemory( config, 
-                                   NodeTypeEnums.ExistsNode );
-    }            
-
 }

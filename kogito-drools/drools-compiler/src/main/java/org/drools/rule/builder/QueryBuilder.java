@@ -7,6 +7,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DescrBuildError;
 import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -106,8 +107,12 @@ public class QueryBuilder implements EngineElementBuilder {
             return false;
         }
 
-        public boolean isIndexable() {
+        public boolean isIndexable(short nodeType) {
             return true;
+        }
+
+        public IndexUtil.ConstraintType getConstraintType() {
+            return IndexUtil.ConstraintType.EQUAL;
         }
 
         public FieldValue getField() {

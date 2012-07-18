@@ -22,6 +22,15 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
 public interface RightTupleMemory {
+
+    enum IndexType {
+        NONE, EQUAL, COMPARISON, RANGE;
+
+        public boolean isComparison() {
+            return this == COMPARISON || this == RANGE;
+        }
+    }
+
     /**
      * The FactHandle is always the context fact and is necessary when the object being modified is in the both left and right
      * node memories. This is because the memory on the opposite side would not have yet memory.removeAdd the fact, so it
@@ -32,27 +41,29 @@ public interface RightTupleMemory {
      * @param factHandle
      * @return
      */
-    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle);
+    RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle, FastIterator rightTupleIterator);
     
-    public void removeAdd(RightTuple rightTuple);
+    void removeAdd(RightTuple rightTuple);
 
-    public void add(RightTuple rightTuple);
+    void add(RightTuple rightTuple);
 
-    public void remove(RightTuple rightTuple);
+    void remove(RightTuple rightTuple);
 
-    public boolean contains(RightTuple rightTuple);
+    boolean contains(RightTuple rightTuple);
     
-    public Iterator iterator();
+    Iterator iterator();
     
-    public FastIterator fastIterator();
+    FastIterator fastIterator();
     
-    public FastIterator fullFastIterator();
+    FastIterator fullFastIterator();
     
-    public FastIterator fullFastIterator(RightTuple rightTuple);
+    FastIterator fullFastIterator(RightTuple rightTuple);
 
-    public boolean isIndexed();
+    boolean isIndexed();
 
-    public Entry[] toArray();
+    Entry[] toArray();
 
-    public int size();
+    int size();
+
+    IndexType getIndexType();
 }

@@ -35,6 +35,7 @@ import org.drools.compiler.DrlExprParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassDefinition;
@@ -57,7 +58,6 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RelationalExprDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
@@ -487,10 +487,10 @@ public class PatternBuilder
         combineConstraints(context, pattern);
     }
 
-    protected void combineConstraints(RuleBuildContext context, Pattern pattern) {
+    private void combineConstraints(RuleBuildContext context, Pattern pattern) {
         List<MvelConstraint> combinableConstraints = pattern.getCombinableConstraints();
 
-        if (combinableConstraints.size() < 2) {
+        if (combinableConstraints == null || combinableConstraints.size() < 2) {
             return;
         }
 
@@ -527,11 +527,12 @@ public class PatternBuilder
         String expression = expressionBuilder.toString();
         MVELCompilationUnit compilationUnit = getConstraintBuilder( context ).buildCompilationUnit(context, pattern, expression);
 
-        Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint(
-                                                               packageName, expression,
-                                                               declarations.toArray(new Declaration[declarations.size()]),
-                                                               compilationUnit, false, null, null, false );
-
+        Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint( packageName,
+                                                                                             expression,
+                                                                                             declarations.toArray(new Declaration[declarations.size()]),
+                                                                                             compilationUnit,
+                                                                                             IndexUtil.ConstraintType.UNKNOWN,
+                                                                                             null, null, false );
         pattern.addConstraint(combinedConstraint);
     }
 
@@ -985,7 +986,7 @@ public class PatternBuilder
         buildEval( context, pattern, pdescr, aliases, expr, false );
 
         // fall back to original dialect
-        context.setDialect( dialect );
+        context.setDialect(dialect);
     }
 
     protected void setInputs( RuleBuildContext context,
@@ -998,7 +999,7 @@ public class PatternBuilder
         conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
 
         final ParserContext pctx = new ParserContext( conf );
-        pctx.setStrictTypeEnforcement( false );
+        pctx.setStrictTypeEnforcement(false);
         pctx.setStrongTyping( false );
         pctx.addInput( "this",
                        thisClass );
@@ -1396,9 +1397,9 @@ public class PatternBuilder
                 vtype = ValueType.determineValueType( o.getClass() );
             }
 
-            field = context.getCompilerFactory().getFieldFactory().getFieldValue( o,
-                                                                                  vtype,
-                                                                                  context.getPackageBuilder().getDateFormats() );
+            field = context.getCompilerFactory().getFieldFactory().getFieldValue(o,
+                    vtype,
+                    context.getPackageBuilder().getDateFormats());
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
             e.printStackTrace();

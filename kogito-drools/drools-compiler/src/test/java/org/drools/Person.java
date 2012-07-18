@@ -157,6 +157,10 @@ public class Person
         return this.age;
     }
 
+    public int getDoubleAge() {
+        return this.age * 2;
+    }
+
     public void setAge(final int age) {
         this.age = age;
     }

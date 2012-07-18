@@ -35,7 +35,7 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.UpdateContext;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
 import org.drools.marshalling.impl.ProtobufInputMarshaller.TupleKey;

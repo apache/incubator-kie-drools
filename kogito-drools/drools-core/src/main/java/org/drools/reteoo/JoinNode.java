@@ -404,8 +404,8 @@ public class JoinNode extends BetaNode {
             this.constraints.updateFromTuple( memory.getContext(),
                                               workingMemory,
                                               leftTuple );
-            for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple,
-                                                                                 (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
+            for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), it );
+                  rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            rightTuple.getFactHandle() ) ) {
                     sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
@@ -493,9 +493,4 @@ public class JoinNode extends BetaNode {
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
-
-    public Memory createMemory(RuleBaseConfiguration config) {
-        return super.createMemory( config, 
-                                   NodeTypeEnums.JoinNode );
-    }      
 }

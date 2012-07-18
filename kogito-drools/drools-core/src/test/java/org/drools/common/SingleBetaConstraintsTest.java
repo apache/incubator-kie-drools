@@ -19,6 +19,7 @@ package org.drools.common;
 import org.drools.Cheese;
 import org.drools.base.evaluators.Operator;
 
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.junit.After;
 import org.junit.Before;
@@ -29,17 +30,30 @@ import static org.junit.Assert.*;
 public class SingleBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
-    public void testIndxed() {
+    public void testIndexed() {
         BetaNodeFieldConstraint constraint0 = getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
 
     @Test
-    public void testNotIndxed() {
+    public void testNotIndexed() {
         BetaNodeFieldConstraint  constraint0 = getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
-            
+
+    @Test
+    public void testIndexedForComparison() {
+        BetaNodeFieldConstraint  constraint0 = getConstraint( "cheeseType0", Operator.LESS, "type", Cheese.class );
+        BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
+        checkBetaConstraints( constraints, SingleBetaConstraints.class, NodeTypeEnums.ExistsNode );
+    }
+
+    @Test
+    public void testNotIndexedForComparison() {
+        BetaNodeFieldConstraint  constraint0 = getConstraint( "cheeseType0", Operator.LESS, "type", Cheese.class );
+        BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
+        checkBetaConstraints( constraints, SingleBetaConstraints.class, NodeTypeEnums.JoinNode );
+    }
 }

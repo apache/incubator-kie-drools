@@ -22,8 +22,11 @@ import java.util.List;
 import org.drools.RuleBaseConfiguration;
 import org.drools.core.util.LinkedList;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.spi.BetaNodeFieldConstraint;
 
 public interface BetaConstraints
     extends
@@ -45,7 +48,7 @@ public interface BetaConstraints
     boolean isAllowedCachedRight(ContextEntry[] context,
                                         LeftTuple tuple);
 
-    LinkedList getConstraints();
+    BetaNodeFieldConstraint[] getConstraints();
 
     BetaConstraints getOriginalConstraint();
     
@@ -63,4 +66,7 @@ public interface BetaConstraints
     void resetFactHandle(final ContextEntry[] context);
 
     long getListenedPropertyMask(List<String> settableProperties);
+
+    void init(BuildContext context, BetaNode betaNode);
+    void initIndexes(int depth, short betaNodeType);
 }

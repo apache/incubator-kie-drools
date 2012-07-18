@@ -24,12 +24,13 @@ import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.base.evaluators.Operator;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
-import org.drools.core.util.LeftTupleIndexHashTable;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.core.util.index.LeftTupleIndexHashTable;
+import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.RightTupleIndexHashTable;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.rule.Declaration;
@@ -67,11 +68,17 @@ public abstract class BaseBetaConstraintsTest {
                                                                 new ClassObjectType( clazz ) ) );
 
         String expression = fieldName + " " + operator.getOperatorString() + " " + identifier;
-        return new MvelConstraintTestUtil(expression, declaration, extractor);
+        return new MvelConstraintTestUtil(expression, operator.getOperatorString(), declaration, extractor);
     }
 
     protected void checkBetaConstraints(BetaNodeFieldConstraint[] constraints,
                                         Class cls) {
+        checkBetaConstraints(constraints, cls, NodeTypeEnums.JoinNode);
+    }
+
+    protected void checkBetaConstraints(BetaNodeFieldConstraint[] constraints,
+                                        Class cls,
+                                        short betaNodeType) {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         int depth = config.getCompositeKeyDepth();
 
@@ -83,15 +90,17 @@ public abstract class BaseBetaConstraintsTest {
             throw new RuntimeException( "could not invoke constructor for " + cls.getName() );
         }
 
+        betaConstraints.initIndexes(depth, betaNodeType);
+
         //BetaConstraints betaConstraints = new DefaultBetaConstraints(constraints, config );
 
-        constraints = convertToConstraints( betaConstraints.getConstraints() );
+        constraints = betaConstraints.getConstraints();
 
         List<Integer> list = new ArrayList<Integer>();
 
         // get indexed positions
         for ( int i = 0; i < constraints.length && list.size() < depth; i++ ) {
-            if ( ((IndexableConstraint)constraints[i]).isIndexable() ) {
+            if ( ((IndexableConstraint)constraints[i]).isIndexable(betaNodeType) ) {
                 list.add( i );
             }
         }
@@ -109,22 +118,26 @@ public abstract class BaseBetaConstraintsTest {
         BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
 
         if ( indexedPositions.length > 0 ) {
-            LeftTupleIndexHashTable tupleHashTable = (LeftTupleIndexHashTable) betaMemory.getLeftTupleMemory();
-            assertTrue( tupleHashTable.isIndexed() );
-            Index index = tupleHashTable.getIndex();
+            if (((IndexableConstraint)constraints[indexedPositions[0]]).getConstraintType() == ConstraintType.EQUAL) {
+                LeftTupleIndexHashTable tupleHashTable = (LeftTupleIndexHashTable) betaMemory.getLeftTupleMemory();
+                assertTrue( tupleHashTable.isIndexed() );
+                Index index = tupleHashTable.getIndex();
 
-            for ( int i = 0; i < indexedPositions.length; i++ ) {
-                checkSameConstraintForIndex( (IndexableConstraint)constraints[indexedPositions[i]],
-                                             index.getFieldIndex( i ) );
-            }
+                for ( int i = 0; i < indexedPositions.length; i++ ) {
+                    checkSameConstraintForIndex( (IndexableConstraint)constraints[indexedPositions[i]],
+                                                 index.getFieldIndex( i ) );
+                }
 
-            RightTupleIndexHashTable factHashTable = (RightTupleIndexHashTable) betaMemory.getRightTupleMemory();
-            assertTrue( factHashTable.isIndexed() );
-            index = factHashTable.getIndex();
+                RightTupleIndexHashTable factHashTable = (RightTupleIndexHashTable) betaMemory.getRightTupleMemory();
+                assertTrue( factHashTable.isIndexed() );
+                index = factHashTable.getIndex();
 
-            for ( int i = 0; i < indexedPositions.length; i++ ) {
-                checkSameConstraintForIndex( (IndexableConstraint)constraints[indexedPositions[i]],
-                                             index.getFieldIndex( i ) );
+                for ( int i = 0; i < indexedPositions.length; i++ ) {
+                    checkSameConstraintForIndex( (IndexableConstraint)constraints[indexedPositions[i]],
+                                                 index.getFieldIndex( i ) );
+                }
+            } else {
+
             }
         } else {
             LeftTupleList tupleHashTable = (LeftTupleList) betaMemory.getLeftTupleMemory();
