@@ -49,6 +49,24 @@ public interface DroolsFactory extends EFactory {
 	ImportType createImportType();
 
 	/**
+	 * Returns a new object of class '<em>Metadata Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Metadata Type</em>'.
+	 * @generated
+	 */
+	MetadataType createMetadataType();
+
+	/**
+	 * Returns a new object of class '<em>Metaentry Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Metaentry Type</em>'.
+	 * @generated
+	 */
+	MetaentryType createMetaentryType();
+
+	/**
 	 * Returns a new object of class '<em>On Entry Script Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -65,15 +83,6 @@ public interface DroolsFactory extends EFactory {
 	 * @generated
 	 */
 	OnExitScriptType createOnExitScriptType();
-
-	/**
-	 * Returns a new object of class '<em>Simulation Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Simulation Type</em>'.
-	 * @generated
-	 */
-	SimulationType createSimulationType();
 
 	/**
 	 * Returns the package supported by this factory.

@@ -27,9 +27,10 @@ import org.jboss.drools.DocumentRoot;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.GlobalType;
 import org.jboss.drools.ImportType;
+import org.jboss.drools.MetadataType;
+import org.jboss.drools.MetaentryType;
 import org.jboss.drools.OnEntryScriptType;
 import org.jboss.drools.OnExitScriptType;
-import org.jboss.drools.SimulationType;
 
 /**
  * <!-- begin-user-doc -->
@@ -43,9 +44,10 @@ import org.jboss.drools.SimulationType;
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getGlobal <em>Global</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getImport <em>Import</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getMetadata <em>Metadata</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getMetaentry <em>Metaentry</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getOnExitScript <em>On Exit Script</em>}</li>
- *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getSimulation <em>Simulation</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getPackageName <em>Package Name</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getPriority <em>Priority</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getRuleFlowGroup <em>Rule Flow Group</em>}</li>
@@ -300,6 +302,60 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public MetadataType getMetadata() {
+		return (MetadataType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__METADATA, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetMetadata(MetadataType newMetadata, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(DroolsPackage.Literals.DOCUMENT_ROOT__METADATA, newMetadata, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setMetadata(MetadataType newMetadata) {
+		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__METADATA, newMetadata);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MetaentryType getMetaentry() {
+		return (MetaentryType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__METAENTRY, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetMetaentry(MetaentryType newMetaentry, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(DroolsPackage.Literals.DOCUMENT_ROOT__METAENTRY, newMetaentry, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setMetaentry(MetaentryType newMetaentry) {
+		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__METAENTRY, newMetaentry);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public OnEntryScriptType getOnEntryScript() {
 		return (OnEntryScriptType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT, true);
 	}
@@ -347,33 +403,6 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 */
 	public void setOnExitScript(OnExitScriptType newOnExitScript) {
 		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT, newOnExitScript);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SimulationType getSimulation() {
-		return (SimulationType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__SIMULATION, true);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetSimulation(SimulationType newSimulation, NotificationChain msgs) {
-		return ((FeatureMap.Internal)getMixed()).basicAdd(DroolsPackage.Literals.DOCUMENT_ROOT__SIMULATION, newSimulation, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setSimulation(SimulationType newSimulation) {
-		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__SIMULATION, newSimulation);
 	}
 
 	/**
@@ -498,12 +527,14 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return basicSetGlobal(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__IMPORT:
 				return basicSetImport(null, msgs);
+			case DroolsPackage.DOCUMENT_ROOT__METADATA:
+				return basicSetMetadata(null, msgs);
+			case DroolsPackage.DOCUMENT_ROOT__METAENTRY:
+				return basicSetMetaentry(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
 				return basicSetOnEntryScript(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				return basicSetOnExitScript(null, msgs);
-			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
-				return basicSetSimulation(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -528,12 +559,14 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getGlobal();
 			case DroolsPackage.DOCUMENT_ROOT__IMPORT:
 				return getImport();
+			case DroolsPackage.DOCUMENT_ROOT__METADATA:
+				return getMetadata();
+			case DroolsPackage.DOCUMENT_ROOT__METAENTRY:
+				return getMetaentry();
 			case DroolsPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
 				return getOnEntryScript();
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				return getOnExitScript();
-			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
-				return getSimulation();
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				return getPackageName();
 			case DroolsPackage.DOCUMENT_ROOT__PRIORITY:
@@ -570,14 +603,17 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case DroolsPackage.DOCUMENT_ROOT__IMPORT:
 				setImport((ImportType)newValue);
 				return;
+			case DroolsPackage.DOCUMENT_ROOT__METADATA:
+				setMetadata((MetadataType)newValue);
+				return;
+			case DroolsPackage.DOCUMENT_ROOT__METAENTRY:
+				setMetaentry((MetaentryType)newValue);
+				return;
 			case DroolsPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
 				setOnEntryScript((OnEntryScriptType)newValue);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				setOnExitScript((OnExitScriptType)newValue);
-				return;
-			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
-				setSimulation((SimulationType)newValue);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				setPackageName((String)newValue);
@@ -620,14 +656,17 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case DroolsPackage.DOCUMENT_ROOT__IMPORT:
 				setImport((ImportType)null);
 				return;
+			case DroolsPackage.DOCUMENT_ROOT__METADATA:
+				setMetadata((MetadataType)null);
+				return;
+			case DroolsPackage.DOCUMENT_ROOT__METAENTRY:
+				setMetaentry((MetaentryType)null);
+				return;
 			case DroolsPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
 				setOnEntryScript((OnEntryScriptType)null);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				setOnExitScript((OnExitScriptType)null);
-				return;
-			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
-				setSimulation((SimulationType)null);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				setPackageName(PACKAGE_NAME_EDEFAULT);
@@ -665,12 +704,14 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getGlobal() != null;
 			case DroolsPackage.DOCUMENT_ROOT__IMPORT:
 				return getImport() != null;
+			case DroolsPackage.DOCUMENT_ROOT__METADATA:
+				return getMetadata() != null;
+			case DroolsPackage.DOCUMENT_ROOT__METAENTRY:
+				return getMetaentry() != null;
 			case DroolsPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
 				return getOnEntryScript() != null;
 			case DroolsPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
 				return getOnExitScript() != null;
-			case DroolsPackage.DOCUMENT_ROOT__SIMULATION:
-				return getSimulation() != null;
 			case DroolsPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				return PACKAGE_NAME_EDEFAULT == null ? packageName != null : !PACKAGE_NAME_EDEFAULT.equals(packageName);
 			case DroolsPackage.DOCUMENT_ROOT__PRIORITY:

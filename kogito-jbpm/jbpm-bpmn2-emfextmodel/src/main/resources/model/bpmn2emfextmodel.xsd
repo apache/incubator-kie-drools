@@ -37,18 +37,6 @@
     </simpleType>
   </attribute>
   
-  <attributeGroup name="simulationattributes">
-  	<attribute name="probability" type="integer" use="optional" />
-  	<attribute name="duration" type="integer" use="optional" />
-  	<attribute name="timeunit" type="string" use="optional" />
-  	<attribute name="range" type="integer" use="optional" />
-  	<attribute name="standarddeviation" type="double" use="optional" />
-  	<attribute name="distributiontype" type="string" use="optional" />
-  	<attribute name="staffavailability" type="double" use="optional" />
-  	<attribute name="workinghours" type="double" use="optional" />
-  	<attribute name="costpertimeunit" type="double" use="optional" />
-  </attributeGroup>
-  
   <attributeGroup name="onxscriptattributes">
     <attribute name="scriptFormat" type="string" use="required" />
   </attributeGroup>
@@ -92,9 +80,18 @@
     </complexType>
   </element>
   
-  <element name="simulation">
+  <element name="metadata">
     <complexType>
-      <attributeGroup ref="drools:simulationattributes" />   
+    	<sequence>
+    		<element maxOccurs="unbounded" ref="drools:metaentry"/>
+    	</sequence>
     </complexType>
+  </element>
+  
+  <element name="metaentry">
+  	<complexType>
+  		<attribute name="name" type="string"/>
+  		<attribute name="value" type="string"/>
+  	</complexType>
   </element>
 </schema>

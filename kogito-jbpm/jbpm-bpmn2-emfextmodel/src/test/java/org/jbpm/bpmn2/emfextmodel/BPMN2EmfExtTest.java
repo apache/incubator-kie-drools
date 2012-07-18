@@ -32,6 +32,8 @@ import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.GlobalType;
 import org.jboss.drools.ImportType;
+import org.jboss.drools.MetadataType;
+import org.jboss.drools.MetaentryType;
 import org.jboss.drools.OnEntryScriptType;
 import org.jboss.drools.OnExitScriptType;
 import org.jboss.drools.util.DroolsResourceFactoryImpl;
@@ -55,6 +57,61 @@ public class BPMN2EmfExtTest extends TestCase {
     
     @Override
     protected void tearDown() throws Exception {
+    }
+    
+    @SuppressWarnings("unchecked")
+	public void testMetadataElement() throws Exception {
+    	// write
+    	XMLResource inResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+        inResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+        inResource.setEncoding("UTF-8");
+        DocumentRoot documentRoot = DroolsFactory.eINSTANCE.createDocumentRoot();
+        
+        MetadataType metadataType =  DroolsFactory.eINSTANCE.createMetadataType();
+        
+        MetaentryType typeOne =  DroolsFactory.eINSTANCE.createMetaentryType();
+        typeOne.setName("entry1");
+        typeOne.setValue("value1");
+        
+        MetaentryType typeTwo =  DroolsFactory.eINSTANCE.createMetaentryType();
+        typeTwo.setName("entry2");
+        typeTwo.setValue("value2");
+        
+        metadataType.getMetaentry().add(typeOne);
+        metadataType.getMetaentry().add(typeTwo);
+        
+        documentRoot.setMetadata(metadataType);
+        inResource.getContents().add(documentRoot);
+        
+        StringWriter stringWriter = new StringWriter();
+        inResource.save(stringWriter, null);
+        assertNotNull(stringWriter.getBuffer().toString());
+        if(stringWriter.getBuffer().toString().length() < 1) {
+            fail("generated xml is empty");
+        }
+    	
+        // read
+        XMLResource outResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+        outResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+        outResource.setEncoding("UTF-8");
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put( XMLResource.OPTION_ENCODING, "UTF-8" );
+        InputStream is = new ByteArrayInputStream(stringWriter.getBuffer().toString().getBytes("UTF-8"));
+        outResource.load(is, options);
+        
+        DocumentRoot outRoot = (DocumentRoot) outResource.getContents().get(0);
+        assertNotNull(outRoot.getMetadata());
+        MetadataType outMetadataType =  outRoot.getMetadata();
+        assertTrue(outMetadataType.getMetaentry().size() == 2);
+        MetaentryType outOne = (MetaentryType) outMetadataType.getMetaentry().get(0);
+        MetaentryType outTwo = (MetaentryType) outMetadataType.getMetaentry().get(1);
+        
+        assertTrue(outOne.getName().equals("entry1"));
+        assertTrue(outOne.getValue().equals("value1"));
+        
+        assertTrue(outTwo.getName().equals("entry2"));
+        assertTrue(outTwo.getValue().equals("value2"));
+        
     }
     
     public void testOnEntryScriptElement() throws Exception {

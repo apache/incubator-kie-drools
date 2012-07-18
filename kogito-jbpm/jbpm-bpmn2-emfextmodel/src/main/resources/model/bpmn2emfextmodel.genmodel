@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/jbpm-bpmn2-emfextmodel/src/main/java" modelPluginID="jbpm-bpmn2-emfextmodel"
-    modelName="Bpmn2emfextmodel" modelPluginClass="" testsDirectory="/jbpm-bpmn2-emfextmodel/src/test/java"
-    importerID="org.eclipse.xsd.ecore.importer" copyrightFields="false" language="">
+    runtimeJar="true" modelName="Bpmn2emfextmodel" testsDirectory="/jbpm-bpmn2-emfextmodel/src/test/java"
+    importerID="org.eclipse.xsd.ecore.importer" copyrightFields="false">
   <foreignModel>bpmn2emfextmodel.xsd</foreignModel>
   <genPackages prefix="Drools" basePackage="org.jboss" resource="XML" disposableProviderFactory="true"
       ecorePackage="drools.ecore#/">
@@ -17,9 +17,10 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/xSISchemaLocation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/global"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/import"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/metadata"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/metaentry"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onEntryScript"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onExitScript"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/simulation"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/packageName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/priority"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/ruleFlowGroup"/>
@@ -33,6 +34,13 @@
     <genClasses ecoreClass="drools.ecore#//ImportType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ImportType/name"/>
     </genClasses>
+    <genClasses ecoreClass="drools.ecore#//MetadataType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//MetadataType/metaentry"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//MetaentryType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaentryType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaentryType/value"/>
+    </genClasses>
     <genClasses ecoreClass="drools.ecore#//OnEntryScriptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnEntryScriptType/script"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnEntryScriptType/scriptFormat"/>
@@ -40,17 +48,6 @@
     <genClasses ecoreClass="drools.ecore#//OnExitScriptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnExitScriptType/script"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnExitScriptType/scriptFormat"/>
-    </genClasses>
-    <genClasses ecoreClass="drools.ecore#//SimulationType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/costpertimeunit"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/distributiontype"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/duration"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/probability"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/range"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/staffavailability"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/standarddeviation"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/timeunit"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//SimulationType/workinghours"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -112,13 +112,31 @@ public interface DroolsPackage extends EPackage {
 	int DOCUMENT_ROOT__IMPORT = 4;
 
 	/**
+	 * The feature id for the '<em><b>Metadata</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__METADATA = 5;
+
+	/**
+	 * The feature id for the '<em><b>Metaentry</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__METAENTRY = 6;
+
+	/**
 	 * The feature id for the '<em><b>On Entry Script</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__ON_ENTRY_SCRIPT = 5;
+	int DOCUMENT_ROOT__ON_ENTRY_SCRIPT = 7;
 
 	/**
 	 * The feature id for the '<em><b>On Exit Script</b></em>' containment reference.
@@ -127,16 +145,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__ON_EXIT_SCRIPT = 6;
-
-	/**
-	 * The feature id for the '<em><b>Simulation</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__SIMULATION = 7;
+	int DOCUMENT_ROOT__ON_EXIT_SCRIPT = 8;
 
 	/**
 	 * The feature id for the '<em><b>Package Name</b></em>' attribute.
@@ -145,7 +154,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__PACKAGE_NAME = 8;
+	int DOCUMENT_ROOT__PACKAGE_NAME = 9;
 
 	/**
 	 * The feature id for the '<em><b>Priority</b></em>' attribute.
@@ -154,7 +163,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__PRIORITY = 9;
+	int DOCUMENT_ROOT__PRIORITY = 10;
 
 	/**
 	 * The feature id for the '<em><b>Rule Flow Group</b></em>' attribute.
@@ -163,7 +172,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__RULE_FLOW_GROUP = 10;
+	int DOCUMENT_ROOT__RULE_FLOW_GROUP = 11;
 
 	/**
 	 * The feature id for the '<em><b>Task Name</b></em>' attribute.
@@ -172,7 +181,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__TASK_NAME = 11;
+	int DOCUMENT_ROOT__TASK_NAME = 12;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute.
@@ -181,7 +190,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__VERSION = 12;
+	int DOCUMENT_ROOT__VERSION = 13;
 
 	/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
@@ -190,7 +199,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 13;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 14;
 
 	/**
 	 * The meta object id for the '{@link org.jboss.drools.impl.GlobalTypeImpl <em>Global Type</em>}' class.
@@ -258,6 +267,71 @@ public interface DroolsPackage extends EPackage {
 	int IMPORT_TYPE_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link org.jboss.drools.impl.MetadataTypeImpl <em>Metadata Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.jboss.drools.impl.MetadataTypeImpl
+	 * @see org.jboss.drools.impl.DroolsPackageImpl#getMetadataType()
+	 * @generated
+	 */
+	int METADATA_TYPE = 3;
+
+	/**
+	 * The feature id for the '<em><b>Metaentry</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_TYPE__METAENTRY = 0;
+
+	/**
+	 * The number of structural features of the '<em>Metadata Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_TYPE_FEATURE_COUNT = 1;
+
+	/**
+	 * The meta object id for the '{@link org.jboss.drools.impl.MetaentryTypeImpl <em>Metaentry Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.jboss.drools.impl.MetaentryTypeImpl
+	 * @see org.jboss.drools.impl.DroolsPackageImpl#getMetaentryType()
+	 * @generated
+	 */
+	int METAENTRY_TYPE = 4;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METAENTRY_TYPE__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METAENTRY_TYPE__VALUE = 1;
+
+	/**
+	 * The number of structural features of the '<em>Metaentry Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METAENTRY_TYPE_FEATURE_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link org.jboss.drools.impl.OnEntryScriptTypeImpl <em>On Entry Script Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -265,7 +339,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getOnEntryScriptType()
 	 * @generated
 	 */
-	int ON_ENTRY_SCRIPT_TYPE = 3;
+	int ON_ENTRY_SCRIPT_TYPE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Script</b></em>' attribute.
@@ -302,7 +376,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getOnExitScriptType()
 	 * @generated
 	 */
-	int ON_EXIT_SCRIPT_TYPE = 4;
+	int ON_EXIT_SCRIPT_TYPE = 6;
 
 	/**
 	 * The feature id for the '<em><b>Script</b></em>' attribute.
@@ -332,106 +406,6 @@ public interface DroolsPackage extends EPackage {
 	int ON_EXIT_SCRIPT_TYPE_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link org.jboss.drools.impl.SimulationTypeImpl <em>Simulation Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.jboss.drools.impl.SimulationTypeImpl
-	 * @see org.jboss.drools.impl.DroolsPackageImpl#getSimulationType()
-	 * @generated
-	 */
-	int SIMULATION_TYPE = 5;
-
-	/**
-	 * The feature id for the '<em><b>Costpertimeunit</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__COSTPERTIMEUNIT = 0;
-
-	/**
-	 * The feature id for the '<em><b>Distributiontype</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__DISTRIBUTIONTYPE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Duration</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__DURATION = 2;
-
-	/**
-	 * The feature id for the '<em><b>Probability</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__PROBABILITY = 3;
-
-	/**
-	 * The feature id for the '<em><b>Range</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__RANGE = 4;
-
-	/**
-	 * The feature id for the '<em><b>Staffavailability</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__STAFFAVAILABILITY = 5;
-
-	/**
-	 * The feature id for the '<em><b>Standarddeviation</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__STANDARDDEVIATION = 6;
-
-	/**
-	 * The feature id for the '<em><b>Timeunit</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__TIMEUNIT = 7;
-
-	/**
-	 * The feature id for the '<em><b>Workinghours</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE__WORKINGHOURS = 8;
-
-	/**
-	 * The number of structural features of the '<em>Simulation Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMULATION_TYPE_FEATURE_COUNT = 9;
-
-	/**
 	 * The meta object id for the '<em>Package Name Type</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -439,7 +413,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getPackageNameType()
 	 * @generated
 	 */
-	int PACKAGE_NAME_TYPE = 6;
+	int PACKAGE_NAME_TYPE = 7;
 
 	/**
 	 * The meta object id for the '<em>Priority Type</em>' data type.
@@ -449,7 +423,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getPriorityType()
 	 * @generated
 	 */
-	int PRIORITY_TYPE = 7;
+	int PRIORITY_TYPE = 8;
 
 	/**
 	 * The meta object id for the '<em>Rule Flow Group Type</em>' data type.
@@ -459,7 +433,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getRuleFlowGroupType()
 	 * @generated
 	 */
-	int RULE_FLOW_GROUP_TYPE = 8;
+	int RULE_FLOW_GROUP_TYPE = 9;
 
 	/**
 	 * The meta object id for the '<em>Task Name Type</em>' data type.
@@ -469,7 +443,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getTaskNameType()
 	 * @generated
 	 */
-	int TASK_NAME_TYPE = 9;
+	int TASK_NAME_TYPE = 10;
 
 	/**
 	 * The meta object id for the '<em>Version Type</em>' data type.
@@ -479,7 +453,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getVersionType()
 	 * @generated
 	 */
-	int VERSION_TYPE = 10;
+	int VERSION_TYPE = 11;
 
 
 	/**
@@ -548,6 +522,28 @@ public interface DroolsPackage extends EPackage {
 	EReference getDocumentRoot_Import();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.jboss.drools.DocumentRoot#getMetadata <em>Metadata</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Metadata</em>'.
+	 * @see org.jboss.drools.DocumentRoot#getMetadata()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Metadata();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.jboss.drools.DocumentRoot#getMetaentry <em>Metaentry</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Metaentry</em>'.
+	 * @see org.jboss.drools.DocumentRoot#getMetaentry()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Metaentry();
+
+	/**
 	 * Returns the meta object for the containment reference '{@link org.jboss.drools.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -568,17 +564,6 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getDocumentRoot_OnExitScript();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link org.jboss.drools.DocumentRoot#getSimulation <em>Simulation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Simulation</em>'.
-	 * @see org.jboss.drools.DocumentRoot#getSimulation()
-	 * @see #getDocumentRoot()
-	 * @generated
-	 */
-	EReference getDocumentRoot_Simulation();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.jboss.drools.DocumentRoot#getPackageName <em>Package Name</em>}'.
@@ -689,6 +674,59 @@ public interface DroolsPackage extends EPackage {
 	EAttribute getImportType_Name();
 
 	/**
+	 * Returns the meta object for class '{@link org.jboss.drools.MetadataType <em>Metadata Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Metadata Type</em>'.
+	 * @see org.jboss.drools.MetadataType
+	 * @generated
+	 */
+	EClass getMetadataType();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.jboss.drools.MetadataType#getMetaentry <em>Metaentry</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Metaentry</em>'.
+	 * @see org.jboss.drools.MetadataType#getMetaentry()
+	 * @see #getMetadataType()
+	 * @generated
+	 */
+	EReference getMetadataType_Metaentry();
+
+	/**
+	 * Returns the meta object for class '{@link org.jboss.drools.MetaentryType <em>Metaentry Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Metaentry Type</em>'.
+	 * @see org.jboss.drools.MetaentryType
+	 * @generated
+	 */
+	EClass getMetaentryType();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.jboss.drools.MetaentryType#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.jboss.drools.MetaentryType#getName()
+	 * @see #getMetaentryType()
+	 * @generated
+	 */
+	EAttribute getMetaentryType_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.jboss.drools.MetaentryType#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see org.jboss.drools.MetaentryType#getValue()
+	 * @see #getMetaentryType()
+	 * @generated
+	 */
+	EAttribute getMetaentryType_Value();
+
+	/**
 	 * Returns the meta object for class '{@link org.jboss.drools.OnEntryScriptType <em>On Entry Script Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -751,115 +789,6 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getOnExitScriptType_ScriptFormat();
-
-	/**
-	 * Returns the meta object for class '{@link org.jboss.drools.SimulationType <em>Simulation Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Simulation Type</em>'.
-	 * @see org.jboss.drools.SimulationType
-	 * @generated
-	 */
-	EClass getSimulationType();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getCostpertimeunit <em>Costpertimeunit</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Costpertimeunit</em>'.
-	 * @see org.jboss.drools.SimulationType#getCostpertimeunit()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Costpertimeunit();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getDistributiontype <em>Distributiontype</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Distributiontype</em>'.
-	 * @see org.jboss.drools.SimulationType#getDistributiontype()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Distributiontype();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getDuration <em>Duration</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Duration</em>'.
-	 * @see org.jboss.drools.SimulationType#getDuration()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Duration();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getProbability <em>Probability</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Probability</em>'.
-	 * @see org.jboss.drools.SimulationType#getProbability()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Probability();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getRange <em>Range</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Range</em>'.
-	 * @see org.jboss.drools.SimulationType#getRange()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Range();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getStaffavailability <em>Staffavailability</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Staffavailability</em>'.
-	 * @see org.jboss.drools.SimulationType#getStaffavailability()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Staffavailability();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getStandarddeviation <em>Standarddeviation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Standarddeviation</em>'.
-	 * @see org.jboss.drools.SimulationType#getStandarddeviation()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Standarddeviation();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getTimeunit <em>Timeunit</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Timeunit</em>'.
-	 * @see org.jboss.drools.SimulationType#getTimeunit()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Timeunit();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.jboss.drools.SimulationType#getWorkinghours <em>Workinghours</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Workinghours</em>'.
-	 * @see org.jboss.drools.SimulationType#getWorkinghours()
-	 * @see #getSimulationType()
-	 * @generated
-	 */
-	EAttribute getSimulationType_Workinghours();
 
 	/**
 	 * Returns the meta object for data type '{@link java.lang.String <em>Package Name Type</em>}'.
@@ -994,6 +923,22 @@ public interface DroolsPackage extends EPackage {
 		EReference DOCUMENT_ROOT__IMPORT = eINSTANCE.getDocumentRoot_Import();
 
 		/**
+		 * The meta object literal for the '<em><b>Metadata</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__METADATA = eINSTANCE.getDocumentRoot_Metadata();
+
+		/**
+		 * The meta object literal for the '<em><b>Metaentry</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__METAENTRY = eINSTANCE.getDocumentRoot_Metaentry();
+
+		/**
 		 * The meta object literal for the '<em><b>On Entry Script</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1008,14 +953,6 @@ public interface DroolsPackage extends EPackage {
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__ON_EXIT_SCRIPT = eINSTANCE.getDocumentRoot_OnExitScript();
-
-		/**
-		 * The meta object literal for the '<em><b>Simulation</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference DOCUMENT_ROOT__SIMULATION = eINSTANCE.getDocumentRoot_Simulation();
 
 		/**
 		 * The meta object literal for the '<em><b>Package Name</b></em>' attribute feature.
@@ -1102,6 +1039,50 @@ public interface DroolsPackage extends EPackage {
 		EAttribute IMPORT_TYPE__NAME = eINSTANCE.getImportType_Name();
 
 		/**
+		 * The meta object literal for the '{@link org.jboss.drools.impl.MetadataTypeImpl <em>Metadata Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.jboss.drools.impl.MetadataTypeImpl
+		 * @see org.jboss.drools.impl.DroolsPackageImpl#getMetadataType()
+		 * @generated
+		 */
+		EClass METADATA_TYPE = eINSTANCE.getMetadataType();
+
+		/**
+		 * The meta object literal for the '<em><b>Metaentry</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference METADATA_TYPE__METAENTRY = eINSTANCE.getMetadataType_Metaentry();
+
+		/**
+		 * The meta object literal for the '{@link org.jboss.drools.impl.MetaentryTypeImpl <em>Metaentry Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.jboss.drools.impl.MetaentryTypeImpl
+		 * @see org.jboss.drools.impl.DroolsPackageImpl#getMetaentryType()
+		 * @generated
+		 */
+		EClass METAENTRY_TYPE = eINSTANCE.getMetaentryType();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute METAENTRY_TYPE__NAME = eINSTANCE.getMetaentryType_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute METAENTRY_TYPE__VALUE = eINSTANCE.getMetaentryType_Value();
+
+		/**
 		 * The meta object literal for the '{@link org.jboss.drools.impl.OnEntryScriptTypeImpl <em>On Entry Script Type</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1152,88 +1133,6 @@ public interface DroolsPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute ON_EXIT_SCRIPT_TYPE__SCRIPT_FORMAT = eINSTANCE.getOnExitScriptType_ScriptFormat();
-
-		/**
-		 * The meta object literal for the '{@link org.jboss.drools.impl.SimulationTypeImpl <em>Simulation Type</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.jboss.drools.impl.SimulationTypeImpl
-		 * @see org.jboss.drools.impl.DroolsPackageImpl#getSimulationType()
-		 * @generated
-		 */
-		EClass SIMULATION_TYPE = eINSTANCE.getSimulationType();
-
-		/**
-		 * The meta object literal for the '<em><b>Costpertimeunit</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__COSTPERTIMEUNIT = eINSTANCE.getSimulationType_Costpertimeunit();
-
-		/**
-		 * The meta object literal for the '<em><b>Distributiontype</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__DISTRIBUTIONTYPE = eINSTANCE.getSimulationType_Distributiontype();
-
-		/**
-		 * The meta object literal for the '<em><b>Duration</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__DURATION = eINSTANCE.getSimulationType_Duration();
-
-		/**
-		 * The meta object literal for the '<em><b>Probability</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__PROBABILITY = eINSTANCE.getSimulationType_Probability();
-
-		/**
-		 * The meta object literal for the '<em><b>Range</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__RANGE = eINSTANCE.getSimulationType_Range();
-
-		/**
-		 * The meta object literal for the '<em><b>Staffavailability</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__STAFFAVAILABILITY = eINSTANCE.getSimulationType_Staffavailability();
-
-		/**
-		 * The meta object literal for the '<em><b>Standarddeviation</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__STANDARDDEVIATION = eINSTANCE.getSimulationType_Standarddeviation();
-
-		/**
-		 * The meta object literal for the '<em><b>Timeunit</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__TIMEUNIT = eINSTANCE.getSimulationType_Timeunit();
-
-		/**
-		 * The meta object literal for the '<em><b>Workinghours</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMULATION_TYPE__WORKINGHOURS = eINSTANCE.getSimulationType_Workinghours();
 
 		/**
 		 * The meta object literal for the '<em>Package Name Type</em>' data type.

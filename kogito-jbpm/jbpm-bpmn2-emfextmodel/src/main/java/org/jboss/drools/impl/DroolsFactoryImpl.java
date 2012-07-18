@@ -64,9 +64,10 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case DroolsPackage.GLOBAL_TYPE: return createGlobalType();
 			case DroolsPackage.IMPORT_TYPE: return createImportType();
+			case DroolsPackage.METADATA_TYPE: return createMetadataType();
+			case DroolsPackage.METAENTRY_TYPE: return createMetaentryType();
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE: return createOnEntryScriptType();
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE: return createOnExitScriptType();
-			case DroolsPackage.SIMULATION_TYPE: return createSimulationType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -151,6 +152,26 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public MetadataType createMetadataType() {
+		MetadataTypeImpl metadataType = new MetadataTypeImpl();
+		return metadataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MetaentryType createMetaentryType() {
+		MetaentryTypeImpl metaentryType = new MetaentryTypeImpl();
+		return metaentryType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public OnEntryScriptType createOnEntryScriptType() {
 		OnEntryScriptTypeImpl onEntryScriptType = new OnEntryScriptTypeImpl();
 		return onEntryScriptType;
@@ -164,16 +185,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public OnExitScriptType createOnExitScriptType() {
 		OnExitScriptTypeImpl onExitScriptType = new OnExitScriptTypeImpl();
 		return onExitScriptType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SimulationType createSimulationType() {
-		SimulationTypeImpl simulationType = new SimulationTypeImpl();
-		return simulationType;
 	}
 
 	/**
