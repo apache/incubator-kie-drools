@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see org.jboss.drools.DroolsPackage#getMetaentryType()
- * @model extendedMetaData="name='metaentry_._type' kind='empty'"
+ * @model extendedMetaData="name='metaentry_._type' kind='elementOnly'"
  * @generated
  */
 public interface MetaentryType extends EObject {
@@ -33,8 +33,8 @@ public interface MetaentryType extends EObject {
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see org.jboss.drools.DroolsPackage#getMetaentryType_Name()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
-	 *        extendedMetaData="kind='attribute' name='name'"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+	 *        extendedMetaData="kind='element' name='name' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	String getName();
@@ -60,8 +60,8 @@ public interface MetaentryType extends EObject {
 	 * @return the value of the '<em>Value</em>' attribute.
 	 * @see #setValue(String)
 	 * @see org.jboss.drools.DroolsPackage#getMetaentryType_Value()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
-	 *        extendedMetaData="kind='attribute' name='value'"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+	 *        extendedMetaData="kind='element' name='value' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	String getValue();

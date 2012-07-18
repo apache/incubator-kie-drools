@@ -90,8 +90,10 @@
   
   <element name="metaentry">
   	<complexType>
-  		<attribute name="name" type="string"/>
-  		<attribute name="value" type="string"/>
+  	    <sequence>
+  	    	<element name="name" type="string" minOccurs="1" maxOccurs="1"/>
+  	    	<element name="value" type="string" minOccurs="1" maxOccurs="1"/>
+  	    </sequence>
   	</complexType>
   </element>
 </schema>

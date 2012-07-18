@@ -645,8 +645,8 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEReference(getMetadataType_Metaentry(), this.getMetaentryType(), null, "metaentry", null, 1, -1, MetadataType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(metaentryTypeEClass, MetaentryType.class, "MetaentryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getMetaentryType_Name(), theXMLTypePackage.getString(), "name", null, 0, 1, MetaentryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMetaentryType_Value(), theXMLTypePackage.getString(), "value", null, 0, 1, MetaentryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMetaentryType_Name(), theXMLTypePackage.getString(), "name", null, 1, 1, MetaentryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMetaentryType_Value(), theXMLTypePackage.getString(), "value", null, 1, 1, MetaentryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(onEntryScriptTypeEClass, OnEntryScriptType.class, "OnEntryScriptType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getOnEntryScriptType_Script(), theXMLTypePackage.getString(), "script", null, 1, 1, OnEntryScriptType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -850,21 +850,23 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   source, 
 		   new String[] {
 			 "name", "metaentry_._type",
-			 "kind", "empty"
+			 "kind", "elementOnly"
 		   });		
 		addAnnotation
 		  (getMetaentryType_Name(), 
 		   source, 
 		   new String[] {
-			 "kind", "attribute",
-			 "name", "name"
+			 "kind", "element",
+			 "name", "name",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getMetaentryType_Value(), 
 		   source, 
 		   new String[] {
-			 "kind", "attribute",
-			 "name", "value"
+			 "kind", "element",
+			 "name", "value",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (onEntryScriptTypeEClass, 
