@@ -7,10 +7,17 @@ import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 
 public class JpaPersistenceContext implements PersistenceContext {
+	
     private EntityManager em;
+    private boolean isJTA;
     
     public JpaPersistenceContext(EntityManager em) {
+        this(em, true);
+    }
+    
+    public JpaPersistenceContext(EntityManager em, boolean isJTA) {
         this.em = em;
+        this.isJTA = isJTA;
     }
 
     public void persist(SessionInfo entity) {
@@ -26,7 +33,9 @@ public class JpaPersistenceContext implements PersistenceContext {
     }
 
     public void joinTransaction() {
-        this.em.joinTransaction();
+    	if (isJTA) {
+    		this.em.joinTransaction();
+    	}
     }
 
     public void close() {
