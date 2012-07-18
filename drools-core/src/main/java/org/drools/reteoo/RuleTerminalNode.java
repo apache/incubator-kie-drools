@@ -260,7 +260,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                                 this, 
                                                 false );
         if( fire && !fireDirect ) {
-            agenda.addActivation( (AgendaItem) leftTuple.getObject() );            
+            agenda.addActivation( (AgendaItem) leftTuple.getObject() );
         }
     }
 

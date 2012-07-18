@@ -21,11 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.IndexEvaluator;
-import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
 
@@ -443,6 +442,10 @@ public abstract class AbstractHashTable
         public ReadAccessor getExtractor() {
             return this.extractor;
         }
+
+        public IndexEvaluator getEvaluator() {
+            return this.evaluator;
+        }
     }
 
     public static interface Index
@@ -506,7 +509,7 @@ public abstract class AbstractHashTable
 
         public FieldIndex getFieldIndex(int index) {
             if ( index > 0 ) {
-                throw new IllegalArgumentException( "Index position " + index + " does not exist" );
+                throw new IllegalArgumentException( "IndexUtil position " + index + " does not exist" );
             }
             return new FieldIndex( extractor,
                                    declaration,
@@ -603,7 +606,7 @@ public abstract class AbstractHashTable
                 case 1 :
                     return index1;
                 default :
-                    throw new IllegalArgumentException( "Index position " + index + " does not exist" );
+                    throw new IllegalArgumentException( "IndexUtil position " + index + " does not exist" );
             }
         }
 
@@ -727,7 +730,7 @@ public abstract class AbstractHashTable
                 case 2 :
                     return index2;
                 default :
-                    throw new IllegalArgumentException( "Index position " + index + " does not exist" );
+                    throw new IllegalArgumentException( "IndexUtil position " + index + " does not exist" );
             }
         }
 

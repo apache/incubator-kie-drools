@@ -74,7 +74,7 @@ public class EvalNodeStep
                                                             pnode,
                                                             eval,
                                                             buildContext );
-        evalNode.attach();
+        evalNode.attach(buildContext);
         context.put( name,
                      evalNode );
     }

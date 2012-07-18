@@ -16,15 +16,13 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.PropagationContext;
@@ -74,7 +72,7 @@ public class NotNode extends BetaNode {
         this.constraints.updateFromTuple( contextEntry,
                                           workingMemory,
                                           leftTuple );
-        FastIterator it = getRightIterator( rightMemory );
+        FastIterator it = getRightIterator(rightMemory);
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
             if ( this.constraints.isAllowedCachedLeft( contextEntry,
@@ -89,7 +87,7 @@ public class NotNode extends BetaNode {
             }
         }
 
-        this.constraints.resetTuple( contextEntry );
+        this.constraints.resetTuple(contextEntry);
 
         if ( leftTuple.getBlocker() == null ) {
             // tuple is not blocked, so add to memory so other fact handles can attempt to match
@@ -120,9 +118,9 @@ public class NotNode extends BetaNode {
             return;
         }
 
-        this.constraints.updateFromFactHandle( memory.getContext(),
-                                               workingMemory,
-                                               factHandle );        
+        this.constraints.updateFromFactHandle(memory.getContext(),
+                workingMemory,
+                factHandle);
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();        
         FastIterator it = getLeftIterator( leftMemory );
         for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );  leftTuple != null; ) {      
@@ -147,7 +145,7 @@ public class NotNode extends BetaNode {
             leftTuple = temp;
         }
 
-        this.constraints.resetFactHandle( memory.getContext() );
+        this.constraints.resetFactHandle(memory.getContext());
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
@@ -311,6 +309,7 @@ public class NotNode extends BetaNode {
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
         if ( memory.getLeftTupleMemory() == null || ( memory.getLeftTupleMemory().size() == 0 && rightTuple.getBlocked() == null ) ) {
             // do nothing here, as we know there are no left tuples
             
@@ -318,7 +317,7 @@ public class NotNode extends BetaNode {
             memory.getRightTupleMemory().removeAdd( rightTuple );
             return;
         }
-        
+
         // TODO: wtd with behaviours?
         //        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
         //                                         rightTuple,
@@ -364,21 +363,20 @@ public class NotNode extends BetaNode {
             leftTuple = temp;
         }
 
-        
         if ( firstBlocked != null ) {
-            // now process existing blocks, we only process existing and not new from above loop            
+            // now process existing blocks, we only process existing and not new from above loop
             FastIterator rightIt = getRightIterator( memory.getRightTupleMemory() );
 
-            RightTuple rootBlocker = (RightTuple) rightIt.next(rightTuple);
-            
+            boolean useComparisonIndex = memory.getRightTupleMemory().getIndexType().isComparison();
+            RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) rightIt.next(rightTuple);
+
             RightTupleList list = rightTuple.getMemory();
-            
-            
+
             // we must do this after we have the next in memory
             // We add to the end to give an opportunity to re-match if in same bucket
-            memory.getRightTupleMemory().removeAdd( rightTuple );    
-            
-            if ( rootBlocker == null && list == rightTuple.getMemory() ) {
+            memory.getRightTupleMemory().removeAdd( rightTuple );
+
+            if ( !useComparisonIndex && rootBlocker == null && list == rightTuple.getMemory() ) {
                 // we are at the end of the list, so set to self, to give self a chance to rematch
                 rootBlocker = rightTuple;
             }
@@ -394,6 +392,10 @@ public class NotNode extends BetaNode {
                 this.constraints.updateFromTuple( memory.getContext(),
                                                   workingMemory,
                                                   leftTuple );
+
+                if (useComparisonIndex) {
+                    rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), context, rightIt );
+                }
 
                 // we know that older tuples have been checked so continue next
                 for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next( newBlocker ) ) {
@@ -425,25 +427,23 @@ public class NotNode extends BetaNode {
 
         this.constraints.resetFactHandle( memory.getContext() );
         this.constraints.resetTuple( memory.getContext() );
-
-
     }
 
     protected void propagateAssertLeftTuple(final PropagationContext context,
                                             final InternalWorkingMemory workingMemory,
                                             LeftTuple leftTuple) {
-        this.sink.propagateAssertLeftTuple( leftTuple,
-                                            context,
-                                            workingMemory,
-                                            true );
+        this.sink.propagateAssertLeftTuple(leftTuple,
+                context,
+                workingMemory,
+                true);
     }
 
     protected void propagateRetractLeftTuple(final PropagationContext context,
                                              final InternalWorkingMemory workingMemory,
                                              LeftTuple leftTuple) {
-        this.sink.propagateRetractLeftTuple( leftTuple,
-                                             context,
-                                             workingMemory );
+        this.sink.propagateRetractLeftTuple(leftTuple,
+                context,
+                workingMemory);
     }
 
     protected void propagateModifyChildLeftTuple(final PropagationContext context,
@@ -505,10 +505,5 @@ public class NotNode extends BetaNode {
     public String toString() {
         ObjectTypeNode source = getObjectTypeNode();
         return "[NotNode(" + this.getId() + ") - " + ((source != null) ? ((ObjectTypeNode) source).getObjectType() : "<source from a subnetwork>") + "]";
-    }
-
-    public Memory createMemory(RuleBaseConfiguration config) {
-        return super.createMemory( config, 
-                                   NodeTypeEnums.NotNode );
     }
 }

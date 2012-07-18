@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.LeftTupleList;
 
 public class JoinNodeLeftTuple extends BaseLeftTuple {
 
@@ -88,7 +88,7 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.LeftTupleList)
+     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
      */
     public void setMemory( LeftTupleList memory ) {
         this.memory = memory;

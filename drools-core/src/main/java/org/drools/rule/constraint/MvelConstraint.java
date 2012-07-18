@@ -9,6 +9,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.ExecutorProviderFactory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.BitMaskUtil;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.MemoryUtil;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
@@ -56,8 +57,8 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private String packageName;
     protected String expression;
-    private boolean isIndexable;
-    protected Declaration[] declarations;
+    private IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.UNKNOWN;
+    private Declaration[] declarations;
     private Declaration indexingDeclaration;
     private InternalReadAccessor extractor;
     private boolean isUnification;
@@ -71,17 +72,26 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public MvelConstraint() {}
 
-    public MvelConstraint(String packageName, String expression, MVELCompilationUnit compilationUnit, boolean isIndexable, FieldValue fieldValue, InternalReadAccessor extractor) {
+    public MvelConstraint(String packageName,
+                          String expression,
+                          MVELCompilationUnit compilationUnit,
+                          IndexUtil.ConstraintType constraintType,
+                          FieldValue fieldValue,
+                          InternalReadAccessor extractor) {
         this.packageName = packageName;
         this.expression = expression;
         this.compilationUnit = compilationUnit;
-        this.isIndexable = isIndexable;
+        this.constraintType = constraintType;
         this.declarations = new Declaration[0];
         this.fieldValue = fieldValue;
         this.extractor = extractor;
     }
 
-    public MvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isDynamic) {
+    public MvelConstraint(String packageName,
+                          String expression,
+                          Declaration[] declarations,
+                          MVELCompilationUnit compilationUnit,
+                          boolean isDynamic) {
         this.packageName = packageName;
         this.expression = expression;
         this.declarations = declarations;
@@ -89,12 +99,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.isDynamic = isDynamic;
     }
 
-    public MvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit,
-                          boolean isIndexable, Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
+    public MvelConstraint(String packageName,
+                          String expression,
+                          Declaration[] declarations,
+                          MVELCompilationUnit compilationUnit,
+                          IndexUtil.ConstraintType constraintType,
+                          Declaration indexingDeclaration,
+                          InternalReadAccessor extractor,
+                          boolean isUnification) {
         this.packageName = packageName;
         this.expression = expression;
         this.compilationUnit = compilationUnit;
-        this.isIndexable = isIndexable && indexingDeclaration != null;
+        this.constraintType = indexingDeclaration != null ? constraintType : IndexUtil.ConstraintType.UNKNOWN;
         this.declarations = declarations == null ? new Declaration[0] : declarations;
         this.indexingDeclaration = indexingDeclaration;
         this.extractor = extractor;
@@ -121,8 +137,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         isUnification = false;
     }
 
-    public boolean isIndexable() {
-        return isIndexable;
+    public boolean isIndexable(short nodeType) {
+        return getConstraintType().isIndexableForNode(nodeType);
+    }
+
+    public IndexUtil.ConstraintType getConstraintType() {
+        return constraintType;
     }
 
     public FieldValue getField() {
@@ -413,7 +433,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         out.writeObject(declarations);
         out.writeObject(indexingDeclaration);
         out.writeObject(extractor);
-        out.writeBoolean(isIndexable);
+        out.writeObject(constraintType);
         out.writeBoolean(isUnification);
         out.writeBoolean(isDynamic);
         out.writeObject(fieldValue);
@@ -427,7 +447,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         declarations = (Declaration[]) in.readObject();
         indexingDeclaration = (Declaration) in.readObject();
         extractor = (InternalReadAccessor) in.readObject();
-        isIndexable = in.readBoolean();
+        constraintType = (IndexUtil.ConstraintType) in.readObject();
         isUnification = in.readBoolean();
         isDynamic = in.readBoolean();
         fieldValue = (FieldValue) in.readObject();
@@ -446,7 +466,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         clone.setType(getType());
         clone.packageName = packageName;
         clone.expression = expression;
-        clone.isIndexable = isIndexable;
+        clone.constraintType = constraintType;
         clone.declarations = clonedDeclarations;
         clone.indexingDeclaration = indexingDeclaration;
         clone.extractor = extractor;

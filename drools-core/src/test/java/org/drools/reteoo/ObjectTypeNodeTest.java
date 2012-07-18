@@ -58,7 +58,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         this.entryPoint = new EntryPointNode( 0,
                                               this.ruleBase.getRete(),
                                               buildContext );
-        this.entryPoint.attach();
+        this.entryPoint.attach(buildContext);
     }
     
     @Test
@@ -83,7 +83,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       map.size() );
 
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
 
         assertEquals( 1,
                       map.size() );
@@ -110,7 +110,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( 0,
                                                               source, 
                                                               buildContext );
-        entryPoint.attach();
+        entryPoint.attach(buildContext);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   entryPoint,
@@ -165,7 +165,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( 0,
                                                               source, 
                                                               buildContext );
-        entryPoint.attach();
+        entryPoint.attach(buildContext);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   entryPoint,
@@ -378,7 +378,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( 0,
                                                               source, 
                                                               buildContext );
-        entryPoint.attach();
+        entryPoint.attach(buildContext);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   this.entryPoint,
@@ -425,7 +425,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( 0,
                                                               source, 
                                                               buildContext );
-        entryPoint.attach();
+        entryPoint.attach(buildContext);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   entryPoint,

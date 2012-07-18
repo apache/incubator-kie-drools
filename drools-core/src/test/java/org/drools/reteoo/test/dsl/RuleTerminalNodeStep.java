@@ -72,7 +72,7 @@ public class RuleTerminalNodeStep
 
             rule.setConsequence( consequence );
 
-            rtn.attach();
+            rtn.attach(buildContext);
             context.put( name,
                          rtn );
 

@@ -48,7 +48,7 @@ public class LeftInputAdapterNodeStep
         LeftInputAdapterNode liaNode = new LeftInputAdapterNode( buildContext.getNextId(),
                                                                  otn,
                                                                  buildContext );
-        liaNode.attach();
+        liaNode.attach(buildContext);
         context.put( name,
                      liaNode );
     }

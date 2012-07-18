@@ -204,7 +204,31 @@ public class KnowledgeBaseConfigurationTest {
         assertEquals( "false",
                       config.getProperty( IndexRightBetaMemoryOption.PROPERTY_NAME ) );
     }
-    
+
+    @Test
+    public void testIndexPrecedenceConfiguration() {
+        // setting the option using the type safe method
+        config.setOption( IndexPrecedenceOption.PATTERN_ORDER );
+
+        // checking the type safe getOption() method
+        assertEquals( IndexPrecedenceOption.PATTERN_ORDER,
+                config.getOption( IndexPrecedenceOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "pattern",
+                config.getProperty( IndexPrecedenceOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( IndexPrecedenceOption.PROPERTY_NAME,
+                "equality" );
+
+        // checking the type safe getOption() method
+        assertEquals( IndexPrecedenceOption.EQUALITY_PRIORITY,
+                config.getOption( IndexPrecedenceOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "equality",
+                config.getProperty( IndexPrecedenceOption.PROPERTY_NAME ) );
+    }
+
     @Test
     public void testAssertBehaviorConfiguration() {
         // setting the option using the type safe method

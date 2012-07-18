@@ -140,7 +140,7 @@ public class ExistsNodeStep
                                                     rightObjectSource,
                                                     constraints,
                                                     buildContext );
-            existsNode.attach();
+            existsNode.attach(buildContext);
             context.put( name,
                          existsNode );
 

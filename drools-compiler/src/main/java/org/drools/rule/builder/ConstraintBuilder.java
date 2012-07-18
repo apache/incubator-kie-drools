@@ -6,6 +6,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.AnalysisResult;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.OperatorDescr;
@@ -76,8 +77,8 @@ public interface ConstraintBuilder {
     public Constraint buildMvelConstraint( String packageName, 
                                            String expression, 
                                            Declaration[] declarations, 
-                                           MVELCompilationUnit compilationUnit, 
-                                           boolean isIndexable, 
+                                           MVELCompilationUnit compilationUnit,
+                                           IndexUtil.ConstraintType constraintType,
                                            Declaration indexingDeclaration,
                                            InternalReadAccessor extractor,
                                            boolean isUnification );

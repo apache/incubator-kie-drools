@@ -71,7 +71,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       source.getAttached() );
 
-        node.attach();
+        node.attach(buildContext);
 
         assertEquals( 1,
                       source.getAttached() );

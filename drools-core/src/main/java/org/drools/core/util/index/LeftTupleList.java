@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.core.util;
+package org.drools.core.util.index;
 
 import org.drools.core.util.AbstractHashTable.Index;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTuple;
@@ -25,7 +28,7 @@ import org.drools.reteoo.RightTuple;
 public class LeftTupleList
     implements
     LeftTupleMemory,
-    Entry {
+        Entry {
 
     public static final long       serialVersionUID = 510l;
     //      private Entry             previous;
@@ -34,8 +37,8 @@ public class LeftTupleList
     public LeftTuple               first;
     public LeftTuple               last;
 
-    private int                    hashCode;
-    private Index                  index;
+    private final int              hashCode;
+    private final Index            index;
 
     private TupleHashTableIterator iterator;
 
@@ -73,10 +76,37 @@ public class LeftTupleList
             this.last = leftTuple;
         } else {
             this.first = leftTuple;
-            this.last = leftTuple;;
+            this.last = leftTuple;
         }
         leftTuple.setMemory( this );
+        this.size++;
+    }
 
+    public void insertAfter(LeftTuple leftTuple, LeftTuple previous) {
+        LeftTuple next = (LeftTuple) previous.getNext();
+        previous.setNext(leftTuple);
+        leftTuple.setPrevious(previous);
+        if (next != null) {
+            next.setPrevious(leftTuple);
+            leftTuple.setNext(next);
+        } else {
+            this.last = leftTuple;
+        }
+        leftTuple.setMemory( this );
+        this.size++;
+    }
+
+    public void insertBefore(LeftTuple leftTuple, LeftTuple next) {
+        LeftTuple previous = (LeftTuple) next.getPrevious();
+        next.setPrevious(leftTuple);
+        leftTuple.setNext(next);
+        if (previous != null) {
+            previous.setNext(leftTuple);
+            leftTuple.setPrevious(previous);
+        } else {
+            this.first = leftTuple;
+        }
+        leftTuple.setMemory( this );
         this.size++;
     }
 
@@ -140,10 +170,6 @@ public class LeftTupleList
         return tuples;
     }
 
-    public Entry getBucket(final Object object) {
-        return this.first;
-    }
-    
     public FastIterator fastIterator() {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
@@ -226,7 +252,7 @@ public class LeftTupleList
         StringBuilder builder = new StringBuilder();
         Iterator it = iterator();
         for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-            builder.append( leftTuple + "\n" );
+            builder.append(leftTuple).append("\n");
         }
 
         return builder.toString();

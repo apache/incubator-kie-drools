@@ -21,8 +21,6 @@ import org.drools.common.InternalFactHandle;
 public class RuleTerminalNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
 
-    private Object             object;
-
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
     }
@@ -78,19 +76,5 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple {
                currentRightChild, 
                sink, 
                leftTupleMemoryEnabled );
-    }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getObject()
-     */
-    public Object getObject() {
-        return this.object;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setObject(java.lang.Object)
-     */
-    public void setObject(final Object object) {
-        this.object = object;
     }
 }

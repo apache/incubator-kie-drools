@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.core.util;
+package org.drools.core.util.index;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.Index;
+import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
@@ -28,7 +32,7 @@ import org.drools.reteoo.RightTupleMemory;
 public class ConcurrentRightTupleList
     implements
     RightTupleMemory,
-    Entry {
+        Entry {
     private static final long          serialVersionUID = 510l;
 
     public AtomicReference<Entry>      previous;
@@ -62,7 +66,7 @@ public class ConcurrentRightTupleList
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }    
 
-    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle ) {
+    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle, FastIterator rightTupleIterator ) {
         return this.first.get();
     }
     
@@ -216,5 +220,9 @@ public class ConcurrentRightTupleList
     
     public Entry[] toArray() {
         throw new UnsupportedOperationException( "method is not implemented yet" );
+    }
+
+    public IndexType getIndexType() {
+        return IndexType.NONE;
     }
 }

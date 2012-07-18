@@ -29,6 +29,7 @@ import org.drools.conf.CompositeKeyDepthOption;
 import org.drools.conf.ConsequenceExceptionHandlerOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.conf.IndexLeftBetaMemoryOption;
+import org.drools.conf.IndexPrecedenceOption;
 import org.drools.conf.IndexRightBetaMemoryOption;
 import org.drools.conf.KnowledgeBaseOption;
 import org.drools.conf.LogicalOverrideOption;
@@ -145,7 +146,9 @@ public class RuleBaseConfiguration
     
     private EventProcessingOption          eventProcessingMode;
 
-    // if "true", rulebase builder will try to split 
+    private IndexPrecedenceOption          indexPrecedenceOption;
+
+    // if "true", rulebase builder will try to split
     // the rulebase into multiple partitions that can be evaluated
     // in parallel by using multiple internal threads
     private boolean                        multithread;
@@ -185,6 +188,7 @@ public class RuleBaseConfiguration
         out.writeInt( compositeKeyDepth );
         out.writeBoolean( indexLeftBetaMemory );
         out.writeBoolean( indexRightBetaMemory );
+        out.writeObject( indexPrecedenceOption );
         out.writeObject( assertBehaviour );
         out.writeObject( logicalOverride );
         out.writeObject( executorService );
@@ -216,6 +220,7 @@ public class RuleBaseConfiguration
         compositeKeyDepth = in.readInt();
         indexLeftBetaMemory = in.readBoolean();
         indexRightBetaMemory = in.readBoolean();
+        indexPrecedenceOption = (IndexPrecedenceOption) in.readObject();
         assertBehaviour = (AssertBehaviour) in.readObject();
         logicalOverride = (LogicalOverride) in.readObject();
         executorService = (String) in.readObject();
@@ -299,6 +304,8 @@ public class RuleBaseConfiguration
             setIndexLeftBetaMemory(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
         } else if ( name.equals( IndexRightBetaMemoryOption.PROPERTY_NAME ) ) {
             setIndexRightBetaMemory(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
+        } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
+            setIndexPrecedenceOption(StringUtils.isEmpty(value) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
         } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
             setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(StringUtils.isEmpty(value) ? "identity" : value));
         } else if ( name.equals( LogicalOverrideOption.PROPERTY_NAME ) ) {
@@ -356,6 +363,8 @@ public class RuleBaseConfiguration
             return Boolean.toString( isIndexLeftBetaMemory() );
         } else if ( name.equals( IndexRightBetaMemoryOption.PROPERTY_NAME ) ) {
             return Boolean.toString(isIndexRightBetaMemory());
+        } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
+            return getIndexPrecedenceOption().getValue();
         } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
             return getAssertBehaviour().toExternalForm();
         } else if ( name.equals( "drools.logicalOverride" ) ) {
@@ -446,6 +455,9 @@ public class RuleBaseConfiguration
                                                                                      "true" ) ).booleanValue() );
         setIndexRightBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( IndexRightBetaMemoryOption.PROPERTY_NAME,
                                                                                       "true" ) ).booleanValue() );
+
+        setIndexPrecedenceOption( IndexPrecedenceOption.determineIndexPrecedence( this.chainedProperties.getProperty( IndexPrecedenceOption.PROPERTY_NAME,
+                                                                                                                      "equality" ) ) );
 
         setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( AssertBehaviorOption.PROPERTY_NAME,
                                                                                                           "identity" ) ) );
@@ -631,6 +643,15 @@ public class RuleBaseConfiguration
     public void setIndexRightBetaMemory(final boolean indexRightBetaMemory) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.indexRightBetaMemory = indexRightBetaMemory;
+    }
+
+    public IndexPrecedenceOption getIndexPrecedenceOption() {
+        return this.indexPrecedenceOption;
+    }
+
+    public void setIndexPrecedenceOption(final IndexPrecedenceOption precedence) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.indexPrecedenceOption = precedence;
     }
 
     public LogicalOverride getLogicalOverride() {
@@ -1157,6 +1178,8 @@ public class RuleBaseConfiguration
             return (T) (this.indexLeftBetaMemory ? IndexLeftBetaMemoryOption.YES : IndexLeftBetaMemoryOption.NO);
         } else if ( IndexRightBetaMemoryOption.class.equals( option ) ) {
             return (T) (this.indexRightBetaMemory ? IndexRightBetaMemoryOption.YES : IndexRightBetaMemoryOption.NO);
+        } else if ( IndexPrecedenceOption.class.equals( option ) ) {
+            return (T) getIndexPrecedenceOption();
         } else if ( AssertBehaviorOption.class.equals( option ) ) {
             return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? AssertBehaviorOption.IDENTITY : AssertBehaviorOption.EQUALITY);
         } else if ( LogicalOverrideOption.class.equals( option ) ) {
@@ -1212,6 +1235,8 @@ public class RuleBaseConfiguration
             setIndexLeftBetaMemory( ((IndexLeftBetaMemoryOption) option).isIndexLeftBetaMemory() );
         } else if ( option instanceof IndexRightBetaMemoryOption ) {
             setIndexRightBetaMemory( ((IndexRightBetaMemoryOption) option).isIndexRightBetaMemory() );
+        } else if ( option instanceof IndexPrecedenceOption ) {
+            setIndexPrecedenceOption( (IndexPrecedenceOption) option );
         } else if ( option instanceof AssertBehaviorOption ) {
             setAssertBehaviour( (option == AssertBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY );
         } else if ( option instanceof LogicalOverrideOption ) {

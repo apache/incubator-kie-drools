@@ -16,15 +16,13 @@
 
 package org.drools.util;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.LeftTupleImpl;
 
 public class RightTupleListTest {
@@ -37,6 +35,6 @@ public class RightTupleListTest {
                                                              stilton1 );
         
         assertNull( map.getFirst( new LeftTupleImpl( h1, null,
-                                                 true ), null ) );
+                                                 true ), null, null ) );
     }
 }

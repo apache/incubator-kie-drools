@@ -21,7 +21,7 @@ import java.util.Arrays;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
-import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.index.LeftTupleList;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 
@@ -56,6 +56,8 @@ public class BaseLeftTuple
     private LeftTuple          lastChild;
 
     private LeftTupleSink      sink;
+
+    private Object             object;
 
     public BaseLeftTuple() {
         // constructor needed for serialisation
@@ -465,7 +467,7 @@ public class BaseLeftTuple
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.LeftTupleList)
+     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
      */
     public void setMemory(LeftTupleList memory) {
         throw new UnsupportedOperationException();
@@ -585,15 +587,15 @@ public class BaseLeftTuple
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getObject()
      */
-    public Object getObject() {
-        throw new UnsupportedOperationException();
+    public final Object getObject() {
+        return this.object;
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setObject(java.lang.Object)
      */
-    public void setObject(final Object object) {
-        throw new UnsupportedOperationException();
+    public final void setObject(final Object object) {
+        this.object = object;
     }
 
     /* (non-Javadoc)

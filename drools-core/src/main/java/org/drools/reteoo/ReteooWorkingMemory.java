@@ -35,7 +35,6 @@ import org.drools.base.QueryRowWithSubruleIndex;
 import org.drools.base.StandardQueryViewChangedEventListener;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.BaseNode;
-import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -47,7 +46,7 @@ import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.impl.EnvironmentFactory;
@@ -1094,8 +1093,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                 
                 FastIterator rightIt = rightMemory.fastIterator();
                 RightTuple temp = null;
-                for ( RightTuple rightTuple = rightMemory.getFirst( leftTuple,
-                                                                    (InternalFactHandle) context.getFactHandle() ); rightTuple != null; ) {
+                for ( RightTuple rightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), rightIt ); rightTuple != null; ) {
                     temp = (RightTuple) rightIt.next( rightTuple );
                     
                     if ( constraint.isAllowedCachedLeft( contextEntry, rightTuple.getFactHandle() ) ) {

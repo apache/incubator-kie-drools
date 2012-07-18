@@ -22,12 +22,14 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.core.util.LeftTupleList;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.RightTupleList;
+import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.spi.BetaNodeFieldConstraint;
 
 public class EmptyBetaConstraints
     implements
@@ -117,9 +119,8 @@ public class EmptyBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#getConstraints()
      */
-    public LinkedList getConstraints() {
-        final LinkedList list = new LinkedList();
-        return list;
+    public BetaNodeFieldConstraint[] getConstraints() {
+        return new BetaNodeFieldConstraint[0];
     }
 
     /**
@@ -150,4 +151,7 @@ public class EmptyBetaConstraints
     public long getListenedPropertyMask(List<String> settableProperties) {
         return 0L;
     }
+
+    public void init(BuildContext context, BetaNode betaNode) { }
+    public void initIndexes(int depth, short betaNodeType) { }
 }

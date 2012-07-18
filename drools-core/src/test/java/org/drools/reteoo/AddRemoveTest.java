@@ -40,13 +40,13 @@ public class AddRemoveTest extends DroolsTestCase {
         final EntryPointNode entryPoint = new EntryPointNode( -1,
                                                               ruleBase.getRete(),
                                                               context );
-        entryPoint.attach();
+        entryPoint.attach(context);
                         
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   entryPoint,
                                                                   new ClassObjectType( Object.class ),
                                                                   context );
-        objectTypeNode.attach();
+        objectTypeNode.attach(context);
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );

@@ -17,13 +17,9 @@
 package org.drools.base;
 
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
 
 import org.drools.common.WorkingMemoryAction;
-import org.drools.core.util.RightTupleList;
-import org.drools.reteoo.QueryTerminalNode;
-import org.drools.rule.Declaration;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.rule.Query;
 import org.drools.runtime.rule.Variable;
 

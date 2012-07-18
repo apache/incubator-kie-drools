@@ -24,8 +24,6 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
 
     private static final long serialVersionUID = 540l;
 
-    private Object            object;
-
     private RightTuple        blocker;
 
     private LeftTuple         blockedPrevious;
@@ -145,20 +143,6 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
      */
     public void setBlockedNext( LeftTuple blockerNext ) {
         this.blockedNext = blockerNext;
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getObject()
-     */
-    public Object getObject() {
-        return this.object;
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setObject(java.lang.Object)
-     */
-    public void setObject( final Object object ) {
-        this.object = object;
     }
 
     /* (non-Javadoc)
