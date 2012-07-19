@@ -84,7 +84,8 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         assertEquals(Status.InProgress, tasks.get(0).getStatus());
 
         client.complete(taskId, users.get("bobba").getId(), null);
-
+        Date completedBy = new Date();
+        
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(0, tasks.size());
 
@@ -94,14 +95,14 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 
         Task task1 = client.getTask(taskId);
         assertEquals(Status.Completed, task1.getTaskData().getStatus());
+        Date completedOn = task1.getTaskData().getCompletedOn();
+        assertTrue( "Completed on date was empty!", completedOn != null );
+        assertTrue( "Completed on date is incorrect.", completedBy.after(completedOn) );
     }
 
     @SuppressWarnings("unchecked")
     public void testLifeCycleMultipleTasks() throws Exception {
-        Map<String, Object> vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
