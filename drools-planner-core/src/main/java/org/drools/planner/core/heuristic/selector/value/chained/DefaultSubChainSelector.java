@@ -83,7 +83,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         Class<?> entityClass = variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass();
         long valueSize = valueSelector.getSize();
-        // Fail-fast when anchorChainSize could ever be too big
+        // Fail-fast when anchorTrailingChainSize could ever be too big
         if (valueSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The subChainSelector (" + this + ") has a valueSelector ("
                     + valueSelector + ") with valueSize (" + valueSize
