@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
@@ -56,17 +57,8 @@ public class CachingEntitySelectorTest {
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
-        EntitySelector childEntitySelector = mock(EntitySelector.class);
-        final List<Object> entityList = Arrays.<Object>asList(
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
-        when(childEntitySelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.iterator();
-            }
-        });
-        when(childEntitySelector.isContinuous()).thenReturn(false);
-        when(childEntitySelector.isNeverEnding()).thenReturn(false);
-        when(childEntitySelector.getSize()).thenReturn((long) entityList.size());
 
         CachingEntitySelector entitySelector = new CachingEntitySelector(childEntitySelector, cacheType);
         verify(childEntitySelector, times(1)).isNeverEnding();

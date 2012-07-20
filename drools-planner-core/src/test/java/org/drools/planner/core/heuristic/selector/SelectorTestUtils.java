@@ -41,8 +41,13 @@ public class SelectorTestUtils {
     }
 
     public static PlanningVariableDescriptor mockVariableDescriptor(Class entityClass, String variableName) {
-        PlanningVariableDescriptor variableDescriptor = mock(PlanningVariableDescriptor.class);
         PlanningEntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
+        return mockVariableDescriptor(entityDescriptor, variableName);
+    }
+
+    public static PlanningVariableDescriptor mockVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
+            String variableName) {
+        PlanningVariableDescriptor variableDescriptor = mock(PlanningVariableDescriptor.class);
         when(variableDescriptor.getPlanningEntityDescriptor()).thenReturn(entityDescriptor);
         when(variableDescriptor.getVariableName()).thenReturn(variableName);
         return variableDescriptor;
@@ -84,6 +89,12 @@ public class SelectorTestUtils {
 
     public static ValueSelector mockValueSelector(Class entityClass, String variableName, Object... values) {
         PlanningVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
+        return mockValueSelector(variableDescriptor, values);
+    }
+
+    public static ValueSelector mockValueSelector(PlanningEntityDescriptor entityDescriptor, String variableName,
+            Object... values) {
+        PlanningVariableDescriptor variableDescriptor = mockVariableDescriptor(entityDescriptor, variableName);
         return mockValueSelector(variableDescriptor, values);
     }
 

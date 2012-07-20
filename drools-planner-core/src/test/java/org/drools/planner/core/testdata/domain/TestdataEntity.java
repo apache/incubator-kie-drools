@@ -12,13 +12,6 @@ import static org.mockito.Mockito.*;
 @PlanningEntity
 public class TestdataEntity extends TestdataObject {
 
-    public static PlanningEntityDescriptor buildEntityDescriptor() {
-        PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
-                mock(SolutionDescriptor.class), TestdataEntity.class);
-        entityDescriptor.processAnnotations();
-        return entityDescriptor;
-    }
-
     private TestdataValue value;
 
     public TestdataEntity() {
@@ -26,6 +19,11 @@ public class TestdataEntity extends TestdataObject {
 
     public TestdataEntity(String code) {
         super(code);
+    }
+
+    public TestdataEntity(String code, TestdataValue value) {
+        this(code);
+        this.value = value;
     }
 
     @PlanningVariable
