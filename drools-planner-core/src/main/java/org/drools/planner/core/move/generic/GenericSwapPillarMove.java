@@ -30,6 +30,7 @@ import org.drools.planner.core.score.director.ScoreDirector;
 /**
  * Non-cacheable
  */
+// TODO rename to PillarSwapMove
 public class GenericSwapPillarMove implements Move {
 
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
@@ -114,6 +115,7 @@ public class GenericSwapPillarMove implements Move {
         } else if (o instanceof GenericSwapPillarMove) {
             GenericSwapPillarMove other = (GenericSwapPillarMove) o;
             return new EqualsBuilder()
+                    .append(planningVariableDescriptors, other.planningVariableDescriptors)
                     .append(leftPlanningEntityList, other.leftPlanningEntityList)
                     .append(rightPlanningEntityList, other.rightPlanningEntityList)
                     .isEquals();
@@ -124,6 +126,7 @@ public class GenericSwapPillarMove implements Move {
 
     public int hashCode() {
         return new HashCodeBuilder()
+                .append(planningVariableDescriptors)
                 .append(leftPlanningEntityList)
                 .append(rightPlanningEntityList)
                 .toHashCode();

@@ -57,7 +57,12 @@ public class SubChainSelectorConfig extends SelectorConfig {
     public SubChainSelector buildSubChainSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType,
             PlanningEntityDescriptor entityDescriptor) {
-        // SelectionOrder.ORIGINAL because a SubChainSelector caches the values
+        if (resolvedCacheType.compareTo(SelectionCacheType.STEP) > 0) {
+            throw new IllegalArgumentException("The subChainChangeMoveSelector's cacheType (" + resolvedCacheType
+                    + ") must not be higher than " + SelectionCacheType.STEP
+                    + " because the chains change every step.");
+        }
+        // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
                 SelectionOrder.ORIGINAL, resolvedCacheType, entityDescriptor);
         return new DefaultSubChainSelector(valueSelector, resolvedSelectionOrder == SelectionOrder.RANDOM);

@@ -73,11 +73,6 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
-        if (resolvedCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-            throw new IllegalArgumentException("The subChainChangeMoveSelector's cacheType (" + resolvedCacheType
-                    + ") must not be higher than " + SelectionCacheType.STEP
-                    + " because the chains change every step.");
-        }
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SubChainSelector subChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
                 solutionDescriptor, resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
