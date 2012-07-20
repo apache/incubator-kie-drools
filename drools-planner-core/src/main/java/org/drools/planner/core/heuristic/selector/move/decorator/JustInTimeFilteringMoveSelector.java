@@ -18,10 +18,9 @@ package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Iterator;
 
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;

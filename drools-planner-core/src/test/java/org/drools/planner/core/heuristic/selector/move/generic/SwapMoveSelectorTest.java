@@ -40,7 +40,8 @@ public class SwapMoveSelectorTest {
         EntitySelector entitySelector  = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
 
-        SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector, false);
+        SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
+                entitySelector.getEntityDescriptor().getPlanningVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
@@ -116,7 +117,8 @@ public class SwapMoveSelectorTest {
     public void emptyOriginalLeftEqualsRight() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
 
-        SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector, false);
+        SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
+                entitySelector.getEntityDescriptor().getPlanningVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
@@ -193,7 +195,8 @@ public class SwapMoveSelectorTest {
         EntitySelector rightEntitySelector  = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("x"), new TestdataEntity("y"), new TestdataEntity("z"));
 
-        SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, false);
+        SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector,
+                leftEntitySelector.getEntityDescriptor().getPlanningVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
@@ -287,7 +290,8 @@ public class SwapMoveSelectorTest {
 
         EntitySelector rightEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor);
 
-        SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector, false);
+        SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector,
+                leftEntitySelector.getEntityDescriptor().getPlanningVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);

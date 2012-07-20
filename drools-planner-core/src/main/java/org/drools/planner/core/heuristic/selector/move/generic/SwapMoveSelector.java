@@ -21,10 +21,9 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.collections.iterators.EmptyListIterator;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.generic.GenericChainedSwapMove;
@@ -41,9 +40,10 @@ public class SwapMoveSelector extends GenericMoveSelector {
     protected final boolean anyChained;
 
     public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
-            boolean randomSelection) {
+            Collection<PlanningVariableDescriptor> variableDescriptors, boolean randomSelection) {
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
+        this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
         leftEqualsRight = (leftEntitySelector == rightEntitySelector);
         PlanningEntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
@@ -55,9 +55,16 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     + ") which is not equal to the rightEntitySelector's planningEntityClass ("
                     + rightEntityDescriptor.getPlanningEntityClass() + ").");
         }
-        variableDescriptors = leftEntityDescriptor.getPlanningVariableDescriptors();
         boolean anyChained = false;
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            if (!leftEntityDescriptor.getPlanningEntityClass().equals(
+                    variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass())) {
+                throw new IllegalStateException("The moveSelector (" + this.getClass()
+                        + ") has a variableDescriptor with a planningEntityClass ("
+                        + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                        + ") which is not equal to the leftEntitySelector's planningEntityClass ("
+                        + leftEntityDescriptor.getPlanningEntityClass() + ").");
+            }
             if (variableDescriptor.isChained()) {
                 anyChained = true;
             }
@@ -180,7 +187,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
 
     @Override
     public String toString() {
-        return "SwapMoveSelector(" + leftEntitySelector + ", " + rightEntitySelector + ")";
+        return getClass().getSimpleName() + "(" + leftEntitySelector + ", " + rightEntitySelector + ")";
     }
 
 }

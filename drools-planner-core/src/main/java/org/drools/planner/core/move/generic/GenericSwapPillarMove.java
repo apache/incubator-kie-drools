@@ -35,7 +35,6 @@ public class GenericSwapPillarMove implements Move {
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
     private final List<Object> leftPlanningEntityList;
-
     private final List<Object> rightPlanningEntityList;
 
     public GenericSwapPillarMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
@@ -58,9 +57,9 @@ public class GenericSwapPillarMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntityList.get(0));
-            Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntityList.get(0));
+        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptors) {
+            Object leftValue = variableDescriptor.getValue(leftPlanningEntityList.get(0));
+            Object rightValue = variableDescriptor.getValue(rightPlanningEntityList.get(0));
             if (!ObjectUtils.equals(leftValue, rightValue)) {
                 return true;
             }
@@ -74,19 +73,19 @@ public class GenericSwapPillarMove implements Move {
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            Object oldLeftValue = planningVariableDescriptor.getValue(leftPlanningEntityList.get(0));
-            Object oldRightValue = planningVariableDescriptor.getValue(rightPlanningEntityList.get(0));
+        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptors) {
+            Object oldLeftValue = variableDescriptor.getValue(leftPlanningEntityList.get(0));
+            Object oldRightValue = variableDescriptor.getValue(rightPlanningEntityList.get(0));
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
                 for (Object leftPlanningEntity : leftPlanningEntityList) {
-                    scoreDirector.beforeVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
-                    planningVariableDescriptor.setValue(leftPlanningEntity, oldRightValue);
-                    scoreDirector.afterVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
+                    variableDescriptor.setValue(leftPlanningEntity, oldRightValue);
+                    scoreDirector.afterVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
                 }
                 for (Object rightPlanningEntity : rightPlanningEntityList) {
-                    scoreDirector.beforeVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
-                    planningVariableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
-                    scoreDirector.afterVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
+                    variableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
+                    scoreDirector.afterVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
                 }
             }
         }
@@ -102,9 +101,9 @@ public class GenericSwapPillarMove implements Move {
 
     public Collection<? extends Object> getPlanningValues() {
         List<Object> values = new ArrayList<Object>(planningVariableDescriptors.size() * 2);
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            values.add(planningVariableDescriptor.getValue(leftPlanningEntityList.get(0)));
-            values.add(planningVariableDescriptor.getValue(rightPlanningEntityList.get(0)));
+        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptors) {
+            values.add(variableDescriptor.getValue(leftPlanningEntityList.get(0)));
+            values.add(variableDescriptor.getValue(rightPlanningEntityList.get(0)));
         }
         return values;
     }

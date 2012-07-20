@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.common;
+package org.drools.planner.core.heuristic.selector.common.iterator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.Random;
 
-public abstract class UpcomingSelectionIterator<S>  implements Iterator<S>  {
+public class CachedListRandomIterator<S> implements Iterator<S>  {
 
-    protected S upcomingSelection;
+    protected final List<S> cachedList;
+    protected final Random workingRandom;
+
+    public CachedListRandomIterator(List<S> cachedList, Random workingRandom) {
+        this.cachedList = cachedList;
+        this.workingRandom = workingRandom;
+    }
 
     public boolean hasNext() {
-        return upcomingSelection != null;
+        return true;
     }
 
     public S next() {
-        if (upcomingSelection == null) {
-            throw new NoSuchElementException();
-        }
-        S selection = upcomingSelection;
-        createUpcomingSelection();
-        return selection;
+        int index = workingRandom.nextInt(cachedList.size());
+        return cachedList.get(index);
     }
 
     public void remove() {
         throw new UnsupportedOperationException("Remove is not supported.");
     }
-
-    protected abstract void createUpcomingSelection();
 
 }

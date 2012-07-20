@@ -26,7 +26,7 @@ import org.drools.planner.core.heuristic.selector.AbstractSelector;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -219,7 +219,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     @Override
     public String toString() {
-        return "DefaultSubChainSelector(" + valueSelector + ")";
+        return getClass().getSimpleName() + "(" + valueSelector + ")";
     }
 
 }

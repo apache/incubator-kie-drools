@@ -24,6 +24,7 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
@@ -86,20 +87,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         if (!randomSelection) {
             return cachedEntityList.iterator();
         } else {
-            return new Iterator<Object>() {
-                public boolean hasNext() {
-                    return true;
-                }
-
-                public Object next() {
-                    int index = workingRandom.nextInt(cachedEntityList.size());
-                    return cachedEntityList.get(index);
-                }
-
-                public void remove() {
-                    throw new UnsupportedOperationException("Remove is not supported.");
-                }
-            };
+            return new CachedListRandomIterator<Object>(cachedEntityList, workingRandom);
         }
     }
 
@@ -123,7 +111,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
 
     @Override
     public String toString() {
-        return "FromSolutionEntitySelector(" + entityDescriptor.getPlanningEntityClass().getSimpleName() + ")";
+        return getClass().getSimpleName() + "(" + entityDescriptor.getPlanningEntityClass().getSimpleName() + ")";
     }
 
 }

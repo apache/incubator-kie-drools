@@ -19,9 +19,9 @@ package org.drools.planner.core.heuristic.selector.move.generic;
 import java.util.Iterator;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.value.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.generic.GenericChainedChangeMove;
@@ -162,7 +162,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
 
     @Override
     public String toString() {
-        return "ChangeMoveSelector(" + entitySelector + ", " + valueSelector + ")";
+        return getClass().getSimpleName() + "(" + entitySelector + ", " + valueSelector + ")";
     }
 
 }

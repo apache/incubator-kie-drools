@@ -16,11 +16,8 @@
 
 package org.drools.planner.core.heuristic.selector.value.chained;
 
-import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.Selector;
-import org.drools.planner.core.heuristic.selector.value.ValueIterator;
 
 public interface SubChainSelector extends Selector, Iterable<SubChain>  {
 

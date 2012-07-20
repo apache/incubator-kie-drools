@@ -26,8 +26,8 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
-import org.drools.planner.core.heuristic.selector.value.IteratorToValueIteratorBridge;
-import org.drools.planner.core.heuristic.selector.value.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
+import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 

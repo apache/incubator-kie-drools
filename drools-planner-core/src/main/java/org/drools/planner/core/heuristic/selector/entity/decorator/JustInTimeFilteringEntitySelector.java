@@ -20,10 +20,9 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;

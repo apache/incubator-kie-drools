@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.value;
+package org.drools.planner.core.heuristic.selector.common.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * An iterator for planning values.
- * @see Iterator
- */
-public interface ValueIterator extends Iterator<Object> {
+public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
 
-    /**
-     * Follows the specification of {@link Iterator#hasNext()}.
-     *
-     * @param entity never null
-     * @return true if there are more planning values
-     */
-    boolean hasNext(Object entity);
+    protected S upcomingSelection;
 
-    /**
-     * Follows the specification of {@link Iterator#next()}.
-     *
-     * @param entity never null
-     * @return the next planning value
-     * @exception NoSuchElementException if there are no more planning values
-     */
-    Object next(Object entity);
+    public boolean hasNext() {
+        return upcomingSelection != null;
+    }
+
+    public S next() {
+        if (upcomingSelection == null) {
+            throw new NoSuchElementException();
+        }
+        S selection = upcomingSelection;
+        createUpcomingSelection();
+        return selection;
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException("Remove is not supported.");
+    }
+
+    protected abstract void createUpcomingSelection();
 
 }

@@ -18,9 +18,9 @@ package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
 import java.util.Iterator;
 
-import org.drools.planner.core.heuristic.selector.common.UpcomingSelectionIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.move.generic.GenericMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChain;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector;
@@ -166,7 +166,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
 
     @Override
     public String toString() {
-        return "SubChainChangeMoveSelector(" + subChainSelector + ", " + valueSelector + ")";
+        return getClass().getSimpleName() + "(" + subChainSelector + ", " + valueSelector + ")";
     }
 
 }

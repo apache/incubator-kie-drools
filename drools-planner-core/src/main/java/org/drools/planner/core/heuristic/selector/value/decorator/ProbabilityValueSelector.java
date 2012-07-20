@@ -26,11 +26,10 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
-import org.drools.planner.core.heuristic.selector.value.EntityIgnoringValueIterator;
-import org.drools.planner.core.heuristic.selector.value.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.iterator.EntityIgnoringValueIterator;
+import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 

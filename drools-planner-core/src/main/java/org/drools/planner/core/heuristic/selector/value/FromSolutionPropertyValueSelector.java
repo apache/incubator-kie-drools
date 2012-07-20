@@ -23,6 +23,9 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.value.iterator.EntityIgnoringValueIterator;
+import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
+import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
@@ -100,7 +103,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
 
     @Override
     public String toString() {
-        return "FromSolutionPropertyValueSelector(" + variableDescriptor.getVariableName() + ")";
+        return getClass().getSimpleName() + "(" + variableDescriptor.getVariableName() + ")";
     }
 
 }

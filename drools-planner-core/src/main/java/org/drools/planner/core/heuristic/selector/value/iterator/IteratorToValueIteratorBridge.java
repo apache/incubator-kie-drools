@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.value;
+package org.drools.planner.core.heuristic.selector.value.iterator;
 
-public abstract class EntityIgnoringValueIterator implements ValueIterator {
+import java.util.Iterator;
 
-    public void remove() {
-        throw new UnsupportedOperationException("Remove is not supported.");
+import org.drools.planner.core.heuristic.selector.value.iterator.EntityIgnoringValueIterator;
+
+public class IteratorToValueIteratorBridge extends EntityIgnoringValueIterator {
+
+    private final Iterator<Object> iterator;
+
+    public IteratorToValueIteratorBridge(Iterator<Object> iterator) {
+        this.iterator = iterator;
     }
 
-    public boolean hasNext(Object entity) {
-        return hasNext();
+    public boolean hasNext() {
+        return iterator.hasNext();
     }
 
-    public Object next(Object entity) {
-        return next();
+    public Object next() {
+        return iterator.next();
     }
 
 }
