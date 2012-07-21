@@ -23,6 +23,7 @@ import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycle
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
+@Deprecated
 public interface MoveFactory extends DeciderAware, LocalSearchSolverPhaseLifecycleListener {
 
     List<Move> createMoveList(Solution solution);

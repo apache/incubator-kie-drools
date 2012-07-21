@@ -21,6 +21,8 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
+import org.drools.planner.config.heuristic.selector.move.factory.MoveListFactoryConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
@@ -40,7 +42,8 @@ import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSe
 @XStreamInclude({
         UnionMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
-        SubChainChangeMoveSelectorConfig.class
+        SubChainChangeMoveSelectorConfig.class,
+        MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class
 })
 public abstract class MoveSelectorConfig extends SelectorConfig {
 
@@ -139,6 +142,10 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         if (shuffled) {
             moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
         }
+        // TODO this is broken because it introduces unneeded caching on level 2 and 3 deep
+//        if (!alreadyCached && resolvedCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
+//            moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType);
+//        }
         return moveSelector;
     }
 

@@ -98,7 +98,6 @@ public class EntitySelectorConfig extends SelectorConfig {
                 && entityProbabilityWeightFactoryClass == null;
         if (resolvedCacheType.compareTo(SelectionCacheType.STEP) < 0) {
             // cacheType upgrades to SelectionCacheType.STEP because JIT is pointless
-            // and an entity can be added in a step
             resolvedCacheType = SelectionCacheType.STEP;
         }
         if (resolvedCacheType == SelectionCacheType.SOLVER) {

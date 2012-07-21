@@ -23,6 +23,7 @@ import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
+@Deprecated
 public abstract class CachedMoveFactory extends AbstractMoveFactory {
 
     protected List<Move> cachedMoveList;
