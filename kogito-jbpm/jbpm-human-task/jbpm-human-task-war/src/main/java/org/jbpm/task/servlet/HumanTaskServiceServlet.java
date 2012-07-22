@@ -60,6 +60,7 @@ public class HumanTaskServiceServlet extends HttpServlet {
      * Dedicated parameters for transport configuration:
      * <b>HornetQ</b>
      * <ul>
+     *  <li>hornetq.host</li>
      * 	<li>hornetq.port</li>
      * </ul>
      * <br/>
@@ -170,16 +171,17 @@ public class HumanTaskServiceServlet extends HttpServlet {
 	        thread = new Thread(server);
 	        thread.start();
 	        System.out.println("Apache Mina Task service started correctly !");
-	        System.out.println("Apache Mina Task service running ...");
+	        System.out.println("Apache Mina Task service running (host " + host + " port " + port + ") ...");
 	        
         } else if ("hornetq".equalsIgnoreCase(activeConfig)) {
         	int port = Integer.parseInt(getConfigParameter("hornetq.port", "5445"));
+        	String host = getConfigParameter("hornetq.host", "localhost");
         	
-        	server = new HornetQTaskServer(taskService, port);
+        	server = new HornetQTaskServer(taskService, host, port);
     		thread = new Thread(server);
     		thread.start();
     		System.out.println("HornetQ Task service started correctly !");
-	        System.out.println("HornetQ Task service running ...");
+	        System.out.println("HornetQ Task service running (host " + host + " port " + port + ") ...");
 	        
         } else if ("jms".equalsIgnoreCase(activeConfig)) {
         	Properties connProperties = new Properties();

@@ -32,6 +32,10 @@
       
       <!-- HornetQ configuration parameters -->
       <init-param>
+        <param-name>hornetq.host</param-name>
+        <param-value></param-value>
+      </init-param>
+      <init-param>
       	<param-name>hornetq.port</param-name>
       	<param-value></param-value>
       </init-param>

@@ -1120,6 +1120,7 @@ ldap.entity.id.dn=true
       </itemizedlist>
       HornetQ
       <itemizedlist>
+        <listitem>hornetq.host : host/ip address used to bind HornetQ server (default localhost)</listitem>
         <listitem>hornetq.port : port used to bind HornetQ server (default 5445)</listitem>
       </itemizedlist>
       JMS

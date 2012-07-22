@@ -50,6 +50,7 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
     private HornetQTaskServerHandler handler;
     private Configuration configuration;
     private boolean standalone;
+    private String host;
     private final int port;
     volatile boolean embeddedServerRunning;
     private boolean running;
@@ -60,6 +61,14 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
         this.handler = handler;
         this.port = port;
         this.standalone = standalone;
+        this.host = "localhost";
+    }
+    
+    public BaseHornetQTaskServer(HornetQTaskServerHandler handler, String host, int port, boolean standalone) {
+        this.handler = handler;
+        this.port = port;
+        this.standalone = standalone;
+        this.host = host;
     }
 
     public BaseHornetQTaskServer(HornetQTaskServerHandler handler, int port, Configuration configuration, boolean standalone) {
@@ -67,6 +76,15 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
         this.port = port;
         this.configuration = configuration;
         this.standalone = standalone;
+        this.host = "localhost";
+    }
+    
+    public BaseHornetQTaskServer(HornetQTaskServerHandler handler, String host, int port, Configuration configuration, boolean standalone) {
+        this.handler = handler;
+        this.port = port;
+        this.configuration = configuration;
+        this.standalone = standalone;
+        this.host = host;
     }
 
     public void run() {
@@ -121,6 +139,7 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 
         Map<String, Object> connectionParams = new HashMap<String, Object>();
         connectionParams.put(TransportConstants.PORT_PROP_NAME, port);
+        connectionParams.put(TransportConstants.HOST_PROP_NAME, host);
 
         if (!standalone) {
             if (configuration == null) {

@@ -26,9 +26,19 @@ public class HornetQTaskServer extends BaseHornetQTaskServer implements Runnable
         super(new HornetQTaskServerHandler(service, SystemEventListenerFactory.getSystemEventListener()), port, false);
         this.service = service;
     }
+    
+    public HornetQTaskServer(TaskService service, String host, int port) {
+        super(new HornetQTaskServerHandler(service, SystemEventListenerFactory.getSystemEventListener()), host, port, false);
+        this.service = service;
+    }
 
     public HornetQTaskServer(TaskService service, int port, Configuration configuration) {
         super(new HornetQTaskServerHandler(service, SystemEventListenerFactory.getSystemEventListener()), port, configuration, false);
+        this.service = service;
+    }
+    
+    public HornetQTaskServer(TaskService service, String host, int port, Configuration configuration) {
+        super(new HornetQTaskServerHandler(service, SystemEventListenerFactory.getSystemEventListener()), host, port, configuration, false);
         this.service = service;
     }
 

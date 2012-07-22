@@ -14,6 +14,3 @@
 /data
 settings-db.xml
 lib-jdbc/
-
-# Old modules
-/jbpm-human-task-war/
