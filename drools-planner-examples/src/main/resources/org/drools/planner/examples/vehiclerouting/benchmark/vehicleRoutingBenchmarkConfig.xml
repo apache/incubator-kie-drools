@@ -10,8 +10,33 @@
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k5.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n34-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n36-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n38-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n44-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n46-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n48-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n53-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n54-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n55-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n60-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n61-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n62-k8.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k10.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n64-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n65-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n69-k9.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n80-k10.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/F-n135-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/F-n45-k4.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/F-n72-k4.xml</inputSolutionFile>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
 
@@ -32,30 +57,87 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>entityTabu9</name>
+    <name>step-changeSwapSubChain-entityTabu9-5000</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedSwapMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
-          </selector>
-          <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
-        </selector>
+        <unionMoveSelector>
+          <cacheType>STEP</cacheType>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector/>
+        </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>9</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <minimalAcceptedSelection>20000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>5000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>jit-changeSwapSubChain-entityTabu9-5000</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>9</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>5000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>step-changeSwapSubChain-entityTabu9-2000</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <cacheType>STEP</cacheType>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>9</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>jit-changeSwapSubChain-entityTabu9-2000</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>9</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>

@@ -28,15 +28,21 @@
     <name>tabuSearch</name>
     <solver>
       <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>1500</solutionTabuSize>
           <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
         </forager>
       </localSearch>
     </solver>
@@ -45,9 +51,16 @@
     <name>simulatedAnnealing-0hard-8000soft</name>
     <solver>
       <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8000soft</simulatedAnnealingStartingTemperature>
           <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
@@ -63,9 +76,16 @@
     <name>simulatedAnnealing-0hard-10000soft</name>
     <solver>
       <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/10000soft</simulatedAnnealingStartingTemperature>
           <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
@@ -81,9 +101,16 @@
     <name>simulatedAnnealing-2hard-10000soft</name>
     <solver>
       <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
           <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
@@ -99,9 +126,16 @@
     <!--<name>deciderScoreComparatorFactory-SHIFTING_HARD_PENALTY</name>-->
     <!--<solver>-->
       <!--<localSearch>-->
-        <!--<selector>-->
-          <!--<moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
+        <!--<unionMoveSelector>-->
+          <!--<moveListFactory>-->
+            <!--<cacheType>PHASE</cacheType>-->
+            <!--<moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>-->
+          <!--</moveListFactory>-->
+          <!--<moveListFactory>-->
+            <!--<cacheType>STEP</cacheType>-->
+            <!--<moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>-->
+          <!--</moveListFactory>-->
+        <!--</unionMoveSelector>-->
         <!--<acceptor>-->
           <!--<solutionTabuSize>1500</solutionTabuSize>-->
           <!--<moveTabuSize>7</moveTabuSize>-->
@@ -116,7 +150,6 @@
             <!--<hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>-->
             <!--<startingHardWeight>1000</startingHardWeight>-->
           <!--</deciderScoreComparatorFactory>-->
-          <!--<pickEarlyType>NEVER</pickEarlyType>-->
         <!--</forager>-->
       <!--<localSearch>-->
     <!--</solver>-->

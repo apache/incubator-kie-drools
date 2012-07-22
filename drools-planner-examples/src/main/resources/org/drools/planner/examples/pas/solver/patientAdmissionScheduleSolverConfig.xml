@@ -21,23 +21,22 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <selector>
-      <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
-      <!--</selector>-->
-      <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwapMoveFactorymoveFactoryClass>-->
-      <!--</selector>-->
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveFactoryClass>
-      </selector>
-    </selector>
+    <!--<moveListFactory>-->
+    <!--<cacheType>PHASE</cacheType>-->
+      <!--<moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveListFactoryClass>-->
+    <!--</moveListFactory>-->
+    <!--<moveListFactory>-->
+      <!--<cacheType>PHASE</cacheType>-->
+      <!--<moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwapMoveFactory</moveListFactoryClass>-->
+    <!--</moveListFactory>-->
+    <moveListFactory>
+      <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+    </moveListFactory>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>
       <undoMoveTabuSize>3</undoMoveTabuSize>
     </acceptor>
     <forager>
-      <pickEarlyType>NEVER</pickEarlyType>
       <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
   </localSearch>

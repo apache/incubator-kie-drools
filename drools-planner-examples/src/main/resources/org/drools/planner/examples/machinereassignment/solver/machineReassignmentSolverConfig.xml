@@ -8,6 +8,10 @@
     <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
     <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>-->
+      <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
   <termination>
     <maximumMinutesSpend>5</maximumMinutesSpend>
@@ -21,19 +25,24 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-      </selector>
-    </selector>
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <cacheType>PHASE</cacheType>
+        <!--<entitySelector>-->
+          <!--<entityProbabilityWeightFactoryClass>org.drools.planner.examples.machinereassignment.solver.selector.MrMachineProbabilityWeightFactory</entityProbabilityWeightFactoryClass>-->
+        <!--</entitySelector>-->
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </swapMoveSelector>
+    </unionMoveSelector>
     <acceptor>
       <planningEntityTabuSize>7</planningEntityTabuSize>
+      <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
     </acceptor>
     <forager>
-      <minimalAcceptedSelection>64000</minimalAcceptedSelection>
+      <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+      <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
     </forager>
   </localSearch>
 </solver>

@@ -11,14 +11,20 @@
         <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>3000</solutionTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
         </forager>
       </localSearch>
     </solver>

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
@@ -35,45 +36,15 @@ import org.drools.planner.examples.travelingtournament.domain.TravelingTournamen
 import org.drools.planner.examples.travelingtournament.solver.smart.move.MatchSwapMove;
 import org.drools.planner.examples.travelingtournament.solver.smart.move.MultipleMatchListRotateMove;
 
-public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
-
-    private List<Move> cachedMoveList;
-
-    @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        TravelingTournament travelingTournament = (TravelingTournament) localSearchSolverPhaseScope.getWorkingSolution();
-        cachedMoveList = new ArrayList<Move>(travelingTournament.getMatchList().size() / 2);
-        addCachedHomeAwaySwapMoves(travelingTournament);
-    }
-
-    private void addCachedHomeAwaySwapMoves(TravelingTournament travelingTournament) {
-        List<Match> matchList = travelingTournament.getMatchList();
-        for (Match firstMatch : matchList) {
-            for (Match secondMatch : matchList) {
-                if (firstMatch.getHomeTeam().equals(secondMatch.getAwayTeam())
-                        && firstMatch.getAwayTeam().equals(secondMatch.getHomeTeam())
-                        && (firstMatch.getId().compareTo(secondMatch.getId()) < 0)) {
-                    MatchSwapMove matchSwapMove = new MatchSwapMove(firstMatch, secondMatch);
-                    cachedMoveList.add(matchSwapMove);
-                    break;
-                }
-            }
-        }
-    }
+// TODO rename to MatchRotationMoveFactory
+public class SmartTravelingTournamentMoveFactory implements MoveListFactory {
 
     public List<Move> createMoveList(Solution solution) {
         TravelingTournament travelingTournament = (TravelingTournament) solution;
         List<Move> moveList = new ArrayList<Move>();
-        moveList.addAll(cachedMoveList);
         RotationMovesFactory rotationMovesFactory = new RotationMovesFactory(travelingTournament);
-        logger.trace("Reused {} moves for N1 neighborhood.", moveList.size());
-        int oldSize = moveList.size();
         rotationMovesFactory.addDayRotation(moveList);
-        logger.trace("Created {} moves for N3 U N5 neighborhood.", (moveList.size() - oldSize));
-        oldSize = moveList.size();
         rotationMovesFactory.addTeamRotation(moveList);
-        logger.trace("Created {} moves for N2 U N4 neighborhood.", (moveList.size() - oldSize));
-        rotationMovesFactory = null;
         return moveList;
     }
 

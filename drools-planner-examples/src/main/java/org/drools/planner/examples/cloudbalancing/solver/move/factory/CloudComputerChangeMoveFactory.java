@@ -19,6 +19,7 @@ package org.drools.planner.examples.cloudbalancing.solver.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -27,9 +28,9 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 
-public class CloudComputerChangeMoveFactory extends CachedMoveFactory {
+public class CloudComputerChangeMoveFactory implements MoveListFactory {
 
-    public List<Move> createCachedMoveList(Solution solution) {
+    public List<Move> createMoveList(Solution solution) {
         CloudBalance cloudBalance = (CloudBalance) solution;
         List<Move> moveList = new ArrayList<Move>();
         List<CloudComputer> cloudComputerList = cloudBalance.getComputerList();

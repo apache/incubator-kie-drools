@@ -20,6 +20,20 @@
       <termination>
         <scoreAttained>0</scoreAttained>
       </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <changeMoveSelector>
+          <selectionOrder>ORIGINAL</selectionOrder>
+        </changeMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+        </forager>
+      </localSearch>
     </solver>
   </inheritedSolverBenchmark>
 
@@ -29,21 +43,6 @@
       <scoreDirectorFactory>
         <simpleScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -52,21 +51,6 @@
       <scoreDirectorFactory>
         <incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -75,21 +59,6 @@
       <scoreDirectorFactory>
         <incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -98,21 +67,6 @@
       <scoreDirectorFactory>
         <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -121,21 +75,6 @@
       <scoreDirectorFactory>
         <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensCompensationActionExperimentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
 </plannerBenchmark>

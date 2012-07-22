@@ -65,14 +65,14 @@
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </swapMoveSelector>
+        </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
@@ -93,14 +93,14 @@
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </swapMoveSelector>
+        </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
         </acceptor>
@@ -121,14 +121,14 @@
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </swapMoveSelector>
+        </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
@@ -149,14 +149,14 @@
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </swapMoveSelector>
+        </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
         </acceptor>

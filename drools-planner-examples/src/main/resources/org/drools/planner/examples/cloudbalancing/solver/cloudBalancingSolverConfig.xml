@@ -24,14 +24,17 @@
     <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
   </constructionHeuristic>
   <localSearch>
-    <selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-      </selector>
-    </selector>
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </swapMoveSelector>
+      <!--<pillarSwapMoveSelector>-->
+        <!--<cacheType>STEP</cacheType>-->
+      <!--</pillarSwapMoveSelector>-->
+    </unionMoveSelector>
     <acceptor>
       <planningEntityTabuSize>7</planningEntityTabuSize>
     </acceptor>

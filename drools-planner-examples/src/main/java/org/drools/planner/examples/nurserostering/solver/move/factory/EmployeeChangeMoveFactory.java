@@ -19,6 +19,7 @@ package org.drools.planner.examples.nurserostering.solver.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -27,9 +28,9 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
-public class EmployeeChangeMoveFactory extends CachedMoveFactory {
+public class EmployeeChangeMoveFactory implements MoveListFactory {
 
-    public List<Move> createCachedMoveList(Solution solution) {
+    public List<Move> createMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<Move> moveList = new ArrayList<Move>();
         List<Employee> employeeList = nurseRoster.getEmployeeList();

@@ -19,6 +19,7 @@ package org.drools.planner.examples.examination.solver.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -27,9 +28,9 @@ import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.solver.move.PeriodChangeMove;
 
-public class PeriodChangeMoveFactory extends CachedMoveFactory {
+public class PeriodChangeMoveFactory implements MoveListFactory {
 
-    public List<Move> createCachedMoveList(Solution solution) {
+    public List<Move> createMoveList(Solution solution) {
         Examination examination = (Examination) solution;
         List<Period> periodList = examination.getPeriodList();
         List<Move> moveList = new ArrayList<Move>();

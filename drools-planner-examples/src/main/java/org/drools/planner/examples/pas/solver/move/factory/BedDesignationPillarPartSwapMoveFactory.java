@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
@@ -36,7 +37,7 @@ import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.solver.move.BedChangeMove;
 import org.apache.commons.lang.builder.CompareToBuilder;
 
-public class BedDesignationPillarPartSwapMoveFactory extends AbstractMoveFactory {
+public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory {
 
     public List<Move> createMoveList(Solution solution) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;

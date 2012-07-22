@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,34 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.travelingtournament.solver.simple.move.factory;
+package org.drools.planner.examples.travelingtournament.solver.smart.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.solver.simple.move.DayChangeMove;
+import org.drools.planner.examples.travelingtournament.solver.smart.move.MatchSwapMove;
 
-public class SimpleTravelingTournamentMoveFactory implements MoveListFactory {
+public class MatchSwapMoveFactory implements MoveListFactory {
 
     public List<Move> createMoveList(Solution solution) {
-        List<Move> moveList = new ArrayList<Move>();
         TravelingTournament travelingTournament = (TravelingTournament) solution;
-        for (Match match : travelingTournament.getMatchList()) {
-            for (Day day : travelingTournament.getDayList()) {
-                moveList.add(new DayChangeMove(match, day));
+        List<Match> matchList = travelingTournament.getMatchList();
+        List<Move> moveList = new ArrayList<Move>(matchList.size() / 2);
+        for (Match firstMatch : matchList) {
+            for (Match secondMatch : matchList) {
+                if (firstMatch.getHomeTeam().equals(secondMatch.getAwayTeam())
+                        && firstMatch.getAwayTeam().equals(secondMatch.getHomeTeam())
+                        && (firstMatch.getId().compareTo(secondMatch.getId()) < 0)) {
+                    MatchSwapMove matchSwapMove = new MatchSwapMove(firstMatch, secondMatch);
+                    moveList.add(matchSwapMove);
+                    break;
+                }
             }
         }
         return moveList;

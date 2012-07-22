@@ -19,6 +19,7 @@ package org.drools.planner.examples.nqueens.solver.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -27,9 +28,9 @@ import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.domain.Row;
 import org.drools.planner.examples.nqueens.solver.move.RowChangeMove;
 
-public class RowChangeMoveFactory extends CachedMoveFactory {
+public class RowChangeMoveFactory implements MoveListFactory {
 
-    public List<Move> createCachedMoveList(Solution solution) {
+    public List<Move> createMoveList(Solution solution) {
         NQueens nQueens = (NQueens) solution;
         List<Move> moveList = new ArrayList<Move>();
         for (Queen queen : nQueens.getQueenList()) {

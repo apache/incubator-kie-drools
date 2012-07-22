@@ -16,35 +16,26 @@
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
-    <selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedSwapMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
-      </selector>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <subChainChangeMoveSelector/>
+      <!-- TODO reverse GenericChainedChangePartMoveFactory -->
       <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
-    </selector>
+    </unionMoveSelector>
     <acceptor>
       <planningEntityTabuSize>9</planningEntityTabuSize>
     </acceptor>
     <forager>
-      <pickEarlyType>NEVER</pickEarlyType>
-      <minimalAcceptedSelection>20000</minimalAcceptedSelection>
+      <minimalAcceptedSelection>2000</minimalAcceptedSelection>
     </forager>
   </localSearch>
   <!--<localSearch>-->
-    <!--<selector>-->
-      <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>-->
-      <!--</selector>-->
-      <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>-->
-      <!--</selector>-->
-    <!--</selector>-->
+    <!--<unionMoveSelector>-->
+      <!--<changeMoveSelector/>-->
+      <!--<swapMoveSelector/>-->
+      <!--<subChainChangeMoveSelector/>-->
+    <!--</unionMoveSelector>-->
     <!--<acceptor>-->
       <!--<simulatedAnnealingStartingTemperature>10</simulatedAnnealingStartingTemperature>-->
     <!--</acceptor>-->

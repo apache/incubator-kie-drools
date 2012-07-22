@@ -12,14 +12,14 @@
     <maximumHoursSpend>2</maximumHoursSpend>
   </termination>
   <localSearch>
-    <selector>
-      <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
-    </selector>
+    <moveListFactory>
+      <cacheType>PHASE</cacheType>
+      <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveListFactoryClass>
+    </moveListFactory>
     <acceptor>
       <solutionTabuSize>1500</solutionTabuSize>
     </acceptor>
     <forager>
-      <pickEarlyType>NEVER</pickEarlyType>
     </forager>
   </localSearch>
 </solver>

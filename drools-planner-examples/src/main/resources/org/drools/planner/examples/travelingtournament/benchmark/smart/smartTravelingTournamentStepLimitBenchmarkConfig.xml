@@ -21,15 +21,21 @@
         <maximumStepCount>100</maximumStepCount>
       </termination>
       <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>1500</solutionTabuSize>
           <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
         </forager>
       </localSearch>
     </solver>

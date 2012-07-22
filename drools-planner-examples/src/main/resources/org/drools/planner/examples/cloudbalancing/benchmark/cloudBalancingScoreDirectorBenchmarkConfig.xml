@@ -25,6 +25,26 @@
       <termination>
         <maximumMinutesSpend>20</maximumMinutesSpend>
       </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </swapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>7</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </inheritedSolverBenchmark>
 
@@ -34,27 +54,6 @@
       <scoreDirectorFactory>
         <simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator</simpleScoreCalculatorClass>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -63,27 +62,6 @@
       <scoreDirectorFactory>
         <incrementalScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -92,27 +70,6 @@
       <scoreDirectorFactory>
         <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -121,27 +78,6 @@
       <scoreDirectorFactory>
         <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingCompensationActionExperimentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
 </plannerBenchmark>

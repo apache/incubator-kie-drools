@@ -28,14 +28,13 @@
         <termination>
           <maximumStepCount>100</maximumStepCount>
         </termination>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
-        </selector>
+        <changeMoveSelector>
+          <selectionOrder>ORIGINAL</selectionOrder>
+        </changeMoveSelector>
         <acceptor>
           <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
         </forager>
       </localSearch>
     </solver>

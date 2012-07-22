@@ -30,6 +30,23 @@
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <changeMoveSelector>
+          <cacheType>PHASE</cacheType>
+        </changeMoveSelector>
+        <swapMoveSelector>
+          <cacheType>PHASE</cacheType>
+        </swapMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </inheritedSolverBenchmark>
 
@@ -39,25 +56,6 @@
       <scoreDirectorFactory>
         <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -66,25 +64,6 @@
       <scoreDirectorFactory>
         <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
     </solver>
   </solverBenchmark>
 </plannerBenchmark>

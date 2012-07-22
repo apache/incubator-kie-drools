@@ -18,6 +18,7 @@ package org.drools.planner.core.localsearch.decider;
 
 import java.util.Iterator;
 
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
@@ -40,7 +41,7 @@ public class DefaultDecider implements Decider {
 
     protected LocalSearchSolverPhase localSearchSolverPhase;
 
-    protected Selector selector;
+    protected MoveSelector moveSelector;
     protected Acceptor acceptor;
     protected Forager forager;
 
@@ -51,9 +52,8 @@ public class DefaultDecider implements Decider {
         this.localSearchSolverPhase = localSearchSolverPhase;
     }
 
-    public void setSelector(Selector selector) {
-        this.selector = selector;
-        selector.setDecider(this);
+    public void setMoveSelector(MoveSelector moveSelector) {
+        this.moveSelector = moveSelector;
     }
 
     public void setAcceptor(Acceptor acceptor) {
@@ -81,19 +81,19 @@ public class DefaultDecider implements Decider {
     // ************************************************************************
 
     public void solvingStarted(DefaultSolverScope solverScope) {
-        selector.solvingStarted(solverScope);
+        moveSelector.solvingStarted(solverScope);
         acceptor.solvingStarted(solverScope);
         forager.solvingStarted(solverScope);
     }
 
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        selector.phaseStarted(localSearchSolverPhaseScope);
+        moveSelector.phaseStarted(localSearchSolverPhaseScope);
         acceptor.phaseStarted(localSearchSolverPhaseScope);
         forager.phaseStarted(localSearchSolverPhaseScope);
     }
 
     public void stepStarted(LocalSearchStepScope localSearchStepScope) {
-        selector.stepStarted(localSearchStepScope);
+        moveSelector.stepStarted(localSearchStepScope);
         acceptor.stepStarted(localSearchStepScope);
         forager.stepStarted(localSearchStepScope);
     }
@@ -101,9 +101,7 @@ public class DefaultDecider implements Decider {
     public void decideNextStep(LocalSearchStepScope stepScope) {
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
         int moveIndex = 0;
-        Iterator<Move> moveIterator = selector.moveIterator(stepScope);
-        while (moveIterator.hasNext()) {
-            Move move = moveIterator.next();
+        for (Move move : moveSelector) {
             MoveScope moveScope = new MoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
             moveScope.setMove(move);
@@ -172,19 +170,19 @@ public class DefaultDecider implements Decider {
     }
 
     public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        selector.stepEnded(localSearchStepScope);
+        moveSelector.stepEnded(localSearchStepScope);
         acceptor.stepEnded(localSearchStepScope);
         forager.stepEnded(localSearchStepScope);
     }
 
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        selector.phaseEnded(localSearchSolverPhaseScope);
+        moveSelector.phaseEnded(localSearchSolverPhaseScope);
         acceptor.phaseEnded(localSearchSolverPhaseScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
-        selector.solvingEnded(solverScope);
+        moveSelector.solvingEnded(solverScope);
         acceptor.solvingEnded(solverScope);
         forager.solvingEnded(solverScope);
     }

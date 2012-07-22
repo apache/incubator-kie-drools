@@ -29,18 +29,13 @@
         <termination>
           <maximumStepCount>100</maximumStepCount>
         </termination>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedSwapMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
-          </selector>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector/>
+          <!-- TODO reverse GenericChainedChangePartMoveFactory -->
           <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
-        </selector>
+        </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>9</planningEntityTabuSize>
         </acceptor>

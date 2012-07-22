@@ -47,32 +47,21 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     protected List<Exam> shuffledExamList;
     protected int nextShuffledExamListIndex;
 
-    @Override
-    public void setDecider(Decider decider) {
-        super.setDecider(decider);
-        periodChangeMoveFactory.setDecider(decider);
-        roomChangeMoveFactory.setDecider(decider);
-        examSwapMoveFactory.setDecider(decider);
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        periodChangeMoveFactory.phaseStarted(localSearchSolverPhaseScope);
-        roomChangeMoveFactory.phaseStarted(localSearchSolverPhaseScope);
-        examSwapMoveFactory.phaseStarted(localSearchSolverPhaseScope);
         createCachedExamToMoveMap(localSearchSolverPhaseScope);
     }
 
     private void createCachedExamToMoveMap(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         Examination examination = (Examination) localSearchSolverPhaseScope.getWorkingSolution();
         int examListSize = examination.getExamList().size();
-        List<Move> cachedPeriodChangeMoveList = periodChangeMoveFactory.getCachedMoveList();
-        List<Move> cachedRoomChangeMoveList = roomChangeMoveFactory.getCachedMoveList();
-        List<Move> cachedExamSwapMoveList = examSwapMoveFactory.getCachedMoveList();
+        List<Move> cachedPeriodChangeMoveList = periodChangeMoveFactory.createMoveList(examination);
+        List<Move> cachedRoomChangeMoveList = roomChangeMoveFactory.createMoveList(examination);
+        List<Move> cachedExamSwapMoveList = examSwapMoveFactory.createMoveList(examination);
         cachedExamToMoveMap = new HashMap<Exam, List<Move>>(cachedPeriodChangeMoveList.size()
                 + cachedRoomChangeMoveList.size() + cachedExamSwapMoveList.size());
         addToCachedExamToMoveMap(examListSize, cachedPeriodChangeMoveList);
@@ -99,9 +88,6 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
 
     @Override
     public void stepStarted(LocalSearchStepScope localSearchStepScope) {
-        periodChangeMoveFactory.stepStarted(localSearchStepScope);
-        roomChangeMoveFactory.stepStarted(localSearchStepScope);
-        examSwapMoveFactory.stepStarted(localSearchStepScope);
     }
 
     public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
@@ -118,16 +104,10 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
 
     @Override
     public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        periodChangeMoveFactory.stepEnded(localSearchStepScope);
-        roomChangeMoveFactory.stepEnded(localSearchStepScope);
-        examSwapMoveFactory.stepEnded(localSearchStepScope);
     }
 
     @Override
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        periodChangeMoveFactory.phaseEnded(localSearchSolverPhaseScope);
-        roomChangeMoveFactory.phaseEnded(localSearchSolverPhaseScope);
-        examSwapMoveFactory.phaseEnded(localSearchSolverPhaseScope);
     }
 
 }

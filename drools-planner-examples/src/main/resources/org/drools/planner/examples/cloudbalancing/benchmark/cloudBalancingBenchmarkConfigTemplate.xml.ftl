@@ -40,14 +40,14 @@
     <name>entityTabu ${planningEntityTabuSize} acceptedSelection ${minimalAcceptedSelection}</name>
     <solver>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+          <unionMoveSelector>
+              <changeMoveSelector>
+                  <cacheType>PHASE</cacheType>
+              </changeMoveSelector>
+              <swapMoveSelector>
+                  <cacheType>PHASE</cacheType>
+              </swapMoveSelector>
+          </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
         </acceptor>

@@ -47,29 +47,33 @@
     <name>absolute300SeqLength2and3PillarPart</name>
     <solver>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+          <cacheType>STEP</cacheType>
+          <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength2MoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+          <cacheType>STEP</cacheType>
+          <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength3MoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
           <planningEntityTabuSize>11</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
           <minimalAcceptedSelection>1100</minimalAcceptedSelection>
         </forager>
       </localSearch>

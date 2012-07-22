@@ -16,37 +16,20 @@
     <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
-    <selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
-      </selector>
-    </selector>
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </swapMoveSelector>
+    </unionMoveSelector>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>
       <planningEntityTabuSize>7</planningEntityTabuSize>
     </acceptor>
     <forager>
-      <pickEarlyType>NEVER</pickEarlyType>
       <minimalAcceptedSelection>10000</minimalAcceptedSelection>
     </forager>
   </localSearch>
-  <!--<localSearch>-->
-    <!--<selector>-->
-      <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>-->
-      <!--</selector>-->
-      <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>-->
-      <!--</selector>-->
-    <!--</selector>-->
-    <!--<acceptor>-->
-      <!--<simulatedAnnealingStartingTemperature>10</simulatedAnnealingStartingTemperature>-->
-    <!--</acceptor>-->
-    <!--<forager>-->
-      <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
-    <!--</forager>-->
-  <!--</localSearch>-->
 </solver>

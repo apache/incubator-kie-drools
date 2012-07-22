@@ -19,6 +19,7 @@ package org.drools.planner.examples.pas.solver.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -27,9 +28,9 @@ import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.solver.move.BedChangeMove;
 
-public class BedChangeMoveFactory extends CachedMoveFactory {
+public class BedChangeMoveFactory implements MoveListFactory {
 
-    public List<Move> createCachedMoveList(Solution solution) {
+    public List<Move> createMoveList(Solution solution) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
         List<Bed> bedList = patientAdmissionSchedule.getBedList();
         List<Move> moveList = new ArrayList<Move>();

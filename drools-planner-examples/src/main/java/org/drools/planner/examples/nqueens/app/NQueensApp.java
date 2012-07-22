@@ -24,6 +24,9 @@ import java.util.Set;
 
 import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
+import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
+import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.score.director.ScoreDirectorFactoryConfig;
@@ -37,7 +40,6 @@ import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
-import org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory;
 import org.drools.planner.examples.nqueens.swingui.NQueensPanel;
 
 public class NQueensApp extends CommonApp {
@@ -81,7 +83,10 @@ public class NQueensApp extends CommonApp {
                 ConstructionHeuristicPickEarlyType.FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING);
         solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
         LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
-        localSearchSolverPhaseConfig.getSelectorConfig().setMoveFactoryClass(RowChangeMoveFactory.class);
+        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
+        changeMoveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
+        localSearchSolverPhaseConfig.setMoveSelectorConfigList(
+                Arrays.<MoveSelectorConfig>asList(changeMoveSelectorConfig));
         localSearchSolverPhaseConfig.getAcceptorConfig().setSolutionTabuSize(1000);
         solverPhaseConfigList.add(localSearchSolverPhaseConfig);
         solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);

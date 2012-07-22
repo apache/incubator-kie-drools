@@ -16,13 +16,23 @@
 
 package org.drools.planner.config.localsearch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
+import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
-import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.move.composite.UnionMoveSelector;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;
@@ -36,19 +46,19 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    @XStreamAlias("selector")
-    private SelectorConfig selectorConfig = new SelectorConfig();
+    @XStreamImplicit()
+    private List<MoveSelectorConfig> moveSelectorConfigList;
     @XStreamAlias("acceptor")
     private AcceptorConfig acceptorConfig = new AcceptorConfig();
     @XStreamAlias("forager")
     private ForagerConfig foragerConfig = new ForagerConfig();
 
-    public SelectorConfig getSelectorConfig() {
-        return selectorConfig;
+    public List<MoveSelectorConfig> getMoveSelectorConfigList() {
+        return moveSelectorConfigList;
     }
 
-    public void setSelectorConfig(SelectorConfig selectorConfig) {
-        this.selectorConfig = selectorConfig;
+    public void setMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
     public AcceptorConfig getAcceptorConfig() {
@@ -75,16 +85,35 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
         configureSolverPhase(localSearchSolverPhase, environmentMode, scoreDefinition, solverTermination);
-        localSearchSolverPhase.setDecider(buildDecider(environmentMode, scoreDefinition));
+        localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
             localSearchSolverPhase.setAssertStepScoreIsUncorrupted(true);
         }
         return localSearchSolverPhase;
     }
 
-    private Decider buildDecider(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+    private Decider buildDecider(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            ScoreDefinition scoreDefinition) {
         DefaultDecider decider = new DefaultDecider();
-        decider.setSelector(selectorConfig.buildSelector(scoreDefinition));
+        MoveSelector moveSelector;
+        SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
+        SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
+        if (moveSelectorConfigList.isEmpty()) {
+            moveSelector = new ChangeMoveSelectorConfig().buildMoveSelector(
+                    environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType);
+        } else if (moveSelectorConfigList.size() == 1) {
+            moveSelector = moveSelectorConfigList.get(0).buildMoveSelector(
+                    environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType);
+        } else {
+            // union them
+            List<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
+            for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
+                childMoveSelectorList.add(moveSelectorConfig.buildMoveSelector(
+                        environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType));
+            }
+            moveSelector = new UnionMoveSelector(childMoveSelectorList, true);
+        }
+        decider.setMoveSelector(moveSelector);
         decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
         decider.setForager(foragerConfig.buildForager(scoreDefinition));
         if (environmentMode == EnvironmentMode.TRACE) {
@@ -98,11 +127,8 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(LocalSearchSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (selectorConfig == null) {
-            selectorConfig = inheritedConfig.getSelectorConfig();
-        } else if (inheritedConfig.getSelectorConfig() != null) {
-            selectorConfig.inherit(inheritedConfig.getSelectorConfig());
-        }
+        moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(moveSelectorConfigList,
+                inheritedConfig.getMoveSelectorConfigList());
         if (acceptorConfig == null) {
             acceptorConfig = inheritedConfig.getAcceptorConfig();
         } else if (inheritedConfig.getAcceptorConfig() != null) {

@@ -2007,3 +2007,196 @@ After in *.java:
 [MINOR] Interface IncrementalScoreCalculator has gotten a new method buildScoreCorruptionAnalysis(...)
 It has a dummy implementation in AbstractIncrementalScoreCalculator, so no changes are needed normally.
 See manual to optionally implement this method to help you analyze score corruption during environmentMode TRACE.
+
+[README] A complete new Selector architecture has been written from scratch.
+It replaces LocalSearch's Selector (which selected moves) and it will also replace ConstructionHeuristics's Selector.
+The new Selector architecture supports Just In Time selection, caching (step, phase, solver), filtering,
+probability selection, selector composition (union, cartesian product) and more. Read about it in the manual.
+
+[README] Selectors can cache the moves they generate based on the cacheType:
+ JUST_IN_TIME: No caching, generate the moves just before its evaluated. This did not exist before.
+ STEP: Cache at the beginning of every step. This is the old default mostly.
+ PHASE: Cache at the beginning of every phase.
+ SOLVER: Cache at the beginning of the solver run. This did not exist before.
+All new Selector configurations default to the lowest possible cacheType, which is usually JUST_IN_TIME.
+JUST_IN_TIME is the preferred cacheType for very big problems, but not always so for medium or small problems.
+During the migration, it's recommended to leave the caching unchanged (don't switch to JUST_IN_TIME just yet),
+but after the migration, it's recommended to play with it aggressively in the Benchmarker
+because it can really improve your results.
+
+[MAJOR] The interface MoveFactory has been replaced by the interface MoveListFactory and the configuration has changed.
+Depending on whether your implementation extended CachedMoveFactory or AbstractMoveFactory, the migration differs.
+If your implementation extended CachedMoveFactory, you actually used PHASE caching.
+Before in *.java:
+    import org.drools.planner.core.move.factory.CachedMoveFactory;
+
+    public class LectureSwapMoveFactory extends CachedMoveFactory {
+
+        public List<Move> createCachedMoveList(Solution solution) {
+            ...
+        }
+
+    }
+After in *.java:
+    import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
+
+    public class LectureSwapMoveFactory implements MoveListFactory {
+
+        public List<Move> createMoveList(Solution solution) {
+            ...
+        }
+
+    }
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+If your implementation extended AbstractMoveFactory, you actually used STEP caching,
+which is the default for MoveListFactory's because less caching is impossible.
+Before in *.java:
+    import org.drools.planner.core.move.factory.AbstractMoveFactory;
+
+    public class BedDesignationPillarPartSwapMoveFactory extends AbstractMoveFactory {
+
+        public List<Move> createMoveList(Solution solution) {
+
+        }
+    }
+After in *.java:
+    import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
+
+    public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory {
+
+        public List<Move> createMoveList(Solution solution) {
+            ...
+        }
+
+    }
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <moveListFactory>
+        <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+If you want to use JUST_IN_TIME caching for your custom moves, take a look at MoveIteratorFactory in the manual.
+
+[MAJOR] The element to group a composition of selectors has been renamed from <selector> to <unionMoveSelector>.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <localSearch>
+        <selector>
+          <selector>...</selector>
+          <selector>...</selector>
+          <selector>...</selector>
+        </selector>
+        ...
+      </localSearch>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>...</changeMoveSelector>
+          <swapMoveSelector>...</swapMoveSelector>
+          <moveListFactory>...</moveListFactory>
+        </unionMoveSelector>
+        ...
+      </localSearch>
+
+[MAJOR] The generic MoveFactory classes have been replaced by generic MoveSelector implementations.
+The generic MoveFactories used to use PHASE or STEP caching (depending on the implementation),
+but now the generic MoveSelector implementations default to JUST_IN_TIME, unless a cacheType specifies otherwise.
+If you have multiple planning entities or multiple planning variables,
+you will often need to create separate selectors and union them.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <changeMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </changeMoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple planning variables:
+      <unionMoveSelector>
+        <cacheType>PHASE</cacheType>
+        <changeMoveSelector>
+          <valueSelector>
+            <planningVariableName>period</planningVariableName>
+          </valueSelector>
+        </changeMoveSelector>
+        <changeMoveSelector>
+          <valueSelector>
+            <planningVariableName>room</planningVariableName>
+          </valueSelector>
+        </changeMoveSelector>
+      </unionMoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple planning entities:
+      <unionMoveSelector>
+        <cacheType>PHASE</cacheType>
+        <changeMoveSelector>
+          <entitySelector>
+            <planningEntityClass>...Cat</planningEntityClass>
+          </entitySelector>
+        </changeMoveSelector>
+        <changeMoveSelector>
+          <entitySelector>
+            <planningEntityClass>...Dog</planningEntityClass>
+            <valueSelector>
+              <planningVariableName>kennel</planningVariableName>
+            </valueSelector>
+          </entitySelector>
+        </changeMoveSelector>
+        <changeMoveSelector>
+          <entitySelector>
+            <planningEntityClass>...Dog</planningEntityClass>
+            <valueSelector>
+              <planningVariableName>toy</planningVariableName>
+            </valueSelector>
+          </entitySelector>
+        </changeMoveSelector>
+      </unionMoveSelector>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <swapMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </swapMoveSelector>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapPillarMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <pillarSwapMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </pillarSwapMoveSelector>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <changeMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </changeMoveSelector>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedSwapMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <swapMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </swapMoveSelector>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
+      </selector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <subChainChangeMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </subChainChangeMoveSelector>
+      TODO reverse subChainChangeMoveSelector also

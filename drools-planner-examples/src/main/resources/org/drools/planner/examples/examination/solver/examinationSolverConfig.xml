@@ -22,47 +22,25 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <selector>
-      <!--<selector>-->
-        <!--<topSize>10</topSize>-->
-      <!--</selector>-->
-      <!--<selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>-->
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
-      </selector>
-    </selector>
+    <unionMoveSelector>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+    </unionMoveSelector>
     <acceptor>
-      <solutionTabuSize>1000</solutionTabuSize>
       <planningEntityTabuSize>10</planningEntityTabuSize>
     </acceptor>
     <forager>
-      <!--<deciderScoreComparatorFactory>-->
-        <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
-        <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
-        <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
-        <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
-        <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
-        <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
-        <!--<startingHardWeight>1000</startingHardWeight>-->
-      <!--</deciderScoreComparatorFactory>-->
-      <pickEarlyType>NEVER</pickEarlyType>
-      <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+      <minimalAcceptedSelection>2000</minimalAcceptedSelection>
     </forager>
-    <!--<selector>-->
-      <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
-      <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
-    <!--</selector>-->
-    <!--<acceptor>-->
-      <!--<acceptorType>SIMULATED_ANNEALING</acceptorType>-->
-    <!--</acceptor>-->
-    <!--<forager>-->
-      <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
-    <!--</forager>-->
   </localSearch>
 </solver>

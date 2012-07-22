@@ -34,114 +34,63 @@
         -->
         <maximumSecondsSpend>429</maximumSecondsSpend>
       </termination>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>absolute500_entityTabu10</name>
+    <name>entityTabu10_2000</name>
     <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <unionMoveSelector>
+          <cacheType>PHASE</cacheType>
+          <moveListFactory>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
           <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>absolute500_moveTabu7</name>
+    <name>entityTabu10_2000_no_union_caching</name>
     <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <moveTabuSize>7</moveTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>absolute500WithCustomSelector_entityTabu10</name>
-    <solver>
-      <localSearch>
-        <selector>
-          <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
           <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>absolute500WithCustomSelector_moveTabu7</name>
-    <solver>
-      <localSearch>
-        <selector>
-          <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <moveTabuSize>7</moveTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>

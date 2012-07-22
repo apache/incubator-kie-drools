@@ -20,13 +20,15 @@
     <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
   </constructionHeuristic>
   <localSearch>
-    <selector>
-      <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-      <!-- GenericChangeMoveFactory is the generic form of RowChangeMoveFactory: -->
-      <!--<moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>-->
-    </selector>
+    <changeMoveSelector>
+      <selectionOrder>ORIGINAL</selectionOrder>
+    </changeMoveSelector>
+    <!-- changeMoveSelector is the generic form of RowChangeMoveFactory: -->
+    <!--<moveListFactory>-->
+      <!--<moveListFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>-->
+    <!--</moveListFactory>-->
     <acceptor>
-      <solutionTabuSize>1000</solutionTabuSize>
+      <planningEntityTabuSize>5</planningEntityTabuSize>
     </acceptor>
     <forager>
       <!-- Real world problems require to use of <minimalAcceptedSelection> -->

@@ -37,7 +37,7 @@
            On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
            On Peter Demeester's PC: 300 (short run), 3000 (long run).
         -->
-        <maximumSecondsSpend>3720</maximumSecondsSpend>
+        <maximumSecondsSpend>372</maximumSecondsSpend>
       </termination>
     </solver>
   </inheritedSolverBenchmark>
@@ -50,61 +50,25 @@
       </customSolverPhase>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>FIRST_FIT</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>FIRST_FIT_DECREASING</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>BEST_FIT</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>BEST_FIT_DECREASING</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
 
-  <!--<solverBenchmark>-->
-    <!--<name>basis</name>-->
-    <!--<solver>-->
-      <!--<localSearch>-->
-        <!--<selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactorymoveFactoryClass>-->
-          <!--</selector>-->
-        <!--</selector>-->
-        <!--<acceptor>-->
-          <!--<solutionTabuSize>1000</solutionTabuSize>-->
-          <!--<undoMoveTabuSize>3</undoMoveTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<pickEarlyType>NEVER</pickEarlyType>-->
-          <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>&lt;!&ndash; TODO tweak me &ndash;&gt;-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
+  <solverBenchmark>
+    <name>basis</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <moveListFactory>
+          <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+        </moveListFactory>
+        <acceptor>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <undoMoveTabuSize>3</undoMoveTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
 </plannerBenchmark>

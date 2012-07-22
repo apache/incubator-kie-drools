@@ -18,14 +18,14 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.manners2009.solver.solution.initializer.Manners2009SolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <selector>
-      <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwapMoveFactory</moveFactoryClass>
-    </selector>
+    <swapMoveSelector>
+      <cacheType>PHASE</cacheType>
+      <moveFilterClass>org.drools.planner.examples.manners2009.solver.move.DifferentGenderSwapMoveFilter</moveFilterClass>
+    </swapMoveSelector>
     <acceptor>
-      <solutionTabuSize>1000</solutionTabuSize>
+      <planningEntityTabuSize>7</planningEntityTabuSize>
     </acceptor>
     <forager>
-      <pickEarlyType>NEVER</pickEarlyType>
       <!-- Real world problems require to use of <minimalAcceptedSelection> -->
     </forager>
   </localSearch>

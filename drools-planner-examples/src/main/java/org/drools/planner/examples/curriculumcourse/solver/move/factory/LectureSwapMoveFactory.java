@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -27,9 +28,9 @@ import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSched
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.solver.move.LectureSwapMove;
 
-public class LectureSwapMoveFactory extends CachedMoveFactory {
+public class LectureSwapMoveFactory implements MoveListFactory {
 
-    public List<Move> createCachedMoveList(Solution solution) {
+    public List<Move> createMoveList(Solution solution) {
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         List<Lecture> lectureList = schedule.getLectureList();
         List<Move> moveList = new ArrayList<Move>();

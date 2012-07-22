@@ -23,23 +23,24 @@
     <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
   </constructionHeuristic>
   <localSearch>
-    <selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-      </selector>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveFactoryClass>
-      </selector>
-    </selector>
+    <unionMoveSelector>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+    </unionMoveSelector>
     <acceptor>
       <planningEntityTabuSize>10</planningEntityTabuSize>
-      <solutionTabuSize>1500</solutionTabuSize>
     </acceptor>
     <forager>
-      <pickEarlyType>NEVER</pickEarlyType>
       <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
   </localSearch>

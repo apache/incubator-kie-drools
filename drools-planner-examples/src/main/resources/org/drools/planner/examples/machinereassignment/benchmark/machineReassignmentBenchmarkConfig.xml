@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
-  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
@@ -12,13 +12,24 @@
       <!--<inputSolutionFile>data/machinereassignment/input/model_a1_3.txt</inputSolutionFile>-->
       <!--<inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>-->
       <!--<inputSolutionFile>data/machinereassignment/input/model_a1_5.txt</inputSolutionFile>-->
-      <inputSolutionFile>data/machinereassignment/input/model_a2_1.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a2_2.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a2_3.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a2_4.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a2_5.txt</inputSolutionFile>
-      <!--<inputSolutionFile>data/machinereassignment/input/model_b_1.txt</inputSolutionFile>-->
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_5.txt</inputSolutionFile>-->
+      <inputSolutionFile>data/machinereassignment/input/model_b_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_5.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_6.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_7.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_8.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_9.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_10.txt</inputSolutionFile>
+      <!--<problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>-->
+      <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
 
     <solver>
@@ -38,99 +49,127 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>entityTabu7-64000</name>
+    <name>original</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>entityTabu7-2000</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <changeMoveSelector>
+          <cacheType>PHASE</cacheType>
+        </changeMoveSelector>
+        <swapMoveSelector>
+          <cacheType>PHASE</cacheType>
+        </swapMoveSelector>
         <acceptor>
           <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>64000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>simulatedAnnealing8_50k</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>8hard/50000soft</simulatedAnnealingStartingTemperature>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>simulatedAnnealing4_100k</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>4hard/100000soft</simulatedAnnealingStartingTemperature>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>simulatedAnnealing2_200k</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>2hard/200000soft</simulatedAnnealingStartingTemperature>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
+  <!--<solverBenchmark>-->
+    <!--<name>lateAcceptance1000_prob</name>-->
+    <!--<solver>-->
+      <!--<customSolverPhase>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
+      <!--</customSolverPhase>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector>-->
+            <!--<entitySelector>-->
+              <!--<entityProbabilityWeightFactoryClass>org.drools.planner.examples.machinereassignment.solver.selector.MrMachineProbabilityWeightFactory</entityProbabilityWeightFactoryClass>-->
+            <!--</entitySelector>-->
+          <!--</changeMoveSelector>-->
+          <!--<swapMoveSelector>-->
+          <!--</swapMoveSelector>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<lateAcceptanceSize>1000</lateAcceptanceSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>lateAcceptance1000</name>-->
+    <!--<solver>-->
+      <!--<customSolverPhase>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
+      <!--</customSolverPhase>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector>-->
+          <!--</changeMoveSelector>-->
+          <!--<swapMoveSelector>-->
+          <!--</swapMoveSelector>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<lateAcceptanceSize>1000</lateAcceptanceSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>lateAcceptance2000_prob</name>-->
+    <!--<solver>-->
+      <!--<customSolverPhase>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
+      <!--</customSolverPhase>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector>-->
+            <!--<entitySelector>-->
+              <!--<entityProbabilityWeightFactoryClass>org.drools.planner.examples.machinereassignment.solver.selector.MrMachineProbabilityWeightFactory</entityProbabilityWeightFactoryClass>-->
+            <!--</entitySelector>-->
+          <!--</changeMoveSelector>-->
+          <!--<swapMoveSelector>-->
+          <!--</swapMoveSelector>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>lateAcceptance2000</name>-->
+    <!--<solver>-->
+      <!--<customSolverPhase>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
+      <!--</customSolverPhase>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector>-->
+          <!--</changeMoveSelector>-->
+          <!--<swapMoveSelector>-->
+          <!--</swapMoveSelector>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
 </plannerBenchmark>

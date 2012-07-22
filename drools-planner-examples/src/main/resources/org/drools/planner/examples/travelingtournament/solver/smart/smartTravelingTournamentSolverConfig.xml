@@ -13,9 +13,16 @@
     <scoreAttained>0hard/0soft</scoreAttained>
   </termination>
   <localSearch>
-    <selector>
-      <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-    </selector>
+    <unionMoveSelector>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <cacheType>STEP</cacheType>
+        <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+    </unionMoveSelector>
     <acceptor>
       <solutionTabuSize>1500</solutionTabuSize>
       <moveTabuSize>7</moveTabuSize>
@@ -30,7 +37,6 @@
         <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
         <startingHardWeight>1000</startingHardWeight>
       </deciderScoreComparatorFactory>
-      <pickEarlyType>NEVER</pickEarlyType>
       <!-- Real world problems require to use of <minimalAcceptedSelection> -->
     </forager>
   </localSearch>

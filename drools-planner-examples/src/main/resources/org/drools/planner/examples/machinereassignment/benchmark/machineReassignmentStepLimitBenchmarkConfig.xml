@@ -30,14 +30,12 @@
         <termination>
           <maximumStepCount>1000</maximumStepCount>
         </termination>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
+        <changeMoveSelector>
+          <cacheType>PHASE</cacheType>
+        </changeMoveSelector>
+        <swapMoveSelector>
+          <cacheType>PHASE</cacheType>
+        </swapMoveSelector>
         <acceptor>
           <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
