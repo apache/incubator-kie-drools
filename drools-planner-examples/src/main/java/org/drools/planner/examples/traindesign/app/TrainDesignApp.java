@@ -26,6 +26,9 @@ import org.drools.planner.examples.traindesign.persistence.TrainDesignDaoImpl;
 import org.drools.planner.examples.traindesign.persistence.TrainDesignSolutionImporter;
 import org.drools.planner.examples.traindesign.swingui.TrainDesignPanel;
 
+/**
+ * TODO This example is unfinished and does not work yet.
+ */
 public class TrainDesignApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
