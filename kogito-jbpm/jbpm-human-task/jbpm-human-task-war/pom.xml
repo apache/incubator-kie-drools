@@ -19,6 +19,28 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>wsdl4j</groupId>
+          <artifactId>wsdl4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.neethi</groupId>
+          <artifactId>neethi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.ws.xmlschema</groupId>
+          <artifactId>xmlschema-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
