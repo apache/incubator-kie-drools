@@ -27,13 +27,11 @@
   <localSearch>
     <unionMoveSelector>
       <changeMoveSelector>
-        <cacheType>PHASE</cacheType>
         <!--<entitySelector>-->
           <!--<entityProbabilityWeightFactoryClass>org.drools.planner.examples.machinereassignment.solver.selector.MrMachineProbabilityWeightFactory</entityProbabilityWeightFactoryClass>-->
         <!--</entitySelector>-->
       </changeMoveSelector>
       <swapMoveSelector>
-        <cacheType>PHASE</cacheType>
       </swapMoveSelector>
     </unionMoveSelector>
     <acceptor>

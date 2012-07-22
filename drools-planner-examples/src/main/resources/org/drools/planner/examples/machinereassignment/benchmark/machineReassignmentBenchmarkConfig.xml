@@ -64,10 +64,8 @@
       </customSolverPhase>
       <localSearch>
         <changeMoveSelector>
-          <cacheType>PHASE</cacheType>
         </changeMoveSelector>
         <swapMoveSelector>
-          <cacheType>PHASE</cacheType>
         </swapMoveSelector>
         <acceptor>
           <planningEntityTabuSize>7</planningEntityTabuSize>
