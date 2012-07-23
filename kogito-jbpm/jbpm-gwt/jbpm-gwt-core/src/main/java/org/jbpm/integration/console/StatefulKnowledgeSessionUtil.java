@@ -438,16 +438,20 @@ public class StatefulKnowledgeSessionUtil {
     }
     
     public static synchronized void checkPackagesFromGuvnor() {
-        GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
-        if(guvnorUtils.guvnorExists()) {
-            List<String> guvnorPackages = guvnorUtils.getBuiltPackageNames();
-            
-            guvnorPackages.removeAll(knownPackages);
-            
-            if (guvnorPackages.size() > 0) {
-                kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet(guvnorPackages)));
-                knownPackages.addAll(guvnorPackages);
-            }
+        try {
+            GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
+            if(guvnorUtils.guvnorExists() && kagent != null) {
+                List<String> guvnorPackages = guvnorUtils.getBuiltPackageNames();
+                
+                guvnorPackages.removeAll(knownPackages);
+                
+                if (guvnorPackages.size() > 0) {
+                    kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet(guvnorPackages)));
+                    knownPackages.addAll(guvnorPackages);
+                }
+            } 
+        } catch (Exception e) {
+            logger.error("Error while checking packages from Guvnor", e);
         }
     }
     
