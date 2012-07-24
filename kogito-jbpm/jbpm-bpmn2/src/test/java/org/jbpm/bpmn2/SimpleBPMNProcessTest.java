@@ -1916,7 +1916,46 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals(4, myList.size());
 	}
-
+	
+	public void testOnEntryExitNamespacedScript() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+				new SystemOutWorkItemHandler());
+		List<String> myList = new ArrayList<String>();
+		ksession.setGlobal("list", myList);
+		ProcessInstance processInstance = ksession
+				.startProcess("OnEntryExitScriptProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		assertEquals(4, myList.size());
+	}
+	
+	public void testOnEntryExitMixedNamespacedScript() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+				new SystemOutWorkItemHandler());
+		List<String> myList = new ArrayList<String>();
+		ksession.setGlobal("list", myList);
+		ProcessInstance processInstance = ksession
+				.startProcess("OnEntryExitScriptProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		assertEquals(4, myList.size());
+	}
+	
+	public void testOnEntryExitScriptDesigner() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+				new SystemOutWorkItemHandler());
+		List<String> myList = new ArrayList<String>();
+		ksession.setGlobal("list", myList);
+		ProcessInstance processInstance = ksession
+				.startProcess("OnEntryExitScriptProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		assertEquals(4, myList.size());
+	}
+	
 	public void testXORGateway() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-gatewayTest.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

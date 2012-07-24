@@ -196,8 +196,8 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 	                NodeList subNodeList = xmlNode.getChildNodes();
 	                for (int j = 0; j < subNodeList.getLength(); j++) {
 	                	org.w3c.dom.Node subXmlNode = subNodeList.item(j);
-	                	if ((type + "-script").equals(subXmlNode.getNodeName())) {
-				    		List<DroolsAction> actions = node.getActions(type);
+	                	if(subXmlNode.getNodeName().contains(type + "-script")) {
+	                		List<DroolsAction> actions = node.getActions(type);
 				    		if (actions == null) {
 				    			actions = new ArrayList<DroolsAction>();
 				            	node.setActions(type, actions);
@@ -262,7 +262,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             String consequence = consequenceAction.getConsequence();
             if (consequence != null) {
                 xmlDump.append(">" + EOL + 
-                    "          <script>" + XmlDumper.replaceIllegalChars(consequence.trim()) + "</script>" + EOL);
+                    "          <tns:script>" + XmlDumper.replaceIllegalChars(consequence.trim()) + "</tns:script>" + EOL);
                 xmlDump.append("        </tns:" + type + "-script>" + EOL);
             } else {
             	xmlDump.append("/>" + EOL);
