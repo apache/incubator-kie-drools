@@ -254,14 +254,14 @@
     <echo message="Checking Designer download ..." />
     <condition property="designer.not.available">
       <not>
-        <available file="${install.home}/lib/designer-${designer.version}.war" />
+        <available file="${install.home}/lib/jbpm-designer-${designer.version}.war" />
       </not>
     </condition>
   </target>  
   <target name="download.designer" depends="download.designer.check" if="designer.not.available">
     <echo message="Getting Designer ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war" />
+    <get src="${designer.url}/jbpm-designer-${designer.version}.war" dest="${install.home}/lib/jbpm-designer-${designer.version}.war" />
   </target>
 
   <!-- Download jBPM and Drools Eclipse plugins -->
@@ -352,7 +352,7 @@
 
   <!-- Install designer -->
   <target name="install.designer.into.jboss" depends="download.designer,check.jboss.version">
-    <copy file="${install.home}/lib/designer-${designer.version}.war"
+    <copy file="${install.home}/lib/jbpm-designer-${designer.version}.war"
           tofile="${jboss.server.deploy.dir}/designer.war"
           overwrite="true" />
   	<antcall target="created.designer.deployment.as7" />
