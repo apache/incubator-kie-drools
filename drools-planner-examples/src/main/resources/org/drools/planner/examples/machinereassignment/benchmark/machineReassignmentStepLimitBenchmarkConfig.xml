@@ -30,10 +30,10 @@
         <termination>
           <maximumStepCount>1000</maximumStepCount>
         </termination>
-        <changeMoveSelector>
-        </changeMoveSelector>
-        <swapMoveSelector>
-        </swapMoveSelector>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>

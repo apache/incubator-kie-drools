@@ -26,13 +26,8 @@
   </customSolverPhase>
   <localSearch>
     <unionMoveSelector>
-      <changeMoveSelector>
-        <!--<entitySelector>-->
-          <!--<entityProbabilityWeightFactoryClass>org.drools.planner.examples.machinereassignment.solver.selector.MrMachineProbabilityWeightFactory</entityProbabilityWeightFactoryClass>-->
-        <!--</entitySelector>-->
-      </changeMoveSelector>
-      <swapMoveSelector>
-      </swapMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
     </unionMoveSelector>
     <acceptor>
       <planningEntityTabuSize>7</planningEntityTabuSize>

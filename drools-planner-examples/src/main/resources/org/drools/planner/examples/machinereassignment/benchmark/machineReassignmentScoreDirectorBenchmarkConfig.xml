@@ -34,10 +34,10 @@
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
-        <changeMoveSelector>
-        </changeMoveSelector>
-        <swapMoveSelector>
-        </swapMoveSelector>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
