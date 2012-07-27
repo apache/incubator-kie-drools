@@ -31,6 +31,7 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 /**
  * A CompositeSelector unions multiple Selectors.
  */
+@Deprecated
 public class CompositeSelector extends AbstractSelector {
 
     protected List<Selector> selectorList;
