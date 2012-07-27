@@ -8,7 +8,6 @@ import java.util.*;
 
 import org.codehaus.janino.Java;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.StockTick;
 import org.drools.agent.impl.KnowledgeAgentImpl;
@@ -20,20 +19,16 @@ import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
-import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.Resource;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ChangeSetImpl;
 import org.drools.io.impl.UrlResource;
-import org.drools.io.internal.InternalResource;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
@@ -41,10 +36,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.Is;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -949,6 +940,58 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         Mockito.verify( ael ).afterActivationFired( arg.capture() );
 
         assertThat( ((Number) arg.getValue().getActivation().getDeclarationValue( "$n" )).intValue(), CoreMatchers.equalTo( 2 ) );
+    }
+    
+    @Test
+    public void testNamedResources(){
+        
+        String namedResourceName = "Rule";
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent(kbase, false);
+        
+        String rule = this.createDefaultRule("Rule1");
+        
+        this.applyNamedResource(
+                (KnowledgeAgentImpl)kagent, 
+                namedResourceName, 
+                ResourceFactory.newByteArrayResource(rule.getBytes()),
+                ResourceType.DRL);
+        
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kagent.getKnowledgeBase() );
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+        
+
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "Rule1" ) );
+
+        list.clear();
+
+        
+        rule = this.createDefaultRule("Rule2");
+        
+        this.applyNamedResource(
+                (KnowledgeAgentImpl)kagent, 
+                namedResourceName, 
+                ResourceFactory.newByteArrayResource(rule.getBytes()),
+                ResourceType.DRL);
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "Rule2" ) );
+
+        list.clear();
+        
+        this.unapplyNamedResource((KnowledgeAgentImpl)kagent, namedResourceName);
+        ksession.fireAllRules();
+        
+        assertTrue(list.isEmpty());
+        
+        
+        ksession.dispose();
     }
 
 

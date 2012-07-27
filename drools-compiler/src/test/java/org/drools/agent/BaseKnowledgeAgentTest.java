@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
+import org.drools.agent.impl.KnowledgeAgentImpl;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.core.util.IoUtils;
@@ -37,6 +38,7 @@ import org.junit.Before;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.ResourceType;
 
 public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
 
@@ -139,6 +141,75 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
             throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0).getKnowledgeBuilder().getErrors() );
         }
 
+    }
+    
+    void applyNamedResource(KnowledgeAgentImpl kagent, String name, Resource resource, ResourceType type){
+        this.processNamedResource(kagent, name, resource, type, true);
+    }
+    
+    void unapplyNamedResource(KnowledgeAgentImpl kagent, String name){
+        this.processNamedResource(kagent, name, null, null, false);
+    }
+    
+    
+    private void processNamedResource(KnowledgeAgentImpl kagent, String name, Resource resource, ResourceType type, boolean apply){
+        // Calls the Resource Scanner and sets up a listener and a latch so we can wait until it's finished processing, instead of using timers
+        final CountDownLatch latch = new CountDownLatch( 1 );
+
+        KnowledgeAgentEventListener l = new KnowledgeAgentEventListener() {
+
+            public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
+                Iterator<KnowledgeBuilderError> iterator = event.getKnowledgeBuilder().getErrors().iterator();
+                while (iterator.hasNext()) {
+                    KnowledgeBuilderError knowledgeBuilderError = iterator.next();
+                    System.out.println(knowledgeBuilderError.getMessage());
+                }
+                throw new RuntimeException("Unable to compile Knowledge"+ event );
+            }
+
+            public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
+            }
+
+            public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
+            }
+
+            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
+            }
+
+            public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
+            }
+
+            public void afterResourceProcessed(AfterResourceProcessedEvent event) {
+            }
+
+            public void afterChangeSetProcessed(AfterChangeSetProcessedEvent event) {
+            }
+
+            public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
+                latch.countDown();
+            }
+        };
+
+        kagent.addEventListener( l );
+
+        if (apply){
+            kagent.applyNamedResource(name, resource, type);
+        }else{
+            kagent.unapplyNamedResource(name);
+        }
+        
+
+        try {
+            latch.await( 10, TimeUnit.SECONDS );
+        } catch ( InterruptedException e ) {
+            throw new RuntimeException( "Unable to wait for latch countdown", e);
+        }
+
+        if ( latch.getCount() > 0 ) {
+            throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
+        }
+
+        kagent.removeEventListener( l );
     }
 
     void applyChangeSet(KnowledgeAgent kagent, String xml) {
