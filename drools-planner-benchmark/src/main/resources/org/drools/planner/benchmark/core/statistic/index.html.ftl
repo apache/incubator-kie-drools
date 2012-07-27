@@ -106,13 +106,15 @@
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                            <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                            <#if !singleBenchmark??>
+                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
-                                            <#elseif !singleBenchmark.success>
-                                                <td><span class="label warning">Failed</span></td>
                                             <#else>
-                                                <td>${singleBenchmark.score}</td>
+                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmark.success>
+                                                    <td><span class="label warning">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmark.score}</td>
+                                                </#if>
                                             </#if>
                                         </#list>
                                         <#if !solverBenchmark.averageScore??>
@@ -156,13 +158,15 @@
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                            <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                            <#if !singleBenchmark??>
+                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
-                                            <#elseif !singleBenchmark.success>
-                                                <td><span class="label warning">Failed</span></td>
                                             <#else>
-                                                <td>${singleBenchmark.winningScoreDifference}</td>
+                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmark.success>
+                                                    <td><span class="label warning">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmark.winningScoreDifference}</td>
+                                                </#if>
                                             </#if>
                                         </#list>
                                     </tr>
@@ -200,13 +204,15 @@
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                            <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                            <#if !singleBenchmark??>
+                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
-                                            <#elseif !singleBenchmark.success>
-                                                <td><span class="label warning">Failed</span></td>
                                             <#else>
-                                                <td>${singleBenchmark.timeMillisSpend} ms</td>
+                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmark.success>
+                                                    <td><span class="label warning">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmark.timeMillisSpend}</td>
+                                                </#if>
                                             </#if>
                                         </#list>
                                     </tr>
@@ -244,13 +250,15 @@
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                            <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                            <#if !singleBenchmark??>
+                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
-                                            <#elseif !singleBenchmark.success>
-                                                <td><span class="label warning">Failed</span></td>
                                             <#else>
-                                                <td>${singleBenchmark.problemScale}</td>
+                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmark.success>
+                                                    <td><span class="label warning">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmark.problemScale}</td>
+                                                </#if>
                                             </#if>
                                         </#list>
                                     </tr>
@@ -288,13 +296,15 @@
                                     <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@rankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                            <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                            <#if !singleBenchmark??>
+                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
-                                            <#elseif !singleBenchmark.success>
-                                                <td><span class="label warning">Failed</span></td>
                                             <#else>
-                                                <td>${singleBenchmark.averageCalculateCountPerSecond}/sec</td>
+                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmark.success>
+                                                    <td><span class="label warning">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmark.averageCalculateCountPerSecond}</td>
+                                                </#if>
                                             </#if>
                                         </#list>
                                     </tr>
