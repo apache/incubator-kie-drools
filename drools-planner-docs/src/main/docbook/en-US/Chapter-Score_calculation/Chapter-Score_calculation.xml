@@ -83,7 +83,7 @@
       constraints are in the same score level, yet they are not weighted against each other. When 2 score are compared,
       each of the score constraints are compared individually and the score with the most dominating score constraints
       wins. Scores are considered equal far more often and it's left up to a user to chose the better out of a set of
-      best solutions (with equal scores) found by planner.</para>
+      best solutions (with equal scores) found by Planner.</para>
     </section>
 
     <section>
@@ -762,7 +762,7 @@ end</programlisting>
       detect corruption in the <link linkend="incrementalScoreCalculation">incremental score calculation</link>. On the
       difference between <literal>TRACE</literal> and <literal>DEBUG</literal>, <link linkend="environmentMode">see the
       section about <literal>environmentMode</literal></link>. However, that will not detect if your score calculator
-      implements your score constraints as your business desires.</para>
+      implements your score constraints as your business actually desires.</para>
 
       <para>A piece of incremental score calculator code can be difficult to write and to review. You can assert its
       correctness by using a different implementation (for example a <literal>SimpleScoreCalculator</literal>) to do the
@@ -939,7 +939,7 @@ end</programlisting>
     <section>
       <title>stepLimit benchmark</title>
 
-      <para>Not all score constraints have the same performance cost. Sometimes one score constraint can kill the score
+      <para>Not all score constraints have the same performance cost. Sometimes 1 score constraint can kill the score
       calculation performance outright. Use the benchmarker to do a 1 minute run and check what happens to the average
       calculation count per second if you comment out all but 1 of the score constraints.</para>
     </section>
@@ -960,8 +960,8 @@ ScoreDirector guiScoreDirector = scoreDirectorFactory.buildScoreDirector();</pro
     <programlisting language="java">guiScoreDirector.setWorkingSolution(solution);
 Score score = guiScoreDirector.calculateScore();</programlisting>
 
-    <para>Currently it's not officially supported to get the specific constraint occurrences, so you can explain in the
-    GUI what entities are causing which part of the <literal>Score</literal>. But if you're using the
-    <literal>DroolsScoreDirector</literal>, it's possible. See the examples.</para>
+    <para>Currently it's not officially supported to get the specific constraint occurrences, to explain in the GUI what
+    entities are causing which part of the <literal>Score</literal>. But if you're using the
+    <literal>DroolsScoreDirector</literal>, it's possible to extract it. See the examples.</para>
   </section>
 </chapter>

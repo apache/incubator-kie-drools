@@ -25,15 +25,8 @@
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>
-      <changeMoveSelector>
-        <cacheType>PHASE</cacheType>
-      </changeMoveSelector>
-      <swapMoveSelector>
-        <cacheType>PHASE</cacheType>
-      </swapMoveSelector>
-      <!--<pillarSwapMoveSelector>-->
-        <!--<cacheType>STEP</cacheType>-->
-      <!--</pillarSwapMoveSelector>-->
+      <changeMoveSelector/>
+      <swapMoveSelector/>
     </unionMoveSelector>
     <acceptor>
       <planningEntityTabuSize>7</planningEntityTabuSize>

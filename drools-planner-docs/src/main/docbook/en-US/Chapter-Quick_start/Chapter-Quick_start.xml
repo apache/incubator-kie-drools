@@ -47,7 +47,7 @@
       <itemizedlist>
         <listitem>
           <para>Each computer that has one or more processes assigned, incurs a maintenance cost (which is fixed per
-          computer). </para>
+          computer).</para>
 
           <itemizedlist>
             <listitem>
@@ -231,14 +231,10 @@
     &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    &lt;selector&gt;
-      &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericChangeMoveFactory&lt;/moveFactoryClass&gt;
-      &lt;/selector&gt;
-      &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericSwapMoveFactory&lt;/moveFactoryClass&gt;
-      &lt;/selector&gt;
-    &lt;/selector&gt;
+    &lt;unionMoveSelector&gt;
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;
     &lt;acceptor&gt;
       &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
@@ -288,14 +284,10 @@
     &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    &lt;selector&gt;
-      &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericChangeMoveFactory&lt;/moveFactoryClass&gt;
-      &lt;/selector&gt;
-      &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericSwapMoveFactory&lt;/moveFactoryClass&gt;
-      &lt;/selector&gt;
-    &lt;/selector&gt;
+    &lt;unionMoveSelector&gt;
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;
     &lt;acceptor&gt;
       &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
@@ -498,7 +490,7 @@ public class CloudProcess ... {
         </listitem>
       </itemizedlist>
 
-      <para>Let's look at 2 different implementations:</para>
+      <para>Let's take a look look at 2 different implementations:</para>
 
       <section>
         <title>Simple Java score configuration</title>
@@ -570,7 +562,7 @@ public class CloudProcess ... {
         <para>Even if we optimize the code above to use <literal>Map</literal>s to iterate through the
         <literal>processList</literal> only once, <emphasis role="bold">it is still slow</emphasis> because it doesn't
         do incremental score calculation. To fix that, either use an incremental Java score function or a Drools score
-        function.</para>
+        function. Let's take a look at the latter.</para>
       </section>
 
       <section>
@@ -585,7 +577,7 @@ public class CloudProcess ... {
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
         <para>First, we want to make sure that all computers have enough CPU, RAM and network bandwidth to support all
-        their processes, so we make those hard constraints:</para>
+        their processes, so we make these hard constraints:</para>
 
         <example>
           <title>cloudBalancingScoreRules.drl - hard constraints</title>
@@ -687,8 +679,8 @@ end</programlisting>
     <section>
       <title>Beyond this tutorial</title>
 
-      <para>Now that this simple example works, you can go further. Try enriching the domain model and adding extra
-      constraints:</para>
+      <para>Now that this simple example works, try going further. Enrich the domain model and add extra constraints
+      such as these:</para>
 
       <itemizedlist>
         <listitem>
