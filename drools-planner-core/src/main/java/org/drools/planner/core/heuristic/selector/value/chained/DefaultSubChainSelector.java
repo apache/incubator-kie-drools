@@ -41,13 +41,14 @@ public class DefaultSubChainSelector extends AbstractSelector
     protected final ValueSelector valueSelector;
     protected final boolean randomSelection;
 
-    protected final int minimumSubChainSize = 1;
+    protected final int minimumSubChainSize;
 
     protected List<SubChain> anchorTrailingChainList = null;
 
-    public DefaultSubChainSelector(ValueSelector valueSelector, boolean randomSelection) {
+    public DefaultSubChainSelector(ValueSelector valueSelector, boolean randomSelection, int minimumSubChainSize) {
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
+        this.minimumSubChainSize = minimumSubChainSize;
         if (!valueSelector.getVariableDescriptor().isChained()) {
             throw new IllegalArgumentException("The valueSelector (" + valueSelector
                     + ") must have a chained variableDescriptor chained ("

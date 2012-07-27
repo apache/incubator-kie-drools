@@ -29,6 +29,9 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.generic.SwapMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
@@ -39,8 +42,12 @@ import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityVal
 @XStreamAlias("subChainSelector")
 public class SubChainSelectorConfig extends SelectorConfig {
 
+    private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 2;
+
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+
+    private Integer minimumSubChainSize = null;
 
     public ValueSelectorConfig getValueSelectorConfig() {
         return valueSelectorConfig;
@@ -48,6 +55,19 @@ public class SubChainSelectorConfig extends SelectorConfig {
 
     public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
+    }
+
+    /**
+     * Defaults to {@value #DEFAULT_MINIMUM_SUB_CHAIN_SIZE} because other {@link MoveSelector}s
+     * s(uch as {@link ChangeMoveSelector} and {@link SwapMoveSelector}) already handle 1-sized chains.
+     * @return sometimes null
+     */
+    public Integer getMinimumSubChainSize() {
+        return minimumSubChainSize;
+    }
+
+    public void setMinimumSubChainSize(Integer minimumSubChainSize) {
+        this.minimumSubChainSize = minimumSubChainSize;
     }
 
     // ************************************************************************
@@ -65,7 +85,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
                 SelectionOrder.ORIGINAL, resolvedCacheType, entityDescriptor);
-        return new DefaultSubChainSelector(valueSelector, resolvedSelectionOrder == SelectionOrder.RANDOM);
+        return new DefaultSubChainSelector(valueSelector, resolvedSelectionOrder == SelectionOrder.RANDOM,
+                minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize);
     }
 
     public void inherit(SubChainSelectorConfig inheritedConfig) {
@@ -75,6 +96,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
         } else if (inheritedConfig.getValueSelectorConfig() != null) {
             valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
         }
+        minimumSubChainSize = ConfigUtils.inheritOverwritableProperty(minimumSubChainSize,
+                inheritedConfig.getMinimumSubChainSize());
     }
 
     @Override

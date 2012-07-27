@@ -56,7 +56,7 @@ public class DefaultSubChainSelectorTest {
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, a1, a2, a3, a4, b0, b1, b2);
 
-        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false);
+        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false, 1);
 
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
@@ -174,7 +174,7 @@ public class DefaultSubChainSelectorTest {
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, b0);
 
-        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false);
+        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false, 1);
 
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(null);
