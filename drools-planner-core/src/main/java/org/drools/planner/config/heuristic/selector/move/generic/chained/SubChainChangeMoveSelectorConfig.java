@@ -43,6 +43,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
 
+    private Boolean selectReversingMoveToo = null;
+
     public Class<?> getPlanningEntityClass() {
         return planningEntityClass;
     }
@@ -67,6 +69,14 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
+    public Boolean getSelectReversingMoveToo() {
+        return selectReversingMoveToo;
+    }
+
+    public void setSelectReversingMoveToo(Boolean selectReversingMoveToo) {
+        this.selectReversingMoveToo = selectReversingMoveToo;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -79,7 +89,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
                 resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
         return new SubChainChangeMoveSelector(subChainSelector, valueSelector,
-                resolvedSelectionOrder == SelectionOrder.RANDOM);
+                resolvedSelectionOrder == SelectionOrder.RANDOM,
+                selectReversingMoveToo == null ? true : selectReversingMoveToo);
     }
 
     private PlanningEntityDescriptor fetchEntityDescriptor(SolutionDescriptor solutionDescriptor) {
@@ -123,6 +134,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
         } else if (inheritedConfig.getValueSelectorConfig() != null) {
             valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
         }
+        selectReversingMoveToo = ConfigUtils.inheritOverwritableProperty(selectReversingMoveToo,
+                inheritedConfig.getSelectReversingMoveToo());
     }
 
     @Override

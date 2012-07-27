@@ -33,7 +33,6 @@
           <changeMoveSelector/>
           <swapMoveSelector/>
           <subChainChangeMoveSelector/>
-          <!-- TODO reverse GenericChainedChangePartMoveFactory -->
           <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
         </unionMoveSelector>
         <acceptor>

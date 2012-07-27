@@ -31,12 +31,14 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     protected final SubChainSelector subChainSelector;
     protected final ValueSelector valueSelector;
     protected final boolean randomSelection;
+    protected final boolean selectReversingMoveToo;
 
     public SubChainChangeMoveSelector(SubChainSelector subChainSelector, ValueSelector valueSelector,
-            boolean randomSelection) {
+            boolean randomSelection, boolean selectReversingMoveToo) {
         this.subChainSelector = subChainSelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
+        this.selectReversingMoveToo = selectReversingMoveToo;
         if (subChainSelector.getVariableDescriptor() != valueSelector.getVariableDescriptor()) {
             throw new IllegalStateException("The subChainSelector (" + subChainSelector + ")'s variableDescriptor ("
                     + subChainSelector.getVariableDescriptor() + ") is not the same as the valueSelector ("
@@ -87,9 +89,12 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
 
         private SubChain upcomingSubChain;
 
+        private Move nextReversingSelection;
+
         private OriginalSubChainChangeMoveIterator() {
             subChainIterator = subChainSelector.iterator();
             valueIterator = valueSelector.iterator();
+            nextReversingSelection = null;
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
             if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingSelection = null;
@@ -100,6 +105,11 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         }
 
         protected void createUpcomingSelection() {
+            if (selectReversingMoveToo && nextReversingSelection != null) {
+                upcomingSelection = nextReversingSelection;
+                nextReversingSelection = null;
+                return;
+            }
             while (!valueIterator.hasNext(upcomingSubChain.getFirstEntity())) {
                 if (!subChainIterator.hasNext()) {
                     upcomingSelection = null;
@@ -110,6 +120,10 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next(upcomingSubChain);
             upcomingSelection = new SubChainChangeMove(upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
+            if (selectReversingMoveToo) {
+                nextReversingSelection = new SubChainReversingChangeMove(
+                        upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
+            }
         }
 
     }
@@ -159,7 +173,10 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                 }
             }
             Object toValue = valueIterator.next(subChain);
-            upcomingSelection = new SubChainChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue);
+            boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
+            upcomingSelection = reversing
+                    ? new SubChainReversingChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue)
+                    : new SubChainChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue);
         }
 
     }
