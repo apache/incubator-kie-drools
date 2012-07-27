@@ -17,6 +17,7 @@
 package org.drools.planner.config.localsearch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -26,6 +27,7 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
@@ -100,8 +102,12 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         if (moveSelectorConfigList.isEmpty()) {
-            moveSelector = new ChangeMoveSelectorConfig().buildMoveSelector(
-                    environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType);
+            // Default to changeMoveSelector and swapMoveSelector
+            UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
+            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
+                    new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
+            moveSelector = unionMoveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
+                    defaultSelectionOrder, defaultCacheType);
         } else if (moveSelectorConfigList.size() == 1) {
             moveSelector = moveSelectorConfigList.get(0).buildMoveSelector(
                     environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType);
