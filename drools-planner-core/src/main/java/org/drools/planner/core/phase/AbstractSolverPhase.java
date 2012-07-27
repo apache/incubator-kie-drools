@@ -39,6 +39,10 @@ public abstract class AbstractSolverPhase implements SolverPhase {
 
     protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
 
+    public Termination getTermination() {
+        return termination;
+    }
+
     public void setTermination(Termination termination) {
         this.termination = termination;
     }

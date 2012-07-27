@@ -90,7 +90,8 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
         configureSolverPhase(localSearchSolverPhase, environmentMode, scoreDefinition, solverTermination);
-        localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition));
+        localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition,
+                localSearchSolverPhase.getTermination()));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
             localSearchSolverPhase.setAssertStepScoreIsUncorrupted(true);
         }
@@ -98,7 +99,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     }
 
     private Decider buildDecider(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            ScoreDefinition scoreDefinition) {
+            ScoreDefinition scoreDefinition, Termination termination) {
         DefaultDecider decider = new DefaultDecider();
         MoveSelector moveSelector;
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
@@ -120,6 +121,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
                     // TODO + " or " + CartesianProductMoveSelectorConfig.class
                     + " element to nest multiple MoveSelectors.");
         }
+        decider.setTermination(termination);
         decider.setMoveSelector(moveSelector);
         decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
         decider.setForager(foragerConfig.buildForager(scoreDefinition));

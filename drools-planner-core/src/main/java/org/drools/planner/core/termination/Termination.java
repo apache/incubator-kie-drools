@@ -38,7 +38,7 @@ public interface Termination extends SolverPhaseLifecycleListener {
     boolean isSolverTerminated(DefaultSolverScope solverScope);
 
     /**
-     * Called by the {@link SolverPhase} after every step to determine if the search should stop.
+     * Called by the {@link SolverPhase} after every step and every move to determine if the search should stop.
      * @param solverPhaseScope never null
      * @return true if the search should terminate.
      */

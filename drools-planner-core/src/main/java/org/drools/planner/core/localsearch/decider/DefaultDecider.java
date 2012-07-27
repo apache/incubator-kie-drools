@@ -29,6 +29,7 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,7 @@ public class DefaultDecider implements Decider {
 
     protected LocalSearchSolverPhase localSearchSolverPhase;
 
+    protected Termination termination;
     protected MoveSelector moveSelector;
     protected Acceptor acceptor;
     protected Forager forager;
@@ -50,6 +52,10 @@ public class DefaultDecider implements Decider {
 
     public void setLocalSearchSolverPhase(LocalSearchSolverPhase localSearchSolverPhase) {
         this.localSearchSolverPhase = localSearchSolverPhase;
+    }
+
+    public void setTermination(Termination termination) {
+        this.termination = termination;
     }
 
     public void setMoveSelector(MoveSelector moveSelector) {
@@ -106,15 +112,18 @@ public class DefaultDecider implements Decider {
             moveScope.setMoveIndex(moveIndex);
             moveScope.setMove(move);
             // Filter out not doable moves
-            if (move.isMoveDoable(scoreDirector)) {
+            if (!move.isMoveDoable(scoreDirector)) {
+                logger.trace("        Ignoring not doable move ({}).", move);
+            } else {
                 doMove(moveScope);
                 if (forager.isQuitEarly()) {
                     break;
                 }
-            } else {
-                logger.trace("        Ignoring not doable move ({}).", move);
             }
             moveIndex++;
+            if (termination.isPhaseTerminated(stepScope.getLocalSearchSolverPhaseScope())) {
+                break;
+            }
         }
         MoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
