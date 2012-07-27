@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
@@ -105,13 +106,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
             moveSelector = moveSelectorConfigList.get(0).buildMoveSelector(
                     environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType);
         } else {
-            // union them
-            List<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
-            for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
-                childMoveSelectorList.add(moveSelectorConfig.buildMoveSelector(
-                        environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType));
-            }
-            moveSelector = new UnionMoveSelector(childMoveSelectorList, true);
+            UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
+            unionMoveSelectorConfig.setMoveSelectorConfigList(moveSelectorConfigList);
+            moveSelector = unionMoveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
+                    defaultSelectionOrder, defaultCacheType);
         }
         decider.setMoveSelector(moveSelector);
         decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
