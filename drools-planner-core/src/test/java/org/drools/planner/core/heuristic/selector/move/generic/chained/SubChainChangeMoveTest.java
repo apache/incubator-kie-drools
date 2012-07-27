@@ -1,10 +1,12 @@
-package org.drools.planner.core.move.generic;
+package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.value.chained.SubChain;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
@@ -13,31 +15,32 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class GenericChainedChangePartMoveTest {
+public class SubChainChangeMoveTest {
 
     @Test
     public void noTrailing() {
-        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
-        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
-
-        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
-
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
-        List<Object> entitiesSubChain = new ArrayList<Object>();
-        entitiesSubChain.add(a3);
-        entitiesSubChain.add(a4);
-        entitiesSubChain.add(a5);
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a1)).thenReturn(a2);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a3)).thenReturn(a4);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a4)).thenReturn(a5);
 
-        GenericChainedChangePartMove move = new GenericChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, b1, null, null);
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
+
+        SubChainChangeMove move = new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a3, a4, a5)),
+                variableDescriptor, b1);
         move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
@@ -58,27 +61,28 @@ public class GenericChainedChangePartMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
-        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
-        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
-
-        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
-
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
-        List<Object> entitiesSubChain = new ArrayList<Object>();
-        entitiesSubChain.add(a2);
-        entitiesSubChain.add(a3);
-        entitiesSubChain.add(a4);
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a1)).thenReturn(a2);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a3)).thenReturn(a4);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a4)).thenReturn(a5);
 
-        GenericChainedChangePartMove move = new GenericChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, b0, a5, b1);
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
+
+        SubChainChangeMove move = new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+                variableDescriptor, b0);
         move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());

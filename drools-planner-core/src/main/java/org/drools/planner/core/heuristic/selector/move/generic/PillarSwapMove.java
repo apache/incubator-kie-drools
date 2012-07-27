@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.move.generic;
+package org.drools.planner.core.heuristic.selector.move.generic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,14 +31,14 @@ import org.drools.planner.core.score.director.ScoreDirector;
  * Non-cacheable
  */
 // TODO rename to PillarSwapMove
-public class GenericSwapPillarMove implements Move {
+public class PillarSwapMove implements Move {
 
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
     private final List<Object> leftPlanningEntityList;
     private final List<Object> rightPlanningEntityList;
 
-    public GenericSwapPillarMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
+    public PillarSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
             List<Object> leftPlanningEntityList, List<Object> rightPlanningEntityList) {
         this.planningVariableDescriptors = planningVariableDescriptors;
         this.leftPlanningEntityList = leftPlanningEntityList;
@@ -69,7 +69,7 @@ public class GenericSwapPillarMove implements Move {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new GenericSwapPillarMove(planningVariableDescriptors,
+        return new PillarSwapMove(planningVariableDescriptors,
                 rightPlanningEntityList, leftPlanningEntityList);
     }
 
@@ -112,8 +112,8 @@ public class GenericSwapPillarMove implements Move {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof GenericSwapPillarMove) {
-            GenericSwapPillarMove other = (GenericSwapPillarMove) o;
+        } else if (o instanceof PillarSwapMove) {
+            PillarSwapMove other = (PillarSwapMove) o;
             return new EqualsBuilder()
                     .append(planningVariableDescriptors, other.planningVariableDescriptors)
                     .append(leftPlanningEntityList, other.leftPlanningEntityList)

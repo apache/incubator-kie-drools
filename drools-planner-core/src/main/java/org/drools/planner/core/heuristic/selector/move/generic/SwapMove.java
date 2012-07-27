@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.move.generic;
+package org.drools.planner.core.heuristic.selector.move.generic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,14 +28,14 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 
-public class GenericSwapMove implements Move {
+public class SwapMove implements Move {
 
     protected final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
     protected final Object leftPlanningEntity;
     protected final Object rightPlanningEntity;
 
-    public GenericSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
+    public SwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
             Object leftPlanningEntity, Object rightPlanningEntity) {
         this.planningVariableDescriptors = planningVariableDescriptors;
         this.leftPlanningEntity = leftPlanningEntity;
@@ -66,7 +66,7 @@ public class GenericSwapMove implements Move {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new GenericSwapMove(planningVariableDescriptors,
+        return new SwapMove(planningVariableDescriptors,
                 rightPlanningEntity, leftPlanningEntity);
     }
 
@@ -101,8 +101,8 @@ public class GenericSwapMove implements Move {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof GenericSwapMove) {
-            GenericSwapMove other = (GenericSwapMove) o;
+        } else if (o instanceof SwapMove) {
+            SwapMove other = (SwapMove) o;
             return new EqualsBuilder()
                     .append(leftPlanningEntity, other.leftPlanningEntity)
                     .append(rightPlanningEntity, other.rightPlanningEntity)

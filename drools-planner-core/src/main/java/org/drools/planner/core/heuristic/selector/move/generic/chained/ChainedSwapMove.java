@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.move.generic;
+package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
 import java.util.Collection;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.move.generic.SwapMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 
-public class GenericChainedSwapMove extends GenericSwapMove {
+public class ChainedSwapMove extends SwapMove {
 
-    public GenericChainedSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
+    public ChainedSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
             Object leftPlanningEntity, Object rightPlanningEntity) {
         super(planningVariableDescriptors, leftPlanningEntity, rightPlanningEntity);
     }
@@ -36,7 +37,7 @@ public class GenericChainedSwapMove extends GenericSwapMove {
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new GenericChainedSwapMove(planningVariableDescriptors,
+        return new ChainedSwapMove(planningVariableDescriptors,
                 rightPlanningEntity, leftPlanningEntity);
     }
 
@@ -65,7 +66,7 @@ public class GenericChainedSwapMove extends GenericSwapMove {
         }
     }
 
-    // TODO DRY with GenericChainedChangeMove
+    // TODO DRY with ChainedChangeMove
     public void doChainedMove(ScoreDirector scoreDirector, PlanningVariableDescriptor variableDescriptor,
             Object planningEntity, Object toPlanningValue ) {
         Object oldPlanningValue = variableDescriptor.getValue(planningEntity);

@@ -19,9 +19,9 @@ package org.drools.planner.core.heuristic.selector.variable;
 import java.util.Iterator;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.move.generic.ChangeMove;
+import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericChainedChangeMove;
-import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -158,7 +158,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
-            return new GenericChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
+            return new ChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
         }
 
         public void remove() {
@@ -176,7 +176,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         @Override
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
-            return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
+            return new ChainedChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
         }
 
     }

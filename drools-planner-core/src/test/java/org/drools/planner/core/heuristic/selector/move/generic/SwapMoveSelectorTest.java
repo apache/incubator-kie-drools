@@ -22,7 +22,6 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericSwapMove;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -365,7 +364,7 @@ public class SwapMoveSelectorTest {
 
     private void assertNextSwapMove(Iterator<Move> iterator, String leftEntityCode, String rightEntityCode) {
         assertTrue(iterator.hasNext());
-        GenericSwapMove move = (GenericSwapMove) iterator.next();
+        SwapMove move = (SwapMove) iterator.next();
         assertCode(leftEntityCode, move.getLeftPlanningEntity());
         assertCode(rightEntityCode, move.getRightPlanningEntity());
     }

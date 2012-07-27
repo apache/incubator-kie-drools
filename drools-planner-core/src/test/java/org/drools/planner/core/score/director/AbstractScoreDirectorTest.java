@@ -17,20 +17,12 @@
 package org.drools.planner.core.score.director;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.Adler32;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.move.generic.GenericChainedChangeMove;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
-import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.drools.planner.core.testdata.domain.TestdataChainedSolution;

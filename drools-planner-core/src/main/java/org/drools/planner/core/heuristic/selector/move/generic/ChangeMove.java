@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.move.generic;
+package org.drools.planner.core.heuristic.selector.move.generic;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,13 +26,13 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 
-public class GenericChangeMove implements Move {
+public class ChangeMove implements Move {
 
     protected final Object planningEntity;
     protected final PlanningVariableDescriptor planningVariableDescriptor;
     protected final Object toPlanningValue;
 
-    public GenericChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
+    public ChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
             Object toPlanningValue) {
         this.planningEntity = planningEntity;
         this.planningVariableDescriptor = planningVariableDescriptor;
@@ -58,7 +58,7 @@ public class GenericChangeMove implements Move {
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new GenericChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
+        return new ChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
@@ -78,8 +78,8 @@ public class GenericChangeMove implements Move {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof GenericChangeMove) {
-            GenericChangeMove other = (GenericChangeMove) o;
+        } else if (o instanceof ChangeMove) {
+            ChangeMove other = (ChangeMove) o;
             return new EqualsBuilder()
                     .append(planningEntity, other.planningEntity)
                     .append(planningVariableDescriptor.getVariableName(),

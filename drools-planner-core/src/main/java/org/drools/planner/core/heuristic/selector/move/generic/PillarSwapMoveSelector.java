@@ -26,7 +26,6 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericSwapPillarMove;
 
 public class PillarSwapMoveSelector extends GenericMoveSelector {
 
@@ -138,7 +137,7 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
                 }
             }
             List<Object> rightEntity = rightEntityIterator.next();
-            upcomingSelection = new GenericSwapPillarMove(variableDescriptors, leftEntity, rightEntity);
+            upcomingSelection = new PillarSwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
     }
@@ -172,7 +171,7 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
                 rightEntityIterator = rightPillarSelector.iterator();
             }
             List<Object> rightEntity = rightEntityIterator.next();
-            upcomingSelection = new GenericSwapPillarMove(variableDescriptors, leftEntity, rightEntity);
+            upcomingSelection = new PillarSwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
     }

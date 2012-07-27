@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.move.generic;
-
-import java.util.Map;
+package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.move.generic.ChangeMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 
-public class GenericChainedChangeMove extends GenericChangeMove {
+public class ChainedChangeMove extends ChangeMove {
 
-    public GenericChainedChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
+    public ChainedChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
             Object toPlanningValue) {
         super(planningEntity, planningVariableDescriptor, toPlanningValue);
     }
@@ -43,7 +42,7 @@ public class GenericChainedChangeMove extends GenericChangeMove {
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
+        return new ChainedChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
     }
 
     @Override

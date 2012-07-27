@@ -21,11 +21,10 @@ import java.util.Iterator;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericChainedChangeMove;
-import org.drools.planner.core.move.generic.GenericChangeMove;
 
 public class ChangeMoveSelector extends GenericMoveSelector {
 
@@ -101,8 +100,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next(upcomingEntity);
             upcomingSelection = chained
-                    ? new GenericChainedChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue)
-                    : new GenericChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue);
+                    ? new ChainedChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue)
+                    : new ChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue);
         }
 
     }
@@ -154,8 +153,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next(entity);
             upcomingSelection = chained
-                    ? new GenericChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
-                    : new GenericChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
+                    ? new ChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
+                    : new ChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
         }
 
     }

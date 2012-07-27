@@ -32,7 +32,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.drools.planner.core.move.generic.GenericSwapMove;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.manners2009.domain.HobbyPractician;
@@ -150,7 +149,7 @@ public class Manners2009Panel extends SolutionPanel {
                 SeatDesignation switchSeatDesignation = (SeatDesignation) seatDesignationListField.getSelectedItem();
                 // TODO FIXME
                 throw new UnsupportedOperationException();
-//                solutionBusiness.doMove(new GenericSwapMove(seatDesignation, switchSeatDesignation));
+//                solutionBusiness.doMove(new SwapMove(seatDesignation, switchSeatDesignation));
 //                solverAndPersistenceFrame.resetScreen();
             }
         }

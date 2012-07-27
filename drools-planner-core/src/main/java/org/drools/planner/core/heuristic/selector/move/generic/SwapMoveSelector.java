@@ -25,9 +25,8 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedSwapMove;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericChainedSwapMove;
-import org.drools.planner.core.move.generic.GenericSwapMove;
 
 public class SwapMoveSelector extends GenericMoveSelector {
 
@@ -143,8 +142,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
             }
             Object rightEntity = rightEntityIterator.next();
             upcomingSelection = anyChained
-                    ? new GenericChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
-                    : new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
+                    ? new ChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
+                    : new SwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
     }
@@ -179,8 +178,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
             }
             Object rightEntity = rightEntityIterator.next();
             upcomingSelection = anyChained
-                    ? new GenericChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
-                    : new GenericSwapMove(variableDescriptors, leftEntity, rightEntity);
+                    ? new ChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
+                    : new SwapMove(variableDescriptors, leftEntity, rightEntity);
         }
 
     }

@@ -17,14 +17,13 @@
 package org.drools.planner.examples.curriculumcourse.solver.move;
 
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.drools.planner.core.move.generic.GenericSwapMove;
+import org.drools.planner.core.heuristic.selector.move.generic.SwapMove;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
-import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
-public class DifferentCourseSwapMoveFilter implements SelectionFilter<GenericSwapMove> {
+public class DifferentCourseSwapMoveFilter implements SelectionFilter<SwapMove> {
 
-    public boolean accept(ScoreDirector scoreDirector, GenericSwapMove move) {
+    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
         Lecture leftLecture = (Lecture) move.getLeftPlanningEntity();
         Lecture rightLecture = (Lecture) move.getRightPlanningEntity();
         return !leftLecture.getCourse().equals(rightLecture.getCourse());

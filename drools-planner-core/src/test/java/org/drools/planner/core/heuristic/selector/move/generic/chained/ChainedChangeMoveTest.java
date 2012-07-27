@@ -1,10 +1,6 @@
-package org.drools.planner.core.move.generic;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
@@ -14,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class GenericChainedChangeMoveTest {
+public class ChainedChangeMoveTest {
 
     @Test
     public void noTrailing() {
@@ -34,7 +30,7 @@ public class GenericChainedChangeMoveTest {
         when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
         when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
 
-        GenericChainedChangeMove move = new GenericChainedChangeMove(a3, variableDescriptor, b1);
+        ChainedChangeMove move = new ChainedChangeMove(a3, variableDescriptor, b1);
         move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
@@ -65,7 +61,7 @@ public class GenericChainedChangeMoveTest {
         when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
         when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
 
-        GenericChainedChangeMove move = new GenericChainedChangeMove(a2, variableDescriptor, b0);
+        ChainedChangeMove move = new ChainedChangeMove(a2, variableDescriptor, b0);
         move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());

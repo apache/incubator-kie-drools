@@ -22,7 +22,6 @@ import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -276,7 +275,7 @@ public class ChangeMoveSelectorTest {
 
     private void assertNextChangeMove(Iterator<Move> iterator, String entityCode, String toValueCode) {
         assertTrue(iterator.hasNext());
-        GenericChangeMove move = (GenericChangeMove) iterator.next();
+        ChangeMove move = (ChangeMove) iterator.next();
         assertCode(entityCode, move.getPlanningEntity());
         assertCode(toValueCode, move.getToPlanningValue());
     }
