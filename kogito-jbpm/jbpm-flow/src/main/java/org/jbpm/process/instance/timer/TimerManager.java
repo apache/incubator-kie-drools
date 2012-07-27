@@ -35,7 +35,6 @@ import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -223,20 +222,25 @@ public class TimerManager {
             Trigger trigger = InputMarshaller.readTrigger( inCtx );
             
             TimerInstance timerInstance = ProcessMarshallerImpl.readTimer( inCtx );            
-
-            ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
-
-            
-            JobHandle jobHandle = ts.scheduleJob( processJob,
-                                                  pctx,
-                                                  trigger );
-            timerInstance.setJobHandle( jobHandle );
-            pctx.setJobHandle( jobHandle );   
             
             TimerManager tm = ((InternalProcessRuntime)inCtx.wm.getProcessRuntime()).getTimerManager();
             
-            tm.getTimerMap().put( timerInstance.getId(),
-                                  timerInstance );            
+            // check if the timer instance is not already registered to avoid duplicated timers
+            if (!tm.getTimerMap().containsKey(timerInstance.getId())) {
+                ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
+    
+                
+                JobHandle jobHandle = ts.scheduleJob( processJob,
+                                                      pctx,
+                                                      trigger );
+                timerInstance.setJobHandle( jobHandle );
+                pctx.setJobHandle( jobHandle );   
+                
+                
+                
+                tm.getTimerMap().put( timerInstance.getId(),
+                                      timerInstance );            
+            }
         }
 
         public void deserialize(MarshallerReaderContext inCtx,
@@ -249,20 +253,25 @@ public class TimerManager {
 
             Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx, _ptimer.getTrigger() );
             
-            TimerInstance timerInstance = ProtobufProcessMarshaller.readTimer( inCtx, _ptimer.getTimer() );            
-
-            ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
-            
-            JobHandle jobHandle = ts.scheduleJob( processJob,
-                                                  pctx,
-                                                  trigger );
-            timerInstance.setJobHandle( jobHandle );
-            pctx.setJobHandle( jobHandle );   
+            TimerInstance timerInstance = ProtobufProcessMarshaller.readTimer( inCtx, _ptimer.getTimer() ); 
             
             TimerManager tm = ((InternalProcessRuntime)inCtx.wm.getProcessRuntime()).getTimerManager();
             
-            tm.getTimerMap().put( timerInstance.getId(),
-                                  timerInstance );            
+            // check if the timer instance is not already registered to avoid duplicated timers
+            if (!tm.getTimerMap().containsKey(timerInstance.getId())) {
+                ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
+                
+                JobHandle jobHandle = ts.scheduleJob( processJob,
+                                                      pctx,
+                                                      trigger );
+                timerInstance.setJobHandle( jobHandle );
+                pctx.setJobHandle( jobHandle );   
+                
+                
+                
+                tm.getTimerMap().put( timerInstance.getId(),
+                                      timerInstance );            
+            }
         }
     }    
 
@@ -282,7 +291,7 @@ public class TimerManager {
                 }
     
                 ctx.getTimer().setLastTriggered( new Date( ctx.getKnowledgeRuntime().<SessionClock>getSessionClock().getCurrentTime() ) );
-    
+
                 ((InternalProcessRuntime) kruntime.getProcessRuntime())
                 	.getSignalManager().signalEvent( processInstanceId,
                                                      "timerTriggered",
@@ -296,11 +305,8 @@ public class TimerManager {
             } catch (Throwable e) {
                 logger.error("Error when executing timer job", e);
                 WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) kruntime.getProcessInstance(processInstanceId);
-                processInstance.setState(ProcessInstance.STATE_ABORTED);
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                } else {
-                    throw new RuntimeException("Error when executing timer job", e);
+                if (processInstance != null && ctx.getTimer().getPeriod() == 0) {
+                    processInstance.setState(ProcessInstance.STATE_ABORTED);
                 }
             }
         }

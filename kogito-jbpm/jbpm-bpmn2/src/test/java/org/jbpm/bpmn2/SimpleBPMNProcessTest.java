@@ -2598,6 +2598,30 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		}
 
     }
+    
+    public void testIntermediateCatchEventTimerCycleWithError() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleWithError.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // now wait for 1 second for timer to trigger
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        ((WorkflowProcessInstance)ksession.getProcessInstance(processInstance.getId())).setVariable("x", 0);
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        
+        Integer xValue = (Integer) ((WorkflowProcessInstance)processInstance).getVariable("x");
+        assertEquals(new Integer(2), xValue);
+        
+        ksession.abortProcessInstance(processInstance.getId());
+        assertProcessInstanceAborted(processInstance.getId(), ksession);
+    }
 
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBaseFactory
