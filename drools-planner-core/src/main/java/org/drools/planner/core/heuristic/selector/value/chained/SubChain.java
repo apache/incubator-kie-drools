@@ -17,7 +17,10 @@
 package org.drools.planner.core.heuristic.selector.value.chained;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A subList out of a single chain.
@@ -36,6 +39,10 @@ public class SubChain implements Serializable {
         return entityList;
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     public Object getFirstEntity() {
         if (entityList.isEmpty()) {
             return null;
@@ -48,6 +55,12 @@ public class SubChain implements Serializable {
             return null;
         }
         return entityList.get(entityList.size() - 1);
+    }
+
+    public SubChain reverse() {
+        List<Object> reversedEntityList = new ArrayList<Object>(entityList);
+        Collections.reverse(reversedEntityList);
+        return new SubChain(reversedEntityList);
     }
 
     @Override
