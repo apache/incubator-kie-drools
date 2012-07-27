@@ -35,6 +35,7 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.move.composite.CartesianProductMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.composite.UnionMoveSelector;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
@@ -49,6 +50,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
+    // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList;
     @XStreamAlias("acceptor")
@@ -112,10 +114,11 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
             moveSelector = moveSelectorConfigList.get(0).buildMoveSelector(
                     environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType);
         } else {
-            UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
-            unionMoveSelectorConfig.setMoveSelectorConfigList(moveSelectorConfigList);
-            moveSelector = unionMoveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
-                    defaultSelectionOrder, defaultCacheType);
+            // TODO moveSelectorConfigList is only a List because of XStream limitations.
+            throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
+                    + ") must a singleton or empty. Use a single " + UnionMoveSelectorConfig.class
+                    // TODO + " or " + CartesianProductMoveSelectorConfig.class
+                    + " element to nest multiple MoveSelectors.");
         }
         decider.setMoveSelector(moveSelector);
         decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
