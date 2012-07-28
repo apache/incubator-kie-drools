@@ -24,4 +24,3 @@ bitronix-default-config.properties
 
 # modules that don't exist in this branch
 /jbpm-human-task-war/
-/jbpm-human-task/jbpm-human-task-core-cdi/target/
