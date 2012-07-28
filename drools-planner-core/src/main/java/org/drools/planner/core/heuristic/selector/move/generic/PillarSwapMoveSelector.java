@@ -19,12 +19,9 @@ package org.drools.planner.core.heuristic.selector.move.generic;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-import org.apache.commons.collections.IteratorUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
-import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.drools.planner.core.move.Move;
@@ -84,44 +81,24 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
     }
 
     public long getSize() {
-        if (!leftEqualsRight) {
-            return (long) leftPillarSelector.getSize() * (long) rightPillarSelector.getSize();
-        } else {
-            long leftSize = (long) leftPillarSelector.getSize();
-            return leftSize * (leftSize - 1L) / 2L;
-        }
+        return AbstractOriginalSwapIterator.getSize(leftPillarSelector, rightPillarSelector);
     }
 
     public Iterator<Move> iterator() {
         if (!randomSelection) {
-            return new OriginalPillarSwapMoveIterator();
+            return new AbstractOriginalSwapIterator<Move, List<Object>>(leftPillarSelector, rightPillarSelector) {
+                @Override
+                protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
+                    return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                }
+            };
         } else {
-            return new RandomPillarSwapMoveIterator();
-        }
-    }
-
-    private class OriginalPillarSwapMoveIterator extends AbstractOriginalSwapIterator<Move, List<Object>> {
-
-        private OriginalPillarSwapMoveIterator() {
-            super(leftPillarSelector, rightPillarSelector);
-        }
-
-        @Override
-        protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
-            return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
-        }
-
-    }
-
-    private class RandomPillarSwapMoveIterator extends AbstractRandomSwapIterator<Move, List<Object>> {
-
-        private RandomPillarSwapMoveIterator() {
-            super(leftPillarSelector, rightPillarSelector);
-        }
-
-        @Override
-        protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
-            return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+            return new AbstractRandomSwapIterator<Move, List<Object>>(leftPillarSelector, rightPillarSelector) {
+                @Override
+                protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
+                    return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                }
+            };
         }
     }
 

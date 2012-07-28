@@ -18,13 +18,10 @@ package org.drools.planner.core.heuristic.selector.move.generic;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.ListIterator;
 
-import org.apache.commons.collections.IteratorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
-import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedSwapMove;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
@@ -88,50 +85,29 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     public long getSize() {
-        if (!leftEqualsRight) {
-            return (long) leftEntitySelector.getSize() * (long) rightEntitySelector.getSize();
-        } else {
-            long leftSize = (long) leftEntitySelector.getSize();
-            return leftSize * (leftSize - 1L) / 2L;
-        }
+        return AbstractOriginalSwapIterator.getSize(leftEntitySelector, rightEntitySelector);
     }
 
     public Iterator<Move> iterator() {
         if (!randomSelection) {
-            return new OriginalSwapMoveIterator();
+            return new AbstractOriginalSwapIterator<Move, Object>(leftEntitySelector, rightEntitySelector) {
+                @Override
+                protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
+                    return anyChained
+                            ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
+                            : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                }
+            };
         } else {
-            return new RandomSwapMoveIterator();
+            return new AbstractRandomSwapIterator<Move, Object>(leftEntitySelector, rightEntitySelector) {
+                @Override
+                protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
+                    return anyChained
+                            ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
+                            : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                }
+            };
         }
-    }
-
-    private class OriginalSwapMoveIterator extends AbstractOriginalSwapIterator<Move, Object> {
-
-        private OriginalSwapMoveIterator() {
-            super(leftEntitySelector, rightEntitySelector);
-        }
-
-        @Override
-        protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
-            return anyChained
-                    ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
-                    : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
-        }
-
-    }
-
-    private class RandomSwapMoveIterator extends AbstractRandomSwapIterator<Move, Object> {
-
-        private RandomSwapMoveIterator() {
-            super(leftEntitySelector, rightEntitySelector);
-        }
-
-        @Override
-        protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
-            return anyChained
-                    ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
-                    : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
-        }
-
     }
 
     @Override
