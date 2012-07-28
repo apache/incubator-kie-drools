@@ -167,7 +167,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
         protected void createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object leftEntity = leftEntityIterator.next();
-            //     Object rightEntity = rightEntityIterator.next(entity);
+            //     Object rightEntity = rightEntityIterator.next();
             // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
             if (!leftEntityIterator.hasNext()) {
                 leftEntityIterator = leftEntitySelector.iterator();
