@@ -30,7 +30,6 @@ import org.drools.planner.core.score.director.ScoreDirector;
 /**
  * Non-cacheable
  */
-// TODO rename to PillarSwapMove
 public class PillarSwapMove implements Move {
 
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
