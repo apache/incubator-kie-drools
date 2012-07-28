@@ -92,20 +92,20 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
 
     public Iterator<Move> iterator() {
         if (!randomSelection) {
-            return new OriginalSwapMoveIterator();
+            return new OriginalPillarSwapMoveIterator();
         } else {
-            return new RandomSwapMoveIterator();
+            return new RandomPillarSwapMoveIterator();
         }
     }
 
-    private class OriginalSwapMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class OriginalPillarSwapMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private ListIterator<List<Object>> leftEntityIterator; // TODO Rename to leftPillarIterator
         private ListIterator<List<Object>> rightEntityIterator;
 
         private List<Object> leftEntity;
 
-        private OriginalSwapMoveIterator() {
+        private OriginalPillarSwapMoveIterator() {
             leftEntityIterator = leftPillarSelector.listIterator();
             rightEntityIterator = IteratorUtils.emptyListIterator();
             createUpcomingSelection();
@@ -142,12 +142,12 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
 
     }
 
-    private class RandomSwapMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class RandomPillarSwapMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<List<Object>> leftEntityIterator;
         private Iterator<List<Object>> rightEntityIterator;
 
-        private RandomSwapMoveIterator() {
+        private RandomPillarSwapMoveIterator() {
             leftEntityIterator = leftPillarSelector.iterator();
             rightEntityIterator = rightPillarSelector.iterator();
             if (!leftEntityIterator.hasNext() || !rightEntityIterator.hasNext()) {
