@@ -13,7 +13,6 @@ import org.jbpm.task.query.TaskSummary;
 
 /**
  *
- * @author salaboy
  */
 public interface TaskQueryService {
 

@@ -12,7 +12,6 @@ import javax.inject.Qualifier;
 
 /**
  *
- * @author salaboy
  */
 @Qualifier
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})

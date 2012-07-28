@@ -12,7 +12,6 @@ import org.jbpm.task.exception.TaskException;
 
 /**
  *
- * @author salaboy
  */
 public interface LifeCycleManager {
     public void taskOperation(final Operation operation, final long taskId, final String userId,

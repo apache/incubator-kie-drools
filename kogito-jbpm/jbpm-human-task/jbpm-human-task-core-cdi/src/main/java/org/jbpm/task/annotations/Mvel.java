@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jbpm.task.internals.lifecycle;
+package org.jbpm.task.annotations;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -15,7 +15,6 @@ import javax.inject.Qualifier;
 
 /**
  *
- * @author salaboy
  */
 @Qualifier
 @Retention(RUNTIME)

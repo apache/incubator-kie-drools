@@ -7,6 +7,7 @@ package org.jbpm.task.impl;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.annotations.Local;
@@ -16,13 +17,11 @@ import org.jbpm.task.api.TaskEventsService;
 
 /**
  *
- * @author salaboy
  */
 @Persistent 
-@Local
 @Transactional
 public class TaskEventsServiceImpl implements TaskEventsService{
-    @Inject  
+    @PersistenceContext
     private EntityManager em;
     
     public List<TaskEvent> getTaskEventsById(long taskId) {

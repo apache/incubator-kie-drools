@@ -12,7 +12,6 @@ import org.jbpm.task.TaskEvent;
 
 /**
  *
- * @author salaboy
  */
 public interface TaskEventsService {
     List<TaskEvent> getTaskEventsById(long taskId);

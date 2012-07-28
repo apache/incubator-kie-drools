@@ -13,9 +13,7 @@ import org.jbpm.task.events.BeforeTaskStartedEvent;
 
 /**
  *
- * @author salaboy
  */
-
 @Internal
 public class InternalTaskLifeCycleEventListener implements TaskLifeCycleEventListener{
 

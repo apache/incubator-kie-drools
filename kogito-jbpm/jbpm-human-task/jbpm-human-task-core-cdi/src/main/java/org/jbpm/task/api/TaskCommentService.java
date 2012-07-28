@@ -9,7 +9,6 @@ import org.jbpm.task.Comment;
 
 /**
  *
- * @author salaboy
  */
 public interface TaskCommentService {
 

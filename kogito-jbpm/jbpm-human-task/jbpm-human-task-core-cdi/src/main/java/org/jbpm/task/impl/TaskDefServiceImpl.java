@@ -6,24 +6,19 @@ package org.jbpm.task.impl;
 
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.TaskDef;
-import org.jbpm.task.annotations.Local;
 import org.jbpm.task.api.TaskDefService;
 
 /**
  *
- * @author salaboy
  */
 
-@Local
-@Named
 @Transactional
 public class TaskDefServiceImpl implements TaskDefService{
     
-    @Inject 
+    @Inject
     private EntityManager em;
 
     public TaskDefServiceImpl() {

@@ -14,7 +14,6 @@ import org.jbpm.task.events.BeforeTaskStartedEvent;
 
 /**
  *
- * @author salaboy
  */
 
 @Alternative @Singleton

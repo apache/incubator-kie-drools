@@ -17,7 +17,6 @@ package org.jbpm.task.impl.factories;
 
 /**
  *
- * @author salaboy
  */
 public class TaskDefFactory {
     

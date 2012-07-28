@@ -14,7 +14,6 @@ import org.jbpm.task.TaskDef;
 
 /**
  *
- * @author salaboy
  */
 public interface TaskInstanceService {
 

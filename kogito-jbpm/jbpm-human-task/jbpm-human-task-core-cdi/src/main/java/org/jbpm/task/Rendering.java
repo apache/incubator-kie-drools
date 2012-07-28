@@ -10,7 +10,6 @@ import javax.persistence.Id;
 
 /**
  *
- * @author salaboy
  */
 @Entity
 public class Rendering {

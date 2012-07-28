@@ -15,7 +15,6 @@ import javax.persistence.OneToMany;
 
 /**
  *
- * @author salaboy
  */
 @Entity
 public class TaskDef implements Serializable {

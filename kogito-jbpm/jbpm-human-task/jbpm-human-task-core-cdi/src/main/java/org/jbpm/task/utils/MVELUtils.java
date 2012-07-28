@@ -59,7 +59,6 @@ import org.mvel2.ParserContext;
 
 /**
  *
- * @author salaboy
  */
 public class MVELUtils { 
      private static Map<String, Class<?>> inputs = new HashMap<String, Class<?>>();

@@ -11,7 +11,6 @@ import org.jbpm.task.User;
 
 /**
  *
- * @author salaboy
  */
 public interface TaskIdentityService {
 

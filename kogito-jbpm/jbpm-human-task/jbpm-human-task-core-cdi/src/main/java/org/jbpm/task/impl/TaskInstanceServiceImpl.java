@@ -7,15 +7,10 @@ package org.jbpm.task.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.net.ssl.SSLEngineResult.Status;
 import javax.persistence.EntityManager;
-import org.jbpm.task.annotations.Local;
 import org.jbpm.task.internals.lifecycle.LifeCycleManager;
-import org.jbpm.task.internals.lifecycle.Mvel;
+import org.jbpm.task.annotations.Mvel;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
@@ -24,7 +19,6 @@ import org.jbpm.task.Operation;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
-import org.jbpm.task.User;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
@@ -35,27 +29,20 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
  *
- * @author salaboy
  */
-@Local
-@Named
 @Transactional
 public class TaskInstanceServiceImpl implements TaskInstanceService {
 
-    private @Inject
-    Logger log;
-    
     @Inject
-    @Local
     private TaskDefService taskDefService;
     
     @Inject
-    @Local
     private TaskQueryService taskQueryService;
     
     @Inject
     @Mvel
     private LifeCycleManager lifeCycleManager;
+    
     @Inject
     private EntityManager em;
 
@@ -105,7 +92,6 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public long addTask(Task task, Map<String, Object> params) {
-        //TODO: need to deal with the params for the content
         if (params != null) {
             ContentData contentData = ContentMarshallerHelper.marshal(params, null);
             Content content = new Content(contentData.getContent());
@@ -117,7 +103,6 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public long addTask(Task task, ContentData contentData) {
-        //TODO: need to deal with the params for the content
         em.persist(task);
         if (contentData != null) {
             Content content = new Content(contentData.getContent());
@@ -147,7 +132,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         if(queryTasks.size() > 0){
             lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null );
         } else{
-            log.log(Level.SEVERE, " No Task Available to Assign");
+            //log.log(Level.SEVERE, " No Task Available to Assign");
         }
     }
 

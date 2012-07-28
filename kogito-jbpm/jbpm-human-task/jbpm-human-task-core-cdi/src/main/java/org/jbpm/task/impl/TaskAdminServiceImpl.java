@@ -6,27 +6,22 @@ package org.jbpm.task.impl;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.inject.Inject;
-import javax.inject.Named;
+
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Task;
-import org.jbpm.task.annotations.Local;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.query.TaskSummary;
 
 /**
  *
- * @author salaboy
  */
-@Local
-@Named
 @Transactional
 public class TaskAdminServiceImpl implements TaskAdminService{
 
-    @Inject 
+    @Inject
     private EntityManager em;
 
     public TaskAdminServiceImpl() {

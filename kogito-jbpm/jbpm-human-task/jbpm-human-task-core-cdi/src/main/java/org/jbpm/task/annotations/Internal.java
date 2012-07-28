@@ -15,7 +15,6 @@ import javax.inject.Qualifier;
 
 /**
  *
- * @author salaboy
  */
 @Qualifier
 @Retention(RUNTIME)

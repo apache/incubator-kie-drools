@@ -13,13 +13,13 @@ import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 
 /**
  *
- * @author salaboy
  */
 public class TaskServiceModule {
     private static TaskServiceModule instance;
     private TaskServiceEntryPoint taskService;
     private WeldContainer container;
     private Weld weld;
+    
     public static TaskServiceModule getInstance(){
         if(instance == null){
             instance = new TaskServiceModule();

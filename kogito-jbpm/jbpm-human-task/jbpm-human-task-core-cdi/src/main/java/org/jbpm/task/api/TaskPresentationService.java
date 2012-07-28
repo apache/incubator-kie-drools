@@ -10,7 +10,6 @@ import org.jbpm.task.PresentationElement;
 
 /**
  *
- * @author salaboy
  */
 public interface TaskPresentationService {
 

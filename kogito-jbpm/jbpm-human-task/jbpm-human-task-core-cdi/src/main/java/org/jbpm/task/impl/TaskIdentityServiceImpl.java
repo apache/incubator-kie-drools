@@ -6,25 +6,21 @@ package org.jbpm.task.impl;
 
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Group;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.User;
-import org.jbpm.task.annotations.Local;
 import org.jbpm.task.api.TaskIdentityService;
 
 /**
  *
- * @author salaboy
  */
-@Local
-@Named
+
 @Transactional
 public class TaskIdentityServiceImpl implements TaskIdentityService {
 
-    @Inject 
+    @Inject
     private EntityManager em;
 
     public TaskIdentityServiceImpl() {

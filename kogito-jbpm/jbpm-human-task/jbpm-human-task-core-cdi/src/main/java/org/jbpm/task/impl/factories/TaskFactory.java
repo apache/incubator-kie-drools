@@ -21,14 +21,14 @@ import org.jbpm.task.utils.MVELUtils;
 
 /**
  *
- * @author salaboy
  */
 public class TaskFactory {
 
     public static Task newTask(TaskDef taskDef) {
         Task task = new Task();
-        task.setTaskData(new TaskData());
-        task.getTaskData().setStatus(Status.Created);
+        TaskData taskData = new TaskData();
+        taskData.initialize();
+        task.setTaskData(taskData);
         initializeTask(taskDef, task);
         return task;
     }

@@ -8,7 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import org.jbpm.task.annotations.Local;
+import javax.persistence.PersistenceContext;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
@@ -19,15 +19,13 @@ import org.jbpm.task.query.TaskSummary;
 
 /**
  *
- * @author salaboy
  */
-@Local
 @Named
 @Transactional
 public class TaskQueryServiceImpl implements TaskQueryService {
     
     
-    @Inject 
+    @Inject
     private EntityManager em;
     
     public TaskQueryServiceImpl() {

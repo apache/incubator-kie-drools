@@ -9,7 +9,6 @@ import org.jbpm.task.Attachment;
 
 /**
  *
- * @author salaboy
  */
 
 public interface TaskAttachmentService {

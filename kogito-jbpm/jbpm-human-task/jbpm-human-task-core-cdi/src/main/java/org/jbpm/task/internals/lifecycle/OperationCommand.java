@@ -21,8 +21,6 @@ import org.jbpm.task.Operation;
 import org.jbpm.task.Status;
 
 
-
-
 public class OperationCommand {
     private List<Status>        status;
     private List<Status>        previousStatus;

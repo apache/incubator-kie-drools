@@ -4,6 +4,7 @@
  */
 package org.jbpm.task.internals.lifecycle;
 
+import org.jbpm.task.annotations.Mvel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.jbpm.task.Group;
 import org.jbpm.task.Operation;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.User;
+import org.jbpm.task.annotations.Log;
 import org.jbpm.task.exception.TaskException;
 import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.identity.UserGroupCallbackManager;
@@ -27,13 +29,11 @@ import org.jbpm.task.identity.UserGroupCallbackManager;
 
 /**
  *
- * @author salaboy
  */
 @Decorator
 public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleManager{
     private @Inject @Delegate @Mvel LifeCycleManager manager;
     private @Inject EntityManager em;
-    private @Inject Logger logger;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
     
     public void taskOperation(Operation operation, long taskId, String userId, String targetEntityId, Map<String, Object> data, List<String> groupIds) throws TaskException {
@@ -73,7 +73,7 @@ public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleMan
             }
             return false;
         } else {
-            logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
+            //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
             // returns true for backward compatibility
             return true;
         }
@@ -99,7 +99,7 @@ public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleMan
                 em.persist(user);
             }
         } catch (Throwable t) {
-            logger.log(Level.SEVERE, "Unable to add user " + userId);
+            //logger.log(Level.SEVERE, "Unable to add user " + userId);
         }
     }
      private void doCallbackGroupsOperation(String userId, List<String> groupIds) { 
@@ -134,7 +134,7 @@ public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleMan
                 }
             }
         } else {
-            logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
+            //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
         }
     }
      
@@ -146,7 +146,7 @@ public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleMan
                 em.persist(group);
             }
         } catch (Throwable t) {
-            logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
+            //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
         }
     } 
 }

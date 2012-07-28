@@ -4,6 +4,7 @@
  */
 package org.jbpm.task.internals.lifecycle;
 
+import org.jbpm.task.annotations.Mvel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,10 +32,10 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.annotations.Internal;
-import org.jbpm.task.annotations.Local;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.task.commands.TaskCommand;
 
 import org.jbpm.task.events.AfterTaskCompletedEvent;
 import org.jbpm.task.events.AfterTaskStartedEvent;
@@ -53,31 +54,25 @@ import org.mvel2.ParserContext;
 
 /**
  *
- * @author salaboy
  */
 @Mvel
 @Transactional
 public class MVELLifeCycleManager implements LifeCycleManager {
 
-    private @Inject
-    Logger log;
-    private @Inject
-    EntityManager em;
-    private @Inject
-    @Local
-    TaskDefService taskDefService;
-    private @Inject
-    @Local
-    TaskQueryService taskQueryService;
-    private @Inject
-    @Local
-    TaskIdentityService taskIdentityService;
+    @Inject
+    private EntityManager em;
+    @Inject
+    private TaskDefService taskDefService;
+    @Inject
+    private TaskQueryService taskQueryService;
+    @Inject
+    private TaskIdentityService taskIdentityService;
+    @Inject 
+    private Event<Task> taskEvents;
+    @Inject @Internal
+    private TaskLifeCycleEventListener eventListener;
+    
     private Map<Operation, List<OperationCommand>> operations;
-    private @Inject
-    Event<Task> taskEvents;
-    private @Inject
-    @Internal
-    TaskLifeCycleEventListener eventListener;
 
     public MVELLifeCycleManager() {
     }
@@ -239,6 +234,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             switch (command.getExec()) {
                 case Claim: {
                     taskData.setActualOwner((User) targetEntity);
+                    taskData.setStatus(Status.Reserved);
                     // Task was reserved so owner should get icals
 //                    SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
 //
@@ -249,7 +245,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 }
             }
         }
-        
+
 
     }
 
@@ -291,7 +287,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 case Fail: {
 //                    taskFailOperation(task, data);
                     if (data != null) {
-                        
+
                         FaultData faultData = ContentMarshallerHelper.marshalFault(data, null);
                         Content content = new Content();
                         content.setContent(faultData.getContent());
@@ -385,7 +381,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 }
             }
 
-            
+
 //            tpm.endTransaction(transactionOwner);
 
         } catch (RuntimeException re) {
@@ -481,8 +477,8 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             return MVEL.executeExpression(s);
         }
     }
-    
-     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
+
+    public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
         final Task task = em.find(Task.class, taskId);
         final User user = em.find(User.class, userId);
         if (isAllowed(user, null, task.getPeopleAssignments().getBusinessAdministrators())) {

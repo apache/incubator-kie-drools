@@ -8,7 +8,6 @@ import org.jbpm.task.Task;
 
 /**
  *
- * @author salaboy
  */
 
 public interface TaskLifeCycleEventListener {

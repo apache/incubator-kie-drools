@@ -13,9 +13,6 @@
     <properties>
         <seam.version>3.1.0.Final</seam.version>
         <weld.version>1.1.8.Final</weld.version>
-        <hibernate-core.version>4.1.3.Final</hibernate-core.version>
-        <hibernate-commons-annotations.version>4.1.3.Final</hibernate-commons-annotations.version>
-        <com.h2database.version>[1.3.166,)</com.h2database.version>
     </properties>
     <dependencies>
         <dependency>
@@ -33,7 +30,7 @@
             <artifactId>weld-se</artifactId>
             <version>${weld.version}</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-core</artifactId>
@@ -55,19 +52,16 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate-core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-core.version}</version>			
+            <artifactId>hibernate-core</artifactId>			
         </dependency>			
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${com.h2database.version}</version>
         </dependency>  
         <dependency>
             <groupId>org.drools</groupId>
@@ -90,6 +84,20 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-junit</artifactId>
+            <version>1.0.0.Alpha5</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+            <version>1.0.0.Alpha5</version>
+        </dependency>
+        
+        
     </dependencies>
     
     <build>

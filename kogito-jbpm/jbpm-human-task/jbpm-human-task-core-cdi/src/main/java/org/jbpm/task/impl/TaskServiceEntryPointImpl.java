@@ -20,7 +20,7 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.annotations.Local;
+import org.jbpm.task.annotations.CommandBased;
 import org.jbpm.task.annotations.Persistent;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.api.TaskDefService;
@@ -34,30 +34,21 @@ import org.jbpm.task.query.TaskSummary;
 
 /**
  * 
- * @author salaboy
  */
 
 public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     @Inject
-    @Local
     private TaskDefService taskDefService;
     @Inject
-    @Local
     private TaskInstanceService taskInstanceService;
     @Inject
-    @Local
     private TaskIdentityService taskIdentityService;
     @Inject
-    @Local
     private TaskAdminService taskAdminService;
     @Inject
-    @Local
     private TaskQueryService taskQueryService;
-
-    @Inject
-    @Persistent
-    @Local
+    @Inject @Persistent
     private TaskEventsService taskEventsService;
     
     private UserInfo userInfo;
@@ -95,7 +86,6 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         return taskEventsService;
     }
     
-
     public List<TaskSummary> getActiveTasks() {
         return taskAdminService.getActiveTasks();
     }
