@@ -14,41 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.pillar;
+package org.drools.planner.core.heuristic.selector.common.iterator;
 
 import java.util.List;
 import java.util.ListIterator;
 
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.Selector;
-import org.drools.planner.core.heuristic.selector.common.iterator.ListIterable;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-
 /**
- * A pillar is a {@link List} of entities that are somehow related.
- * Selects a {@link List} of somehow related entities that are moved together.
- * @see EntitySelector
+ * An extension on the {@link Iterable} interface that supports {@link #listIterator()} and  {@link #listIterator(int)}.
+ * @param <T> the element type
  */
-public interface PillarSelector extends Selector, ListIterable<List<Object>> {
-
-    /**
-     * @return never null
-     */
-    PlanningEntityDescriptor getEntityDescriptor();
+public interface ListIterable<T> extends Iterable<T> {
 
     /**
      * See {@link List#listIterator()}
      *
      * @return never null, see {@link List#listIterator()}.
      */
-    ListIterator<List<Object>> listIterator();
+    ListIterator<T> listIterator();
 
     /**
      * See {@link List#listIterator()}
      *
-     * @param index lower than {@link #getSize()}, see {@link List#listIterator(int)}.
+     * @param index lower than the size of this {@link ListIterable}, see {@link List#listIterator(int)}.
      * @return never null, see {@link List#listIterator(int)}.
      */
-    ListIterator<List<Object>> listIterator(int index);
+    ListIterator<T> listIterator(int index);
 
 }

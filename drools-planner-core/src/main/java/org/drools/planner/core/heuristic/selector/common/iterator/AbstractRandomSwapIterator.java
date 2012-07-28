@@ -26,7 +26,7 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
     protected Iterator<SubS> leftSubSelectionIterator;
     protected Iterator<SubS> rightSubSelectionIterator;
 
-    protected AbstractRandomSwapIterator(Iterable<SubS> leftSubSelector,
+    public AbstractRandomSwapIterator(Iterable<SubS> leftSubSelector,
             Iterable<SubS> rightSubSelector) {
         this.leftSubSelector = leftSubSelector;
         this.rightSubSelector = rightSubSelector;

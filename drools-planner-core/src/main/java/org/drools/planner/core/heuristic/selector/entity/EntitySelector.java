@@ -23,32 +23,18 @@ import java.util.ListIterator;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.heuristic.selector.common.iterator.ListIterable;
 
 /**
  * Selects instances of 1 {@link PlanningEntity} annotated class.
  * @see AbstractEntitySelector
  * @see FromSolutionEntitySelector
  */
-public interface EntitySelector extends Selector, Iterable<Object> {
+public interface EntitySelector extends Selector, ListIterable<Object> {
 
     /**
      * @return never null
      */
     PlanningEntityDescriptor getEntityDescriptor();
-
-    /**
-     * See {@link List#listIterator()}
-     *
-     * @return never null, see {@link List#listIterator()}.
-     */
-    ListIterator<Object> listIterator();
-
-    /**
-     * See {@link List#listIterator()}
-     *
-     * @param index lower than {@link #getSize()}, see {@link List#listIterator(int)}.
-     * @return never null, see {@link List#listIterator(int)}.
-     */
-    ListIterator<Object> listIterator(int index);
 
 }

@@ -23,6 +23,7 @@ import java.util.ListIterator;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
@@ -99,46 +100,15 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
         }
     }
 
-    private class OriginalPillarSwapMoveIterator extends UpcomingSelectionIterator<Move> {
-
-        private ListIterator<List<Object>> leftEntityIterator; // TODO Rename to leftPillarIterator
-        private ListIterator<List<Object>> rightEntityIterator;
-
-        private List<Object> leftEntity;
+    private class OriginalPillarSwapMoveIterator extends AbstractOriginalSwapIterator<Move, List<Object>> {
 
         private OriginalPillarSwapMoveIterator() {
-            leftEntityIterator = leftPillarSelector.listIterator();
-            rightEntityIterator = IteratorUtils.emptyListIterator();
-            createUpcomingSelection();
+            super(leftPillarSelector, rightPillarSelector);
         }
 
         @Override
-        protected void createUpcomingSelection() {
-            if (!rightEntityIterator.hasNext()) {
-                if (!leftEntityIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
-                }
-                leftEntity = leftEntityIterator.next();
-
-                if (!leftEqualsRight) {
-                    rightEntityIterator = rightPillarSelector.listIterator();
-                    if (!rightEntityIterator.hasNext()) {
-                        upcomingSelection = null;
-                        return;
-                    }
-                } else {
-                    // Select A-B, A-C, B-C. Do not select B-A, C-A, C-B. Do not select A-A, B-B, C-C.
-                    if (!leftEntityIterator.hasNext()) {
-                        upcomingSelection = null;
-                        return;
-                    }
-                    rightEntityIterator = rightPillarSelector.listIterator(leftEntityIterator.nextIndex());
-                    // rightEntityIterator's first hasNext() always returns true because of the nextIndex()
-                }
-            }
-            List<Object> rightEntity = rightEntityIterator.next();
-            upcomingSelection = new PillarSwapMove(variableDescriptors, leftEntity, rightEntity);
+        protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
+            return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
         }
 
     }

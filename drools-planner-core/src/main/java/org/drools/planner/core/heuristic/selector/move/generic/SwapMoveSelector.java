@@ -23,6 +23,7 @@ import java.util.ListIterator;
 import org.apache.commons.collections.IteratorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedSwapMove;
@@ -103,48 +104,17 @@ public class SwapMoveSelector extends GenericMoveSelector {
         }
     }
 
-    private class OriginalSwapMoveIterator extends UpcomingSelectionIterator<Move> {
-
-        private ListIterator<Object> leftEntityIterator;
-        private ListIterator<Object> rightEntityIterator;
-
-        private Object leftEntity;
+    private class OriginalSwapMoveIterator extends AbstractOriginalSwapIterator<Move, Object> {
 
         private OriginalSwapMoveIterator() {
-            leftEntityIterator = leftEntitySelector.listIterator();
-            rightEntityIterator = IteratorUtils.emptyListIterator();
-            createUpcomingSelection();
+            super(leftEntitySelector, rightEntitySelector);
         }
 
         @Override
-        protected void createUpcomingSelection() {
-            if (!rightEntityIterator.hasNext()) {
-                if (!leftEntityIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
-                }
-                leftEntity = leftEntityIterator.next();
-
-                if (!leftEqualsRight) {
-                    rightEntityIterator = rightEntitySelector.listIterator();
-                    if (!rightEntityIterator.hasNext()) {
-                        upcomingSelection = null;
-                        return;
-                    }
-                } else {
-                    // Select A-B, A-C, B-C. Do not select B-A, C-A, C-B. Do not select A-A, B-B, C-C.
-                    if (!leftEntityIterator.hasNext()) {
-                        upcomingSelection = null;
-                        return;
-                    }
-                    rightEntityIterator = rightEntitySelector.listIterator(leftEntityIterator.nextIndex());
-                    // rightEntityIterator's first hasNext() always returns true because of the nextIndex()
-                }
-            }
-            Object rightEntity = rightEntityIterator.next();
-            upcomingSelection = anyChained
-                    ? new ChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
-                    : new SwapMove(variableDescriptors, leftEntity, rightEntity);
+        protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
+            return anyChained
+                    ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
+                    : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
         }
 
     }
