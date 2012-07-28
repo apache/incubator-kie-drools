@@ -57,29 +57,27 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>step-changeSwapSubChain-entityTabu9-5000</name>
+    <name>jit-changeSwap-entityTabu9-2000</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <cacheType>STEP</cacheType>
           <changeMoveSelector/>
           <swapMoveSelector/>
-          <subChainChangeMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>9</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>5000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>jit-changeSwapSubChain-entityTabu9-5000</name>
+    <name>jit-changeSwapSubChainNoReverse-entityTabu9-2000</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -88,29 +86,9 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
-          <subChainChangeMoveSelector/>
-        </unionMoveSelector>
-        <acceptor>
-          <planningEntityTabuSize>9</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>5000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>step-changeSwapSubChain-entityTabu9-2000</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <cacheType>STEP</cacheType>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <subChainChangeMoveSelector/>
+          <subChainChangeMoveSelector>
+            <selectReversingMoveToo>false</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>9</planningEntityTabuSize>
