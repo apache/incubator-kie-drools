@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.move.iterator;
+package org.drools.planner.core.heuristic.selector.common.iterator;
 
 import java.util.Iterator;
 
-import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.drools.planner.core.move.Move;
+public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelectionIterator<S> {
 
-public abstract class AbstractRandomSwappingMoveIterator<SubSelection> extends UpcomingSelectionIterator<Move> {
+    protected final Iterable<SubS> leftSubSelector;
+    protected final Iterable<SubS> rightSubSelector;
 
-    protected final Iterable<SubSelection> leftSubSelector;
-    protected final Iterable<SubSelection> rightSubSelector;
+    protected Iterator<SubS> leftSubSelectionIterator;
+    protected Iterator<SubS> rightSubSelectionIterator;
 
-    protected Iterator<SubSelection> leftSubSelectionIterator;
-    protected Iterator<SubSelection> rightSubSelectionIterator;
-
-    protected AbstractRandomSwappingMoveIterator(Iterable<SubSelection> leftSubSelector,
-            Iterable<SubSelection> rightSubSelector) {
+    protected AbstractRandomSwapIterator(Iterable<SubS> leftSubSelector,
+            Iterable<SubS> rightSubSelector) {
         this.leftSubSelector = leftSubSelector;
         this.rightSubSelector = rightSubSelector;
         leftSubSelectionIterator = this.leftSubSelector.iterator();
@@ -45,20 +42,20 @@ public abstract class AbstractRandomSwappingMoveIterator<SubSelection> extends U
     @Override
     protected void createUpcomingSelection() {
         // Ideally, this code should have read:
-        //     SubSelection leftSubSelection = leftSubSelectionIterator.next();
-        //     SubSelection rightSubSelection = rightSubSelectionIterator.next();
+        //     SubS leftSubSelection = leftSubSelectionIterator.next();
+        //     SubS rightSubSelection = rightSubSelectionIterator.next();
         // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
         if (!leftSubSelectionIterator.hasNext()) {
             leftSubSelectionIterator = leftSubSelector.iterator();
         }
-        SubSelection leftSubSelection = leftSubSelectionIterator.next();
+        SubS leftSubSelection = leftSubSelectionIterator.next();
         if (!rightSubSelectionIterator.hasNext()) {
             rightSubSelectionIterator = rightSubSelector.iterator();
         }
-        SubSelection rightSubSelection = rightSubSelectionIterator.next();
-        upcomingSelection = newSwappingMove(leftSubSelection, rightSubSelection);
+        SubS rightSubSelection = rightSubSelectionIterator.next();
+        upcomingSelection = newSwapSelection(leftSubSelection, rightSubSelection);
     }
 
-    protected abstract Move newSwappingMove(SubSelection leftSubSelection, SubSelection rightSubSelection);
+    protected abstract S newSwapSelection(SubS leftSubSelection, SubS rightSubSelection);
 
 }

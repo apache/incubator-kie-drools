@@ -25,7 +25,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
-import org.drools.planner.core.heuristic.selector.move.iterator.AbstractRandomSwappingMoveIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.drools.planner.core.move.Move;
 
 public class PillarSwapMoveSelector extends GenericMoveSelector {
@@ -143,14 +143,14 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
 
     }
 
-    private class RandomPillarSwapMoveIterator extends AbstractRandomSwappingMoveIterator<List<Object>> {
+    private class RandomPillarSwapMoveIterator extends AbstractRandomSwapIterator<Move, List<Object>> {
 
         private RandomPillarSwapMoveIterator() {
             super(leftPillarSelector, rightPillarSelector);
         }
 
         @Override
-        protected Move newSwappingMove(List<Object> leftSubSelection, List<Object> rightSubSelection) {
+        protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
             return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
         }
     }
