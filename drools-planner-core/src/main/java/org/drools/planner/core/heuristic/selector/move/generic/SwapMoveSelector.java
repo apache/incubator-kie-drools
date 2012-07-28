@@ -18,6 +18,7 @@ package org.drools.planner.core.heuristic.selector.move.generic;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -26,6 +27,7 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedSwapMove;
+import org.drools.planner.core.heuristic.selector.move.iterator.AbstractRandomSwappingMoveIterator;
 import org.drools.planner.core.move.Move;
 
 public class SwapMoveSelector extends GenericMoveSelector {
@@ -148,38 +150,17 @@ public class SwapMoveSelector extends GenericMoveSelector {
 
     }
 
-    private class RandomSwapMoveIterator extends UpcomingSelectionIterator<Move> {
-
-        private Iterator<Object> leftEntityIterator;
-        private Iterator<Object> rightEntityIterator;
+    private class RandomSwapMoveIterator extends AbstractRandomSwappingMoveIterator<Object> {
 
         private RandomSwapMoveIterator() {
-            leftEntityIterator = leftEntitySelector.iterator();
-            rightEntityIterator = rightEntitySelector.iterator();
-            if (!leftEntityIterator.hasNext() || !rightEntityIterator.hasNext()) {
-                upcomingSelection = null;
-            } else {
-                createUpcomingSelection();
-            }
+            super(leftEntitySelector, rightEntitySelector);
         }
 
         @Override
-        protected void createUpcomingSelection() {
-            // Ideally, this code should have read:
-            //     Object leftEntity = leftEntityIterator.next();
-            //     Object rightEntity = rightEntityIterator.next();
-            // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
-            if (!leftEntityIterator.hasNext()) {
-                leftEntityIterator = leftEntitySelector.iterator();
-            }
-            Object leftEntity = leftEntityIterator.next();
-            if (!rightEntityIterator.hasNext()) {
-                rightEntityIterator = rightEntitySelector.iterator();
-            }
-            Object rightEntity = rightEntityIterator.next();
-            upcomingSelection = anyChained
-                    ? new ChainedSwapMove(variableDescriptors, leftEntity, rightEntity)
-                    : new SwapMove(variableDescriptors, leftEntity, rightEntity);
+        protected Move newSwappingMove(Object leftSubSelection, Object rightSubSelection) {
+            return anyChained
+                    ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
+                    : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
         }
 
     }

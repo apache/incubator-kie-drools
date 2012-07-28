@@ -25,6 +25,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
+import org.drools.planner.core.heuristic.selector.move.iterator.AbstractRandomSwappingMoveIterator;
 import org.drools.planner.core.move.Move;
 
 public class PillarSwapMoveSelector extends GenericMoveSelector {
@@ -142,38 +143,16 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
 
     }
 
-    private class RandomPillarSwapMoveIterator extends UpcomingSelectionIterator<Move> {
-
-        private Iterator<List<Object>> leftEntityIterator;
-        private Iterator<List<Object>> rightEntityIterator;
+    private class RandomPillarSwapMoveIterator extends AbstractRandomSwappingMoveIterator<List<Object>> {
 
         private RandomPillarSwapMoveIterator() {
-            leftEntityIterator = leftPillarSelector.iterator();
-            rightEntityIterator = rightPillarSelector.iterator();
-            if (!leftEntityIterator.hasNext() || !rightEntityIterator.hasNext()) {
-                upcomingSelection = null;
-            } else {
-                createUpcomingSelection();
-            }
+            super(leftPillarSelector, rightPillarSelector);
         }
 
         @Override
-        protected void createUpcomingSelection() {
-            // Ideally, this code should have read:
-            //     Object leftEntity = leftEntityIterator.next();
-            //     Object rightEntity = rightEntityIterator.next();
-            // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
-            if (!leftEntityIterator.hasNext()) {
-                leftEntityIterator = leftPillarSelector.iterator();
-            }
-            List<Object> leftEntity = leftEntityIterator.next();
-            if (!rightEntityIterator.hasNext()) {
-                rightEntityIterator = rightPillarSelector.iterator();
-            }
-            List<Object> rightEntity = rightEntityIterator.next();
-            upcomingSelection = new PillarSwapMove(variableDescriptors, leftEntity, rightEntity);
+        protected Move newSwappingMove(List<Object> leftSubSelection, List<Object> rightSubSelection) {
+            return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
         }
-
     }
 
     @Override
