@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.AbstractSelector;
@@ -142,6 +143,34 @@ public class DefaultSubChainSelector extends AbstractSelector
             return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
         } else {
             return new RandomSubChainIterator();
+        }
+    }
+
+    public ListIterator<SubChain> listIterator() {
+        if (!randomSelection) {
+            // TODO refactor OriginalSubChainIterator to implement ListIterator
+            // https://issues.jboss.org/browse/JBRULES-3586
+            throw new UnsupportedOperationException("This class ("
+                    + getClass() + ") does not support the listIterator() methods yet. "
+                    + "As a result you can only use SubChain based swap moves with randomSelection true. "
+                    + " https://issues.jboss.org/browse/JBRULES-3586");
+        } else {
+            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
+                    + randomSelection + ").");
+        }
+    }
+
+    public ListIterator<SubChain> listIterator(int index) {
+        if (!randomSelection) {
+            // TODO refactor OriginalSubChainIterator to implement ListIterator
+            // https://issues.jboss.org/browse/JBRULES-3586
+            throw new UnsupportedOperationException("This class ("
+                    + getClass() + ") does not support the listIterator() methods yet. "
+                    + "As a result you can only use SubChain based swap moves with randomSelection true. "
+                    + " https://issues.jboss.org/browse/JBRULES-3586");
+        } else {
+            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
+                    + randomSelection + ").");
         }
     }
 

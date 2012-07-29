@@ -33,15 +33,12 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
     protected final Collection<PlanningVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
 
-    protected final boolean leftEqualsRight;
-
     public PillarSwapMoveSelector(PillarSelector leftPillarSelector, PillarSelector rightPillarSelector,
             Collection<PlanningVariableDescriptor> variableDescriptors, boolean randomSelection) {
         this.leftPillarSelector = leftPillarSelector;
         this.rightPillarSelector = rightPillarSelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
-        leftEqualsRight = (leftPillarSelector == rightPillarSelector);
         Class<?> leftEntityClass = leftPillarSelector.getEntityDescriptor().getPlanningEntityClass();
         if (!leftEntityClass.equals(rightPillarSelector.getEntityDescriptor().getPlanningEntityClass())) {
             throw new IllegalStateException("The moveSelector (" + this.getClass()
@@ -65,7 +62,9 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
             }
         }
         solverPhaseLifecycleSupport.addEventListener(leftPillarSelector);
-        solverPhaseLifecycleSupport.addEventListener(rightPillarSelector);
+        if (leftPillarSelector != rightPillarSelector) {
+            solverPhaseLifecycleSupport.addEventListener(rightPillarSelector);
+        }
     }
 
     // ************************************************************************

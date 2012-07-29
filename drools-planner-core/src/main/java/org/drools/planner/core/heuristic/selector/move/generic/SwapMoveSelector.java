@@ -34,7 +34,6 @@ public class SwapMoveSelector extends GenericMoveSelector {
     protected final Collection<PlanningVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
 
-    protected final boolean leftEqualsRight;
     protected final boolean anyChained;
 
     public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
@@ -43,7 +42,6 @@ public class SwapMoveSelector extends GenericMoveSelector {
         this.rightEntitySelector = rightEntitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
-        leftEqualsRight = (leftEntitySelector == rightEntitySelector);
         PlanningEntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
         PlanningEntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
         if (!leftEntityDescriptor.getPlanningEntityClass().equals(rightEntityDescriptor.getPlanningEntityClass())) {
@@ -69,7 +67,9 @@ public class SwapMoveSelector extends GenericMoveSelector {
         }
         this.anyChained = anyChained;
         solverPhaseLifecycleSupport.addEventListener(leftEntitySelector);
-        solverPhaseLifecycleSupport.addEventListener(rightEntitySelector);
+        if (leftEntitySelector != rightEntitySelector) {
+            solverPhaseLifecycleSupport.addEventListener(rightEntitySelector);
+        }
     }
 
     // ************************************************************************
