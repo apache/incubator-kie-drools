@@ -29,9 +29,11 @@ import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
+import org.drools.planner.core.testdata.domain.TestdataChainedObject;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class SelectorTestUtils {
@@ -128,6 +130,15 @@ public class SelectorTestUtils {
                 return null;
             }
         });
+    }
+
+    public static void assertChain(TestdataChainedObject... chainedObjects) {
+        TestdataChainedObject chainedObject = chainedObjects[0];
+        for (int i = 1; i < chainedObjects.length; i++) {
+            TestdataChainedEntity chainedEntity = (TestdataChainedEntity) chainedObjects[i];
+            assertEquals(chainedObject, chainedEntity.getChainedObject());
+            chainedObject = chainedEntity;
+        }
     }
 
     private SelectorTestUtils() {

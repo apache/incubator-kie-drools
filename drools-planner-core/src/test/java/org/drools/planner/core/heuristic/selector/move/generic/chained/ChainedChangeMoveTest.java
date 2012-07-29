@@ -8,7 +8,6 @@ import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ChainedChangeMoveTest {
@@ -33,11 +32,8 @@ public class ChainedChangeMoveTest {
         ChainedChangeMove move = new ChainedChangeMove(a3, variableDescriptor, b1);
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, a2.getChainedObject());
-
-        assertEquals(b0, b1.getChainedObject());
-        assertEquals(b1, a3.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, a2);
+        SelectorTestUtils.assertChain(b0, b1, a3);
 
         verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
@@ -63,11 +59,8 @@ public class ChainedChangeMoveTest {
         ChainedChangeMove move = new ChainedChangeMove(a2, variableDescriptor, b0);
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, a3.getChainedObject());
-
-        assertEquals(b0, a2.getChainedObject());
-        assertEquals(a2, b1.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, a3);
+        SelectorTestUtils.assertChain(b0, a2, b1);
 
         verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a2, "chainedObject");

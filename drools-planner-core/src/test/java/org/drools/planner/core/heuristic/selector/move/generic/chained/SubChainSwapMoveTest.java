@@ -59,15 +59,8 @@ public class SubChainSwapMoveTest {
                 new SubChain(Arrays.<Object>asList(b2, b3)));
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, a2.getChainedObject());
-        assertEquals(a2, b2.getChainedObject());
-        assertEquals(b2, b3.getChainedObject());
-
-        assertEquals(b0, b1.getChainedObject());
-        assertEquals(b1, a3.getChainedObject());
-        assertEquals(a3, a4.getChainedObject());
-        assertEquals(a4, a5.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, a2, b2, b3);
+        SelectorTestUtils.assertChain(b0, b1, a3, a4, a5);
 
         verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
@@ -106,15 +99,8 @@ public class SubChainSwapMoveTest {
                 new SubChain(Arrays.<Object>asList(b1, b2)));
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, b1.getChainedObject());
-        assertEquals(b1, b2.getChainedObject());
-        assertEquals(b2, a5.getChainedObject());
-
-        assertEquals(b0, a2.getChainedObject());
-        assertEquals(a2, a3.getChainedObject());
-        assertEquals(a3, a4.getChainedObject());
-        assertEquals(a4, b3.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, b1, b2, a5);
+        SelectorTestUtils.assertChain(b0, a2, a3, a4, b3);
 
         verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a2, "chainedObject");

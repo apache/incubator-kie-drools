@@ -42,13 +42,8 @@ public class SubChainReversingChangeMoveTest {
                 variableDescriptor, b1);
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, a2.getChainedObject());
-
-        assertEquals(b0, b1.getChainedObject());
-        assertEquals(b1, a5.getChainedObject());
-        assertEquals(a5, a4.getChainedObject());
-        assertEquals(a4, a3.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, a2);
+        SelectorTestUtils.assertChain(b0, b1, a5, a4, a3);
 
         verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
@@ -79,11 +74,7 @@ public class SubChainReversingChangeMoveTest {
                 variableDescriptor, a2);
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, a2.getChainedObject());
-        assertEquals(a2, a5.getChainedObject());
-        assertEquals(a5, a4.getChainedObject());
-        assertEquals(a4, a3.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, a2, a5, a4, a3);
 
         verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
@@ -117,13 +108,8 @@ public class SubChainReversingChangeMoveTest {
                 variableDescriptor, b0);
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, a5.getChainedObject());
-
-        assertEquals(b0, a4.getChainedObject());
-        assertEquals(a4, a3.getChainedObject());
-        assertEquals(a3, a2.getChainedObject());
-        assertEquals(a2, b1.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, a5);
+        SelectorTestUtils.assertChain(b0, a4, a3, a2, b1);
 
         verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
@@ -158,11 +144,7 @@ public class SubChainReversingChangeMoveTest {
                 variableDescriptor, a1);
         move.doMove(scoreDirector);
 
-        assertEquals(a0, a1.getChainedObject());
-        assertEquals(a1, a4.getChainedObject());
-        assertEquals(a4, a3.getChainedObject());
-        assertEquals(a3, a2.getChainedObject());
-        assertEquals(a2, a5.getChainedObject());
+        SelectorTestUtils.assertChain(a0, a1, a4, a3, a2, a5);
 
         verify(scoreDirector, atLeast(1)).beforeVariableChanged(a5, "chainedObject");
         verify(scoreDirector, atLeast(1)).afterVariableChanged(a5, "chainedObject");
