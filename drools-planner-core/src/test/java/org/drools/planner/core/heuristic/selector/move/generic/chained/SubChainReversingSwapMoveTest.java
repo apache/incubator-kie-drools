@@ -53,7 +53,8 @@ public class SubChainReversingSwapMoveTest {
         SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor, new SubChain(Arrays.<Object>asList(a3, a4, a5)),
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+                new SubChain(Arrays.<Object>asList(a3, a4, a5)),
                 new SubChain(Arrays.<Object>asList(b2, b3)));
         move.doMove(scoreDirector);
 
@@ -70,6 +71,43 @@ public class SubChainReversingSwapMoveTest {
         verify(scoreDirector, atLeastOnce()).afterVariableChanged(b2, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b3, "chainedObject");
+    }
+
+    @Test
+    public void noTrailingInPlace() {
+        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+        TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
+        TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
+
+        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+                new TestdataChainedEntity[]{a1, a2, a3, a4, a5, a6, a7});
+
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+                new SubChain(Arrays.<Object>asList(a3, a4, a5)),
+                new SubChain(Arrays.<Object>asList(a6, a7)));
+        move.doMove(scoreDirector);
+
+        SelectorTestUtils.assertChain(a0, a1, a2, a7, a6, a5, a4, a3);
+
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a5, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a5, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a6, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a6, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a7, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a7, "chainedObject");
     }
 
     @Test
@@ -93,7 +131,8 @@ public class SubChainReversingSwapMoveTest {
         SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor, new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)),
                 new SubChain(Arrays.<Object>asList(b1, b2)));
         move.doMove(scoreDirector);
 
@@ -114,6 +153,45 @@ public class SubChainReversingSwapMoveTest {
         verify(scoreDirector).afterVariableChanged(b2, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b3, "chainedObject");
+    }
+
+    @Test
+    public void oldAndNewTrailingInPlace() {
+        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+        TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
+        TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
+
+        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+                new TestdataChainedEntity[]{a1, a2, a3, a4, a5, a6, a7});
+
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+                new SubChain(Arrays.<Object>asList(a5, a6)));
+        move.doMove(scoreDirector);
+
+        SelectorTestUtils.assertChain(a0, a1, a6, a5, a4, a3, a2, a7);
+
+        verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a4, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a4, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a5, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a6, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a6, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a7, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a7, "chainedObject");
     }
 
 }
