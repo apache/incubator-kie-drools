@@ -34,13 +34,15 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
     protected final SubChainSelector rightSubChainSelector;
     protected final PlanningVariableDescriptor variableDescriptor;
     protected final boolean randomSelection;
+    protected final boolean selectReversingMoveToo;
 
     public SubChainSwapMoveSelector(SubChainSelector leftSubChainSelector, SubChainSelector rightSubChainSelector,
-            PlanningVariableDescriptor variableDescriptor, boolean randomSelection) {
+            boolean randomSelection, boolean selectReversingMoveToo) {
         this.leftSubChainSelector = leftSubChainSelector;
         this.rightSubChainSelector = rightSubChainSelector;
-        this.variableDescriptor = variableDescriptor;
         this.randomSelection = randomSelection;
+        this.selectReversingMoveToo = selectReversingMoveToo;
+        variableDescriptor = leftSubChainSelector.getVariableDescriptor();
         if (leftSubChainSelector.getVariableDescriptor() != rightSubChainSelector.getVariableDescriptor()) {
             throw new IllegalStateException("The moveSelector (" + this.getClass()
                     + ") has a leftSubChainSelector's variableDescriptor ("
@@ -51,6 +53,10 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
         solverPhaseLifecycleSupport.addEventListener(leftSubChainSelector);
         if (leftSubChainSelector != rightSubChainSelector) {
             solverPhaseLifecycleSupport.addEventListener(rightSubChainSelector);
+        }
+        // TODO
+        if (selectReversingMoveToo) {
+            throw new UnsupportedOperationException();
         }
     }
 

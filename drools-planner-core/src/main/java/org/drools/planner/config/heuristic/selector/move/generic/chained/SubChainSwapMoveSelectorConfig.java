@@ -22,26 +22,25 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
-import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.heuristic.selector.move.generic.PillarSwapMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector;
 
-@XStreamAlias("subChainChangeMoveSelector")
-public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
+@XStreamAlias("subChainSwapMoveSelector")
+public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
 
     private Class<?> planningEntityClass = null;
     @XStreamAlias("subChainSelector")
     private SubChainSelectorConfig subChainSelectorConfig = new SubChainSelectorConfig();
-    @XStreamAlias("valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+    @XStreamAlias("secondarySubChainSelector")
+    private SubChainSelectorConfig secondarySubChainSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;
 
@@ -61,12 +60,12 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
         this.subChainSelectorConfig = subChainSelectorConfig;
     }
 
-    public ValueSelectorConfig getValueSelectorConfig() {
-        return valueSelectorConfig;
+    public SubChainSelectorConfig getSecondarySubChainSelectorConfig() {
+        return secondarySubChainSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
-        this.valueSelectorConfig = valueSelectorConfig;
+    public void setSecondarySubChainSelectorConfig(SubChainSelectorConfig secondarySubChainSelectorConfig) {
+        this.secondarySubChainSelectorConfig = secondarySubChainSelectorConfig;
     }
 
     public Boolean getSelectReversingMoveToo() {
@@ -84,11 +83,13 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
-        SubChainSelector subChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
-                solutionDescriptor, resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
-        return new SubChainChangeMoveSelector(subChainSelector, valueSelector,
+        SubChainSelector leftSubChainSelector = subChainSelectorConfig.buildSubChainSelector(
+                environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
+        SubChainSelectorConfig rightSubChainSelectorConfig = secondarySubChainSelectorConfig == null
+                ? subChainSelectorConfig : secondarySubChainSelectorConfig;
+        SubChainSelector rightSubChainSelector = rightSubChainSelectorConfig.buildSubChainSelector(
+                environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
+        return new SubChainSwapMoveSelector(leftSubChainSelector, rightSubChainSelector,
                 resolvedSelectionOrder == SelectionOrder.RANDOM,
                 selectReversingMoveToo == null ? true : selectReversingMoveToo);
     }
@@ -121,7 +122,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
         return entityDescriptor;
     }
 
-    public void inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {
+    public void inherit(SubChainSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         planningEntityClass = ConfigUtils.inheritOverwritableProperty(planningEntityClass,
                 inheritedConfig.getPlanningEntityClass());
@@ -130,10 +131,10 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
         } else if (inheritedConfig.getSubChainSelectorConfig() != null) {
             subChainSelectorConfig.inherit(inheritedConfig.getSubChainSelectorConfig());
         }
-        if (valueSelectorConfig == null) {
-            valueSelectorConfig = inheritedConfig.getValueSelectorConfig();
-        } else if (inheritedConfig.getValueSelectorConfig() != null) {
-            valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
+        if (secondarySubChainSelectorConfig == null) {
+            secondarySubChainSelectorConfig = inheritedConfig.getSecondarySubChainSelectorConfig();
+        } else if (inheritedConfig.getSecondarySubChainSelectorConfig() != null) {
+            secondarySubChainSelectorConfig.inherit(inheritedConfig.getSecondarySubChainSelectorConfig());
         }
         selectReversingMoveToo = ConfigUtils.inheritOverwritableProperty(selectReversingMoveToo,
                 inheritedConfig.getSelectReversingMoveToo());
@@ -141,7 +142,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + subChainSelectorConfig + ", " + valueSelectorConfig + ")";
+        return getClass().getSimpleName() + "(" + subChainSelectorConfig
+                + (secondarySubChainSelectorConfig == null ? "" : ", " + secondarySubChainSelectorConfig) + ")";
     }
 
 }

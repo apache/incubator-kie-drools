@@ -27,6 +27,7 @@ import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelec
 import org.drools.planner.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
+import org.drools.planner.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -42,7 +43,7 @@ import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSe
 @XStreamInclude({
         UnionMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
-        SubChainChangeMoveSelectorConfig.class,
+        SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
         MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class
 })
 public abstract class MoveSelectorConfig extends SelectorConfig {
