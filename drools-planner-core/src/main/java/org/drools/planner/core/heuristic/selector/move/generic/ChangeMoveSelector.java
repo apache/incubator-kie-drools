@@ -58,7 +58,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     }
 
     public long getSize() {
-        return (long) entitySelector.getSize() * (long) valueSelector.getSize();
+        return entitySelector.getSize() * valueSelector.getSize();
     }
 
     public Iterator<Move> iterator() {

@@ -71,7 +71,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     }
 
     public long getSize() {
-        return (long) subChainSelector.getSize() * (long) valueSelector.getSize();
+        return subChainSelector.getSize() * valueSelector.getSize();
     }
 
     public Iterator<Move> iterator() {
