@@ -30,24 +30,23 @@ import org.drools.planner.core.score.director.ScoreDirector;
 
 public class SwapMove implements Move {
 
-    protected final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
+    protected final Collection<PlanningVariableDescriptor> variableDescriptors;
 
-    protected final Object leftPlanningEntity;
-    protected final Object rightPlanningEntity;
+    protected final Object leftEntity;
+    protected final Object rightEntity;
 
-    public SwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
-            Object leftPlanningEntity, Object rightPlanningEntity) {
-        this.planningVariableDescriptors = planningVariableDescriptors;
-        this.leftPlanningEntity = leftPlanningEntity;
-        this.rightPlanningEntity = rightPlanningEntity;
+    public SwapMove(Collection<PlanningVariableDescriptor> variableDescriptors, Object leftEntity, Object rightEntity) {
+        this.variableDescriptors = variableDescriptors;
+        this.leftEntity = leftEntity;
+        this.rightEntity = rightEntity;
     }
 
-    public Object getLeftPlanningEntity() {
-        return leftPlanningEntity;
+    public Object getLeftEntity() {
+        return leftEntity;
     }
 
-    public Object getRightPlanningEntity() {
-        return rightPlanningEntity;
+    public Object getRightEntity() {
+        return rightEntity;
     }
 
     // ************************************************************************
@@ -55,9 +54,9 @@ public class SwapMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntity);
-            Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntity);
+        for (PlanningVariableDescriptor planningVariableDescriptor : variableDescriptors) {
+            Object leftValue = planningVariableDescriptor.getValue(leftEntity);
+            Object rightValue = planningVariableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
                 return true;
             }
@@ -66,34 +65,33 @@ public class SwapMove implements Move {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new SwapMove(planningVariableDescriptors,
-                rightPlanningEntity, leftPlanningEntity);
+        return new SwapMove(variableDescriptors, rightEntity, leftEntity);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            Object oldLeftValue = planningVariableDescriptor.getValue(leftPlanningEntity);
-            Object oldRightValue = planningVariableDescriptor.getValue(rightPlanningEntity);
+        for (PlanningVariableDescriptor planningVariableDescriptor : variableDescriptors) {
+            Object oldLeftValue = planningVariableDescriptor.getValue(leftEntity);
+            Object oldRightValue = planningVariableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
-                scoreDirector.beforeVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
-                planningVariableDescriptor.setValue(leftPlanningEntity, oldRightValue);
-                scoreDirector.afterVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
-                scoreDirector.beforeVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
-                planningVariableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
-                scoreDirector.afterVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
+                scoreDirector.beforeVariableChanged(leftEntity, planningVariableDescriptor.getVariableName());
+                planningVariableDescriptor.setValue(leftEntity, oldRightValue);
+                scoreDirector.afterVariableChanged(leftEntity, planningVariableDescriptor.getVariableName());
+                scoreDirector.beforeVariableChanged(rightEntity, planningVariableDescriptor.getVariableName());
+                planningVariableDescriptor.setValue(rightEntity, oldLeftValue);
+                scoreDirector.afterVariableChanged(rightEntity, planningVariableDescriptor.getVariableName());
             }
         }
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        return Arrays.asList(leftPlanningEntity, rightPlanningEntity);
+        return Arrays.asList(leftEntity, rightEntity);
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<Object>(planningVariableDescriptors.size() * 2);
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            values.add(planningVariableDescriptor.getValue(leftPlanningEntity));
-            values.add(planningVariableDescriptor.getValue(rightPlanningEntity));
+        List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
+        for (PlanningVariableDescriptor planningVariableDescriptor : variableDescriptors) {
+            values.add(planningVariableDescriptor.getValue(leftEntity));
+            values.add(planningVariableDescriptor.getValue(rightEntity));
         }
         return values;
     }
@@ -104,8 +102,8 @@ public class SwapMove implements Move {
         } else if (o instanceof SwapMove) {
             SwapMove other = (SwapMove) o;
             return new EqualsBuilder()
-                    .append(leftPlanningEntity, other.leftPlanningEntity)
-                    .append(rightPlanningEntity, other.rightPlanningEntity)
+                    .append(leftEntity, other.leftEntity)
+                    .append(rightEntity, other.rightEntity)
                     .isEquals();
         } else {
             return false;
@@ -114,13 +112,13 @@ public class SwapMove implements Move {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(leftPlanningEntity)
-                .append(rightPlanningEntity)
+                .append(leftEntity)
+                .append(rightEntity)
                 .toHashCode();
     }
 
     public String toString() {
-        return leftPlanningEntity + " <=> " + rightPlanningEntity;
+        return leftEntity + " <=> " + rightEntity;
     }
 
 }

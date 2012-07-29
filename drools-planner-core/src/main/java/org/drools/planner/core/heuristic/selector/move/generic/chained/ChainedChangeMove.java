@@ -24,9 +24,8 @@ import org.drools.planner.core.score.director.ScoreDirector;
 
 public class ChainedChangeMove extends ChangeMove {
 
-    public ChainedChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
-            Object toPlanningValue) {
-        super(planningEntity, planningVariableDescriptor, toPlanningValue);
+    public ChainedChangeMove(Object entity, PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
+        super(entity, variableDescriptor, toPlanningValue);
     }
 
     // ************************************************************************
@@ -36,40 +35,40 @@ public class ChainedChangeMove extends ChangeMove {
     @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return super.isMoveDoable(scoreDirector)
-                && !ObjectUtils.equals(planningEntity, toPlanningValue);
+                && !ObjectUtils.equals(entity, toPlanningValue);
     }
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new ChainedChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
+        Object oldPlanningValue = variableDescriptor.getValue(entity);
+        return new ChainedChangeMove(entity, variableDescriptor, oldPlanningValue);
     }
 
     @Override
     public void doMove(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(planningVariableDescriptor, planningEntity);
+        Object oldPlanningValue = variableDescriptor.getValue(entity);
+        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, entity);
         // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
         Object newTrailingEntity = toPlanningValue == null ? null
-                : scoreDirector.getTrailingEntity(planningVariableDescriptor, toPlanningValue);
+                : scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
-            planningVariableDescriptor.setValue(oldTrailingEntity, oldPlanningValue);
-            scoreDirector.afterVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            variableDescriptor.setValue(oldTrailingEntity, oldPlanningValue);
+            scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
         }
 
         // Change the entity
-        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
-        planningVariableDescriptor.setValue(planningEntity, toPlanningValue);
-        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+        variableDescriptor.setValue(entity, toPlanningValue);
+        scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
 
         // Reroute the new chain
         if (newTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
-            planningVariableDescriptor.setValue(newTrailingEntity, planningEntity);
-            scoreDirector.afterVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+            variableDescriptor.setValue(newTrailingEntity, entity);
+            scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
         }
     }
 

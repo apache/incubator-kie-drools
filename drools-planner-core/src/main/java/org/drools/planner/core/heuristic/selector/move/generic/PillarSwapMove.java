@@ -32,24 +32,24 @@ import org.drools.planner.core.score.director.ScoreDirector;
  */
 public class PillarSwapMove implements Move {
 
-    private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
+    private final Collection<PlanningVariableDescriptor> variableDescriptors;
 
-    private final List<Object> leftPlanningEntityList;
-    private final List<Object> rightPlanningEntityList;
+    private final List<Object> leftEntityList;
+    private final List<Object> rightEntityList;
 
-    public PillarSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
-            List<Object> leftPlanningEntityList, List<Object> rightPlanningEntityList) {
-        this.planningVariableDescriptors = planningVariableDescriptors;
-        this.leftPlanningEntityList = leftPlanningEntityList;
-        this.rightPlanningEntityList = rightPlanningEntityList;
+    public PillarSwapMove(Collection<PlanningVariableDescriptor> variableDescriptors,
+            List<Object> leftEntityList, List<Object> rightEntityList) {
+        this.variableDescriptors = variableDescriptors;
+        this.leftEntityList = leftEntityList;
+        this.rightEntityList = rightEntityList;
     }
 
-    public List<Object> getLeftPlanningEntityList() {
-        return leftPlanningEntityList;
+    public List<Object> getLeftEntityList() {
+        return leftEntityList;
     }
 
-    public List<Object> getRightPlanningEntityList() {
-        return rightPlanningEntityList;
+    public List<Object> getRightEntityList() {
+        return rightEntityList;
     }
 
     // ************************************************************************
@@ -57,9 +57,9 @@ public class PillarSwapMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptors) {
-            Object leftValue = variableDescriptor.getValue(leftPlanningEntityList.get(0));
-            Object rightValue = variableDescriptor.getValue(rightPlanningEntityList.get(0));
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            Object leftValue = variableDescriptor.getValue(leftEntityList.get(0));
+            Object rightValue = variableDescriptor.getValue(rightEntityList.get(0));
             if (!ObjectUtils.equals(leftValue, rightValue)) {
                 return true;
             }
@@ -68,21 +68,21 @@ public class PillarSwapMove implements Move {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new PillarSwapMove(planningVariableDescriptors,
-                rightPlanningEntityList, leftPlanningEntityList);
+        return new PillarSwapMove(variableDescriptors,
+                rightEntityList, leftEntityList);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptors) {
-            Object oldLeftValue = variableDescriptor.getValue(leftPlanningEntityList.get(0));
-            Object oldRightValue = variableDescriptor.getValue(rightPlanningEntityList.get(0));
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            Object oldLeftValue = variableDescriptor.getValue(leftEntityList.get(0));
+            Object oldRightValue = variableDescriptor.getValue(rightEntityList.get(0));
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
-                for (Object leftPlanningEntity : leftPlanningEntityList) {
+                for (Object leftPlanningEntity : leftEntityList) {
                     scoreDirector.beforeVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
                     variableDescriptor.setValue(leftPlanningEntity, oldRightValue);
                     scoreDirector.afterVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
                 }
-                for (Object rightPlanningEntity : rightPlanningEntityList) {
+                for (Object rightPlanningEntity : rightEntityList) {
                     scoreDirector.beforeVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
                     variableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
                     scoreDirector.afterVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
@@ -93,17 +93,17 @@ public class PillarSwapMove implements Move {
 
     public Collection<? extends Object> getPlanningEntities() {
         List<Object> entities = new ArrayList<Object>(
-                leftPlanningEntityList.size() + rightPlanningEntityList.size());
-        entities.addAll(leftPlanningEntityList);
-        entities.addAll(rightPlanningEntityList);
+                leftEntityList.size() + rightEntityList.size());
+        entities.addAll(leftEntityList);
+        entities.addAll(rightEntityList);
         return entities;
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<Object>(planningVariableDescriptors.size() * 2);
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptors) {
-            values.add(variableDescriptor.getValue(leftPlanningEntityList.get(0)));
-            values.add(variableDescriptor.getValue(rightPlanningEntityList.get(0)));
+        List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            values.add(variableDescriptor.getValue(leftEntityList.get(0)));
+            values.add(variableDescriptor.getValue(rightEntityList.get(0)));
         }
         return values;
     }
@@ -114,9 +114,9 @@ public class PillarSwapMove implements Move {
         } else if (o instanceof PillarSwapMove) {
             PillarSwapMove other = (PillarSwapMove) o;
             return new EqualsBuilder()
-                    .append(planningVariableDescriptors, other.planningVariableDescriptors)
-                    .append(leftPlanningEntityList, other.leftPlanningEntityList)
-                    .append(rightPlanningEntityList, other.rightPlanningEntityList)
+                    .append(variableDescriptors, other.variableDescriptors)
+                    .append(leftEntityList, other.leftEntityList)
+                    .append(rightEntityList, other.rightEntityList)
                     .isEquals();
         } else {
             return false;
@@ -125,14 +125,14 @@ public class PillarSwapMove implements Move {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(planningVariableDescriptors)
-                .append(leftPlanningEntityList)
-                .append(rightPlanningEntityList)
+                .append(variableDescriptors)
+                .append(leftEntityList)
+                .append(rightEntityList)
                 .toHashCode();
     }
 
     public String toString() {
-        return leftPlanningEntityList + " <=> " + rightPlanningEntityList;
+        return leftEntityList + " <=> " + rightEntityList;
     }
 
 }

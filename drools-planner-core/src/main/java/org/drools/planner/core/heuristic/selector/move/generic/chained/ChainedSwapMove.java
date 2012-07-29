@@ -26,9 +26,9 @@ import org.drools.planner.core.score.director.ScoreDirector;
 
 public class ChainedSwapMove extends SwapMove {
 
-    public ChainedSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
-            Object leftPlanningEntity, Object rightPlanningEntity) {
-        super(planningVariableDescriptors, leftPlanningEntity, rightPlanningEntity);
+    public ChainedSwapMove(Collection<PlanningVariableDescriptor> variableDescriptors,
+            Object leftEntity, Object rightEntity) {
+        super(variableDescriptors, leftEntity, rightEntity);
     }
 
     // ************************************************************************
@@ -37,29 +37,28 @@ public class ChainedSwapMove extends SwapMove {
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new ChainedSwapMove(planningVariableDescriptors,
-                rightPlanningEntity, leftPlanningEntity);
+        return new ChainedSwapMove(variableDescriptors, rightEntity, leftEntity);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptors) {
-            Object oldLeftValue = variableDescriptor.getValue(leftPlanningEntity);
-            Object oldRightValue = variableDescriptor.getValue(rightPlanningEntity);
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            Object oldLeftValue = variableDescriptor.getValue(leftEntity);
+            Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
                 if (!variableDescriptor.isChained()) {
-                    scoreDirector.beforeVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
-                    variableDescriptor.setValue(leftPlanningEntity, oldRightValue);
-                    scoreDirector.afterVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                    variableDescriptor.setValue(leftEntity, oldRightValue);
+                    scoreDirector.afterVariableChanged(leftEntity, variableDescriptor.getVariableName());
 
-                    scoreDirector.beforeVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
-                    variableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
-                    scoreDirector.afterVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                    variableDescriptor.setValue(rightEntity, oldLeftValue);
+                    scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
                 } else {
-                    if (oldRightValue != leftPlanningEntity) {
-                        doChainedMove(scoreDirector, variableDescriptor, leftPlanningEntity, oldRightValue);
+                    if (oldRightValue != leftEntity) {
+                        doChainedMove(scoreDirector, variableDescriptor, leftEntity, oldRightValue);
                     }
-                    if (oldLeftValue != rightPlanningEntity) {
-                        doChainedMove(scoreDirector, variableDescriptor, rightPlanningEntity, oldLeftValue);
+                    if (oldLeftValue != rightEntity) {
+                        doChainedMove(scoreDirector, variableDescriptor, rightEntity, oldLeftValue);
                     }
                 }
             }

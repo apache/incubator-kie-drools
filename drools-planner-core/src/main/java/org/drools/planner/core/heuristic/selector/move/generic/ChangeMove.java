@@ -28,19 +28,19 @@ import org.drools.planner.core.score.director.ScoreDirector;
 
 public class ChangeMove implements Move {
 
-    protected final Object planningEntity;
-    protected final PlanningVariableDescriptor planningVariableDescriptor;
+    protected final Object entity;
+    protected final PlanningVariableDescriptor variableDescriptor;
     protected final Object toPlanningValue;
 
-    public ChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
+    public ChangeMove(Object entity, PlanningVariableDescriptor variableDescriptor,
             Object toPlanningValue) {
-        this.planningEntity = planningEntity;
-        this.planningVariableDescriptor = planningVariableDescriptor;
+        this.entity = entity;
+        this.variableDescriptor = variableDescriptor;
         this.toPlanningValue = toPlanningValue;
     }
 
-    public Object getPlanningEntity() {
-        return planningEntity;
+    public Object getEntity() {
+        return entity;
     }
 
     public Object getToPlanningValue() {
@@ -52,23 +52,23 @@ public class ChangeMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
+        Object oldPlanningValue = variableDescriptor.getValue(entity);
         return !ObjectUtils.equals(oldPlanningValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new ChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
+        Object oldPlanningValue = variableDescriptor.getValue(entity);
+        return new ChangeMove(entity, variableDescriptor, oldPlanningValue);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
-        planningVariableDescriptor.setValue(planningEntity, toPlanningValue);
-        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+        variableDescriptor.setValue(entity, toPlanningValue);
+        scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        return Collections.singletonList(planningEntity);
+        return Collections.singletonList(entity);
     }
 
     public Collection<? extends Object> getPlanningValues() {
@@ -81,9 +81,9 @@ public class ChangeMove implements Move {
         } else if (o instanceof ChangeMove) {
             ChangeMove other = (ChangeMove) o;
             return new EqualsBuilder()
-                    .append(planningEntity, other.planningEntity)
-                    .append(planningVariableDescriptor.getVariableName(),
-                            other.planningVariableDescriptor.getVariableName())
+                    .append(entity, other.entity)
+                    .append(variableDescriptor.getVariableName(),
+                            other.variableDescriptor.getVariableName())
                     .append(toPlanningValue, other.toPlanningValue)
                     .isEquals();
         } else {
@@ -93,14 +93,14 @@ public class ChangeMove implements Move {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(planningEntity)
-                .append(planningVariableDescriptor.getVariableName())
+                .append(entity)
+                .append(variableDescriptor.getVariableName())
                 .append(toPlanningValue)
                 .toHashCode();
     }
 
     public String toString() {
-        return planningEntity + " => " + toPlanningValue;
+        return entity + " => " + toPlanningValue;
     }
 
 }

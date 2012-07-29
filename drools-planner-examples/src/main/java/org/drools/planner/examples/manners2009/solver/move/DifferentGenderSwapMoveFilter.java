@@ -24,8 +24,8 @@ import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 public class DifferentGenderSwapMoveFilter implements SelectionFilter<SwapMove> {
 
     public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
-        SeatDesignation leftSeatDesignation = (SeatDesignation) move.getLeftPlanningEntity();
-        SeatDesignation rightSeatDesignation = (SeatDesignation) move.getRightPlanningEntity();
+        SeatDesignation leftSeatDesignation = (SeatDesignation) move.getLeftEntity();
+        SeatDesignation rightSeatDesignation = (SeatDesignation) move.getRightEntity();
         return leftSeatDesignation.getGuest().getGender()
                 == rightSeatDesignation.getGuest().getGender();
     }

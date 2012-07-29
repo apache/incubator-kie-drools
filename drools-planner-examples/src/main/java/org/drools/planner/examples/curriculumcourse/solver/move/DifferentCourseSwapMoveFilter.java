@@ -24,8 +24,8 @@ import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 public class DifferentCourseSwapMoveFilter implements SelectionFilter<SwapMove> {
 
     public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
-        Lecture leftLecture = (Lecture) move.getLeftPlanningEntity();
-        Lecture rightLecture = (Lecture) move.getRightPlanningEntity();
+        Lecture leftLecture = (Lecture) move.getLeftEntity();
+        Lecture rightLecture = (Lecture) move.getRightEntity();
         return !leftLecture.getCourse().equals(rightLecture.getCourse());
     }
 

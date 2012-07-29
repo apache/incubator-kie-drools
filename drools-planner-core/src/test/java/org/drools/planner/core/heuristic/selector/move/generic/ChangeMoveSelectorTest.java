@@ -276,7 +276,7 @@ public class ChangeMoveSelectorTest {
     private void assertNextChangeMove(Iterator<Move> iterator, String entityCode, String toValueCode) {
         assertTrue(iterator.hasNext());
         ChangeMove move = (ChangeMove) iterator.next();
-        assertCode(entityCode, move.getPlanningEntity());
+        assertCode(entityCode, move.getEntity());
         assertCode(toValueCode, move.getToPlanningValue());
     }
 

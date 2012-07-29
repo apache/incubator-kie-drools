@@ -365,8 +365,8 @@ public class SwapMoveSelectorTest {
     private void assertNextSwapMove(Iterator<Move> iterator, String leftEntityCode, String rightEntityCode) {
         assertTrue(iterator.hasNext());
         SwapMove move = (SwapMove) iterator.next();
-        assertCode(leftEntityCode, move.getLeftPlanningEntity());
-        assertCode(rightEntityCode, move.getRightPlanningEntity());
+        assertCode(leftEntityCode, move.getLeftEntity());
+        assertCode(rightEntityCode, move.getRightEntity());
     }
 
 }
