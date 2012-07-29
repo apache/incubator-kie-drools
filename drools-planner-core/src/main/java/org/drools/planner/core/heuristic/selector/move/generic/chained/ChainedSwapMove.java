@@ -67,9 +67,9 @@ public class ChainedSwapMove extends SwapMove {
 
     // TODO DRY with ChainedChangeMove
     public void doChainedMove(ScoreDirector scoreDirector, PlanningVariableDescriptor variableDescriptor,
-            Object planningEntity, Object toPlanningValue ) {
-        Object oldPlanningValue = variableDescriptor.getValue(planningEntity);
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, planningEntity);
+            Object entity, Object toPlanningValue) {
+        Object oldPlanningValue = variableDescriptor.getValue(entity);
+        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, entity);
         // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
         Object newTrailingEntity = toPlanningValue == null ? null
                 : scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
@@ -82,14 +82,14 @@ public class ChainedSwapMove extends SwapMove {
         }
 
         // Change the entity
-        scoreDirector.beforeVariableChanged(planningEntity, variableDescriptor.getVariableName());
-        variableDescriptor.setValue(planningEntity, toPlanningValue);
-        scoreDirector.afterVariableChanged(planningEntity, variableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+        variableDescriptor.setValue(entity, toPlanningValue);
+        scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
 
         // Reroute the new chain
         if (newTrailingEntity != null) {
             scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
-            variableDescriptor.setValue(newTrailingEntity, planningEntity);
+            variableDescriptor.setValue(newTrailingEntity, entity);
             scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
         }
     }
