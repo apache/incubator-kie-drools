@@ -8,6 +8,7 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChain;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
@@ -39,6 +40,7 @@ public class SubChainChangeMoveTest {
 
         SubChainChangeMove move = new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a3, a4, a5)),
                 variableDescriptor, b1);
+        Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, a2);
@@ -50,6 +52,10 @@ public class SubChainChangeMoveTest {
         verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
+
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(b0, b1);
     }
 
     @Test
@@ -73,6 +79,7 @@ public class SubChainChangeMoveTest {
 
         SubChainChangeMove move = new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a2, a3, a4)),
                 variableDescriptor, b0);
+        Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, a5);
@@ -88,6 +95,10 @@ public class SubChainChangeMoveTest {
         verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b1, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b1, "chainedObject");
+
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(b0, b1);
     }
 
 }

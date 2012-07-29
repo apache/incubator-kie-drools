@@ -22,6 +22,7 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChain;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
@@ -57,6 +58,7 @@ public class SubChainSwapMoveTest {
 
         SubChainSwapMove move = new SubChainSwapMove(variableDescriptor, new SubChain(Arrays.<Object>asList(a3, a4, a5)),
                 new SubChain(Arrays.<Object>asList(b2, b3)));
+        Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, a2, b2, b3);
@@ -72,6 +74,10 @@ public class SubChainSwapMoveTest {
         verify(scoreDirector, atLeastOnce()).afterVariableChanged(b2, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b3, "chainedObject");
+
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(b0, b1, b2, b3);
     }
 
     @Test
@@ -97,6 +103,7 @@ public class SubChainSwapMoveTest {
 
         SubChainSwapMove move = new SubChainSwapMove(variableDescriptor, new SubChain(Arrays.<Object>asList(a2, a3, a4)),
                 new SubChain(Arrays.<Object>asList(b1, b2)));
+        Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, b1, b2, a5);
@@ -116,6 +123,10 @@ public class SubChainSwapMoveTest {
         verify(scoreDirector).afterVariableChanged(b2, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b3, "chainedObject");
+
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(b0, b1, b2, b3);
     }
 
 }
