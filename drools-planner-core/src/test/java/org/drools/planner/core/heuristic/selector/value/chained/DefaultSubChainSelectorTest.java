@@ -39,6 +39,11 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void original() {
+        PlanningVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
+                TestdataChainedEntity.class, "chainedObject");
+        when(variableDescriptor.isChained()).thenReturn(true);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
@@ -49,24 +54,13 @@ public class DefaultSubChainSelectorTest {
         TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
         TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
 
-        PlanningVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+                new TestdataChainedEntity[]{a1, a2, a3, a4, b1, b2});
 
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, a1, a2, a3, a4, b0, b1, b2);
 
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false, 1);
-
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a1)).thenReturn(a2);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a3)).thenReturn(a4);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a4)).thenReturn(null);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, b1)).thenReturn(b2);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, b2)).thenReturn(null);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
@@ -85,9 +79,6 @@ public class DefaultSubChainSelectorTest {
         a4.setChainedObject(a2);
         a3.setChainedObject(b1);
         b2.setChainedObject(a3);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a4);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, b1)).thenReturn(a3);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a3)).thenReturn(b2);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
@@ -164,21 +155,21 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void emptyEntitySelectorOriginal() {
-        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-
         PlanningVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+
+        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+                new TestdataChainedEntity[]{});
 
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, b0);
 
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false, 1);
-
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(null);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(null);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);

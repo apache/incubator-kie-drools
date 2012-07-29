@@ -2,6 +2,7 @@ package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
@@ -14,6 +15,10 @@ public class ChainedChangeMoveTest {
 
     @Test
     public void noTrailing() {
+        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
@@ -22,13 +27,8 @@ public class ChainedChangeMoveTest {
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
         TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
 
-        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a1)).thenReturn(a2);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
+        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+                new TestdataChainedEntity[]{a1, a2, a3, b1});
 
         ChainedChangeMove move = new ChainedChangeMove(a3, variableDescriptor, b1);
         move.doMove(scoreDirector);
@@ -45,6 +45,10 @@ public class ChainedChangeMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
+
+        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
@@ -53,13 +57,8 @@ public class ChainedChangeMoveTest {
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
         TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
 
-        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a1)).thenReturn(a2);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
-        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
+        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+                new TestdataChainedEntity[]{a1, a2, a3, b1});
 
         ChainedChangeMove move = new ChainedChangeMove(a2, variableDescriptor, b0);
         move.doMove(scoreDirector);
