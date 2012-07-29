@@ -77,7 +77,7 @@ public class SubChainReversingSwapMove implements Move {
         ChainedMoveUtils.doReverseSubChainChange(scoreDirector, leftSubChain, variableDescriptor,
                 oldRightValue == leftSubChain.getLastEntity() ? oldLeftValue : oldRightValue);
         ChainedMoveUtils.doReverseSubChainChange(scoreDirector, rightSubChain, variableDescriptor,
-                oldLeftValue == rightSubChain.getLastEntity() ? oldRightValue : oldLeftValue);
+                oldLeftValue == rightSubChain.getLastEntity() ? leftSubChain.getFirstEntity() : oldLeftValue);
     }
 
     public Collection<? extends Object> getPlanningEntities() {
