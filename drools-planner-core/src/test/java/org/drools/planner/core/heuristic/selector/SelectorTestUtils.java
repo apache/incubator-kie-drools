@@ -27,6 +27,8 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
 import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.score.director.ScoreDirector;
+import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -111,6 +113,21 @@ public class SelectorTestUtils {
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize()).thenReturn((long) valueList.size());
         return valueSelector;
+    }
+
+    public static void mockMethodGetTrailingEntity(ScoreDirector scoreDirector,
+            PlanningVariableDescriptor variableDescriptor, final TestdataChainedEntity[] allEntities) {
+        when(scoreDirector.getTrailingEntity(eq(variableDescriptor), anyObject())).thenAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object planningValue = invocation.getArguments()[1];
+                for (TestdataChainedEntity entity : allEntities) {
+                    if (entity.getChainedObject().equals(planningValue)) {
+                        return entity;
+                    }
+                }
+                return null;
+            }
+        });
     }
 
     private SelectorTestUtils() {
