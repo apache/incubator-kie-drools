@@ -136,7 +136,8 @@ public class SelectorTestUtils {
         TestdataChainedObject chainedObject = chainedObjects[0];
         for (int i = 1; i < chainedObjects.length; i++) {
             TestdataChainedEntity chainedEntity = (TestdataChainedEntity) chainedObjects[i];
-            assertEquals(chainedObject, chainedEntity.getChainedObject());
+            assertEquals("Chained entity (" + chainedEntity + ")'s chainedObject",
+                    chainedObject, chainedEntity.getChainedObject());
             chainedObject = chainedEntity;
         }
     }
