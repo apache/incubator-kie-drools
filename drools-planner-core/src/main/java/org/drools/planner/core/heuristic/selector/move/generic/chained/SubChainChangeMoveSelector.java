@@ -89,12 +89,11 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
 
         private SubChain upcomingSubChain;
 
-        private Move nextReversingSelection;
+        private Move nextReversingSelection = null;
 
         private OriginalSubChainChangeMoveIterator() {
             subChainIterator = subChainSelector.iterator();
             valueIterator = valueSelector.iterator();
-            nextReversingSelection = null;
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
             if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingSelection = null;

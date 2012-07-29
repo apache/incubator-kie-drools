@@ -54,10 +54,6 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
         if (leftSubChainSelector != rightSubChainSelector) {
             solverPhaseLifecycleSupport.addEventListener(rightSubChainSelector);
         }
-        // TODO
-        if (selectReversingMoveToo) {
-            throw new UnsupportedOperationException();
-        }
     }
 
     // ************************************************************************
@@ -79,8 +75,24 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return new AbstractOriginalSwapIterator<Move, SubChain>(leftSubChainSelector, rightSubChainSelector) {
+                private Move nextReversingSelection = null;
+
+                @Override
+                protected void createUpcomingSelection() {
+                    if (selectReversingMoveToo && nextReversingSelection != null) {
+                        upcomingSelection = nextReversingSelection;
+                        nextReversingSelection = null;
+                        return;
+                    }
+                    super.createUpcomingSelection();
+                }
+
                 @Override
                 protected Move newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
+                    if (selectReversingMoveToo) {
+                        nextReversingSelection
+                                = new SubChainReversingSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
+                    }
                     return new SubChainSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
                 }
             };
@@ -88,7 +100,10 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
             return new AbstractRandomSwapIterator<Move, SubChain>(leftSubChainSelector, rightSubChainSelector) {
                 @Override
                 protected Move newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
-                    return new SubChainSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
+                    boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
+                    return reversing
+                            ? new SubChainReversingSwapMove(variableDescriptor, leftSubSelection, rightSubSelection)
+                            : new SubChainSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
                 }
             };
         }

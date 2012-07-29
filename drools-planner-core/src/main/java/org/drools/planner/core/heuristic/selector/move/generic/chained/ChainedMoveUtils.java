@@ -16,6 +16,9 @@
 
 package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
+import java.util.List;
+import java.util.ListIterator;
+
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChain;
 import org.drools.planner.core.score.director.ScoreDirector;
@@ -83,6 +86,59 @@ public class ChainedMoveUtils {
             scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
             variableDescriptor.setValue(newTrailingEntity, lastEntity);
             scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+        }
+    }
+
+    public static void doReverseSubChainChange(ScoreDirector scoreDirector, SubChain subChain,
+            PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
+        Object firstEntity = subChain.getFirstEntity();
+        Object lastEntity = subChain.getLastEntity();
+        Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
+
+        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
+        Object newTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
+
+        if (firstEntity.equals(newTrailingEntity)) {
+            // Unmoved reverse
+            // Temporary close the old chain
+            if (oldTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+                variableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+                scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            }
+        } else {
+            // Close the old chain
+            if (oldTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+                variableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+                scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            }
+        }
+        // Change the entity
+        Object nextEntity = toPlanningValue;
+        List<Object> entityList = subChain.getEntityList();
+        for (ListIterator<Object> it = entityList.listIterator(entityList.size()); it.hasPrevious();) {
+            Object entity = it.previous();
+            scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+            variableDescriptor.setValue(entity, nextEntity);
+            scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
+            nextEntity = entity;
+        }
+        if (firstEntity.equals(newTrailingEntity)) {
+            // Unmoved reverse
+            // Reroute the old chain
+            if (oldTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+                variableDescriptor.setValue(oldTrailingEntity, firstEntity);
+                scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            }
+        } else {
+            // Reroute the new chain
+            if (newTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+                variableDescriptor.setValue(newTrailingEntity, firstEntity);
+                scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+            }
         }
     }
 
