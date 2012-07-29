@@ -46,30 +46,7 @@ public class ChainedChangeMove extends ChangeMove {
 
     @Override
     public void doMove(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = variableDescriptor.getValue(entity);
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, entity);
-        // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
-        Object newTrailingEntity = toPlanningValue == null ? null
-                : scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
-
-        // Close the old chain
-        if (oldTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
-            variableDescriptor.setValue(oldTrailingEntity, oldPlanningValue);
-            scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
-        }
-
-        // Change the entity
-        scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
-        variableDescriptor.setValue(entity, toPlanningValue);
-        scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
-
-        // Reroute the new chain
-        if (newTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
-            variableDescriptor.setValue(newTrailingEntity, entity);
-            scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
-        }
+        ChainedMoveUtils.doChainedMove(scoreDirector, variableDescriptor, entity, toPlanningValue);
     }
 
 }

@@ -55,42 +55,13 @@ public class ChainedSwapMove extends SwapMove {
                     scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
                 } else {
                     if (oldRightValue != leftEntity) {
-                        doChainedMove(scoreDirector, variableDescriptor, leftEntity, oldRightValue);
+                        ChainedMoveUtils.doChainedMove(scoreDirector, variableDescriptor, leftEntity, oldRightValue);
                     }
                     if (oldLeftValue != rightEntity) {
-                        doChainedMove(scoreDirector, variableDescriptor, rightEntity, oldLeftValue);
+                        ChainedMoveUtils.doChainedMove(scoreDirector, variableDescriptor, rightEntity, oldLeftValue);
                     }
                 }
             }
-        }
-    }
-
-    // TODO DRY with ChainedChangeMove
-    public void doChainedMove(ScoreDirector scoreDirector, PlanningVariableDescriptor variableDescriptor,
-            Object entity, Object toPlanningValue) {
-        Object oldPlanningValue = variableDescriptor.getValue(entity);
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, entity);
-        // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
-        Object newTrailingEntity = toPlanningValue == null ? null
-                : scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
-
-        // Close the old chain
-        if (oldTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
-            variableDescriptor.setValue(oldTrailingEntity, oldPlanningValue);
-            scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
-        }
-
-        // Change the entity
-        scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
-        variableDescriptor.setValue(entity, toPlanningValue);
-        scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
-
-        // Reroute the new chain
-        if (newTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
-            variableDescriptor.setValue(newTrailingEntity, entity);
-            scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
         }
     }
 
