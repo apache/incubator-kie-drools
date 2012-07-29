@@ -55,10 +55,10 @@ public class ChainedSwapMove extends SwapMove {
                     scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
                 } else {
                     if (oldRightValue != leftEntity) {
-                        ChainedMoveUtils.doChainedMove(scoreDirector, variableDescriptor, leftEntity, oldRightValue);
+                        ChainedMoveUtils.doChainedChange(scoreDirector, leftEntity, variableDescriptor, oldRightValue);
                     }
                     if (oldLeftValue != rightEntity) {
-                        ChainedMoveUtils.doChainedMove(scoreDirector, variableDescriptor, rightEntity, oldLeftValue);
+                        ChainedMoveUtils.doChainedChange(scoreDirector, rightEntity, variableDescriptor, oldLeftValue);
                     }
                 }
             }

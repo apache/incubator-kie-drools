@@ -33,16 +33,11 @@ public class SubChainChangeMove implements Move {
     private final PlanningVariableDescriptor variableDescriptor;
     private final Object toPlanningValue;
 
-    private final Object firstEntity;
-    private final Object lastEntity;
-
     public SubChainChangeMove(SubChain subChain,
             PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;
         this.toPlanningValue = toPlanningValue;
-        firstEntity = this.subChain.getFirstEntity();
-        lastEntity = this.subChain.getLastEntity();
     }
 
     // ************************************************************************
@@ -53,45 +48,17 @@ public class SubChainChangeMove implements Move {
         if (subChain.getEntityList().contains(toPlanningValue)) {
             return false;
         }
-        Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
+        Object oldFirstPlanningValue = variableDescriptor.getValue(subChain.getFirstEntity());
         return !ObjectUtils.equals(oldFirstPlanningValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
+        Object oldFirstPlanningValue = variableDescriptor.getValue(subChain.getFirstEntity());
         return new SubChainChangeMove(subChain, variableDescriptor, oldFirstPlanningValue);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
-
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
-        Object newTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
-
-        // Close the old chain
-        if (oldTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
-            variableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-            scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
-        }
-
-        // Change the entity
-        for (Object entity : subChain.getEntityList()) {
-            // When firstEntity changes, other entities in the chain can get a new anchor, so they are changed too
-            scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
-        }
-        variableDescriptor.setValue(firstEntity, toPlanningValue);
-        for (Object entity : subChain.getEntityList()) {
-            // When firstEntity changes, other entities in the chain can get a new anchor, so they are changed too
-            scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
-        }
-
-        // Reroute the new chain
-        if (newTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
-            variableDescriptor.setValue(newTrailingEntity, lastEntity);
-            scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
-        }
+        ChainedMoveUtils.doSubChainChange(scoreDirector, subChain, variableDescriptor, toPlanningValue);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

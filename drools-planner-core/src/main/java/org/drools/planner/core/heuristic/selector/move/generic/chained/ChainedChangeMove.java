@@ -46,7 +46,7 @@ public class ChainedChangeMove extends ChangeMove {
 
     @Override
     public void doMove(ScoreDirector scoreDirector) {
-        ChainedMoveUtils.doChainedMove(scoreDirector, variableDescriptor, entity, toPlanningValue);
+        ChainedMoveUtils.doChainedChange(scoreDirector, entity, variableDescriptor, toPlanningValue);
     }
 
 }
