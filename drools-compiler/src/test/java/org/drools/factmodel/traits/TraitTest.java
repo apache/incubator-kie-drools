@@ -48,6 +48,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -1826,5 +1827,94 @@ public class TraitTest extends CommonTestMethodBase {
         aliasing( TraitFactory.VirtualPropertyMode.MAP );
     }
 
+
+
+
+
+
+
+    public void traitLogicalRemoval( TraitFactory.VirtualPropertyMode mode ) {
+        String drl = "package org.drools.trait.test;\n" +
+                "\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare trait Student\n" +
+                "  age  : int\n" +
+                "  name : String\n" +
+                "end\n" +
+                "\n" +
+                "declare trait Worker\n" +
+                "  wage  : int\n" +
+                "  name : String\n" +
+                "end\n" +
+                "declare Person\n" +
+                "  @Traitable\n" +
+                "  name : String\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Don Logical\"\n" +
+                "when\n" +
+                "  $s : String( this == \"trigger\" )\n" +
+                "then\n" +
+                "  Person p = new Person( \"john\" );\n" +
+                "  insertLogical( p ); \n" +
+                "  don( p, Student.class, true );\n" +
+                "end\n" +
+                " " +
+                "rule \"Don Logical 2\"\n" +
+                "when\n" +
+                "  $s : String( this == \"trigger2\" )\n" +
+                "  $p : Person( name == \"john\" )" +
+                "then\n" +
+                "  don( $p, Worker.class, true );\n" +
+                "end";
+
+
+        StatefulKnowledgeSession ksession = getSessionFromString(drl);
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle h = ksession.insert( "trigger" );
+        ksession.fireAllRules();
+        assertEquals( 4, ksession.getObjects().size() );
+
+        ksession.retract( h );
+        ksession.fireAllRules();
+
+        assertEquals( 0, ksession.getObjects().size() );
+
+
+        FactHandle h1 = ksession.insert( "trigger" );
+        FactHandle h2 = ksession.insert( "trigger2" );
+        ksession.fireAllRules();
+
+        assertEquals( 6, ksession.getObjects().size() );
+
+        ksession.retract( h2 );
+        ksession.fireAllRules();
+
+        assertEquals( 4, ksession.getObjects().size() );
+
+        ksession.retract( h1 );
+        ksession.fireAllRules();
+
+        assertEquals( 0, ksession.getObjects().size() );
+
+    }
+
+    @Test
+    public void testLogicalRemovalTriples() {
+        traitLogicalRemoval( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testLogicalRemovalMap() {
+        traitLogicalRemoval( TraitFactory.VirtualPropertyMode.MAP );
+    }
 
 }
