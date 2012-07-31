@@ -15,50 +15,50 @@
  */
 package org.jbpm.task;
 
-import org.jbpm.task.utils.TaskServiceModule;
-import org.junit.After;
-import org.junit.Before;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.runner.RunWith;
 
 /**
  *
  *
  */
-//@RunWith(Arquillian.class)
+@RunWith(Arquillian.class)
 public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseTest {
+    
 
-//    @Deployment
-//    public static Archive<?> createDeployment() {
-//        return ShrinkWrap.create(JavaArchive.class, "jbpm-human-task-cdi.jar")
-//                .addPackage("org.jboss.seam.persistence") //seam-persistence
-//                .addPackage("org.jboss.seam.transaction") //seam-persistence
-//                .addPackage("org.jbpm.task") //org.jbpm.task
-//                .addPackage("org.jbpm.task.annotations") //org.jbpm.task.annotations
-//                .addPackage("org.jbpm.task.api") //org.jbpm.task.api
-//                .addPackage("org.jbpm.task.impl") //org.jbpm.task.impl
-//                .addPackage("org.jbpm.task.events") //org.jbpm.task.events
-//                .addPackage("org.jbpm.task.exception") //org.jbpm.task.exception
-//                .addPackage("org.jbpm.task.identity") //org.jbpm.task.identity
-//                .addPackage("org.jbpm.task.factories") //org.jbpm.task.factories
-//                .addPackage("org.jbpm.task.internals") //org.jbpm.task.internals
-//                .addPackage("org.jbpm.task.internals.lifecycle") //org.jbpm.task.internals.lifecycle
-//                .addPackage("org.jbpm.task.lifecycle.listeners") //org.jbpm.task.internals.listeners
-//                .addPackage("org.jbpm.task.query") //org.jbpm.task.query
-//                .addPackage("org.jbpm.task.util") //org.jbpm.task.util
-//                .addAsResource("org/jbpm/task/LoadUsers.mvel", "org/jbpm/task/LoadUsers.mvel")
-//                .addAsResource("org/jbpm/task/LoadGroups.mvel", "org/jbpm/task/LoadGroups.mvel")
-//                .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
-//                .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-//                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
-//
-//    }
-    @Before
-    public void setUp() {
-        taskService = TaskServiceModule.getInstance().getTaskService();
-        super.setUp();
+    @Deployment()
+    public static Archive<?> createDeployment() {
+        return ShrinkWrap.create(JavaArchive.class, "jbpm-human-task-cdi.jar")
+                .addPackage("org.jboss.seam.persistence") //seam-persistence
+                .addPackage("org.jboss.seam.transaction") //seam-persistence
+                .addPackage("org.jbpm.task") 
+                .addPackage("org.jbpm.task.annotations") 
+                .addPackage("org.jbpm.task.api") 
+                .addPackage("org.jbpm.task.impl") 
+                .addPackage("org.jbpm.task.events") 
+                .addPackage("org.jbpm.task.exception") 
+                .addPackage("org.jbpm.task.identity") 
+                .addPackage("org.jbpm.task.factories") 
+                .addPackage("org.jbpm.task.internals") 
+                .addPackage("org.jbpm.task.internals.lifecycle") 
+                .addPackage("org.jbpm.task.lifecycle.listeners") 
+                .addPackage("org.jbpm.task.query") 
+                .addPackage("org.jbpm.task.util") 
+                .addPackage("org.jbpm.task.commands") // This should not be required here 
+                .addAsResource("org/jbpm/task/LoadUsers.mvel", "org/jbpm/task/LoadUsers.mvel")
+                .addAsResource("org/jbpm/task/LoadGroups.mvel", "org/jbpm/task/LoadGroups.mvel")
+                .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
+                .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
+                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
+
     }
     
-     @After
-    public void tearDown() {
-        TaskServiceModule.getInstance().dispose();
-    }
+  
+    
+   
 }

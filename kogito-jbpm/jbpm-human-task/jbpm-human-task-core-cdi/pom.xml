@@ -13,6 +13,8 @@
     <properties>
         <seam.version>3.1.0.Final</seam.version>
         <weld.version>1.1.8.Final</weld.version>
+        <arquillian.version>1.0.1.Final</arquillian.version>
+        <arquillian_weld.version>1.0.0.CR3</arquillian_weld.version>
     </properties>
     <dependencies>
         <dependency>
@@ -85,21 +87,31 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-junit</artifactId>
-            <version>1.0.0.Alpha5</version>
+            
+             <groupId>org.jboss.arquillian.junit</groupId>
+           <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
-            <type>jar</type>
+            
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-            <version>1.0.0.Alpha5</version>
+            <version>1.0.0.CR3</version>
         </dependency>
         
         
     </dependencies>
-    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <testResources>
             <testResource>
@@ -137,4 +149,10 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>jboos</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
 </project>

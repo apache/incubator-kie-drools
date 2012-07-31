@@ -193,4 +193,7 @@ public interface TaskServiceEntryPoint {
     public void addUsersAndGroups(Map<String, User> users, Map<String, Group> groups);
     
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners);
+
+    public int removeAllTasks();
+
 }

@@ -183,12 +183,11 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testClaimWithGroupAssignee() throws Exception {
+        Map<String, Object> vars = fillVariables();
         Properties userGroups = new Properties();
 
         userGroups.setProperty(users.get("darth").getId(), "Knights Templer, Dummy Group");
         UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
-
-        Map<String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";

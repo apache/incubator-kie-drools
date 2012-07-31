@@ -19,15 +19,14 @@ import org.jbpm.task.query.TaskSummary;
  *
  */
 @Transactional
-public class TaskAdminServiceImpl implements TaskAdminService{
+public class TaskAdminServiceImpl implements TaskAdminService {
 
     @Inject
     private EntityManager em;
 
     public TaskAdminServiceImpl() {
     }
-    
-    
+
     public List<TaskSummary> getActiveTasks() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -57,16 +56,25 @@ public class TaskAdminServiceImpl implements TaskAdminService{
     }
 
     public int removeTasks(List<TaskSummary> tasks) {
-        
+
         int count = 0;
-        
-        for(TaskSummary taskSummary : tasks){
+
+        for (TaskSummary taskSummary : tasks) {
             Task task = em.find(Task.class, taskSummary.getId());
             em.remove(task);
             count++;
         }
-        
+
         return count;
     }
-    
+
+    public int removeAllTasks() {
+        List<Task> tasks = em.createQuery("select t from Task t").getResultList();
+        int count = 0;
+        for (Task t : tasks) {
+            em.remove(t);
+            count++;
+        }
+        return count;
+    }
 }

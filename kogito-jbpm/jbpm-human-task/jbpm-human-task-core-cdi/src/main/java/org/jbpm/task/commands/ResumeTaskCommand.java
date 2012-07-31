@@ -24,8 +24,8 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
-import org.jbpm.task.events.AfterTaskReleasedEvent;
-import org.jbpm.task.events.BeforeTaskReleasedEvent;
+import org.jbpm.task.events.AfterTaskResumedEvent;
+import org.jbpm.task.events.BeforeTaskResumedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
 
 /**
@@ -50,7 +50,7 @@ public class ResumeTaskCommand extends TaskCommand {
         TaskContext context = (TaskContext) cntxt;
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskReleasedEvent>() {
+        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskResumedEvent>() {
         }).fire(task);
         // CHeck for potential Owner allowed (decorator?)
         boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
@@ -78,7 +78,7 @@ public class ResumeTaskCommand extends TaskCommand {
             }
         }
 
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskReleasedEvent>() {
+        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskResumedEvent>() {
         }).fire(task);
 
         return null;

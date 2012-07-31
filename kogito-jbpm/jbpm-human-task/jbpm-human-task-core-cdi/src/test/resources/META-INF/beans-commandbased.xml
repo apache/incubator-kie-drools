@@ -25,10 +25,10 @@
     
     <alternatives>
         <class>org.jbpm.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
-        <!--class>org.jbpm.task.impl.CommandBasedTaskInstanceServiceImpl</class-->
+        <class>org.jbpm.task.impl.CommandBasedTaskInstanceServiceImpl</class>
     </alternatives>
     <decorators>
-        <class>org.jbpm.task.internals.lifecycle.UserGroupLifeCycleManagerDecorator</class>
+        <!--class>org.jbpm.task.internals.lifecycle.UserGroupLifeCycleManagerDecorator</class-->
         <class>org.jbpm.task.internals.lifecycle.UserGroupTaskCommandExecutorDecorator</class>
     </decorators>
     <interceptors>

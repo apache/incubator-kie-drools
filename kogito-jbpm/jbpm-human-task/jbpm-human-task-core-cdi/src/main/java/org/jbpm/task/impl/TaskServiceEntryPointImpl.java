@@ -20,7 +20,6 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.annotations.CommandBased;
 import org.jbpm.task.annotations.Persistent;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.api.TaskDefService;
@@ -393,6 +392,10 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
         this.taskInstanceService.nominate(taskId, userId, potentialOwners); 
+    }
+
+    public int removeAllTasks() {
+        return this.taskAdminService.removeAllTasks();
     }
     
 }

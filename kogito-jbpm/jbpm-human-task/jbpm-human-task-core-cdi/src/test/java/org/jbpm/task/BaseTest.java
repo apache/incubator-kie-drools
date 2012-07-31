@@ -28,40 +28,50 @@ import org.slf4j.LoggerFactory;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.utils.MVELUtils;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 public abstract class BaseTest {
 
     protected static Logger logger = LoggerFactory.getLogger(BaseTest.class);
-    protected Map<String, User> users;
-    protected Map<String, Group> groups;
-    
+    protected static Map<String, User> users;
+    protected static Map<String, Group> groups;
+    protected static boolean usersLoaded = false;
     @Inject
     protected TaskServiceEntryPoint taskService;
 
     @Before
-    public void setUp() {
-        try {
-            System.out.println(" XXXXXXX GOING UP!");
-            MockUserInfo userInfo = new MockUserInfo();
-            taskService.setUserInfo(userInfo);
+    public void loadUsersAndGroups() {
+        
+        if (!usersLoaded) {
 
-            users = fillUsersOrGroups("LoadUsers.mvel");
-            groups = fillUsersOrGroups("LoadGroups.mvel");
-            taskService.addUsersAndGroups(users, groups);
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(TaskServiceLifeCycleBaseTest.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+
+                MockUserInfo userInfo = new MockUserInfo();
+                taskService.setUserInfo(userInfo);
+                users = fillUsersOrGroups("LoadUsers.mvel");
+                groups = fillUsersOrGroups("LoadGroups.mvel");
+                taskService.addUsersAndGroups(users, groups);
+                usersLoaded = true;
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(TaskServiceLifeCycleBaseTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
-
+    
     @After
     public void tearDown() {
-        System.out.println("XXXXXXXXXX Going Down! ");
+        int removeAllTasks = taskService.removeAllTasks();
+        //System.out.println(" XXX Cleaning up "+removeAllTasks+" tasks generated in the previous test");
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+        usersLoaded = false;
     }
 
-    
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static Map fillUsersOrGroups(String mvelFileName) throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();

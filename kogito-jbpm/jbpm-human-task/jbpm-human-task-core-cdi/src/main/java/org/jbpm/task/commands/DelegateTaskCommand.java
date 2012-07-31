@@ -22,8 +22,8 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
-import org.jbpm.task.events.AfterTaskSuspendedEvent;
-import org.jbpm.task.events.BeforeTaskSuspendedEvent;
+import org.jbpm.task.events.AfterTaskDelegatedEvent;
+import org.jbpm.task.events.BeforeTaskDelegatedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
 
 /**
@@ -63,7 +63,7 @@ public class DelegateTaskCommand extends TaskCommand {
         OrganizationalEntity targetEntity = context.getTaskIdentityService()
                                                     .getOrganizationalEntityById(targetEntityId);
         
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskSuspendedEvent>() {
+        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskDelegatedEvent>() {
         }).fire(task);
         // CHeck for potential Owner allowed (decorator?)
         boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
@@ -93,7 +93,7 @@ public class DelegateTaskCommand extends TaskCommand {
             }
         }
 
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskSuspendedEvent>() {
+        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskDelegatedEvent>() {
         }).fire(task);
 
         return null;
