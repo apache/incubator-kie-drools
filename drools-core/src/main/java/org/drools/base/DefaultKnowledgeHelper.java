@@ -500,7 +500,7 @@ public class DefaultKnowledgeHelper
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
 
-        T thing = applyTrait(core, trait);
+        T thing = applyTrait( core, trait, logical );
 
         return doInsertTrait( thing, logical );
 
@@ -515,7 +515,7 @@ public class DefaultKnowledgeHelper
         return thing;
     }
 
-    protected <T, K> T applyTrait( K core, Class<T> trait ) {
+    protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) {
         AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKnowledgeBase() ).getRuleBase();
         TraitFactory builder = arb.getConfiguration().getComponentFactory().getTraitFactory();
 
@@ -523,7 +523,7 @@ public class DefaultKnowledgeHelper
 
         TraitableBean inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean) core;
 
-        return processTraits( core, trait, builder, needsWrapping, inner );
+        return processTraits( core, trait, builder, needsWrapping, inner, logical );
     }
 
     protected <K> TraitableBean asTraitable( K core, TraitFactory builder ) {
@@ -536,7 +536,7 @@ public class DefaultKnowledgeHelper
     }
     
     
-    protected <T,K> T processTraits( K core, Class<T> trait, TraitFactory builder, boolean needsUpdate, TraitableBean inner ) {
+    protected <T,K> T processTraits( K core, Class<T> trait, TraitFactory builder, boolean needsUpdate, TraitableBean inner, boolean logical ) {
 
         T thing;
         if ( inner.hasTrait( trait.getName() ) ) {
@@ -550,7 +550,7 @@ public class DefaultKnowledgeHelper
         }
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
-            insert( don( inner, Thing.class, false ) );
+            don( inner, Thing.class, logical );
         }
 
         return thing;
