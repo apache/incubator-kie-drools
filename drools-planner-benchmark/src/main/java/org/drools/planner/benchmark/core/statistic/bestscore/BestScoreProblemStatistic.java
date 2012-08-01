@@ -21,13 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
@@ -116,7 +109,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            XYSeries series = new XYSeries(singleBenchmark.getSolverBenchmark().getName());
+            XYSeries series = new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix());
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {

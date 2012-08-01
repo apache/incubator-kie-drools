@@ -21,13 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
@@ -37,15 +30,11 @@ import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.SingleStatistic;
-import org.drools.planner.benchmark.core.statistic.bestscore.BestScoreSingleStatistic;
-import org.drools.planner.benchmark.core.statistic.bestscore.BestScoreSingleStatisticPoint;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.score.Score;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
@@ -90,8 +79,10 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
     protected void writeGraphStatistic() {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            XYSeries usedSeries = new XYSeries(singleBenchmark.getSolverBenchmark().getName() + " used");
-            XYSeries maxSeries = new XYSeries(singleBenchmark.getSolverBenchmark().getName() + " max");
+            XYSeries usedSeries = new XYSeries(
+                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " used");
+            XYSeries maxSeries = new XYSeries(
+                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " max");
             if (singleBenchmark.isSuccess()) {
                 MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);

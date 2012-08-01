@@ -101,6 +101,13 @@ public class SolverBenchmark {
     // Benchmark methods
     // ************************************************************************
 
+    public String getNameWithFavoriteSuffix() {
+        if (isFavorite()) {
+            return name + " (favorite)";
+        }
+        return name;
+    }
+
     public void benchmarkingStarted() {
         // Note: do not call SingleBenchmark.benchmarkingStarted()
         // because DefaultPlannerBenchmark does that already on the unified list
