@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.Solver;
@@ -42,6 +43,9 @@ public class SolverBenchmark {
 
     private int failureCount = -1;
     private Score totalScore = null;
+    private Score totalWinningScoreDifference = null;
+    private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
+
     // Ranking starts from 0
     private Integer ranking = null;
 
@@ -89,6 +93,14 @@ public class SolverBenchmark {
         return totalScore;
     }
 
+    public Score getTotalWinningScoreDifference() {
+        return totalWinningScoreDifference;
+    }
+
+    public ScoreDifferencePercentage getAverageWorstScoreDifferencePercentage() {
+        return averageWorstScoreDifferencePercentage;
+    }
+
     public Integer getRanking() {
         return ranking;
     }
@@ -109,6 +121,9 @@ public class SolverBenchmark {
     }
 
     public void benchmarkingStarted() {
+        totalScore = null;
+        totalWinningScoreDifference = null;
+        averageWorstScoreDifferencePercentage = null;
         // Note: do not call SingleBenchmark.benchmarkingStarted()
         // because DefaultPlannerBenchmark does that already on the unified list
     }
@@ -119,22 +134,37 @@ public class SolverBenchmark {
 
     protected void determineTotalScore() {
         failureCount = 0;
-        totalScore = null;
+        boolean firstNonFailure = true;
+        ScoreDifferencePercentage totalWorstScoreDifferencePercentage = null;
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
             if (singleBenchmark.isFailure()) {
                 failureCount++;
             } else {
-                if (totalScore == null) {
+                if (firstNonFailure) {
                     totalScore = singleBenchmark.getScore();
+                    totalWinningScoreDifference = singleBenchmark.getWinningScoreDifference();
+                    totalWorstScoreDifferencePercentage = singleBenchmark.getWorstScoreDifferencePercentage();
+                    firstNonFailure = false;
                 } else {
                     totalScore = totalScore.add(singleBenchmark.getScore());
+                    totalWinningScoreDifference = totalWinningScoreDifference.add(
+                            singleBenchmark.getWinningScoreDifference());
+                    totalWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.add(
+                            singleBenchmark.getWorstScoreDifferencePercentage());
                 }
             }
         }
+        if (totalWorstScoreDifferencePercentage != null) {
+            averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide(getSuccessCount());
+        }
+    }
+
+    public int getSuccessCount() {
+        return singleBenchmarkList.size() - failureCount;
     }
 
     public boolean hasAnySuccess() {
-        return singleBenchmarkList.size() - failureCount > 0;
+        return getSuccessCount() > 0;
     }
 
     public boolean hasAnyFailure() {
@@ -149,7 +179,14 @@ public class SolverBenchmark {
         if (totalScore == null) {
             return null;
         }
-        return getTotalScore().divide(singleBenchmarkList.size() - failureCount);
+        return totalScore.divide(getSuccessCount());
+    }
+
+    public Score getAverageWinningScoreDifference() {
+        if (totalWinningScoreDifference == null) {
+            return null;
+        }
+        return totalWinningScoreDifference.divide(getSuccessCount());
     }
 
     public List<Score> getScoreList() {

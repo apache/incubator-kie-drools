@@ -16,6 +16,7 @@
 
 package org.drools.planner.benchmark.core.measurement;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -23,7 +24,7 @@ import java.util.Locale;
 import org.apache.commons.lang.LocaleUtils;
 import org.drools.planner.core.score.Score;
 
-public class ScoreDifferencePercentage {
+public class ScoreDifferencePercentage implements Serializable {
 
     public static <S extends Score> ScoreDifferencePercentage calculateScoreDifferencePercentage(
             Score<S> baseScore, Score<S> valueScore) {
@@ -61,6 +62,42 @@ public class ScoreDifferencePercentage {
 
     public ScoreDifferencePercentage(double[] percentageLevels) {
         this.percentageLevels = percentageLevels;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public ScoreDifferencePercentage add(ScoreDifferencePercentage augment) {
+        double[] newPercentageLevels = new double[percentageLevels.length];
+        for (int i = 0; i < percentageLevels.length; i++) {
+            newPercentageLevels[i] = percentageLevels[i] + augment.percentageLevels[i];
+        }
+        return new ScoreDifferencePercentage(newPercentageLevels);
+    }
+
+    public ScoreDifferencePercentage subtract(ScoreDifferencePercentage subtrahend) {
+        double[] newPercentageLevels = new double[percentageLevels.length];
+        for (int i = 0; i < percentageLevels.length; i++) {
+            newPercentageLevels[i] = percentageLevels[i] - subtrahend.percentageLevels[i];
+        }
+        return new ScoreDifferencePercentage(newPercentageLevels);
+    }
+
+    public ScoreDifferencePercentage multiply(double multiplicand) {
+        double[] newPercentageLevels = new double[percentageLevels.length];
+        for (int i = 0; i < percentageLevels.length; i++) {
+            newPercentageLevels[i] = percentageLevels[i] * multiplicand;
+        }
+        return new ScoreDifferencePercentage(newPercentageLevels);
+    }
+
+    public ScoreDifferencePercentage divide(double divisor) {
+        double[] newPercentageLevels = new double[percentageLevels.length];
+        for (int i = 0; i < percentageLevels.length; i++) {
+            newPercentageLevels[i] = percentageLevels[i] / divisor;
+        }
+        return new ScoreDifferencePercentage(newPercentageLevels);
     }
 
     @Override
