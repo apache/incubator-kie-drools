@@ -10,6 +10,8 @@ import static org.junit.Assert.fail;
 import java.io.StringReader;
 import java.util.List;
 
+import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
@@ -26,6 +28,7 @@ import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleList;
+import org.drools.definition.type.FactType;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
@@ -38,10 +41,11 @@ import org.drools.reteoo.ObjectSinkNodeList;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.IndexableConstraint;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
 
-public class IndexingTest {
+public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testBuildsIndexedAlphaNodes() {
@@ -257,5 +261,173 @@ public class IndexingTest {
             }
         }
         return null;
+    }
+    @Test
+    public void testRangeIndex() {
+        String str = "import org.drools.*;\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $s : String()" +
+                "   exists Cheese( type > $s )\n" +
+                "then\n" +
+                "   System.out.println( $s );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( "cheddar" );
+        ksession.insert( "gorgonzola" );
+        ksession.insert( "stilton" );
+        ksession.insert( new Cheese( "gorgonzola", 10 ) );
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testRangeIndex2() {
+        String str = "import org.drools.*;\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $s : String()" +
+                "   exists Cheese( type < $s )\n" +
+                "then\n" +
+                "   System.out.println( $s );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( "gorgonzola" );
+        ksession.insert( new Cheese( "cheddar", 10 ) );
+        ksession.insert( new Cheese( "gorgonzola", 10 ) );
+        ksession.insert( new Cheese( "stilton", 10 ) );
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testNotNode() {
+        String str = "import org.drools.*;\n" +
+                "rule R1 salience 10\n" +
+                "when\n" +
+                "   Person( $age : age )" +
+                "   not Cheese( price < $age )\n" +
+                "then\n" +
+                "   System.out.println( $age );\n" +
+                "end\n" +
+                "rule R2 salience 1\n" +
+                "when\n" +
+                "   $p : Person( age == 10 )" +
+                "then\n" +
+                "   modify($p) { setAge(15); }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Person( "mario", 10 ) );
+        ksession.insert( new Cheese( "gorgonzola", 20 ) );
+        assertEquals(3, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testNotNodeModifyRight() {
+        String str = "import org.drools.*;\n" +
+                "rule R1 salience 10 when\n" +
+                "   Person( $age : age )\n" +
+                "   not Cheese( price < $age )\n" +
+                "then\n" +
+                "   System.out.println( $age );\n" +
+                "end\n" +
+                "rule R3 salience 5 when\n" +
+                "   $c : Cheese( price == 8 )\n" +
+                "then\n" +
+                "   modify($c) { setPrice(15); }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Person( "A", 10 ) );
+        ksession.insert( new Cheese( "C1", 20 ) );
+        ksession.insert( new Cheese( "C2", 8 ) );
+        assertEquals(2, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testRange() {
+        String str = "import org.drools.*;\n" +
+                "rule R1 salience 10 when\n" +
+                "   Person( $age : age, $doubleAge : doubleAge )\n" +
+                "   not Cheese( this.price > $age && < $doubleAge )\n" +
+                "then\n" +
+                "   System.out.println( $age );\n" +
+                "end\n" +
+                "rule R3 salience 5 when\n" +
+                "   $c : Cheese( price == 15 )\n" +
+                "then\n" +
+                "   System.out.println( \"modify\" );\n" +
+                "   modify($c) { setPrice(8); }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Person( "A", 10 ) );
+        ksession.insert( new Cheese( "C1", 30 ) );
+        ksession.insert( new Cheese( "C2", 15 ) );
+        assertEquals(2, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testRange2() throws Exception {
+        String rule = "package org.drools.test\n" +
+                "declare A\n" +
+                "    a: int\n" +
+                "end\n" +
+                "declare B\n" +
+                "    b: int\n" +
+                "end\n" +
+                "declare C\n" +
+                "    c: int\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "   A( $a : a )\n" +
+                "   B( $b : b )\n" +
+                "   exists C( c > $a && < $b )\n" +
+                "then\n" +
+                "   System.out.println( $a + \", \" + $b );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType aType = kbase.getFactType( "org.drools.test", "A" );
+        FactType bType = kbase.getFactType( "org.drools.test", "B" );
+        FactType cType = kbase.getFactType( "org.drools.test", "C" );
+
+        Object a1 = aType.newInstance();
+        aType.set( a1, "a", 5 );
+        ksession.insert( a1 );
+        Object a2 = aType.newInstance();
+        aType.set( a2, "a", 11 );
+        ksession.insert( a2 );
+
+        Object b1 = bType.newInstance();
+        bType.set( b1, "b", 10 );
+        ksession.insert( b1 );
+        Object b2 = bType.newInstance();
+        bType.set( b2, "b", 6 );
+        ksession.insert( b2 );
+
+        Object c = cType.newInstance();
+        cType.set( c, "c", 7 );
+        ksession.insert( c );
+
+        ksession.fireAllRules();
     }
 }
