@@ -73,6 +73,7 @@ import org.drools.IndexedNumber;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.LongAddress;
 import org.drools.Message;
 import org.drools.MockPersistentSet;
 import org.drools.Move;
@@ -11264,6 +11265,26 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( new Person() );
         ksession.insert( new Cheese("gorgonzola") );
         ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup( "group1" );
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testInstanceof() throws Exception {
+        // JBRULES-3591
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   Person( address instanceof LongAddress )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person mark = new Person("mark");
+        mark.setAddress(new LongAddress("uk"));
+        ksession.insert(mark);
+
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }

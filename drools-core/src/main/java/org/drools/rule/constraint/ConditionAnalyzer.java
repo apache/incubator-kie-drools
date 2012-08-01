@@ -123,6 +123,10 @@ public class ConditionAnalyzer {
             condition.left = analyzeNode(((Soundslike) node).getStatement());
             condition.operation = BooleanOperator.SOUNDSLIKE;
             condition.right = analyzeNode(((Soundslike)node).getSoundslike());
+        } else if (node instanceof Instance) {
+            condition.left = analyzeNode((ASTNode) getFieldValue(Instance.class, "stmt", (Instance) node));
+            condition.operation = BooleanOperator.INSTANCEOF;
+            condition.right = analyzeNode((ASTNode) getFieldValue(Instance.class, "clsStmt", (Instance) node));
         } else {
             condition.left = analyzeNode(node);
         }
@@ -253,7 +257,7 @@ public class ConditionAnalyzer {
 
         if (accessorNode != null && accessorNode instanceof VariableAccessor) {
             if (isStaticAccessor(accessorNode)) {
-                while (accessorNode != null && accessorNode instanceof VariableAccessor) {
+                while (accessorNode instanceof VariableAccessor) {
                     accessorNode = accessorNode.getNextNode();
                 }
             } else {
@@ -295,7 +299,7 @@ public class ConditionAnalyzer {
         Invocation invocation = new MethodInvocation(listCreationMethod);
 
         ArrayCreationExpression arrayExpression = new ArrayCreationExpression(Object[].class);
-        Accessor[] accessors = getFieldValue(ListCreator.class, "values", listCreator);
+        Accessor[] accessors = listCreator.getValues();
         for (Accessor accessor : accessors) {
             ExecutableStatement statement = ((ExprValueAccessor)accessor).getStmt();
             arrayExpression.addItem(statementToExpression(statement, Object.class));
@@ -956,7 +960,7 @@ public class ConditionAnalyzer {
     }
 
     public enum BooleanOperator {
-        EQ("=="), NE("!="), GT(">"), GE(">="), LT("<"), LE("<="), MATCHES("~="), CONTAINS("in"), SOUNDSLIKE("like");
+        EQ("=="), NE("!="), GT(">"), GE(">="), LT("<"), LE("<="), MATCHES("~="), CONTAINS("in"), SOUNDSLIKE("like"), INSTANCEOF("isa");
 
         private String symbol;
 
@@ -973,7 +977,7 @@ public class ConditionAnalyzer {
         }
 
         public boolean needsSameType() {
-            return this != CONTAINS;
+            return this != CONTAINS && this != INSTANCEOF;
         }
 
         public boolean isComparison() {
