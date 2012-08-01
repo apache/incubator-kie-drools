@@ -58,14 +58,15 @@ public interface Score<S extends Score> extends Comparable<S> {
     S divide(double divisor);
 
     /**
-     * Returns an array of doubles representing the Score.
-     * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}.
-     * <p/>
+     * Returns an array of doubles representing the Score. Each double represents 1 score level.
      * A greater score level uses a lower array index than a lesser score level.
-     * The length of the returned array is stable for a specific Score implementation.
+     * <p/>
+     * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}.
+     * The length of the returned array must be stable for a specific {@link Score} implementation.
+     * <p/>
      * For example: -0hard/-7soft returns new double{-0.0, -7.0}
      * @return never null
      */
-    double[] toDoubleArray();
+    double[] toDoubleLevels();
 
 }

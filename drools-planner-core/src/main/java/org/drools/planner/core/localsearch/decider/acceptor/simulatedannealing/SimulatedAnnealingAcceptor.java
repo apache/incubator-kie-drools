@@ -47,13 +47,13 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseStarted(localSearchSolverPhaseScope);
-        for (double startingTemperaturePart : startingTemperature.toDoubleArray()) {
+        for (double startingTemperaturePart : startingTemperature.toDoubleLevels()) {
             if (startingTemperaturePart < 0.0) {
                 throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
                         + ") cannot have negative part (" + startingTemperaturePart + ").");
             }
         }
-        startingTemperatureParts = startingTemperature.toDoubleArray();
+        startingTemperatureParts = startingTemperature.toDoubleLevels();
         temperatureParts = startingTemperatureParts;
         partsLength = startingTemperatureParts.length;
     }
@@ -75,7 +75,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
         double acceptChance = 1.0;
-        double[] scoreDifferenceParts = scoreDifference.toDoubleArray();
+        double[] scoreDifferenceParts = scoreDifference.toDoubleLevels();
         for (int i = 0; i < partsLength; i++) {
             double scoreDifferencePart = scoreDifferenceParts[i];
             double temperaturePart = temperatureParts[i];

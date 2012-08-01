@@ -2223,3 +2223,13 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <partialSolutionTabuSize>...</partialSolutionTabuSize>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <fadingSolutionTabuSize>...</fadingSolutionTabuSize>
+
+[MINOR] If you have a custom Score implementation, the toDoubleArray() method has been renamed to toDoubleLevels().
+Before in *Score.java:
+    public double[] toDoubleArray() {
+        ...
+    }
+After in *Score.java:
+    public double[] toDoubleLevels() {
+        ...
+    }

@@ -98,7 +98,7 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
                 (int) Math.floor(this.softScore / divisor));
     }
 
-    public double[] toDoubleArray() {
+    public double[] toDoubleLevels() {
         return new double[]{hardScore, softScore};
     }
 

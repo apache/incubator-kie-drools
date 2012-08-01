@@ -65,7 +65,7 @@ public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
         return new DefaultSimpleScore((int) Math.floor(score / divisor));
     }
 
-    public double[] toDoubleArray() {
+    public double[] toDoubleLevels() {
         return new double[]{score};
     }
 
