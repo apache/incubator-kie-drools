@@ -49,6 +49,7 @@ public class ProblemBenchmark {
 
     private Integer failureCount = null;
     private SingleBenchmark winningSingleBenchmark = null;
+    private SingleBenchmark worstSingleBenchmark = null;
 
     public ProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
@@ -104,6 +105,10 @@ public class ProblemBenchmark {
 
     public SingleBenchmark getWinningSingleBenchmark() {
         return winningSingleBenchmark;
+    }
+
+    public SingleBenchmark getWorstSingleBenchmark() {
+        return worstSingleBenchmark;
     }
 
     // ************************************************************************
@@ -170,6 +175,8 @@ public class ProblemBenchmark {
             singleBenchmarkRanking++;
         }
         winningSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null : rankedSingleBenchmarkList.get(0);
+        worstSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null
+                : rankedSingleBenchmarkList.get(rankedSingleBenchmarkList.size() - 1);
     }
 
     private void determineWinningScoreDifference() {
@@ -177,10 +184,11 @@ public class ProblemBenchmark {
             if (singleBenchmark.isFailure()) {
                 continue;
             }
-            singleBenchmark.setWinningScoreDifference(singleBenchmark.getScore().subtract(winningSingleBenchmark.getScore()));
-            singleBenchmark.setWinningScoreDifferencePercentage(
+            singleBenchmark.setWinningScoreDifference(
+                    singleBenchmark.getScore().subtract(winningSingleBenchmark.getScore()));
+            singleBenchmark.setWorstScoreDifferencePercentage(
                     ScoreDifferencePercentage.calculateScoreDifferencePercentage(
-                            singleBenchmark.getScore(), winningSingleBenchmark.getScore()));
+                            worstSingleBenchmark.getScore(), singleBenchmark.getScore()));
         }
     }
 

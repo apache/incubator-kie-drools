@@ -22,7 +22,6 @@ import java.util.concurrent.Callable;
 
 import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
-import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.SingleStatistic;
 import org.drools.planner.benchmark.core.statistic.StatisticType;
 import org.drools.planner.core.Solver;
@@ -47,7 +46,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private Score score = null;
     // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
-    private ScoreDifferencePercentage winningScoreDifferencePercentage = null;
+    private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
     // Ranking starts from 0
@@ -93,12 +92,12 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         this.winningScoreDifference = winningScoreDifference;
     }
 
-    public ScoreDifferencePercentage getWinningScoreDifferencePercentage() {
-        return winningScoreDifferencePercentage;
+    public ScoreDifferencePercentage getWorstScoreDifferencePercentage() {
+        return worstScoreDifferencePercentage;
     }
 
-    public void setWinningScoreDifferencePercentage(ScoreDifferencePercentage winningScoreDifferencePercentage) {
-        this.winningScoreDifferencePercentage = winningScoreDifferencePercentage;
+    public void setWorstScoreDifferencePercentage(ScoreDifferencePercentage worstScoreDifferencePercentage) {
+        this.worstScoreDifferencePercentage = worstScoreDifferencePercentage;
     }
 
     public long getTimeMillisSpend() {
