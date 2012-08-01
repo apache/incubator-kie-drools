@@ -2026,7 +2026,7 @@ because it can really improve your results.
 
 [MAJOR] The interface MoveFactory has been replaced by the interface MoveListFactory and the configuration has changed.
 Depending on whether your implementation extended CachedMoveFactory or AbstractMoveFactory, the migration differs.
-If your implementation extended CachedMoveFactory, you actually used PHASE caching.
+If your implementation extended CachedMoveFactory, you were actually using PHASE caching.
 Before in *.java:
     import org.drools.planner.core.move.factory.CachedMoveFactory;
 
@@ -2056,7 +2056,7 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
         <cacheType>PHASE</cacheType>
         <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
-If your implementation extended AbstractMoveFactory, you actually used STEP caching,
+If your implementation extended AbstractMoveFactory, you were actually using STEP caching,
 which is the default for MoveListFactory's because less caching is impossible.
 Before in *.java:
     import org.drools.planner.core.move.factory.AbstractMoveFactory;
@@ -2134,7 +2134,7 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple plannin
           </valueSelector>
         </changeMoveSelector>
       </unionMoveSelector>
-After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple planning entities:
+After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple planning entities and multiple planning variables:
       <unionMoveSelector>
         <cacheType>PHASE</cacheType>
         <changeMoveSelector>
@@ -2173,7 +2173,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       </selector>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <pillarSwapMoveSelector>
-        <cacheType>PHASE</cacheType>
+        <cacheType>STEP</cacheType>
       </pillarSwapMoveSelector>
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <selector>
@@ -2197,6 +2197,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       </selector>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <subChainChangeMoveSelector>
-        <cacheType>PHASE</cacheType>
+        <cacheType>STEP</cacheType>
       </subChainChangeMoveSelector>
-      TODO reverse subChainChangeMoveSelector also
+
+TODO custom Selector
