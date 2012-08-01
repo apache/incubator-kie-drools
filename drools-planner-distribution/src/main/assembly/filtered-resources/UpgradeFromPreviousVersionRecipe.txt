@@ -2201,3 +2201,25 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
       </subChainChangeMoveSelector>
 
 TODO custom Selector
+
+[MINOR] partialTabu has been renamed to fadingTabu
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <partialPlanningEntityTabuSize>...</partialPlanningEntityTabuSize>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <fadingPlanningEntityTabuSize>...</fadingPlanningEntityTabuSize>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <partialPlanningValueTabuSize>...</partialPlanningValueTabuSize>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <fadingPlanningValueTabuSize>...</fadingPlanningValueTabuSize>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <partialMoveTabuSize>...</partialMoveTabuSize>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <fadingMoveTabuSize>...</fadingMoveTabuSize>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <partialUndoMoveTabuSize>...</partialUndoMoveTabuSize>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <fadingUndoMoveTabuSize>...</fadingUndoMoveTabuSize>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <partialSolutionTabuSize>...</partialSolutionTabuSize>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <fadingSolutionTabuSize>...</fadingSolutionTabuSize>

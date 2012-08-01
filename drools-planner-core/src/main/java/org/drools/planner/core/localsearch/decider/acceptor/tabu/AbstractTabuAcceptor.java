@@ -36,7 +36,7 @@ import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     protected int tabuSize = -1;
-    protected int partialTabuSize = 0;
+    protected int fadingTabuSize = 0;
     protected boolean aspirationEnabled = true;
 
     protected boolean assertTabuHashCodeCorrectness = false;
@@ -48,8 +48,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         this.tabuSize = tabuSize;
     }
 
-    public void setPartialTabuSize(int partialTabuSize) {
-        this.partialTabuSize = partialTabuSize;
+    public void setFadingTabuSize(int fadingTabuSize) {
+        this.fadingTabuSize = fadingTabuSize;
     }
 
     public void setAspirationEnabled(boolean aspirationEnabled) {
@@ -68,7 +68,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseStarted(localSearchSolverPhaseScope);
         validate();
-        tabuToStepIndexMap = new HashMap<Object, Integer>(tabuSize + partialTabuSize);
+        tabuToStepIndexMap = new HashMap<Object, Integer>(tabuSize + fadingTabuSize);
         tabuSequenceList = new LinkedList<Object>();
     }
 
@@ -77,12 +77,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             throw new IllegalArgumentException("The tabuSize (" + tabuSize
                     + ") cannot be negative.");
         }
-        if (partialTabuSize < 0) {
-            throw new IllegalArgumentException("The partialTabuSize (" + partialTabuSize
+        if (fadingTabuSize < 0) {
+            throw new IllegalArgumentException("The fadingTabuSize (" + fadingTabuSize
                     + ") cannot be negative.");
         }
-        if (tabuSize + partialTabuSize == 0) {
-            throw new IllegalArgumentException("The sum of tabuSize and partialTabuSize should be at least 1.");
+        if (tabuSize + fadingTabuSize == 0) {
+            throw new IllegalArgumentException("The sum of tabuSize and fadingTabuSize should be at least 1.");
         }
     }
 
@@ -134,31 +134,31 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
             return false;
         }
-        double acceptChance = calculatePartialTabuAcceptChance(tabuStepCount - tabuSize);
+        double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - tabuSize);
         boolean accepted = moveScope.getWorkingRandom().nextDouble() < acceptChance;
         if (accepted) {
-            logger.trace("        Proposed move ({}) is partially tabu with acceptChance ({}) and is accepted.",
+            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is accepted.",
                     moveScope.getMove(), acceptChance);
         } else {
-            logger.trace("        Proposed move ({}) is partially tabu with acceptChance ({}) and is not accepted.",
+            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is not accepted.",
                     moveScope.getMove(), acceptChance);
         }
         return accepted;
     }
 
     /**
-     * @param partialTabuStepCount 0 < partialTabuStepCount <= partialTabuSize
+     * @param fadingTabuStepCount 0 < fadingTabuStepCount <= fadingTabuSize
      * @return 0.0 < acceptChance < 1.0
      */
-    protected double calculatePartialTabuAcceptChance(int partialTabuStepCount) {
+    protected double calculateFadingTabuAcceptChance(int fadingTabuStepCount) {
         // The + 1's are because acceptChance should not be 0.0 or 1.0
-        // when (partialTabuStepCount == 0) or (partialTabuStepCount + 1 == partialTabuSize)
-        return ((double) (partialTabuSize - partialTabuStepCount)) / ((double) (partialTabuSize + 1));
+        // when (fadingTabuStepCount == 0) or (fadingTabuStepCount + 1 == fadingTabuSize)
+        return ((double) (fadingTabuSize - fadingTabuStepCount)) / ((double) (fadingTabuSize + 1));
     }
 
     @Override
     public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        int maximumTabuListSize = tabuSize + partialTabuSize; // is at least 1
+        int maximumTabuListSize = tabuSize + fadingTabuSize; // is at least 1
         int tabuStepIndex = localSearchStepScope.getStepIndex();
         // Remove the oldest tabu(s)
         for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {

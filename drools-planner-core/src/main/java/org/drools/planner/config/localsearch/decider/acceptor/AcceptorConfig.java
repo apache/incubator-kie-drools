@@ -45,15 +45,15 @@ public class AcceptorConfig {
     private List<AcceptorType> acceptorTypeList = null;
 
     protected Integer moveTabuSize = null;
-    protected Integer partialMoveTabuSize = null;
+    protected Integer fadingMoveTabuSize = null;
     protected Integer undoMoveTabuSize = null;
-    protected Integer partialUndoMoveTabuSize = null;
+    protected Integer fadingUndoMoveTabuSize = null;
     protected Integer planningEntityTabuSize = null;
-    protected Integer partialPlanningEntityTabuSize = null;
+    protected Integer fadingPlanningEntityTabuSize = null;
     protected Integer planningValueTabuSize = null;
-    protected Integer partialPlanningValueTabuSize = null;
+    protected Integer fadingPlanningValueTabuSize = null;
     protected Integer solutionTabuSize = null;
-    protected Integer partialSolutionTabuSize = null;
+    protected Integer fadingSolutionTabuSize = null;
 
     protected String simulatedAnnealingStartingTemperature = null;
 
@@ -86,12 +86,12 @@ public class AcceptorConfig {
         this.moveTabuSize = moveTabuSize;
     }
 
-    public Integer getPartialMoveTabuSize() {
-        return partialMoveTabuSize;
+    public Integer getFadingMoveTabuSize() {
+        return fadingMoveTabuSize;
     }
 
-    public void setPartialMoveTabuSize(Integer partialMoveTabuSize) {
-        this.partialMoveTabuSize = partialMoveTabuSize;
+    public void setFadingMoveTabuSize(Integer fadingMoveTabuSize) {
+        this.fadingMoveTabuSize = fadingMoveTabuSize;
     }
 
     public Integer getUndoMoveTabuSize() {
@@ -102,12 +102,12 @@ public class AcceptorConfig {
         this.undoMoveTabuSize = undoMoveTabuSize;
     }
 
-    public Integer getPartialUndoMoveTabuSize() {
-        return partialUndoMoveTabuSize;
+    public Integer getFadingUndoMoveTabuSize() {
+        return fadingUndoMoveTabuSize;
     }
 
-    public void setPartialUndoMoveTabuSize(Integer partialUndoMoveTabuSize) {
-        this.partialUndoMoveTabuSize = partialUndoMoveTabuSize;
+    public void setFadingUndoMoveTabuSize(Integer fadingUndoMoveTabuSize) {
+        this.fadingUndoMoveTabuSize = fadingUndoMoveTabuSize;
     }
 
     public Integer getPlanningEntityTabuSize() {
@@ -118,12 +118,12 @@ public class AcceptorConfig {
         this.planningEntityTabuSize = planningEntityTabuSize;
     }
 
-    public Integer getPartialPlanningEntityTabuSize() {
-        return partialPlanningEntityTabuSize;
+    public Integer getFadingPlanningEntityTabuSize() {
+        return fadingPlanningEntityTabuSize;
     }
 
-    public void setPartialPlanningEntityTabuSize(Integer partialPlanningEntityTabuSize) {
-        this.partialPlanningEntityTabuSize = partialPlanningEntityTabuSize;
+    public void setFadingPlanningEntityTabuSize(Integer fadingPlanningEntityTabuSize) {
+        this.fadingPlanningEntityTabuSize = fadingPlanningEntityTabuSize;
     }
 
     public Integer getPlanningValueTabuSize() {
@@ -134,12 +134,12 @@ public class AcceptorConfig {
         this.planningValueTabuSize = planningValueTabuSize;
     }
 
-    public Integer getPartialPlanningValueTabuSize() {
-        return partialPlanningValueTabuSize;
+    public Integer getFadingPlanningValueTabuSize() {
+        return fadingPlanningValueTabuSize;
     }
 
-    public void setPartialPlanningValueTabuSize(Integer partialPlanningValueTabuSize) {
-        this.partialPlanningValueTabuSize = partialPlanningValueTabuSize;
+    public void setFadingPlanningValueTabuSize(Integer fadingPlanningValueTabuSize) {
+        this.fadingPlanningValueTabuSize = fadingPlanningValueTabuSize;
     }
 
     public Integer getSolutionTabuSize() {
@@ -150,12 +150,12 @@ public class AcceptorConfig {
         this.solutionTabuSize = solutionTabuSize;
     }
 
-    public Integer getPartialSolutionTabuSize() {
-        return partialSolutionTabuSize;
+    public Integer getFadingSolutionTabuSize() {
+        return fadingSolutionTabuSize;
     }
 
-    public void setPartialSolutionTabuSize(Integer partialSolutionTabuSize) {
-        this.partialSolutionTabuSize = partialSolutionTabuSize;
+    public void setFadingSolutionTabuSize(Integer fadingSolutionTabuSize) {
+        this.fadingSolutionTabuSize = fadingSolutionTabuSize;
     }
 
     public String getSimulatedAnnealingStartingTemperature() {
@@ -210,14 +210,14 @@ public class AcceptorConfig {
             }
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.MOVE_TABU))
-                || moveTabuSize != null || partialMoveTabuSize != null) {
+                || moveTabuSize != null || fadingMoveTabuSize != null) {
             MoveTabuAcceptor moveTabuAcceptor = new MoveTabuAcceptor();
             moveTabuAcceptor.setUseUndoMoveAsTabuMove(false);
             if (moveTabuSize != null) {
                 moveTabuAcceptor.setTabuSize(moveTabuSize);
             }
-            if (partialMoveTabuSize != null) {
-                moveTabuAcceptor.setPartialTabuSize(partialMoveTabuSize);
+            if (fadingMoveTabuSize != null) {
+                moveTabuAcceptor.setFadingTabuSize(fadingMoveTabuSize);
             }
             if (environmentMode == EnvironmentMode.TRACE) {
                 moveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
@@ -225,14 +225,14 @@ public class AcceptorConfig {
             acceptorList.add(moveTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.UNDO_MOVE_TABU))
-                || undoMoveTabuSize != null || partialUndoMoveTabuSize != null) {
+                || undoMoveTabuSize != null || fadingUndoMoveTabuSize != null) {
             MoveTabuAcceptor undoMoveTabuAcceptor = new MoveTabuAcceptor();
             undoMoveTabuAcceptor.setUseUndoMoveAsTabuMove(true);
             if (undoMoveTabuSize != null) {
                 undoMoveTabuAcceptor.setTabuSize(undoMoveTabuSize);
             }
-            if (partialUndoMoveTabuSize != null) {
-                undoMoveTabuAcceptor.setPartialTabuSize(partialUndoMoveTabuSize);
+            if (fadingUndoMoveTabuSize != null) {
+                undoMoveTabuAcceptor.setFadingTabuSize(fadingUndoMoveTabuSize);
             }
             if (environmentMode == EnvironmentMode.TRACE) {
                 undoMoveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
@@ -240,13 +240,13 @@ public class AcceptorConfig {
             acceptorList.add(undoMoveTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU))
-                || planningEntityTabuSize != null || partialPlanningEntityTabuSize != null) {
+                || planningEntityTabuSize != null || fadingPlanningEntityTabuSize != null) {
             PlanningEntityTabuAcceptor planningEntityTabuAcceptor = new PlanningEntityTabuAcceptor();
             if (planningEntityTabuSize != null) {
                 planningEntityTabuAcceptor.setTabuSize(planningEntityTabuSize);
             }
-            if (partialPlanningEntityTabuSize != null) {
-                planningEntityTabuAcceptor.setPartialTabuSize(partialPlanningEntityTabuSize);
+            if (fadingPlanningEntityTabuSize != null) {
+                planningEntityTabuAcceptor.setFadingTabuSize(fadingPlanningEntityTabuSize);
             }
             if (environmentMode == EnvironmentMode.TRACE) {
                 planningEntityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
@@ -254,13 +254,13 @@ public class AcceptorConfig {
             acceptorList.add(planningEntityTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_VALUE_TABU))
-                || planningValueTabuSize != null || partialPlanningValueTabuSize != null) {
+                || planningValueTabuSize != null || fadingPlanningValueTabuSize != null) {
             PlanningValueTabuAcceptor planningValueTabuAcceptor = new PlanningValueTabuAcceptor();
             if (planningValueTabuSize != null) {
                 planningValueTabuAcceptor.setTabuSize(planningValueTabuSize);
             }
-            if (partialPlanningValueTabuSize != null) {
-                planningValueTabuAcceptor.setPartialTabuSize(partialPlanningValueTabuSize);
+            if (fadingPlanningValueTabuSize != null) {
+                planningValueTabuAcceptor.setFadingTabuSize(fadingPlanningValueTabuSize);
             }
             if (environmentMode == EnvironmentMode.TRACE) {
                 planningValueTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
@@ -268,13 +268,13 @@ public class AcceptorConfig {
             acceptorList.add(planningValueTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SOLUTION_TABU))
-                || solutionTabuSize != null || partialSolutionTabuSize != null) {
+                || solutionTabuSize != null || fadingSolutionTabuSize != null) {
             SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
             if (solutionTabuSize != null) {
                 solutionTabuAcceptor.setTabuSize(solutionTabuSize);
             }
-            if (partialSolutionTabuSize != null) {
-                solutionTabuAcceptor.setPartialTabuSize(partialSolutionTabuSize);
+            if (fadingSolutionTabuSize != null) {
+                solutionTabuAcceptor.setFadingTabuSize(fadingSolutionTabuSize);
             }
             if (environmentMode == EnvironmentMode.TRACE) {
                 solutionTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
@@ -335,26 +335,26 @@ public class AcceptorConfig {
         if (moveTabuSize == null) {
             moveTabuSize = inheritedConfig.getMoveTabuSize();
         }
-        if (partialMoveTabuSize == null) {
-            partialMoveTabuSize = inheritedConfig.getPartialMoveTabuSize();
+        if (fadingMoveTabuSize == null) {
+            fadingMoveTabuSize = inheritedConfig.getFadingMoveTabuSize();
         }
         if (undoMoveTabuSize == null) {
             undoMoveTabuSize = inheritedConfig.getUndoMoveTabuSize();
         }
-        if (partialUndoMoveTabuSize == null) {
-            partialUndoMoveTabuSize = inheritedConfig.getPartialUndoMoveTabuSize();
+        if (fadingUndoMoveTabuSize == null) {
+            fadingUndoMoveTabuSize = inheritedConfig.getFadingUndoMoveTabuSize();
         }
         if (planningEntityTabuSize == null) {
             planningEntityTabuSize = inheritedConfig.getPlanningEntityTabuSize();
         }
-        if (partialPlanningEntityTabuSize == null) {
-            partialPlanningEntityTabuSize = inheritedConfig.getPartialPlanningEntityTabuSize();
+        if (fadingPlanningEntityTabuSize == null) {
+            fadingPlanningEntityTabuSize = inheritedConfig.getFadingPlanningEntityTabuSize();
         }
         if (solutionTabuSize == null) {
             solutionTabuSize = inheritedConfig.getSolutionTabuSize();
         }
-        if (partialSolutionTabuSize == null) {
-            partialSolutionTabuSize = inheritedConfig.getPartialSolutionTabuSize();
+        if (fadingSolutionTabuSize == null) {
+            fadingSolutionTabuSize = inheritedConfig.getFadingSolutionTabuSize();
         }
         if (simulatedAnnealingStartingTemperature == null) {
             simulatedAnnealingStartingTemperature = inheritedConfig.getSimulatedAnnealingStartingTemperature();

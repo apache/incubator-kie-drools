@@ -89,7 +89,7 @@
         </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>7</planningEntityTabuSize>
-          <partialPlanningEntityTabuSize>7</partialPlanningEntityTabuSize>
+          <fadingPlanningEntityTabuSize>7</fadingPlanningEntityTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>2000</minimalAcceptedSelection>
@@ -110,7 +110,7 @@
         </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>5</planningEntityTabuSize>
-          <partialPlanningEntityTabuSize>10</partialPlanningEntityTabuSize>
+          <fadingPlanningEntityTabuSize>10</fadingPlanningEntityTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>2000</minimalAcceptedSelection>
