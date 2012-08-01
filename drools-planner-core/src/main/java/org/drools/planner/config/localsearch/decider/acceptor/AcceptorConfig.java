@@ -338,6 +338,12 @@ public class AcceptorConfig {
         if (fadingPlanningEntityTabuSize == null) {
             fadingPlanningEntityTabuSize = inheritedConfig.getFadingPlanningEntityTabuSize();
         }
+        if (planningValueTabuSize == null) {
+            planningValueTabuSize = inheritedConfig.getPlanningValueTabuSize();
+        }
+        if (fadingPlanningValueTabuSize == null) {
+            fadingPlanningValueTabuSize = inheritedConfig.getFadingPlanningValueTabuSize();
+        }
         if (moveTabuSize == null) {
             moveTabuSize = inheritedConfig.getMoveTabuSize();
         }
