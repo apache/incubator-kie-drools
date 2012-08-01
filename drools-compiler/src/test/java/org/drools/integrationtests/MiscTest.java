@@ -175,6 +175,7 @@ import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
@@ -11401,5 +11402,37 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( c );
 
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testClassCastByRuleTerminalNode() throws Exception {
+        // JBRULES-3590
+        String str = "import org.drools.Person;\n" +
+                "import org.drools.Cheese;\n" +
+                "rule R1\n" +
+                "ruleflow-group \"group1\"\n" +
+                "lock-on-active true\n" +
+                "when\n" +
+                "   $p : Person()\n" +
+                "then\n" +
+                "   $p.setName(\"John\");\n" +
+                "   update( $p );\n" +
+                "end\n" +
+                "rule R2\n" +
+                "ruleflow-group \"group1\"\n" +
+                "lock-on-active true\n" +
+                "when\n" +
+                "   $p : Person( name == null )\n" +
+                "   forall ( Cheese ( type == \"cheddar\" ))\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert( new Person( ) );
+        ksession.insert( new Cheese( "gorgonzola") );
+        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup( "group1" );
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
     }
 }
