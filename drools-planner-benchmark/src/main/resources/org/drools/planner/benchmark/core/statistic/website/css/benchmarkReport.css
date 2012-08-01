@@ -31,10 +31,10 @@
     border-bottom: 2px solid #dddddd;
 }
 
-.rankingBest th {
+.favoriteSolverBenchmark th {
     background-color: #dff0d8 !important
 }
-.rankingBest td {
+.favoriteSolverBenchmark td {
     background-color: #dff0d8 !important
 }
 

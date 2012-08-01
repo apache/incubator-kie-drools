@@ -134,7 +134,7 @@ public class SolverBenchmark {
         return failureCount > 0;
     }
 
-    public boolean isRankingBest() {
+    public boolean isFavorite() {
         return ranking != null && ranking.intValue() == 0;
     }
 

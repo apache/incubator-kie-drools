@@ -66,7 +66,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private ExecutorService executorService;
     private Integer failureCount;
     private SingleBenchmark firstFailureSingleBenchmark;
-    private SolverBenchmark winningSolverBenchmark;
+    private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
 
     public File getBenchmarkDirectory() {
@@ -177,7 +177,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         executorService = Executors.newFixedThreadPool(parallelBenchmarkCount);
         failureCount = 0;
         firstFailureSingleBenchmark = null;
-        winningSolverBenchmark = null;
+        favoriteSolverBenchmark = null;
         benchmarkTimeMillisSpend = -1L;
         logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount ({}).",
                 solverBenchmarkList.size(), parallelBenchmarkCount);
@@ -278,8 +278,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         PlannerStatistic plannerStatistic = new PlannerStatistic(this);
         plannerStatistic.writeStatistics();
         if (failureCount == 0) {
-            logger.info("Benchmarking ended: winning solverBenchmark ({}), statistic html overview ({}).",
-                    winningSolverBenchmark.getName(), plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
+            logger.info("Benchmarking ended: favoriteSolverBenchmark ({}), statistic html overview ({}).",
+                    favoriteSolverBenchmark.getName(), plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
         } else {
             logger.info("Benchmarking failed: failureCount ({}), statistic html overview ({}).",
                     failureCount, plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
@@ -324,7 +324,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             solverBenchmark.setRanking(ranking);
             ranking++;
         }
-        winningSolverBenchmark = rankedSolverBenchmarkList.isEmpty() ? null : rankedSolverBenchmarkList.get(0);
+        favoriteSolverBenchmark = rankedSolverBenchmarkList.isEmpty() ? null : rankedSolverBenchmarkList.get(0);
     }
 
     public boolean hasAnyFailure() {

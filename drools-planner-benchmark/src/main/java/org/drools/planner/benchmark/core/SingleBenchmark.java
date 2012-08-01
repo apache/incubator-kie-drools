@@ -44,7 +44,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private int planningEntityCount = -1;
     private long problemScale = -1;
     private Score score = null;
-    // compared to winning singleBenchmark (which might not be the overall winner)
+    // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
@@ -175,7 +175,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return calculateCount * 1000L / timeMillisSpend;
     }
 
-    public boolean isRankingBest() {
+    public boolean isWinner() {
         return ranking != null && ranking.intValue() == 0;
     }
 

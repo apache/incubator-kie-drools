@@ -385,8 +385,10 @@
     <section>
       <title>Ranking the <literal>Solver</literal>s</title>
 
-      <para>The benchmark report automatically ranks the solvers. It's recommended to use the winning
-      <literal>Solver</literal> (which has rank 0) in production.</para>
+      <para>The benchmark report automatically ranks the solvers. The <literal>Solver</literal> with rank
+      <literal>0</literal> is called the favorite <literal>Solver</literal>: it performs best overall, but it might not
+      be the best on every problem. It's recommended to use that favorite <literal>Solver</literal> in
+      production.</para>
 
       <para>However, there are different ways of ranking the solvers. You can configure how:</para>
 

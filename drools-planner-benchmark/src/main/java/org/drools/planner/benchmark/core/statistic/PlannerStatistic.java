@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
@@ -122,8 +121,8 @@ public class PlannerStatistic {
                     Score score = singleBenchmark.getScore();
                     Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                     String solverLabel = solverBenchmark.getName();
-                    if (solverBenchmark.isRankingBest()) {
-                        solverLabel += " (winner)";
+                    if (solverBenchmark.isFavorite()) {
+                        solverLabel += " (favorite)";
                     }
                     String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                     dataset.addValue(scoreGraphValue, solverLabel, planningProblemLabel);
@@ -170,8 +169,8 @@ public class PlannerStatistic {
                     Score score = singleBenchmark.getWinningScoreDifference();
                     Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                     String solverLabel = solverBenchmark.getName();
-                    if (solverBenchmark.isRankingBest()) {
-                        solverLabel += " (winner)";
+                    if (solverBenchmark.isFavorite()) {
+                        solverLabel += " (favorite)";
                     }
                     String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                     dataset.addValue(scoreGraphValue, solverLabel, planningProblemLabel);
@@ -217,8 +216,8 @@ public class PlannerStatistic {
                 if (singleBenchmark.isSuccess()) {
                     long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                     String solverLabel = solverBenchmark.getName();
-                    if (solverBenchmark.isRankingBest()) {
-                        solverLabel += " (winner)";
+                    if (solverBenchmark.isFavorite()) {
+                        solverLabel += " (favorite)";
                     }
                     String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                     dataset.addValue(timeMillisSpend, solverLabel, planningProblemLabel);
@@ -264,8 +263,8 @@ public class PlannerStatistic {
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getName();
-            if (solverBenchmark.isRankingBest()) {
-                solverLabel += " (winner)";
+            if (solverBenchmark.isFavorite()) {
+                solverLabel += " (favorite)";
             }
             XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
@@ -309,8 +308,8 @@ public class PlannerStatistic {
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getName();
-            if (solverBenchmark.isRankingBest()) {
-                solverLabel += " (winner)";
+            if (solverBenchmark.isFavorite()) {
+                solverLabel += " (favorite)";
             }
             XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {

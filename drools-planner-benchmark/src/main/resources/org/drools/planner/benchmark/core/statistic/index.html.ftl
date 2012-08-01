@@ -16,7 +16,7 @@
 <#macro addSolverRankingBadge solverBenchmark>
     <#if !solverBenchmark.ranking??>
     <span class="badge badge-warning">F</span>
-    <#elseif solverBenchmark.rankingBest>
+    <#elseif solverBenchmark.favorite>
     <span class="badge badge-success">${solverBenchmark.ranking}</span>
     <#else>
     <span class="badge">${solverBenchmark.ranking}</span>
@@ -25,7 +25,7 @@
 <#macro addSingleRankingBadge singleBenchmark>
     <#if !singleBenchmark.ranking??>
     <span class="badge badge-warning">F</span>
-    <#elseif singleBenchmark.rankingBest>
+    <#elseif singleBenchmark.winner>
     <span class="badge badge-success">${singleBenchmark.ranking}</span>
     <#else>
     <span class="badge">${singleBenchmark.ranking}</span>
@@ -112,7 +112,7 @@
                                         <th>Ranking</th>
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                    <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
@@ -160,7 +160,7 @@
                                     </#list>
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                    <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
@@ -206,7 +206,7 @@
                                     </#list>
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                    <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
@@ -252,7 +252,7 @@
                                     </#list>
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                    <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
@@ -298,7 +298,7 @@
                                     </#list>
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                    <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
                                         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
