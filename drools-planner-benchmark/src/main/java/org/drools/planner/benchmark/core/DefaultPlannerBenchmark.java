@@ -60,12 +60,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private List<SolverBenchmark> solverBenchmarkList = null;
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
 
+    private long startingSystemTimeMillis;
     private Date startingTimestamp;
     private String plannerVersion;
     private ExecutorService executorService;
     private Integer failureCount;
     private SingleBenchmark firstFailureSingleBenchmark;
     private SolverBenchmark winningSolverBenchmark;
+    private long benchmarkTimeMillisSpend;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -142,6 +144,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return failureCount;
     }
 
+    public long getBenchmarkTimeMillisSpend() {
+        return benchmarkTimeMillisSpend;
+    }
+
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
@@ -154,6 +160,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     public void benchmarkingStarted() {
+        startingSystemTimeMillis = System.currentTimeMillis();
         startingTimestamp = new Date();
         if (solverBenchmarkList == null || solverBenchmarkList.isEmpty()) {
             throw new IllegalArgumentException(
@@ -171,6 +178,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         failureCount = 0;
         firstFailureSingleBenchmark = null;
         winningSolverBenchmark = null;
+        benchmarkTimeMillisSpend = -1L;
         logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount ({}).",
                 solverBenchmarkList.size(), parallelBenchmarkCount);
     }
@@ -252,6 +260,11 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
     }
 
+    public long calculateTimeMillisSpend() {
+        long now = System.currentTimeMillis();
+        return now - startingSystemTimeMillis;
+    }
+
     public void benchmarkingEnded() {
         executorService.shutdownNow();
         for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
@@ -261,6 +274,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             solverBenchmark.benchmarkingEnded();
         }
         determineRanking();
+        benchmarkTimeMillisSpend = calculateTimeMillisSpend();
         PlannerStatistic plannerStatistic = new PlannerStatistic(this);
         plannerStatistic.writeStatistics();
         if (failureCount == 0) {
