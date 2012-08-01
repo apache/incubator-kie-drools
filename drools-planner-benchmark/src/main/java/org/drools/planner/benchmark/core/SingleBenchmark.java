@@ -48,6 +48,8 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private Score winningScoreDifference = null;
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
+    // Ranking starts from 0
+    private Integer ranking = null;
 
     private Boolean succeeded = null;
     private Throwable failureThrowable = null;
@@ -93,16 +95,16 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return timeMillisSpend;
     }
 
-    public void setTimeMillisSpend(long timeMillisSpend) {
-        this.timeMillisSpend = timeMillisSpend;
-    }
-
     public long getCalculateCount() {
         return calculateCount;
     }
 
-    public void setCalculateCount(long calculateCount) {
-        this.calculateCount = calculateCount;
+    public Integer getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(Integer ranking) {
+        this.ranking = ranking;
     }
 
     public Boolean getSucceeded() {
@@ -171,6 +173,10 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
             timeMillisSpend = 1L;
         }
         return calculateCount * 1000L / timeMillisSpend;
+    }
+
+    public boolean isRankingBest() {
+        return ranking != null && ranking.intValue() == 0;
     }
 
     public SingleStatistic getSingleStatistic(StatisticType statisticType) {

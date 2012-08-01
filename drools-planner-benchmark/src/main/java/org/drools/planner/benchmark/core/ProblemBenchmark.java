@@ -17,8 +17,12 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.benchmark.core.ranking.SingleBenchmarkRankingComparator;
 import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
@@ -143,26 +147,31 @@ public class ProblemBenchmark {
     }
 
     public void benchmarkingEnded() {
-        determineWinningSingleBenchmark();
-        determineWinningSingleBenchmarkScoreDifference();
+        determineSingleBenchmarkRanking();
+        determineWinningScoreDifference();
     }
 
-    private void determineWinningSingleBenchmark() {
+    private void determineSingleBenchmarkRanking() {
         failureCount = 0;
-        winningSingleBenchmark = null;
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+        List<SingleBenchmark> rankedSingleBenchmarkList = new ArrayList<SingleBenchmark>(singleBenchmarkList);
+        // Do not rank a SingleBenchmark that has a failure
+        for (Iterator<SingleBenchmark> it = rankedSingleBenchmarkList.iterator(); it.hasNext(); ) {
+            SingleBenchmark singleBenchmark = it.next();
             if (singleBenchmark.isFailure()) {
                 failureCount++;
-            } else {
-                if (winningSingleBenchmark == null
-                        || singleBenchmark.getScore().compareTo(winningSingleBenchmark.getScore()) > 0) {
-                    winningSingleBenchmark = singleBenchmark;
-                }
+                it.remove();
             }
         }
+        Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(new SingleBenchmarkRankingComparator()));
+        int singleBenchmarkRanking = 0;
+        for (SingleBenchmark singleBenchmark : rankedSingleBenchmarkList) {
+            singleBenchmark.setRanking(singleBenchmarkRanking);
+            singleBenchmarkRanking++;
+        }
+        winningSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null : rankedSingleBenchmarkList.get(0);
     }
 
-    private void determineWinningSingleBenchmarkScoreDifference() {
+    private void determineWinningScoreDifference() {
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
             if (singleBenchmark.isFailure()) {
                 continue;

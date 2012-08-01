@@ -273,7 +273,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingEnded();
         }
-        determineRanking();
+        determineSolverBenchmarkRanking();
         benchmarkTimeMillisSpend = calculateTimeMillisSpend();
         PlannerStatistic plannerStatistic = new PlannerStatistic(this);
         plannerStatistic.writeStatistics();
@@ -290,7 +290,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
     }
 
-    private void determineRanking() {
+    private void determineSolverBenchmarkRanking() {
         List<SolverBenchmark> rankedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
         // Do not rank a SolverBenchmark that has a failure
         for (Iterator<SolverBenchmark> it = rankedSolverBenchmarkList.iterator(); it.hasNext(); ) {
