@@ -19,8 +19,12 @@
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
-      <subChainChangeMoveSelector/>
-      <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
+      <subChainChangeMoveSelector>
+        <selectReversingMoveToo>false</selectReversingMoveToo>
+      </subChainChangeMoveSelector>
+      <subChainSwapMoveSelector>
+        <selectReversingMoveToo>false</selectReversingMoveToo>
+      </subChainSwapMoveSelector>
     </unionMoveSelector>
     <acceptor>
       <planningEntityTabuSize>9</planningEntityTabuSize>

@@ -77,7 +77,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>jit-changeSwapSubChainNoReverse-entityTabu9-2000</name>
+    <name>jit-changeSwapSubChainChangeNoReversing-entityTabu9-2000</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -100,7 +100,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>jit-changeSwapSubChain-entityTabu9-2000</name>
+    <name>jit-changeSwapSubChainChange-entityTabu9-2000</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -110,6 +110,54 @@
           <changeMoveSelector/>
           <swapMoveSelector/>
           <subChainChangeMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>9</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>jit-changeSwapSubChainChangeSwapNoReversing-entityTabu9-2000</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector>
+            <selectReversingMoveToo>false</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <subChainSwapMoveSelector>
+            <selectReversingMoveToo>false</selectReversingMoveToo>
+          </subChainSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>9</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>jit-changeSwapSubChainChangeSwap-entityTabu9-2000</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector/>
+          <subChainSwapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>9</planningEntityTabuSize>
