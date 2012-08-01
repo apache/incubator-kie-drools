@@ -306,12 +306,16 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        final Activation activation = (Activation) leftTuple.getObject();
+        Object obj = leftTuple.getObject();
+
 
         // activation can be null if the LeftTuple previous propagated into a no-loop
-        if ( activation == null ) {
+        // or could be true due to lock-on-active blocking activation creation
+        if ( obj == null || obj == Boolean.TRUE) {
             return;
         }
+
+        final Activation activation = (Activation) leftTuple.getObject();
 
         activation.setMatched( false );
         
