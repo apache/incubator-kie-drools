@@ -68,14 +68,18 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
     protected void writeCsvStatistic() {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
-                    singleBenchmark.getSingleStatistic(problemStatisticType);
-            for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
-                long timeMillisSpend = point.getTimeMillisSpend();
-                MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
-                String value = "\"" + Long.toString(memoryUseMeasurement.getUsedMemory())
-                        + "/" + Long.toString(memoryUseMeasurement.getMaxMemory()) + "\"";
-                csv.addPoint(singleBenchmark, timeMillisSpend, value);
+            if (singleBenchmark.isSuccess()) {
+                MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
+                    long timeMillisSpend = point.getTimeMillisSpend();
+                    MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
+                    String value = "\"" + Long.toString(memoryUseMeasurement.getUsedMemory())
+                            + "/" + Long.toString(memoryUseMeasurement.getMaxMemory()) + "\"";
+                    csv.addPoint(singleBenchmark, timeMillisSpend, value);
+                }
+            } else {
+                csv.addPoint(singleBenchmark, 0L, "Failed");
             }
         }
         csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
@@ -86,15 +90,17 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
     protected void writeGraphStatistic() {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
-                    singleBenchmark.getSingleStatistic(problemStatisticType);
             XYSeries usedSeries = new XYSeries(singleBenchmark.getSolverBenchmark().getName() + " used");
             XYSeries maxSeries = new XYSeries(singleBenchmark.getSolverBenchmark().getName() + " max");
-            for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
-                long timeMillisSpend = point.getTimeMillisSpend();
-                MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
-                usedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());
-                maxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
+            if (singleBenchmark.isSuccess()) {
+                MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
+                    long timeMillisSpend = point.getTimeMillisSpend();
+                    MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
+                    usedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());
+                    maxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
+                }
             }
             seriesCollection.addSeries(usedSeries);
             seriesCollection.addSeries(maxSeries);

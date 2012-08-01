@@ -67,11 +67,15 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
     protected void writeCsvStatistic() {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
-                    singleBenchmark.getSingleStatistic(problemStatisticType);
-            for (CalculateCountSingleStatisticPoint point : singleStatistic.getPointList()) {
-                long timeMillisSpend = point.getTimeMillisSpend();
-                csv.addPoint(singleBenchmark, timeMillisSpend, point.getCalculateCountPerSecond());
+            if (singleBenchmark.isSuccess()) {
+                CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                for (CalculateCountSingleStatisticPoint point : singleStatistic.getPointList()) {
+                    long timeMillisSpend = point.getTimeMillisSpend();
+                    csv.addPoint(singleBenchmark, timeMillisSpend, point.getCalculateCountPerSecond());
+                }
+            } else {
+                csv.addPoint(singleBenchmark, 0L, "Failed");
             }
         }
         csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
@@ -82,13 +86,15 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
     protected void writeGraphStatistic() {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
-                    singleBenchmark.getSingleStatistic(problemStatisticType);
             XYSeries series = new XYSeries(singleBenchmark.getSolverBenchmark().getName());
-            for (CalculateCountSingleStatisticPoint point : singleStatistic.getPointList()) {
-                long timeMillisSpend = point.getTimeMillisSpend();
-                long calculateCountPerSecond = point.getCalculateCountPerSecond();
-                series.add(timeMillisSpend, calculateCountPerSecond);
+            if (singleBenchmark.isSuccess()) {
+                CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                for (CalculateCountSingleStatisticPoint point : singleStatistic.getPointList()) {
+                    long timeMillisSpend = point.getTimeMillisSpend();
+                    long calculateCountPerSecond = point.getCalculateCountPerSecond();
+                    series.add(timeMillisSpend, calculateCountPerSecond);
+                }
             }
             seriesCollection.addSeries(series);
         }

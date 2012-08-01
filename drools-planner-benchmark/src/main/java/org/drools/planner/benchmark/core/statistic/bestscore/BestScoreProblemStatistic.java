@@ -86,17 +86,21 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     protected void writeCsvStatistic() {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
-                    singleBenchmark.getSingleStatistic(problemStatisticType);
-            for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
-                long timeMillisSpend = point.getTimeMillisSpend();
-                Score score = point.getScore();
-                if (score != null) {
-                    Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
-                    if (scoreGraphValue != null) {
-                        csv.addPoint(singleBenchmark, timeMillisSpend, scoreGraphValue);
+            if (singleBenchmark.isSuccess()) {
+                BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
+                    long timeMillisSpend = point.getTimeMillisSpend();
+                    Score score = point.getScore();
+                    if (score != null) {
+                        Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
+                        if (scoreGraphValue != null) {
+                            csv.addPoint(singleBenchmark, timeMillisSpend, scoreGraphValue);
+                        }
                     }
                 }
+            } else {
+                csv.addPoint(singleBenchmark, 0L, "Failed");
             }
         }
         csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
@@ -112,27 +116,28 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
-                    singleBenchmark.getSingleStatistic(problemStatisticType);
             XYSeries series = new XYSeries(singleBenchmark.getSolverBenchmark().getName());
-            for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
-                long timeMillisSpend = point.getTimeMillisSpend();
-                Score score = point.getScore();
-                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
-                if (scoreGraphValue != null) {
-                    series.add(timeMillisSpend, scoreGraphValue);
+            // No direct ascending lines between 2 points, but a stepping line instead
+            XYItemRenderer renderer = new XYStepRenderer();
+            if (singleBenchmark.isSuccess()) {
+                BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
+                    long timeMillisSpend = point.getTimeMillisSpend();
+                    Score score = point.getScore();
+                    Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
+                    if (scoreGraphValue != null) {
+                        series.add(timeMillisSpend, scoreGraphValue);
+                    }
+                }
+                if (singleStatistic.getPointList().size() <= 1) {
+                    // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
+                    renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
                 }
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
             plot.setDataset(seriesIndex, seriesCollection);
-            XYItemRenderer renderer;
-            // No direct lines between 2 points
-            renderer = new XYStepRenderer();
-            if (singleStatistic.getPointList().size() <= 1) {
-                // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
-                renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
-            }
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
