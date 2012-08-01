@@ -62,6 +62,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                 add("matches");
                 add("excludes");
                 add("memberOf");
+                add("instanceof");
             }};
         }
     }

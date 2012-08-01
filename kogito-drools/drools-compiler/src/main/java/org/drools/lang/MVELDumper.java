@@ -40,7 +40,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
 
     private static final String[] standard;
     static {
-        standard = new String[]{ "==", "<", ">", ">=", "<=", "!=", "~=" };
+        standard = new String[]{ "==", "<", ">", ">=", "<=", "!=", "~=", "instanceof" };
         Arrays.sort( standard );
     }
 

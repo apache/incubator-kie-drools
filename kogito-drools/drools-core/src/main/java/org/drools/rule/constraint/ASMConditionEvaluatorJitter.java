@@ -144,10 +144,15 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitSingleCondition(SingleCondition singleCondition) {
             if (singleCondition.isBinary()) {
-                if (singleCondition.getOperation() == BooleanOperator.MATCHES) {
-                    jitMatches(singleCondition);
-                } else {
-                    jitBinary(singleCondition);
+                switch (singleCondition.getOperation()) {
+                    case MATCHES:
+                        jitMatches(singleCondition);
+                        break;
+                    case INSTANCEOF:
+                        jitInstanceof(singleCondition);
+                        break;
+                    default:
+                        jitBinary(singleCondition);
                 }
             } else {
                 jitUnary(singleCondition);
@@ -230,6 +235,17 @@ public class ASMConditionEvaluatorJitter {
             invokeVirtual(Matcher.class, "matches", boolean.class);
 
             mv.visitLabel(nullEvaluation);
+        }
+
+        private void jitInstanceof(SingleCondition singleCondition) {
+            Class<?> value = (Class<?>)((FixedExpression)singleCondition.getRight()).getValue();
+            String internalClassName = internalName(value);
+
+            Expression left = singleCondition.getLeft();
+            Class<?> leftType = isDeclarationExpression(left) ? convertFromPrimitiveType(left.getType()) : left.getType();
+            jitExpression(left, leftType);
+
+            mv.visitTypeInsn(INSTANCEOF, internalClassName);
         }
 
         private void jitPrimitiveBinary(SingleCondition singleCondition, Expression left, Expression right, Class<?> type) {
@@ -320,29 +336,35 @@ public class ASMConditionEvaluatorJitter {
             load(LEFT_OPERAND);
             load(RIGHT_OPERAND);
 
-            if (operation == BooleanOperator.CONTAINS) {
-                invokeStatic(EvaluatorHelper.class, "contains", boolean.class, Object.class, rightType.isPrimitive() ? rightType : Object.class);
-            } else if (operation == BooleanOperator.MATCHES) {
-                invokeVirtual(type, "matches", boolean.class, String.class);
-            } else if (operation == BooleanOperator.SOUNDSLIKE) {
-                invokeStatic(EvaluatorHelper.class, "soundslike", boolean.class, String.class, String.class);
-            } else if (operation.isEquality()) {
-                if (type.isInterface()) {
-                    invokeInterface(type, "equals", boolean.class, Object.class);
-                } else {
-                    invokeVirtual(type, "equals", boolean.class, Object.class);
-                }
-                if (operation == BooleanOperator.NE) {
-                    singleCondition.toggleNegation();
-                }
-            } else {
-                if (type.isInterface()) {
-                    invokeInterface(type, "compareTo", int.class, type == Comparable.class ? Object.class : type);
-                } else {
-                    invokeVirtual(type, "compareTo", int.class, type);
-                }
-                mv.visitInsn(ICONST_0);
-                jitPrimitiveOperation(operation, int.class);
+            switch (operation) {
+                case CONTAINS:
+                    invokeStatic(EvaluatorHelper.class, "contains", boolean.class, Object.class, rightType.isPrimitive() ? rightType : Object.class);
+                    break;
+                case MATCHES:
+                    invokeVirtual(type, "matches", boolean.class, String.class);
+                    break;
+                case SOUNDSLIKE:
+                    invokeStatic(EvaluatorHelper.class, "soundslike", boolean.class, String.class, String.class);
+                    break;
+                default:
+                    if (operation.isEquality()) {
+                        if (type.isInterface()) {
+                            invokeInterface(type, "equals", boolean.class, Object.class);
+                        } else {
+                            invokeVirtual(type, "equals", boolean.class, Object.class);
+                        }
+                        if (operation == BooleanOperator.NE) {
+                            singleCondition.toggleNegation();
+                        }
+                    } else {
+                        if (type.isInterface()) {
+                            invokeInterface(type, "compareTo", int.class, type == Comparable.class ? Object.class : type);
+                        } else {
+                            invokeVirtual(type, "compareTo", int.class, type);
+                        }
+                        mv.visitInsn(ICONST_0);
+                        jitPrimitiveOperation(operation, int.class);
+                    }
             }
 
             mv.visitLabel(shortcutEvaluation);
