@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.drools.planner.benchmark.core.ranking.SingleBenchmarkRankingComparator;
 import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
@@ -177,6 +178,9 @@ public class ProblemBenchmark {
                 continue;
             }
             singleBenchmark.setWinningScoreDifference(singleBenchmark.getScore().subtract(winningSingleBenchmark.getScore()));
+            singleBenchmark.setWinningScoreDifferencePercentage(
+                    ScoreDifferencePercentage.calculateScoreDifferencePercentage(
+                            singleBenchmark.getScore(), winningSingleBenchmark.getScore()));
         }
     }
 

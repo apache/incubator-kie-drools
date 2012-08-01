@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.SingleStatistic;
@@ -46,6 +47,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private Score score = null;
     // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
+    private ScoreDifferencePercentage winningScoreDifferencePercentage = null;
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
     // Ranking starts from 0
@@ -89,6 +91,14 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     public void setWinningScoreDifference(Score winningScoreDifference) {
         this.winningScoreDifference = winningScoreDifference;
+    }
+
+    public ScoreDifferencePercentage getWinningScoreDifferencePercentage() {
+        return winningScoreDifferencePercentage;
+    }
+
+    public void setWinningScoreDifferencePercentage(ScoreDifferencePercentage winningScoreDifferencePercentage) {
+        this.winningScoreDifferencePercentage = winningScoreDifferencePercentage;
     }
 
     public long getTimeMillisSpend() {

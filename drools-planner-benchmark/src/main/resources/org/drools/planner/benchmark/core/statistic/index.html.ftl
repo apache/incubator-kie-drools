@@ -44,6 +44,7 @@
                         <ul class="nav nav-list">
                             <li><a href="#summary_bestScore">Best score</a></li>
                             <li><a href="#summary_winningScoreDifference">Winning score difference</a></li>
+                            <li><a href="#summary_winningScoreDifferencePercentage">Winning score difference percentage</a></li>
                             <li><a href="#summary_timeSpend">Time spend</a></li>
                             <li><a href="#summary_scalability">Scalability</a></li>
                             <li><a href="#summary_averageCalculateCount">Average calculate count</a></li>
@@ -171,6 +172,53 @@
                                                     <td><span class="label warning">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmark.winningScoreDifference}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
+                                                </#if>
+                                            </#if>
+                                        </#list>
+                                    </tr>
+                                </#list>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="summary_winningScoreDifferencePercentage">
+                    <h2>Winning score difference percentage summary chart</h2>
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#summary_winningScoreDifferencePercentage_chart" data-toggle="tab">Chart</a>
+                            </li>
+                            <li>
+                                <a href="#summary_winningScoreDifferencePercentage_table" data-toggle="tab">Table</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="summary_winningScoreDifferencePercentage_chart">
+                                <p>TODO</p><!-- TODO bar chart -->
+                                <#--<img src="${plannerStatistic.winningScoreDifferencePercentageSummaryFile.name}"/>-->
+                            </div>
+                            <div class="tab-pane" id="summary_winningScoreDifferencePercentage_table">
+                                <table class="table table-striped table-bordered">
+                                    <tr>
+                                        <th>Solver</th>
+                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <th>${problemBenchmark.name}</th>
+                                    </#list>
+                                    </tr>
+                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
+                                        <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
+                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
+                                                <td></td>
+                                            <#else>
+                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmark.success>
+                                                    <td><span class="label warning">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmark.winningScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
                                                 </#if>
                                             </#if>
                                         </#list>

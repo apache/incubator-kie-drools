@@ -1,0 +1,88 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.planner.benchmark.core.measurement;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
+import org.apache.commons.lang.LocaleUtils;
+import org.drools.planner.core.score.Score;
+
+public class ScoreDifferencePercentage {
+
+    public static <S extends Score> ScoreDifferencePercentage calculateScoreDifferencePercentage(
+            Score<S> baseScore, Score<S> valueScore) {
+        double[] baseLevels = baseScore.toDoubleLevels();
+        double[] valueLevels = valueScore.toDoubleLevels();
+        if (baseLevels.length != valueLevels.length) {
+            throw new IllegalStateException("The baseScore (" + baseScore + ")'s levelsLength (" + baseLevels.length
+                    + ") is different from the valueScore (" + valueScore + ")'s levelsLength (" + valueLevels.length
+                    + ").");
+        }
+        double[] percentageLevels = new double[baseLevels.length];
+        for (int i = 0; i < baseLevels.length; i++) {
+            percentageLevels[i] = calculatePercentageLevel(baseLevels[i], valueLevels[i]);
+        }
+        return new ScoreDifferencePercentage(percentageLevels);
+    }
+
+    private static double calculatePercentageLevel(double baseLevel, double valueLevel) {
+        double differenceLevel = valueLevel - baseLevel;
+        if (baseLevel < 0.0) {
+            return differenceLevel / - baseLevel;
+        } else if (baseLevel == 0.0) {
+            if (differenceLevel == 0.0) {
+                return 0.0;
+            } else {
+                // percentageLevel will return Infinity or -Infinity
+                return differenceLevel / baseLevel;
+            }
+        } else {
+            return differenceLevel / baseLevel;
+        }
+    }
+
+    private double[] percentageLevels;
+
+    public ScoreDifferencePercentage(double[] percentageLevels) {
+        this.percentageLevels = percentageLevels;
+    }
+
+    @Override
+    public String toString() {
+        return toString(Locale.US);
+    }
+
+    public String toString(String locale) {
+        return toString(LocaleUtils.toLocale(locale));
+    }
+
+    public String toString(Locale locale) {
+        StringBuilder s = new StringBuilder(percentageLevels.length * 8);
+        DecimalFormat decimalFormat = new DecimalFormat("#.##", DecimalFormatSymbols.getInstance(locale));
+        for (int i = 0; i < percentageLevels.length; i++) {
+            if (i > 0) {
+                s.append("/");
+            }
+            String percentageLevelString = decimalFormat.format(percentageLevels[i] * 100.0);
+            s.append(percentageLevelString).append("%");
+        }
+        return s.toString();
+    }
+
+}
