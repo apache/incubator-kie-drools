@@ -126,11 +126,7 @@
                                                 </#if>
                                             </#if>
                                         </#list>
-                                        <#if !solverBenchmark.averageScore??>
-                                            <td></td>
-                                        <#else>
-                                            <td>${solverBenchmark.averageScore}</td>
-                                        </#if>
+                                        <td>${solverBenchmark.averageScore!""}</td>
                                         <td><@addSolverRankingBadge solverBenchmark=solverBenchmark/></td>
                                     </tr>
                                 </#list>
