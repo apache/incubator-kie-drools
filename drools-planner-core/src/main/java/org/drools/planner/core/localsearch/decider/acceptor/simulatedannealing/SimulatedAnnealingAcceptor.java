@@ -29,10 +29,10 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     protected Score startingTemperature;
 
-    protected int partsLength = -1;
-    protected double[] startingTemperatureParts;
+    protected int levelsLength = -1;
+    protected double[] startingTemperatureLevels;
     // No protected Score temperature do avoid rounding errors when using Score.multiply(double)
-    protected double[] temperatureParts;
+    protected double[] temperatureLevels;
 
     protected double temperatureMinimum = 1.0E-100; // Double.MIN_NORMAL is E-308
 
@@ -47,23 +47,23 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseStarted(localSearchSolverPhaseScope);
-        for (double startingTemperaturePart : startingTemperature.toDoubleLevels()) {
-            if (startingTemperaturePart < 0.0) {
+        for (double startingTemperatureLevel : startingTemperature.toDoubleLevels()) {
+            if (startingTemperatureLevel < 0.0) {
                 throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
-                        + ") cannot have negative part (" + startingTemperaturePart + ").");
+                        + ") cannot have negative level (" + startingTemperatureLevel + ").");
             }
         }
-        startingTemperatureParts = startingTemperature.toDoubleLevels();
-        temperatureParts = startingTemperatureParts;
-        partsLength = startingTemperatureParts.length;
+        startingTemperatureLevels = startingTemperature.toDoubleLevels();
+        temperatureLevels = startingTemperatureLevels;
+        levelsLength = startingTemperatureLevels.length;
     }
 
     @Override
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseEnded(localSearchSolverPhaseScope);
-        startingTemperatureParts = null;
-        temperatureParts = null;
-        partsLength = -1;
+        startingTemperatureLevels = null;
+        temperatureLevels = null;
+        levelsLength = -1;
     }
 
     public boolean isAccepted(MoveScope moveScope) {
@@ -75,18 +75,18 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
         double acceptChance = 1.0;
-        double[] scoreDifferenceParts = scoreDifference.toDoubleLevels();
-        for (int i = 0; i < partsLength; i++) {
-            double scoreDifferencePart = scoreDifferenceParts[i];
-            double temperaturePart = temperatureParts[i];
-            double acceptChancePart;
-            if (scoreDifferencePart <= 0.0) {
-                // In this part it is moveScore is better than the lastStepScore, so do not disrupt the acceptChance
-                acceptChancePart = 1.0;
+        double[] scoreDifferenceLevels = scoreDifference.toDoubleLevels();
+        for (int i = 0; i < levelsLength; i++) {
+            double scoreDifferenceLevel = scoreDifferenceLevels[i];
+            double temperatureLevel = temperatureLevels[i];
+            double acceptChanceLevel;
+            if (scoreDifferenceLevel <= 0.0) {
+                // In this level moveScore is better than the lastStepScore, so do not disrupt the acceptChance
+                acceptChanceLevel = 1.0;
             } else {
-                acceptChancePart = Math.exp(-scoreDifferencePart / temperaturePart);
+                acceptChanceLevel = Math.exp(-scoreDifferenceLevel / temperatureLevel);
             }
-            acceptChance *= acceptChancePart;
+            acceptChance *= acceptChanceLevel;
         }
         if (moveScope.getWorkingRandom().nextDouble() < acceptChance) {
             return true;
@@ -100,11 +100,11 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         super.stepEnded(localSearchStepScope);
         double timeGradient = localSearchStepScope.getTimeGradient();
         double reverseTimeGradient = 1.0 - timeGradient;
-        temperatureParts = new double[partsLength];
-        for (int i = 0; i < partsLength; i++) {
-            temperatureParts[i] = startingTemperatureParts[i] * reverseTimeGradient;
-            if (temperatureParts[i] < temperatureMinimum) {
-                temperatureParts[i] = temperatureMinimum;
+        temperatureLevels = new double[levelsLength];
+        for (int i = 0; i < levelsLength; i++) {
+            temperatureLevels[i] = startingTemperatureLevels[i] * reverseTimeGradient;
+            if (temperatureLevels[i] < temperatureMinimum) {
+                temperatureLevels[i] = temperatureMinimum;
             }
         }
         // TODO implement reheating
