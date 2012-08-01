@@ -20,10 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import org.jbpm.task.exception.PermissionDeniedException;
-import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallbackManager;
 
 import org.jbpm.task.impl.factories.TaskFactory;
 import org.jbpm.task.query.TaskSummary;
@@ -38,7 +35,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
     public void testNewTaskWithNoPotentialOwners() {
         
         
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
@@ -46,7 +43,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -61,15 +58,15 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
     @Test
     public void testNewTaskWithSinglePotentialOwner() {
         
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = TaskFactory.evalTask(new StringReader(str));
 
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
@@ -79,21 +76,18 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("bobba"), task1.getTaskData().getActualOwner());
+        assertEquals("Bobba Fet", task1.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testNewTaskWithContent() {
-        
-        Map<String, Object> vars = fillVariables();
-
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
         ContentData data = ContentMarshallerHelper.marshal("content", null);
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, data);
 
         long taskId = task.getId();
@@ -117,10 +111,10 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
     @Test
     public void testNewTaskWithLargeContent() {
         
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
         String largeContent = "";
@@ -130,7 +124,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         ContentData data = ContentMarshallerHelper.marshal(largeContent, null);
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, data);
 
         long taskId = task.getId();
@@ -151,15 +145,15 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testClaimWithMultiplePotentialOwners() throws Exception {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'),new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -171,31 +165,24 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Ready, task1.getTaskData().getStatus());
 
 
-        taskService.claim(taskId, users.get("darth").getId());
-
-
-
+        taskService.claim(taskId, "Darth Vader");
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testClaimWithGroupAssignee() throws Exception {
-        Map<String, Object> vars = fillVariables();
-        Properties userGroups = new Properties();
-
-        userGroups.setProperty(users.get("darth").getId(), "Knights Templer, Dummy Group");
-        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(userGroups));
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [groups['knightsTempler' ]], businessAdministrators = [ new User('Administrator') ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Knights Templer' )], businessAdministrators = [ new User('Administrator') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -206,27 +193,23 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Ready, task1.getTaskData().getStatus());
 
-        taskService.claim(taskId, users.get("darth").getId());
-
-
-
+        taskService.claim(taskId, "Darth Vader");
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testStartFromReadyStateWithPotentialOwner() throws Exception {
-        Map<String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -238,24 +221,23 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Ready, task1.getTaskData().getStatus());
 
         // Go straight from Ready to Inprogress
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testStartFromReadyStateWithIncorrectPotentialOwner() {
-        Map<String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -271,7 +253,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         PermissionDeniedException denied = null;
         try {
-            taskService.start(taskId, users.get("tony").getId());
+            taskService.start(taskId, "Tony Stark");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -285,15 +267,14 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testStartFromReserved() throws Exception {
-        Map<String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -303,31 +284,30 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("bobba"), task1.getTaskData().getActualOwner());
+        assertEquals("Bobba Fet", task1.getTaskData().getActualOwner().getId());
 
         // Should change to InProgress
 
-        taskService.start(taskId, users.get("bobba").getId());
+        taskService.start(taskId, "Bobba Fet");
 
 
 
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task2.getTaskData().getStatus());
-        assertEquals(users.get("bobba"), task1.getTaskData().getActualOwner());
+        assertEquals("Bobba Fet", task1.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testStartFromReservedWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -336,7 +316,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("bobba"), task1.getTaskData().getActualOwner());
+        assertEquals("Bobba Fet", task1.getTaskData().getActualOwner().getId());
 
         // Should change not change
 
@@ -344,7 +324,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         PermissionDeniedException denied = null;
         try {
-            taskService.start(taskId, users.get("tony").getId());
+            taskService.start(taskId, "Tony Stark");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -352,74 +332,73 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals(users.get("bobba"), task1.getTaskData().getActualOwner());
+        assertEquals("Bobba Fet", task1.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testStop() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
         taskService.getTaskById(taskId);
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Now Stop
 
-        taskService.stop(taskId, users.get("darth").getId());
+        taskService.stop(taskId, "Darth Vader");
 
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testStopWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Should not stop
 
 
         PermissionDeniedException denied = null;
         try {
-            taskService.stop(taskId, users.get("bobba").getId());
+            taskService.stop(taskId, "Bobba Fet");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -429,38 +408,38 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testReleaseFromInprogress() throws Exception {
-        Map<String, Object> vars = fillVariables();
+
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
 
         taskService.getTaskById(taskId);
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is Released
 
-        taskService.release(taskId, users.get("darth").getId());
+        taskService.release(taskId, "Darth Vader");
 
 
 
@@ -471,33 +450,33 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
     }
 
     public void testReleaseFromReserved() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is Released
 
-        taskService.release(taskId, users.get("darth").getId());
+        taskService.release(taskId, "Darth Vader");
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Ready, task2.getTaskData().getStatus());
@@ -506,36 +485,36 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testReleaseWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is not changed
 
 
         PermissionDeniedException denied = null;
         try {
-            taskService.release(taskId, users.get("bobba").getId());
+            taskService.release(taskId, "Bobba Fet");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -545,20 +524,20 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testSuspendFromReady() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -572,7 +551,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         // Check is Suspended
 
-        taskService.suspend(taskId, users.get("darth").getId());
+        taskService.suspend(taskId, "Darth Vader");
 
 
 
@@ -585,66 +564,66 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testSuspendFromReserved() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Check is Reserved
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is Suspended
 
-        taskService.suspend(taskId, users.get("darth").getId());
+        taskService.suspend(taskId, "Darth Vader");
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getPreviousStatus());
         assertEquals(Status.Suspended, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testSuspendFromReservedWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Check is Reserved
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is not changed
 
 
         PermissionDeniedException denied = null;
         try {
-            taskService.suspend(taskId, users.get("bobba").getId());
+            taskService.suspend(taskId, "Bobba Fet");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -654,20 +633,20 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test // FIX
     public void testResumeFromReady() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -681,7 +660,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         // Check is Suspended
 
-        taskService.suspend(taskId, users.get("darth").getId());
+        taskService.suspend(taskId, "Darth Vader");
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Suspended, task2.getTaskData().getStatus());
@@ -690,7 +669,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         // Check is Resumed
 
-        taskService.resume(taskId, users.get("darth").getId());
+        taskService.resume(taskId, "Darth Vader");
 
         Task task3 = taskService.getTaskById(taskId);
         assertEquals(Status.Ready, task3.getTaskData().getStatus());
@@ -700,31 +679,31 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testResumeFromReserved() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Check is Reserved
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is suspended
 
-        taskService.suspend(taskId, users.get("darth").getId());
+        taskService.suspend(taskId, "Darth Vader");
 
 
 
@@ -732,47 +711,47 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getPreviousStatus());
         assertEquals(Status.Suspended, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
 
         // Check is Resumed
 
-        taskService.resume(taskId, users.get("darth").getId());
+        taskService.resume(taskId, "Darth Vader");
 
         Task task3 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task3.getTaskData().getStatus());
         assertEquals(Status.Suspended, task3.getTaskData().getPreviousStatus());
-        assertEquals(users.get("darth"), task3.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task3.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testResumeFromReservedWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Check is Reserved
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check not changed
 
         PermissionDeniedException denied = null;
         try {
-            taskService.suspend(taskId, users.get("bobba").getId());
+            taskService.suspend(taskId, "Bobba Fet");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -780,26 +759,26 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testSkipFromReady() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = true} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Check is Complete
 
-        taskService.skip(taskId, users.get("darth").getId());
+        taskService.skip(taskId, "Darth Vader");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Obsolete, task1.getTaskData().getStatus());
@@ -808,235 +787,235 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testSkipFromReserved() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = true} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready 
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
         // Check is Complete
 
-        taskService.skip(taskId, users.get("darth").getId());
+        taskService.skip(taskId, "Darth Vader");
 
         taskService.getTaskById(taskId);
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Obsolete, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testDelegateFromReady() throws Exception {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
         // Check is Delegated
-        taskService.delegate(taskId, users.get("darth").getId(), users.get("tony").getId());
+        taskService.delegate(taskId, "Darth Vader", "Tony Stark");
 
 
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("tony")));
-        assertEquals(users.get("tony"), task2.getTaskData().getActualOwner());
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Darth Vader")));
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Tony Stark")));
+        assertEquals("Tony Stark", task2.getTaskData().getActualOwner().getId());
         // this was checking for ready, but it should be reserved.. it was an old bug
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
 
     @Test
     public void testDelegateFromReserved() throws Exception {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Claim and Reserved
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is Delegated
 
-        taskService.delegate(taskId, users.get("darth").getId(), users.get("tony").getId());
+        taskService.delegate(taskId, "Darth Vader", "Tony Stark");
 
 
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("tony")));
-        assertEquals(users.get("tony"), task2.getTaskData().getActualOwner());
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Darth Vader")));
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Tony Stark")));
+        assertEquals("Tony Stark", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
 
     @Test
     public void testDelegateFromReservedWithIncorrectUser() throws Exception {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
         // Claim and Reserved
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check was not delegated
 
 
         PermissionDeniedException denied = null;
         try {
-            taskService.delegate(taskId, users.get("bobba").getId(), users.get("tony").getId());
+            taskService.delegate(taskId, "Bobba Fet", "Tony Stark");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
         assertNotNull("Should get permissed denied exception", denied);
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("tony")));
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Darth Vader")));
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Tony Stark")));
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
 
     public void testForwardFromReady() throws Exception {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Check is Forwarded
 
-        taskService.forward(taskId, users.get("darth").getId(), users.get("tony").getId());
+        taskService.forward(taskId, "Darth Vader", "Tony Stark");
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("tony")));
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains("Darth Vader"));
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains("Tony Stark"));
         assertNull(task2.getTaskData().getActualOwner());
         assertEquals(Status.Ready, task2.getTaskData().getStatus());
     }
 
     @Test
     public void testForwardFromReserved() throws Exception {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Claim and Reserved
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is Delegated
 
-        taskService.forward(taskId, users.get("darth").getId(), users.get("tony").getId());
+        taskService.forward(taskId, "Darth Vader", "Tony Stark");
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("tony")));
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Darth Vader")));
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Tony Stark")));
         assertNull(task2.getTaskData().getActualOwner());
         assertEquals(Status.Ready, task2.getTaskData().getStatus());
     }
 
     @Test
     public void testForwardFromReservedWithIncorrectUser() throws Exception {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Claim and Reserved
 
-        taskService.claim(taskId, users.get("darth").getId());
+        taskService.claim(taskId, "Darth Vader");
 
 
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check was not delegated
 
 
         PermissionDeniedException denied = null;
         try {
-            taskService.forward(taskId, users.get("bobba").getId(), users.get("tony").getId());
+            taskService.forward(taskId, "Bobba Fet", "Tony Stark");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -1045,78 +1024,78 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(users.get("tony")));
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Darth Vader")));
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(new User("Tony Stark")));
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
 
     @Test
     public void testComplete() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is Complete
 
-        taskService.complete(taskId, users.get("darth").getId(), null);
+        taskService.complete(taskId, "Darth Vader", null);
 
 
 
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testCompleteWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Should not complete as wrong user
 
 
         PermissionDeniedException denied = null;
         try {
-            taskService.complete(taskId, users.get("bobba").getId(), null);
+            taskService.complete(taskId, "Bobba Fet", null);
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -1126,37 +1105,37 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testCompleteWithContent() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         //ContentData data = ContentMarshallerHelper.marshal("content", null);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("content", "content");
-        taskService.complete(taskId, users.get("darth").getId(), params);
+        taskService.complete(taskId, "Darth Vader", params);
 
 
         Task task2 = taskService.getTaskById(taskId);
@@ -1174,32 +1153,32 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testCompleteWithResults() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("content", "content");
-        taskService.complete(taskId, users.get("darth").getId(), params);
+        taskService.complete(taskId, "Darth Vader", params);
 
 
         Task task2 = taskService.getTaskById(taskId);
@@ -1217,71 +1196,71 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testFail() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Check is Failed
 
-        taskService.fail(taskId, users.get("darth").getId(), null);
+        taskService.fail(taskId, "Darth Vader", null);
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Failed, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testFailWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
 
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
 
 
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
         // Should not fail as wrong user
 
 
         PermissionDeniedException denied = null;
         try {
-            taskService.fail(taskId, users.get("bobba").getId(), null);
+            taskService.fail(taskId, "Bobba Fet", null);
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -1291,31 +1270,31 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task2.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task2.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 
     @Test
     public void testFailWithContent() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
         // Go straight from Ready to Inprogress
-        taskService.start(taskId, users.get("darth").getId());
+        taskService.start(taskId, "Darth Vader");
 
         taskService.getTaskById(taskId);
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
-        assertEquals(users.get("darth"), task1.getTaskData().getActualOwner());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
 //        FaultData data = new FaultData();
 //        data.setAccessType(AccessType.Inline);
@@ -1327,7 +1306,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         faultData.put("faultName", "faultName");
         faultData.put("content", "content");
 
-        taskService.fail(taskId, users.get("darth").getId(), faultData);
+        taskService.fail(taskId, "Darth Vader", faultData);
 
 
         Task task2 = taskService.getTaskById(taskId);
@@ -1363,7 +1342,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 //    	  Map <String, Object> vars = fillVariables();
 //        
 //        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-//        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'], users['darth'] ], }),";                        
+//        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], }),";                        
 //        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 //
 //        
@@ -1372,7 +1351,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 //        
 //        long taskId = task.getId();               
 //       
-//        taskService.register(taskId, users.get("bobba").getId());
+//        taskService.register(taskId, "Bobba Fet");
 //
 //        
 //        Task task1 = taskService.getTaskById(taskId);
@@ -1380,27 +1359,34 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 //        
 //        assertNotNull(myRecipientTasks);
 //        assertEquals(1, myRecipientTasks.size());
-//        assertTrue(task1.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+//        assertTrue(task1.getPeopleAssignments().getRecipients().contains("Bobba Fet"));
 //        
-//        taskService.remove(taskId, users.get("bobba").getId());
+//        taskService.remove(taskId, "Bobba Fet");
 //        
 //        Task task2 = taskService.getTaskById( taskId );
-//        assertFalse(task2.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+//        assertFalse(task2.getPeopleAssignments().getRecipients().contains("Bobba Fet"));
 //    }
 //    
 
     @Test
     public void testRemoveNotInRecipientList() {
-        Map<String, Object> vars = fillVariables();
+        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { status = Status.Ready } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ],";
-        str += "recipients = [users['bobba'] ] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],";
+        str += "recipients = [new User('Bobba Fet') ] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars, false);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null, false);
+        // We need to add the Admin if we don't initialize the task
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
+            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
+            businessAdmins.add(new User("Administrator"));
+            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
+            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+        }
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1408,21 +1394,21 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         // Do nominate and fail due to Ready status
 
 
-        List<TaskSummary> myRecipientTasks = taskService.getTasksAssignedAsRecipient(users.get("jabba").getId(), "en-UK");
+        List<TaskSummary> myRecipientTasks = taskService.getTasksAssignedAsRecipient("Jabba Hutt", "en-UK");
 
         assertNotNull(myRecipientTasks);
         assertEquals(0, myRecipientTasks.size());
 
 
 
-        List<TaskSummary> myPotentialTasks = taskService.getTasksAssignedAsPotentialOwner(users.get("jabba").getId(), "en-UK");
+        List<TaskSummary> myPotentialTasks = taskService.getTasksAssignedAsPotentialOwner("Jabba Hutt", "en-UK");
 
         assertNotNull(myPotentialTasks);
         assertEquals(0, myPotentialTasks.size());
 
 
         try {
-            taskService.remove(taskId, users.get("jabba").getId());
+            taskService.remove(taskId, "Jabba Hutt");
             fail("Shouldn't be successful");
         } catch (RuntimeException e) { //expected
         }
@@ -1431,7 +1417,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+        assertTrue(task1.getPeopleAssignments().getRecipients().contains(new User("Bobba Fet")));
     }
 
     /**
@@ -1442,24 +1428,31 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
      */
     @Test
     public void testNominateOnOtherThanCreated() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { status = Status.Ready } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'] ] ,";
-        str += " potentialOwners = [ users['darth'], users['bobba'] ] } ),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ new User('Darth Vader') ] ,";
+        str += " potentialOwners = [ new User('Darth Vader'), new User('Bobba Fet') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars, false);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null, false);
+        // We need to add the Admin if we don't initialize the task
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
+            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
+            businessAdmins.add(new User("Administrator"));
+            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
+            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+        }
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
-        taskService.start(taskId, users.get("bobba").getId());
+        taskService.start(taskId, "Bobba Fet");
 
         try {
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-            potentialOwners.add(users.get("bobba"));
-            taskService.nominate(taskId, users.get("darth").getId(), potentialOwners);
+            potentialOwners.add(new User("Bobba Fet"));
+            taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
             fail("Shouldn't be successful");
         } catch (RuntimeException e) { //expected
@@ -1471,20 +1464,20 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         //shouldn't affect the assignments
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
-        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(users.get("bobba")));
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(new User("Darth Vader")));
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(new User("Bobba Fet")));
     }
 
     @Test
     public void testNominateWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['bobba'] ] } ),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ new User('Bobba Fet') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1492,96 +1485,96 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         try {
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
-            potentialOwners.add(users.get("jabba"));
-            taskService.nominate(taskId, users.get("darth").getId(), potentialOwners);
+            potentialOwners.add(new User("Jabba Hutt"));
+            taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
             fail("Shouldn't be successful");
         } catch (RuntimeException e) { //expected
 //        	assertNotNull(nominateHandler.getError());
 //        	assertNotNull(nominateHandler.getError().getMessage());
-//        	assertTrue(nominateHandler.getError().getMessage().contains(users.get("darth").getId()));
+//        	assertTrue(nominateHandler.getError().getMessage().contains("Darth Vader"));
         }
 
         //shouldn't affect the assignments
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getBusinessAdministrators().contains(users.get("bobba")));
+        assertTrue(task1.getPeopleAssignments().getBusinessAdministrators().contains(new User("Bobba Fet")));
         assertEquals(task1.getTaskData().getStatus(), Status.Created);
     }
 
     @Test
     public void testNominateToUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'], users['bobba'] ] } ),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ new User('Darth Vader'), new User('Bobba Fet') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
 
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
-        potentialOwners.add(users.get("jabba"));
-        taskService.nominate(taskId, users.get("darth").getId(), potentialOwners);
+        potentialOwners.add(new User("Jabba Hutt"));
+        taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
 
         //shouldn't affect the assignments
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertEquals(task1.getTaskData().getActualOwner(), users.get("jabba"));
+        assertEquals(task1.getTaskData().getActualOwner().getId(), "Jabba Hutt");
         assertEquals(task1.getTaskData().getStatus(), Status.Reserved);
     }
 
     @Test
     public void testNominateToGroup() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'], users['bobba'] ] } ),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ new User('Darth Vader'), new User('Bobba Fet') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
 
         List<OrganizationalEntity> potentialGroups = new ArrayList<OrganizationalEntity>();
-        potentialGroups.add(groups.get("knightsTempler"));
-        taskService.nominate(taskId, users.get("darth").getId(), potentialGroups);
+        potentialGroups.add(new Group( "Knights Templer" ));
+        taskService.nominate(taskId, "Darth Vader", potentialGroups);
 
 
         //shouldn't affect the assignments
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(groups.get("knightsTempler")));
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(new Group("Knights Templer")));
         assertEquals(task1.getTaskData().getStatus(), Status.Ready);
     }
 
     @Test
     public void testActivate() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { ";
-        str += "businessAdministrators = [ users['darth'] ] } ),";
+        str += "businessAdministrators = [ new User('Darth Vader') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
 
-        taskService.activate(taskId, users.get("darth").getId());
+        taskService.activate(taskId, "Darth Vader");
 
         Task task1 = taskService.getTaskById(taskId);
 
@@ -1594,21 +1587,21 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testActivateWithIncorrectUser() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [ users['darth'], users['bobba'] ], ";
-        str += "businessAdministrators = [ users['jabba'] ] } ),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [ new User('Darth Vader'), new User('Bobba Fet') ], ";
+        str += "businessAdministrators = [ new User('Jabba Hutt') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
 
         try {
-            taskService.activate(taskId, users.get("darth").getId());
+            taskService.activate(taskId, "Darth Vader");
 
             fail("Shouldn't have succeded");
         } catch (RuntimeException e) {
@@ -1621,41 +1614,50 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testActivateFromIncorrectStatus() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { status = Status.Ready } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [ users['darth'], users['bobba'] ], ";
-        str += "businessAdministrators = [ users['jabba'] ] } ),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [ new User('Darth Vader'), new User('Bobba Fet') ], ";
+        str += "businessAdministrators = [ new User('Jabba Hutt') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars, false);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null, false);
+        // We need to add the Admin if we don't initialize the task
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
+            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
+            businessAdmins.add(new User("Administrator"));
+            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
+            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+        }
+        
         taskService.addTask(task, new HashMap<String, Object>());
 
+        
         long taskId = task.getId();
 
 
         try {
-            taskService.activate(taskId, users.get("darth").getId());
+            taskService.activate(taskId, "Darth Vader");
 
             fail("Shouldn't have succeded");
         } catch (RuntimeException e) {
 //        	assertNotNull(activateResponseHandler.getError());
 //        	assertNotNull(activateResponseHandler.getError().getMessage());
-//        	assertTrue(activateResponseHandler.getError().getMessage().contains(users.get("darth").getId()));
+//        	assertTrue(activateResponseHandler.getError().getMessage().contains("Darth Vader"));
         }
     }
 
     @Test
     public void testExitFromReady() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], businessAdministrators = [ users['admin']] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], businessAdministrators = [ new User('Administrator')] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1663,7 +1665,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Ready, task.getTaskData().getStatus());
 
 
-        taskService.exit(taskId, users.get("admin").getId());
+        taskService.exit(taskId, "Administrator");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Exited, task1.getTaskData().getStatus());
@@ -1671,14 +1673,14 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testExitFromReserved() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'] ], businessAdministrators = [ users['admin']] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], businessAdministrators = [ new User('Administrator')] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1686,7 +1688,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Reserved, task.getTaskData().getStatus());
 
 
-        taskService.exit(taskId, users.get("admin").getId());
+        taskService.exit(taskId, "Administrator");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Exited, task1.getTaskData().getStatus());
@@ -1694,25 +1696,25 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testExitFromInProgress() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'] ], businessAdministrators = [ users['admin']] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], businessAdministrators = [ new User('admin')] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task.getTaskData().getStatus());
 
-        taskService.start(taskId, users.get("bobba").getId());
+        taskService.start(taskId, "Bobba Fet");
         task = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task.getTaskData().getStatus());
 
-        taskService.exit(taskId, users.get("admin").getId());
+        taskService.exit(taskId, "Administrator");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Exited, task1.getTaskData().getStatus());
@@ -1720,25 +1722,25 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testExitFromSuspended() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'] ], businessAdministrators = [ users['admin']] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], businessAdministrators = [ new User('Administrator')] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task.getTaskData().getStatus());
 
-        taskService.suspend(taskId, users.get("bobba").getId());
+        taskService.suspend(taskId, "Bobba Fet");
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Suspended, task.getTaskData().getStatus());
 
-        taskService.exit(taskId, users.get("admin").getId());
+        taskService.exit(taskId, "Administrator");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Exited, task1.getTaskData().getStatus());
@@ -1746,14 +1748,14 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testExitPermissionDenied() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], businessAdministrators = [ users['admin']] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ], businessAdministrators = [ new User('Administrator')] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1761,7 +1763,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Ready, task.getTaskData().getStatus());
 
         try {
-            taskService.exit(taskId, users.get("darth").getId());
+            taskService.exit(taskId, "Darth Vader");
             fail("Non admin user can't exit a task");
         } catch (PermissionDeniedException e) {
         }
@@ -1771,14 +1773,14 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
     @Test
     public void testExitNotAvailableToUsers() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba']], businessAdministrators = [ users['admin']] }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], businessAdministrators = [ new User('Administrator')] }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), vars);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1786,32 +1788,32 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Reserved, task.getTaskData().getStatus());
 
 
-        taskService.exit(taskId, users.get("admin").getId());
+        taskService.exit(taskId, "Administrator");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Exited, task1.getTaskData().getStatus());
 
-        List<TaskSummary> exitedTasks = taskService.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
+        List<TaskSummary> exitedTasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
         assertEquals(0, exitedTasks.size());
 
     }
 
     @Test
     public void testClaimConflictAndRetry() {
-        Map<String, Object> vars = fillVariables();
+        
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['salaboy' ], users['bobba'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy'), new User('Bobba Fet') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
         // Create a local instance of the TaskService
 
         // Deploy the Task Definition to the Task Component
-        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str), vars), new HashMap<String, Object>());
+        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
 
         // Because the Task contains a direct assignment we can query it for its Potential Owner
         // Notice that we obtain a list of TaskSummary (a lightweight representation of a task)
-        List<TaskSummary> salaboyTasks = taskService.getTasksAssignedAsPotentialOwner(users.get("salaboy").getId(), "en-UK");
+        List<TaskSummary> salaboyTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
 
         // We know that there is just one task available so we get the first one
         Long salaboyTaskId = salaboyTasks.get(0).getId();
@@ -1823,7 +1825,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
         // Because the Task contains a direct assignment we can query it for its Potential Owner
         // Notice that we obtain a list of TaskSummary (a lightweight representation of a task)
-        List<TaskSummary> bobbaTasks = taskService.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
+        List<TaskSummary> bobbaTasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
 
         // We know that there is just one task available so we get the first one
         Long bobbaTaskId = bobbaTasks.get(0).getId();
@@ -1834,10 +1836,10 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Ready, bobbaTask.getTaskData().getStatus());
 
 
-        taskService.claim(bobbaTask.getId(), users.get("bobba").getId());
+        taskService.claim(bobbaTask.getId(), "Bobba Fet");
 
         try {
-            taskService.claim(salaboyTask.getId(), users.get("salaboy").getId());
+            taskService.claim(salaboyTask.getId(), "salaboy");
         } catch (PermissionDeniedException ex) {
             // The Task is gone.. salaboy needs to retry
             assertNotNull(ex);
@@ -1858,27 +1860,27 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
 
 
-        Map<String, Object> vars = fillVariables();
+        
         // Create a local instance of the TaskService
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['salaboy' ], users['bobba'] ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy'), new User('Bobba Fet') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
 
 
         // Deploy the Task Definition to the Task Component
-        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str), vars), new HashMap<String, Object>());
+        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
 
         // we don't need to query for our task to see what we will claim, just claim the next one available for us
 
-        taskService.claimNextAvailable(users.get("bobba").getId(), "en-UK");
+        taskService.claimNextAvailable("Bobba Fet", "en-UK");
 
 
         List<Status> status = new ArrayList<Status>();
         status.add(Status.Ready);
-        List<TaskSummary> salaboyTasks = taskService.getTasksAssignedAsPotentialOwnerByStatus(users.get("salaboy").getId(), status, "en-UK");
+        List<TaskSummary> salaboyTasks = taskService.getTasksAssignedAsPotentialOwnerByStatus("salaboy", status, "en-UK");
         assertEquals(0, salaboyTasks.size());
 
 

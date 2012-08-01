@@ -32,5 +32,21 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskStartedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @BeforeTaskStartedEvent Task ti) {
         em.persist(new TaskEvent(ti.getId(), TaskEvent.TaskEventType.STARTED, ti.getTaskData().getActualOwner()));
     }
+
+    public void afterTaskActivatedEvent(Task ti) {
+        em.persist(new TaskEvent(ti.getId(), TaskEvent.TaskEventType.ACTIVATED, ti.getTaskData().getActualOwner()));
+    }
+
+    public void afterTaskClaimedEvent(Task ti) {
+        em.persist(new TaskEvent(ti.getId(), TaskEvent.TaskEventType.CLAIMED, ti.getTaskData().getActualOwner()));
+    }
+
+    public void afterTaskSkippedEvent(Task ti) {
+        em.persist(new TaskEvent(ti.getId(), TaskEvent.TaskEventType.SKIPPED, ti.getTaskData().getActualOwner()));
+    }
+
+    public void afterTaskStoppedEvent(Task ti) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }

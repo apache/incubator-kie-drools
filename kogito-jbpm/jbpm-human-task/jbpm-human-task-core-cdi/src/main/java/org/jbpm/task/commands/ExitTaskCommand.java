@@ -36,8 +36,6 @@ import org.jbpm.task.exception.PermissionDeniedException;
 @Transactional
 public class ExitTaskCommand<Void> extends TaskCommand {
 
-    private long taskId;
-    private String userId;
 
     public ExitTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

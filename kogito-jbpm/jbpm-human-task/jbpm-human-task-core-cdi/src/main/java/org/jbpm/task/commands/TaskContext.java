@@ -25,6 +25,7 @@ import org.jbpm.task.annotations.Internal;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 
 /**
@@ -43,7 +44,8 @@ public class TaskContext implements Context{
     private Event<Task> taskEvents;
     @Inject @Internal
     private TaskLifeCycleEventListener eventListener;
-    
+    @Inject 
+    private UserGroupCallback userGroupCallback;
     
     public TaskContext() {
     }
@@ -92,6 +94,14 @@ public class TaskContext implements Context{
         return eventListener;
     }
 
+    public UserGroupCallback getUserGroupCallback() {
+        return userGroupCallback;
+    }
+
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+        this.userGroupCallback = userGroupCallback;
+    }
+    
     public void setEventListener(TaskLifeCycleEventListener eventListener) {
         this.eventListener = eventListener;
     }

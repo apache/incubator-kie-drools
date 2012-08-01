@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import javax.enterprise.inject.Alternative;
 
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
@@ -47,6 +48,7 @@ import org.slf4j.LoggerFactory;
  * 
  *
  */
+@Alternative
 public class JAASUserGroupCallbackImpl implements UserGroupCallback {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JAASUserGroupCallbackImpl.class);
@@ -82,7 +84,6 @@ public class JAASUserGroupCallbackImpl implements UserGroupCallback {
 	
 	public JAASUserGroupCallbackImpl(String rolesPrincipleName) {
 		this.rolePrincipleName = rolesPrincipleName;
-		UserGroupCallbackManager.getInstance().setProperty("disable.all.groups", "true");
 	}
 	
 	public String getRolePrincipleName() {

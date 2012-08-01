@@ -35,8 +35,6 @@ import org.jbpm.task.exception.PermissionDeniedException;
 @Transactional
 public class SuspendTaskCommand extends TaskCommand {
 
-    private long taskId;
-    private String userId;
 
     public SuspendTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

@@ -9,7 +9,11 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Singleton;
 import org.jbpm.task.Task;
+import org.jbpm.task.events.BeforeTaskActivatedEvent;
+import org.jbpm.task.events.BeforeTaskClaimedEvent;
+import org.jbpm.task.events.BeforeTaskSkippedEvent;
 import org.jbpm.task.events.BeforeTaskStartedEvent;
+import org.jbpm.task.events.BeforeTaskStoppedEvent;
 
 
 /**
@@ -24,7 +28,23 @@ public class DefaultTaskLifeCycleEventListener implements TaskLifeCycleEventList
     }
 
     public void afterTaskStartedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @BeforeTaskStartedEvent Task ti) {
-        System.out.println(" XXX Default Log Task Started");
+        
+    }
+
+    public void afterTaskActivatedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @BeforeTaskActivatedEvent Task ti) {
+        
+    }
+
+    public void afterTaskClaimedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @BeforeTaskClaimedEvent Task ti) {
+        
+    }
+
+    public void afterTaskSkippedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @BeforeTaskSkippedEvent Task ti) {
+        
+    }
+
+    public void afterTaskStoppedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @BeforeTaskStoppedEvent Task ti) {
+        
     }
     
 }

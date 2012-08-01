@@ -49,9 +49,7 @@ public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseTest 
                 .addPackage("org.jbpm.task.lifecycle.listeners") 
                 .addPackage("org.jbpm.task.query") 
                 .addPackage("org.jbpm.task.util") 
-                .addPackage("org.jbpm.task.commands") // This should not be required here 
-                .addAsResource("org/jbpm/task/LoadUsers.mvel", "org/jbpm/task/LoadUsers.mvel")
-                .addAsResource("org/jbpm/task/LoadGroups.mvel", "org/jbpm/task/LoadGroups.mvel")
+                //.addPackage("org.jbpm.task.commands") // This should not be required here 
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));

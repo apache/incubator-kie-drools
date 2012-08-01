@@ -46,9 +46,7 @@ import org.jbpm.task.exception.PermissionDeniedException;
 @Transactional
 public class DelegateTaskCommand extends TaskCommand {
 
-    private long taskId;
-    private String userId;
-    private String targetEntityId;
+   
 
     public DelegateTaskCommand(long taskId, String userId, String targetEntityId) {
         this.taskId = taskId;

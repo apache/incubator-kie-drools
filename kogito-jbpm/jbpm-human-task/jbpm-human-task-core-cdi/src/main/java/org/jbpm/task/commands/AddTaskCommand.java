@@ -15,12 +15,20 @@
  */
 package org.jbpm.task.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.drools.command.Context;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
+import org.jbpm.task.Group;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
@@ -29,7 +37,6 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
  * Status.InProgress }, new OperationCommand().{ status = [ Status.Reserved ],
  * allowed = [ Allowed.Owner ], newStatus = Status.InProgress } ], *
  */
-
 @Transactional
 public class AddTaskCommand<Long> extends TaskCommand {
 
@@ -41,7 +48,7 @@ public class AddTaskCommand<Long> extends TaskCommand {
         this.task = task;
         this.params = params;
     }
-    
+
     public AddTaskCommand(Task task, ContentData data) {
         this.task = task;
         this.data = data;
@@ -62,9 +69,23 @@ public class AddTaskCommand<Long> extends TaskCommand {
         }
         
         context.getEm().persist(task);
-        
+
         return (Long) task.getId();
     }
 
+    public Task getTask() {
+        return task;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    public ContentData getData() {
+        return data;
+    }
+    
+    
+    
     
 }

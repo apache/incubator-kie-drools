@@ -6,6 +6,8 @@ package org.jbpm.task.impl.factories;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,26 +109,34 @@ public class TaskFactory {
             task.getTaskData().setStatus(assignedStatus);
         }
 
-
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
+            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
+            businessAdmins.add(new User("Administrator"));
+            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
+            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+        }
 
     }
-
 
     public static Task evalTask(Reader reader, Map<String, Object> vars, boolean initialize) {
         Task task = null;
         try {
             task = (Task) MVELUtils.eval(MVELUtils.toString(reader), vars);
-            if(initialize){
+            if (initialize) {
                 initializeTask(task);
             }
-            
+
         } catch (IOException ex) {
             Logger.getLogger(TaskFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
         return task;
     }
-    
+
+    public static Task evalTask(Reader reader) {
+        return evalTask(reader, null);
+    }
+
     public static Task evalTask(Reader reader, Map<String, Object> vars) {
-       return evalTask(reader, vars, true);
+        return evalTask(reader, vars, true);
     }
 }

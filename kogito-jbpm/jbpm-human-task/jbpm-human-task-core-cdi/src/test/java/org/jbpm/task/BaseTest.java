@@ -35,8 +35,6 @@ import org.junit.Before;
 public abstract class BaseTest {
 
     protected static Logger logger = LoggerFactory.getLogger(BaseTest.class);
-    protected static Map<String, User> users;
-    protected static Map<String, Group> groups;
     protected static boolean usersLoaded = false;
     @Inject
     protected TaskServiceEntryPoint taskService;
@@ -50,9 +48,7 @@ public abstract class BaseTest {
 
                 MockUserInfo userInfo = new MockUserInfo();
                 taskService.setUserInfo(userInfo);
-                users = fillUsersOrGroups("LoadUsers.mvel");
-                groups = fillUsersOrGroups("LoadGroups.mvel");
-                taskService.addUsersAndGroups(users, groups);
+                taskService.addUser(new User("Administrator"));
                 usersLoaded = true;
             } catch (Exception ex) {
                 java.util.logging.Logger.getLogger(TaskServiceLifeCycleBaseTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,17 +86,17 @@ public abstract class BaseTest {
         return result;
     }
 
-    protected Map<String, Object> fillVariables() {
-        return fillVariables(users, groups);
-    }
+//    protected Map<String, Object> fillVariables() {
+//        return fillVariables(users, groups);
+//    }
 
-    public static Map<String, Object> fillVariables(Map<String, User> users, Map<String, Group> groups) {
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
-        return vars;
-    }
+//    public static Map<String, Object> fillVariables(Map<String, User> users, Map<String, Group> groups) {
+//        Map<String, Object> vars = new HashMap<String, Object>();
+//        vars.put("users", users);
+//        vars.put("groups", groups);
+//        vars.put("now", new Date());
+//        return vars;
+//    }
 //    protected static void testDeadlines(long now, MockEscalatedDeadlineHandler handler) throws Exception { 
 //        int sleep = 8000;
 //        handler.wait(3, sleep);

@@ -22,6 +22,7 @@ public class TaskServiceLifeCycleLocalCommandBasedTest extends TaskServiceLifeCy
                 .addPackage("org.jbpm.task.annotations") 
                 .addPackage("org.jbpm.task.api") 
                 .addPackage("org.jbpm.task.impl") 
+                
                 .addPackage("org.jbpm.task.events") 
                 .addPackage("org.jbpm.task.exception") 
                 .addPackage("org.jbpm.task.identity") 
@@ -31,9 +32,9 @@ public class TaskServiceLifeCycleLocalCommandBasedTest extends TaskServiceLifeCy
                 .addPackage("org.jbpm.task.lifecycle.listeners") 
                 .addPackage("org.jbpm.task.query") 
                 .addPackage("org.jbpm.task.util") 
+                //This two packages are required for the command based implementation
                 .addPackage("org.jbpm.task.commands") 
-                .addAsResource("org/jbpm/task/LoadUsers.mvel", "org/jbpm/task/LoadUsers.mvel")
-                .addAsResource("org/jbpm/task/LoadGroups.mvel", "org/jbpm/task/LoadGroups.mvel")
+                .addPackage("org.jbpm.task.impl.command") 
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans-commandbased.xml", ArchivePaths.create("beans.xml"));

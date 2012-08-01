@@ -279,8 +279,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 targetEntity = taskIdentityService.getOrganizationalEntityById(targetEntityId);
             }
 
-            switch (operation) {
-
+            switch (operation) {    
                 case Activate: {
                     taskEvents.select(new AnnotationLiteral<BeforeTaskActivatedEvent>() {
                     }).fire(task);

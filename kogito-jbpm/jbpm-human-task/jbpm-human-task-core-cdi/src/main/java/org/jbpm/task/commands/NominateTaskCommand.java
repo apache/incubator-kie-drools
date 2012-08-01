@@ -40,8 +40,6 @@ import org.jbpm.task.exception.PermissionDeniedException;
 @Transactional
 public class NominateTaskCommand<Void> extends TaskCommand {
 
-    private long taskId;
-    private String userId;
     private List<OrganizationalEntity> potentialOwners;
     public NominateTaskCommand(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
         this.taskId = taskId;
@@ -73,4 +71,10 @@ public class NominateTaskCommand<Void> extends TaskCommand {
 
         return null;
     }
+
+    public List<OrganizationalEntity> getPotentialOwners() {
+        return potentialOwners;
+    }
+    
+    
 }

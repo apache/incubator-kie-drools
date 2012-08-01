@@ -50,10 +50,6 @@ import org.jbpm.task.exception.PermissionDeniedException;
 @Transactional
 public class ForwardTaskCommand<Void> extends TaskCommand {
 
-    private long taskId;
-    private String userId;
-    private String targetEntityId;
-
     public ForwardTaskCommand(long taskId, String userId, String targetEntityId) {
         this.taskId = taskId;
         this.userId = userId;

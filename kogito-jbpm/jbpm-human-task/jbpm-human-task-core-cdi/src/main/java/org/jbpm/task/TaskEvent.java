@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class TaskEvent implements Serializable {
     
-    public enum TaskEventType{STARTED, COMPLETED, SUSPENDED};
+    public enum TaskEventType{STARTED, ACTIVATED, COMPLETED, CLAIMED, SKIPPED, SUSPENDED};
     @Id
     @GeneratedValue
     private long id;

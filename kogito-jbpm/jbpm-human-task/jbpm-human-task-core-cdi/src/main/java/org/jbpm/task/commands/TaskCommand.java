@@ -22,13 +22,14 @@ import org.drools.command.impl.GenericCommand;
  *
  */
 public abstract class TaskCommand<T> implements GenericCommand {
+
     protected long taskId;
     protected String userId;
     protected List<String> groupsIds;
     protected String targetEntityId;
 
     public long getTaskId() {
-        return taskId;
+        return this.taskId;
     }
 
     public void setTaskId(long taskId) {
@@ -44,7 +45,7 @@ public abstract class TaskCommand<T> implements GenericCommand {
     }
 
     public List<String> getGroupsIds() {
-        return groupsIds;
+        return this.groupsIds;
     }
 
     public void setGroupsIds(List<String> groupsIds) {
@@ -52,11 +53,10 @@ public abstract class TaskCommand<T> implements GenericCommand {
     }
 
     public String getTargetEntityId() {
-        return targetEntityId;
+        return this.targetEntityId;
     }
 
     public void setTargetEntityId(String targetEntityId) {
         this.targetEntityId = targetEntityId;
     }
-    
 }

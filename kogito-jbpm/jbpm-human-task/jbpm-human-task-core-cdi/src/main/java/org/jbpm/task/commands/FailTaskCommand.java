@@ -36,8 +36,6 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 @Transactional
 public class FailTaskCommand<Void> extends TaskCommand {
 
-    private long taskId;
-    private String userId;
     private Map<String, Object> data;
 
     public FailTaskCommand(long taskId, String userId, Map<String, Object> data) {

@@ -25,22 +25,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import javax.enterprise.inject.Alternative;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultUserGroupCallbackImpl implements UserGroupCallback {
+@Alternative
+public class JBossUserGroupCallbackImpl implements UserGroupCallback {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DefaultUserGroupCallbackImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(JBossUserGroupCallbackImpl.class);
 
 	private Map<String, List<String>> groupStore = new HashMap<String, List<String>>();
 	private Set<String> allgroups = new HashSet<String>();
 	
-	public DefaultUserGroupCallbackImpl() {
+	public JBossUserGroupCallbackImpl() {
 		this(System.getProperty("jbpm.user.group.mapping", "file:" + System.getProperty("jboss.server.config.dir") + "/roles.properties"));
 	}
 	
-	public DefaultUserGroupCallbackImpl(String location) {
+	public JBossUserGroupCallbackImpl(String location) {
 		URL locationUrl = null;
 		Properties userGroups = null;
 		try {
@@ -60,7 +62,7 @@ public class DefaultUserGroupCallbackImpl implements UserGroupCallback {
 		init(userGroups);
 	}
 	
-	public DefaultUserGroupCallbackImpl(Properties userGroups) {
+	public JBossUserGroupCallbackImpl(Properties userGroups) {
 		
 		init(userGroups);
 	}

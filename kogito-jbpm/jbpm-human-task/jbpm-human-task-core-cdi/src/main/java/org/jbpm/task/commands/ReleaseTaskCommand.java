@@ -41,8 +41,6 @@ import org.jbpm.task.exception.PermissionDeniedException;
 @Transactional
 public class ReleaseTaskCommand extends TaskCommand {
 
-    private long taskId;
-    private String userId;
 
     public ReleaseTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

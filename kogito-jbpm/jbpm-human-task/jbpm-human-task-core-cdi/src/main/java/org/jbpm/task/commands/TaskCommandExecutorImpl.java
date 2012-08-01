@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.internals.lifecycle;
+package org.jbpm.task.commands;
 
 import org.jbpm.task.annotations.CommandBased;
 import javax.inject.Inject;

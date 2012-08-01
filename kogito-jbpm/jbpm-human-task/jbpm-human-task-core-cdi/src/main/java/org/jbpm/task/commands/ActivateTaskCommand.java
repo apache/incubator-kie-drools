@@ -33,8 +33,6 @@ import org.jbpm.task.exception.PermissionDeniedException;
 @Transactional
 public class ActivateTaskCommand<Void> extends TaskCommand {
 
-    private long taskId;
-    private String userId;
 
     public ActivateTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

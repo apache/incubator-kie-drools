@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import javax.enterprise.inject.Alternative;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -57,6 +58,8 @@ import org.slf4j.LoggerFactory;
  *  <li></li>
  * </ul>
  */
+
+@Alternative
 public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
     
     private static final Logger logger = LoggerFactory.getLogger(LDAPUserGroupCallbackImpl.class);
@@ -98,13 +101,12 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
                 config = null;
             }
         }
-        UserGroupCallbackManager.getInstance().setProperty("disable.all.groups", "true");
+       
         validate();
     }
     
     public LDAPUserGroupCallbackImpl(Properties config) {
         this.config = config;
-        UserGroupCallbackManager.getInstance().setProperty("disable.all.groups", "true");
         validate();
     }
 
