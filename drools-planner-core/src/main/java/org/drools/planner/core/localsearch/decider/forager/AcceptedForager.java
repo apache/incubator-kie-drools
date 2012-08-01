@@ -54,6 +54,10 @@ public class AcceptedForager extends AbstractForager {
     public AcceptedForager(PickEarlyType pickEarlyType, int minimalAcceptedSelection) {
         this.pickEarlyType = pickEarlyType;
         this.minimalAcceptedSelection = minimalAcceptedSelection;
+        if (minimalAcceptedSelection < 1) {
+            throw new IllegalArgumentException("The minimalAcceptedSelection (" + minimalAcceptedSelection
+                    + ") cannot be negative or zero.");
+        }
     }
 
     public void setDeciderScoreComparatorFactory(DeciderScoreComparatorFactory deciderScoreComparator) {
