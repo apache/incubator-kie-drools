@@ -37,7 +37,7 @@ import java.util.Set;
 
 public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 
-    private transient Map<String, FieldDefinition> aliases = new HashMap<String, FieldDefinition>();
+    private transient Map<String, FieldDefinition> aliases;
     
     private transient ClassDefinition trait;
 
@@ -71,7 +71,8 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         String internalWrapper  = BuildUtils.getInternalType( name );
         String descrCore        = BuildUtils.getTypeDescriptor( core.getClassName() );
 
-        
+
+        aliases = new HashMap<String, FieldDefinition>();
         for ( FieldDefinition tfld : trait.getFieldsDefinitions() ) {
             if ( tfld.hasAlias() ) {
                 String alias = tfld.getAlias();

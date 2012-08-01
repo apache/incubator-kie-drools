@@ -51,7 +51,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     }
 
     
-    private transient Map<String,FieldDefinition> aliases = new HashMap<String, FieldDefinition>();
+    private transient Map<String,FieldDefinition> aliases;
 
 
     public byte[] buildClass( ClassDefinition core ) throws IOException,
@@ -80,7 +80,8 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         String internalWrapper  = BuildUtils.getInternalType(name);
         String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
 
-        
+
+        aliases = new HashMap<String, FieldDefinition>();
         for ( FieldDefinition tfld : trait.getFieldsDefinitions() ) {            
             if ( tfld.hasAlias() ) {
                 String alias = tfld.getAlias();
