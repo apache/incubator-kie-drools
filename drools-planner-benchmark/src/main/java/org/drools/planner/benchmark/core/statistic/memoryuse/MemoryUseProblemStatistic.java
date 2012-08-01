@@ -16,6 +16,7 @@
 
 package org.drools.planner.benchmark.core.statistic.memoryuse;
 
+import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,12 +78,19 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
     }
 
     protected void writeGraphStatistic() {
-        XYSeriesCollection seriesCollection = new XYSeriesCollection();
+        NumberAxis xAxis = new NumberAxis("Time spend");
+        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
+        NumberAxis yAxis = new NumberAxis("Memory");
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        int seriesIndex = 0;
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             XYSeries usedSeries = new XYSeries(
                     singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " used");
-            XYSeries maxSeries = new XYSeries(
-                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " max");
+            // TODO enable max memory, but in the same color as used memory, but with a dotted line instead
+//            XYSeries maxSeries = new XYSeries(
+//                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " max");
+            XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmark.isSuccess()) {
                 MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
@@ -90,18 +98,21 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
                     usedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());
-                    maxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
+//                    maxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
                 }
             }
+            XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(usedSeries);
-            seriesCollection.addSeries(maxSeries);
+//            seriesCollection.addSeries(maxSeries);
+            plot.setDataset(seriesIndex, seriesCollection);
+            if (singleBenchmark.getSolverBenchmark().isFavorite()) {
+                // Make the favorite more obvious
+                renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+//                renderer.setSeriesStroke(1, new BasicStroke(2.0f));
+            }
+            plot.setRenderer(seriesIndex, renderer);
+            seriesIndex++;
         }
-        NumberAxis xAxis = new NumberAxis("Time spend");
-        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
-        NumberAxis yAxis = new NumberAxis("Memory");
-        XYItemRenderer renderer = new XYLineAndShapeRenderer();
-        XYPlot plot = new XYPlot(seriesCollection, xAxis, yAxis, renderer);
-        plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " memory use statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);

@@ -16,6 +16,7 @@
 
 package org.drools.planner.benchmark.core.statistic.bestscore;
 
+import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -107,6 +108,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         NumberAxis yAxis = new NumberAxis("Score");
         yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             XYSeries series = new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix());
@@ -128,13 +130,14 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
                 }
             }
-            XYSeriesCollection seriesCollection = new XYSeriesCollection();
-            seriesCollection.addSeries(series);
-            plot.setDataset(seriesIndex, seriesCollection);
+            plot.setDataset(seriesIndex, new XYSeriesCollection(series));
+            if (singleBenchmark.getSolverBenchmark().isFavorite()) {
+                // Make the favorite more obvious
+                renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+            }
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
-        plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " best score statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
