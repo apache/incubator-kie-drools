@@ -42,9 +42,7 @@
                     <li><a href="#summary">Summary</a></li>
                     <li>
                         <ul class="nav nav-list">
-                            <li><a href="#summary_bestScore">Best score</a></li>
-                            <li><a href="#summary_winningScoreDifference">Winning score difference</a></li>
-                            <li><a href="#summary_worstScoreDifferencePercentage">Worst score difference percentage</a></li>
+                            <li><a href="#summary_result">Result</a></li>
                             <li><a href="#summary_timeSpend">Time spend</a></li>
                             <li><a href="#summary_scalability">Scalability</a></li>
                             <li><a href="#summary_averageCalculateCount">Average calculate count</a></li>
@@ -87,23 +85,27 @@
                 </div>
             </#if>
 
-                <section id="summary_bestScore">
-                    <h2>Best score summary</h2>
+                <section id="summary_result">
+                    <h2>Result</h2>
                     <div class="tabbable">
-                        <ul class="nav nav-tabs">
+                        <ul class="nav nav-pills">
                             <li class="active">
-                                <a href="#summary_bestScore_chart" data-toggle="tab">Chart</a>
+                                <a href="#summary_bestScore" data-toggle="tab">Best score</a>
                             </li>
                             <li>
-                                <a href="#summary_bestScore_table" data-toggle="tab">Table</a>
+                                <a href="#summary_winningScoreDifference" data-toggle="tab">Winning score difference</a>
+                            </li>
+                            <li>
+                                <a href="#summary_worstScoreDifferencePercentage" data-toggle="tab">Worst score difference percentage</a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="summary_bestScore_chart">
-                                <img src="${plannerStatistic.bestScoreSummaryFile.name}"/>
-                            </div>
-                            <div class="tab-pane" id="summary_bestScore_table">
-                                <table class="table table-striped table-bordered">
+                            <div class="tab-pane active" id="summary_bestScore">
+                                <h3>Best score summary</h3>
+                                <div class="benchmark-chart">
+                                    <img src="${plannerStatistic.bestScoreSummaryFile.name}"/>
+                                </div>
+                                <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
@@ -133,27 +135,12 @@
                                 </#list>
                                 </table>
                             </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="summary_winningScoreDifference">
-                    <h2>Winning score difference summary</h2>
-                    <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#summary_winningScoreDifference_chart" data-toggle="tab">Chart</a>
-                            </li>
-                            <li>
-                                <a href="#summary_winningScoreDifference_table" data-toggle="tab">Table</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="summary_winningScoreDifference_chart">
-                                <img src="${plannerStatistic.winningScoreDifferenceSummaryFile.name}"/>
-                            </div>
-                            <div class="tab-pane" id="summary_winningScoreDifference_table">
-                                <table class="table table-striped table-bordered">
+                            <div class="tab-pane" id="summary_winningScoreDifference">
+                                <h3>Winning score difference summary</h3>
+                                <div class="benchmark-chart">
+                                    <img src="${plannerStatistic.winningScoreDifferenceSummaryFile.name}"/>
+                                </div>
+                                <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
@@ -181,28 +168,12 @@
                                 </#list>
                                 </table>
                             </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="summary_worstScoreDifferencePercentage">
-                    <h2>Worst score difference percentage summary</h2>
-                    <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#summary_worstScoreDifferencePercentage_chart" data-toggle="tab">Chart</a>
-                            </li>
-                            <li>
-                                <a href="#summary_worstScoreDifferencePercentage_table" data-toggle="tab">Table</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="summary_worstScoreDifferencePercentage_chart">
-                                <p>TODO</p><!-- TODO bar chart -->
-                                <#--<img src="${plannerStatistic.worstScoreDifferencePercentageSummaryFile.name}"/>-->
-                            </div>
-                            <div class="tab-pane" id="summary_worstScoreDifferencePercentage_table">
-                                <table class="table table-striped table-bordered">
+                            <div class="tab-pane" id="summary_worstScoreDifferencePercentage">
+                                <h3>Worst score difference percentage summary</h3>
+                                <div class="benchmark-chart">
+                                    <img src="${plannerStatistic.worstScoreDifferencePercentageSummaryFile.name}"/>
+                                </div>
+                                <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
@@ -231,6 +202,17 @@
                                 </table>
                             </div>
                         </div>
+                        <ul class="nav nav-pills">
+                            <li class="active">
+                                <a href="#summary_bestScore" data-toggle="tab">Best score</a>
+                            </li>
+                            <li>
+                                <a href="#summary_winningScoreDifference" data-toggle="tab">Winning score difference</a>
+                            </li>
+                            <li>
+                                <a href="#summary_worstScoreDifferencePercentage" data-toggle="tab">Worst score difference percentage</a>
+                            </li>
+                        </ul>
                     </div>
                 </section>
 
@@ -247,10 +229,12 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_timeSpend_chart">
-                                <img src="${plannerStatistic.timeSpendSummaryFile.name}"/>
+                                <div class="benchmark-chart">
+                                    <img src="${plannerStatistic.timeSpendSummaryFile.name}"/>
+                                </div>
                             </div>
                             <div class="tab-pane" id="summary_timeSpend_table">
-                                <table class="table table-striped table-bordered">
+                                <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
@@ -293,10 +277,12 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_scalability_chart">
-                                <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
+                                <div class="benchmark-chart">
+                                    <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
+                                </div>
                             </div>
                             <div class="tab-pane" id="summary_scalability_table">
-                                <table class="table table-striped table-bordered">
+                                <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
@@ -339,10 +325,12 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_averageCalculateCount_chart">
-                                <img src="${plannerStatistic.averageCalculateCountSummaryFile.name}"/>
+                                <div class="benchmark-chart">
+                                    <img src="${plannerStatistic.averageCalculateCountSummaryFile.name}"/>
+                                </div>
                             </div>
                             <div class="tab-pane" id="summary_averageCalculateCount_table">
-                                <table class="table table-striped table-bordered">
+                                <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
@@ -402,7 +390,9 @@
                                 <#assign firstRow = true>
                                 <#list problemBenchmark.problemStatisticList as problemStatistic>
                                     <div class="tab-pane<#if firstRow> active</#if>" id="problemStatistic_${problemStatistic.anchorId}">
-                                        <img src="${problemStatistic.graphFilePath}"/>
+                                        <div class="benchmark-chart">
+                                            <img src="${problemStatistic.graphFilePath}"/>
+                                        </div>
                                         <div class="btn-group download-btn-group">
                                             <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CVS file</button>
                                         </div>
@@ -442,7 +432,7 @@
                 <div class="page-header">
                     <h1>Benchmark information</h1>
                 </div>
-                <table class="table table-striped">
+                <table class="benchmark-table table table-striped">
                     <tr>
                         <th>startingTimestamp</th>
                         <td>${plannerStatistic.plannerBenchmark.startingTimestamp?datetime}</td>

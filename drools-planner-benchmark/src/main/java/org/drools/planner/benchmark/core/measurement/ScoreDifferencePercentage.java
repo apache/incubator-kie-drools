@@ -68,6 +68,10 @@ public class ScoreDifferencePercentage implements Serializable {
     // Worker methods
     // ************************************************************************
 
+    public double getLastPercentageLevel() {
+        return percentageLevels[percentageLevels.length - 1];
+    }
+
     public ScoreDifferencePercentage add(ScoreDifferencePercentage augment) {
         double[] newPercentageLevels = new double[percentageLevels.length];
         for (int i = 0; i < percentageLevels.length; i++) {
@@ -111,13 +115,12 @@ public class ScoreDifferencePercentage implements Serializable {
 
     public String toString(Locale locale) {
         StringBuilder s = new StringBuilder(percentageLevels.length * 8);
-        DecimalFormat decimalFormat = new DecimalFormat("#.##", DecimalFormatSymbols.getInstance(locale));
+        DecimalFormat decimalFormat = new DecimalFormat("0.00%", DecimalFormatSymbols.getInstance(locale));
         for (int i = 0; i < percentageLevels.length; i++) {
             if (i > 0) {
                 s.append("/");
             }
-            String percentageLevelString = decimalFormat.format(percentageLevels[i] * 100.0);
-            s.append(percentageLevelString).append("%");
+            s.append(decimalFormat.format(percentageLevels[i]));
         }
         return s.toString();
     }

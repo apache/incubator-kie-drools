@@ -42,6 +42,15 @@
     margin: 10px;
 }
 
+.benchmark-chart {
+    margin: 10px;
+}
+
+.benchmark-table {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .showSolverConfiguration {
     margin: 10px;
 }
