@@ -77,13 +77,35 @@
     </section>
 
     <section>
-      <title>Multi-objective pareto scoring</title>
+      <title>Multi-objective optimization scoring and pareto optimal</title>
 
-      <para>Less common use cases use multi-objective scoring or pareto scoring. In pareto scoring, some score
-      constraints are in the same score level, yet they are not weighted against each other. When 2 score are compared,
-      each of the score constraints are compared individually and the score with the most dominating score constraints
-      wins. Scores are considered equal far more often and it's left up to a user to chose the better out of a set of
-      best solutions (with equal scores) found by Planner.</para>
+      <para>Less common is the use case of multi-objective optimization scoring. In multi-objective optimization
+      scoring, some score constraints are in the same score level, yet they are not weighted against each other. When 2
+      scores are compared, each of the score constraints are compared individually and the score with the most
+      dominating score constraints wins.</para>
+
+      <para>Consider this example with positive constraints, where we want to get the most apples and oranges. Since
+      it's impossible to compare apples and oranges, we can't weight them against each other. Yet, despite that we can't
+      compare them, we can state that 2 apples are better then 1 apple. Similarly, we can state that 2 apples and 1
+      orange are better than just 1 orange. So despite our inability to compare some Scores conclusively (at which point
+      we declare them equal), we can find a set of optimal scores. Those are called Pareto optimal.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Score_calculation/multiObjectiveOptimizationScoring.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Scores are considered equal far more often. It's left up to a human to choose the better out of a set of
+      best solutions (with equal scores) found by Planner. In the example above, the user must choose between solution A
+      (3 apples and 1 orange) and solution B (1 apples and 6 oranges). It's guaranteed that Planner has not found
+      another solution which has more apples or more oranges or even a better combination of both (such as 2 apples and
+      3 oranges).</para>
+
+      <para>To implement multi-object optimization scoring in Planner, <link linkend="customScore">implement a custom
+      <literal>ScoreDefinition</literal> and <literal>Score</literal></link>. Future versions will provide
+      out-of-the-box support.</para>
     </section>
 
     <section>
@@ -165,7 +187,7 @@
       </itemizedlist>
     </section>
 
-    <section>
+    <section xml:id="customScore">
       <title>Implementing a custom Score</title>
 
       <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
