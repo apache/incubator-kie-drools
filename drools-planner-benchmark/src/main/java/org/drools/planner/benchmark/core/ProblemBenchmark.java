@@ -29,11 +29,15 @@ import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.solution.Solution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
  */
 public class ProblemBenchmark {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final DefaultPlannerBenchmark plannerBenchmark;
 
@@ -47,6 +51,7 @@ public class ProblemBenchmark {
 
     private List<SingleBenchmark> singleBenchmarkList = null;
 
+    private Long problemScale = null;
     private Integer failureCount = null;
     private SingleBenchmark winningSingleBenchmark = null;
     private SingleBenchmark worstSingleBenchmark = null;
@@ -99,6 +104,10 @@ public class ProblemBenchmark {
         this.singleBenchmarkList = singleBenchmarkList;
     }
 
+    public Long getProblemScale() {
+        return problemScale;
+    }
+
     public Integer getFailureCount() {
         return failureCount;
     }
@@ -118,6 +127,7 @@ public class ProblemBenchmark {
     public void benchmarkingStarted() {
         problemReportDirectory = new File(plannerBenchmark.getBenchmarkReportDirectory(), name);
         problemReportDirectory.mkdirs();
+        problemScale = null;
     }
 
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
@@ -219,6 +229,22 @@ public class ProblemBenchmark {
     @Override
     public int hashCode() {
         return inputSolutionFile.hashCode();
+    }
+
+    /**
+     * HACK to avoid loading the planningProblem just to extract it's problemScale.
+     * Called multiple times, for every {@link SingleBenchmark} of this {@link ProblemBenchmark}.
+     * @param registeringProblemScale >= 0
+     */
+    public void registerProblemScale(long registeringProblemScale) {
+        if (problemScale == null) {
+            problemScale = registeringProblemScale;
+        } else if (problemScale.longValue() != registeringProblemScale) {
+            logger.warn("The problemBenchmark ({}) has different problemScale values ([{},{}]).",
+                    new Object[] {getName(), problemScale, registeringProblemScale});
+            // The problemScale is not unknown (null), but known to be ambiguous
+            problemScale = -1L;
+        }
     }
 
 }

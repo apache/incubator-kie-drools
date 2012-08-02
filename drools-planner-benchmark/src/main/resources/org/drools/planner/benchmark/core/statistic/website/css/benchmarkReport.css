@@ -51,6 +51,11 @@
     margin-bottom: 10px;
 }
 
+.problemScale {
+    font-size: smaller;
+    color: darkGray;
+}
+
 .showSolverConfiguration {
     margin: 10px;
 }

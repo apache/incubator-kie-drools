@@ -241,6 +241,12 @@
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                     </tr>
+                                    <tr>
+                                        <th class="problemScale">Problem scale</th>
+                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <td class="problemScale">${problemBenchmark.problemScale}</td>
+                                    </#list>
+                                    </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
@@ -282,31 +288,6 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="summary_scalability_table">
-                                <table class="benchmark-table table table-striped table-bordered">
-                                    <tr>
-                                        <th>Solver</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                        <th>${problemBenchmark.name}</th>
-                                    </#list>
-                                    </tr>
-                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
-                                        <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
-                                                <td></td>
-                                            <#else>
-                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                                <#if !singleBenchmark.success>
-                                                    <td><span class="label warning">Failed</span></td>
-                                                <#else>
-                                                    <td>${singleBenchmark.problemScale}</td>
-                                                </#if>
-                                            </#if>
-                                        </#list>
-                                    </tr>
-                                </#list>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -337,6 +318,13 @@
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="problemScale">Problem scale</th>
+                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <td class="problemScale">${problemBenchmark.problemScale}</td>
+                                    </#list>
+                                        <td class="problemScale">${plannerStatistic.plannerBenchmark.averageProblemScale}</td>
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>

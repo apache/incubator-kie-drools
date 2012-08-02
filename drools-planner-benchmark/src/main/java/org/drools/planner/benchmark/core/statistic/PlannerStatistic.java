@@ -311,7 +311,7 @@ public class PlannerStatistic {
             XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
-                    long problemScale = singleBenchmark.getProblemScale();
+                    long problemScale = singleBenchmark.getProblemBenchmark().getProblemScale();
                     long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                     series.add((Long) problemScale, (Long) timeMillisSpend);
                 }
@@ -353,7 +353,7 @@ public class PlannerStatistic {
             XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
-                    long problemScale = singleBenchmark.getProblemScale();
+                    long problemScale = singleBenchmark.getProblemBenchmark().getProblemScale();
                     long averageCalculateCountPerSecond = singleBenchmark.getAverageCalculateCountPerSecond();
                     series.add((Long) problemScale, (Long) averageCalculateCountPerSecond);
                 }

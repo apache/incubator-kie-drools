@@ -26,11 +26,15 @@ import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
  */
 public class SolverBenchmark {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final DefaultPlannerBenchmark plannerBenchmark;
 
@@ -132,10 +136,10 @@ public class SolverBenchmark {
     }
 
     public void benchmarkingEnded() {
-        determineTotalScore();
+        determineTotalsAndAverages();
     }
 
-    protected void determineTotalScore() {
+    protected void determineTotalsAndAverages() {
         failureCount = 0;
         boolean firstNonFailure = true;
         totalScore = null;

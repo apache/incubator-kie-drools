@@ -66,6 +66,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private ExecutorService executorService;
     private Integer failureCount;
     private SingleBenchmark firstFailureSingleBenchmark;
+    private Long averageProblemScale = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
 
@@ -144,6 +145,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return failureCount;
     }
 
+    public Long getAverageProblemScale() {
+        return averageProblemScale;
+    }
+
     public long getBenchmarkTimeMillisSpend() {
         return benchmarkTimeMillisSpend;
     }
@@ -177,6 +182,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         executorService = Executors.newFixedThreadPool(parallelBenchmarkCount);
         failureCount = 0;
         firstFailureSingleBenchmark = null;
+        averageProblemScale = null;
         favoriteSolverBenchmark = null;
         benchmarkTimeMillisSpend = -1L;
         logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount ({}).",
@@ -273,21 +279,37 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingEnded();
         }
+        determineTotalsAndAverages();
         determineSolverBenchmarkRanking();
         benchmarkTimeMillisSpend = calculateTimeMillisSpend();
         PlannerStatistic plannerStatistic = new PlannerStatistic(this);
         plannerStatistic.writeStatistics();
         if (failureCount == 0) {
-            logger.info("Benchmarking ended: favoriteSolverBenchmark ({}), statistic html overview ({}).",
-                    favoriteSolverBenchmark.getName(), plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
+            logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
+                    new Object[] {benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),
+                            plannerStatistic.getHtmlOverviewFile().getAbsolutePath()});
         } else {
-            logger.info("Benchmarking failed: failureCount ({}), statistic html overview ({}).",
-                    failureCount, plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
+            logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",
+                    new Object[] {benchmarkTimeMillisSpend, failureCount,
+                            plannerStatistic.getHtmlOverviewFile().getAbsolutePath()});
             throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
                     " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
                     + ") is chained.",
                     firstFailureSingleBenchmark.getFailureThrowable());
         }
+    }
+
+    private void determineTotalsAndAverages() {
+        long totalProblemScale = 0L;
+        int problemScaleCount = 0;
+        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
+            Long problemScale = problemBenchmark.getProblemScale();
+            if (problemScale != null && problemScale >= 0L) {
+                totalProblemScale += problemScale;
+                problemScaleCount++;
+            }
+        }
+        averageProblemScale = problemScaleCount == 0 ? null : totalProblemScale / (long) problemScaleCount;
     }
 
     private void determineSolverBenchmarkRanking() {

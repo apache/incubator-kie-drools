@@ -30,11 +30,15 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.DefaultSolverScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
  */
 public class SingleBenchmark implements Callable<SingleBenchmark> {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SolverBenchmark solverBenchmark;
     private final ProblemBenchmark problemBenchmark;
@@ -42,7 +46,6 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private Map<StatisticType, SingleStatistic> singleStatisticMap = new HashMap<StatisticType, SingleStatistic>();
 
     private int planningEntityCount = -1;
-    private long problemScale = -1;
     private Score score = null;
     // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
@@ -70,10 +73,6 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     public int getPlanningEntityCount() {
         return planningEntityCount;
-    }
-
-    public long getProblemScale() {
-        return problemScale;
     }
 
     public Score getScore() {
@@ -158,7 +157,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         score = outputSolution.getScore();
         SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
         planningEntityCount = solutionDescriptor.getPlanningEntityCount(outputSolution);
-        problemScale = solutionDescriptor.getProblemScale(outputSolution);
+        problemBenchmark.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
 
         for (SingleStatistic singleStatistic : singleStatisticMap.values()) {
             singleStatistic.close();
