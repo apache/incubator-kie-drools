@@ -348,6 +348,7 @@
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
+                                        <th>Average</th>
                                     </tr>
                                 <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
@@ -364,6 +365,7 @@
                                                 </#if>
                                             </#if>
                                         </#list>
+                                        <td>${solverBenchmark.averageAverageCalculateCountPerSecond!""}</td>
                                     </tr>
                                 </#list>
                                 </table>

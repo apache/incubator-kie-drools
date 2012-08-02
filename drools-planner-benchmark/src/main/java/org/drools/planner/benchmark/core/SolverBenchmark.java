@@ -45,6 +45,8 @@ public class SolverBenchmark {
     private Score totalScore = null;
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
+    // The average of the average is not just the overall average if the SingleBenchmark's timeMillisSpend differ
+    private long averageAverageCalculateCountPerSecond = -1L;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -101,6 +103,10 @@ public class SolverBenchmark {
         return averageWorstScoreDifferencePercentage;
     }
 
+    public long getAverageAverageCalculateCountPerSecond() {
+        return averageAverageCalculateCountPerSecond;
+    }
+
     public Integer getRanking() {
         return ranking;
     }
@@ -121,9 +127,6 @@ public class SolverBenchmark {
     }
 
     public void benchmarkingStarted() {
-        totalScore = null;
-        totalWinningScoreDifference = null;
-        averageWorstScoreDifferencePercentage = null;
         // Note: do not call SingleBenchmark.benchmarkingStarted()
         // because DefaultPlannerBenchmark does that already on the unified list
     }
@@ -135,7 +138,10 @@ public class SolverBenchmark {
     protected void determineTotalScore() {
         failureCount = 0;
         boolean firstNonFailure = true;
+        totalScore = null;
+        totalWinningScoreDifference = null;
         ScoreDifferencePercentage totalWorstScoreDifferencePercentage = null;
+        long totalAverageCalculateCountPerSecond = 0L;
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
             if (singleBenchmark.isFailure()) {
                 failureCount++;
@@ -144,6 +150,7 @@ public class SolverBenchmark {
                     totalScore = singleBenchmark.getScore();
                     totalWinningScoreDifference = singleBenchmark.getWinningScoreDifference();
                     totalWorstScoreDifferencePercentage = singleBenchmark.getWorstScoreDifferencePercentage();
+                    totalAverageCalculateCountPerSecond = singleBenchmark.getAverageCalculateCountPerSecond();
                     firstNonFailure = false;
                 } else {
                     totalScore = totalScore.add(singleBenchmark.getScore());
@@ -151,11 +158,14 @@ public class SolverBenchmark {
                             singleBenchmark.getWinningScoreDifference());
                     totalWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.add(
                             singleBenchmark.getWorstScoreDifferencePercentage());
+                    totalAverageCalculateCountPerSecond += singleBenchmark.getAverageCalculateCountPerSecond();
                 }
             }
         }
-        if (totalWorstScoreDifferencePercentage != null) {
-            averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide(getSuccessCount());
+        if (!firstNonFailure) {
+            int successCount = getSuccessCount();
+            averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
+            averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
         }
     }
 
