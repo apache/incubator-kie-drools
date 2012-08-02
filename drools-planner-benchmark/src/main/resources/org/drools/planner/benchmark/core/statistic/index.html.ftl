@@ -43,9 +43,7 @@
                     <li>
                         <ul class="nav nav-list">
                             <li><a href="#summary_result">Result</a></li>
-                            <li><a href="#summary_timeSpend">Time spend</a></li>
-                            <li><a href="#summary_scalability">Scalability</a></li>
-                            <li><a href="#summary_averageCalculateCount">Average calculate count</a></li>
+                            <li><a href="#summary_performance">Performance</a></li>
                         </ul>
                     </li>
                     <li class="divider"></li>
@@ -86,7 +84,7 @@
             </#if>
 
                 <section id="summary_result">
-                    <h2>Result</h2>
+                    <h2>Result summary</h2>
                     <div class="tabbable">
                         <ul class="nav nav-pills">
                             <li class="active">
@@ -202,6 +200,7 @@
                                 </table>
                             </div>
                         </div>
+                        <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
                         <ul class="nav nav-pills">
                             <li class="active">
                                 <a href="#summary_bestScore" data-toggle="tab">Best score</a>
@@ -216,24 +215,26 @@
                     </div>
                 </section>
 
-                <section id="summary_timeSpend">
-                    <h2>Time spend summary</h2>
+                <section id="summary_performance">
+                    <h2>Performance summary</h2>
                     <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#summary_timeSpend_chart" data-toggle="tab">Chart</a>
+                        <ul class="nav nav-pills">
+                            <li>
+                                <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
                             </li>
                             <li>
-                                <a href="#summary_timeSpend_table" data-toggle="tab">Table</a>
+                                <a href="#summary_scalability" data-toggle="tab">Scalability</a>
+                            </li>
+                            <li class="active">
+                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="summary_timeSpend_chart">
+                            <div class="tab-pane" id="summary_timeSpend">
+                                <h3>Time spend summary</h3>
                                 <div class="benchmark-chart">
                                     <img src="${plannerStatistic.timeSpendSummaryFile.name}"/>
                                 </div>
-                            </div>
-                            <div class="tab-pane" id="summary_timeSpend_table">
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
@@ -266,51 +267,17 @@
                                 </#list>
                                 </table>
                             </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="summary_scalability">
-                    <h2>Scalability summary</h2>
-                    <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#summary_scalability_chart" data-toggle="tab">Chart</a>
-                            </li>
-                            <li>
-                                <a href="#summary_scalability_table" data-toggle="tab">Table</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="summary_scalability_chart">
+                            <div class="tab-pane" id="summary_scalability">
+                                <h3>Scalability summary</h3>
                                 <div class="benchmark-chart">
                                     <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="summary_scalability_table">
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="summary_averageCalculateCount">
-                    <h2>Average calculate count summary</h2>
-                    <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#summary_averageCalculateCount_chart" data-toggle="tab">Chart</a>
-                            </li>
-                            <li>
-                                <a href="#summary_averageCalculateCount_table" data-toggle="tab">Table</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="summary_averageCalculateCount_chart">
+                            <div class="tab-pane active" id="summary_averageCalculateCount">
+                                <h3>Average calculate count summary</h3>
                                 <div class="benchmark-chart">
                                     <img src="${plannerStatistic.averageCalculateCountSummaryFile.name}"/>
                                 </div>
-                            </div>
-                            <div class="tab-pane" id="summary_averageCalculateCount_table">
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
@@ -347,6 +314,18 @@
                                 </table>
                             </div>
                         </div>
+                        <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
+                        <ul class="nav nav-pills">
+                            <li>
+                                <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
+                            </li>
+                            <li>
+                                <a href="#summary_scalability" data-toggle="tab">Scalability</a>
+                            </li>
+                            <li class="active">
+                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
+                            </li>
+                        </ul>
                     </div>
                 </section>
             </section>
