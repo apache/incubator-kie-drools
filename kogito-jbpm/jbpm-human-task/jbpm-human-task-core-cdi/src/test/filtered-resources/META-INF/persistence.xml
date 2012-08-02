@@ -37,18 +37,9 @@
     
     <!-- Event Classes -->
     <class>org.jbpm.task.TaskEvent</class>
-    <!--class>org.jbpm.task.event.entity.TaskUserEvent</class-->
     
-    <!-- Specific Event Classes -->
-    <!--class>org.jbpm.task.event.entity.TaskClaimedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskCompletedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskCreatedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskFailedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskForwardedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskReleasedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskSkippedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskStartedEvent</class>
-    <class>org.jbpm.task.event.entity.TaskStoppedEvent</class-->
+    
+ 
    
     <properties>
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
@@ -69,24 +60,6 @@
     </properties>
   </persistence-unit>
 
-  <persistence-unit name="org.jbpm.persistence.example">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <class>org.jbpm.task.service.persistence.variable.MyEntity</class>
-    <properties>
-      <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
-      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-      <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
-      <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
-      <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
-      
-      <property name="hibernate.max_fetch_depth" value="3" />
-      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-      <property name="hibernate.show_sql" value="false" />
-      
-      <!-- needed for JTA testing 
-      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" /> 
-        -->
-    </properties>
-  </persistence-unit>
+ 
   
 </persistence>

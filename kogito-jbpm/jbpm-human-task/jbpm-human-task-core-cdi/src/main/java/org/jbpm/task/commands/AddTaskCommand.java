@@ -15,20 +15,15 @@
  */
 package org.jbpm.task.commands;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import javax.enterprise.util.AnnotationLiteral;
 import org.drools.command.Context;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
+import org.jbpm.task.events.AfterTaskAddedEvent;
+import org.jbpm.task.events.BeforeTaskAddedEvent;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
@@ -55,7 +50,10 @@ public class AddTaskCommand<Long> extends TaskCommand {
     }
 
     public Long execute(Context cntxt) {
+        
         TaskContext context = (TaskContext) cntxt;
+        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskAddedEvent>() {
+        }).fire(task);
         if (params != null) {
             ContentData contentData = ContentMarshallerHelper.marshal(params, null);
             Content content = new Content(contentData.getContent());
@@ -69,7 +67,8 @@ public class AddTaskCommand<Long> extends TaskCommand {
         }
         
         context.getEm().persist(task);
-
+        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskAddedEvent>() {
+        }).fire(task);
         return (Long) task.getId();
     }
 

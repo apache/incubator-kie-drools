@@ -132,6 +132,14 @@ public class TaskFactory {
         return task;
     }
 
+    public static Task evalTask(String taskString, Map<String, Object> vars, boolean initialize) {
+        Task task = (Task) MVELUtils.eval(taskString, vars);
+        if (initialize) {
+            initializeTask(task);
+        }
+        return task;
+    }
+
     public static Task evalTask(Reader reader) {
         return evalTask(reader, null);
     }

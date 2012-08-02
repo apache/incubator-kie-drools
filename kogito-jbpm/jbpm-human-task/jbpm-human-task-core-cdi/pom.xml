@@ -88,8 +88,8 @@
         </dependency>
         <dependency>
             
-             <groupId>org.jboss.arquillian.junit</groupId>
-           <artifactId>arquillian-junit-container</artifactId>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
             
         </dependency>
@@ -123,8 +123,24 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-
+        <pluginManagement>
+            <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>    
+            </plugins>
+        </pluginManagement>
         <plugins>
+            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
