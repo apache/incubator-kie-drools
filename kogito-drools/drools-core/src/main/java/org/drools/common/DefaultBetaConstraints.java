@@ -70,19 +70,19 @@ public class DefaultBetaConstraints
         this.indexPrecedenceOption = conf.getIndexPrecedenceOption();
     }
 
-    public void init(BuildContext context, BetaNode betaNode) {
+    public void init(BuildContext context, short betaNodeType) {
         RuleBaseConfiguration config = context.getRuleBase().getConfiguration();
 
         if ( disableIndexing || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
             indexed = 0;
         } else {
             int depth = config.getCompositeKeyDepth();
-            if ( !compositeAllowed( constraints, betaNode.getType() ) ) {
+            if ( !compositeAllowed( constraints, betaNodeType ) ) {
                 // UnificationRestrictions cannot be allowed in composite indexes
                 // We also ensure that if there is a mixture that standard restriction is first
                 depth = 1;
             }
-            initIndexes( depth, betaNode.getType() );
+            initIndexes( depth, betaNodeType );
         }
     }
 
