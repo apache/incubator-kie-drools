@@ -2023,17 +2023,34 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
             type.setResource( typeDescr.getResource() );
 
+            TypeDeclaration parent = null;
+            if ( typeDescr.getSuperTypes().size() > 0 ) {
+                // parent might have inheritable properties
+                PackageRegistry sup = pkgRegistryMap.get( typeDescr.getSuperTypeNamespace() );
+                if ( sup != null ) {
+                    parent = sup.getPackage().getTypeDeclaration( typeDescr.getSuperTypeName() );
+                    if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
+                        // trying to find a definition
+                        parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                    }
+                }
+            }
+
             // is it a regular fact or an event?
             AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
             String role = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
             if (role != null) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
+            } else if ( parent != null ) {
+                type.setRole( parent.getRole() );
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TYPESAFE );
             String typesafe = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
             if (typesafe != null) {
                 type.setTypesafe( Boolean.parseBoolean( typesafe ) );
+            } else if ( parent != null ) {
+                type.setTypesafe( parent.isTypesafe() );
             }
 
             // is it a pojo or a template?
@@ -2157,7 +2174,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         type.setPropertyReactive(propertySpecific);
 
         if ( type.isValid() ) {
-            pkgRegistry.getPackage().addTypeDeclaration( type );
+            // prefer definitions where possible
+            if ( type.getNature() == TypeDeclaration.Nature.DEFINITION
+                 || pkgRegistry.getPackage().getTypeDeclaration( type.getTypeName() ) == null ) {
+                pkgRegistry.getPackage().addTypeDeclaration( type );
+            }
         }
 
         return true;

@@ -557,7 +557,7 @@ abstract public class AbstractRuleBase
                                 Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
                                 if ( definedKlass == null && typeDeclaration.isNovel() ) {
-                                    throw new RuntimeException( "Registering nyll bytes for class " + className );
+                                    throw new RuntimeException( "Registering null bytes for class " + className );
                                 }
 
 
@@ -720,7 +720,9 @@ abstract public class AbstractRuleBase
 
         existingDecl.setRole( mergeLeft( existingDecl.getTypeName(),
                                          "Unable to merge @role attribute for type declaration of class:",
-                                         isSet(existingDecl.getSetMask(), TypeDeclaration.ROLE_BIT) ? existingDecl.getRole() : null,
+                                         isSet(existingDecl.getSetMask(), TypeDeclaration.ROLE_BIT)
+                                           && newDecl.getRole() != TypeDeclaration.Role.FACT
+                                           ? existingDecl.getRole() : null,
                                          newDecl.getRole(),
                                          true,
                                          false ) );

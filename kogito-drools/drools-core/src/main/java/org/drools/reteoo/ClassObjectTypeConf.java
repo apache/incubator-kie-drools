@@ -62,6 +62,8 @@ public class ClassObjectTypeConf
     
     private boolean                    supportsPropertyListeners;
 
+    private boolean                    isEvent;
+
 
     public ClassObjectTypeConf() {
 
@@ -74,7 +76,7 @@ public class ClassObjectTypeConf
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
         this.typeDecl = ruleBase.getTypeDeclaration( clazz );
-        final boolean isEvent = typeDecl != null && typeDecl.getRole() == TypeDeclaration.Role.EVENT;
+        isEvent = typeDecl != null && typeDecl.getRole() == TypeDeclaration.Role.EVENT;
 
         ObjectType objectType = ((AbstractRuleBase) ruleBase).getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz,
                                                                                                                                     isEvent ) );
@@ -114,6 +116,7 @@ public class ClassObjectTypeConf
         entryPoint = (EntryPoint) stream.readObject();
         tmsEnabled = stream.readBoolean();
         supportsPropertyListeners = stream.readBoolean();
+        isEvent = stream.readBoolean();
         defineShadowProxyData( cls );
     }
 
@@ -126,6 +129,7 @@ public class ClassObjectTypeConf
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
         stream.writeBoolean( supportsPropertyListeners );
+        stream.writeBoolean( isEvent );
     }
 
     public boolean isAssignableFrom(Object object) {
@@ -209,7 +213,8 @@ public class ClassObjectTypeConf
     }
 
     public boolean isEvent() {
-        return this.concreteObjectTypeNode.getObjectType().isEvent();
+//        return this.concreteObjectTypeNode.getObjectType().isEvent();
+        return this.isEvent;
     }
 
     public TypeDeclaration getTypeDeclaration() {
