@@ -47,10 +47,11 @@ public class MoveSelectorConfigTest {
                 return baseMoveSelector;
             }
         };
+        moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
-                SelectionOrder.ORIGINAL, SelectionCacheType.STEP);
+                SelectionOrder.ORIGINAL, SelectionCacheType.JUST_IN_TIME);
         assertTrue(moveSelector instanceof CachingMoveSelector);
         moveSelector = ((CachingMoveSelector) moveSelector).getChildMoveSelector();
         assertSame(baseMoveSelector, moveSelector);
@@ -89,10 +90,11 @@ public class MoveSelectorConfigTest {
                 return baseMoveSelector;
             }
         };
+        moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
-                SelectionOrder.RANDOM, SelectionCacheType.STEP);
+                SelectionOrder.RANDOM, SelectionCacheType.JUST_IN_TIME);
         assertTrue(moveSelector instanceof ShufflingMoveSelector);
         moveSelector = ((ShufflingMoveSelector) moveSelector).getChildMoveSelector();
         assertSame(baseMoveSelector, moveSelector);
