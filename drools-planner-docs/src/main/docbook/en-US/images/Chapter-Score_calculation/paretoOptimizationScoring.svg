@@ -15,8 +15,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="multiObjectiveOptimizationScoring.svg"
-   inkscape:export-filename="multiObjectiveOptimizationScoring.png"
+   sodipodi:docname="paretoOptimizationScoring.svg"
+   inkscape:export-filename="paretoOptimizationScoring.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -844,7 +844,7 @@
            x="40"
            y="210.0002"
            style="font-size:36px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara3413">Multi-objective optimization scoring</flowPara></flowRoot>    <flowRoot
+         id="flowPara3413">Pareto optimization scoring</flowPara></flowRoot>    <flowRoot
        transform="translate(-20,382.36205)"
        xml:space="preserve"
        id="flowRoot4302-6"

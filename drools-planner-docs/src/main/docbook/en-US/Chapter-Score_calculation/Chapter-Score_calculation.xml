@@ -77,22 +77,24 @@
     </section>
 
     <section>
-      <title>Multi-objective optimization scoring and pareto optimal</title>
+      <title>Pareto scoring (AKA multi-objective optimization scoring)</title>
 
-      <para>Less common is the use case of multi-objective optimization scoring. In multi-objective optimization
-      scoring, some score constraints are in the same score level, yet they are not weighted against each other. When 2
+      <para>Less common is the use case of pareto optimization, which is also known under the more confusing term
+      multi-objective optimization. In pareto
+      scoring, score constraints are in the same score level, yet they are not weighted against each other. When 2
       scores are compared, each of the score constraints are compared individually and the score with the most
-      dominating score constraints wins.</para>
+      dominating score constraints wins.
+      Pareto scoring can even be combined with score levels and score constraint weighting.</para>
 
       <para>Consider this example with positive constraints, where we want to get the most apples and oranges. Since
       it's impossible to compare apples and oranges, we can't weight them against each other. Yet, despite that we can't
       compare them, we can state that 2 apples are better then 1 apple. Similarly, we can state that 2 apples and 1
       orange are better than just 1 orange. So despite our inability to compare some Scores conclusively (at which point
-      we declare them equal), we can find a set of optimal scores. Those are called Pareto optimal.</para>
+      we declare them equal), we can find a set of optimal scores. Those are called pareto optimal.</para>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Score_calculation/multiObjectiveOptimizationScoring.png"
+          <imagedata align="center" fileref="images/Chapter-Score_calculation/paretoOptimizationScoring.png"
                      format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
@@ -103,16 +105,16 @@
       another solution which has more apples or more oranges or even a better combination of both (such as 2 apples and
       3 oranges).</para>
 
-      <para>To implement multi-objective optimization scoring in Planner, <link linkend="customScore">implement a custom
+      <para>To implement pareto scoring in Planner, <link linkend="customScore">implement a custom
       <literal>ScoreDefinition</literal> and <literal>Score</literal></link>. Future versions will provide
       out-of-the-box support.</para>
 
       <note>
-        <para>A multi-objective optimization <literal>Score</literal>'s method <literal>compareTo</literal> is not
-        transitive because it does Pareto comparison. For example: 2 apples is greater than 1 apple. 1 apples is equal
+        <para>A pareto <literal>Score</literal>'s method <literal>compareTo</literal> is not
+        transitive because it does a pareto comparison. For example: 2 apples is greater than 1 apple. 1 apples is equal
         to 1 orange. Yet, 2 apples are not greater than 1 orange (but actually equal). Pareto comparison violates the
-        contract of the inferface <literal>java.lang.Comparable</literal>'s method <literal>compareTo</literal>, but
-        Planner's systems are <emphasis>Pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
+        contract of the interface <literal>java.lang.Comparable</literal>'s method <literal>compareTo</literal>, but
+        Planner's systems are <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
         documentation.</para>
       </note>
     </section>
