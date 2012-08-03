@@ -155,7 +155,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                         + entityProbabilityWeightFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
-            entitySelector= new ProbabilityEntitySelector(entitySelector,
+            entitySelector = new ProbabilityEntitySelector(entitySelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
         }
         return entitySelector;

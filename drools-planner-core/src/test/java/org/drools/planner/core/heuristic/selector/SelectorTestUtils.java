@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
@@ -39,6 +40,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class SelectorTestUtils {
+
+    public static SolutionDescriptor mockSolutionDescriptor() {
+        SolutionDescriptor solutionDescriptor = mock(SolutionDescriptor.class);
+        return solutionDescriptor;
+    }
 
     public static PlanningEntityDescriptor mockEntityDescriptor(Class entityClass) {
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);

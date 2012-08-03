@@ -32,9 +32,12 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingFilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.JustInTimeFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.ProbabilityMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
 /**
@@ -51,8 +54,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     protected SelectionOrder selectionOrder = null;
     protected SelectionCacheType cacheType = null;
     protected Class<? extends SelectionFilter> moveFilterClass = null;
+    private Class<? extends SelectionProbabilityWeightFactory> moveProbabilityWeightFactoryClass = null;
     // TODO moveSorterClass
-    // TODO moveProbabilityWeightFactoryClass
 
     private Double fixedProbabilityWeight = null;
 
@@ -80,6 +83,14 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         this.moveFilterClass = moveFilterClass;
     }
 
+    public Class<? extends SelectionProbabilityWeightFactory> getMoveProbabilityWeightFactoryClass() {
+        return moveProbabilityWeightFactoryClass;
+    }
+
+    public void setMoveProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> moveProbabilityWeightFactoryClass) {
+        this.moveProbabilityWeightFactoryClass = moveProbabilityWeightFactoryClass;
+    }
+
     public Double getFixedProbabilityWeight() {
         return fixedProbabilityWeight;
     }
@@ -97,20 +108,18 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
 
-        boolean shuffled;
+        boolean shuffledOrProbability;
         if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-            shuffled = false;
+            shuffledOrProbability = false;
         } else {
-            if (resolvedCacheType.compareTo(SelectionCacheType.STEP) >= 0) {
-                shuffled = true;
+            if (resolvedCacheType.isCached()) {
+                shuffledOrProbability = true;
                 // the baseMoveSelector and lower should not be random as they are going to get cached completely
                 resolvedSelectionOrder = SelectionOrder.ORIGINAL;
             } else {
-                shuffled = false;
+                shuffledOrProbability = false;
             }
         }
-        // TODO && moveProbabilityWeightFactoryClass == null;
-        // TODO if probability and random==true then put random=false to entity and value selectors
 
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
                 resolvedSelectionOrder, resolvedCacheType);
@@ -139,12 +148,32 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             moveSelector = filteringMoveSelector;
         }
         // TODO moveSorterClass
-        // TODO moveProbabilityWeightFactoryClass
-        if (shuffled) {
+        if (moveProbabilityWeightFactoryClass != null) {
+            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") with moveProbabilityWeightFactoryClass ("
+                        + moveProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
+                        + resolvedSelectionOrder + ").");
+            }
+            SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
+            try {
+                entityProbabilityWeightFactory = moveProbabilityWeightFactoryClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("moveProbabilityWeightFactoryClass ("
+                        + moveProbabilityWeightFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("moveProbabilityWeightFactoryClass ("
+                        + moveProbabilityWeightFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+            moveSelector = new ProbabilityMoveSelector(moveSelector,
+                    resolvedCacheType, entityProbabilityWeightFactory);
+        } else if (shuffledOrProbability) {
             moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
         }
         // TODO this is broken because it introduces unneeded caching on level 2 and 3 deep
-//        if (!alreadyCached && resolvedCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
+//        if (!alreadyCached && resolvedCacheType.isCached()) {
 //            moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType);
 //        }
         return moveSelector;
@@ -160,6 +189,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         moveFilterClass = ConfigUtils.inheritOverwritableProperty(
                 moveFilterClass, inheritedConfig.getMoveFilterClass());
+        moveProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                moveProbabilityWeightFactoryClass, inheritedConfig.getMoveProbabilityWeightFactoryClass());
 
         fixedProbabilityWeight = ConfigUtils.inheritOverwritableProperty(
                 fixedProbabilityWeight, inheritedConfig.getFixedProbabilityWeight());

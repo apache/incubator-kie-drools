@@ -57,6 +57,10 @@ public class CachingMoveSelector extends AbstractMoveSelector implements Selecti
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
+    public MoveSelector getChildMoveSelector() {
+        return childMoveSelector;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
