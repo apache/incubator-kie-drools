@@ -397,6 +397,7 @@ public class FromNode extends LeftTupleSource
     }
 
     public void attach( BuildContext context ) {
+        betaConstraints.init(context, getType());
         this.tupleSource.addTupleSink( this, context );
         if (context == null) {
             return;

@@ -11288,4 +11288,27 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testFromNodeWithMultipleBetas() throws Exception {
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   $p : Person( $name : name, $addresses : addresses )\n" +
+                "   $c : Cheese( $type: type == $name )\n" +
+                "   $a : Address( street == $type, suburb == $name ) from $addresses\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("x");
+        p.addAddress(new Address("x", "x", "x"));
+        p.addAddress(new Address("y", "y", "y"));
+        ksession.insert(p);
+
+        ksession.insert(new Cheese("x"));
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
 }

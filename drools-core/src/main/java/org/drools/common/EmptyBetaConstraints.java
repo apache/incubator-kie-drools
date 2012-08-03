@@ -152,6 +152,6 @@ public class EmptyBetaConstraints
         return 0L;
     }
 
-    public void init(BuildContext context, BetaNode betaNode) { }
+    public void init(BuildContext context, short betaNodeType) { }
     public void initIndexes(int depth, short betaNodeType) { }
 }

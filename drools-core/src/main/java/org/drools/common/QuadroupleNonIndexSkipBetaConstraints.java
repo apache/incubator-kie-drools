@@ -53,8 +53,8 @@ public class QuadroupleNonIndexSkipBetaConstraints
         this.constraint3 = constraint[3];
     }
 
-    public void init(BuildContext context, BetaNode betaNode) {
-        constraints.init(context, betaNode);
+    public void init(BuildContext context, short betaNodeType) {
+        constraints.init(context, betaNodeType);
     }
 
     public void initIndexes(int depth, short betaNodeType) {

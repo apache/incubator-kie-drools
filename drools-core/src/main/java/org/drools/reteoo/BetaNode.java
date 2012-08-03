@@ -379,7 +379,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public void attach(BuildContext context) {
-        constraints.init(context, this);
+        constraints.init(context, getType());
         setUnificationJoin();
 
         this.rightInput.addObjectSink( this );

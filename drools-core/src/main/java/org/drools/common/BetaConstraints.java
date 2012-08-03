@@ -67,6 +67,6 @@ public interface BetaConstraints
 
     long getListenedPropertyMask(List<String> settableProperties);
 
-    void init(BuildContext context, BetaNode betaNode);
+    void init(BuildContext context, short betaNodeType);
     void initIndexes(int depth, short betaNodeType);
 }

@@ -48,8 +48,8 @@ public class DoubleNonIndexSkipBetaConstraints
         this.constraint1 = constraint[1];
     }
 
-    public void init(BuildContext context, BetaNode betaNode) {
-        constraints.init(context, betaNode);
+    public void init(BuildContext context, short betaNodeType) {
+        constraints.init(context, betaNodeType);
     }
 
     public void initIndexes(int depth, short betaNodeType) {

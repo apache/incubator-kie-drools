@@ -68,13 +68,13 @@ public class SingleBetaConstraints
         this.disableIndex = disableIndex;
     }
 
-    public void init(BuildContext context, BetaNode betaNode) {
+    public void init(BuildContext context, short betaNodeType) {
         RuleBaseConfiguration config = context.getRuleBase().getConfiguration();
 
         if ( (disableIndex) || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
             this.indexed = false;
         } else {
-            initIndexes(config.getCompositeKeyDepth(), betaNode.getType());
+            initIndexes(config.getCompositeKeyDepth(), betaNodeType);
         }
     }
 
