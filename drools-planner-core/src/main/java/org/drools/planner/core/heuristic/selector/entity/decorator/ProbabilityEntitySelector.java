@@ -90,7 +90,7 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
     }
 
     public boolean isNeverEnding() {
-        return false;
+        return true;
     }
 
     public long getSize() {
