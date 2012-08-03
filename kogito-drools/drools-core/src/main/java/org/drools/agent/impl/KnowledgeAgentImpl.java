@@ -55,6 +55,7 @@ import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.KnowledgeAgentEventSupport;
 import org.drools.event.io.ResourceChangeListener;
 import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.io.Resource;
@@ -88,23 +89,23 @@ public class KnowledgeAgentImpl
         KnowledgeAgent,
         ResourceChangeListener {
 
-    private String                         name;
-    private Set<Resource>                  resourceDirectories;
-    private KnowledgeBase                  kbase;
-    private ResourceChangeNotifierImpl     notifier;
-    private boolean                        newInstance;
-    private SystemEventListener            listener;
-    private boolean                        scanDirectories;
-    private boolean                        useKBaseClassLoaderForCompiling;
-    private LinkedBlockingQueue<ChangeSet> queue;
-    private Future<Boolean>                notificationDetectorExecutor;
-    private ChangeSetNotificationDetector  changeSetNotificationDetector;
-    private SemanticModules                semanticModules;
-    private final RegisteredResourceMap    registeredResources = new RegisteredResourceMap();
-    private Map<Resource, String>          dslResources        = new HashMap<Resource, String>();
-    private KnowledgeAgentEventSupport     eventSupport        = new KnowledgeAgentEventSupport();
-    private KnowledgeBuilderConfiguration  builderConfiguration;
-    private int                            validationTimeout   = 0;
+    private final String                            name;
+    private final Set<Resource>                     resourceDirectories;
+    private KnowledgeBase                           kbase;
+    private ResourceChangeNotifierImpl              notifier;
+    private boolean                                 newInstance;
+    private SystemEventListener                     listener;
+    private boolean                                 scanDirectories;
+    private boolean                                 useKBaseClassLoaderForCompiling;
+    private final LinkedBlockingQueue<ChangeSet>    queue;
+    private Future<Boolean>                         notificationDetectorExecutor;
+    private ChangeSetNotificationDetector           changeSetNotificationDetector;
+    private SemanticModules                         semanticModules;
+    private final RegisteredResourceMap             registeredResources = new RegisteredResourceMap();
+    private final Map<Resource, String>             dslResources        = new HashMap<Resource, String>();
+    private final KnowledgeAgentEventSupport        eventSupport        = new KnowledgeAgentEventSupport();
+    private final KnowledgeBuilderConfiguration     builderConfiguration;
+    private int                                     validationTimeout   = 0;
 
     /**
      * Default constructor for KnowledgeAgentImpl
@@ -437,7 +438,7 @@ public class KnowledgeAgentImpl
             reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),
                                    null );
         } else {
-            reader.setClassLoader( ((AbstractRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getConfiguration().getClassLoader(),
+            reader.setClassLoader( ((InternalRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getConfiguration().getClassLoader(),
                                    null );
         }
 
@@ -598,10 +599,7 @@ public class KnowledgeAgentImpl
 
     private boolean isNewDefinition(Resource resource,
                                     KnowledgeDefinition def) {
-        if ( !this.registeredResources.isResourceMapped( resource ) ) {
-            return true;
-        }
-        return !this.registeredResources.getDefinitions( resource ).contains( def );
+        return !this.registeredResources.isResourceMapped(resource) || !this.registeredResources.getDefinitions(resource).contains(def);
     }
 
     /**
@@ -746,7 +744,16 @@ public class KnowledgeAgentImpl
             Collection<KnowledgePackage> kpkgs = null;
             try {
                 is = resource.getInputStream();
-                Object object = DroolsStreamUtils.streamIn( is );
+                ClassLoader classLoader = null;
+                if ( this.isUseKBaseClassLoaderForCompiling() ) {
+                    classLoader = ((InternalRuleBase)((KnowledgeBaseImpl)this.kbase).ruleBase).getRootClassLoader();
+                } else if ( this.builderConfiguration != null ) {
+                    this.listener.warning("Even if a custom KnowledgeBuilderConfiguration was provided, "
+                            + " the Knowledge Agent will not use any specific classloader while deserializing packages."
+                            + " Expect ClassNotFoundExceptions.");
+                }
+
+                Object object = DroolsStreamUtils.streamIn( is, classLoader );
                 if ( object instanceof Collection ) {
                     kpkgs = (Collection<KnowledgePackage>) object;
                 } else if ( object instanceof KnowledgePackageImp ) {
@@ -953,7 +960,7 @@ public class KnowledgeAgentImpl
             for ( Resource resource : changeSetState.addedResources ) {
                 ///compile the new resource
                 Collection<KnowledgePackage> kpkgs = createPackageFromResource( resource, kBuilder );
-                if ( kpkgs == null || kpkgs.size() == 0 ) {
+                if ( kpkgs == null || kpkgs.isEmpty()) {
                     this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + resource );
                     continue;
                 }
@@ -978,7 +985,7 @@ public class KnowledgeAgentImpl
                                        Collection<KnowledgePackage> newPackages) {
         Set<String> newPkgNames = new HashSet<String>();
 
-        if ( newPackages == null || newPackages.size() == 0 ) {
+        if ( newPackages == null || newPackages.isEmpty()) {
             this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + entry.getKey() + ". Removing any existing knowledge definition of " + entry.getKey() );
         } else {
             for( KnowledgePackage kp : newPackages ) {
@@ -1065,7 +1072,7 @@ public class KnowledgeAgentImpl
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 
-        if ( changeSetState.addedResources.size() > 0 ) {
+        if ( !changeSetState.addedResources.isEmpty() ) {
             KnowledgeBuilder builder = createKBuilder();
             for ( Resource resource : changeSetState.addedResources ) {
                 Collection<KnowledgePackage> createdPackages = this.createPackageFromResource( resource, builder );
@@ -1192,12 +1199,11 @@ public class KnowledgeAgentImpl
 
         boolean isNewResource = !this.registeredResources.isResourceMapped( resource );
 
-        boolean isNewDefinition = true;
-
         if ( resource instanceof ClassPathResource && ((ClassPathResource) resource).getClassLoader() == null ) {
-            ((ClassPathResource) resource).setClassLoader( ((InternalRuleBase) ((KnowledgeBaseImpl) kbase).getRuleBase()).getRootClassLoader() );
+            ((ClassPathResource) resource).setClassLoader( ((InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).getRootClassLoader() );
         }
 
+        boolean isNewDefinition = true;
         if ( definition != null ) {
             isNewDefinition = this.registeredResources.putDefinition( resource,
                                                                       definition );
@@ -1242,10 +1248,10 @@ public class KnowledgeAgentImpl
             implements
             Runnable {
 
-        private LinkedBlockingQueue<ChangeSet> queue;
-        private volatile boolean               monitor;
-        private KnowledgeAgentImpl             kagent;
-        private SystemEventListener            listener;
+        private final LinkedBlockingQueue<ChangeSet> queue;
+        private volatile boolean                     monitor;
+        private final KnowledgeAgentImpl             kagent;
+        private final SystemEventListener            listener;
 
         public ChangeSetNotificationDetector(KnowledgeAgentImpl kagent,
                                              LinkedBlockingQueue<ChangeSet> queue,
@@ -1285,7 +1291,7 @@ public class KnowledgeAgentImpl
 
     private static class RegisteredResourceMap {
 
-        private Map<Resource, Set<KnowledgeDefinition>> map = new HashMap<Resource, Set<KnowledgeDefinition>>();
+        private final Map<Resource, Set<KnowledgeDefinition>> map = new HashMap<Resource, Set<KnowledgeDefinition>>();
 
         /**
          * Creates a new entry for resource with an empty Set<KnowledgeDefinition>.
@@ -1414,7 +1420,7 @@ public class KnowledgeAgentImpl
             //all kbase's ksessions must be disposed
             if ( this.kbase != null ) {
                 Collection<StatefulKnowledgeSession> statefulSessions = this.kbase.getStatefulKnowledgeSessions();
-                if ( statefulSessions != null && statefulSessions.size() > 0 ) {
+                if ( statefulSessions != null && !statefulSessions.isEmpty()) {
                     String message = "The kbase still contains " + statefulSessions.size() + " stateful sessions. You must dispose them first.";
                     this.listener.warning( message );
                     throw new IllegalStateException( message );
