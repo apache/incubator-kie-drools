@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
@@ -64,17 +65,8 @@ public class FilteringMoveSelectorTest {
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
-        MoveSelector childMoveSelector = mock(MoveSelector.class);
-        final List<Move> moveList = Arrays.<Move>asList(
+        MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
-        when(childMoveSelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return moveList.iterator();
-            }
-        });
-        when(childMoveSelector.isContinuous()).thenReturn(false);
-        when(childMoveSelector.isNeverEnding()).thenReturn(false);
-        when(childMoveSelector.getSize()).thenReturn((long) moveList.size());
 
         SelectionFilter<DummyMove> entityFilter = new SelectionFilter<DummyMove>() {
             public boolean accept(ScoreDirector scoreDirector, DummyMove move) {

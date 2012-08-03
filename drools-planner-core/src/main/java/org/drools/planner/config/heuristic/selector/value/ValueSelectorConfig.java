@@ -139,9 +139,8 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + valueProbabilityWeightFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
-            ProbabilityValueSelector probabilityValueSelector = new ProbabilityValueSelector(valueSelector,
+            valueSelector = new ProbabilityValueSelector(valueSelector,
                     resolvedCacheType, valueProbabilityWeightFactory);
-            valueSelector = probabilityValueSelector;
         }
         return valueSelector;
     }

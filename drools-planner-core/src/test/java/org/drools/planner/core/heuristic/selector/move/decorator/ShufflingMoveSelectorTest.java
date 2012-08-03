@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
@@ -54,16 +55,8 @@ public class ShufflingMoveSelectorTest {
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
-        MoveSelector childMoveSelector = mock(MoveSelector.class);
-        final List<Move> moveList = Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
-        when(childMoveSelector.iterator()).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return moveList.iterator();
-            }
-        });
-        when(childMoveSelector.isContinuous()).thenReturn(false);
-        when(childMoveSelector.isNeverEnding()).thenReturn(false);
-        when(childMoveSelector.getSize()).thenReturn((long) moveList.size());
+        MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
+                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
 
         ShufflingMoveSelector moveSelector = new ShufflingMoveSelector(childMoveSelector, cacheType);
         verify(childMoveSelector, times(1)).isNeverEnding();

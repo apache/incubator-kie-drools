@@ -24,9 +24,11 @@ import java.util.ListIterator;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
 import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.drools.planner.core.testdata.domain.TestdataChainedObject;
@@ -67,19 +69,19 @@ public class SelectorTestUtils {
         EntitySelector entitySelector = mock(EntitySelector.class);
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
         final List<Object> entityList = Arrays.<Object>asList(entities);
-        when(entitySelector.iterator()).thenAnswer(new Answer<Object>() {
+        when(entitySelector.iterator()).thenAnswer(new Answer<Iterator<Object>>() {
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return entityList.iterator();
             }
         });
-        when(entitySelector.listIterator()).thenAnswer(new Answer<Object>() {
+        when(entitySelector.listIterator()).thenAnswer(new Answer<ListIterator<Object>>() {
             public ListIterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return entityList.listIterator();
             }
         });
         for (int i = 0; i < entityList.size(); i++) {
             final int index = i;
-            when(entitySelector.listIterator(index)).thenAnswer(new Answer<Object>() {
+            when(entitySelector.listIterator(index)).thenAnswer(new Answer<ListIterator<Object>>() {
                 public ListIterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                     return entityList.listIterator(index);
                 }
@@ -106,7 +108,7 @@ public class SelectorTestUtils {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         final List<Object> valueList = Arrays.<Object>asList(values);
-        when(valueSelector.iterator()).thenAnswer(new Answer<Object>() {
+        when(valueSelector.iterator()).thenAnswer(new Answer<Iterator<Object>>() {
             public ValueIterator answer(InvocationOnMock invocation) throws Throwable {
                 return new IteratorToValueIteratorBridge(valueList.iterator());
             }
@@ -115,6 +117,21 @@ public class SelectorTestUtils {
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize()).thenReturn((long) valueList.size());
         return valueSelector;
+    }
+
+    public static MoveSelector mockMoveSelector(Class moveClass,
+            Move... moves) {
+        MoveSelector moveSelector = mock(MoveSelector.class);
+        final List<Move> moveList = Arrays.<Move>asList(moves);
+        when(moveSelector.iterator()).thenAnswer(new Answer<Iterator<Move>>() {
+            public Iterator<Move> answer(InvocationOnMock invocation) throws Throwable {
+                return moveList.iterator();
+            }
+        });
+        when(moveSelector.isContinuous()).thenReturn(false);
+        when(moveSelector.isNeverEnding()).thenReturn(false);
+        when(moveSelector.getSize()).thenReturn((long) moveList.size());
+        return moveSelector;
     }
 
     public static void mockMethodGetTrailingEntity(ScoreDirector scoreDirector,
