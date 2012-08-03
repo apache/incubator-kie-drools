@@ -68,20 +68,29 @@ public class PillarSelectorConfig extends SelectorConfig {
     // Builder methods
     // ************************************************************************
 
+    /**
+     * @param environmentMode never null
+     * @param solutionDescriptor never null
+     * @param inheritedSelectionOrder never null
+     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
+     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     * and less would be pointless.
+     * @return never null
+     */
     public PillarSelector buildPillarSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
-        if (resolvedCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-            throw new IllegalArgumentException("The subChainChangeMoveSelector's cacheType (" + resolvedCacheType
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType) {
+        if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
+            throw new IllegalArgumentException("The subChainChangeMoveSelector's minimumCacheType (" + minimumCacheType
                     + ") must not be higher than " + SelectionCacheType.STEP
-                    + " because the chains change every step.");
+                    + " because the pillars change every step.");
         }
         // EntitySelector uses SelectionOrder.ORIGINAL because a SameValuePillarSelector STEP caches the values
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
-                SelectionOrder.ORIGINAL, resolvedCacheType);
+                SelectionOrder.ORIGINAL, minimumCacheType);
         Collection<PlanningVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getPlanningVariableDescriptors();
         return new SameValuePillarSelector(entitySelector, variableDescriptors,
-                resolvedSelectionOrder == SelectionOrder.RANDOM);
+                inheritedSelectionOrder == SelectionOrder.RANDOM);
     }
 
     public void inherit(PillarSelectorConfig inheritedConfig) {

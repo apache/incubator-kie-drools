@@ -82,12 +82,12 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SubChainSelector subChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
-                solutionDescriptor, resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
+                solutionDescriptor, resolvedSelectionOrder, minimumCacheType, entityDescriptor);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, resolvedCacheType, entityDescriptor);
+                resolvedSelectionOrder, minimumCacheType, entityDescriptor);
         return new SubChainChangeMoveSelector(subChainSelector, valueSelector,
                 resolvedSelectionOrder == SelectionOrder.RANDOM,
                 selectReversingMoveToo == null ? true : selectReversingMoveToo);

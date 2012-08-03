@@ -64,12 +64,12 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
         List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorList.add(
                     moveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
-                            resolvedSelectionOrder, resolvedCacheType));
+                            resolvedSelectionOrder, minimumCacheType));
         }
 
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;

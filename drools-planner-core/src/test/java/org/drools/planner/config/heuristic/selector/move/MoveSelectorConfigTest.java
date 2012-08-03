@@ -41,9 +41,9 @@ public class MoveSelectorConfigTest {
             @Override
             protected MoveSelector buildBaseMoveSelector(
                     EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-                    SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+                    SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
                 assertEquals(SelectionOrder.ORIGINAL, resolvedSelectionOrder);
-                assertEquals(SelectionCacheType.STEP, resolvedCacheType);
+                assertEquals(SelectionCacheType.STEP, minimumCacheType);
                 return baseMoveSelector;
             }
         };
@@ -63,9 +63,9 @@ public class MoveSelectorConfigTest {
             @Override
             protected MoveSelector buildBaseMoveSelector(
                     EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-                    SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+                    SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
                 assertEquals(SelectionOrder.ORIGINAL, resolvedSelectionOrder);
-                assertEquals(SelectionCacheType.JUST_IN_TIME, resolvedCacheType);
+                assertEquals(SelectionCacheType.JUST_IN_TIME, minimumCacheType);
                 return baseMoveSelector;
             }
         };
@@ -83,9 +83,9 @@ public class MoveSelectorConfigTest {
             @Override
             protected MoveSelector buildBaseMoveSelector(
                     EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-                    SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+                    SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
                 assertEquals(SelectionOrder.ORIGINAL, resolvedSelectionOrder);
-                assertEquals(SelectionCacheType.STEP, resolvedCacheType);
+                assertEquals(SelectionCacheType.STEP, minimumCacheType);
                 return baseMoveSelector;
             }
         };
@@ -105,9 +105,9 @@ public class MoveSelectorConfigTest {
             @Override
             protected MoveSelector buildBaseMoveSelector(
                     EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-                    SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+                    SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
                 assertEquals(SelectionOrder.RANDOM, resolvedSelectionOrder);
-                assertEquals(SelectionCacheType.JUST_IN_TIME, resolvedCacheType);
+                assertEquals(SelectionCacheType.JUST_IN_TIME, minimumCacheType);
                 return baseMoveSelector;
             }
         };

@@ -23,7 +23,7 @@ import org.drools.planner.config.heuristic.selector.SelectorConfig;
  */
 public enum SelectionOrder {
     /**
-     * Inherit the value from the parent {@value SelectorConfig}.
+     * Inherit the value from the parent {@value SelectorConfig}. This is the default.
      * If there is no such parent, then it defaults to {@link #RANDOM}.
      */
     INHERIT,

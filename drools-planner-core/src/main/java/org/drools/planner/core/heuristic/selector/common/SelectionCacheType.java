@@ -16,13 +16,12 @@
 
 package org.drools.planner.core.heuristic.selector.common;
 
+/**
+ * There is no INHERIT by design because 2 sequential caches provides no benefit, only memory overhead.
+ */
 public enum SelectionCacheType {
     /**
-     * Inherit the value from the parent.
-     */
-    INHERIT,
-    /**
-     * Just in time, when the move is created. This is effectively no caching.
+     * Just in time, when the move is created. This is effectively no caching. This is the default for most selectors.
      */
     JUST_IN_TIME,
     /**
@@ -38,18 +37,20 @@ public enum SelectionCacheType {
      */
     SOLVER;
 
-    public static SelectionCacheType resolve(SelectionCacheType cacheType, SelectionCacheType inheritedCacheType) {
-        if (cacheType == null || cacheType == INHERIT) {
-            return inheritedCacheType;
+    public static SelectionCacheType resolve(SelectionCacheType cacheType, SelectionCacheType minimumCacheType) {
+        if (cacheType == null) {
+            return JUST_IN_TIME;
         } else {
+            if (cacheType != JUST_IN_TIME && cacheType.compareTo(minimumCacheType) < 0) {
+                throw new IllegalArgumentException("The cacheType (" + cacheType
+                        + ") is wasteful because an ancestor has a higher cacheType (" + minimumCacheType + ").");
+            }
             return cacheType;
         }
     }
 
     public boolean isCached() {
         switch (this) {
-            case  INHERIT:
-                throw new IllegalStateException("The cacheType (" + this + ") must be resolved at this point.");
             case JUST_IN_TIME:
                 return false;
             case STEP:
@@ -63,6 +64,14 @@ public enum SelectionCacheType {
 
     public boolean isNotCached() {
         return !isCached();
+    }
+
+    public static SelectionCacheType max(SelectionCacheType a, SelectionCacheType b) {
+        if (a.compareTo(b) >= 0) {
+            return a;
+        } else {
+            return b;
+        }
     }
 
 }

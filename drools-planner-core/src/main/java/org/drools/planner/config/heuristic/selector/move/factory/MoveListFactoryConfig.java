@@ -45,7 +45,7 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
         MoveListFactory moveListFactory;
         try {
             moveListFactory = moveListFactoryClass.newInstance();
@@ -58,11 +58,12 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
                     + moveListFactoryClass.getName()
                     + ") does not have a public no-arg constructor", e);
         }
-        if (resolvedCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-            // cacheType upgrades to SelectionCacheType.STEP because JIT is pointless
-            resolvedCacheType = SelectionCacheType.STEP;
+        // MoveListFactoryToMoveSelectorBridge caches by design, so they use the minimumCacheType
+        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+            // cacheType upgrades to SelectionCacheType.STEP because JIT is not supported
+            minimumCacheType = SelectionCacheType.STEP;
         }
-        return new MoveListFactoryToMoveSelectorBridge(moveListFactory, resolvedCacheType);
+        return new MoveListFactoryToMoveSelectorBridge(moveListFactory, minimumCacheType);
     }
 
     public void inherit(MoveListFactoryConfig inheritedConfig) {

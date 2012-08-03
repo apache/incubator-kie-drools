@@ -88,27 +88,38 @@ public class EntitySelectorConfig extends SelectorConfig {
     // Builder methods
     // ************************************************************************
 
+    /**
+     * @param environmentMode never null
+     * @param solutionDescriptor never null
+     * @param inheritedSelectionOrder never null
+     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
+     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     * and less would be pointless.
+     * @return never null
+     */
     public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType) {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
+        minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && entityProbabilityWeightFactoryClass == null;
-        if (resolvedCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-            // cacheType upgrades to SelectionCacheType.STEP because JIT is pointless
-            resolvedCacheType = SelectionCacheType.STEP;
+        // FromSolutionEntitySelector caches by design, so they use the minimumCacheType
+        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+            // cacheType upgrades to SelectionCacheType.STEP because JIT is not supported
+            minimumCacheType = SelectionCacheType.STEP;
         }
-        if (resolvedCacheType == SelectionCacheType.SOLVER) {
+        if (minimumCacheType == SelectionCacheType.SOLVER) {
             // TODO Solver cached entities are not compatible with DroolsScoreCalculator
             // because between phases the entities get cloned and the WorkingMemory contains those clones afterwards
             // https://issues.jboss.org/browse/JBRULES-3557
-            throw new IllegalArgumentException("The cacheType (" + resolvedCacheType
+            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
         EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
-                resolvedCacheType);
+                minimumCacheType);
 
         if (entityFilterClass != null) {
             SelectionFilter entityFilter;
@@ -127,8 +138,6 @@ public class EntitySelectorConfig extends SelectorConfig {
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringEntitySelector = new JustInTimeFilteringEntitySelector(entitySelector,
                         resolvedCacheType, entityFilter);
-                throw new IllegalStateException("Impossible situation: the resolvedCacheType (" + resolvedCacheType
-                        + ") should have already been upgraded to " + SelectionCacheType.STEP + ".");
             } else {
                 filteringEntitySelector = new CachingFilteringEntitySelector(entitySelector,
                         resolvedCacheType, entityFilter);

@@ -78,8 +78,18 @@ public class ValueSelectorConfig extends SelectorConfig {
     // Builder methods
     // ************************************************************************
 
+    /**
+     * @param environmentMode never null
+     * @param solutionDescriptor never null
+     * @param inheritedSelectionOrder never null
+     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
+     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     * and less would be pointless.
+     * @param entityDescriptor never null
+     * @return never null
+     */
     public ValueSelector buildValueSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType,
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType,
             PlanningEntityDescriptor entityDescriptor) {
         PlanningVariableDescriptor variableDescriptor;
         if (planningVariableName != null) {
@@ -108,15 +118,17 @@ public class ValueSelectorConfig extends SelectorConfig {
         }
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
+        minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && valueProbabilityWeightFactoryClass == null;
-        if (resolvedCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
+        // FromSolutionPropertyValueSelector caches by design, so they use the minimumCacheType
+        if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
             // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-            resolvedCacheType = SelectionCacheType.PHASE;
+            minimumCacheType = SelectionCacheType.PHASE;
         }
         ValueSelector valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
-                resolvedCacheType);
+                minimumCacheType);
 
         // TODO filterclass
 

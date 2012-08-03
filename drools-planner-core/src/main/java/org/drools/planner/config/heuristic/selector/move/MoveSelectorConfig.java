@@ -103,10 +103,20 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     // Builder methods
     // ************************************************************************
 
+    /**
+     * @param environmentMode never null
+     * @param solutionDescriptor never null
+     * @param inheritedSelectionOrder never null
+     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
+     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     * and less would be pointless.
+     * @return never null
+     */
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType inheritedCacheType) {
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType) {
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, inheritedCacheType);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
+        minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
 
         boolean shuffledOrProbability;
         if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
@@ -122,7 +132,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         }
 
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, resolvedCacheType);
+                resolvedSelectionOrder, minimumCacheType);
 
         if (moveFilterClass != null) {
             SelectionFilter moveFilter;
@@ -179,9 +189,18 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         return moveSelector;
     }
 
+    /**
+     * @param environmentMode never null
+     * @param solutionDescriptor never null
+     * @param resolvedSelectionOrder never null
+     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
+     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     * and less would be pointless.
+     * @return never null
+     */
     protected abstract MoveSelector buildBaseMoveSelector(
             EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType);
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType);
 
     protected void inherit(MoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

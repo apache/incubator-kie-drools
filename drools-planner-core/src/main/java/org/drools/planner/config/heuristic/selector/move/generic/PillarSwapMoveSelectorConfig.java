@@ -59,13 +59,13 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
         PillarSelector leftPillarSelector = pillarSelectorConfig.buildPillarSelector(
-                environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType);
+                environmentMode, solutionDescriptor, resolvedSelectionOrder, minimumCacheType);
         PillarSelectorConfig rightPillarSelectorConfig = secondaryPillarSelectorConfig == null
                 ? pillarSelectorConfig : secondaryPillarSelectorConfig;
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(
-                environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType);
+                environmentMode, solutionDescriptor, resolvedSelectionOrder, minimumCacheType);
         Collection<PlanningVariableDescriptor> variableDescriptors = leftPillarSelector.getEntityDescriptor()
                 .getPlanningVariableDescriptors();
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptors,

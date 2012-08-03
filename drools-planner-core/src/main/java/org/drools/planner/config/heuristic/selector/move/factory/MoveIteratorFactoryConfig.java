@@ -45,7 +45,7 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
         MoveIteratorFactory moveIteratorFactory;
         try {
             moveIteratorFactory = moveIteratorFactoryClass.newInstance();

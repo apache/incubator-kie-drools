@@ -74,18 +74,28 @@ public class SubChainSelectorConfig extends SelectorConfig {
     // Builder methods
     // ************************************************************************
 
+    /**
+     * @param environmentMode never null
+     * @param solutionDescriptor never null
+     * @param inheritedSelectionOrder never null
+     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
+     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     * and less would be pointless.
+     * @param entityDescriptor never null
+     * @return never null
+     */
     public SubChainSelector buildSubChainSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType,
+            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType,
             PlanningEntityDescriptor entityDescriptor) {
-        if (resolvedCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-            throw new IllegalArgumentException("The subChainChangeMoveSelector's cacheType (" + resolvedCacheType
+        if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
+            throw new IllegalArgumentException("The subChainChangeMoveSelector's minimumCacheType (" + minimumCacheType
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the chains change every step.");
         }
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
-                SelectionOrder.ORIGINAL, resolvedCacheType, entityDescriptor);
-        return new DefaultSubChainSelector(valueSelector, resolvedSelectionOrder == SelectionOrder.RANDOM,
+                SelectionOrder.ORIGINAL, minimumCacheType, entityDescriptor);
+        return new DefaultSubChainSelector(valueSelector, inheritedSelectionOrder == SelectionOrder.RANDOM,
                 minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize);
     }
 

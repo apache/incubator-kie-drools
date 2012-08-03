@@ -59,13 +59,13 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType resolvedCacheType) {
+            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
         EntitySelector leftEntitySelector = entitySelectorConfig.buildEntitySelector(
-                environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType);
+                environmentMode, solutionDescriptor, resolvedSelectionOrder, minimumCacheType);
         EntitySelectorConfig rightEntitySelectorConfig = secondaryEntitySelectorConfig == null
                 ? entitySelectorConfig : secondaryEntitySelectorConfig;
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
-                        environmentMode, solutionDescriptor, resolvedSelectionOrder, resolvedCacheType);
+                        environmentMode, solutionDescriptor, resolvedSelectionOrder, minimumCacheType);
         Collection<PlanningVariableDescriptor> variableDescriptors = leftEntitySelector.getEntityDescriptor()
                 .getPlanningVariableDescriptors();
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptors,

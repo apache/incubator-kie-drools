@@ -41,6 +41,10 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
     public MoveListFactoryToMoveSelectorBridge(MoveListFactory moveListFactory, SelectionCacheType cacheType) {
         this.moveListFactory = moveListFactory;
         this.cacheType = cacheType;
+        if (cacheType.isNotCached()) {
+            throw new IllegalArgumentException("The cacheType (" + cacheType
+                    + ") is not supported on the class (" + getClass().getName() + ").");
+        }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
