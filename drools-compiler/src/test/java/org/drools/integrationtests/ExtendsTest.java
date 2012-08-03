@@ -30,11 +30,13 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.EventFactHandle;
 import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
 
 /**
@@ -479,6 +481,91 @@ public class ExtendsTest extends CommonTestMethodBase {
 
         assertEquals( 3, kSession.fireAllRules() );
     }
+
+
+
+
+    @Test
+    public void testInheritAnnotationsInOtherPackage() throws Exception {
+
+        String s1 = "package org.drools.test.pack1;\n" +
+                "\n" +
+                "declare Event\n" +
+                "@role(event)" +
+                "  id    : int\n" +
+                "end\n";
+
+        String s2 = "package org.drools.test.pack2;\n" +
+                "\n" +
+                "import org.drools.test.pack1.Event;\n" +
+                "\n" +
+                "declare Event end\n" +
+                "\n" +
+                "declare SubEvent extends Event\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new SubEvent( 1 ) );\n" +
+                "  insert( new SubEvent( 2 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Seq\"\n" +
+                "when\n" +
+                "  $s1 : SubEvent()\n" +
+                "  $s2 : SubEvent( this after $s1 )\n" +
+                "then\n" +
+                "  System.out.println( $s1 + \" after \" + $s1 );\n" +
+                "end \n" +
+                "\n" +
+                "rule \"Seq 2 \"\n" +
+                "when\n" +
+                "  $s1 : Event()\n" +
+                "  $s2 : Event( this after $s1 )\n" +
+                "then\n" +
+                "  System.out.println( $s1 + \" after II \" + $s1 );\n" +
+                "end";
+
+
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder.hasErrors() ) {
+            fail( kBuilder.getErrors().toString() );
+        }
+        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+
+        KnowledgeBuilder kBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
+        kBuilder2.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder2.hasErrors() ) {
+            fail( kBuilder2.getErrors().toString() );
+        }
+
+//        THIS IS NOT NECESSARY SINCE WE'RE ALREADY USING A KBASE-DRIVEN BUILDER?
+//        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
+
+        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+
+        int n = kSession.fireAllRules();
+
+        for ( Object o : kSession.getObjects() ) {
+            FactHandle h = kSession.getFactHandle( o );
+            assertTrue( h instanceof EventFactHandle );
+        }
+
+        assertEquals( 3, n );
+
+    }
+
+
+
 
 }
 
