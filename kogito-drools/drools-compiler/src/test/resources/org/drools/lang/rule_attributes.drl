@@ -2,7 +2,7 @@
 
 
 rule simple_rule 
-        #attributes keywork (and colon) is totally optional
+        // attributes keywork (and colon) is totally optional
         salience 42
         agenda-group "my_group"
         no-loop

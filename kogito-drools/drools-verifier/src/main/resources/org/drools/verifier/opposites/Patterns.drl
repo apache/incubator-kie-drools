@@ -58,11 +58,11 @@ rule "Opposite Patterns"
             items contains $opposites.right
         )
 
-        # Check that these facts do not already exist
+        // Check that these facts do not already exist
         not Opposites( left == $pp1, right == $pp2 )
         not Opposites( left == $pp2, right == $pp1 )
 
-        # Check if all the restrictions in $pp1 have an opposite in $pp2.
+        // Check if all the restrictions in $pp1 have an opposite in $pp2.
         forall (
             $r1 :Restriction(
                     this memberOf $pp1.items
@@ -74,7 +74,7 @@ rule "Opposite Patterns"
             )
         )
 
-        # Check if all the restrictions in $pp2 have an opposite in $pp1.
+        // Check if all the restrictions in $pp2 have an opposite in $pp1.
         forall (
             $r1 :Restriction(
                     this memberOf $pp2.items
@@ -86,6 +86,6 @@ rule "Opposite Patterns"
             )
         )
     then
-        # These two pattern possibilities are opposite.
+        // These two pattern possibilities are opposite.
         insert( new Opposites( $pp1, $pp2 ));
 end

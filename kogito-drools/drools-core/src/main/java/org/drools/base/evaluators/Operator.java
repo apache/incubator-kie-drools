@@ -73,7 +73,6 @@ public class Operator
     public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
                                                                                      true );
 
-
     /**
      * Creates a new Operator instance for the given parameters,
      * adds it to the registry and return it

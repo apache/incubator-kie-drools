@@ -56,10 +56,10 @@ rule "Pattern that is always false"
     when
         $p :Pattern()
 
-        # Check that there is at least one pattern possibility.
+        // Check that there is at least one pattern possibility.
         exists SubPattern( patternPath == $p.path )
 
-        # All the pattern possibilities for pattern need to be in conflict
+        // All the pattern possibilities for pattern need to be in conflict
         forall(
             $pp :SubPattern(
                 patternPath == $p.path
@@ -76,7 +76,7 @@ rule "Pattern that is always false"
         Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
-        # Report an error
+        // Report an error
         result.add( new VerifierMessage(
                                 impactedRules,
                                 Severity.ERROR,

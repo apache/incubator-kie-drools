@@ -55,7 +55,7 @@ rule "Rule that is always false"
     when
         $r :VerifierRule()
 
-        # All the rule possibilities for rule need to be in conflict
+        // All the rule possibilities for rule need to be in conflict
         forall(
             $rp :SubRule(
                 rulePath == $r.path
@@ -70,7 +70,7 @@ rule "Rule that is always false"
         Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
-        # Report an error
+        // Report an error
         result.add( new VerifierMessage(
                                 impactedRules,
                                 Severity.ERROR,

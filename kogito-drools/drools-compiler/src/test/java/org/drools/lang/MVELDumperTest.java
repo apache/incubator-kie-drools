@@ -7,6 +7,7 @@ import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.MVELDumper.MVELDumperContext;
+import org.drools.lang.descr.AtomicExprDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.junit.Before;
@@ -283,6 +284,27 @@ public class MVELDumperTest {
                       bind.getVariable() );
         assertEquals( "age",
                       bind.getExpression() );
+    }
+
+    @Test
+    public void testProcessInlineCast() throws Exception {
+        String expr = "field1#Class.field2";
+        String expectedInstanceof = "field1 instanceof Class && ";
+        String expectedcasted = "((Class)field1).field2";
+        AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
+        String[] instanceofAndCastedExpr = dumper.processInlineCast( expr, atomicExpr, null );
+        assertEquals(expectedInstanceof, instanceofAndCastedExpr[0]);
+        assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
+        assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
+
+        expr = "field1#Class1.field2#Class2.field3";
+        expectedInstanceof = "field1 instanceof Class1 && ((Class1)field1).field2 instanceof Class2 && ";
+        expectedcasted = "((Class2)((Class1)field1).field2).field3";
+        atomicExpr = new AtomicExprDescr(expr);
+        instanceofAndCastedExpr = dumper.processInlineCast( expr, atomicExpr, null );
+        assertEquals(expectedInstanceof, instanceofAndCastedExpr[0]);
+        assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
+        assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {

@@ -68,7 +68,7 @@ rule "Redundant consiquence 3a"
 
         c.add( "c" );
 
-        # comment
+        // comment
 
         c.add( "d" );
         c.add( "e" );
@@ -84,7 +84,7 @@ rule "Redundant consiquence 3b"
         c.add( "a" );
         c.add( "b" );
 
-        # comment
+        // comment
 
         c.add( "c" );
 

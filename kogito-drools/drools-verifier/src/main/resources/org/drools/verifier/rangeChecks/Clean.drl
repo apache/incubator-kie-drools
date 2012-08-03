@@ -101,13 +101,13 @@ end
 rule "Remove useless integer gaps lesser or lesser and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        # Covered x > 10
+        // Covered x > 10
         $lower :NumberRestriction(
             valueType == Field.INT,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
         )
 
-        # Covered x < 100
+        // Covered x < 100
         $higher :NumberRestriction(
             fieldPath == $lower.fieldPath,
             value > $lower.value,
@@ -115,7 +115,7 @@ rule "Remove useless integer gaps lesser or lesser and equal"
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
         )
 
-        # No "<" or "<=" restrictions between these two
+        // No "<" or "<=" restrictions between these two
         not NumberRestriction(
             ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
             fieldPath == $lower.fieldPath,
@@ -124,7 +124,7 @@ rule "Remove useless integer gaps lesser or lesser and equal"
             value < $higher.value
         )
 
-        # gap ( x < 50 ) or ( x > 50 ) or ( x <= 70 )
+        // gap ( x < 50 ) or ( x > 50 ) or ( x <= 70 )
         $gap :Gap(
 //            restriction.fieldPath == $lower.fieldPath,
 //            restriction.patternIsNot == $lower.patternIsNot,
@@ -155,13 +155,13 @@ end
 rule "Remove useless integer gaps greater or greater and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        # Covered x > 10
+        // Covered x > 10
         $lower :NumberRestriction(
             valueType == Field.INT,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
         )
 
-        # Covered x < 100
+        // Covered x < 100
         $higher :NumberRestriction(
             fieldPath == $lower.fieldPath,
             value > $lower.value,
@@ -169,7 +169,7 @@ rule "Remove useless integer gaps greater or greater and equal"
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
         )
 
-        # No "<" or "<=" restrictions between these two
+        // No "<" or "<=" restrictions between these two
         not NumberRestriction(
             ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
             fieldPath == $lower.fieldPath,
@@ -178,7 +178,7 @@ rule "Remove useless integer gaps greater or greater and equal"
             value < $higher.value
         )
 
-        # gap ( x < 50 ) or ( x > 50 ) or ( x >= 70 )
+        // gap ( x < 50 ) or ( x > 50 ) or ( x >= 70 )
         $gap :Gap(
             restriction.fieldPath == $lower.fieldPath,
             restriction.patternIsNot == $lower.patternIsNot,
@@ -208,13 +208,13 @@ end
 rule "Remove useless double gaps lesser or lesser and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        # Covered x > 10.0
+        // Covered x > 10.0
         $lower :NumberRestriction(
             valueType == Field.DOUBLE,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
         )
 
-        # Covered x < 100.0
+        // Covered x < 100.0
         $higher :NumberRestriction(
             fieldPath == $lower.fieldPath,
             value > $lower.value,
@@ -222,7 +222,7 @@ rule "Remove useless double gaps lesser or lesser and equal"
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
         )
 
-        # No "<" or "<=" restrictions between these two
+        // No "<" or "<=" restrictions between these two
         not NumberRestriction(
             ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
             fieldPath == $lower.fieldPath,
@@ -231,7 +231,7 @@ rule "Remove useless double gaps lesser or lesser and equal"
             value < $higher.value
         )
 
-        # gap ( x < 50.0 ) or ( x > 50.0 ) or ( x <= 70.0 )
+        // gap ( x < 50.0 ) or ( x > 50.0 ) or ( x <= 70.0 )
         $gap :Gap(
             restriction.fieldPath == $lower.fieldPath,
             restriction.patternIsNot == $lower.patternIsNot,
@@ -261,13 +261,13 @@ end
 rule "Remove useless double gaps greater or greater and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        # Covered x > 10.0
+        // Covered x > 10.0
         $lower :NumberRestriction(
             valueType == Field.DOUBLE,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
         )
 
-        # Covered x < 100.0
+        // Covered x < 100.0
         $higher :NumberRestriction(
             fieldPath == $lower.fieldPath,
             value > $lower.value,
@@ -275,7 +275,7 @@ rule "Remove useless double gaps greater or greater and equal"
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
         )
 
-        # No "<" or "<=" restrictions between these two
+        // No "<" or "<=" restrictions between these two
         not NumberRestriction(
             ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
             fieldPath == $lower.fieldPath,
@@ -284,7 +284,7 @@ rule "Remove useless double gaps greater or greater and equal"
             value < $higher.value
         )
 
-        # gap ( x < 50.0 ) or ( x > 50.0 ) or ( x >= 70.0 )
+        // gap ( x < 50.0 ) or ( x > 50.0 ) or ( x >= 70.0 )
         $gap :Gap(
             restriction.fieldPath == $lower.fieldPath,
             restriction.patternIsNot == $lower.patternIsNot,
@@ -314,13 +314,13 @@ end
 rule "Remove useless date gaps lesser or lesser and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        # Covered x > "01-Oct-2007"
+        // Covered x > "01-Oct-2007"
         $lower :DateRestriction(
             valueType == Field.DATE,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
         )
 
-        # Covered x < "20-Oct-2007"
+        // Covered x < "20-Oct-2007"
         $higher :DateRestriction(
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
@@ -328,7 +328,7 @@ rule "Remove useless date gaps lesser or lesser and equal"
             eval( value.after( $lower.getValue() ) )
         )
 
-        # No "<" or "<=" restrictions between these two
+        // No "<" or "<=" restrictions between these two
         not DateRestriction(
             ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
             fieldPath == $lower.fieldPath,
@@ -337,7 +337,7 @@ rule "Remove useless date gaps lesser or lesser and equal"
             eval( value.before( $higher.getValue() ) )
         )
 
-        # gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x <= "15-Oct-2007" )
+        // gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x <= "15-Oct-2007" )
         $gap :Gap(
             restriction.fieldPath == $lower.fieldPath,
             restriction.patternIsNot == $lower.patternIsNot,
@@ -368,13 +368,13 @@ end
 rule "Remove useless date gaps greater or greater and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        # Covered x > "01-Oct-2007"
+        // Covered x > "01-Oct-2007"
         $lower :DateRestriction(
             valueType == Field.DATE,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
         )
 
-        # Covered x < "20-Oct-2007"
+        // Covered x < "20-Oct-2007"
         $higher :DateRestriction(
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
@@ -382,7 +382,7 @@ rule "Remove useless date gaps greater or greater and equal"
             eval( value.after( $lower.getValue() ) )
         )
 
-        # No ">" or ">=" restrictions between these two
+        // No ">" or ">=" restrictions between these two
         not DateRestriction(
             ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
             fieldPath == $lower.fieldPath,
@@ -391,7 +391,7 @@ rule "Remove useless date gaps greater or greater and equal"
             eval( value.before( $higher.getValue() ) )
         )
 
-        # gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x >= "15-Oct-2007" )
+        // gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x >= "15-Oct-2007" )
         $gap :Gap(
             restriction.fieldPath == $lower.fieldPath,
             restriction.patternIsNot == $lower.patternIsNot,

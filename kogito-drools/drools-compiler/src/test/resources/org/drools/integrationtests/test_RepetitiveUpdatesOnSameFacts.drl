@@ -16,7 +16,7 @@ rule "intervalRequirementNotCovered"
         $intervalReq : IntervalRequirement($interval : interval)
         not (ShiftAssignment(shiftStartTime <= $interval, shiftEndTime > $interval))
     then 
-        #actions
+        // actions
         notCovered.add($intervalReq);
         System.out.println("intervalRequirementNotCovered -> " + $intervalReq);
 end
@@ -29,7 +29,7 @@ rule "intervalRequirementPartiallyCovered"
                                             , count($matchingShiftAssignments)
         )
     then 
-        #actions
+        // actions
         partiallyCovered.add($intervalReq);
         System.out.println("intervalRequirementPartiallyCovered -> " + $intervalReq + " covered by " + $matchingShiftAssignmentsCount + " ShiftAssignment(s)");
 end
@@ -42,7 +42,7 @@ rule "intervalRequirementTotallyCovered"
                                             , count($matchingShiftAssignments)
         )
     then 
-        #actions
+        // actions
         totallyCovered.add($intervalReq);
         System.out.println("intervalRequirementTotallyCovered -> " + $intervalReq + " covered by " + $matchingShiftAssignmentsCount + " ShiftAssignment(s)");
 end

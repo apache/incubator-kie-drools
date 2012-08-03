@@ -798,7 +798,7 @@ public final class DialectUtil {
         return findClassByName(context, className);
     }
 
-    private static Class<?> findClassByName(RuleBuildContext context, String className) {
+    public static Class<?> findClassByName(RuleBuildContext context, String className) {
         if (className == null) {
             return null;
         }

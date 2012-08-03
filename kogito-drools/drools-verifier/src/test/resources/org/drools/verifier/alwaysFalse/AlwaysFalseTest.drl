@@ -30,7 +30,7 @@ end
 rule "Persons age, FAIL"
     when
         Person(
-            # Can't be under 0 and over 20
+            // Can't be under 0 and over 20
             age < 0,
             age > 20
         )

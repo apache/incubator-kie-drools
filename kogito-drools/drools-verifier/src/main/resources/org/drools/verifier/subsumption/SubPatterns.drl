@@ -52,12 +52,12 @@ rule "Find subsumptant sub patterns, subsumptant source"
         $subPattern2 :SubPattern(
             path != $subPattern1.path,
             objectTypePath == $subPattern1.objectTypePath,
-            # TODO: Check these. Should work with the idea of subsumption.
+            // TODO: Check these. Should work with the idea of subsumption.
             patternNot == $subPattern1.patternNot,
             patternExists == $subPattern1.patternExists,
             patternForall == $subPattern1.patternForall
         )
-        # Check if sources are equal or subsumptant
+        // Check if sources are equal or subsumptant
         $sourceSubsumption :Subsumption()
         Source(
             path == $subPattern1.sourcePath,
@@ -70,7 +70,7 @@ rule "Find subsumptant sub patterns, subsumptant source"
             this == $sourceSubsumption.right
         )
 
-        # For every restriction in $subPattern1 there is a subsumption to a restriction in $subPattern2.
+        // For every restriction in $subPattern1 there is a subsumption to a restriction in $subPattern2.
         forall (
             $leftPatternComponent :PatternComponent(
             ) from $subPattern1.items
@@ -117,18 +117,18 @@ rule "Find subsumptant sub patterns, same source"
         $subPattern2 :SubPattern(
             path != $subPattern1.path,
             objectTypePath == $subPattern1.objectTypePath,
-            # TODO: Check these. Should work with the idea of subsumption.
+            // TODO: Check these. Should work with the idea of subsumption.
             patternNot == $subPattern1.patternNot,
             patternExists == $subPattern1.patternExists,
             patternForall == $subPattern1.patternForall
         )
-        # Check if sources are equal or subsumptant #
+        // Check if sources are equal or subsumptant //
         Source(
                 path == $subPattern1.sourcePath && == $subPattern2.sourcePath,
                 verifierComponentType == $subPattern1.sourceType && == $subPattern2.sourceType
         )
 
-        # For every restriction in $subPattern1 there is a subsumption to a restriction in $subPattern2.
+        // For every restriction in $subPattern1 there is a subsumption to a restriction in $subPattern2.
         forall (
             $leftPatternComponent :PatternComponent(
             ) from $subPattern1.items

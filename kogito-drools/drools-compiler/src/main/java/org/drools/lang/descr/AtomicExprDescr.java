@@ -20,6 +20,7 @@ public class AtomicExprDescr extends BaseDescr {
     private static final long serialVersionUID = 510l;
 
     private String            expression;
+    private String            rewrittenExpression;
     private boolean           literal;
 
     public AtomicExprDescr() { }
@@ -54,4 +55,11 @@ public class AtomicExprDescr extends BaseDescr {
         this.literal = literal;
     }
 
+    public String getRewrittenExpression() {
+        return rewrittenExpression != null ? rewrittenExpression : expression;
+    }
+
+    public void setRewrittenExpression(String rewrittenExpression) {
+        this.rewrittenExpression = rewrittenExpression;
+    }
 }

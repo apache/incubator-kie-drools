@@ -57,13 +57,13 @@ rule "Range check for dates, if smaller than or equal is missing"
             fieldType == Field.DATE
         )
 
-        # Foo( bar > "27-Oct-2007" )
+        // Foo( bar > "27-Oct-2007" )
         $r :DateRestriction(
             fieldPath == $f.path,
             operator == Operator.GREATER
         )
 
-        # Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+        // Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
         not DateRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
@@ -89,13 +89,13 @@ rule "Range check for dates, if greater than or equal is missing"
     when
         $f :Field( fieldType == Field.DATE )
 
-        # Foo( bar > "27-Oct-2007" )
+        // Foo( bar > "27-Oct-2007" )
         $r :DateRestriction(
             fieldPath == $f.path,
             operator == Operator.LESS
         )
 
-        # Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+        // Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
         not DateRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
@@ -122,13 +122,13 @@ rule "Range check for dates, equal and greater than"
     when
         $f :Field( fieldType == Field.DATE )
 
-        # Foo( bar == "27-Oct-2007" )
+        // Foo( bar == "27-Oct-2007" )
         $r :DateRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
         )
 
-        # Check if Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" ) is missing.
+        // Check if Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" ) is missing.
         not DateRestriction(
             fieldPath == $f.path,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ),
@@ -136,7 +136,7 @@ rule "Range check for dates, equal and greater than"
             value == $r.value
         )
 
-        # Check if Foo( bar == "28-Oct-2007" || >= "28-Oct-2007" ) is missing.
+        // Check if Foo( bar == "28-Oct-2007" || >= "28-Oct-2007" ) is missing.
         not DateRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
@@ -163,13 +163,13 @@ rule "Range check for dates, equal and smaller than"
     when
         $f :Field( fieldType == Field.DATE )
 
-        # Foo( bar == "27-Oct-2007" )
+        // Foo( bar == "27-Oct-2007" )
         $r :DateRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
         )
 
-        # Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+        // Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
         not DateRestriction(
             fieldPath == $f.path,
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ),
@@ -177,7 +177,7 @@ rule "Range check for dates, equal and smaller than"
             eval( value.equals($r.getValue()) )
         )
 
-        # Check if Foo( bar == "26-Oct-2007" || <= "26-Oct-2007" ) is missing.
+        // Check if Foo( bar == "26-Oct-2007" || <= "26-Oct-2007" ) is missing.
         not DateRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),

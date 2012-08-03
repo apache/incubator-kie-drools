@@ -442,6 +442,7 @@ public class PatternBuilder
                                              final PatternDescr patternDescr,
                                              final Pattern pattern ) {
 
+        MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext().setRuleContext(context);
         for ( BaseDescr b : patternDescr.getDescrs() ) {
             String expression;
             boolean isPositional = false;
@@ -480,7 +481,8 @@ public class PatternBuilder
                 build( context,
                        patternDescr,
                        pattern,
-                       result );
+                       result,
+                       mvelCtx );
             }
         }
 
@@ -614,22 +616,29 @@ public class PatternBuilder
             return;
         }
         result.copyLocation( original );
+        MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext().setRuleContext(context);
         build( context,
                patternDescr,
                pattern,
-               result );
+               result,
+               mvelCtx );
     }
 
     protected void build( RuleBuildContext context,
                         PatternDescr patternDescr,
                         Pattern pattern,
-                        ConstraintConnectiveDescr descr ) {
+                        ConstraintConnectiveDescr descr,
+                        MVELDumper.MVELDumperContext mvelCtx ) {
         for ( BaseDescr d : descr.getDescrs() ) {
-            buildCcdDescr(context, patternDescr, pattern, d);
+            buildCcdDescr(context, patternDescr, pattern, d, mvelCtx);
         }
     }
 
-    protected void buildCcdDescr(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern, BaseDescr d) {
+    protected void buildCcdDescr(RuleBuildContext context,
+                                 PatternDescr patternDescr,
+                                 Pattern pattern,
+                                 BaseDescr d,
+                                 MVELDumper.MVELDumperContext mvelCtx) {
         d.copyLocation( patternDescr );
 
         if ( d instanceof BindingDescr ) {
@@ -637,7 +646,7 @@ public class PatternBuilder
             return;
         }
 
-        MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
+        mvelCtx.clear();
         String expr = context.getCompilerFactory().getExpressionProcessor().dump( d, mvelCtx );
         Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
         Map<String, Class<?>> localTypes = mvelCtx.getLocalTypes();
@@ -688,7 +697,7 @@ public class PatternBuilder
         boolean usesThisRef;
         if ( relDescr.getRight() instanceof AtomicExprDescr ) {
             AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
-            value2 = rdescr.getExpression().trim();
+            value2 = rdescr.getRewrittenExpression().trim();
             usesThisRef = "this".equals( value2 ) || value2.startsWith( "this." );
         } else {
             BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
@@ -697,7 +706,7 @@ public class PatternBuilder
         }
         if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
             AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
-            value1 = ldescr.getExpression();
+            value1 = ldescr.getRewrittenExpression();
             usesThisRef = usesThisRef || "this".equals( value1 ) || value1.startsWith( "this." );
         } else {
             value1 = ((BindingDescr) relDescr.getLeft()).getExpression();

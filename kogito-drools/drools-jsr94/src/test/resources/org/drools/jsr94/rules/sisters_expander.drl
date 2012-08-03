@@ -23,7 +23,7 @@ expander sisters_expander.dsl
 rule "FindSisters"
 
     when
-        #conditions
+        // conditions
         There is a Person
         There is a second Person and they are sisters
     then

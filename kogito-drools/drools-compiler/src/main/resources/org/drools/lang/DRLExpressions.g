@@ -527,7 +527,10 @@ primary returns [BaseDescr result]
     |   (inlineMapExpression)=> inlineMapExpression
     |   (inlineListExpression)=> inlineListExpression
     |   (ID)=>i1=ID { helper.emit($i1, DroolsEditorType.IDENTIFIER); }
-        ((DOT ID)=>DOT i2=ID { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); }
+        (
+            ( (DOT ID)=>DOT i2=ID { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            |
+            ( (SHARP ID)=>SHARP i2=ID { helper.emit($SHARP, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
         )* ((identifierSuffix)=>identifierSuffix)?
     ;
 

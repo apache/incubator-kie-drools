@@ -38,13 +38,13 @@ global VerifierReport result;
 //
 rule "Find subsumptant restrictions, greater than"
     when
-        # Covered x > 10
+        // Covered x > 10
         $lower:NumberRestriction(
             ( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
         )
 
-        # Covered x > 100
+        // Covered x > 100
         $higher :NumberRestriction(
             fieldPath == $lower.fieldPath,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL ),
@@ -56,10 +56,10 @@ end
 
 rule "Find subsumptant restrictions, equal"
     when
-        # Covered x > 10
+        // Covered x > 10
         $left :LiteralRestriction( )
 
-        # Covered x > 10
+        // Covered x > 10
         $right :LiteralRestriction(
             path != $left.path,
             fieldPath == $left.fieldPath,
@@ -80,13 +80,13 @@ end
 //
 rule "Find subsumptant restrictions, less than"
     when
-        # Covered x < 10
+        // Covered x < 10
         $higher :NumberRestriction(
             ( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL )
         )
 
-        # Covered x < 100
+        // Covered x < 100
         $lower :NumberRestriction(
             fieldPath == $higher.fieldPath,
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL),

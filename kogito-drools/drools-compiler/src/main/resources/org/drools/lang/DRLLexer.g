@@ -295,13 +295,19 @@ MINUS	:	'-'
 PLUS	:	'+'
     ;
 
-SH_STYLE_SINGLE_LINE_COMMENT	
-    :	'#' (~('\r'|'\n'))* EOL
-                { $channel=HIDDEN; setText("//"+getText().substring(1));}
+SH_STYLE_SINGLE_LINE_COMMENT
+    : {$pos == 0}?=> SPACES* '#' (~('\r'|'\n'))* EOL
+        { $channel=HIDDEN; setText("//"+getText().substring(1));}
     ;
-        
-        
-C_STYLE_SINGLE_LINE_COMMENT	
+
+SHARP   :	'#'
+    ;
+
+fragment
+SPACES : ' '| '\t'
+    ;
+
+C_STYLE_SINGLE_LINE_COMMENT
     :	'//' (~('\r'|'\n'))* EOL
                 { $channel=HIDDEN; }
     ;

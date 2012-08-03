@@ -26,14 +26,14 @@ rule "Incoherent restrictions 1"
     when
         IncoherencePattern1( a == 1, a != 1 )
     then
-        # Test
+        // Test
 end
 
 rule "Incoherent restrictions 2"
     when
         IncoherencePattern2( a matches "text", a not matches "text" )
     then
-        # Test
+        // Test
 end
 
 
@@ -42,7 +42,7 @@ rule "Incoherent restrictions 3"
         $o :Object()
         IncoherencePattern3( a contains $o, a not contains $o )
     then
-        # Test
+        // Test
 end
 
 
@@ -51,7 +51,7 @@ rule "Incoherent restrictions 4"
         $list :ListItem()
         IncoherencePattern4( a memberOf $list, a not memberOf $list )
     then
-        # Test
+        // Test
 end
 
 rule "Incoherent restrictions 5"
@@ -59,7 +59,7 @@ rule "Incoherent restrictions 5"
         $var :Object()
         IncoherencePattern5( a == $var, a != $var )
     then
-        # Test
+        // Test
 end
 
 rule "Incoherent restrictions 6"
@@ -67,21 +67,21 @@ rule "Incoherent restrictions 6"
         $var :Object()
         IncoherencePattern6( a > $var, a < $var )
     then
-        # Test
+        // Test
 end
 
 rule "Incoherent restrictions 7"
     when
         IncoherencePattern7( a > 11, a < 11 )
     then
-        # Test
+        // Test
 end
 
 rule "Incoherent restrictions 8"
     when
         IncoherencePattern8( a > 10, a < 0 )
     then
-        # Test
+        // Test
 end
 
 //TODO:
@@ -89,21 +89,21 @@ rule "Incoherent restrictions 9"
     when
         IncoherencePattern9( a == 1, a == 2 )
     then
-        # Test
+        // Test
 end
 
 rule "Incoherent restrictions 10"
     when
         IncoherencePattern10( a == 1, a > 10 )
     then
-        # Test
+        // Test
 end
 
 rule "Incoherent restrictions 11"
     when
         IncoherencePattern11( a == 10, a < 1 )
     then
-        # Test
+        // Test
 end
 
 // no problems in this one

@@ -58,7 +58,7 @@ rule "Rule possibility that is always true"
             rulePath == $r.path
         )
 
-        # Each pattern possibility in rule possibility needs to be always true.
+        // Each pattern possibility in rule possibility needs to be always true.
         forall(
             $pp :SubPattern(
                 this memberOf $rp.items

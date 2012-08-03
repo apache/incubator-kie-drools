@@ -290,20 +290,25 @@ public final class ClassUtils {
         Class<?> clazz = null;
         for (String imp : availableImports) {
             String className = imp.endsWith(name) ? imp : imp + "." + name;
-            try {
-                clazz = Class.forName(className, false, cl);
-            } catch (ClassNotFoundException e) {
-                int lastDot = className.lastIndexOf('.');
-                className = className.substring(0, lastDot) + "$" + className.substring(lastDot+1);
-                try {
-                    clazz = Class.forName(className, false, cl);
-                } catch (ClassNotFoundException e1) {
-                    continue;
-                }
+            clazz = findClass(className, cl);
+            if (clazz != null) {
+                break;
             }
-            break;
         }
         return clazz;
+    }
+
+    public static Class<?> findClass(String className, ClassLoader cl) {
+        try {
+            return Class.forName(className, false, cl);
+        } catch (ClassNotFoundException e) {
+            int lastDot = className.lastIndexOf('.');
+            className = className.substring(0, lastDot) + "$" + className.substring(lastDot+1);
+            try {
+                return Class.forName(className, false, cl);
+            } catch (ClassNotFoundException e1) { }
+        }
+        return null;
     }
 
     public static List<String> getSettableProperties(Class<?> clazz) {

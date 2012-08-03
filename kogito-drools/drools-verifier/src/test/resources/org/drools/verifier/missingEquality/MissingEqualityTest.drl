@@ -29,42 +29,42 @@ rule "Missing equality 1"
     when
         MissingEqualityPattern1( value == 10 )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 1a"
     when
         CoveredEqualityPattern1( value == 10 )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 1b"
     when
         CoveredEqualityPattern1( value != 10 )
     then
-        #actions
+        //actions
 end
 
 rule "Missing equality 2"
     when
         MissingEqualityPattern2( value matches "a" )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 2a"
     when
         CoveredEqualityPattern2( value matches "a" )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 2b"
     when
         CoveredEqualityPattern2( value not matches "a" )
     then
-        #actions
+        //actions
 end
 
 rule "Missing equality 3"
@@ -72,7 +72,7 @@ rule "Missing equality 3"
         $col :MissingEqualityCollection()
         MissingEqualityPattern3( value memberOf $col )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 3a"
@@ -80,7 +80,7 @@ rule "Covered equality 3a"
         $col :MissingEqualityCollection()
         CoveredEqualityPattern3( value memberOf $col )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 3b"
@@ -88,7 +88,7 @@ rule "Covered equality 3b"
         $col :MissingEqualityCollection()
         CoveredEqualityPattern3( value not memberOf $col )
     then
-        #actions
+        //actions
 end
 
 rule "Missing equality 4"
@@ -96,7 +96,7 @@ rule "Missing equality 4"
         $value :MissingEqualityValue()
         MissingEqualityPattern4( value contains $value )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 4a"
@@ -104,7 +104,7 @@ rule "Covered equality 4a"
         $value :MissingEqualityValue()
         CoveredEqualityPattern4( value contains $value )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 4b"
@@ -112,7 +112,7 @@ rule "Covered equality 4b"
         $value :MissingEqualityValue()
         CoveredEqualityPattern4( value not contains $value )
     then
-        #actions
+        //actions
 end
 
 rule "Missing equality 5"
@@ -120,7 +120,7 @@ rule "Missing equality 5"
         MissingEqualityNumber( $n :number )
         MissingEqualityPattern5( value == $n )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 5a"
@@ -128,7 +128,7 @@ rule "Covered equality 5a"
         MissingEqualityNumber( $n :number )
         CoveredEqualityPattern5( value == $n )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 5b"
@@ -136,7 +136,7 @@ rule "Covered equality 5b"
         MissingEqualityNumber( $n :number )
         CoveredEqualityPattern5( value != $n )
     then
-        #actions
+        //actions
 end
 
 rule "Missing equality 6"
@@ -144,7 +144,7 @@ rule "Missing equality 6"
         MissingEqualityString( $t :text )
         MissingEqualityPattern6( value matches $t )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 6a"
@@ -152,7 +152,7 @@ rule "Covered equality 6a"
         MissingEqualityString( $t :text )
         CoveredEqualityPattern6( value matches $t )
     then
-        #actions
+        //actions
 end
 
 rule "Covered equality 6b"
@@ -160,7 +160,7 @@ rule "Covered equality 6b"
         MissingEqualityString( $t :text )
         CoveredEqualityPattern6( value not matches $t )
     then
-        #actions
+        //actions
 end
 
 rule "Missing equality 7"
@@ -168,5 +168,5 @@ rule "Missing equality 7"
         Person( $name :name)
         Person( name != $name )
     then
-        #actions
+        //actions
 end
