@@ -135,18 +135,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                 resolvedSelectionOrder, minimumCacheType);
 
         if (moveFilterClass != null) {
-            SelectionFilter moveFilter;
-            try {
-                moveFilter = moveFilterClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("moveFilterClass ("
-                        + moveFilterClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("moveFilterClass ("
-                        + moveFilterClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            SelectionFilter moveFilter = ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass);
             MoveSelector filteringMoveSelector;
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringMoveSelector = new JustInTimeFilteringMoveSelector(moveSelector,
@@ -165,18 +154,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                         + moveProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
-            try {
-                entityProbabilityWeightFactory = moveProbabilityWeightFactoryClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("moveProbabilityWeightFactoryClass ("
-                        + moveProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("moveProbabilityWeightFactoryClass ("
-                        + moveProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            SelectionProbabilityWeightFactory entityProbabilityWeightFactory = ConfigUtils.newInstance(this,
+                    "moveProbabilityWeightFactoryClass", moveProbabilityWeightFactoryClass);
             moveSelector = new ProbabilityMoveSelector(moveSelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
         } else if (shuffledOrProbability) {

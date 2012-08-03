@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.score.director.incremental;
 
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.score.director.simple.SimpleScoreDirector;
@@ -42,18 +43,8 @@ public class IncrementalScoreDirectorFactory extends AbstractScoreDirectorFactor
     // ************************************************************************
 
     public IncrementalScoreDirector buildScoreDirector() {
-        IncrementalScoreCalculator incrementalScoreCalculator;
-        try {
-            incrementalScoreCalculator = incrementalScoreCalculatorClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
-                    + incrementalScoreCalculatorClass.getName()
-                    + ") does not have a public no-arg constructor", e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
-                    + incrementalScoreCalculatorClass.getName()
-                    + ") does not have a public no-arg constructor", e);
-        }
+        IncrementalScoreCalculator incrementalScoreCalculator = ConfigUtils.newInstance(this,
+                "incrementalScoreCalculatorClass", incrementalScoreCalculatorClass);
         return new IncrementalScoreDirector(this, incrementalScoreCalculator);
     }
 

@@ -124,15 +124,7 @@ public class ProblemBenchmarksConfig {
                     + ") and xstreamAnnotatedClassList (" + xstreamAnnotatedClassList + ") together.");
         }
         if (problemIOClass != null) {
-            try {
-                return problemIOClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("problemIOClass (" + problemIOClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("problemIOClass (" + problemIOClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            return ConfigUtils.newInstance(this, "problemIOClass", problemIOClass);
         } else {
             Class[] xstreamAnnotatedClasses;
             if (xstreamAnnotatedClassList != null) {

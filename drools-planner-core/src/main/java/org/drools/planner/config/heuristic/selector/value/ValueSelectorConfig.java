@@ -139,18 +139,8 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + valueProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            SelectionProbabilityWeightFactory valueProbabilityWeightFactory;
-            try {
-                valueProbabilityWeightFactory = valueProbabilityWeightFactoryClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("valueProbabilityWeightFactoryClass ("
-                        + valueProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("valueProbabilityWeightFactoryClass ("
-                        + valueProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            SelectionProbabilityWeightFactory valueProbabilityWeightFactory = ConfigUtils.newInstance(this,
+                    "valueProbabilityWeightFactoryClass", valueProbabilityWeightFactoryClass);
             valueSelector = new ProbabilityValueSelector(valueSelector,
                     resolvedCacheType, valueProbabilityWeightFactory);
         }

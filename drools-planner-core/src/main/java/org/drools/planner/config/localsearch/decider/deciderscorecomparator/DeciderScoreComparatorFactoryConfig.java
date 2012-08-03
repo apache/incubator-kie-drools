@@ -17,6 +17,7 @@
 package org.drools.planner.config.localsearch.decider.deciderscorecomparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.ShiftingHardPenaltyDeciderScoreComparatorFactory;
@@ -104,15 +105,8 @@ public class DeciderScoreComparatorFactoryConfig {
 
     public DeciderScoreComparatorFactory buildDeciderScoreComparatorFactory() {
         if (deciderScoreComparatorClass != null) {
-            try {
-                return deciderScoreComparatorClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("deciderScoreComparatorClass ("
-                        + deciderScoreComparatorClass.getName() + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("deciderScoreComparatorClass ("
-                        + deciderScoreComparatorClass.getName() + ") does not have a public no-arg constructor", e);
-            }
+            return ConfigUtils.newInstance(this,
+                    "deciderScoreComparatorClass", deciderScoreComparatorClass);
         } else if (deciderScoreComparatorFactoryType != null) {
             switch (deciderScoreComparatorFactoryType) {
                 case NATURAL:

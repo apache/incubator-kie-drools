@@ -81,17 +81,8 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
                         + selectorProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            try {
-                selectorProbabilityWeightFactory = selectorProbabilityWeightFactoryClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("selectorProbabilityWeightFactoryClass ("
-                        + selectorProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("selectorProbabilityWeightFactoryClass ("
-                        + selectorProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            selectorProbabilityWeightFactory = ConfigUtils.newInstance(this,
+                    "selectorProbabilityWeightFactoryClass", selectorProbabilityWeightFactoryClass);
         } else if (randomSelection) {
             Map<Selector, Double> fixedProbabilityWeightMap = new HashMap<Selector, Double>(
                     moveSelectorConfigList.size());

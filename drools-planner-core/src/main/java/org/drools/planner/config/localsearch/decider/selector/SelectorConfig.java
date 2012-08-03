@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.localsearch.decider.selector.CompositeSelector;
 import org.drools.planner.core.localsearch.decider.selector.MoveFactorySelector;
 import org.drools.planner.core.localsearch.decider.selector.Selector;
@@ -99,15 +100,7 @@ public class SelectorConfig {
             if (moveFactory != null) {
                 initializedMoveFactory = moveFactory;
             } else {
-                try {
-                    initializedMoveFactory = moveFactoryClass.newInstance();
-                } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("The moveFactoryClass (" + moveFactoryClass.getName()
-                            + ") does not have a public no-arg constructor", e);
-                } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("The moveFactoryClass (" + moveFactoryClass.getName()
-                            + ") does not have a public no-arg constructor", e);
-                }
+                initializedMoveFactory  = ConfigUtils.newInstance(this, "moveFactoryClass", moveFactoryClass);
             }
             MoveFactorySelector selector = new MoveFactorySelector();
             selector.setMoveFactory(initializedMoveFactory);

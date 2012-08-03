@@ -198,15 +198,8 @@ public class AcceptorConfig {
         List<Acceptor> acceptorList = new ArrayList<Acceptor>();
         if (acceptorClassList != null) {
             for (Class<? extends Acceptor> acceptorClass : acceptorClassList) {
-                try {
-                    acceptorList.add(acceptorClass.newInstance());
-                } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
-                            + ") does not have a public no-arg constructor", e);
-                } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
-                            + ") does not have a public no-arg constructor", e);
-                }
+                Acceptor acceptor = ConfigUtils.newInstance(this, "acceptorClass", acceptorClass);
+                acceptorList.add(acceptor);
             }
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU))

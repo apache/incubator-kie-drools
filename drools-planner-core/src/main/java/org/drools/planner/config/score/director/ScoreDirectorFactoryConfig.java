@@ -179,15 +179,7 @@ public class ScoreDirectorFactoryConfig {
         if (scoreDefinition != null) {
             return scoreDefinition;
         } else if (scoreDefinitionClass != null) {
-            try {
-                return scoreDefinitionClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("scoreDefinitionClass (" + scoreDefinitionClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("scoreDefinitionClass (" + scoreDefinitionClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            return ConfigUtils.newInstance(this, "scoreDefinitionClass", scoreDefinitionClass);
         } else if (scoreDefinitionType != null) {
             switch (scoreDefinitionType) {
                 case SIMPLE:
@@ -211,16 +203,8 @@ public class ScoreDirectorFactoryConfig {
         if (simpleScoreCalculator != null) {
             return new SimpleScoreDirectorFactory(simpleScoreCalculator);
         } else if (simpleScoreCalculatorClass != null) {
-            SimpleScoreCalculator simpleScoreCalculator;
-            try {
-                simpleScoreCalculator = simpleScoreCalculatorClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("simpleScoreCalculatorClass (" + simpleScoreCalculatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("simpleScoreCalculatorClass (" + simpleScoreCalculatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            SimpleScoreCalculator simpleScoreCalculator = ConfigUtils.newInstance(this,
+                    "simpleScoreCalculatorClass", simpleScoreCalculatorClass);
             return new SimpleScoreDirectorFactory(simpleScoreCalculator);
         } else {
             return null;

@@ -146,15 +146,8 @@ public class TerminationConfig implements Cloneable {
     public Termination buildTermination(ScoreDefinition scoreDefinition) {
         List<Termination> terminationList = new ArrayList<Termination>();
         if (terminationClass != null) {
-            try {
-                terminationList.add(terminationClass.newInstance());
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("terminationClass (" + terminationClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("terminationClass (" + terminationClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            Termination termination  = ConfigUtils.newInstance(this, "terminationClass", terminationClass);
+            terminationList.add(termination);
         }
         Long maximumTimeMillisSpendTotal = calculateMaximumTimeMillisSpendTotal();
         if (maximumTimeMillisSpendTotal != null) {

@@ -74,15 +74,7 @@ public class ForagerConfig {
 
     public Forager buildForager(ScoreDefinition scoreDefinition) {
         if (foragerClass != null) {
-            try {
-                return foragerClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("foragerClass (" + foragerClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("foragerClass (" + foragerClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            return ConfigUtils.newInstance(this, "foragerClass", foragerClass);
         }
         PickEarlyType pickEarlyType = (this.pickEarlyType == null) ? PickEarlyType.NEVER : this.pickEarlyType;
         int minimalAcceptedSelection = (this.minimalAcceptedSelection == null)

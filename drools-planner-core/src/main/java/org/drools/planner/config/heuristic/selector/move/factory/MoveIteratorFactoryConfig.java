@@ -46,18 +46,8 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
-        MoveIteratorFactory moveIteratorFactory;
-        try {
-            moveIteratorFactory = moveIteratorFactoryClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("moveIteratorFactoryClass ("
-                    + moveIteratorFactoryClass.getName()
-                    + ") does not have a public no-arg constructor", e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("moveIteratorFactoryClass ("
-                    + moveIteratorFactoryClass.getName()
-                    + ") does not have a public no-arg constructor", e);
-        }
+        MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(this,
+                "moveIteratorFactoryClass", moveIteratorFactoryClass);
         return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory);
     }
 

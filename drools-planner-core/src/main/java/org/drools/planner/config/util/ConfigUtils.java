@@ -21,6 +21,18 @@ import java.util.List;
 
 public class ConfigUtils {
 
+    public static <T> T newInstance(Object bean, String propertyName, Class<T> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
+                    + clazz.getName() + ") does not have a public no-arg constructor", e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
+                    + clazz.getName() + ") does not have a public no-arg constructor", e);
+        }
+    }
+
     public static <T> T inheritOverwritableProperty(T original, T inherited) {
         if (original != null) {
             // Original overwrites inherited

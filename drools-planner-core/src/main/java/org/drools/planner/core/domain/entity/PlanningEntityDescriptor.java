@@ -33,6 +33,7 @@ import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.api.domain.variable.DependentPlanningVariable;
 import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.DependentPlanningVariableDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -93,33 +94,13 @@ public class PlanningEntityDescriptor {
                     + ") at the same time.");
         }
         if (difficultyComparatorClass != null) {
-            Comparator<Object> difficultyComparator;
-            try {
-                difficultyComparator = difficultyComparatorClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("The difficultyComparatorClass ("
-                        + difficultyComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("The difficultyComparatorClass ("
-                        + difficultyComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            Comparator<Object> difficultyComparator = ConfigUtils.newInstance(this,
+                    "difficultyComparatorClass", difficultyComparatorClass);
             planningEntitySorter.setDifficultyComparator(difficultyComparator);
         }
         if (difficultyWeightFactoryClass != null) {
-            PlanningEntityDifficultyWeightFactory difficultyWeightFactory;
-            try {
-                difficultyWeightFactory = difficultyWeightFactoryClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("The difficultyWeightFactoryClass ("
-                        + difficultyWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("The difficultyWeightFactoryClass ("
-                        + difficultyWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            PlanningEntityDifficultyWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
+                    "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
             planningEntitySorter.setDifficultyWeightFactory(difficultyWeightFactory);
         }
     }

@@ -122,18 +122,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                 minimumCacheType);
 
         if (entityFilterClass != null) {
-            SelectionFilter entityFilter;
-            try {
-                entityFilter = entityFilterClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("entityFilterClass ("
-                        + entityFilterClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("entityFilterClass ("
-                        + entityFilterClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            SelectionFilter entityFilter = ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass);
             EntitySelector filteringEntitySelector;
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringEntitySelector = new JustInTimeFilteringEntitySelector(entitySelector,
@@ -152,18 +141,8 @@ public class EntitySelectorConfig extends SelectorConfig {
                         + entityProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
-            try {
-                entityProbabilityWeightFactory = entityProbabilityWeightFactoryClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("entityProbabilityWeightFactoryClass ("
-                        + entityProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("entityProbabilityWeightFactoryClass ("
-                        + entityProbabilityWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            SelectionProbabilityWeightFactory entityProbabilityWeightFactory = ConfigUtils.newInstance(this,
+                    "entityProbabilityWeightFactoryClass", entityProbabilityWeightFactoryClass);
             entitySelector = new ProbabilityEntitySelector(entitySelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
         }

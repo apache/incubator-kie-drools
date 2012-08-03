@@ -63,15 +63,9 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
         List<CustomSolverPhaseCommand> customSolverPhaseCommandList
                 = new ArrayList<CustomSolverPhaseCommand>(customSolverPhaseCommandClassList.size());
         for (Class<CustomSolverPhaseCommand> customSolverPhaseCommandClass : customSolverPhaseCommandClassList) {
-            try {
-                customSolverPhaseCommandList.add(customSolverPhaseCommandClass.newInstance());
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("customSolverPhaseCommandClass ("
-                        + customSolverPhaseCommandClass.getName() + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("customSolverPhaseCommandClass ("
-                        + customSolverPhaseCommandClass.getName() + ") does not have a public no-arg constructor", e);
-            }
+            CustomSolverPhaseCommand customSolverPhaseCommand = ConfigUtils.newInstance(this,
+                    "customSolverPhaseCommandClass", customSolverPhaseCommandClass);
+            customSolverPhaseCommandList.add(customSolverPhaseCommand);
         }
         customSolverPhase.setCustomSolverPhaseCommandList(customSolverPhaseCommandList);
         return customSolverPhase;

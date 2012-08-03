@@ -37,6 +37,7 @@ import org.drools.planner.benchmark.core.ranking.SolverBenchmarkRankingType;
 import org.drools.planner.benchmark.core.ranking.TotalRankSolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.core.ranking.TotalScoreSolverBenchmarkRankingComparator;
 import org.drools.planner.benchmark.core.ranking.WorstScoreSolverBenchmarkRankingComparator;
+import org.drools.planner.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -270,17 +271,8 @@ public class PlannerBenchmarkConfig {
             }
         }
         if (solverBenchmarkRankingComparatorClass != null) {
-            try {
-                solverBenchmarkRankingComparator = solverBenchmarkRankingComparatorClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("solverBenchmarkRankingComparatorClass ("
-                        + solverBenchmarkRankingComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("solverBenchmarkRankingComparatorClass ("
-                        + solverBenchmarkRankingComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            solverBenchmarkRankingComparator = ConfigUtils.newInstance(this,
+                    "solverBenchmarkRankingComparatorClass", solverBenchmarkRankingComparatorClass);
         }
         if (solverBenchmarkRankingWeightFactoryClass != null) {
             try {

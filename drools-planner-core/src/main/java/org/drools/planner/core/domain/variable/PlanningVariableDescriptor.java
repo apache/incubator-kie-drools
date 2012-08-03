@@ -29,6 +29,7 @@ import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRanges;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
@@ -83,33 +84,13 @@ public class PlanningVariableDescriptor {
                     + ") at the same time.");
         }
         if (strengthComparatorClass != null) {
-            Comparator<Object> strengthComparator;
-            try {
-                strengthComparator = strengthComparatorClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("The strengthComparatorClass ("
-                        + strengthComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("The strengthComparatorClass ("
-                        + strengthComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            Comparator<Object> strengthComparator = ConfigUtils.newInstance(this,
+                    "strengthComparatorClass", strengthComparatorClass);
             valueSorter.setStrengthComparator(strengthComparator);
         }
         if (strengthWeightFactoryClass != null) {
-            PlanningValueStrengthWeightFactory strengthWeightFactory;
-            try {
-                strengthWeightFactory = strengthWeightFactoryClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("The strengthWeightFactoryClass ("
-                        + strengthWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("The strengthWeightFactoryClass ("
-                        + strengthWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
+            PlanningValueStrengthWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
+                    "strengthWeightFactoryClass", strengthWeightFactoryClass);
             valueSorter.setStrengthWeightFactory(strengthWeightFactory);
         }
     }
