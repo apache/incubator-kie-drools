@@ -22,6 +22,9 @@ import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
  * <p/>
  * Implementations must be immutable.
+ * <p/>
+ * Implementations are allowed to optionally implement Pareto comparison
+ * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
  * @see AbstractScore
  * @see DefaultHardAndSoftScore
  */

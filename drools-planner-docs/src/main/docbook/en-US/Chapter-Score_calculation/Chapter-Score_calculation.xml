@@ -103,9 +103,18 @@
       another solution which has more apples or more oranges or even a better combination of both (such as 2 apples and
       3 oranges).</para>
 
-      <para>To implement multi-object optimization scoring in Planner, <link linkend="customScore">implement a custom
+      <para>To implement multi-objective optimization scoring in Planner, <link linkend="customScore">implement a custom
       <literal>ScoreDefinition</literal> and <literal>Score</literal></link>. Future versions will provide
       out-of-the-box support.</para>
+
+      <note>
+        <para>A multi-objective optimization <literal>Score</literal>'s method <literal>compareTo</literal> is not
+        transitive because it does Pareto comparison. For example: 2 apples is greater than 1 apple. 1 apples is equal
+        to 1 orange. Yet, 2 apples are not greater than 1 orange (but actually equal). Pareto comparison violates the
+        contract of the inferface <literal>java.lang.Comparable</literal>'s method <literal>compareTo</literal>, but
+        Planner's systems are <emphasis>Pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
+        documentation.</para>
+      </note>
     </section>
 
     <section>
