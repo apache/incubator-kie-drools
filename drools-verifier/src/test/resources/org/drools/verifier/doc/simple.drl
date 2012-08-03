@@ -29,17 +29,17 @@ package org.drools.doc
 rule "Your First Rule"
 
     when
-        #conditions
+        //conditions
     then
-        #actions
+        //actions
 
 end
 
 rule "Your Second Rule"
-    #include attributes such as "salience" here...
+    //include attributes such as "salience" here...
     when
-        #conditions
+        //conditions
     then
-        #actions
+        //actions
 
 end

@@ -33,7 +33,7 @@ end
 rule "4. Constraint connectors"
     salience 5
     when
-        # forcing a variable restriction so we can trigger the issue reported in JBRULES-909
+        // forcing a variable restriction so we can trigger the issue reported in JBRULES-909
         Person( $age : age == 48, hair == "blue" )
         $person : Person( age > $age || hair == "gray" )
     then

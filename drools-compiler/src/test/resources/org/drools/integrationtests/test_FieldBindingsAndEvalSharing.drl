@@ -2,7 +2,7 @@ package org.drools;
 
 global java.util.List list;
 
-//this is to test eval condition node sharing working properly
+// this is to test eval condition node sharing working properly
 rule rule1
     when
         TestParam(val: value1)
@@ -15,7 +15,7 @@ end
 rule rule2
     when
         TestParam(val: value2)
-        eval(val == null) #note its the same guts, but different binding
+        eval(val == null) // note its the same guts, but different binding
     then
         list.add("rule2 fired");
 end  

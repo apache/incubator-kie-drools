@@ -10,7 +10,7 @@ global java.util.List errors;
 rule "Order1"
 salience 210
     when
-        # testing join node + eval
+        // testing join node + eval
         n1 : IndexedNumber($nb1 : number);
         n2 : IndexedNumber(number < $nb1);
         eval(n1.getIndex() < n2.getIndex());
@@ -23,7 +23,7 @@ end
 rule "Order2"
 salience 200
     when
-        #testing pure join nodes
+        // testing pure join nodes
         n1 : IndexedNumber($nb1 : number, $index : index);
         n2 : IndexedNumber(number < $nb1, index > $index );
     then

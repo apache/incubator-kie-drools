@@ -54,7 +54,7 @@ rule "Incompatible Patterns"
             items contains $incompatibility.right
         )
 
-        # Check that these facts do not already exist
+        // Check that these facts do not already exist
         not Incompatibility( left == $pp1, right == $pp2)
         not Incompatibility( left == $pp2, right == $pp1)
     then

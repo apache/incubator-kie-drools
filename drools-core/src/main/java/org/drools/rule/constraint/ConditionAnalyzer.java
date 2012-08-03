@@ -167,6 +167,11 @@ public class ConditionAnalyzer {
             return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
         }
 
+        if (node instanceof TypeCast) {
+            ExecutableAccessor accessor = getFieldValue(TypeCast.class, "statement", (TypeCast)node);
+            return new CastExpression(node.getEgressType(), analyzeNode(accessor.getNode()));
+        }
+
         if (node instanceof Union) {
             ASTNode main = ((Union)node).getMain();
             Accessor accessor = node.getAccessor();
@@ -736,6 +741,24 @@ public class ConditionAnalyzer {
             Class<?> primitiveLeft = convertToPrimitiveType(left.getType());
             Class<?> primitiveRight = convertToPrimitiveType(right.getType());
             return primitiveLeft == primitiveRight ? primitiveLeft : double.class;
+        }
+    }
+
+    public static class CastExpression implements Expression {
+        private final Class<?> type;
+        final Expression expression;
+
+        public CastExpression(Class<?> type, Expression expression) {
+            this.type = type;
+            this.expression = expression;
+        }
+
+        public boolean canBeNull() {
+            return true;
+        }
+
+        public Class<?> getType() {
+            return type;
         }
     }
 

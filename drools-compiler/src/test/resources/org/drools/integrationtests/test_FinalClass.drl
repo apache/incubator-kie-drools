@@ -18,7 +18,7 @@ rule "test final class 2"
     when
         $p : Person( name == "bob", status == null )
     then
-        # this rule should not fire
+        // this rule should not fire
         $p.status = "NOT OK";
         results.add("NOT OK");
 end

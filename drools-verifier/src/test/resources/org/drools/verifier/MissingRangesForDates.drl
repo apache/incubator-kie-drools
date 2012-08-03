@@ -22,119 +22,119 @@ rule "Date gap rule 1"
     when
         DatePattern1( value == "27-Oct-2007" )
     then
-        # gap > 10 <.
+        // gap > 10 <.
 end
 
 rule "Date gap rule 2"
     when
         DatePattern2( value >= "27-Oct-2000" )
     then
-        # gap < 15.
+        // gap < 15.
 end
 
 rule "Date gap rule 3"
     when
         DatePattern3( value <= "27-Oct-2004" )
     then
-        # gap > 15.
+        // gap > 15.
 end
 
 rule "Date gap rule 4a"
     when
         DatePattern4( value > "27-Oct-2001" )
     then
-        # gap == 25.
+        // gap == 25.
 end
 
 rule "Date gap rule 4b"
     when
         DatePattern4( value < "27-Oct-2001" )
     then
-        # gap == 25.
+        // gap == 25.
 end
 
 rule "Date gap rule 5a"
     when
         DatePattern5( value > "20-Oct-2007" )
     then
-        # gap 100 > x > 50.
+        // gap 100 > x > 50.
 end
 
 rule "Date gap rule 5b"
     when
         DatePattern5( value < "10-Oct-2007" )
     then
-        # gap 100 > x > 50.
+        // gap 100 > x > 50.
 end
 
 rule "Date gap rule 6a"
     when
         DatePattern6( value > "28-Oct-2007" )
     then
-        # gap < 350.
+        // gap < 350.
 end
 
 rule "Date gap rule 6b"
     when
         DatePattern6( value == "28-Oct-2007" )
     then
-        # gap < 350.
+        // gap < 350.
 end
 
 rule "Date gap rule 7a"
     when
         DatePattern7( value < "27-Jan-2007" )
     then
-        # gap > 55.
+        // gap > 55.
 end
 
 rule "Date gap rule 7b"
     when
         DatePattern7( value == "27-Jan-2007" )
     then
-        # gap > 55.
+        // gap > 55.
 end
 
 rule "Date gap rule 8a"
     when
         DatePattern8( value < "11-Jan-2007" )
     then
-        # No gap
+        // No gap
 end
 
 rule "Date gap rule 8b"
     when
         DatePattern8( value == "11-Jan-2007" )
     then
-        # No gap
+        // No gap
 end
 
 rule "Date gap rule 8c"
     when
         DatePattern8( value > "11-Jan-2007" )
     then
-        # No gap
+        // No gap
 end
 
 rule "Date gap rule 9a"
     when
         DatePattern9( value <= "14-Jan-2007" )
     then
-        # No gap
+        // No gap
 end
 
 rule "Date gap rule 9b"
     when
         DatePattern9( value == "15-Jan-2007" )
     then
-        # No gap
+        // No gap
 end
 
 rule "Date gap rule 9c"
     when
         DatePattern9( value >= "16-Jan-2007" )
     then
-        # No gap
+        // No gap
 end
 
 /*

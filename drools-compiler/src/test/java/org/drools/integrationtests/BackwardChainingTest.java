@@ -2731,7 +2731,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
         str +=
                 "then \n" +
-                        "#   System.out.println( \"Object by query: \" + $a );\n" +
+                        "//   System.out.println( \"Object by query: \" + $a );\n" +
                         "    queryList.add( $a ); \n" +
                         "end \n" +
                         "rule findObject \n" +
@@ -2739,7 +2739,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         "when \n" +
                         "    $o: Object() \n" +
                         "then " +
-                        "#   System.out.println( \"Object: \" + $o );\n" +
+                        "//   System.out.println( \"Object: \" + $o );\n" +
                         "    ruleList.add( $o ); \n" +
                         "end \n" +
                         "";

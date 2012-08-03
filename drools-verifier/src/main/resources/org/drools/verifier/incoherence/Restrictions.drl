@@ -50,8 +50,8 @@ global VerifierReport result;
 rule "Incoherent LiteralRestrictions in pattern possibility"
     when
         $r1 :LiteralRestriction(
-            # Not >= and <=, because ( a <=, a >= ) works.
-            # And not < or > because they are handled in a separate rule.
+            // Not >= and <=, because ( a <=, a >= ) works.
+            // And not < or > because they are handled in a separate rule.
             ( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
         )
 
@@ -61,12 +61,12 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
             fieldPath == $r1.fieldPath,
             valueType == $r1.valueType,
             path != $r1.path,
-            # Operator needs to be reversed to what the other one has.
+            // Operator needs to be reversed to what the other one has.
             eval( operator == MissingRange.getReversedOperator( $r1.getOperator() )),
             valueAsString == $r1.valueAsString
         )
 
-        # There is a problem if both of these are in the same SubPattern.
+        // There is a problem if both of these are in the same SubPattern.
         $pp :SubPattern(
              items contains $r1,
              items contains $r2
@@ -115,7 +115,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
             value < $r1.value
         )
 
-        # There is a problem if both of these are in the same SubPattern.
+        // There is a problem if both of these are in the same SubPattern.
         $pp :SubPattern(
              items contains $r1,
              items contains $r2
@@ -164,7 +164,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
             value < $r1.value
         )
 
-        # There is a problem if both of these are in the same SubPattern.
+        // There is a problem if both of these are in the same SubPattern.
         $pp :SubPattern(
              items contains $r1,
              items contains $r2
@@ -213,7 +213,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
             value < $r1.value
         )
 
-        # There is a problem if both of these are in the same SubPattern.
+        // There is a problem if both of these are in the same SubPattern.
         $pp :SubPattern(
              items contains $r1,
              items contains $r2
@@ -262,7 +262,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
             valueAsString == $r1.valueAsString
         )
 
-        # There is a problem if both of these are in the same SubPattern.
+        // There is a problem if both of these are in the same SubPattern.
         $pp :SubPattern(
              items contains $r1,
              items contains $r2
@@ -298,8 +298,8 @@ end
 rule "Incoherent VariableRestrictions in pattern possibility"
     when
         $r1 :VariableRestriction(
-            # Not >= and <=, because ( a <=, a >= ) works.
-            # And not < or > because they are handled in a separete rule.
+            // Not >= and <=, because ( a <=, a >= ) works.
+            // And not < or > because they are handled in a separete rule.
             ( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
         )
 
@@ -309,11 +309,11 @@ rule "Incoherent VariableRestrictions in pattern possibility"
             path != $r1.path,
             variable.parentPath == $r1.variable.parentPath,
             variable.parentType == $r1.variable.parentType,
-            # Operator needs to be reversed to what the other one has.
+            // Operator needs to be reversed to what the other one has.
             eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
         )
 
-        # There is a problem if both of these are in the same SubPattern.
+        // There is a problem if both of these are in the same SubPattern.
         $pp :SubPattern(
              items contains $r1,
              items contains $r2
@@ -362,7 +362,7 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
             path != $r1.path
         )
 
-        # There is a problem if both of these are in the same SubPattern.
+        // There is a problem if both of these are in the same SubPattern.
         $pp :SubPattern(
              items contains $r1,
              items contains $r2

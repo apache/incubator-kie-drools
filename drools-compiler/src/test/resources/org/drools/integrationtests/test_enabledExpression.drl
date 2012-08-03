@@ -4,7 +4,7 @@ global java.util.List results;
 
 rule "Test enabled expression 1"
     @ruleID(1234)
-    #arbitrary expression using a rule metadata
+    // arbitrary expression using a rule metadata
     enabled ( rule.metaAttributes["ruleID"] == "1234" )
   when
     Person(name == "Michael")
@@ -14,7 +14,7 @@ end
 
 rule "Test enabled expression 2"
     @ruleID(1234)
-    # using bound variables 
+    // using bound variables
     enabled ( "Michael".equals( $name ) )
   when
     Person( $name : name )
@@ -24,7 +24,7 @@ end
 
 rule "Test enabled expression 3"
     @ruleID(1234)
-    # using simple expressions 
+    // using simple expressions
     enabled ( 1 + 1 == 2 )
   when
     Person( $name : name )
@@ -34,7 +34,7 @@ end
 
 rule "Test enabled expression 4"
     @ruleID(1234)
-    # using a false expression 
+    // using a false expression
     enabled ( 1 + 1 == 5 )
   when
     Person( $name : name )

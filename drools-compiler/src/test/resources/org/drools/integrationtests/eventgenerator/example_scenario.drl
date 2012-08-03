@@ -7,7 +7,7 @@ import org.drools.integrationtests.eventgenerator.example.*;
 
 rule "Rule 1: check for expiry of sliding window (and reset window)"
     no-loop true
-    #salience 0
+    // salience 0
     when
         PseudoSessionClock ( $currentTime : currentTime )
         $sw : SlidingWindow ( state == SlidingWindow.DEFAULT, $windowStart : windowStart, $windowEnd : windowEnd < $currentTime )
@@ -20,7 +20,7 @@ end
 
 rule "Rule 2: collect specified objects within sliding window"
     no-loop true
-    #salience 0
+    // salience 0
     when
         $sw : SlidingWindow ( state == SlidingWindow.COLLECT, $windowStart : windowStart, $windowEnd : windowEnd )
         $evCount : Number()

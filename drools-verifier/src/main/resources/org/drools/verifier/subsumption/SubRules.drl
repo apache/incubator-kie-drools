@@ -45,7 +45,7 @@ rule "Find subsumptant sub rules"
             attributes["xor-group"] == $subRule1.attributes["xor-group"]
         )
 
-        # For every restriction in $subRule1 there is a subsumption to a restriction in $subRule2.
+        // For every restriction in $subRule1 there is a subsumption to a restriction in $subRule2.
         forall (
             $subPattern :SubPattern(
             ) from $subRule1.items

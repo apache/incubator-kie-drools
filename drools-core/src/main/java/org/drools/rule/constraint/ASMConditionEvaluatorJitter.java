@@ -538,9 +538,17 @@ public class ASMConditionEvaluatorJitter {
                 return jitAritmeticExpression((AritmeticExpression)exp);
             } else if (exp instanceof ArrayCreationExpression) {
                 return jitArrayCreationExpression((ArrayCreationExpression) exp);
+            } else if (exp instanceof CastExpression) {
+                return jitCastExpression((CastExpression) exp);
             } else {
                 throw new RuntimeException("Unknown expression: " + exp);
             }
+        }
+
+        private Class<?> jitCastExpression(CastExpression exp) {
+            jitExpression(exp.expression, Object.class);
+            cast(exp.getType());
+            return exp.getType();
         }
 
         private Class<?> jitArrayCreationExpression(ArrayCreationExpression exp) {
@@ -557,7 +565,7 @@ public class ASMConditionEvaluatorJitter {
         private Class<?> jitEvaluatedExpression(EvaluatedExpression exp, boolean firstInvocation, Class<?> currentClass) {
             if (exp.firstExpression != null) {
                 currentClass = jitExpression(exp.firstExpression, currentClass);
-                if (exp.firstExpression instanceof FixedExpression) {
+                if (exp.firstExpression instanceof FixedExpression || exp.firstExpression instanceof CastExpression) {
                     firstInvocation = false;
                 }
             }

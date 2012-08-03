@@ -46,8 +46,8 @@ global VerifierReport result;
 rule "Opposite LiteralRestrictions"
     when
         $left :LiteralRestriction(
-            # Not >= and <=, because ( a <=, a >= ) works.
-            # And not < or > because they are handled in a separate rule.
+            // Not >= and <=, because ( a <=, a >= ) works.
+            // And not < or > because they are handled in a separate rule.
             ( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
         )
 
@@ -55,12 +55,12 @@ rule "Opposite LiteralRestrictions"
             fieldPath == $left.fieldPath,
             valueType == $left.valueType,
             path != $left.path,
-            # Operator needs to be reversed to what the other one has.
+            // Operator needs to be reversed to what the other one has.
             eval( operator == MissingRange.getReversedOperator( $left.getOperator() )),
             valueAsString == $left.valueAsString
         )
 
-        # Check that there is not already a pair with these values.
+        // Check that there is not already a pair with these values.
         not Opposites(
             left == $left,
             right == $right
@@ -95,7 +95,7 @@ rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
             valueAsString == $left.valueAsString
         )
 
-        # Check that there is not already a pair with these values.
+        // Check that there is not already a pair with these values.
         not Opposites(
             left == $left,
             right == $right
@@ -129,7 +129,7 @@ rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
             valueAsString == $left.valueAsString
         )
 
-        # Check that there is not already a pair with these values.
+        // Check that there is not already a pair with these values.
         not Opposites(
             left == $left,
             right == $right
@@ -165,7 +165,7 @@ rule "Opposite LiteralRestrictions with ranges, less - greater for numbers"
             value > $left.value
         )
 
-        # Check that there is not already a pair with these values.
+        // Check that there is not already a pair with these values.
         not Opposites(
             left == $left,
             right == $right
@@ -200,7 +200,7 @@ rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal
             value < $left.value
         )
 
-        # Check that there is not already a pair with these values.
+        // Check that there is not already a pair with these values.
         not Opposites(
             left == $left,
             right == $right
@@ -228,11 +228,11 @@ rule "Opposite VariableRestrictions"
             path != $r1.path,
             variable.parentPath == $r1.variable.parentPath,
             variable.parentType == $r1.variable.parentType,
-            # Operator needs to be reverse to what the other one has.
+            // Operator needs to be reverse to what the other one has.
             eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
         )
 
-        # Check that there is not already a pair with these values.
+        // Check that there is not already a pair with these values.
         not Opposites(
             left == $r1,
             right == $r2

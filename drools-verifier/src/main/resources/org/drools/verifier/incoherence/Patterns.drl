@@ -76,7 +76,7 @@ rule "Incoherent Patterns in rule possibility"
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2
@@ -145,7 +145,7 @@ rule "Incoherent Patterns in rule possibility, variables"
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2
@@ -214,7 +214,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2
@@ -282,7 +282,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2
@@ -337,7 +337,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
         $r2 :LiteralRestriction(
             rulePath == $r1.rulePath,
             patternIsNot == false,
-            # It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
+            // It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
             ( operator != Operator.EQUAL && != Operator.NOT_EQUAL ),
             fieldPath == $r1.fieldPath,
             valueAsString == $r1.valueAsString
@@ -351,7 +351,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2
@@ -409,7 +409,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             fieldPath == $r1.fieldPath,
             variable.parentPath == $r1.variable.parentPath,
             variable.parentType == $r1.variable.parentType,
-            # It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
+            // It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
             ( operator != Operator.EQUAL && != Operator.NOT_EQUAL )
         )
 
@@ -421,7 +421,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2
@@ -489,7 +489,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2
@@ -538,7 +538,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
     when
         $r1 :VariableRestriction(
             patternIsNot == true,
-            # Equal is also a problem, but there is already a rule for that.
+            // Equal is also a problem, but there is already a rule for that.
             ( operator == Operator.LESS_OR_EQUAL || == Operator.GREATER_OR_EQUAL )
         )
 
@@ -559,7 +559,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             patternPath == $r2.patternPath
         )
 
-        # There is a problem if both of these are in the same SubRule.
+        // There is a problem if both of these are in the same SubRule.
         $rp :SubRule(
              items contains $pp1,
              items contains $pp2

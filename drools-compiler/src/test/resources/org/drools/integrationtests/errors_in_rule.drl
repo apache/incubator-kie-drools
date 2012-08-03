@@ -7,12 +7,12 @@ global java.lang.Integer five;
 
 rule "eval rule test"
     when
-        #some bad stuff here
+        // some bad stuff here
         Stilton()
         Cheese()
         Poison()
     then
-        #this is an error
+        // this is an error
         list.add( ;
 end  
 

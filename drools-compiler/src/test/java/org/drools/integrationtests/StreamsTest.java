@@ -551,7 +551,7 @@ public class StreamsTest extends CommonTestMethodBase {
                            "    when\n" +
                            "        String( ) from entry-point UsedEntryPoint\n" +
                            "    then\n" +
-                           "        # consequences\n" +
+                           "        // consequences\n" +
                            "end\n";
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, drl );

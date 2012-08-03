@@ -6,7 +6,7 @@ import org.drools.Cheese;
 rule "rule2"
     when
         Cheese( type : type, price : price, eval(price < 3))
-        #Cheese( type : type, price < 3)
+        // Cheese( type : type, price < 3)
     then
         insertLogical( new  Person( type ) );
 end

@@ -1,10 +1,10 @@
 package test
 
-#must be in the following order.
+// must be in the following order.
 import org.drools.Person
 import org.drools.Cheese
 
-#refer to test_expander.dsl
+// refer to test_expander.dsl
 expander test_expander.dsl
 
 global java.util.List messages;
@@ -14,13 +14,13 @@ global java.util.List messages;
 
 rule "my rule"
     when
-        #Person(name=="Bob", likes=="stilton")
-        #Cheese(type=="stilton")
+        // Person(name=="Bob", likes=="stilton")
+        // Cheese(type=="stilton")
         There is a person with the name of Bob who likes "http://foo.bar"
         There is some stilton cheese available
 
     then
         Add the message "We have a winner"
-        #messages.add("We have a winner");
+        // messages.add("We have a winner");
 end
 

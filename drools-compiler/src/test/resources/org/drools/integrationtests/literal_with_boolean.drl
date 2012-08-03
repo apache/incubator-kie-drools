@@ -8,7 +8,7 @@ global java.util.List list;
 rule "Literal with boolean"
 
     when
-        #conditions
+        // conditions
         alivePerson : PersonInterface(alive ==  true)
     then
         list.add( alivePerson );

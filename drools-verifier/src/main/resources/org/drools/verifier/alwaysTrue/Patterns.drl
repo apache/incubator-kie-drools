@@ -74,8 +74,8 @@ rule "Pattern possibility that is always true"
             patternPath == $p.path
         )
 
-        # For each restriction in pattern possibility
-        # there needs to be an opposite.
+        // For each restriction in pattern possibility
+        // there needs to be an opposite.
         forall(
             $r :Restriction(
                 this memberOf $pp.items
@@ -114,11 +114,11 @@ rule "Pattern that is always true"
     when
         $p :Pattern()
 
-        # Only report the ones that have restrictions.
+        // Only report the ones that have restrictions.
         exists SubPattern( patternPath == $p.path )
 
-        # For each restriction in each pattern possibility for current pattern,
-        # there needs to be an opposite.
+        // For each restriction in each pattern possibility for current pattern,
+        // there needs to be an opposite.
         forall(
             $pp :SubPattern(
                 patternPath == $p.path

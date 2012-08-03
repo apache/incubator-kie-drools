@@ -39,13 +39,13 @@ rule "Range check for integers, if smaller than or equal is missing"
     when
         $f :Field( fieldType == Field.INT )
 
-        # Foo( bar > 42 )
+        // Foo( bar > 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
             operator == Operator.GREATER
         )
 
-        # Check if Foo( bar == 42 || <= 42 ) is missing.
+        // Check if Foo( bar == 42 || <= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
@@ -71,13 +71,13 @@ rule "Range check for integers, if greater than or equal is missing"
     when
         $f :Field( fieldType == Field.INT )
 
-        # Foo( bar > 42 )
+        // Foo( bar > 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
             operator == Operator.LESS
         )
 
-        # Check if Foo( bar == 42 || <= 42 ) is missing.
+        // Check if Foo( bar == 42 || <= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
@@ -105,13 +105,13 @@ rule "Range check for integers, equal and greater than"
     when
         $f :Field( fieldType == Field.INT )
 
-        # Foo( bar == 42 )
+        // Foo( bar == 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
         )
 
-        # Check if Foo( bar > 42 || >= 42 ) is missing.
+        // Check if Foo( bar > 42 || >= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ),
@@ -119,7 +119,7 @@ rule "Range check for integers, equal and greater than"
             value == $r.value
         )
 
-        # Check if Foo( bar == 43 || >= 43 ) is missing.
+        // Check if Foo( bar == 43 || >= 43 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
@@ -147,13 +147,13 @@ rule "Range check for integers, equal and smaller than"
     when
         $f :Field( fieldType == Field.INT )
 
-        # Foo( bar == 42 )
+        // Foo( bar == 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
         )
 
-        # Check if Foo( bar < 42 || <= 42 ) is missing.
+        // Check if Foo( bar < 42 || <= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ),
@@ -161,7 +161,7 @@ rule "Range check for integers, equal and smaller than"
             value == $r.value
         )
 
-        # Check if Foo( bar == 41 || <= 41 ) is missing.
+        // Check if Foo( bar == 41 || <= 41 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),

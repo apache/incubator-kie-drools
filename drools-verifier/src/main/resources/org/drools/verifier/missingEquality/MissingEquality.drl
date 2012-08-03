@@ -48,9 +48,9 @@ global VerifierReport result;
 rule "Missing restriction in LiteralRestrictions"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        #
-        # == and !=
-        #
+        //
+        // == and !=
+        //
         (
                 $r :LiteralRestriction(
                     operator == Operator.EQUAL
@@ -73,9 +73,9 @@ rule "Missing restriction in LiteralRestrictions"
                     patternIsNot == $r.patternIsNot,
                     valueAsString == $r.valueAsString
                 )
-        #
-        # matches and not matches
-        #
+        //
+        // matches and not matches
+        //
         ) or (
                 $r :LiteralRestriction(
                     operator == MatchesEvaluatorsDefinition.MATCHES,

@@ -49,7 +49,7 @@ import java.util.HashMap;
 rule "Find redundant LHS"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
-        # Check that VerifierRule $left and $right have redundant fields.
+        // Check that VerifierRule $left and $right have redundant fields.
         $left :VerifierRule()
 
         $right :VerifierRule(
@@ -92,8 +92,8 @@ rule "Find redundant LHS"
 end
 
 rule "Find equivalent Rules" extends "Find redundant LHS"
-    # This rule needs to fire after "Find redundant rules"
-    # or the not Reduncancy( ... ) does not check correctly.
+    // This rule needs to fire after "Find redundant rules"
+    // or the not Reduncancy( ... ) does not check correctly.
     salience -1
     when
 
@@ -102,7 +102,7 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
             items contains $right
         )
 
-        # RHS should not be redundant
+        // RHS should not be redundant
         $leftConsequence : Consequence(
             path == $left.consequencePath,
             consequenceType == $left.consequenceType
@@ -161,7 +161,7 @@ rule "Find redundant rules" extends "Find redundant LHS"
             items contains $right
         )
 
-        # RHS needs to be redundant
+        // RHS needs to be redundant
         $leftConsequence : Consequence(
             path == $left.consequencePath,
             consequenceType == $left.consequenceType
@@ -235,7 +235,7 @@ rule "Find subsumptant rule possibilities from different rules"
             right == $right
         )
 
-        # No redundacy
+        // No redundacy
         not Subsumption(
             left == $subsumption.right,
             right == $subsumption.left

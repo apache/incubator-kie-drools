@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.base.EvaluatorWrapper;
@@ -33,6 +32,10 @@ import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.OperatorDescr;
 import org.drools.lang.descr.RelationalExprDescr;
+import org.drools.rule.builder.RuleBuildContext;
+
+import static org.drools.core.util.ClassUtils.findClass;
+import static org.drools.rule.builder.dialect.DialectUtil.findClassByName;
 
 public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter {
     
@@ -83,14 +86,13 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
             processConnectiveDescr( sbuilder, base, parentPriority, isInsideRelCons, context );
 
         } else if ( base instanceof AtomicExprDescr ) {
-            AtomicExprDescr atom = (AtomicExprDescr) base;
-            String expr = atom.getExpression().trim();
-            Matcher m = evalRegexp.matcher( atom.getExpression() );
-            if (m.find()) {
-                // stripping "eval" as it is no longer necessary
-                expr = expr.substring( expr.indexOf( '(' ) + 1,
-                                       expr.lastIndexOf( ')' ) );
-            }
+            AtomicExprDescr atomicExpr = (AtomicExprDescr) base;
+            String expr = atomicExpr.getExpression().trim();
+            expr = processEval(expr);
+            String[] instanceofAndCastedExpr = processInlineCast( expr, atomicExpr, context );
+            expr = instanceofAndCastedExpr != null ?
+                    instanceofAndCastedExpr[0] + instanceofAndCastedExpr[1] :
+                    processInferredCast(expr, atomicExpr, context);
             sbuilder.append( expr );
         } else if ( base instanceof BindingDescr ) {
             context.addBinding( (BindingDescr) base );
@@ -101,21 +103,17 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
             }
         } else if ( base instanceof RelationalExprDescr ) {
             RelationalExprDescr red = (RelationalExprDescr) base;
-            String left = dump( new StringBuilder(),
-                                red.getLeft(),
-                                Integer.MAX_VALUE,
-                                true,
-                                context ).toString(); // maximum precedence, so wrap any child connective in parenthesis
-            String right = dump( new StringBuilder(),
-                                 red.getRight(),
-                                 Integer.MAX_VALUE,
-                                 true,
-                                 context ).toString();
+            // maximum precedence, so wrap any child connective in parenthesis
+            StringBuilder left = dump(new StringBuilder(), red.getLeft(), Integer.MAX_VALUE, true, context);
+            StringBuilder right = red.getRight() instanceof AtomicExprDescr ?
+                    processRightAtomicExpr(left, (AtomicExprDescr)red.getRight(), context) :
+                    dump( new StringBuilder(), red.getRight(), Integer.MAX_VALUE, true, context);
+
             processRestriction( context,
                                 sbuilder,
-                                left,
+                                left.toString(),
                                 red.getOperatorDescr(),
-                                right );// maximum precedence, so wrap any child connective in parenthesis
+                                right.toString() );// maximum precedence, so wrap any child connective in parenthesis
         } else if ( base instanceof ExprConstraintDescr ) {
             DrlExprParser expr = new DrlExprParser();
             ConstraintConnectiveDescr result = expr.parse( ((ExprConstraintDescr) base).getExpression() );
@@ -134,6 +132,97 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
             }
         }
         return sbuilder;
+    }
+
+    private StringBuilder processRightAtomicExpr(StringBuilder left, AtomicExprDescr atomicExpr, MVELDumperContext context) {
+        String expr = atomicExpr.getExpression().trim();
+        expr = processEval(expr);
+        String[] instanceofAndCastedExpr = processInlineCast( expr, atomicExpr, context );
+        if (instanceofAndCastedExpr != null) {
+            expr = instanceofAndCastedExpr[1];
+            left.insert(0, instanceofAndCastedExpr[0]);
+        }
+        return new StringBuilder( expr );
+    }
+
+    String[] processInlineCast(String expr, AtomicExprDescr atomicExpr, MVELDumperContext context) {
+        // convert "field1#Class.field2" in "field1 instanceof Class && ((Class)field1).field2"
+        int sharpPos = expr.indexOf('#');
+        if (sharpPos < 0) {
+            return null;
+        }
+
+        String field1 = expr.substring(0, sharpPos).trim();
+        int sharpPos2 = expr.indexOf('#', sharpPos+1);
+        String part2 = sharpPos2 < 0 ? expr.substring(sharpPos+1).trim() : expr.substring(sharpPos+1, sharpPos2).trim();
+        String[] classAndField = splitInClassAndField(part2, context);
+        if (classAndField == null) {
+            return null;
+        }
+        String className = classAndField[0];
+        String field2 = classAndField[1];
+
+        String castedExpression = "((" + className + ")" + field1 + ")." + field2;
+        String instanceofExpression = "";
+        if (sharpPos2 >= 0) {
+            String[] instanceofAndCastedExpr = processInlineCast( castedExpression + expr.substring(sharpPos2), atomicExpr, context );
+            if (instanceofAndCastedExpr == null) {
+                return null;
+            } else {
+                instanceofExpression = instanceofAndCastedExpr[0];
+                castedExpression = instanceofAndCastedExpr[1];
+            }
+        }
+
+        atomicExpr.setRewrittenExpression(castedExpression);
+        instanceofExpression = field1 + " instanceof " + className + " && " + instanceofExpression;
+        return new String[] { instanceofExpression, castedExpression };
+    }
+
+    private String processInferredCast(String expr, AtomicExprDescr atomicExpr, MVELDumperContext context) {
+        Map.Entry<String, String> castEntry = context.getInferredCast(expr);
+        if (castEntry == null) {
+            return expr;
+        }
+        String castedExpr = "((" + castEntry.getValue() + ")" + castEntry.getKey() + ")" + expr.substring(castEntry.getKey().length());
+        atomicExpr.setRewrittenExpression(castedExpr);
+        return castedExpr;
+    }
+
+    private String processEval(String expr) {
+        // stripping "eval" as it is no longer necessary
+        return evalRegexp.matcher( expr ).find() ? expr.substring( expr.indexOf( '(' ) + 1, expr.lastIndexOf( ')' ) ) : expr;
+    }
+
+    private String[] splitInClassAndField(String expr, MVELDumperContext context) {
+        String[] split = expr.split("\\.");
+        if (split.length < 3) {
+            return split.length == 2 ? split : null;
+        }
+
+        RuleBuildContext ruleContext = context.getRuleContext();
+        // check non-FQN case first
+        if (findClassByName(ruleContext, split[0]) != null) {
+            return new String[] { split[0], concatDotSeparated(split, 1, split.length) };
+        }
+
+        ClassLoader cl = ruleContext.getPackageBuilder().getRootClassLoader();
+        for (int i = split.length-1; i > 1; i++) {
+            String className = concatDotSeparated(split, 0, i);
+            if (findClass(className, cl) != null) {
+                return new String[] { className, concatDotSeparated(split, i, split.length) };
+            }
+        }
+
+        return null;
+    }
+
+    private String concatDotSeparated(String[] parts, int start, int end) {
+        StringBuilder sb = new StringBuilder( parts[start] );
+        for (int i = start+1; i < end; i++) {
+            sb.append(".").append(parts[i]);
+        }
+        return sb.toString();
     }
 
     protected void processConnectiveDescr( StringBuilder sbuilder,
@@ -209,6 +298,9 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
                     .append( right )
                     .append( evaluatorSufix( operator.isNegated() ) );
         } else if ( lookupBasicOperator( operator.getOperator() ) ) {
+            if (operator.getOperator().equals("instanceof")) {
+                context.addInferredCast(left, right);
+            }
             rewriteBasicOperator( context, sbuilder, left, operator, right );
         } else {
             // rewrite operator as a function call
@@ -283,12 +375,39 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         protected int                        counter;
         protected List<BindingDescr>         bindings;
         protected Map<String, Class<?>>      localTypes;
+        private   RuleBuildContext           ruleContext;
+        private   Map<String, String>        inferredCasts;
 
         public MVELDumperContext() {
             this.aliases = new HashMap<String, OperatorDescr>();
             this.counter = 0;
             this.bindings = null;
             this.localTypes = null;
+        }
+
+        public void clear() {
+            this.aliases.clear();
+            this.counter = 0;
+            this.bindings = null;
+            this.localTypes = null;
+        }
+
+        public void addInferredCast(String var, String cast) {
+            if (inferredCasts == null) {
+                inferredCasts = new HashMap<String, String>();
+            }
+            inferredCasts.put(var, cast);
+        }
+
+        public Map.Entry<String, String> getInferredCast(String expr) {
+            if (inferredCasts != null) {
+                for (Map.Entry<String, String> entry : inferredCasts.entrySet()) {
+                    if (expr.matches(entry.getKey() + "\\s*\\..+")) {
+                        return entry;
+                    }
+                }
+            }
+            return null;
         }
 
         /**
@@ -314,7 +433,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
          */
         public String createAlias( OperatorDescr operator ) {
             String alias = operator.getOperator() + counter++;
-            operator.setAlias( alias );
+            operator.setAlias(alias);
             this.aliases.put( alias,
                               operator );
             return alias;
@@ -342,6 +461,15 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
 
         public void setLocalTypes(Map<String, Class<?>> localTypes) {
             this.localTypes = localTypes;
+        }
+
+        public RuleBuildContext getRuleContext() {
+            return ruleContext;
+        }
+
+        public MVELDumperContext setRuleContext(RuleBuildContext ruleContext) {
+            this.ruleContext = ruleContext;
+            return this;
         }
     }
 }

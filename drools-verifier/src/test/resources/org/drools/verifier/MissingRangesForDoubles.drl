@@ -22,112 +22,112 @@ rule "Double gap rule 1"
     when
         DoublePattern1( value == 10.0 )
     then
-        # gap > 10 <.
+        // gap > 10 <.
 end
 
 rule "Double gap rule 2"
     when
         DoublePattern2( value >= 15.0 )
     then
-        # gap < 15.
+        // gap < 15.
 end
 
 rule "Double gap rule 3"
     when
         DoublePattern3( value <= 15.0 )
     then
-        # gap > 15.
+        // gap > 15.
 end
 
 rule "Double gap rule 4a"
     when
         DoublePattern4( value > 25.0 )
     then
-        # gap == 25.
+        // gap == 25.
 end
 
 rule "Double gap rule 4b"
     when
         DoublePattern4( value < 25.0 )
     then
-        # gap == 25.
+        // gap == 25.
 end
 
 rule "Double gap rule 5a"
     when
         DoublePattern5( value > 100.0 )
     then
-        # gap 100 > x > 50.
+        // gap 100 > x > 50.
 end
 
 rule "Double gap rule 5b"
     when
         DoublePattern5( value < 50.0 )
     then
-        # gap 100 > x > 50.
+        // gap 100 > x > 50.
 end
 
 rule "Double gap rule 6a"
     when
         DoublePattern6( value > 350.0 )
     then
-        # gap < 350.
+        // gap < 350.
 end
 
 rule "Double gap rule 6b"
     when
         DoublePattern6( value == 350.0 )
     then
-        # gap < 350.
+        // gap < 350.
 end
 
 rule "Double gap rule 7a"
     when
         DoublePattern7( value < 55.0 )
     then
-        # gap > 55.
+        // gap > 55.
 end
 
 rule "Double gap rule 7b"
     when
         DoublePattern7( value == 55.0 )
     then
-        # gap > 55.
+        // gap > 55.
 end
 
 rule "Double gap rule 8a"
     when
         DoublePattern8( value < 333.0 )
     then
-        # No gap
+        // No gap
 end
 
 rule "Double gap rule 8b"
     when
         DoublePattern8( value == 333.0 )
     then
-        # No gap
+        // No gap
 end
 
 rule "Double gap rule 8c"
     when
         DoublePattern8( value > 333.0 )
     then
-        # No gap
+        // No gap
 end
 
 rule "Double gap rule 9a"
     when
         DoublePattern9( value >= 400.0 )
     then
-        # gap 400 > x > 399
+        // gap 400 > x > 399
 end
 
 rule "Double gap rule 9b"
     when
         DoublePattern9( value <= 399.0 )
     then
-        # gap 400 > x > 399
+        // gap 400 > x > 399
 end
 
 /*

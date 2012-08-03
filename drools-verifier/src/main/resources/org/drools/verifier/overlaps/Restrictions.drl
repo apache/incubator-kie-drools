@@ -48,7 +48,7 @@ global VerifierReport result;
 //
 rule "Find overlapping number restrictions"
     when
-        # There is subsumption between two restrictions
+        // There is subsumption between two restrictions
 
         $left :NumberRestriction()
         $right :NumberRestriction(
@@ -62,7 +62,7 @@ rule "Find overlapping number restrictions"
             right.verifierComponentType == $right.verifierComponentType
         )
 
-        # There is no restriction between these two restrictions.
+        // There is no restriction between these two restrictions.
         not $center :NumberRestriction(
                 fieldPath == $left.fieldPath,
                 value == $left.value,
@@ -74,7 +74,7 @@ end
 
 rule "Find overlapping literal restrictions"
     when
-        # There is subsumption between two restrictions
+        // There is subsumption between two restrictions
 
         $left :LiteralRestriction()
         $right :LiteralRestriction(
@@ -88,7 +88,7 @@ rule "Find overlapping literal restrictions"
             right.verifierComponentType == $right.verifierComponentType
         )
 
-        # There is no restriction between these two restrictions.
+        // There is no restriction between these two restrictions.
         not $center :LiteralRestriction(
                 fieldPath == $left.fieldPath,
                 valueAsString == $left.valueAsString,
@@ -100,7 +100,7 @@ end
 
 rule "Finddsds overlapping literal restrictions"
     when
-        # There is subsumption between two restrictions
+        // There is subsumption between two restrictions
 
         $left :LiteralRestriction()
         $right :LiteralRestriction(
