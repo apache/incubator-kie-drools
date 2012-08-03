@@ -36,6 +36,7 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProb
 import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.JustInTimeFilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ProbabilityMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
@@ -118,28 +119,18 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
 
-        boolean shuffledOrProbability;
-        if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-            shuffledOrProbability = false;
-        } else {
-            if (resolvedCacheType.isCached()) {
-                shuffledOrProbability = true;
-                // the baseMoveSelector and lower should not be random as they are going to get cached completely
-                resolvedSelectionOrder = SelectionOrder.ORIGINAL;
-            } else {
-                shuffledOrProbability = false;
-            }
-        }
-
+        // baseMoveSelector and lower should not be SelectionOrder.RANDOM as they are going to get cached completely
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, minimumCacheType);
+                resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder, minimumCacheType);
 
+        boolean alreadyCached = false;
         if (moveFilterClass != null) {
             SelectionFilter moveFilter = ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass);
             MoveSelector filteringMoveSelector;
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringMoveSelector = new JustInTimeFilteringMoveSelector(moveSelector,
                         resolvedCacheType, moveFilter);
+                alreadyCached = true;
             } else {
                 filteringMoveSelector = new CachingFilteringMoveSelector(moveSelector,
                         resolvedCacheType, moveFilter);
@@ -158,13 +149,15 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                     "moveProbabilityWeightFactoryClass", moveProbabilityWeightFactoryClass);
             moveSelector = new ProbabilityMoveSelector(moveSelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
-        } else if (shuffledOrProbability) {
-            moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
+            alreadyCached = true;
         }
-        // TODO this is broken because it introduces unneeded caching on level 2 and 3 deep
-//        if (!alreadyCached && resolvedCacheType.isCached()) {
-//            moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType);
-//        }
+        if (resolvedCacheType.isCached() && !alreadyCached) {
+            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+                moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType);
+            } else {
+                moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
+            }
+        }
         return moveSelector;
     }
 
