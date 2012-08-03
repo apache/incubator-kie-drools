@@ -408,5 +408,77 @@ public class ExtendsTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+
+
+    @Test
+    public void testExtendFromOtherPackage() throws Exception {
+
+        String s1 = "package org.drools.test.pack1;\n" +
+                "\n" +
+                "declare Base\n" +
+                "  id    : int\n" +
+                "end\n" +
+                "\n" +
+                "declare Sub extends Base\n" +
+                "  field : int\n" +
+                "end\n";
+
+        String s2 = "package org.drools.test.pack2;\n" +
+                "\n" +
+                "import org.drools.test.pack1.Base;\n" +
+                "import org.drools.test.pack1.Sub;\n" +
+                "\n" +
+                "declare Sub end\n" +
+                "\n" +
+                "declare SubChild extends Sub\n" +
+                "  field2 : int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new SubChild( 1, 2, 3 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Touch Base\"\n" +
+                "when\n" +
+                "  $b : Base()\n" +
+                "then\n" +
+                "  System.out.println( $b );\n" +
+                "end \n" +
+                "rule \"Touch Base 2\"\n" +
+                "when\n" +
+                "  $c : Sub()\n" +
+                "then\n" +
+                "  System.out.println( $c );\n" +
+                "end";
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors().toString() );
+            fail();
+        }
+        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+
+        KnowledgeBuilder kBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
+        kBuilder2.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder2.hasErrors() ) {
+            System.err.println( kBuilder2.getErrors().toString() );
+            fail();
+        }
+        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
+
+        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+
+        assertEquals( 3, kSession.fireAllRules() );
+    }
+
 }
 

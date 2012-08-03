@@ -849,7 +849,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         updateResults();
 
         // iterate and compile
-        if (this.ruleBase != null) {
+        if (! hasErrors() && this.ruleBase != null) {
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
                 pkgRegistry = this.pkgRegistryMap.get(ruleDescr.getNamespace());
                 this.ruleBase.addRule(pkgRegistry.getPackage(), pkgRegistry.getPackage().getRule(ruleDescr.getName()));
@@ -3294,10 +3294,17 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         //different superclasses -> Incompatible (TODO: check for hierarchy)
-        if (!oldDeclaration.getTypeClassDef().getSuperClass().equals(newDeclaration.getTypeClassDef().getSuperClass())){
-            throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" has a different"
-                    + " supperclass that its previous definition: "+newDeclaration.getTypeClassDef().getSuperClass()
-                    +" != "+oldDeclaration.getTypeClassDef().getSuperClass());
+        if ( !oldDeclaration.getTypeClassDef().getSuperClass().equals(newDeclaration.getTypeClassDef().getSuperClass()) ){
+            if ( oldDeclaration.getNature() == TypeDeclaration.Nature.DEFINITION
+                 && newDeclaration.getNature() == TypeDeclaration.Nature.DECLARATION
+                 && Object.class.getName().equals( newDeclaration.getTypeClassDef().getSuperClass() )
+                    ) {
+                // actually do nothing. The new declaration just recalls the previous definition, probably to extend it.
+            } else {
+                throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" has a different"
+                        + " superclass that its previous definition: "+newDeclaration.getTypeClassDef().getSuperClass()
+                        +" != "+oldDeclaration.getTypeClassDef().getSuperClass());
+            }
         }
 
         //different duration -> Incompatible
