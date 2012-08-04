@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,6 +67,7 @@ import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.internal.InternalResource;
 import org.drools.rule.Function;
+import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
@@ -720,9 +722,8 @@ public class KnowledgeAgentImpl
 
         if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
 
-            if ( kbuilder == null ) {
-                kbuilder = this.createKBuilder();
-            }
+
+            kbuilder = this.createKBuilder();
 
             kbuilder.add( resource,
                           ((InternalResource) resource).getResourceType() );
@@ -914,6 +915,18 @@ public class KnowledgeAgentImpl
                     AbstractRuleBase abstractRuleBase = (AbstractRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase;
                     CompositeClassLoader rootClassLoader = abstractRuleBase.getRootClassLoader();
 
+                    JavaDialectRuntimeData.TypeDeclarationClassLoader tdClassLoader = (JavaDialectRuntimeData.TypeDeclarationClassLoader)
+                            ((AbstractRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getTypeDeclarationClassLoader();
+
+                    JavaDialectRuntimeData jdata = (JavaDialectRuntimeData) newPackage.pkg.getDialectRuntimeRegistry().getDialectData( "java" );
+                    Map<String,byte[]> definedClasses = jdata.getClassDefinitions();
+                    for ( String className : definedClasses.keySet() ) {
+                        if ( tdClassLoader.getStore().getClassDefinition( className ) != null ) {
+                            jdata.removeClassDefinition( className );
+                            jdata.getStore().remove( className );
+                        }
+                    }
+
                     newPackage.pkg.getDialectRuntimeRegistry().onAdd( rootClassLoader );
                     newPackage.pkg.getDialectRuntimeRegistry().onBeforeExecute();
                     newPackage.pkg.getClassFieldAccessorStore().setClassFieldAccessorCache( abstractRuleBase.getClassFieldAccessorCache() );
@@ -1085,7 +1098,7 @@ public class KnowledgeAgentImpl
             }
         }
 
-        Set<KnowledgePackage> createdDistinctPackages = new HashSet<KnowledgePackage>();
+        Set<KnowledgePackage> createdDistinctPackages = new LinkedHashSet<KnowledgePackage>();
         for ( Resource resource : changeSetState.createdPackages.keySet() ) {
             createdDistinctPackages.addAll( changeSetState.createdPackages.get( resource ) );
         }

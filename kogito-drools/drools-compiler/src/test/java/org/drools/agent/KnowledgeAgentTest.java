@@ -980,16 +980,16 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
                 "\n" +
                 "rule \"Seq\"\n" +
                 "when\n" +
-                "  $s1 : SubEvent()\n" +
-                "  $s2 : SubEvent( this after $s1 )\n" +
+                "  $s1 : SubEvent( id == 1 )\n" +
+                "  $s2 : SubEvent( id == 2, this after[0,10s] $s1 )\n" +
                 "then\n" +
                 "  System.out.println( $s1 + \" after \" + $s1 );\n" +
                 "end \n" +
                 "\n" +
                 "rule \"Seq 2 \"\n" +
                 "when\n" +
-                "  $s1 : Event()\n" +
-                "  $s2 : Event( this after $s1 )\n" +
+                "  $s1 : Event( id == 1 )\n" +
+                "  $s2 : Event( id == 2, this after[0,10s] $s1 )\n" +
                 "then\n" +
                 "  System.out.println( $s1 + \" after II \" + $s1 );\n" +
                 "end";

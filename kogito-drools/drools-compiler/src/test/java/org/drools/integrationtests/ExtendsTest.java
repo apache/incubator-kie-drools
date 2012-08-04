@@ -489,6 +489,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     public void testInheritAnnotationsInOtherPackage() throws Exception {
 
         String s1 = "package org.drools.test.pack1;\n" +
+                "global java.util.List list;" +
                 "\n" +
                 "declare Event\n" +
                 "@role(event)" +
@@ -500,12 +501,14 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  $s1 : Event()\n" +
                 "then\n" +
                 "  System.out.println( $s1 );\n" +
+                "  list.add( $s1.getId() );\n " +
                 "end";
 
 
         String s2 = "package org.drools.test.pack2;\n" +
                 "\n" +
                 "import org.drools.test.pack1.Event;\n" +
+                "global java.util.List list;" +
                 "\n" +
                 "declare Event end\n" +
                 "\n" +
@@ -515,23 +518,26 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +
+                "  list.add( 0 );\n" +
                 "  insert( new SubEvent( 1 ) );\n" +
                 "  insert( new SubEvent( 2 ) );\n" +
                 "end\n" +
                 "\n" +
                 "rule \"Seq\"\n" +
                 "when\n" +
-                "  $s1 : SubEvent()\n" +
-                "  $s2 : SubEvent( this after $s1 )\n" +
+                "  $s1 : SubEvent( id == 1 )\n" +
+                "  $s2 : SubEvent( id == 2, this after[0,10s] $s1 )\n" +
                 "then\n" +
+                "  list.add( 3 );\n" +
                 "  System.out.println( $s1 + \" after \" + $s1 );\n" +
                 "end \n" +
                 "\n" +
                 "rule \"Seq 2 \"\n" +
                 "when\n" +
-                "  $s1 : Event()\n" +
-                "  $s2 : Event( this after $s1 )\n" +
+                "  $s1 : Event( id == 1 )\n" +
+                "  $s2 : Event( id == 2, this after[0,10s] $s1 )\n" +
                 "then\n" +
+                "  list.add( 4 );\n" +
                 "  System.out.println( $s1 + \" after II \" + $s1 );\n" +
                 "end";
 
@@ -558,15 +564,23 @@ public class ExtendsTest extends CommonTestMethodBase {
         kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
 
         StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        kSession.setGlobal( "list", list );
 
-        int n = kSession.fireAllRules();
+        kSession.fireAllRules();
 
         for ( Object o : kSession.getObjects() ) {
             FactHandle h = kSession.getFactHandle( o );
             assertTrue( h instanceof EventFactHandle );
         }
 
-        assertEquals( 5, n );
+        System.out.println( list );
+        assertEquals( 5, list.size() );
+        assertTrue( list.contains( 0 ) );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+        assertTrue( list.contains( 3 ) );
+        assertTrue( list.contains( 4 ) );
 
     }
 
