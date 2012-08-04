@@ -44,9 +44,12 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                                                                    .setParameter("language", language)
                                                                    .getResultList();
     }
-    
+    //@TODO: There is no test for this method! 
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return em.createNamedQuery("TasksAssignedAsPotentialOwnerWithGroups").setParameter("userId", userId)
+                                                                   .setParameter("groupIds", groupIds) 
+                                                                   .setParameter("language", language)
+                                                                   .getResultList();
     }
     
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult) {
@@ -69,18 +72,9 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     
     public List<TaskSummary> getTasksOwned(String userId) {
         
-        List<TaskSummary> taskOwned = em.createQuery("select"
-                + "    new org.jboss.human.interactions.model.TaskSummary(\n"
-                + "    t.id,\n"
-                + "    t.status,\n"
-                + "    t.skipable,\n"
-                + "    t.actualOwner,\n"
-                + "    t.createdTime)\n"
-                + "from\n"
-                + "    TaskInstance t \n"
-                + "where\n"
-                + "    t.actualOwner.id = :userId and\n"
-                + "    t.expirationTime is null").setParameter("userId", userId).getResultList();
+        List<TaskSummary> taskOwned = em.createNamedQuery("TasksOwned")
+                    .setParameter("userId", userId)
+                    .setParameter("language", "en-UK").getResultList();
         
         return taskOwned;
         
