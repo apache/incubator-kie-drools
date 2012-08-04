@@ -2578,7 +2578,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         byte[] d = tb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
-                        dialect.write( resourceName, d );
+                        if ( ruleBase != null ) {
+                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
+                        } else {
+                            dialect.write( resourceName, d );
+                        }
                     } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to compile declared trait " + fullName +
@@ -2591,7 +2595,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         byte[] d = eb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
-                        dialect.write( resourceName, d );
+                        if ( ruleBase != null ) {
+                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
+                        } else {
+                            dialect.write( resourceName, d );
+                        }
                     } catch ( Exception e ) {
                         e.printStackTrace();
                         this.results.add( new TypeDeclarationError( typeDescr,
@@ -2606,7 +2614,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         byte[] d = cb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
-                        dialect.write( resourceName, d );
+                        if ( ruleBase != null ) {
+                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
+                        }
+                        else {
+                            dialect.write( resourceName, d );
+                        }
                     } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to create a class for declared type " + fullName +
