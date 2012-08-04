@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
+  <benchmarkDirectory>local/data/machinereassignment/template</benchmarkDirectory>
   <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
@@ -56,8 +56,10 @@
       </customSolverPhase>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>entityTabu7-2000</name>
+<#list [500, 1000, 2000, 4000] as minimalAcceptedSelection>
+<#list [5, 7, 9, 11] as planningEntityTabuSize>
+    <solverBenchmark>
+    <name>entityTabu${planningEntityTabuSize}-mas${minimalAcceptedSelection}</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
@@ -68,98 +70,36 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
+          <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
-  <!--<solverBenchmark>-->
-    <!--<name>entityTabu7-fading7-2000</name>-->
-    <!--<solver>-->
-      <!--<customSolverPhase>-->
-        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
-      <!--</customSolverPhase>-->
-      <!--<localSearch>-->
-        <!--<unionMoveSelector>-->
-          <!--<changeMoveSelector/>-->
-          <!--<swapMoveSelector/>-->
-        <!--</unionMoveSelector>-->
-        <!--<acceptor>-->
-          <!--<planningEntityTabuSize>7</planningEntityTabuSize>-->
-          <!--<fadingPlanningEntityTabuSize>7</fadingPlanningEntityTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<minimalAcceptedSelection>2000</minimalAcceptedSelection>-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
-  <!--<solverBenchmark>-->
-    <!--<name>entityTabu5-fading10-2000</name>-->
-    <!--<solver>-->
-      <!--<customSolverPhase>-->
-        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
-      <!--</customSolverPhase>-->
-      <!--<localSearch>-->
-        <!--<unionMoveSelector>-->
-          <!--<changeMoveSelector/>-->
-          <!--<swapMoveSelector/>-->
-        <!--</unionMoveSelector>-->
-        <!--<acceptor>-->
-          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
-          <!--<fadingPlanningEntityTabuSize>10</fadingPlanningEntityTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<minimalAcceptedSelection>2000</minimalAcceptedSelection>-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
-  <solverBenchmark>
-    <name>lateAcceptance1000</name>
+</#list>
+<#list [500, 1000, 2000, 4000] as lateAcceptanceSize>
+    <solverBenchmark>
+    <name>lateAcceptance${lateAcceptanceSize}-mas${minimalAcceptedSelection}</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>
-          </changeMoveSelector>
-          <swapMoveSelector>
-          </swapMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <lateAcceptanceSize>1000</lateAcceptanceSize>
+          <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection>
+          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>lateAcceptance2000</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector>
-          </changeMoveSelector>
-          <swapMoveSelector>
-          </swapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <lateAcceptanceSize>2000</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
+</#list>
+</#list>
 </plannerBenchmark>

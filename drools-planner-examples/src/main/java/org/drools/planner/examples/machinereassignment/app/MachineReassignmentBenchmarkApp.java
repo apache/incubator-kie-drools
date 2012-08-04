@@ -26,6 +26,8 @@ public class MachineReassignmentBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/machinereassignment/benchmark/machineReassignmentStepLimitBenchmarkConfig.xml";
     public static final String SCORE_DIRECTOR_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/machinereassignment/benchmark/machineReassignmentScoreDirectorBenchmarkConfig.xml";
+    public static final String TEMPLATE_BENCHMARK_CONFIG_TEMPLATE
+            = "/org/drools/planner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfigTemplate.xml.ftl";
 
     public static void main(String[] args) {
         String benchmarkConfig;
@@ -36,6 +38,10 @@ public class MachineReassignmentBenchmarkApp extends CommonBenchmarkApp {
                 benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
             } else if (args[0].equals("scoreDirector")) {
                 benchmarkConfig = SCORE_DIRECTOR_BENCHMARK_CONFIG;
+            } else if (args[0].equals("template")) {
+                benchmarkConfig = TEMPLATE_BENCHMARK_CONFIG_TEMPLATE;
+                new MachineReassignmentBenchmarkApp().buildFromTemplateAndBenchmark(benchmarkConfig);
+                return;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
