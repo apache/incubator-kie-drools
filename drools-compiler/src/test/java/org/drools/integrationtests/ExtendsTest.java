@@ -493,7 +493,15 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "declare Event\n" +
                 "@role(event)" +
                 "  id    : int\n" +
-                "end\n";
+                "end\n" +
+                "\n" +
+                "rule \"X\"\n" +
+                "when\n" +
+                "  $s1 : Event()\n" +
+                "then\n" +
+                "  System.out.println( $s1 );\n" +
+                "end";
+
 
         String s2 = "package org.drools.test.pack2;\n" +
                 "\n" +
@@ -532,7 +540,7 @@ public class ExtendsTest extends CommonTestMethodBase {
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
 
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
         kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
 
         if ( kBuilder.hasErrors() ) {
@@ -547,9 +555,7 @@ public class ExtendsTest extends CommonTestMethodBase {
         if ( kBuilder2.hasErrors() ) {
             fail( kBuilder2.getErrors().toString() );
         }
-
-//        THIS IS NOT NECESSARY SINCE WE'RE ALREADY USING A KBASE-DRIVEN BUILDER?
-//        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
+        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
 
         StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
 
@@ -560,7 +566,7 @@ public class ExtendsTest extends CommonTestMethodBase {
             assertTrue( h instanceof EventFactHandle );
         }
 
-        assertEquals( 3, n );
+        assertEquals( 5, n );
 
     }
 
