@@ -2622,6 +2622,15 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.abortProcessInstance(processInstance.getId());
         assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
+    
+    public void testScriptTaskWithVariableByName() throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("myVar", "test");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ProcessWithVariableName.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-ProcessWithVariableName", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBaseFactory

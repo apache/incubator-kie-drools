@@ -70,6 +70,7 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
 		parser.startElementBuilder(localName, attrs);
 
 		final String id = attrs.getValue("id");
+		final String name = attrs.getValue("name");
 		final String itemSubjectRef = attrs.getValue("itemSubjectRef");
 
 		Object parent = parser.getParent();
@@ -79,7 +80,12 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
                 contextContainer.getDefaultContext(VariableScope.VARIABLE_SCOPE);
 			List variables = variableScope.getVariables();
 			Variable variable = new Variable();
-			variable.setName(id);
+			// if name is given use it as variable name instead of id
+			if (name != null && name.length() > 0) {
+			    variable.setName(name);
+			} else {
+			    variable.setName(id);
+			}
 			// retrieve type from item definition
 			DataType dataType = new ObjectDataType();
 			Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
