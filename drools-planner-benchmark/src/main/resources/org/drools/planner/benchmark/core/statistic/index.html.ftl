@@ -194,7 +194,11 @@
                                                 </#if>
                                             </#if>
                                         </#list>
-                                        <td>${solverBenchmark.averageWorstScoreDifferencePercentage!""}</td>
+                                    <#if !solverBenchmark.averageWorstScoreDifferencePercentage??>
+                                        <td></td>
+                                    <#else>
+                                        <td>${solverBenchmark.averageWorstScoreDifferencePercentage.toString(.locale)}</td>
+                                    </#if>
                                     </tr>
                                 </#list>
                                 </table>
