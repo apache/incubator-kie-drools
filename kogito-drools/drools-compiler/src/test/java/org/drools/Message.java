@@ -114,4 +114,11 @@ public class Message implements Serializable {
     public void addToList(final String s) {
         this.list.add( s );
     }
+
+    public String toString() {
+        return "Message{" +
+                "status=" + status +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
