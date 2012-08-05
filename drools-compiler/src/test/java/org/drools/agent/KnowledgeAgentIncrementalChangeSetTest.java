@@ -263,7 +263,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
      * drl file to change rule2 with rule3.
      * @throws Exception
      */
-    @Test @Ignore
+    @Test
     public void testMultipleRulesOnFileUrlIncremental() throws Exception {
 
         File f1 = fileManager.write( "rules.drl",
@@ -292,7 +292,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
-        ksession.insert( "String1" );
+        FactHandle h = ksession.insert( "String1" );
         ksession.fireAllRules();
 
         assertEquals( 2,
@@ -301,6 +301,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         assertTrue( list.contains( "rule2" ) );
 
         list.clear();
+        ksession.retract( h );
 
         fileManager.write( "rules.drl",
                             createLhsRule( new String[]{"rule1", "rule3"},
