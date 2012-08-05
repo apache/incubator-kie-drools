@@ -145,7 +145,7 @@ public class KnowledgeStoreServiceImpl
     }
 
     private KnowledgeSessionConfiguration mergeConfig(KnowledgeSessionConfiguration configuration) {
-        ((SessionConfiguration) configuration).addProperties( configProps );
+        ((SessionConfiguration) configuration).addPropertiesLast( configProps );
         ((SessionConfiguration) configuration).setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
         return configuration;
     }
