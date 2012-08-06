@@ -153,6 +153,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         }
         if (resolvedCacheType.isCached() && !alreadyCached) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+                // TODO this is pretty pointless for MoveListFactoryConfig, because MoveListFactory caches
                 moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType);
             } else {
                 moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
