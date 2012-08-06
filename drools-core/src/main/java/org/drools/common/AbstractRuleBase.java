@@ -700,7 +700,9 @@ abstract public class AbstractRuleBase
         existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
                                                     newDecl.getExpirationOffset() ) );
 
-        if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) ) {
+        if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) && newDecl.isNovel() ) {
+            // At this point, the definitions must be equivalent.
+            // So the only illegal case is a novel definition of an already existing type
             existingDecl.setNovel( mergeLeft( existingDecl.getTypeName(),
                                               "Unable to merge @novel attribute for type declaration of class:",
                                               existingDecl.isNovel(),
