@@ -4,6 +4,10 @@ options {
     language = Java;
 }
 
+tokens {
+    SHARP;
+}
+
 @header {
     package org.drools.lang;
 
@@ -51,6 +55,14 @@ options {
             input = "\"" + input + "\"";
         }
         return input;
+    }
+
+    public boolean isValidBashComment() {
+        try {
+            return input.substring(input.index() - input.getCharPositionInLine(), input.index() - 2).trim().length() == 0;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }
 
@@ -296,15 +308,15 @@ PLUS	:	'+'
     ;
 
 SH_STYLE_SINGLE_LINE_COMMENT
-    : {$pos == 0}?=> SPACES* '#' (~('\r'|'\n'))* EOL
-        { $channel=HIDDEN; setText("//"+getText().substring(1));}
-    ;
-
-SHARP   :	'#'
-    ;
-
-fragment
-SPACES : ' '| '\t'
+    :   '#'
+    {
+        if ( !isValidBashComment() ) {
+            state.type = SHARP;
+            return;
+        }
+    }
+     (~('\r'|'\n'))* EOL
+        { $channel=HIDDEN; setText("//"+getText().substring(1)); }
     ;
 
 C_STYLE_SINGLE_LINE_COMMENT
@@ -1018,5 +1030,3 @@ IdentifierPart
     |   '\ufff9'..'\ufffb' 
 // UTF-16    |   ('\ud800'..'\udbff') ('\udc00'..'\udfff')
     ;
-
-
