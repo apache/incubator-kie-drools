@@ -110,7 +110,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-            // cacheType upgrades to SelectionCacheType.STEP because JIT is not supported
+            // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
             minimumCacheType = SelectionCacheType.STEP;
         }
         if (minimumCacheType == SelectionCacheType.SOLVER) {
