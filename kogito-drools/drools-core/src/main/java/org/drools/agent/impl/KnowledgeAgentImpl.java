@@ -722,8 +722,9 @@ public class KnowledgeAgentImpl
 
         if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
 
-
-            kbuilder = this.createKBuilder();
+            if ( kbuilder == null ) {
+                kbuilder = this.createKBuilder();
+            }
 
             kbuilder.add( resource,
                           ((InternalResource) resource).getResourceType() );
