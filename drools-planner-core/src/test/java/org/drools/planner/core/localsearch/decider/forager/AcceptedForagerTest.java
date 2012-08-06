@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 public class AcceptedForagerTest {
 
     @Test
-    public void testPickMoveMaxScoreOfAll() {
+    public void pickMoveMaxScoreAccepted() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
@@ -49,10 +49,42 @@ public class AcceptedForagerTest {
         forager.stepStarted(localSearchStepScope);
         // Pre conditions
         MoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
-        MoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
+        MoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
         MoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
-        MoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
-        MoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), true);
+        MoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), true);
+        MoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
+        // Do stuff
+        forager.addMove(a);
+        assertFalse(forager.isQuitEarly());
+        forager.addMove(b);
+        assertFalse(forager.isQuitEarly());
+        forager.addMove(c);
+        assertFalse(forager.isQuitEarly());
+        forager.addMove(d);
+        assertFalse(forager.isQuitEarly());
+        forager.addMove(e);
+        assertFalse(forager.isQuitEarly());
+        MoveScope pickedScope = forager.pickMove(localSearchStepScope);
+        // Post conditions
+        assertSame(d, pickedScope);
+        forager.phaseEnded(localSearchSolverPhaseScope);
+    }
+
+    @Test
+    public void pickMoveMaxScoreUnaccepted() {
+        // Setup
+        Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
+        ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
+        forager.phaseStarted(localSearchSolverPhaseScope);
+        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
+        forager.stepStarted(localSearchStepScope);
+        // Pre conditions
+        MoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
+        MoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
+        MoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
+        MoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), false);
+        MoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), false);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -71,7 +103,7 @@ public class AcceptedForagerTest {
     }
 
     @Test
-    public void testPickMoveFirstBestScoreImproving() {
+    public void pickMoveFirstBestScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
@@ -100,7 +132,7 @@ public class AcceptedForagerTest {
     }
 
     @Test
-    public void testPickMoveFirstLastStepScoreImproving() {
+    public void pickMoveFirstLastStepScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
@@ -129,7 +161,7 @@ public class AcceptedForagerTest {
     }
 
     @Test @Ignore
-    public void testPickMoveRandomly() {
+    public void pickMoveAcceptedRandomly() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, 1);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
