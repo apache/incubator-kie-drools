@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TotalRankSolverBenchmarkRankingWeightFactoryTest {
+public class TotalRankSolverBenchmarkRankingWeightFactoryTest extends AbstractRankingComparatorTest {
 
     @Test
     public void normal() {
@@ -96,18 +96,6 @@ public class TotalRankSolverBenchmarkRankingWeightFactoryTest {
         assertEquals(1, cWeight.compareTo(aWeight));
         assertEquals(-1, bWeight.compareTo(cWeight));
         assertEquals(1, cWeight.compareTo(bWeight));
-    }
-
-    private void addSingleBenchmark(List<SingleBenchmark> singleBenchmarkList, int score, int bestScore, int worstScore) {
-        SingleBenchmark singleBenchmark = new SingleBenchmark(null, null);
-        DefaultSimpleScore scoreObject = DefaultSimpleScore.valueOf(score);
-        DefaultSimpleScore bestScoreObject = DefaultSimpleScore.valueOf(bestScore);
-        DefaultSimpleScore worstScoreObject = DefaultSimpleScore.valueOf(worstScore);
-        singleBenchmark.setScore(scoreObject);
-        singleBenchmark.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
-        singleBenchmark.setWorstScoreDifferencePercentage(
-                ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScoreObject, scoreObject));
-        singleBenchmarkList.add(singleBenchmark);
     }
 
 }

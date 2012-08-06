@@ -26,23 +26,23 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TotalScoreSolverBenchmarkRankingComparatorTest {
+public class TotalScoreSolverBenchmarkRankingComparatorTest extends AbstractRankingComparatorTest {
 
     @Test
     public void normal() {
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(aSingleBenchmarkList, -1000);
-        addSingleBenchmark(aSingleBenchmarkList, -400);
-        addSingleBenchmark(aSingleBenchmarkList, -30);
+        addSingleBenchmark(aSingleBenchmarkList, -1000, -30, -1000);
+        addSingleBenchmark(aSingleBenchmarkList, -400, -30, -1000);
+        addSingleBenchmark(aSingleBenchmarkList, -30, -30, -1000);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
         SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(bSingleBenchmarkList, -1000);
-        addSingleBenchmark(bSingleBenchmarkList, -200);
-        addSingleBenchmark(bSingleBenchmarkList, -50);
+        addSingleBenchmark(bSingleBenchmarkList, -1000, -50, -1000);
+        addSingleBenchmark(bSingleBenchmarkList, -200, -50, -1000);
+        addSingleBenchmark(bSingleBenchmarkList, -50, -50, -1000);
         b.setSingleBenchmarkList(bSingleBenchmarkList);
         b.benchmarkingEnded();
         assertEquals(-1, comparator.compare(a, b));
@@ -54,26 +54,20 @@ public class TotalScoreSolverBenchmarkRankingComparatorTest {
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(aSingleBenchmarkList, -1005);
-        addSingleBenchmark(aSingleBenchmarkList, -200);
-        addSingleBenchmark(aSingleBenchmarkList, -30);
+        addSingleBenchmark(aSingleBenchmarkList, -1005, -30, -1005);
+        addSingleBenchmark(aSingleBenchmarkList, -200, -30, -1005);
+        addSingleBenchmark(aSingleBenchmarkList, -30, -30, -1005);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
         SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(bSingleBenchmarkList, -1000);
-        addSingleBenchmark(bSingleBenchmarkList, -200);
-        addSingleBenchmark(bSingleBenchmarkList, -35);
+        addSingleBenchmark(bSingleBenchmarkList, -1000, -35, -1000);
+        addSingleBenchmark(bSingleBenchmarkList, -200, -35, -1000);
+        addSingleBenchmark(bSingleBenchmarkList, -35, -35, -1000);
         b.setSingleBenchmarkList(bSingleBenchmarkList);
         b.benchmarkingEnded();
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
-    }
-
-    private void addSingleBenchmark(List<SingleBenchmark> singleBenchmarkList, int score) {
-        SingleBenchmark result = new SingleBenchmark(null, null);
-        result.setScore(DefaultSimpleScore.valueOf(score));
-        singleBenchmarkList.add(result);
     }
 
 }
