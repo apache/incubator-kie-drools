@@ -53,7 +53,8 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
             // cacheType upgrades to SelectionCacheType.STEP because JIT is not supported
             minimumCacheType = SelectionCacheType.STEP;
         }
-        return new MoveListFactoryToMoveSelectorBridge(moveListFactory, minimumCacheType);
+        return new MoveListFactoryToMoveSelectorBridge(moveListFactory,
+                resolvedSelectionOrder == SelectionOrder.RANDOM, minimumCacheType);
     }
 
     public void inherit(MoveListFactoryConfig inheritedConfig) {

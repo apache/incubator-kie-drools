@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
@@ -34,12 +35,15 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
         implements SelectionCacheLifecycleListener {
 
     protected final MoveListFactory moveListFactory;
+    protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
 
     protected List<Move> cachedMoveList = null;
 
-    public MoveListFactoryToMoveSelectorBridge(MoveListFactory moveListFactory, SelectionCacheType cacheType) {
+    public MoveListFactoryToMoveSelectorBridge(MoveListFactory moveListFactory,
+            boolean randomSelection, SelectionCacheType cacheType) {
         this.moveListFactory = moveListFactory;
+        this.randomSelection = randomSelection;
         this.cacheType = cacheType;
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
@@ -65,15 +69,20 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
     }
 
     public boolean isNeverEnding() {
-        return false;
+        // CachedListRandomIterator is neverEnding
+        return randomSelection;
     }
 
     public long getSize() {
-        return cachedMoveList.size();
+        return (long) cachedMoveList.size();
     }
 
     public Iterator<Move> iterator() {
-        return cachedMoveList.iterator();
+        if (!randomSelection) {
+            return cachedMoveList.iterator();
+        } else {
+            return new CachedListRandomIterator<Move>(cachedMoveList, workingRandom);
+        }
     }
 
     @Override

@@ -2056,8 +2056,9 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
         <cacheType>PHASE</cacheType>
         <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
-If your implementation extended AbstractMoveFactory, you were actually using STEP caching,
-which is the default for MoveListFactory's because less caching is impossible.
+If your implementation extended AbstractMoveFactory, you were actually using STEP caching.
+Note that MoveListFactory cannot use JUST_IN_TIME because by design
+they create the entire List<Move> at the beginning of every step.
 Before in *.java:
     import org.drools.planner.core.move.factory.AbstractMoveFactory;
 
@@ -2083,6 +2084,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       </selector>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <moveListFactory>
+        <cacheType>STEP</cacheType>
         <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
 If you want to use JUST_IN_TIME caching for your custom moves, take a look at MoveIteratorFactory in the manual.

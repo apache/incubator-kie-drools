@@ -75,11 +75,11 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
     }
 
     public boolean isNeverEnding() {
+        // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 
     public long getSize() {
-        // cachedEntityList is never longer null because a parent's cacheType >= this.cacheType
         return (long) cachedEntityList.size();
     }
 
