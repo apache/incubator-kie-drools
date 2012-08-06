@@ -12,6 +12,7 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.StockTick;
 import org.drools.agent.impl.KnowledgeAgentImpl;
+import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -1031,5 +1032,72 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         assertEquals( 3, kagent.getKnowledgeBase().newStatefulKnowledgeSession().fireAllRules() );
 
     }
+
+
+
+    @Test
+    public void testEquivalentRedeclarations() {
+        // JBRULES-3597
+
+        String s1 = "package org.drools.test.pack1;\n" +
+                "\n" +
+                "declare Event\n" +
+                "@role(event)" +
+                "  id    : int\n" +
+                "end\n" +
+                "rule \"Init 1\"\n" +
+                "when\n" +
+                "  $s : String() \n" +
+                "then\n" +
+                "  insert( new Event( 1 ) );\n" +
+                "end\n";
+
+
+        String s2 = "package org.drools.test.pack1;\n" +
+                "\n" +
+                "declare Event\n" +
+                "@role(event)" +
+                "  id    : int\n" +
+                "end\n" +
+                "rule \"Init 2\"\n" +
+                "when\n" +
+                "  $s : String() \n" +
+                "then\n" +
+                "  insert( new Event( 2 ) );\n" +
+                "end\n";
+
+
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = createKAgent( kbase, false, true );
+        kagent.setSystemEventListener( new PrintStreamSystemEventListener() );
+
+        ByteArrayResource bres = (ByteArrayResource) ResourceFactory.newByteArrayResource( s1.getBytes() );
+        bres.setResourceType( ResourceType.DRL );
+
+        ChangeSetImpl cs = new ChangeSetImpl();
+        cs.setResourcesAdded(Arrays.<Resource>asList(bres));
+        kagent.applyChangeSet(cs);
+
+
+        ByteArrayResource bres2 = (ByteArrayResource) ResourceFactory.newByteArrayResource( s2.getBytes() );
+        bres2.setResourceType( ResourceType.DRL );
+
+        ChangeSetImpl cs2 = new ChangeSetImpl();
+        cs2.setResourcesAdded( Arrays.<Resource> asList( bres2 ) );
+        kagent.applyChangeSet( cs2 );
+
+
+        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        assertEquals(3, ksession.getObjects().size());
+
+        ksession.dispose();
+        kagent.dispose();
+    }
+
 
 }
