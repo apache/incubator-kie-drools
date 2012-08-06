@@ -130,10 +130,10 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringMoveSelector = new JustInTimeFilteringMoveSelector(moveSelector,
                         resolvedCacheType, moveFilter);
-                alreadyCached = true;
             } else {
                 filteringMoveSelector = new CachingFilteringMoveSelector(moveSelector,
                         resolvedCacheType, moveFilter);
+                alreadyCached = true;
             }
             moveSelector = filteringMoveSelector;
         }

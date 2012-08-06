@@ -127,6 +127,7 @@ public class SameValuePillarSelector extends AbstractSelector
     }
 
     public boolean isNeverEnding() {
+        // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 

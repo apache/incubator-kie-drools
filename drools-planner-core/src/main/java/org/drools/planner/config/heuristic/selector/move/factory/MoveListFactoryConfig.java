@@ -48,7 +48,7 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
             SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
         MoveListFactory moveListFactory = ConfigUtils.newInstance(this,
                 "moveListFactoryClass", moveListFactoryClass);
-        // MoveListFactoryToMoveSelectorBridge caches by design, so they use the minimumCacheType
+        // MoveListFactoryToMoveSelectorBridge caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
             // cacheType upgrades to SelectionCacheType.STEP because JIT is not supported
             minimumCacheType = SelectionCacheType.STEP;

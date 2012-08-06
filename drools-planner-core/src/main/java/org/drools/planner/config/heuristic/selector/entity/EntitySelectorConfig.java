@@ -30,9 +30,13 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilt
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.CachingFilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.JustInTimeFilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
@@ -104,9 +108,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                 inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
-                && entityProbabilityWeightFactoryClass == null;
-        // FromSolutionEntitySelector caches by design, so they use the minimumCacheType
+        // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
             // cacheType upgrades to SelectionCacheType.STEP because JIT is not supported
             minimumCacheType = SelectionCacheType.STEP;
@@ -118,9 +120,12 @@ public class EntitySelectorConfig extends SelectorConfig {
             throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
-        EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, randomSelection,
+        EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
+                (resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder)
+                        == SelectionOrder.RANDOM,
                 minimumCacheType);
 
+        boolean alreadyCached = false;
         if (entityFilterClass != null) {
             SelectionFilter entityFilter = ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass);
             EntitySelector filteringEntitySelector;
@@ -130,10 +135,11 @@ public class EntitySelectorConfig extends SelectorConfig {
             } else {
                 filteringEntitySelector = new CachingFilteringEntitySelector(entitySelector,
                         resolvedCacheType, entityFilter);
+                alreadyCached = true;
             }
             entitySelector = filteringEntitySelector;
         }
-
+        // TODO entitySorterClass
         if (entityProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
@@ -145,6 +151,16 @@ public class EntitySelectorConfig extends SelectorConfig {
                     "entityProbabilityWeightFactoryClass", entityProbabilityWeightFactoryClass);
             entitySelector = new ProbabilityEntitySelector(entitySelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
+            alreadyCached = true;
+        }
+        if (resolvedCacheType.isCached() && !alreadyCached) {
+            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+                // TODO this is pretty pointless, because FromSolutionEntitySelector caches
+                entitySelector = new CachingEntitySelector(entitySelector, resolvedCacheType);
+            } else {
+                // Not pointless, because FromSolutionEntitySelector does not shuffle
+                entitySelector = new ShufflingEntitySelector(entitySelector, resolvedCacheType);
+            }
         }
         return entitySelector;
     }

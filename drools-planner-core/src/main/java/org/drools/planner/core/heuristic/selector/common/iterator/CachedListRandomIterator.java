@@ -20,6 +20,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This {@link Iterator} does not shuffle and is never ending.
+ * @param <S>
+ */
 public class CachedListRandomIterator<S> implements Iterator<S>  {
 
     protected final List<S> cachedList;

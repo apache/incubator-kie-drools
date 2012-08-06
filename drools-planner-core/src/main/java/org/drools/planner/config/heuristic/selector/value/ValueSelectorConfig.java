@@ -122,7 +122,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
                 && valueProbabilityWeightFactoryClass == null;
-        // FromSolutionPropertyValueSelector caches by design, so they use the minimumCacheType
+        // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
             // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
             minimumCacheType = SelectionCacheType.PHASE;
