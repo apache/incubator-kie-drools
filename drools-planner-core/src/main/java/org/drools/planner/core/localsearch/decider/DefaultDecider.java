@@ -111,7 +111,7 @@ public class DefaultDecider implements Decider {
             MoveScope moveScope = new MoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
             moveScope.setMove(move);
-            // Filter out not doable moves
+            // TODO use Selector filtering to filter out not doable moves
             if (!move.isMoveDoable(scoreDirector)) {
                 logger.trace("        Ignoring not doable move ({}).", move);
             } else {

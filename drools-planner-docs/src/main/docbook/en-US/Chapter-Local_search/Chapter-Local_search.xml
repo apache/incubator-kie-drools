@@ -433,9 +433,9 @@
       those steps are shown into the log:</para>
 
       <programlisting>INFO  Solving started: time spend (0), score (-6), new best score (-6), random seed (0).
-DEBUG     Step index (0), time spend (20), score (-3), new best score (-3), accepted move size (12) for picked step (col1@row0 =&gt; row3).
-DEBUG     Step index (1), time spend (31), score (-1), new best score (-1), accepted move size (12) for picked step (col0@row0 =&gt; row1).
-DEBUG     Step index (2), time spend (40), score (0), new best score (0), accepted move size (12) for picked step (col3@row0 =&gt; row2).
+DEBUG     Step index (0), time spend (20), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
+DEBUG     Step index (1), time spend (31), score (-1), new best score (-1), accepted/selected move count (12/12) for picked step (col0@row0 =&gt; row1).
+DEBUG     Step index (2), time spend (40), score (0), new best score (0), accepted/selected move count (12/12) for picked step (col3@row0 =&gt; row2).
 INFO  Phase localSearch ended: step total (3), time spend (41), best score (0).
 INFO  Solving ended: time spend (41), best score (0), average calculate count per second (1780).</programlisting>
 
@@ -521,7 +521,7 @@ TRACE         Move score (-3), accepted (true) for move (col1@row0 =&gt; row3).
 TRACE         Move score (-3), accepted (true) for move (col2@row0 =&gt; row3).
 ...
 TRACE         Move score (-4), accepted (true) for move (col3@row0 =&gt; row3).
-DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accepted move size (12) for picked step (col1@row0 =&gt; row3).
+DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
 ...</programlisting>
 
     <para>Because the last solution can degrade (especially in tabu search and simulated annealing), the

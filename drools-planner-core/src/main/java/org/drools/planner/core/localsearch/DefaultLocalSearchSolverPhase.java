@@ -20,7 +20,6 @@ import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
@@ -61,9 +60,21 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             decider.decideNextStep(stepScope);
             Move nextStep = stepScope.getStep();
             if (nextStep == null) {
-                logger.warn("    Cancelled step index ({}), time spend ({}): there is no doable move. Terminating phase early.",
-                        stepScope.getStepIndex(),
-                        solverPhaseScope.calculateSolverTimeMillisSpend());
+                if (termination.isPhaseTerminated(solverPhaseScope)) {
+                    logger.trace("    Step index ({}), time spend ({}) terminated without picking a nextStep.",
+                            stepScope.getStepIndex(),
+                            stepScope.getLocalSearchSolverPhaseScope().calculateSolverTimeMillisSpend());
+                } else if (stepScope.getSelectedMoveCount() == 0L) {
+                    logger.warn("    No doable selected move at step index ({}), time spend ({})."
+                            + " Terminating phase early.",
+                            stepScope.getStepIndex(),
+                            stepScope.getLocalSearchSolverPhaseScope().calculateSolverTimeMillisSpend());
+                } else {
+                    throw new IllegalStateException("The step index (" + stepScope.getStepIndex()
+                            + ") has accepted/selected move count (" + stepScope.getAcceptedMoveCount() + "/"
+                            + stepScope.getSelectedMoveCount() + ") but failed to pick a nextStep (" + nextStep + ").");
+                }
+                // Although stepStarted has been called, stepEnded is not called for this step
                 break;
             }
             nextStep.doMove(stepScope.getScoreDirector());
@@ -116,14 +127,15 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         super.stepEnded(localSearchStepScope);
         decider.stepEnded(localSearchStepScope);
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = localSearchStepScope.getLocalSearchSolverPhaseScope();
-        logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}), accepted move size ({})" +
-                " for picked step ({}).",
+        logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({})," +
+                " accepted/selected move count ({}/{}) for picked step ({}).",
                 new Object[]{localSearchStepScope.getStepIndex(),
                         localSearchSolverPhaseScope.calculateSolverTimeMillisSpend(),
                         localSearchStepScope.getScore(),
                         (localSearchStepScope.getBestScoreImproved() ? "new" : "   "),
                         localSearchSolverPhaseScope.getBestScore(),
-                        localSearchStepScope.getAcceptedMovesSize(),
+                        localSearchStepScope.getAcceptedMoveCount(),
+                        localSearchStepScope.getSelectedMoveCount(),
                         localSearchStepScope.getStepString()});
     }
 

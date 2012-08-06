@@ -44,7 +44,7 @@ public class AcceptedForager extends AbstractForager {
     protected Comparator<Score> scoreComparator;
     protected AcceptedMoveScopeComparator acceptedMoveScopeComparator;
 
-    protected int selectedCount;
+    protected long selectedMoveCount;
     protected List<MoveScope> acceptedList;
     protected List<MoveScope> maxScoreAcceptedList;
     protected Score maxScore;
@@ -78,7 +78,7 @@ public class AcceptedForager extends AbstractForager {
         deciderScoreComparatorFactory.stepStarted(localSearchStepScope);
         scoreComparator = deciderScoreComparatorFactory.createDeciderScoreComparator();
         acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(scoreComparator);
-        selectedCount = 0;
+        selectedMoveCount = 0L;
         acceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
         maxScoreAcceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
         maxScore = localSearchStepScope.getSolverPhaseScope().getScoreDefinition().getPerfectMinimumScore();
@@ -86,7 +86,7 @@ public class AcceptedForager extends AbstractForager {
     }
 
     public void addMove(MoveScope moveScope) {
-        selectedCount++;
+        selectedMoveCount++;
         if (moveScope.getAccepted()) {
             checkPickEarly(moveScope);
             addMoveScopeToAcceptedList(moveScope);
@@ -131,6 +131,8 @@ public class AcceptedForager extends AbstractForager {
     }
 
     public MoveScope pickMove(LocalSearchStepScope localSearchStepScope) {
+        localSearchStepScope.setSelectedMoveCount(selectedMoveCount);
+        localSearchStepScope.setAcceptedMoveCount((long) acceptedList.size());
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;
         } else {
@@ -168,7 +170,6 @@ public class AcceptedForager extends AbstractForager {
     @Override
     public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         deciderScoreComparatorFactory.stepEnded(localSearchStepScope);
-        localSearchStepScope.setAcceptedMovesSize((long) acceptedList.size());
     }
 
     @Override

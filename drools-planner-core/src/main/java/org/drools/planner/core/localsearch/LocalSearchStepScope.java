@@ -16,12 +16,9 @@
 
 package org.drools.planner.core.localsearch;
 
-import java.util.Comparator;
-
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.score.Score;
 
 public class LocalSearchStepScope extends AbstractStepScope {
 
@@ -31,7 +28,8 @@ public class LocalSearchStepScope extends AbstractStepScope {
     private Move step = null;
     private String stepString = null;
     private Move undoStep = null;
-    private Long acceptedMovesSize = null;
+    private Long selectedMoveCount = null;
+    private Long acceptedMoveCount = null;
 
     public LocalSearchStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         this.localSearchSolverPhaseScope = localSearchSolverPhaseScope;
@@ -81,12 +79,20 @@ public class LocalSearchStepScope extends AbstractStepScope {
         this.undoStep = undoStep;
     }
 
-    public Long getAcceptedMovesSize() {
-        return acceptedMovesSize;
+    public Long getSelectedMoveCount() {
+        return selectedMoveCount;
     }
 
-    public void setAcceptedMovesSize(Long acceptedMovesSize) {
-        this.acceptedMovesSize = acceptedMovesSize;
+    public void setSelectedMoveCount(Long selectedMoveCount) {
+        this.selectedMoveCount = selectedMoveCount;
+    }
+
+    public Long getAcceptedMoveCount() {
+        return acceptedMoveCount;
+    }
+
+    public void setAcceptedMoveCount(Long acceptedMoveCount) {
+        this.acceptedMoveCount = acceptedMoveCount;
     }
 
     // ************************************************************************
