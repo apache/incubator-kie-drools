@@ -446,7 +446,6 @@ public abstract class BetaNode extends LeftTupleSource
                 }
 
                 FastIterator it = memory.getLeftTupleMemory().fullFastIterator();
-                int x = memory.getLeftTupleMemory().size();
                 for (LeftTuple leftTuple = getFirstLeftTuple(memory.getLeftTupleMemory(), it); leftTuple != null; ) {
                     LeftTuple tmp = (LeftTuple) it.next(leftTuple);
                     if (context.getCleanupAdapter() != null) {
