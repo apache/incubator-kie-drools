@@ -160,10 +160,10 @@ public class AcceptedForagerTest {
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
-    @Test @Ignore
+    @Test
     public void pickMoveAcceptedRandomly() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyType.NEVER, 1);
+        Forager forager = new AcceptedForager(PickEarlyType.NEVER, 3);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
         forager.phaseStarted(localSearchSolverPhaseScope);
@@ -172,7 +172,7 @@ public class AcceptedForagerTest {
         // Pre conditions
         MoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
         MoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
-        MoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
+        MoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
         MoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
         // Do stuff
         forager.addMove(a);
@@ -185,7 +185,7 @@ public class AcceptedForagerTest {
         assertTrue(forager.isQuitEarly());
         // Post conditions
         MoveScope pickedScope = forager.pickMove(localSearchStepScope);
-        assertSame(d, pickedScope);
+        assertSame(b, pickedScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
