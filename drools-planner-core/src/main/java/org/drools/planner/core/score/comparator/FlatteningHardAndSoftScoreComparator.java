@@ -40,8 +40,8 @@ public class FlatteningHardAndSoftScoreComparator implements Comparator<Score>, 
     public int compare(Score s1, Score s2) {
         HardAndSoftScore score1 = (HardAndSoftScore) s1;
         HardAndSoftScore score2 = (HardAndSoftScore) s2;
-        int score1Side = score1.getHardScore() * hardWeight + score1.getSoftScore();
-        int score2Side = score2.getHardScore() * hardWeight + score2.getSoftScore();
+        long score1Side = (long) score1.getHardScore() * (long) hardWeight + (long) score1.getSoftScore();
+        long score2Side = (long) score2.getHardScore() * (long) hardWeight + (long) score2.getSoftScore();
         return score1Side < score2Side ? -1 : (score1Side == score2Side ? 0 : 1);
     }
 
