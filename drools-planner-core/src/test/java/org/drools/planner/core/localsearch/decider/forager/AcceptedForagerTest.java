@@ -67,12 +67,6 @@ public class AcceptedForagerTest {
         MoveScope pickedScope = forager.pickMove(localSearchStepScope);
         // Post conditions
         assertSame(b, pickedScope);
-        List<Move> topList = forager.getTopList(3);
-        assertTrue(topList.contains(a.getMove())); // Because c is not accepted
-        assertTrue(topList.contains(b.getMove()));
-        assertFalse(topList.contains(c.getMove()));
-        assertFalse(topList.contains(d.getMove()));
-        assertTrue(topList.contains(e.getMove()));
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
@@ -102,9 +96,6 @@ public class AcceptedForagerTest {
         // Post conditions
         MoveScope pickedScope = forager.pickMove(localSearchStepScope);
         assertSame(d, pickedScope);
-        List<Move> topList = forager.getTopList(2);
-        assertTrue(topList.contains(b.getMove()));
-        assertTrue(topList.contains(d.getMove()));
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
@@ -134,9 +125,6 @@ public class AcceptedForagerTest {
         // Post conditions
         MoveScope pickedScope = forager.pickMove(localSearchStepScope);
         assertSame(d, pickedScope);
-        List<Move> topList = forager.getTopList(2);
-        assertTrue(topList.contains(b.getMove()));
-        assertTrue(topList.contains(d.getMove()));
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
@@ -166,9 +154,6 @@ public class AcceptedForagerTest {
         // Post conditions
         MoveScope pickedScope = forager.pickMove(localSearchStepScope);
         assertSame(d, pickedScope);
-        List<Move> topList = forager.getTopList(2);
-        assertTrue(topList.contains(b.getMove()));
-        assertTrue(topList.contains(d.getMove()));
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
 

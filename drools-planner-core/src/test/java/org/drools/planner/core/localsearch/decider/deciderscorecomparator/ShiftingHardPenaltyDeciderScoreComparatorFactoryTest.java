@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
 
     @Test
-    public void testShiftingPenaltyActiveAndHardWeight() {
+    public void shiftingPenaltyActiveAndHardWeight() {
         // Setup
         ShiftingHardPenaltyDeciderScoreComparatorFactory deciderScoreComparatorFactory
                 = new ShiftingHardPenaltyDeciderScoreComparatorFactory();

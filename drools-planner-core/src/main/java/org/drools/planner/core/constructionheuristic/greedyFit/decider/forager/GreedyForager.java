@@ -27,7 +27,6 @@ import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyMov
 import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListener;
 import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.localsearch.decider.MoveScope;
-import org.drools.planner.core.localsearch.decider.forager.AcceptedMoveScopeComparator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;

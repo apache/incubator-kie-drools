@@ -25,7 +25,6 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.localsearch.decider.selector.CompositeSelector;
 import org.drools.planner.core.localsearch.decider.selector.MoveFactorySelector;
 import org.drools.planner.core.localsearch.decider.selector.Selector;
-import org.drools.planner.core.localsearch.decider.selector.TopListSelector;
 import org.drools.planner.core.move.factory.MoveFactory;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
@@ -39,8 +38,6 @@ public class SelectorConfig {
     private MoveFactory moveFactory = null;
     private Class<? extends MoveFactory> moveFactoryClass = null;
     protected Boolean shuffle = null;
-
-    private Integer topSize = null;
 
     public List<SelectorConfig> getSelectorConfigList() {
         return selectorConfigList;
@@ -74,14 +71,6 @@ public class SelectorConfig {
         this.shuffle = shuffle;
     }
 
-    public Integer getTopSize() {
-        return topSize;
-    }
-
-    public void setTopSize(Integer topSize) {
-        this.topSize = topSize;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -107,10 +96,6 @@ public class SelectorConfig {
             boolean shuffleValue = (shuffle == null) ?  true : shuffle.booleanValue();
             selector.setShuffle(shuffleValue);
             return selector;
-        } else if (topSize != null) {
-            TopListSelector selector = new TopListSelector();
-            selector.setTopSize(topSize);
-            return selector;
         } else {
             throw new IllegalArgumentException("A selector requires configuration, for example a moveFactoryClass.");
         }
@@ -133,9 +118,6 @@ public class SelectorConfig {
         }
         if (shuffle == null) {
             shuffle = inheritedConfig.getShuffle();
-        }
-        if (topSize == null) {
-            topSize = inheritedConfig.getTopSize();
         }
     }
 

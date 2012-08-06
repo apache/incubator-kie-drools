@@ -2202,6 +2202,13 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
         <cacheType>STEP</cacheType>
       </subChainChangeMoveSelector>
 
+[MINOR] topSize is not longer supported
+If you used this undocumented feature anyway, vote for https://issues.jboss.org/browse/JBRULES-3598
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <selector>
+    <topSize>...</topSize>
+      </selector>
+
 TODO custom Selector
 
 [MINOR] partialTabu has been renamed to fadingTabu

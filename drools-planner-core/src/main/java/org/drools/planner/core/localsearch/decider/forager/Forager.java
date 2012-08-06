@@ -35,6 +35,4 @@ public interface Forager extends LocalSearchSolverPhaseLifecycleListener {
 
     MoveScope pickMove(LocalSearchStepScope localSearchStepScope);
 
-    List<Move> getTopList(int topSize);
-
 }
