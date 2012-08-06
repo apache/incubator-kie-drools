@@ -35,11 +35,13 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelector {
 
     protected final MoveIteratorFactory moveIteratorFactory;
+    protected final boolean randomSelection;
 
     protected ScoreDirector scoreDirector = null;
 
-    public MoveIteratorFactoryToMoveSelectorBridge(MoveIteratorFactory moveIteratorFactory) {
+    public MoveIteratorFactoryToMoveSelectorBridge(MoveIteratorFactory moveIteratorFactory, boolean randomSelection) {
         this.moveIteratorFactory = moveIteratorFactory;
+        this.randomSelection = randomSelection;
     }
 
     // ************************************************************************
@@ -63,7 +65,7 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
     }
 
     public boolean isNeverEnding() {
-        return false;
+        return randomSelection;
     }
 
     public long getSize() {
@@ -77,7 +79,11 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
     }
 
     public Iterator<Move> iterator() {
-        return moveIteratorFactory.createMoveIterator(scoreDirector);
+        if (!randomSelection) {
+            return moveIteratorFactory.createOriginalMoveIterator(scoreDirector);
+        } else {
+            return moveIteratorFactory.createRandomMoveIterator(scoreDirector, workingRandom);
+        }
     }
 
     @Override
