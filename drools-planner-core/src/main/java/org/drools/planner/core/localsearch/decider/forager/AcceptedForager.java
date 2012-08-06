@@ -45,7 +45,7 @@ public class AcceptedForager extends AbstractForager {
     protected AcceptedMoveScopeComparator acceptedMoveScopeComparator;
 
     protected long selectedMoveCount;
-    protected List<MoveScope> acceptedList;
+    protected List<MoveScope> acceptedList; // TODO no need to remember acceptedList, implement topList differently
     protected List<MoveScope> maxScoreAcceptedList;
     protected Score maxScore;
 
