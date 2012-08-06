@@ -88,7 +88,7 @@ public class JavaDialectRuntimeData
 
     public JavaDialectRuntimeData() {
         this.invokerLookups = new HashMap<String, Object>();
-		this.classLookups = new HashMap();	
+		this.classLookups = new HashMap();
 		this.store = new HashMap<String, byte[]>();        
         this.dirty = false;
     }
@@ -333,7 +333,7 @@ public class JavaDialectRuntimeData
         this.dirty = dirty;
     }
 
-    protected Map<String, byte[]> getStore() {
+    public Map<String, byte[]> getStore() {
         if (store == null) {
             store = new HashMap<String, byte[]>();
         }

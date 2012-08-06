@@ -438,15 +438,18 @@ public abstract class BetaNode extends LeftTupleSource
                 }
 
                 FastIterator it = memory.getLeftTupleMemory().fullFastIterator();
+                int x = memory.getLeftTupleMemory().size();
                 for (LeftTuple leftTuple = getFirstLeftTuple(memory.getLeftTupleMemory(), it); leftTuple != null; ) {
                     LeftTuple tmp = (LeftTuple) it.next(leftTuple);
                     if (context.getCleanupAdapter() != null) {
-                        for (LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getLeftParentNext()) {
+                        LeftTuple child;
+                        while ( (child = leftTuple.getFirstChild()) != null ) {
                             if (child.getLeftTupleSink() == this) {
                                 // this is a match tuple on collect and accumulate nodes, so just unlink it
-                                leftTuple.unlinkFromLeftParent();
-                                leftTuple.unlinkFromRightParent();
+                                child.unlinkFromLeftParent();
+                                child.unlinkFromRightParent();
                             } else {
+                                // the cleanupAdapter will take care of the unlinking
                                 context.getCleanupAdapter().cleanUp(child, workingMemory);
                             }
                         }

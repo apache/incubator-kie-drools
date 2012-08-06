@@ -849,7 +849,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         updateResults();
 
         // iterate and compile
-        if (this.ruleBase != null) {
+        if (! hasErrors() && this.ruleBase != null) {
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
                 pkgRegistry = this.pkgRegistryMap.get(ruleDescr.getNamespace());
                 this.ruleBase.addRule(pkgRegistry.getPackage(), pkgRegistry.getPackage().getRule(ruleDescr.getName()));
@@ -2023,17 +2023,34 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
             type.setResource( typeDescr.getResource() );
 
+            TypeDeclaration parent = null;
+            if ( typeDescr.getSuperTypes().size() > 0 ) {
+                // parent might have inheritable properties
+                PackageRegistry sup = pkgRegistryMap.get( typeDescr.getSuperTypeNamespace() );
+                if ( sup != null ) {
+                    parent = sup.getPackage().getTypeDeclaration( typeDescr.getSuperTypeName() );
+                    if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
+                        // trying to find a definition
+                        parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                    }
+                }
+            }
+
             // is it a regular fact or an event?
             AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
             String role = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
             if (role != null) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
+            } else if ( parent != null ) {
+                type.setRole( parent.getRole() );
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TYPESAFE );
             String typesafe = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
             if (typesafe != null) {
                 type.setTypesafe( Boolean.parseBoolean( typesafe ) );
+            } else if ( parent != null ) {
+                type.setTypesafe( parent.isTypesafe() );
             }
 
             // is it a pojo or a template?
@@ -2157,7 +2174,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         type.setPropertyReactive(propertySpecific);
 
         if ( type.isValid() ) {
-            pkgRegistry.getPackage().addTypeDeclaration( type );
+            // prefer definitions where possible
+            if ( type.getNature() == TypeDeclaration.Nature.DEFINITION
+                 || pkgRegistry.getPackage().getTypeDeclaration( type.getTypeName() ) == null ) {
+                pkgRegistry.getPackage().addTypeDeclaration( type );
+            }
         }
 
         return true;
@@ -2557,7 +2578,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         byte[] d = tb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
-                        dialect.write( resourceName, d );
+                        if ( ruleBase != null ) {
+                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
+                        } else {
+                            dialect.write( resourceName, d );
+                        }
                     } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to compile declared trait " + fullName +
@@ -2570,7 +2595,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         byte[] d = eb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
-                        dialect.write( resourceName, d );
+                        if ( ruleBase != null ) {
+                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
+                        } else {
+                            dialect.write( resourceName, d );
+                        }
                     } catch ( Exception e ) {
                         e.printStackTrace();
                         this.results.add( new TypeDeclarationError( typeDescr,
@@ -2585,7 +2614,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         byte[] d = cb.buildClass( def );
                         String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
                         dialect.putClassDefinition( resourceName, d );
-                        dialect.write( resourceName, d );
+                        if ( ruleBase != null ) {
+                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
+                        }
+                        else {
+                            dialect.write( resourceName, d );
+                        }
                     } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to create a class for declared type " + fullName +
@@ -3294,10 +3328,17 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         //different superclasses -> Incompatible (TODO: check for hierarchy)
-        if (!oldDeclaration.getTypeClassDef().getSuperClass().equals(newDeclaration.getTypeClassDef().getSuperClass())){
-            throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" has a different"
-                    + " supperclass that its previous definition: "+newDeclaration.getTypeClassDef().getSuperClass()
-                    +" != "+oldDeclaration.getTypeClassDef().getSuperClass());
+        if ( !oldDeclaration.getTypeClassDef().getSuperClass().equals(newDeclaration.getTypeClassDef().getSuperClass()) ){
+            if ( oldDeclaration.getNature() == TypeDeclaration.Nature.DEFINITION
+                 && newDeclaration.getNature() == TypeDeclaration.Nature.DECLARATION
+                 && Object.class.getName().equals( newDeclaration.getTypeClassDef().getSuperClass() )
+                    ) {
+                // actually do nothing. The new declaration just recalls the previous definition, probably to extend it.
+            } else {
+                throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" has a different"
+                        + " superclass that its previous definition: "+newDeclaration.getTypeClassDef().getSuperClass()
+                        +" != "+oldDeclaration.getTypeClassDef().getSuperClass());
+            }
         }
 
         //different duration -> Incompatible

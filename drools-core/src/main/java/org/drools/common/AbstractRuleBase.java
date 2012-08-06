@@ -557,7 +557,7 @@ abstract public class AbstractRuleBase
                                 Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
                                 if ( definedKlass == null && typeDeclaration.isNovel() ) {
-                                    throw new RuntimeException( "Registering nyll bytes for class " + className );
+                                    throw new RuntimeException( "Registering null bytes for class " + className );
                                 }
 
 
@@ -700,7 +700,9 @@ abstract public class AbstractRuleBase
         existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
                                                     newDecl.getExpirationOffset() ) );
 
-        if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) ) {
+        if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) && newDecl.isNovel() ) {
+            // At this point, the definitions must be equivalent.
+            // So the only illegal case is a novel definition of an already existing type
             existingDecl.setNovel( mergeLeft( existingDecl.getTypeName(),
                                               "Unable to merge @novel attribute for type declaration of class:",
                                               existingDecl.isNovel(),
@@ -720,7 +722,9 @@ abstract public class AbstractRuleBase
 
         existingDecl.setRole( mergeLeft( existingDecl.getTypeName(),
                                          "Unable to merge @role attribute for type declaration of class:",
-                                         isSet(existingDecl.getSetMask(), TypeDeclaration.ROLE_BIT) ? existingDecl.getRole() : null,
+                                         isSet(existingDecl.getSetMask(), TypeDeclaration.ROLE_BIT)
+                                           && newDecl.getRole() != TypeDeclaration.Role.FACT
+                                           ? existingDecl.getRole() : null,
                                          newDecl.getRole(),
                                          true,
                                          false ) );
