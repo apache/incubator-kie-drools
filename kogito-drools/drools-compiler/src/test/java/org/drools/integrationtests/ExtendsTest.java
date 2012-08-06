@@ -30,11 +30,13 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.EventFactHandle;
 import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
 
 /**
@@ -407,6 +409,183 @@ public class ExtendsTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+
+
+    @Test
+    public void testExtendFromOtherPackage() throws Exception {
+
+        String s1 = "package org.drools.test.pack1;\n" +
+                "\n" +
+                "declare Base\n" +
+                "  id    : int\n" +
+                "end\n" +
+                "\n" +
+                "declare Sub extends Base\n" +
+                "  field : int\n" +
+                "end\n";
+
+        String s2 = "package org.drools.test.pack2;\n" +
+                "\n" +
+                "import org.drools.test.pack1.Base;\n" +
+                "import org.drools.test.pack1.Sub;\n" +
+                "\n" +
+                "declare Sub end\n" +
+                "\n" +
+                "declare SubChild extends Sub\n" +
+                "  field2 : int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new SubChild( 1, 2, 3 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Touch Base\"\n" +
+                "when\n" +
+                "  $b : Base()\n" +
+                "then\n" +
+                "  System.out.println( $b );\n" +
+                "end \n" +
+                "rule \"Touch Base 2\"\n" +
+                "when\n" +
+                "  $c : Sub()\n" +
+                "then\n" +
+                "  System.out.println( $c );\n" +
+                "end";
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors().toString() );
+            fail();
+        }
+        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+
+        KnowledgeBuilder kBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
+        kBuilder2.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder2.hasErrors() ) {
+            System.err.println( kBuilder2.getErrors().toString() );
+            fail();
+        }
+        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
+
+        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+
+        assertEquals( 3, kSession.fireAllRules() );
+    }
+
+
+
+
+    @Test
+    public void testInheritAnnotationsInOtherPackage() throws Exception {
+
+        String s1 = "package org.drools.test.pack1;\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Event\n" +
+                "@role(event)" +
+                "  id    : int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"X\"\n" +
+                "when\n" +
+                "  $s1 : Event()\n" +
+                "then\n" +
+                "  System.out.println( $s1 );\n" +
+                "  list.add( $s1.getId() );\n " +
+                "end";
+
+
+        String s2 = "package org.drools.test.pack2;\n" +
+                "\n" +
+                "import org.drools.test.pack1.Event;\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Event end\n" +
+                "\n" +
+                "declare SubEvent extends Event\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 0 );\n" +
+                "  insert( new SubEvent( 1 ) );\n" +
+                "  insert( new SubEvent( 2 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Seq\"\n" +
+                "when\n" +
+                "  $s1 : SubEvent( id == 1 )\n" +
+                "  $s2 : SubEvent( id == 2, this after[0,10s] $s1 )\n" +
+                "then\n" +
+                "  list.add( 3 );\n" +
+                "  System.out.println( $s1 + \" after \" + $s1 );\n" +
+                "end \n" +
+                "\n" +
+                "rule \"Seq 2 \"\n" +
+                "when\n" +
+                "  $s1 : Event( id == 1 )\n" +
+                "  $s2 : Event( id == 2, this after[0,10s] $s1 )\n" +
+                "then\n" +
+                "  list.add( 4 );\n" +
+                "  System.out.println( $s1 + \" after II \" + $s1 );\n" +
+                "end";
+
+
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder.hasErrors() ) {
+            fail( kBuilder.getErrors().toString() );
+        }
+        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+
+        KnowledgeBuilder kBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
+        kBuilder2.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
+
+        if ( kBuilder2.hasErrors() ) {
+            fail( kBuilder2.getErrors().toString() );
+        }
+        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
+
+        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        kSession.setGlobal( "list", list );
+
+        kSession.fireAllRules();
+
+        for ( Object o : kSession.getObjects() ) {
+            FactHandle h = kSession.getFactHandle( o );
+            assertTrue( h instanceof EventFactHandle );
+        }
+
+        System.out.println( list );
+        assertEquals( 5, list.size() );
+        assertTrue( list.contains( 0 ) );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+        assertTrue( list.contains( 3 ) );
+        assertTrue( list.contains( 4 ) );
+
+    }
+
+
+
 
 }
 
