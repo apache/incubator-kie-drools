@@ -13,7 +13,7 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="continuousPlanningPatientAdmissionSchedule.svg"
    inkscape:export-filename="continuousPlanningPatientAdmissionSchedule.png"
    inkscape:export-xdpi="90"
@@ -1239,19 +1239,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.8149074"
-     inkscape:cx="453.54019"
-     inkscape:cy="224.90226"
+     inkscape:zoom="1.4116667"
+     inkscape:cx="400"
+     inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="1680"
-     inkscape:window-height="974"
-     inkscape:window-x="1680"
-     inkscape:window-y="0"
+     inkscape:window-width="1631"
+     inkscape:window-height="1026"
+     inkscape:window-x="49"
+     inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
      inkscape:snap-bbox="false"
@@ -2586,7 +2586,7 @@
          style="fill:none;stroke:#8f5902;stroke-width:3.70055461;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     </g>
     <g
-       transform="matrix(0.54045954,0,0,0.54045954,146.5035,580.6211)"
+       transform="matrix(0.54045954,0,0,0.54045954,136.5035,580.6211)"
        id="g4560">
       <rect
          style="fill:#edd400;fill-opacity:1;stroke:#8f5902;stroke-width:3.70055461;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -2608,16 +2608,16 @@
        xml:space="preserve"
        id="flowRoot4566"
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="translate(186.15625,676.46202)"><flowRegion
+       transform="translate(176.15625,676.46202)"><flowRegion
          id="flowRegion4568"><rect
            style="font-size:14px;text-align:start;text-anchor:start;fill:#8f5902"
            id="rect4570"
-           width="50.000198"
-           height="20.000212"
+           width="80"
+           height="24.999891"
            x="83.84375"
            y="340.90027" /></flowRegion><flowPara
          id="flowPara4572"
-         style="font-size:14px;text-align:start;text-anchor:start;fill:#8f5902">locked</flowPara></flowRoot>    <flowRoot
+         style="font-size:14px;text-align:start;text-anchor:start;fill:#8f5902">immovable</flowPara></flowRoot>    <flowRoot
        transform="translate(186.15625,347.67886)"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.5"
        id="flowRoot4597"

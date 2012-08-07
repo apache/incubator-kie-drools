@@ -56,22 +56,24 @@
     <title>Continuous planning (windowed planning)</title>
 
     <para>Continuous planning is the technique of planning one or more upcoming planning windows at the same time and
-    repeating that process every week (or every day). Because time infinite, there are an infinite future windows, so
-    planning all future windows is impossible. Instead we plan only a number of upcoming planning windows.</para>
+    repeating that process monthly, weekly, daily or hourly. Because time is infinite, there are infinite future
+    windows, so planning all future windows is impossible. Instead, plan only a fixed number of upcoming planning
+    windows.</para>
 
     <para>Past planning windows are immutable. The first upcoming planning window is considered stable (unlikely to
     change), while later upcoming planning windows are considered draft (likely to change during the next planning
     effort). Distant future planning windows are not planned at all.</para>
 
-    <para>Past planning windows have <emphasis>locked</emphasis> planning entities: the planning entities can no longer
-    be changed (they are locked in place), but some of them are still needed in the score calculation, as they might affect
-    some of the score constraints that apply on the upcoming planning entities. For example: when an employee should not
-    work more than 5 days in a row, he shouldn't work today and tomorrow if he worked the past 4 days already.</para>
+    <para>Past planning windows have only <emphasis>immovable</emphasis> planning entities: the planning entities can no
+    longer be changed (they are unable to move), but some of them are still needed in the score calculation, as they
+    might affect some of the score constraints that apply on the upcoming planning entities. For example: when an
+    employee should not work more than 5 days in a row, he shouldn't work today and tomorrow if he worked the past 4
+    days already.</para>
 
-    <para>Sometimes some planning entities are semi-locked: they can be changed, but occur a certain score penalty if
+    <para>Sometimes some planning entities are semi-immovable: they can be changed, but occur a certain score penalty if
     they differ from their original place. For example: avoid rescheduling hospital beds less than 2 days before the
-    patient arrives (unless it's really worth it), avoid changing the airplane gate (or worse, the terminal) during the
-    2 hours before boarding, ...</para>
+    patient arrives (unless it's really worth it), avoid changing the airplane gate during the 2 hours before boarding
+    (unless there is no alternative), ...</para>
 
     <figure>
       <title>Continuous planning diagram</title>
@@ -86,6 +88,35 @@
 
     <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
     planning facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
+
+    <section>
+      <title>Immovable planning entities</title>
+
+      <para>To make some planning entities immovable, simply add an entity <literal>SelectionFilter</literal> that
+      returns <literal>true</literal> if an entity is movable and <literal>false</literal> if it is immovable.</para>
+
+      <programlisting language="java">public class MovableShiftAssignmentSelectionFilter implements SelectionFilter&lt;ShiftAssignment&gt; {
+
+    public boolean accept(ScoreDirector scoreDirector, ShiftAssignment shiftAssignment) {
+        ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
+        NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
+        return nurseRoster.getNurseRosterInfo().isInPlanningWindow(shiftDate);
+    }
+
+}</programlisting>
+
+      <para>And configure it like this:</para>
+
+      <programlisting language="java">@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
+public class ShiftAssignment {
+    ...
+}</programlisting>
+
+      <warning>
+        <para>Custom <literal>MoveListFactory</literal> implementations must make sure that they don't move immovable
+        entities.</para>
+      </warning>
+    </section>
   </section>
 
   <section xml:id="realTimePlanning">
