@@ -27,7 +27,7 @@ import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
-import org.drools.planner.examples.nurserostering.domain.RosterInfo;
+import org.drools.planner.examples.nurserostering.domain.NurseRosterInfo;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
@@ -265,7 +265,7 @@ rule "insertFirstEmployeeFreeSequence"
             employee == $employee,
             shiftDateDayIndex < $lastDayIndexPlusOne
         )
-        RosterInfo(firstShiftDateDayIndex < $lastDayIndexPlusOne, $firstDayIndex : firstShiftDateDayIndex)
+        NurseRosterInfo(firstShiftDateDayIndex < $lastDayIndexPlusOne, $firstDayIndex : firstShiftDateDayIndex)
     then
         insertLogical(new EmployeeFreeSequence($employee, $firstDayIndex, $lastDayIndexPlusOne - 1));
 end
@@ -282,7 +282,7 @@ rule "insertLastEmployeeFreeSequence"
             employee == $employee,
             shiftDateDayIndex > $firstDayIndexMinusOne
         )
-        RosterInfo(lastShiftDateDayIndex > $firstDayIndexMinusOne, $lastDayIndex : lastShiftDateDayIndex)
+        NurseRosterInfo(lastShiftDateDayIndex > $firstDayIndexMinusOne, $lastDayIndex : lastShiftDateDayIndex)
     then
         insertLogical(new EmployeeFreeSequence($employee, $firstDayIndexMinusOne + 1, $lastDayIndex));
 end
@@ -294,7 +294,7 @@ rule "insertEntireEmployeeFreeSequence"
         not EmployeeConsecutiveAssignmentStart(
             employee == $employee
         )
-        RosterInfo($firstDayIndex : firstShiftDateDayIndex, $lastDayIndex : lastShiftDateDayIndex)
+        NurseRosterInfo($firstDayIndex : firstShiftDateDayIndex, $lastDayIndex : lastShiftDateDayIndex)
     then
         insertLogical(new EmployeeFreeSequence($employee, $firstDayIndex, $lastDayIndex));
 end

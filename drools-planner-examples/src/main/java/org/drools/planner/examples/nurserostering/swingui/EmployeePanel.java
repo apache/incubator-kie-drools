@@ -127,8 +127,10 @@ public class EmployeePanel extends JPanel {
             if (weekendDefinition.isWeekend(shiftDate.getDayOfWeek())) {
                 shiftDatePanel.setBackground(TangoColors.ALUMINIUM_2);
             }
+            Color borderColor = nurseRosteringPanel.getNurseRoster().getNurseRosterInfo().isInPlanningWindow(shiftDate)
+                    ? TangoColors.ALUMINIUM_6 : TangoColors.ORANGE_1;
             shiftDatePanel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(TangoColors.ALUMINIUM_6),
+                    BorderFactory.createLineBorder(borderColor),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             shiftDatePanelMap.put(shiftDate, shiftDatePanel);
             if (employee == null) {

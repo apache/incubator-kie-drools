@@ -33,6 +33,7 @@ import java.util.TimeZone;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
+import org.drools.planner.examples.nurserostering.domain.NurseRosterInfo;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
@@ -100,6 +101,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             generateShiftDateList(nurseRoster,
                     schedulingPeriodElement.getChild("StartDate"),
                     schedulingPeriodElement.getChild("EndDate"));
+            generateNurseRosterInfo(nurseRoster);
             readSkillList(nurseRoster, schedulingPeriodElement.getChild("Skills"));
             readShiftTypeList(nurseRoster, schedulingPeriodElement.getChild("ShiftTypes"));
             generateShiftList(nurseRoster);
@@ -196,6 +198,15 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
             nurseRoster.setShiftDateList(shiftDateList);
+        }
+
+        private void generateNurseRosterInfo(NurseRoster nurseRoster) {
+            List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
+            NurseRosterInfo nurseRosterInfo = new NurseRosterInfo();
+            nurseRosterInfo.setFirstShiftDate(shiftDateList.get(0));
+            nurseRosterInfo.setLastShiftDate(shiftDateList.get(shiftDateList.size() - 1));
+            nurseRosterInfo.setPlanningWindowStart(shiftDateList.get(0));
+            nurseRoster.setNurseRosterInfo(nurseRosterInfo);
         }
 
         private void readSkillList(NurseRoster nurseRoster, Element skillsElement) throws JDOMException {

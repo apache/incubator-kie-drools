@@ -16,6 +16,9 @@
 
 package org.drools.planner.examples.nurserostering.swingui;
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -26,13 +29,18 @@ import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.nurserostering.domain.NurseRosterInfo;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
@@ -46,6 +54,8 @@ public class NurseRosteringPanel extends SolutionPanel {
 
     private JPanel employeeListPanel;
 
+    private JTextField planningWindowStartField;
+    private JButton advancePlanningWindowStartButton;
     private EmployeePanel unassignedPanel;
     private Map<Employee, EmployeePanel> employeeToPanelMap;
     private Map<ShiftAssignment, EmployeePanel> shiftAssignmentToPanelMap;
@@ -65,7 +75,20 @@ public class NurseRosteringPanel extends SolutionPanel {
     }
 
     private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel();
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        headerPanel.add(new JLabel("Planning window start:"));
+        planningWindowStartField = new JTextField(10);
+        planningWindowStartField.setEditable(false);
+        planningWindowStartField.setForeground(TangoColors.ORANGE_3);
+        headerPanel.add(planningWindowStartField);
+        advancePlanningWindowStartButton = new JButton("Advance 1 day into the future");
+        advancePlanningWindowStartButton.setEnabled(false);
+        advancePlanningWindowStartButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                advancePlanningWindowStart();
+            }
+        });
+        headerPanel.add(advancePlanningWindowStartButton);
         return headerPanel;
     }
 
@@ -90,6 +113,7 @@ public class NurseRosteringPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
+        NurseRoster nurseRoster = (NurseRoster) solution;
         for (EmployeePanel employeePanel : employeeToPanelMap.values()) {
             if (employeePanel.getEmployee() != null) {
                 employeeListPanel.remove(employeePanel);
@@ -99,7 +123,9 @@ public class NurseRosteringPanel extends SolutionPanel {
         employeeToPanelMap.put(null, unassignedPanel);
         shiftAssignmentToPanelMap.clear();
         unassignedPanel.clearShiftAssignments();
-        updatePanel(solution);
+        updatePanel(nurseRoster);
+        advancePlanningWindowStartButton.setEnabled(true);
+        planningWindowStartField.setText(nurseRoster.getNurseRosterInfo().getPlanningWindowStart().getLabel());
     }
 
     @Override
@@ -148,6 +174,32 @@ public class NurseRosteringPanel extends SolutionPanel {
         for (EmployeePanel employeePanel : employeeToPanelMap.values()) {
             employeePanel.update();
         }
+    }
+
+    private void advancePlanningWindowStart() {
+        logger.info("Advancing planningWindowStart.");
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
+                NurseRosterInfo nurseRosterInfo = nurseRoster.getNurseRosterInfo();
+                List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
+                int index = shiftDateList.indexOf(nurseRosterInfo.getPlanningWindowStart());
+                if (index < 0) {
+                    throw new IllegalStateException("The planningWindowStart ("
+                            + nurseRosterInfo.getPlanningWindowStart() + ") must be in the shiftDateList ("
+                            + shiftDateList +").");
+                }
+                index++;
+                if (index >= shiftDateList.size()) {
+                    logger.warn("Cannot advance planningWindowStart any further.");
+                    return;
+                }
+                nurseRosterInfo.setPlanningWindowStart(shiftDateList.get(index));
+                scoreDirector.afterProblemFactChanged(nurseRosterInfo);
+            }
+        });
+        resetPanel(solutionBusiness.getSolution());
+        validate();
     }
 
     public void deleteEmployee(final Employee employee) {

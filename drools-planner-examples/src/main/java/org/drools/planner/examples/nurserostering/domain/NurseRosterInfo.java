@@ -21,16 +21,13 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
-@XStreamAlias("RosterInfo")
-public class RosterInfo extends AbstractPersistable {
+@XStreamAlias("NurseRosterInfo")
+public class NurseRosterInfo extends AbstractPersistable {
 
     private ShiftDate firstShiftDate;
     private ShiftDate lastShiftDate;
 
-    public RosterInfo(ShiftDate firstShiftDate, ShiftDate lastShiftDate) {
-        this.firstShiftDate = firstShiftDate;
-        this.lastShiftDate = lastShiftDate;
-    }
+    private ShiftDate planningWindowStart;
 
     public ShiftDate getFirstShiftDate() {
         return firstShiftDate;
@@ -48,17 +45,33 @@ public class RosterInfo extends AbstractPersistable {
         this.lastShiftDate = lastShiftDate;
     }
 
-    @Override
-    public String toString() {
-        return firstShiftDate + " - " + lastShiftDate;
-    }
-
     public int getFirstShiftDateDayIndex() {
         return firstShiftDate.getDayIndex();
     }
 
     public int getLastShiftDateDayIndex() {
         return lastShiftDate.getDayIndex();
+    }
+
+    public ShiftDate getPlanningWindowStart() {
+        return planningWindowStart;
+    }
+
+    public void setPlanningWindowStart(ShiftDate planningWindowStart) {
+        this.planningWindowStart = planningWindowStart;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public boolean isInPlanningWindow(ShiftDate shiftDate) {
+        return planningWindowStart.getDayIndex() <= shiftDate.getDayIndex();
+    }
+
+    @Override
+    public String toString() {
+        return firstShiftDate + " - " + lastShiftDate;
     }
 
 }

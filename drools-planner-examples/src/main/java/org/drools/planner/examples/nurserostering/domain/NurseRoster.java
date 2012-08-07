@@ -40,6 +40,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
 
     private String code;
 
+    private NurseRosterInfo nurseRosterInfo;
     private List<Skill> skillList;
     private List<ShiftType> shiftTypeList;
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
@@ -66,6 +67,14 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public NurseRosterInfo getNurseRosterInfo() {
+        return nurseRosterInfo;
+    }
+
+    public void setNurseRosterInfo(NurseRosterInfo nurseRosterInfo) {
+        this.nurseRosterInfo = nurseRosterInfo;
     }
 
     public List<Skill> getSkillList() {
@@ -211,8 +220,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
-        // TODO add RosterInfo as a property on NurseRoster
-        facts.add(new RosterInfo(shiftDateList.get(0), shiftDateList.get(shiftDateList.size() - 1)));
+        facts.add(nurseRosterInfo);
         facts.addAll(skillList);
         facts.addAll(shiftTypeList);
         facts.addAll(shiftTypeSkillRequirementList);
@@ -239,6 +247,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         NurseRoster clone = new NurseRoster();
         clone.id = id;
         clone.code = code;
+        clone.nurseRosterInfo = nurseRosterInfo;
         clone.skillList = skillList;
         clone.shiftTypeList = shiftTypeList;
         clone.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
