@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.drools.rule.Declaration;
 import org.mvel2.Operator;
-import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.ast.*;
 import org.mvel2.compiler.Accessor;
@@ -44,14 +43,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 
 public class ConditionAnalyzer {
 
     private ASTNode node;
     private ExecutableLiteral executableLiteral;
-    private ParserContext parserContext;
     private final Declaration[] declarations;
 
     public ConditionAnalyzer(ExecutableStatement stmt, Declaration[] declarations) {
@@ -59,7 +56,6 @@ public class ConditionAnalyzer {
         if (stmt instanceof ExecutableLiteral) {
             executableLiteral = (ExecutableLiteral)stmt;
         } else if (stmt instanceof CompiledExpression) {
-            parserContext = ((CompiledExpression)stmt).getParserContext();
             node = ((CompiledExpression)stmt).getFirstNode();
         } else {
             node = ((ExecutableAccessor)stmt).getNode();
@@ -194,7 +190,7 @@ public class ConditionAnalyzer {
             }
             Class<?> variableType = getVariableType(variableName);
             return new VariableExpression(variableName,
-                                          analyzeExpressionNode(((IndexedVariableAccessor) accessor).getNextNode()),
+                                          analyzeExpressionNode(((AccessorNode) accessor).getNextNode()),
                                           variableType != null ? variableType : node.getEgressType());
         }
 
@@ -211,20 +207,22 @@ public class ConditionAnalyzer {
                 if (variableType != null) {
                     return new VariableExpression(variableName, analyzeExpressionNode(accessorNode), variableType);
                 } else {
-                    // it's not a variable but a method invocation on this
-                    Class<?> thisClass = parserContext.getInputs().get("this");
-                    try {
-                        return new EvaluatedExpression(new MethodInvocation(thisClass.getMethod(variableName)));
-                    } catch (NoSuchMethodException e) {
-                        if (node.getEgressType() == Class.class) {
-                            // there's no method on this with the given name, check if it is a class literal
-                            ParserConfiguration conf = parserContext.getParserConfiguration();
-                            Class<?> classLiteral = conf.getImport(variableName);
-                            if (classLiteral != null) {
-                                return new FixedExpression(Class.class, classLiteral);
+                    if (node.getLiteralValue() instanceof ParserContext) {
+                        ParserContext pCtx = (ParserContext)node.getLiteralValue();
+                        // it's not a variable but a method invocation on this
+                        Class<?> thisClass = pCtx.getInputs().get("this");
+                        try {
+                            return new EvaluatedExpression(new MethodInvocation(thisClass.getMethod(variableName)));
+                        } catch (NoSuchMethodException e) {
+                            if (node.getEgressType() == Class.class) {
+                                // there's no method on this with the given name, check if it is a class literal
+                                Class<?> classLiteral = pCtx.getParserConfiguration().getImport(variableName);
+                                if (classLiteral != null) {
+                                    return new FixedExpression(Class.class, classLiteral);
+                                }
                             }
+                            throw new RuntimeException(e);
                         }
-                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -251,7 +249,7 @@ public class ConditionAnalyzer {
             throw new RuntimeException("Unknown accessor type: " + accessor);
         }
 
-        if (accessorNode != null && accessorNode instanceof VariableAccessor) {
+        if (accessorNode instanceof VariableAccessor) {
             if (isStaticAccessor(accessorNode)) {
                 while (accessorNode != null && accessorNode instanceof VariableAccessor) {
                     accessorNode = accessorNode.getNextNode();

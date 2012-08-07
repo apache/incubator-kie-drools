@@ -21,23 +21,23 @@ import static org.drools.rule.constraint.EvaluatorHelper.valuesAsMap;
 
 public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionEvaluator {
 
-    private final Declaration[] declarations;
-    private ExecutableStatement executableStatement;
-    private ParserContext parserContext;
-    private MVELCompilationUnit compilationUnit;
+    protected final Declaration[] declarations;
+    private final ParserConfiguration parserConfiguration;
+    protected ExecutableStatement executableStatement;
+    protected MVELCompilationUnit compilationUnit;
 
     private boolean evaluated = false;
 
     MvelConditionEvaluator(ParserConfiguration configuration, String expression, Declaration[] declarations) {
         this.declarations = declarations;
-        this.parserContext = new ParserContext(configuration);
-        executableStatement = (ExecutableStatement)MVEL.compileExpression(expression, parserContext);
+        this.parserConfiguration = configuration;
+        executableStatement = (ExecutableStatement)MVEL.compileExpression(expression, new ParserContext(parserConfiguration));
     }
 
-    MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserContext parserContext, ExecutableStatement executableStatement, Declaration[] declarations) {
+    public MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserConfiguration parserConfiguration, ExecutableStatement executableStatement, Declaration[] declarations) {
         this.declarations = declarations;
         this.compilationUnit = compilationUnit;
-        this.parserContext = parserContext;
+        this.parserConfiguration = parserConfiguration;
         this.executableStatement = executableStatement;
     }
 
@@ -136,11 +136,11 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
         if (node instanceof Contains) {
             return ((Contains)node).getFirstStatement().getAccessor() != null;
         }
-        return node instanceof BinaryOperation ? ((BinaryOperation)node).getLeft().getAccessor() != null : node.getAccessor() != null;
+        return node instanceof BinaryOperation ? ((BooleanNode) node).getLeft().getAccessor() != null : node.getAccessor() != null;
     }
 
     private CompiledExpression asCompiledExpression(ASTNode node) {
-        return new CompiledExpression(new ASTLinkedList(node), null, Object.class, parserContext, false);
+        return new CompiledExpression(new ASTLinkedList(node), null, Object.class, parserConfiguration, false);
     }
 
     private ASTNode getRootNode() {

@@ -30,7 +30,6 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
-import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
 
@@ -179,10 +178,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         if (compilationUnit != null) {
             MVELDialectRuntimeData data = getMVELDialectRuntimeData(workingMemory);
             ExecutableStatement statement = (ExecutableStatement)compilationUnit.getCompiledExpression(data);
-            ParserContext context = statement instanceof CompiledExpression ?
-                    ((CompiledExpression)statement).getParserContext() :
-                    new ParserContext(data.getParserConfiguration());
-            conditionEvaluator = new MvelConditionEvaluator(compilationUnit, context, statement, declarations);
+            ParserConfiguration configuration = statement instanceof CompiledExpression ?
+                    ((CompiledExpression)statement).getParserConfiguration() :
+                    data.getParserConfiguration();
+            conditionEvaluator = new MvelConditionEvaluator(compilationUnit, configuration, statement, declarations);
         } else {
             conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, declarations);
         }
