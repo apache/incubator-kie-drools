@@ -32,6 +32,7 @@ import org.drools.planner.api.domain.variable.ValueRanges;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.solution.Solution;
 
 public class PlanningVariableDescriptor {

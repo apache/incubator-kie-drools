@@ -29,6 +29,7 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -130,10 +131,17 @@ public class EntitySelectorConfig extends SelectorConfig {
                 minimumCacheType);
 
         boolean alreadyCached = false;
-        if (!CollectionUtils.isEmpty(entityFilterClassList)) {
-            List<SelectionFilter> entityFilterList = new ArrayList<SelectionFilter>(entityFilterClassList.size());
-            for (Class<? extends SelectionFilter> entityFilterClass : entityFilterClassList) {
-                entityFilterList.add(ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass));
+        if (!CollectionUtils.isEmpty(entityFilterClassList)
+                || entityDescriptor.hasMovableEntitySelectionFilter()) {
+            List<SelectionFilter> entityFilterList = new ArrayList<SelectionFilter>(
+                    entityFilterClassList == null ? 1 : entityFilterClassList.size());
+            if (entityFilterClassList != null) {
+                for (Class<? extends SelectionFilter> entityFilterClass : entityFilterClassList) {
+                    entityFilterList.add(ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass));
+                }
+            }
+            if (entityDescriptor.hasMovableEntitySelectionFilter()) {
+                entityFilterList.add(entityDescriptor.getMovableEntitySelectionFilter());
             }
             EntitySelector filteringEntitySelector;
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {

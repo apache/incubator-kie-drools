@@ -25,10 +25,12 @@ import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.drools.planner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
 
-@PlanningEntity(difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
+@PlanningEntity(difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class,
+        movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
 @XStreamAlias("ShiftAssignment")
 public class ShiftAssignment extends AbstractPersistable {
 

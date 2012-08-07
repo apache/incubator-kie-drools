@@ -37,6 +37,7 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.DependentPlanningVariableDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.solution.Solution;
 
 public class PlanningEntityDescriptor {
@@ -46,6 +47,7 @@ public class PlanningEntityDescriptor {
     private final Class<?> planningEntityClass;
     private final BeanInfo planningEntityBeanInfo;
     private PlanningEntitySorter planningEntitySorter;
+    private SelectionFilter movableEntitySelectionFilter;
 
     private Map<String, PlanningVariableDescriptor> planningVariableDescriptorMap;
     private Map<String, DependentPlanningVariableDescriptor> dependentPlanningVariableDescriptorMap;
@@ -75,6 +77,7 @@ public class PlanningEntityDescriptor {
         }
         planningEntitySorter = new PlanningEntitySorter();
         processDifficulty(planningEntityAnnotation);
+        processMovable(planningEntityAnnotation);
     }
 
     private void processDifficulty(PlanningEntity planningEntityAnnotation) {
@@ -102,6 +105,17 @@ public class PlanningEntityDescriptor {
             PlanningEntityDifficultyWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
             planningEntitySorter.setDifficultyWeightFactory(difficultyWeightFactory);
+        }
+    }
+
+    private void processMovable(PlanningEntity planningEntityAnnotation) {
+        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = planningEntityAnnotation.movableEntitySelectionFilter();
+        if (movableEntitySelectionFilterClass == PlanningEntity.NullMovableEntitySelectionFilter.class) {
+            movableEntitySelectionFilterClass = null;
+        }
+        if (movableEntitySelectionFilterClass != null) {
+            movableEntitySelectionFilter = ConfigUtils.newInstance(this,
+                    "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
         }
     }
 
@@ -171,6 +185,14 @@ public class PlanningEntityDescriptor {
 
     public PlanningEntitySorter getPlanningEntitySorter() {
         return planningEntitySorter;
+    }
+
+    public boolean hasMovableEntitySelectionFilter() {
+        return movableEntitySelectionFilter != null;
+    }
+
+    public SelectionFilter getMovableEntitySelectionFilter() {
+        return movableEntitySelectionFilter;
     }
 
     public PropertyDescriptor getPropertyDescriptor(String propertyName) {

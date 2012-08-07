@@ -21,6 +21,8 @@ import java.lang.annotation.Target;
 import java.util.Comparator;
 
 import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -54,5 +56,21 @@ public @interface PlanningEntity {
     public Class<? extends PlanningEntityDifficultyWeightFactory> difficultyWeightFactoryClass()
             default NullDifficultyWeightFactory.class;
     interface NullDifficultyWeightFactory extends PlanningEntityDifficultyWeightFactory {}
+
+    /**
+     * An immovable planning entity is never changed during planning,
+     * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
+     * <p/>
+     * This applies to all the planning variables of this planning entity.
+     * To make individual variables immovable, see https://issues.jboss.org/browse/JBRULES-3601
+     * <p/>
+     * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
+     * if the selection entity is immovable and it returns true if the selection entity is movable
+     * @return {@link NullMovableEntitySelectionFilter} when it is null (workaround for annotation limitation)
+     */
+    Class<? extends SelectionFilter> movableEntitySelectionFilter()
+            default NullMovableEntitySelectionFilter.class;
+
+    interface NullMovableEntitySelectionFilter extends SelectionFilter {}
 
 }
