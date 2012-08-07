@@ -31,7 +31,6 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.definition.rule.Rule;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.mvel2.MVEL;
@@ -101,12 +100,11 @@ public class MVELExprAnalyzer {
                                          availableIdentifiers.getThisClass() );
             }
             if ( availableIdentifiers.getOperators() != null ) {
-                for ( String opKey : availableIdentifiers.getOperators().keySet() ) {
-                    parserContext1.addInput( opKey, availableIdentifiers.getOperators().get( opKey ).getClass() );
+                for ( Entry<String, EvaluatorWrapper> opEntry : availableIdentifiers.getOperators().entrySet() ) {
+                    parserContext1.addInput( opEntry.getKey(), opEntry.getValue().getClass() );
                 }
-
             }
-            
+
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
@@ -152,8 +150,7 @@ public class MVELExprAnalyzer {
             parserContext2.setInterceptors( dialect.getInterceptors() );
 
             for ( String str : requiredInputs ) {
-                Class< ? > cls;
-                cls = availableIdentifiers.getDeclrClasses().get( str );
+                Class< ? > cls = availableIdentifiers.getDeclrClasses().get( str );
                 if ( cls != null ) {
                     parserContext2.addInput( str,
                                              cls );
