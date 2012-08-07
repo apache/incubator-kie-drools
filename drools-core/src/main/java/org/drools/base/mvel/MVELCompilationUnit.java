@@ -315,8 +315,8 @@ public class MVELCompilationUnit
 
 
         if ( globalIdentifiers != null ) {
-            for ( int j = 0, length = globalIdentifiers.length; j < length; j++ ) {
-                factory.getIndexedVariableResolver( i++ ).setValue( globals.resolveGlobal( this.globalIdentifiers[j] ) );
+            for (String globalIdentifier : globalIdentifiers) {
+                factory.getIndexedVariableResolver(i++).setValue(globals.resolveGlobal(globalIdentifier));
             }
         }
 
@@ -327,23 +327,21 @@ public class MVELCompilationUnit
             handles = new InternalFactHandle[0];
         }
         if ( operators != null ) {
-            for ( int j = 0, length = operators.length; j < length; j++ ) {
+            for (EvaluatorWrapper operator : operators) {
                 // TODO: need to have one operator per working memory
-                factory.getIndexedVariableResolver( i++ ).setValue( operators[j].setWorkingMemory( workingMemory ) );
-                if ( operators[j].getLeftBinding() != null ) {
-                    if( operators[j].getLeftBinding().getIdentifier().equals( "this" )) {
-                        operators[j].setLeftHandle( (InternalFactHandle) workingMemory.getFactHandle( rightObject ) );
+                factory.getIndexedVariableResolver(i++).setValue(operator.setWorkingMemory(workingMemory));
+                if (operator.getLeftBinding() != null) {
+                    if (operator.getLeftBinding().getIdentifier().equals("this")) {
+                        operator.setLeftHandle((InternalFactHandle) workingMemory.getFactHandle(rightObject));
                     } else {
-                        operators[j].setLeftHandle( getFactHandle( operators[j].getLeftBinding(),
-                                                                   handles ) );
+                        operator.setLeftHandle(getFactHandle(operator.getLeftBinding(), handles));
                     }
                 }
-                if ( operators[j].getRightBinding() != null ) {
-                    if( operators[j].getRightBinding().getIdentifier().equals( "this" )) {
-                        operators[j].setRightHandle( (InternalFactHandle) workingMemory.getFactHandle( rightObject ) );
+                if (operator.getRightBinding() != null) {
+                    if (operator.getRightBinding().getIdentifier().equals("this")) {
+                        operator.setRightHandle((InternalFactHandle) workingMemory.getFactHandle(rightObject));
                     } else {
-                        operators[j].setRightHandle( getFactHandle( operators[j].getRightBinding(),
-                                                                    handles ) );
+                        operator.setRightHandle(getFactHandle(operator.getRightBinding(), handles));
                     }
                 }
             }
@@ -361,20 +359,16 @@ public class MVELCompilationUnit
                     // allows the caller to override the member var
                     // used for rules, salience and timers so they work with 'or' CEs
                     prevDecl =  this.previousDeclarations;
-                }                
+                }
 
-                for ( int j = 0, length = prevDecl.length; j < length; j++ ) {
-                    Declaration decl = prevDecl[j];
-                    InternalFactHandle handle = getFactHandle( decl,
-                                                               handles );
+                for (Declaration decl : prevDecl) {
+                    InternalFactHandle handle = getFactHandle(decl, handles);
 
-                    Object o = decl.getValue( (InternalWorkingMemory) workingMemory,
-                                              handle.getObject() );
-                    if ( knowledgeHelper != null && decl.isPatternDeclaration() ) {
-                        identityMap.put( o,
-                                         handle );
+                    Object o = decl.getValue(workingMemory, handle.getObject());
+                    if (knowledgeHelper != null && decl.isPatternDeclaration()) {
+                        identityMap.put(o, handle);
                     }
-                    factory.getIndexedVariableResolver( i++ ).setValue(  o );
+                    factory.getIndexedVariableResolver(i++).setValue(o);
                 }
             }
         }
@@ -407,7 +401,7 @@ public class MVELCompilationUnit
         df.setOtherVarsPos( otherVarsPos );
         df.setOtherVarsLength( otherVarsLength );
         
-        if ( knowledgeHelper != null && knowledgeHelper instanceof KnowledgeHelper ) {
+        if ( knowledgeHelper instanceof KnowledgeHelper ) {
             KnowledgeHelper kh = ( KnowledgeHelper ) knowledgeHelper;
             kh.setIdentityMap( identityMap );
             df.setKnowledgeHelper( kh );
