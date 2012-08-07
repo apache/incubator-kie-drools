@@ -535,13 +535,15 @@ public class KnowledgeAgentImpl
             }
 
             for ( Rule rule : pkg.getRules() ) {
+                if ( autoDiscoverResource ) {
+                    resource = rule.getResource();
+                }
+
                 if ( resource == null ) {
                     this.listener.debug( "KnowledgeAgent no resource mapped for rule="
                                          + rule );
                 }
-                if ( autoDiscoverResource ) {
-                    resource = rule.getResource();
-                }
+
 
                 if ( isNewDefinition( resource, rule ) ) {
                     this.addDefinitionMapping( resource,

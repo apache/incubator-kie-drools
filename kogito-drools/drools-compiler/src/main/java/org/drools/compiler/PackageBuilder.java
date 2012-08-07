@@ -719,18 +719,29 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws IOException {
+    public void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception, DroolsParserException {
         PMMLCompiler compiler = getPMMLCompiler();
-        if (compiler != null) {
-
-            String theory = compiler.compile( resource.getInputStream(),
-                                              getPackageRegistry() );
-
-            addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
-                                  ResourceType.DRL,
-                                  configuration );
+        if ( compiler != null ) {
+            this.resource = resource;
+            addPackage( pmmlModelToPackageDescr( compiler, resource ) );
+            this.resource = null;
         } else {
-            throw new RuntimeException( "Unknown resource type: " + type );
+            addPackageForExternalType( resource, type, configuration );
+        }
+    }
+
+    PackageDescr pmmlModelToPackageDescr( PMMLCompiler compiler, Resource resource ) throws DroolsParserException, IOException {
+        String theory = compiler.compile( resource.getInputStream(),
+                getPackageRegistry() );
+
+        DrlParser parser = new DrlParser();
+        PackageDescr pkg = parser.parse( new StringReader( theory ) );
+        this.results.addAll( parser.getErrors() );
+        if ( pkg == null ) {
+            this.results.add( new ParserError( resource, "Parser returned a null Package", 0, 0 ) );
+            return pkg;
+        } else {
+            return parser.hasErrors() ? null : pkg;
         }
     }
 
@@ -2749,7 +2760,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private void addRule( final RuleDescr ruleDescr ) {
-        if (ruleDescr.getResource() == null) {
+        if ( ruleDescr.getResource() == null ) {
             ruleDescr.setResource( resource );
         }
 

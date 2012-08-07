@@ -5,20 +5,28 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.compiler.PMMLCompiler;
+import org.drools.compiler.PMMLCompilerFactory;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
+import org.drools.definitions.rule.impl.RuleImpl;
+import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
+import java.io.InputStream;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -419,6 +427,46 @@ public class KnowledgeBuilderTest {
 
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, kpkgs.size() );
+    }
+
+
+    @Test
+    public void testResourceMapping() throws Exception {
+        String rule = "package org.drools.test\n" +
+                "rule R1 when\n" +
+                " \n" +
+                "then\n" +
+                "end\n";
+
+        Resource res1 = ResourceFactory.newByteArrayResource( rule.getBytes() );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( res1, ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+
+        KnowledgePackage kp1 = kbuilder.getKnowledgePackages().iterator().next();
+        assertEquals( 1, kp1.getRules().size() );
+        Rule r = kp1.getRules().iterator().next();
+        assertEquals( res1, ((RuleImpl) r).getRule().getResource() );
+
+        String pmml = "<PMML version=\"4.0\"><Header/></PMML>";
+
+        Resource res2 = ResourceFactory.newByteArrayResource( pmml.getBytes() );
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        PMMLCompilerFactory.setProvider(new PMMLCompiler() {
+            public String compile(InputStream stream, Map<String, PackageRegistry> registries) {
+                return "rule R2 when then end";
+            }
+        });
+
+        kbuilder2.add( res2, ResourceType.PMML );
+        assertFalse( kbuilder2.getErrors().toString(), kbuilder2.hasErrors() );
+
+        KnowledgePackage kp2 = kbuilder2.getKnowledgePackages().iterator().next();
+        assertEquals( 1, kp2.getRules().size() );
+        Rule r2 = kp2.getRules().iterator().next();
+        assertEquals( res2, ((RuleImpl) r2).getRule().getResource() );
+
     }
 
 }
