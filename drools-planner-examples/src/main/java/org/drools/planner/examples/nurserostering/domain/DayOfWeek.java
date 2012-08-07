@@ -75,6 +75,10 @@ public enum DayOfWeek {
         return distance;
     }
 
+    public String getLabel() {
+        return code.substring(0, 1);
+    }
+
     public String toString() {
         return code.substring(0, 3);
     }

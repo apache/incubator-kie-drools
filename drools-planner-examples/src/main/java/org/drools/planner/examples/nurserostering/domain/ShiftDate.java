@@ -66,7 +66,7 @@ public class ShiftDate extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return dateString.substring(5);
+        return  dateString.substring(5).replaceAll("\\-", "/") + " " + dayOfWeek.getLabel();
     }
 
     @Override
