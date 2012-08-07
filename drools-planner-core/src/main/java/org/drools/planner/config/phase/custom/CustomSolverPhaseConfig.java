@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.util.ConfigUtils;
@@ -56,7 +57,7 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultCustomSolverPhase customSolverPhase = new DefaultCustomSolverPhase();
         configureSolverPhase(customSolverPhase, environmentMode, scoreDefinition, solverTermination);
-        if (customSolverPhaseCommandClassList == null || customSolverPhaseCommandClassList.isEmpty()) {
+        if (CollectionUtils.isEmpty(customSolverPhaseCommandClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");
         }

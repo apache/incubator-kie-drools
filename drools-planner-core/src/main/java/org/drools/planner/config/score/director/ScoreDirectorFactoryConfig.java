@@ -24,6 +24,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -227,7 +228,7 @@ public class ScoreDirectorFactoryConfig {
 
     private RuleBase buildRuleBase() {
         if (ruleBase != null) {
-            if (scoreDrlList != null && !scoreDrlList.isEmpty()) {
+            if (!CollectionUtils.isEmpty(scoreDrlList)) {
                 throw new IllegalArgumentException("If ruleBase is not null, the scoreDrlList (" + scoreDrlList
                         + ") must be empty.");
             }

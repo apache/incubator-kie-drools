@@ -17,6 +17,7 @@
 package org.drools.planner.core.heuristic.selector.entity.decorator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
@@ -26,12 +27,12 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class CachingFilteringEntitySelector extends CachingEntitySelector {
 
-    protected final SelectionFilter entityFilter;
+    protected final List<SelectionFilter> entityFilterList;
 
     public CachingFilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
-            SelectionFilter entityFilter) {
+            List<SelectionFilter> entityFilterList) {
         super(childEntitySelector, cacheType);
-        this.entityFilter = entityFilter;
+        this.entityFilterList = entityFilterList;
     }
 
     // ************************************************************************
@@ -49,10 +50,19 @@ public class CachingFilteringEntitySelector extends CachingEntitySelector {
         }
         cachedEntityList = new ArrayList<Object>((int) childSize);
         for (Object entity : childEntitySelector) {
-            if (entityFilter.accept(scoreDirector, entity)) {
+            if (accept(scoreDirector, entity)) {
                 cachedEntityList.add(entity);
             }
         }
+    }
+
+    private boolean accept(ScoreDirector scoreDirector, Object entity) {
+        for (SelectionFilter entityFilter : entityFilterList) {
+            if (!entityFilter.accept(scoreDirector, entity)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

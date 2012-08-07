@@ -17,6 +17,7 @@
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
@@ -31,14 +32,14 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
 
     protected final MoveSelector childMoveSelector;
 
-    protected final SelectionFilter moveFilter;
+    protected final List<SelectionFilter> moveFilterList;
 
     protected ScoreDirector scoreDirector = null;
 
     public JustInTimeFilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
-            SelectionFilter moveFilter) {
+            List<SelectionFilter> moveFilterList) {
         this.childMoveSelector = childMoveSelector;
-        this.moveFilter = moveFilter;
+        this.moveFilterList = moveFilterList;
         solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
         if (cacheType != SelectionCacheType.JUST_IN_TIME) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
@@ -96,10 +97,19 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
                     return;
                 }
                 next = childMoveIterator.next();
-            } while (!moveFilter.accept(scoreDirector, next));
+            } while (!accept(scoreDirector, next));
             upcomingSelection = next;
         }
 
+    }
+
+    private boolean accept(ScoreDirector scoreDirector, Move move) {
+        for (SelectionFilter moveFilter : moveFilterList) {
+            if (!moveFilter.accept(scoreDirector, move)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

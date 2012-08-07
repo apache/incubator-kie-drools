@@ -68,14 +68,15 @@ public class FilteringMoveSelectorTest {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
 
-        SelectionFilter<DummyMove> entityFilter = new SelectionFilter<DummyMove>() {
+        SelectionFilter<DummyMove> moveFilter = new SelectionFilter<DummyMove>() {
             public boolean accept(ScoreDirector scoreDirector, DummyMove move) {
                 return !move.getCode().equals("e3");
             }
         };
+        List<SelectionFilter> moveFilterList = Arrays.<SelectionFilter>asList(moveFilter);
         MoveSelector moveSelector = cacheType == SelectionCacheType.JUST_IN_TIME
-                ? new JustInTimeFilteringMoveSelector(childMoveSelector, cacheType, entityFilter)
-                : new CachingFilteringMoveSelector(childMoveSelector, cacheType, entityFilter);
+                ? new JustInTimeFilteringMoveSelector(childMoveSelector, cacheType, moveFilterList)
+                : new CachingFilteringMoveSelector(childMoveSelector, cacheType, moveFilterList);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);

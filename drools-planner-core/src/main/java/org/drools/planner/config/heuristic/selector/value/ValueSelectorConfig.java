@@ -35,11 +35,12 @@ import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {
 
-    private String planningVariableName = null;
-    private SelectionOrder selectionOrder = null;
-    private SelectionCacheType cacheType = null;
+    protected String planningVariableName = null;
+
+    protected SelectionOrder selectionOrder = null;
+    protected SelectionCacheType cacheType = null;
     // TODO filterClass
-    private Class<? extends SelectionProbabilityWeightFactory> valueProbabilityWeightFactoryClass = null;
+    protected Class<? extends SelectionProbabilityWeightFactory> valueProbabilityWeightFactoryClass = null;
     // TODO sorterClass, increasingStrength
 
     public String getPlanningVariableName() {

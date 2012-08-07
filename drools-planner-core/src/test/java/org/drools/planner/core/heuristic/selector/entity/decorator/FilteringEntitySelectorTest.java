@@ -69,9 +69,10 @@ public class FilteringEntitySelectorTest {
                 return !entity.getCode().equals("e3");
             }
         };
+        List<SelectionFilter> entityFilterList = Arrays.<SelectionFilter>asList(entityFilter);
         EntitySelector entitySelector = cacheType == SelectionCacheType.JUST_IN_TIME
-                ? new JustInTimeFilteringEntitySelector(childEntitySelector, cacheType, entityFilter)
-                : new CachingFilteringEntitySelector(childEntitySelector, cacheType, entityFilter);
+                ? new JustInTimeFilteringEntitySelector(childEntitySelector, cacheType, entityFilterList)
+                : new CachingFilteringEntitySelector(childEntitySelector, cacheType, entityFilterList);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);

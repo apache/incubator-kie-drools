@@ -16,7 +16,12 @@
 
 package org.drools.planner.config.heuristic.selector.move;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
@@ -33,7 +38,6 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingFilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
@@ -54,8 +58,9 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     protected SelectionOrder selectionOrder = null;
     protected SelectionCacheType cacheType = null;
-    protected Class<? extends SelectionFilter> moveFilterClass = null;
-    private Class<? extends SelectionProbabilityWeightFactory> moveProbabilityWeightFactoryClass = null;
+    @XStreamImplicit(itemFieldName = "moveFilterClass")
+    protected List<Class<? extends SelectionFilter>> moveFilterClassList = null;
+    protected Class<? extends SelectionProbabilityWeightFactory> moveProbabilityWeightFactoryClass = null;
     // TODO moveSorterClass
 
     private Double fixedProbabilityWeight = null;
@@ -76,12 +81,12 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         this.cacheType = cacheType;
     }
 
-    public Class<? extends SelectionFilter> getMoveFilterClass() {
-        return moveFilterClass;
+    public List<Class<? extends SelectionFilter>> getMoveFilterClassList() {
+        return moveFilterClassList;
     }
 
-    public void setMoveFilterClass(Class<? extends SelectionFilter> moveFilterClass) {
-        this.moveFilterClass = moveFilterClass;
+    public void setMoveFilterClassList(List<Class<? extends SelectionFilter>> moveFilterClassList) {
+        this.moveFilterClassList = moveFilterClassList;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getMoveProbabilityWeightFactoryClass() {
@@ -124,15 +129,18 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                 resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder, minimumCacheType);
 
         boolean alreadyCached = false;
-        if (moveFilterClass != null) {
-            SelectionFilter moveFilter = ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass);
+        if (!CollectionUtils.isEmpty(moveFilterClassList)) {
+            List<SelectionFilter> moveFilterList = new ArrayList<SelectionFilter>(moveFilterClassList.size());
+            for (Class<? extends SelectionFilter> moveFilterClass : moveFilterClassList) {
+                moveFilterList.add(ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass));
+            }
             MoveSelector filteringMoveSelector;
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringMoveSelector = new JustInTimeFilteringMoveSelector(moveSelector,
-                        resolvedCacheType, moveFilter);
+                        resolvedCacheType, moveFilterList);
             } else {
                 filteringMoveSelector = new CachingFilteringMoveSelector(moveSelector,
-                        resolvedCacheType, moveFilter);
+                        resolvedCacheType, moveFilterList);
                 alreadyCached = true;
             }
             moveSelector = filteringMoveSelector;
@@ -179,8 +187,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         super.inherit(inheritedConfig);
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
-        moveFilterClass = ConfigUtils.inheritOverwritableProperty(
-                moveFilterClass, inheritedConfig.getMoveFilterClass());
+        moveFilterClassList = ConfigUtils.inheritOverwritableProperty(
+                moveFilterClassList, inheritedConfig.getMoveFilterClassList());
         moveProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 moveProbabilityWeightFactoryClass, inheritedConfig.getMoveProbabilityWeightFactoryClass());
 

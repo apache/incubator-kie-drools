@@ -17,6 +17,7 @@
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
@@ -27,12 +28,12 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class CachingFilteringMoveSelector extends CachingMoveSelector {
 
-    protected final SelectionFilter moveFilter;
+    protected final List<SelectionFilter> moveFilterList;
 
     public CachingFilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
-            SelectionFilter moveFilter) {
+            List<SelectionFilter> moveFilterList) {
         super(childMoveSelector, cacheType);
-        this.moveFilter = moveFilter;
+        this.moveFilterList = moveFilterList;
     }
 
     // ************************************************************************
@@ -45,10 +46,19 @@ public class CachingFilteringMoveSelector extends CachingMoveSelector {
         long childSize = childMoveSelector.getSize();
         cachedMoveList = new ArrayList<Move>((int) childSize);
         for (Move move : childMoveSelector) {
-            if (moveFilter.accept(scoreDirector, move)) {
+            if (accept(scoreDirector, move)) {
                 cachedMoveList.add(move);
             }
         }
+    }
+
+    private boolean accept(ScoreDirector scoreDirector, Move move) {
+        for (SelectionFilter moveFilter : moveFilterList) {
+            if (!moveFilter.accept(scoreDirector, move)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

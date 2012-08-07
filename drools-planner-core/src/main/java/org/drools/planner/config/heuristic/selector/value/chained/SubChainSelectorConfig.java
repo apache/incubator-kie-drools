@@ -45,9 +45,9 @@ public class SubChainSelectorConfig extends SelectorConfig {
     private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 2;
 
     @XStreamAlias("valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+    protected ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
 
-    private Integer minimumSubChainSize = null;
+    protected Integer minimumSubChainSize = null;
 
     public ValueSelectorConfig getValueSelectorConfig() {
         return valueSelectorConfig;

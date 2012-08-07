@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
@@ -52,7 +53,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XStreamImplicit()
-    private List<MoveSelectorConfig> moveSelectorConfigList;
+    private List<MoveSelectorConfig> moveSelectorConfigList = null;
     @XStreamAlias("acceptor")
     private AcceptorConfig acceptorConfig = new AcceptorConfig();
     @XStreamAlias("forager")
@@ -104,7 +105,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         MoveSelector moveSelector;
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
-        if (moveSelectorConfigList.isEmpty()) {
+        if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
             unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(

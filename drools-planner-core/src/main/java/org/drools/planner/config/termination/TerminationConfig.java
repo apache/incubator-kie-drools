@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.termination.AbstractCompositeTermination;
@@ -170,7 +171,7 @@ public class TerminationConfig implements Cloneable {
             termination.setMaximumUnimprovedStepCount(maximumUnimprovedStepCount);
             terminationList.add(termination);
         }
-        if (terminationConfigList != null && !terminationConfigList.isEmpty()) {
+        if (!CollectionUtils.isEmpty(terminationConfigList)) {
             for (TerminationConfig terminationConfig : terminationConfigList) {
                 Termination termination = terminationConfig.buildTermination(scoreDefinition);
                 if (termination != null) {

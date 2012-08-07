@@ -22,6 +22,7 @@ import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.score.director.ScoreDirectorFactoryConfig;
@@ -146,7 +147,7 @@ public class SolverConfig {
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
-        if (solverPhaseConfigList == null || solverPhaseConfigList.isEmpty()) {
+        if (CollectionUtils.isEmpty(solverPhaseConfigList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 phase (for example <localSearch>) in the solver configuration.");
         }
@@ -175,7 +176,7 @@ public class SolverConfig {
         }
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
         solutionDescriptor.processAnnotations();
-        if (planningEntityClassSet == null || planningEntityClassSet.isEmpty()) {
+        if (CollectionUtils.isEmpty(planningEntityClassSet)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }

@@ -42,7 +42,7 @@ import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector
 public class PillarSelectorConfig extends SelectorConfig {
 
     @XStreamAlias("entitySelector")
-    private EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+    protected EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
 
     // TODO add planningVariableName but do not duplicate from PillarSwapMoveSelectorConfig
 //    @XStreamImplicit(itemFieldName = "planningVariableName")

@@ -17,6 +17,7 @@
 package org.drools.planner.core.heuristic.selector.entity.decorator;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
@@ -35,14 +36,14 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
 
-    protected final SelectionFilter entityFilter;
+    protected final List<SelectionFilter> entityFilterList;
 
     protected ScoreDirector scoreDirector = null;
 
     public JustInTimeFilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
-            SelectionFilter entityFilter) {
+            List<SelectionFilter> entityFilterList) {
         this.childEntitySelector = childEntitySelector;
-        this.entityFilter = entityFilter;
+        this.entityFilterList = entityFilterList;
         if (cacheType != SelectionCacheType.JUST_IN_TIME) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");
@@ -104,7 +105,7 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
                     return;
                 }
                 next = childEntityIterator.next();
-            } while (!entityFilter.accept(scoreDirector, next));
+            } while (!accept(scoreDirector, next));
             upcomingSelection = next;
         }
 
@@ -118,6 +119,15 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
     public ListIterator<Object> listIterator(int index) {
         // TODO Not yet implemented because this class isn't used
         throw new UnsupportedOperationException();
+    }
+
+    private boolean accept(ScoreDirector scoreDirector, Object entity) {
+        for (SelectionFilter entityFilter : entityFilterList) {
+            if (!entityFilter.accept(scoreDirector, entity)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

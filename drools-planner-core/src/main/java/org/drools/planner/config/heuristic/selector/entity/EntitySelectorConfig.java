@@ -16,9 +16,13 @@
 
 package org.drools.planner.config.heuristic.selector.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
@@ -35,17 +39,17 @@ import org.drools.planner.core.heuristic.selector.entity.decorator.CachingFilter
 import org.drools.planner.core.heuristic.selector.entity.decorator.JustInTimeFilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
 
-    private Class<?> planningEntityClass = null;
-    private SelectionOrder selectionOrder = null;
-    private SelectionCacheType cacheType = null;
-    private Class<? extends SelectionFilter> entityFilterClass = null;
-    private Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass = null;
+    protected Class<?> planningEntityClass = null;
+
+    protected SelectionOrder selectionOrder = null;
+    protected SelectionCacheType cacheType = null;
+    @XStreamImplicit(itemFieldName = "entityFilterClass")
+    protected List<Class<? extends SelectionFilter>> entityFilterClassList = null;
+    protected Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass = null;
     // TODO sorterClass, decreasingDifficulty
 
     public Class<?> getPlanningEntityClass() {
@@ -72,12 +76,12 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.cacheType = cacheType;
     }
 
-    public Class<? extends SelectionFilter> getEntityFilterClass() {
-        return entityFilterClass;
+    public List<Class<? extends SelectionFilter>> getEntityFilterClassList() {
+        return entityFilterClassList;
     }
 
-    public void setEntityFilterClass(Class<? extends SelectionFilter> entityFilterClass) {
-        this.entityFilterClass = entityFilterClass;
+    public void setEntityFilterClassList(List<Class<? extends SelectionFilter>> entityFilterClassList) {
+        this.entityFilterClassList = entityFilterClassList;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getEntityProbabilityWeightFactoryClass() {
@@ -126,15 +130,18 @@ public class EntitySelectorConfig extends SelectorConfig {
                 minimumCacheType);
 
         boolean alreadyCached = false;
-        if (entityFilterClass != null) {
-            SelectionFilter entityFilter = ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass);
+        if (!CollectionUtils.isEmpty(entityFilterClassList)) {
+            List<SelectionFilter> entityFilterList = new ArrayList<SelectionFilter>(entityFilterClassList.size());
+            for (Class<? extends SelectionFilter> entityFilterClass : entityFilterClassList) {
+                entityFilterList.add(ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass));
+            }
             EntitySelector filteringEntitySelector;
             if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
                 filteringEntitySelector = new JustInTimeFilteringEntitySelector(entitySelector,
-                        resolvedCacheType, entityFilter);
+                        resolvedCacheType, entityFilterList);
             } else {
                 filteringEntitySelector = new CachingFilteringEntitySelector(entitySelector,
-                        resolvedCacheType, entityFilter);
+                        resolvedCacheType, entityFilterList);
                 alreadyCached = true;
             }
             entitySelector = filteringEntitySelector;
@@ -198,8 +205,8 @@ public class EntitySelectorConfig extends SelectorConfig {
                 inheritedConfig.getPlanningEntityClass());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
-        entityFilterClass = ConfigUtils.inheritOverwritableProperty
-                (entityFilterClass, inheritedConfig.getEntityFilterClass());
+        entityFilterClassList = ConfigUtils.inheritOverwritableProperty
+                (entityFilterClassList, inheritedConfig.getEntityFilterClassList());
         entityProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 entityProbabilityWeightFactoryClass, inheritedConfig.getEntityProbabilityWeightFactoryClass());
     }
