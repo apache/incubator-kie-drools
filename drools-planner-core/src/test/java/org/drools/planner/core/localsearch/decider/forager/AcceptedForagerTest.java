@@ -35,6 +35,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class AcceptedForagerTest {
 
@@ -196,11 +197,9 @@ public class AcceptedForagerTest {
         scoreDirectorFactory.setSolutionDescriptor(TestdataSolution.buildSolutionDescriptor());
         scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
-        solverScope.setWorkingRandom(new Random() {
-            public double nextDouble() {
-                return 0.2;
-            }
-        });
+        Random workingRandom = mock(Random.class);
+        when(workingRandom.nextInt(2)).thenReturn(0);
+        solverScope.setWorkingRandom(workingRandom);
         solverScope.setBestScore(DefaultSimpleScore.valueOf(-10));
         LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         lastLocalSearchStepScope.setScore(DefaultSimpleScore.valueOf(-100));
