@@ -11348,4 +11348,47 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals("mario", sb.toString());
         ksession.dispose();
     }
+
+    public void testGenericsList() throws Exception {
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   $c : Cheese( $type: type )\n" +
+                "   $p : Person( $name : name, addresses.get(0).street == $type )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("x");
+        p.addAddress(new Address("x", "x", "x"));
+        p.addAddress(new Address("y", "y", "y"));
+        ksession.insert(p);
+
+        ksession.insert(new Cheese("x"));
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testGenericsOption() throws Exception {
+        // JBRULES-3579
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   $c : Cheese( $type: type )\n" +
+                "   $p : Person( $name : name, addressOption.get.street == $type )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("x");
+        p.setAddress(new Address("x", "x", "x"));
+        ksession.insert(p);
+
+        ksession.insert(new Cheese("x"));
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
 }

@@ -54,14 +54,6 @@ public class Person
 
     public Object object;
 
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public Person() {
 
     }
@@ -77,6 +69,18 @@ public class Person
         this(name,
                 "",
                 0);
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Option<Address> getAddressOption() {
+        return new Option<Address>(address);
     }
 
     public List<Address> getAddresses() {
