@@ -11219,4 +11219,41 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testMvelFunctionWithDeclaredTypeArg() {
+        // JBRULES-3562
+        String rule = "package test; \n" +
+                "dialect \"mvel\"\n" +
+                "global java.lang.StringBuilder value;\n" +
+                "function String getFieldValue(Bean bean) {" +
+                "   return bean.getField();" +
+                "}" +
+                "declare Bean \n" +
+                "   field : String \n" +
+                "end \n" +
+                "\n" +
+                "rule R1 \n" +
+                "when \n" +
+                "then \n" +
+                "   insert( new Bean( \"mario\" ) ); \n" +
+                "end \n" +
+                "\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "   $bean : Bean( ) \n" +
+                "then \n" +
+                "   value.append( getFieldValue($bean) ); \n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        StringBuilder sb = new StringBuilder();
+        ksession.setGlobal("value", sb);
+        ksession.fireAllRules();
+
+        assertEquals("mario", sb.toString());
+        ksession.dispose();
+    }
 }

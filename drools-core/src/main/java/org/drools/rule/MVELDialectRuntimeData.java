@@ -43,25 +43,25 @@ public class MVELDialectRuntimeData
     implements
     DialectRuntimeData,
     Externalizable {
-    private MapFunctionResolverFactory     functionFactory;
+    private final MapFunctionResolverFactory functionFactory;
 
-    private Map<Wireable, MVELCompileable> invokerLookups;
-    private Set<MVELCompileable>           mvelReaders;
+    private Map<Wireable, MVELCompileable>   invokerLookups;
+    private Set<MVELCompileable>             mvelReaders;
 
-    private CompositeClassLoader           rootClassLoader;
+    private CompositeClassLoader             rootClassLoader;
 
-    private List<Wireable>                 wireList = Collections.<Wireable> emptyList();
+    private List<Wireable>                   wireList = Collections.emptyList();
 
-    private Map<String, Object>           imports;
-    private HashSet<String>               packageImports;
-    private ParserConfiguration           parserConfiguration;
+    private Map<String, Object>              imports;
+    private HashSet<String>                  packageImports;
+    private ParserConfiguration              parserConfiguration;
 
     public MVELDialectRuntimeData() {
         this.functionFactory = new MapFunctionResolverFactory();
         this.invokerLookups = new IdentityHashMap<Wireable, MVELCompileable>();
         this.mvelReaders = new HashSet<MVELCompileable> ();
-        this.imports = new HashMap();
-        this.packageImports = new HashSet();
+        this.imports = new HashMap<String, Object>();
+        this.packageImports = new HashSet<String>();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -83,7 +83,7 @@ public class MVELDialectRuntimeData
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         imports = (Map) in.readObject();
-        packageImports = (HashSet) in.readObject();
+        packageImports = (HashSet<String>) in.readObject();
 
         invokerLookups = (Map<Wireable, MVELCompileable>) in.readObject();
         if ( !invokerLookups.isEmpty() ) {
@@ -111,6 +111,8 @@ public class MVELDialectRuntimeData
                  // store it as a String, we'll re-resolve this later, against the correct ClassLoader
                     this.imports.put(  entry.getKey(), ((Class) entry.getValue()).getName() );
                 }
+            } else if ( entry.getValue() instanceof Method ) {
+                this.imports.put( entry.getKey(), "m:" + ((Method)entry.getValue()).getDeclaringClass().getName() );
             } else {
                 this.imports.put( entry.getKey(), entry.getValue() );
             }
@@ -272,7 +274,7 @@ public class MVELDialectRuntimeData
                                 for ( Method method : cls.getDeclaredMethods() ) {
                                     if ( method.getName().equals( methodName ) ) {
                                         entry.setValue( method );
-                                        continue;
+                                        break;
                                     }
                                 }
                             } else {
