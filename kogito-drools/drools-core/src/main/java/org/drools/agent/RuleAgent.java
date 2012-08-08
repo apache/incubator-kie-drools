@@ -35,6 +35,8 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.rule.Package;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This manages a single rulebase, based on the properties given.
@@ -79,7 +81,7 @@ import org.drools.rule.Package;
  *
  *  There is also an AgentEventListener interface which you can provide which will call back when lifecycle
  *  events happen, or errors/warnings occur. As the updating happens in a background thread, this may be important.
- *  The default event listener logs to the System.err output stream.
+ *  The default event listener logs to SLF4J.
  */
 public class RuleAgent {
 
@@ -113,6 +115,8 @@ public class RuleAgent {
                                                                  URLScanner.class );
                                                         }
                                                     };
+
+    protected static transient Logger logger = LoggerFactory.getLogger(RuleAgent.class);
 
     String                        name;
 
@@ -179,7 +183,7 @@ public class RuleAgent {
 
     /**
      * This allows an optional listener to be passed in.
-     * The default one prints some stuff out to System.err only when really needed.
+     * The default one prints some stuff out to SLF4J only when really needed.
      */
     public static RuleAgent newRuleAgent(Properties config,
                                          AgentEventListener listener) {
@@ -190,7 +194,7 @@ public class RuleAgent {
 
     /**
      * This allows an optional listener to be passed in.
-     * The default one prints some stuff out to System.err only when really needed.
+     * The default one prints some stuff out to SLF4J only when really needed.
      */
     public static RuleAgent newRuleAgent(Properties config,
                                          AgentEventListener listener,
@@ -564,42 +568,42 @@ public class RuleAgent {
             }
 
             public void exception(String message, Throwable e) {
-                System.err.println( "RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow." );
-                e.printStackTrace( System.err );
+                logger.error("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow.", e);
             }
 
             public void exception(Throwable e) {
-                System.err.println( "RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow." );
-                e.printStackTrace( System.err );
+                logger.error("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow.", e);
             }
 
             public void info(String message) {
-                System.err.println( "RuleAgent(" + name + ") INFO (" + time() + "): " + message );
+                logger.info("RuleAgent(" + name + ") INFO (" + time() + "): " + message);
             }
 
             public void warning(String message) {
-                System.err.println( "RuleAgent(" + name + ") WARNING (" + time() + "): " + message );
+                logger.warn("RuleAgent(" + name + ") WARNING (" + time() + "): " + message);
             }
 
             public void debug(String message) {
-                //do nothing...
+                logger.debug(message);
             }
 
             public void setAgentName(String name) {
                 this.name = name;
-
             }
 
             public void debug(String message,
                               Object object) {
+                logger.debug(message);
             }
 
             public void info(String message,
                              Object object) {
+                logger.info(message);
             }
 
             public void warning(String message,
                                 Object object) {
+                logger.warn(message);
             }
 
         };

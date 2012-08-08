@@ -17,14 +17,18 @@
 package org.drools.command.impl;
 
 import org.drools.command.Command;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class LoggingInterceptor extends AbstractInterceptor {
 
+    protected static transient Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
+
     public <T> T execute(Command<T> command) {
-        System.out.println("Executing --> " + command);
+        logger.info("Executing --> " + command);
         T result = executeNext(command);
-        System.out.println("Done executing --> " + command);
+        logger.info("Done executing --> " + command);
         return result;
     }
 

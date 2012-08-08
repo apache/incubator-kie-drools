@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.Visitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Java Tip 98: Reflect on the Visitor design pattern. Implement visitors in
@@ -34,6 +36,9 @@ import org.drools.Visitor;
 public abstract class ReflectiveVisitor
     implements
     Visitor {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(ReflectiveVisitor.class);
+
     static final String newline = System.getProperty( "line.separator" );
     private Map<Class<?>, Method> methodCache = new HashMap<Class<?>, Method>();
     
@@ -106,7 +111,7 @@ public abstract class ReflectiveVisitor
     }
 
     public void visitObject(final Object object) {
-        System.err.println( "no visitor implementation for : " + object.getClass() + " : " + object );
+        logger.error("no visitor implementation for : " + object.getClass() + " : " + object);
     }
     
     private void addMethodToCache(Class<?> clazz, Method m) {

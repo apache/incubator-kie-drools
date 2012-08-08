@@ -34,16 +34,21 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator
     implements
     BundleActivator {
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
+
     private ServiceRegistration resourceReg;
     private ServiceRegistration kbaseReg;
     private ServiceRegistration marshallerProviderReg;
 
     public void start(BundleContext bc) throws Exception {
-        System.out.println( "registering core  services" );
+        logger.info( "registering core  services" );
         this.resourceReg = bc.registerService( new String[]{ResourceFactoryService.class.getName(), Service.class.getName()},
                                                new ResourceFactoryServiceImpl(),
                                                new Hashtable() );
@@ -55,8 +60,8 @@ public class Activator
         this.marshallerProviderReg = bc.registerService( new String[]{MarshallerProvider.class.getName(), Service.class.getName()},
                 new MarshallerProviderImpl(),
                 new Hashtable() );
-        
-        System.out.println( "core services registered" );
+
+        logger.info( "core services registered" );
     }
 
     public void stop(BundleContext bc) throws Exception {

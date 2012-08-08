@@ -38,6 +38,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -59,6 +61,9 @@ import org.xml.sax.helpers.DefaultHandler;
  *  This can be done using -Dorg.drools.io.EntityResolver=YourClassHere on the command line, for instance.
  */
 public class ExtensibleXmlParser extends DefaultHandler {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(ExtensibleXmlParser.class);
+
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
@@ -269,7 +274,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
                 } catch ( final SAXNotRecognizedException e ) {
                     boolean hideWarnings = Boolean.getBoolean( "drools.schema.hidewarnings" );
                     if ( !hideWarnings ) {
-                        System.err.println( "Your SAX parser is not JAXP 1.2 compliant - turning off validation." );
+                        logger.warn( "Your SAX parser is not JAXP 1.2 compliant - turning off validation." );
                     }
                     localParser = null;
                 }
@@ -649,21 +654,20 @@ public class ExtensibleXmlParser extends DefaultHandler {
         this.namespaces.remove( prefix );
     }
 
-    private void print(final SAXParseException x) {
-        final String msg = this.message.format( new Object[]{x.getSystemId(), new Integer( x.getLineNumber() ), new Integer( x.getColumnNumber() ), x.getMessage()} );
-        System.out.println( msg );
+    private String buildPrintMessage(final SAXParseException x) {
+        return this.message.format( new Object[]{x.getSystemId(), new Integer( x.getLineNumber() ), new Integer( x.getColumnNumber() ), x.getMessage()} );
     }
 
     public void warning(final SAXParseException x) {
-        print( x );
+        logger.warn( buildPrintMessage( x ) );
     }
 
     public void error(final SAXParseException x) {
-        print( x );
+        logger.error( buildPrintMessage( x ) );
     }
 
     public void fatalError(final SAXParseException x) throws SAXParseException {
-        print( x );
+        logger.error( buildPrintMessage( x ) );
         throw x;
     }
 
