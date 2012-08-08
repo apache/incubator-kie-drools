@@ -29,8 +29,12 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
 import org.drools.template.parser.TemplateDataListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExternalSpreadsheetCompiler {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(ExternalSpreadsheetCompiler.class);
 
     public String compile(final String xls,
                           final String template,
@@ -184,7 +188,7 @@ public class ExternalSpreadsheetCompiler {
         try {
             stream.close();
         } catch ( final Exception e ) {
-            System.err.print( "WARNING: Wasn't able to " + "correctly close stream for decision table. " + e.getMessage() );
+            logger.warn( "WARNING: Wasn't able to " + "correctly close stream for decision table. " + e.getMessage() );
         }
     }
 
