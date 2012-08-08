@@ -12,6 +12,7 @@
   <xi:include href="Section-DecisionTables.xml" />
   <xi:include href="Section-Templates.xml" />    
   <xi:include href="Section-BuildingAndDeploying.xml" />
+  <xi:include href="Section-Logging.xml" />
 
  <!-- xi:include href="Section-A_Little_More_Theory.xml" /-->
  
