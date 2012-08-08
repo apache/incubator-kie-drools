@@ -12,7 +12,7 @@
   <table>
     <title>Compatibility matrix</title>
 
-    <tgroup cols="3">
+    <tgroup cols="4">
       <thead>
         <row>
           <entry>Drools</entry>
