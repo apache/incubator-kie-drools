@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %l lowers performance -->
+      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
+      <pattern>%d [%t] %-5p %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.drools" level="info"/>
+
+  <!--  marshalling utils -->
+  <logger name="org.drools.marshalling.util" level="debug"/>
+  <logger name="org.drools.marshalling.util.CompareViaReflectionUtil" level="info"/>
+
+  <!-- bitronix -->
+  <logger name="bitronix.tm.twopc.Preparer" level="error"/>
+
+  <!--  hibernate  -->
+  <logger name="org.hibernate" level="warn"/>
+  <logger name="org.hibernate.cfg.search" level="warn"/>
+  <logger name="org.hibernate.cfg.annotations" level="warn"/>
+  <logger name="org.hibernate.cfg.AnnotationBinder" level="warn"/>
+  <logger name="org.hibernate.cfg.SettingsFactory" level="warn"/>
+  <logger name="org.hibernate.tool.hbm2ddl" level="warn"/>
+
+  <root level="info"><!-- TODO We probably want to set default level to warn instead -->
+    <appender-ref ref="consoleAppender" />
+  </root>
+
+</configuration>
+

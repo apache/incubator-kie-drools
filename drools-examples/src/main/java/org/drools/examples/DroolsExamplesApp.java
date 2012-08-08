@@ -47,6 +47,8 @@ import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
 import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1;
 import org.drools.examples.workitemconsequence.WorkItemConsequenceExample2;
 import org.drools.games.adventures.TextAdventure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DroolsExamplesApp extends JFrame {
 
@@ -56,10 +58,13 @@ public class DroolsExamplesApp extends JFrame {
         droolsExamplesApp.setVisible(true);
     }
 
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
     public DroolsExamplesApp() {
         super("JBoss BRMS examples");
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        logger.info("DroolsExamplesApp started.");
     }
 
     private Container createContentPane() {

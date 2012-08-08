@@ -39,6 +39,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <!-- TODO jexcelapi drags in log4j
+        Our users should use log4j-over-slf4j (with for example logback-classic),
+        unless they use log4j with slf4j-log4j -->
       <groupId>net.sourceforge.jexcelapi</groupId>
       <artifactId>jxl</artifactId>
     </dependency>
