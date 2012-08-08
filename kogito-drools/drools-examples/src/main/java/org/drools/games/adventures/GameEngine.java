@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.lf5.util.StreamUtils;
+import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -122,7 +122,7 @@ public class GameEngine {
                       c );
             Map<String, Map> map;
             try {
-                map = (Map<String, Map>) MVEL.executeExpression( MVEL.compileExpression( new String( StreamUtils.getBytes( getClass().getResource( "data.mvel" ).openStream() ) ) ),
+                map = (Map<String, Map>) MVEL.executeExpression( MVEL.compileExpression( new String( IOUtils.toByteArray(getClass().getResource("data.mvel").openStream()) ) ),
                                                                  vars );
             } catch ( IOException e ) {
                 throw new RuntimeException( e );

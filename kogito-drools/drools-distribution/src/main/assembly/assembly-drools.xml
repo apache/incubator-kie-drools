@@ -63,6 +63,7 @@
       <excludes>
         <exclude>org.drools:drools-examples</exclude>
         <exclude>com.miglayout:miglayout</exclude><!-- Examples dependency -->
+        <exclude>commons-io:commons-io</exclude><!-- Examples dependency -->
         <exclude>org.drools:drools-expert-docs</exclude>
         <exclude>org.drools:drools-fusion-docs</exclude>
         <exclude>*:*:jar:javadoc</exclude>
@@ -75,6 +76,7 @@
       <includes>
         <include>org.drools:drools-examples:jar</include>
         <include>com.miglayout:miglayout:jar</include><!-- Examples dependency -->
+        <include>commons-io:commons-io:jar</include><!-- Examples dependency -->
       </includes>
       <excludes>
         <exclude>*:sources</exclude>

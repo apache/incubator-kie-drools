@@ -120,6 +120,10 @@
        <artifactId>miglayout</artifactId>
        <version>3.7.4</version>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
