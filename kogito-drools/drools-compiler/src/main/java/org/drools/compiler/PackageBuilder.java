@@ -1540,7 +1540,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         //look among imports
         for (ImportDescr id : packageDescr.getImports()) {
             if (id.getTarget().endsWith( "." + sup )) {
-                //System.out.println("Replace supertype " + sup + " with full name " + id.getTarget());
+                //logger.info("Replace supertype " + sup + " with full name " + id.getTarget());
                 return id.getTarget();
 
             }
