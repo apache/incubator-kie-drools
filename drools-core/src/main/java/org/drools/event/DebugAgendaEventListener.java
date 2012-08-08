@@ -17,62 +17,67 @@
 package org.drools.event;
 
 import org.drools.WorkingMemory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DebugAgendaEventListener
     implements
     AgendaEventListener {
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(DebugAgendaEventListener.class);
+
     public DebugAgendaEventListener() {
         // intentionally left blank
     }
 
     public void activationCreated(final ActivationCreatedEvent event,
                                   final WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void activationCancelled(final ActivationCancelledEvent event,
                                     final WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void beforeActivationFired(final BeforeActivationFiredEvent event,
                                       final WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void afterActivationFired(final AfterActivationFiredEvent event,
                                      final WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
                                   final WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void agendaGroupPushed(final AgendaGroupPushedEvent event,
                                   final WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
                                             WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
                                               WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
             WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
                                                WorkingMemory workingMemory) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
 }

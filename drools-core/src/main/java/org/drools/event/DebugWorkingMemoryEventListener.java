@@ -16,23 +16,29 @@
 
 package org.drools.event;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DebugWorkingMemoryEventListener
     implements
     WorkingMemoryEventListener {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(DebugWorkingMemoryEventListener.class);
+
     public DebugWorkingMemoryEventListener() {
         // intentionally left blank
     }
 
     public void objectInserted(final ObjectInsertedEvent event) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void objectUpdated(final ObjectUpdatedEvent event) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
     public void objectRetracted(final ObjectRetractedEvent event) {
-        System.err.println( event );
+        logger.info( event.toString() );
     }
 
 }

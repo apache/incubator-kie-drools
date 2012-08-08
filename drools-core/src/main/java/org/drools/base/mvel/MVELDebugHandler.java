@@ -19,6 +19,8 @@ package org.drools.base.mvel;
 import org.mvel2.MVELRuntime;
 import org.mvel2.debug.Debugger;
 import org.mvel2.debug.Frame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Debug Handler for MVEL dialect.
@@ -29,6 +31,8 @@ import org.mvel2.debug.Frame;
 public final class MVELDebugHandler {
 
     private static int onBreakReturn = Debugger.CONTINUE;
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(MVELDebugHandler.class);
 
     public final static String DEBUG_LAUNCH_KEY="mvel.debugger";
 
@@ -58,28 +62,28 @@ public final class MVELDebugHandler {
         //onBreakReturn = Debugger.CONTINUE;
         //return oldReturn;
         if (verbose) {
-            System.out.println("Continuing with "+(onBreakReturn==Debugger.CONTINUE?"continue":"step-over"));
+            logger.info("Continuing with "+(onBreakReturn==Debugger.CONTINUE?"continue":"step-over"));
         }
         return onBreakReturn;
     }
 
     protected final static void registerBreakpoint(String sourceName, int lineNumber) {
         if (verbose) {
-            System.out.println("Registering breakpoint for "+sourceName+":"+lineNumber);
+            logger.info("Registering breakpoint for "+sourceName+":"+lineNumber);
         }
         MVELRuntime.registerBreakpoint( sourceName, lineNumber );
     }
 
     protected final static void clearAllBreakpoints() {
         if (verbose) {
-            System.out.println("Clearing all breakpoints");
+            logger.info("Clearing all breakpoints");
         }
         MVELRuntime.clearAllBreakpoints();
     }
 
     protected final static void removeBreakpoint(String sourceName, int lineNumber) {
         if (verbose) {
-            System.out.println("Removing breakpoint from "+sourceName+":"+lineNumber);
+            logger.info("Removing breakpoint from "+sourceName+":"+lineNumber);
         }
         MVELRuntime.removeBreakpoint( sourceName, lineNumber );
     }
@@ -91,7 +95,7 @@ public final class MVELDebugHandler {
 
         public int onBreak(Frame frame) {
             if (verbose) {
-                System.out.println("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
+                logger.info("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
             }
             return MVELDebugHandler.onBreak(frame);
             // This call is supposed to be catched by the remote debugger

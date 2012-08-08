@@ -306,14 +306,14 @@ public class ResourceChangeScannerImpl
                 }
                 while ( this.scan ) {
                     try {
-                        // System.out.println( "BEFORE : sync this.resources" );
+                        // logger.trace( "BEFORE : sync this.resources" );
                         synchronized ( this.resources ) {
-                            // System.out.println( "DURING : sync this.resources" );
+                            // logger.trace( "DURING : sync this.resources" );
                             // lock the resources, as we don't want this modified
                             // while processing
                             this.scanner.scan();
                         }
-                        // System.out.println( "AFTER : SCAN" );
+                        // logger.trace( "AFTER : SCAN" );
                     } catch (RuntimeException e) {
                         this.listener.exception( e );
                     } catch (Error e) {

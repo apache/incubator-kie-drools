@@ -38,6 +38,8 @@ import org.mvel2.debug.DebugTools;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
 import org.mvel2.integration.impl.IndexedVariableResolverFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MVELConsequence
     implements
@@ -45,6 +47,7 @@ public class MVELConsequence
     MVELCompileable,
         Externalizable {
     private static final long   serialVersionUID = 510l;
+    protected static transient Logger logger = LoggerFactory.getLogger(MVELConsequence.class);
 
     private MVELCompilationUnit unit;
     private String              id;
@@ -92,7 +95,7 @@ public class MVELConsequence
 
         if ( MVELDebugHandler.isDebugMode() ) {
             if ( MVELDebugHandler.verbose ) {
-                System.out.println( DebugTools.decompile( compexpr ) );
+                logger.info(DebugTools.decompile(compexpr));
             }
             MVEL.executeDebugger( compexpr,
                                   knowledgeHelper,

@@ -192,8 +192,8 @@ public class PersisterHelper {
         sign( _header, buff );
         _header.setPayload( ByteString.copyFrom( buff ) );
 
-//        System.out.println("=============================================================================================================");
-//        System.out.println(payload);
+//        LoggerFactory.getLogger(PersisterHelper.class).trace("=============================================================================================================");
+//        LoggerFactory.getLogger(PersisterHelper.class).trace(payload);
         context.stream.write( _header.build().toByteArray() );
     }
     

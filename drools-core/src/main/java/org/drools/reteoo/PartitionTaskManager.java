@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class to control the tasks for a given rulebase partition.
@@ -34,6 +36,8 @@ import org.drools.spi.PropagationContext;
  * memory and injected in here.
  */
 public class PartitionTaskManager {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(PartitionTaskManager.class);
 
     // we use a fly weight implementation of the partition tasks to ensure no more
     // than one task is executed concurrently for each partition
@@ -64,6 +68,8 @@ public class PartitionTaskManager {
         implements
         Runnable,
         Comparable<PartitionTask> {
+
+        protected static transient Logger logger = LoggerFactory.getLogger(PartitionTask.class);
 
         // the priority of this task
         private int                   priority;
@@ -118,9 +124,9 @@ public class PartitionTaskManager {
                 enqueued.set( false );
                 addToExecutorQueue();
             } catch ( Exception e ) {
-                System.err.println( "*******************************************************************************************************" );
-                System.err.println( "Partition task manager caught an unexpected exception: " + e.getMessage() );
-                System.err.println( "Drools is capturing the exception to avoid thread death. Please report stack trace to development team." );
+                logger.error("*******************************************************************************************************");
+                logger.error("Partition task manager caught an unexpected exception: " + e.getMessage());
+                logger.error("Drools is capturing the exception to avoid thread death. Please report stack trace to development team.");
                 e.printStackTrace();
             }
         }
@@ -129,7 +135,7 @@ public class PartitionTaskManager {
             synchronized ( isYieldAdded ) {
                 if ( this.manager.isOnHold() && (!queue.isEmpty()) && isYieldAdded.compareAndSet( false,
                                                                                                   true ) ) {
-                    //System.out.println( "Adding yield " + System.identityHashCode( this ) );
+                    //logger.trace( "Adding yield " + System.identityHashCode( this ) );
                     queue.add( YieldAction.INSTANCE );
                 }
             }
@@ -140,7 +146,7 @@ public class PartitionTaskManager {
                 while ( head != null && head instanceof YieldAction ) {
                     isYieldAdded.compareAndSet( true,
                                                 false );
-                    //System.out.println( "Yield consumed " + System.identityHashCode( this ) );
+                    //logger.trace( "Yield consumed " + System.identityHashCode( this ) );
                     priority = Action.PRIORITY_NORMAL;
                     queue.remove();
                     head = queue.peek();

@@ -25,11 +25,15 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 import org.drools.util.codec.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class HttpClientImpl
     implements
     IHttpClient {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(HttpClientImpl.class);
 
     public LastUpdatedPing checkLastUpdated(URL url) throws IOException {
         URLConnection con = url.openConnection();
@@ -94,8 +98,8 @@ public class HttpClientImpl
 
         Package p = cl.fetchPackage( url, false, null, null );
 
-        System.err.println( ping );
-        System.err.println( ping.isError() );
+        logger.warn( ping.toString() );
+        logger.warn( "Ping is error: " + ping.isError() );
     }
 
 }

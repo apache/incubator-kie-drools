@@ -58,6 +58,8 @@ import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.MVEL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -117,6 +119,8 @@ public class RuleBaseConfiguration
     private static final long              serialVersionUID = 510l;
     
     public static final String          DEFAULT_SIGN_ON_SERIALIZATION = "false";
+
+    protected static transient Logger logger = LoggerFactory.getLogger(RuleBaseConfiguration.class);
 
     private ChainedProperties              chainedProperties;
 
@@ -853,9 +857,8 @@ public class RuleBaseConfiguration
             this.workDefinitions.addAll(
                 (List<Map<String, Object>>) MVEL.eval( content, new HashMap() ) );
         } catch ( Throwable t ) {
-            System.err.println( "Error occured while loading work definitions " + location );
-            System.err.println( "Continuing without reading these work definitions" );
-            t.printStackTrace();
+            logger.error("Error occurred while loading work definitions " + location
+                    + "\nContinuing without reading these work definitions", t);
             throw new RuntimeException( "Could not parse work definitions " + location + ": " + t.getMessage() );
         }
     }

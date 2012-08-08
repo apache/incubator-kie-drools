@@ -8,12 +8,16 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultTimerJobInstance
     implements
     Callable<Void>,
     Comparable<DefaultTimerJobInstance>,
     TimerJobInstance {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(DefaultTimerJobInstance.class);
     
     private final Job                         job;
     private final Trigger                     trigger;
@@ -55,9 +59,8 @@ public class DefaultTimerJobInstance
                 scheduler.internalSchedule( this );
             }
         }
-        catch(Exception e) { 
-            System.out.println("Unable to execute timer job!" );
-            e.printStackTrace();
+        catch(Exception e) {
+            logger.warn("Unable to execute timer job!", e);
             throw e;
         }
 

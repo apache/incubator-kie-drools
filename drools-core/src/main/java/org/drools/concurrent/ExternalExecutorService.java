@@ -16,6 +16,9 @@
 
 package org.drools.concurrent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -268,6 +271,8 @@ public class ExternalExecutorService implements
      */
     protected static class TaskManager implements TaskObserver {
 
+        protected static transient Logger logger = LoggerFactory.getLogger(TaskManager.class);
+
         // maps Task->ObservableTask
         private final Map<Object, ObservableTask> tasks;
 
@@ -279,21 +284,21 @@ public class ExternalExecutorService implements
         }
 
         public void waitUntilEmpty() {
-            // System.out.println("Will wait for empty...");
+            // logger.trace("Will wait for empty...");
             lock.lock();
             try {
                 if (!tasks.isEmpty()) {
-                    // System.out.println("Not empty yet...");
+                    // logger.trace("Not empty yet...");
                     try {
                         // wait until it is empty
                         empty.await();
-                        // System.out.println("it is now");
+                        // logger.trace("it is now");
                     } catch (InterruptedException e) {
-                        // System.out.println("interruped...");
+                        // logger.trace("interruped...");
                         Thread.currentThread().interrupt();
                     }
                 } else {
-                    // System.out.println("Already empty...");
+                    // logger.trace("Already empty...");
                 }
             } finally {
                 lock.unlock();
@@ -317,7 +322,7 @@ public class ExternalExecutorService implements
          * @return the observable instance of the given task
          */
         public Runnable trackTask(Runnable task) {
-            // System.out.println("Tracking task = "+System.identityHashCode(
+            // logger.trace("Tracking task = "+System.identityHashCode(
             // task )+" : "+task);
             ObservableRunnable obs = new ObservableRunnable(task, this);
             tasks.put(task, obs);
@@ -361,7 +366,7 @@ public class ExternalExecutorService implements
         public void afterTaskFinishes(Runnable task, Thread thread) {
             lock.lock();
             try {
-                // System.out.println("Task finished = "+System.identityHashCode(
+                // logger.trace("Task finished = "+System.identityHashCode(
                 // task )+" : "+task);
                 this.tasks.remove(task);
                 if (this.tasks.isEmpty()) {

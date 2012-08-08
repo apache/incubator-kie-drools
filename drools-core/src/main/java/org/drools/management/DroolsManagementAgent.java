@@ -28,6 +28,8 @@ import javax.management.ObjectName;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The main management agent for Drools. The purpose of this 
@@ -42,6 +44,8 @@ public class DroolsManagementAgent
 
     private static DroolsManagementAgent  INSTANCE;
     private static MBeanServer            mbs;
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(DroolsManagementAgent.class);
 
     private long                          kbases;
     private long                          ksessions;
@@ -64,8 +68,7 @@ public class DroolsManagementAgent
                                        mbName );
                 }
             } catch ( Exception e ) {
-                System.err.println( "Unable to register DroolsManagementAgent into the platform MBean Server" );
-                e.printStackTrace();
+                logger.error( "Unable to register DroolsManagementAgent into the platform MBean Server", e);
             }
         }
         return INSTANCE;
@@ -128,8 +131,7 @@ public class DroolsManagementAgent
                 mbl.add( name );
             }
         } catch ( Exception e ) {
-            System.err.println( "Unable to register mbean " + name + " into the platform MBean Server" );
-            e.printStackTrace();
+            logger.error( "Unable to register mbean " + name + " into the platform MBean Server", e );
         }
     }
 
@@ -149,8 +151,7 @@ public class DroolsManagementAgent
         try {
             mbs.unregisterMBean( name );
         } catch ( Exception e ) {
-            System.err.println( "Exception unregistering mbean: " + name );
-            e.printStackTrace();
+            logger.error( "Exception unregistering mbean: " + name, e);
         }
     }
     
@@ -180,9 +181,8 @@ public class DroolsManagementAgent
         try {
             return new ObjectName( name );
         } catch ( Exception e ) {
-            System.err.println( "This is a bug. Error creating ObjectName for MBean: " + name );
-            System.err.println( "Please contact the development team and provide the following stack trace: " + e.getMessage() );
-            e.printStackTrace();
+            logger.error( "This is a bug. Error creating ObjectName for MBean: " + name
+                + "\nPlease contact the development team and provide the following stack trace: " + e.getMessage(), e);
             return null;
         }
     }

@@ -31,10 +31,15 @@ import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MemoryVisitor extends ReflectiveVisitor
     implements
     Externalizable {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(MemoryVisitor.class);
+
     private InternalWorkingMemory workingMemory;
     private int                   indent = 0;
 
@@ -76,7 +81,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     }
 
     public void visitObjectTypeNode(final ObjectTypeNode node) {
-        System.out.println( indent() + node );
+        logger.info( indent() + node );
 
         ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( node );
         checkObjectHashSet( memory );
@@ -97,7 +102,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     }
 
     public void visitAlphaNode(final AlphaNode node) {
-        System.out.println( indent() + node );
+        logger.info( indent() + node );
 
         this.indent++;
         try {
@@ -115,7 +120,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     }
 
     public void visitLeftInputAdapterNode(final LeftInputAdapterNode node) {
-        System.out.println( indent() + node );
+        logger.info( indent() + node );
 
         this.indent++;
         try {
@@ -133,7 +138,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     }
 
     public void visitJoinNode(final JoinNode node) {
-        System.out.println( indent() + node );
+        logger.info( indent() + node );
 
         try {
             final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
@@ -159,7 +164,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     }
 
     public void visitNotNode(final NotNode node) {
-        System.out.println( indent() + node );
+        logger.info( indent() + node );
         try {
             final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
             checkObjectHashTable( memory.getRightTupleMemory() );
@@ -184,7 +189,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     }
 
     public void visitRuleTerminalNode(final RuleTerminalNode node) {
-        System.out.println( indent() + node );
+        logger.info( indent() + node );
 //        final TerminalNodeMemory memory = (TerminalNodeMemory) this.workingMemory.getNodeMemory( node );
 //        checkLeftTupleMemory( memory.getTupleMemory() );
     }
@@ -198,9 +203,9 @@ public class MemoryVisitor extends ReflectiveVisitor
     //            }
     //        }
     //
-    //        System.out.println( "ObjectHashMap: " + indent() + map.size() + ":" + count );
+    //        logger.info( "ObjectHashMap: " + indent() + map.size() + ":" + count );
     //        if ( map.size() != count ) {
-    //            System.out.println( indent() + "error" );
+    //            logger.info( indent() + "error" );
     //        }
     //    }
 
@@ -219,9 +224,9 @@ public class MemoryVisitor extends ReflectiveVisitor
             }
         }
         
-        System.out.println( indent() + "ObjectHashSet: " + memory.size() + ":" + factCount );
+        logger.info( indent() + "ObjectHashSet: " + memory.size() + ":" + factCount );
         if( factCount != memory.size() ) {
-            System.out.println( indent() + "error" );
+            logger.info( indent() + "error" );
         }
     }
     
@@ -242,9 +247,9 @@ public class MemoryVisitor extends ReflectiveVisitor
                     count++;
         }
 
-        System.out.println( indent() + "FactHashTable: " + memory.size() + ":" + count );
+        logger.info( indent() + "FactHashTable: " + memory.size() + ":" + count );
         if ( memory.size() != count ) {
-            System.out.println( indent() + "error" );
+            logger.info( indent() + "error" );
         }
     }
 
@@ -264,7 +269,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                             factCount++;
                         }
                     } else {
-                        System.out.println( "error : fieldIndexHashTable cannot have empty FieldIndexEntry objects" );
+                        logger.info( "error : fieldIndexHashTable cannot have empty FieldIndexEntry objects" );
                     }
                     rightTupleList = (RightTupleList) rightTupleList.getNext();
                     bucketCount++;
@@ -275,17 +280,17 @@ public class MemoryVisitor extends ReflectiveVisitor
         try {
             final Field field = AbstractHashTable.class.getDeclaredField( "size" );
             field.setAccessible( true );
-            System.out.println( indent() + "FieldIndexBuckets: " + ((Integer) field.get( memory )).intValue() + ":" + bucketCount );
+            logger.info( indent() + "FieldIndexBuckets: " + ((Integer) field.get( memory )).intValue() + ":" + bucketCount );
             if ( ((Integer) field.get( memory )).intValue() != bucketCount ) {
-                System.out.println( indent() + "error" );
+                logger.info( indent() + "error" );
             }
         } catch ( final Exception e ) {
             e.printStackTrace();
         }
 
-        System.out.println( indent() + "FieldIndexFacts: " + memory.size() + ":" + factCount );
+        logger.info( indent() + "FieldIndexFacts: " + memory.size() + ":" + factCount );
         if ( memory.size() != factCount ) {
-            System.out.println( indent() + "error" );
+            logger.info( indent() + "error" );
         }
     }
 
@@ -303,9 +308,9 @@ public class MemoryVisitor extends ReflectiveVisitor
 //            }
 //        }
 //
-//        System.out.println( indent() + "TupleMemory: " + memory.size() + ":" + count );
+//        logger.info( indent() + "TupleMemory: " + memory.size() + ":" + count );
 //        if ( memory.size() != count ) {
-//            System.out.println( indent() + "error" );
+//            logger.info( indent() + "error" );
 //        }
     }
 

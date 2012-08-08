@@ -24,8 +24,12 @@ import java.io.ObjectOutput;
 import org.drools.WorkingMemory;
 import org.drools.audit.event.LogEvent;
 import org.drools.event.KnowledgeRuntimeEventManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(WorkingMemoryConsoleLogger.class);
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
@@ -44,7 +48,7 @@ public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
     }
 
     public void logEventCreated(LogEvent logEvent) {
-        System.out.println(logEvent);
+        logger.info(logEvent.toString());
     }
 
 }
