@@ -30,16 +30,21 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator
     implements
     BundleActivator {
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
+
     private ServiceRegistration serviceRegistry;
     private ServiceTracker      registryTracker;
     private ServiceTracker marshallerProviderTracker;
 
     public void start(BundleContext bc) throws Exception {
-        System.out.println( "registering api services" );
+        logger.info( "registering api services" );
 
         this.serviceRegistry = bc.registerService( ServiceRegistry.class.getName(),
                                                    ServiceRegistryImpl.getInstance(),
@@ -58,8 +63,8 @@ public class Activator
                                           this) );
         
         this.marshallerProviderTracker.open();
-        
-        System.out.println( "api drools services registered" );
+
+        logger.info( "api drools services registered" );
     }
 
     public void stop(BundleContext bc) throws Exception {
@@ -71,6 +76,9 @@ public class Activator
     public static class DroolsServiceTracker
         implements
         ServiceTrackerCustomizer {
+
+        protected static final transient Logger logger = LoggerFactory.getLogger(DroolsServiceTracker.class);
+
         private BundleContext bc;
         private Activator     activator;
 
@@ -82,7 +90,7 @@ public class Activator
 
         public Object addingService(ServiceReference ref) {
             Service service = (Service) this.bc.getService( ref );
-            System.out.println( "registering api : " + service + " : " + service.getClass().getInterfaces()[0] );
+            logger.info( "registering api : " + service + " : " + service.getClass().getInterfaces()[0] );
 
             Dictionary dic = new Hashtable();
             ServiceReference regServiceRef = this.activator.serviceRegistry.getReference();
@@ -109,7 +117,7 @@ public class Activator
         public void removedService(ServiceReference ref,
                                    Object arg1) {
             Service service = (Service) this.bc.getService( ref );
-            System.out.println( "unregistering : " + service + " : " + service.getClass().getInterfaces()[0] );
+            logger.info( "unregistering : " + service + " : " + service.getClass().getInterfaces()[0] );
 
             Dictionary dic = new Hashtable();
             ServiceReference regServiceRef = this.activator.serviceRegistry.getReference();

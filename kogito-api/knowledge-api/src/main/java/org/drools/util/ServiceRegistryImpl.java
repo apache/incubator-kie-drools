@@ -41,6 +41,8 @@ import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.concurrent.ExecutorProvider;
 import org.drools.io.ResourceFactoryService;
 import org.drools.marshalling.MarshallerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is an internal class, not for public consumption.
@@ -49,6 +51,8 @@ public class ServiceRegistryImpl
     implements
     ServiceRegistry {
     private static ServiceRegistry instance = new ServiceRegistryImpl();
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(ServiceRegistryImpl.class);
 
     private Map<String, Callable< ? >> registry        = new HashMap<String, Callable< ? >>();
     private Map<String, Callable< ? >> defaultServices = new HashMap<String, Callable< ? >>();
@@ -78,13 +82,13 @@ public class ServiceRegistryImpl
     
     synchronized void registerInstance(Service service, Map map) {
         //this.context.getProperties().put( "org.dr, value )
-        System.out.println( "regInstance : " + map );
+        logger.info( "regInstance : " + map );
         String[] values = ( String[] ) map.get( "objectClass" );
 
         for ( String v : values ) {
-            System.out.println( v );
+            logger.info( v );
         }
-       // System.out.println( "register : " + service );
+       // logger.info( "register : " + service );
         this.registry.put( service.getClass().getInterfaces()[0].getName(),
                            new ReturnInstance<Service>( service ) );
         
@@ -100,7 +104,7 @@ public class ServiceRegistryImpl
 //            properties.put( values[0], "true" );
 //            conf.update( properties );
 //        } catch ( IOException e ) {
-//            e.printStackTrace();
+//            logger.error("error", e);
 //        }
     }
 
@@ -108,7 +112,7 @@ public class ServiceRegistryImpl
      * @see org.drools.util.internal.ServiceRegistry#unregisterLocator(java.lang.String)
      */
     synchronized void unregisterInstance(Service service, Map map) {
-        System.out.println( "unregister : " + map );
+        logger.info( "unregister : " + map );
         String name = service.getClass().getInterfaces()[0].getName();
         this.registry.remove( name );
         this.registry.put( name,
@@ -118,7 +122,7 @@ public class ServiceRegistryImpl
 //    ConfigurationAdmin confAdmin;
 //    synchronized void setConfigurationAdmin(ConfigurationAdmin confAdmin) {
 //        this.confAdmin = confAdmin;
-//        System.out.println( "ConfAdmin : " + this.confAdmin );
+//        logger.info( "ConfAdmin : " + this.confAdmin );
 //    }
 //    
 //    synchronized void unsetConfigurationAdmin(ConfigurationAdmin confAdmin) {
@@ -127,7 +131,7 @@ public class ServiceRegistryImpl
     
 //    private ComponentContext context;
 //    void activate(ComponentContext context) {
-//        System.out.println( "reg comp" + context.getProperties() );
+//        logger.info( "reg comp" + context.getProperties() );
 //        this.context = context;
 //        
 //       
@@ -136,7 +140,7 @@ public class ServiceRegistryImpl
 //      
 //      ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
 //      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
-//      System.out.println( "conf admin : " + admin );
+//      logger.info( "conf admin : " + admin );
 //        //context.
 //    //    log = (LogService) context.locateService("LOG");
 //        }

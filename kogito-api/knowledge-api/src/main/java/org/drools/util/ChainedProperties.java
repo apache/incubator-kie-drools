@@ -16,6 +16,9 @@
 
 package org.drools.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +41,8 @@ import java.util.Properties;
 public class ChainedProperties
     implements
     Externalizable {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
 
     private List<Properties> props;
     private List<Properties> defaultProps;
@@ -143,7 +148,7 @@ public class ChainedProperties
         try {
             enumeration = classLoader.getResources( name );
         } catch ( IOException e ) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
         return enumeration;
     }
