@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +33,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
+import org.drools.agent.impl.LoggingAgentEventListener;
 import org.drools.rule.Package;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -557,59 +557,11 @@ public class RuleAgent {
      * @return
      */
     private AgentEventListener getDefaultListener() {
-
-        return new AgentEventListener() {
-
-            private String name;
-
-            public String time() {
-                Date d = new Date();
-                return d.toString();
-            }
-
-            public void exception(String message, Throwable e) {
-                logger.error("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow.", e);
-            }
-
-            public void exception(Throwable e) {
-                logger.error("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow.", e);
-            }
-
-            public void info(String message) {
-                logger.info("RuleAgent(" + name + ") INFO (" + time() + "): " + message);
-            }
-
-            public void warning(String message) {
-                logger.warn("RuleAgent(" + name + ") WARNING (" + time() + "): " + message);
-            }
-
-            public void debug(String message) {
-                logger.debug(message);
-            }
-
-            public void setAgentName(String name) {
-                this.name = name;
-            }
-
-            public void debug(String message,
-                              Object object) {
-                logger.debug(message);
-            }
-
-            public void info(String message,
-                             Object object) {
-                logger.info(message);
-            }
-
-            public void warning(String message,
-                                Object object) {
-                logger.warn(message);
-            }
-
-        };
+        return new LoggingAgentEventListener();
     }
 
     RuleBaseConfiguration getRuleBaseConfiguration() {
         return ruleBaseConf;
     }
+
 }
