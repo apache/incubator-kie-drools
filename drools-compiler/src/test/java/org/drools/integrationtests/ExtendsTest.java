@@ -587,5 +587,54 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
+    @Test
+    public void testInheritFromClassWithDefaults() throws Exception {
+
+        // car is a java class with attributes
+        // brand (default ferrari)
+        // expensive (default true)
+        String s1 = "package org.drools;\n" +
+                "global java.util.List list;\n" +
+                "declare Car end\n" +
+                "\n" +
+                "declare MyCar extends Car \n" +
+                " miles : int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  MyCar c = new MyCar();\n" +
+                "  c.setMiles( 100 );" +
+                "  insert( c );\n" +
+                "end\n" +
+                "rule \"Match\"\n" +
+                "when\n" +
+                "  MyCar( brand == \"ferrari\", expensive == true, $miles : miles ) " +
+                "then\n" +
+                "  list.add( $miles );\n" +
+                "end";
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            fail( kBuilder.getErrors().toString() );
+        }
+        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+            List list = new ArrayList();
+            kSession.setGlobal( "list", list );
+
+        kSession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( 100 ) );
+
+    }
+
+
+
 }
 
