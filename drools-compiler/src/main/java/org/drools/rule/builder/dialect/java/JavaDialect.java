@@ -517,7 +517,7 @@ public class JavaDialect
                             final TypeResolver typeResolver,
                             final Resource resource) {
 
-        //System.out.println( functionDescr + " : " + typeResolver );
+        //logger.info( functionDescr + " : " + typeResolver );
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
 

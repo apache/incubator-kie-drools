@@ -32,6 +32,8 @@ import java.util.regex.Pattern;
 
 import org.drools.lang.Expander;
 import org.drools.lang.ExpanderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default expander uses String templates to provide pseudo natural
@@ -42,6 +44,9 @@ import org.drools.lang.ExpanderException;
 public class DefaultExpander
     implements
     Expander {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(DefaultExpander.class);
+
     private static final String         ruleOrQuery  =
                                                                  "^(?:                         " + // alternatives rule...end, query...end
                                                                          "\\p{Blank}*(rule\\b.+?^\\s*when\\b)" + // 1: rule, name, attributes. when starts a line
@@ -142,7 +147,7 @@ public class DefaultExpander
 
     private void displayUsage(String what,
                               Map<String, Integer> use) {
-        System.out.println( "=== Usage of " + what + " ===" );
+        logger.info( "=== Usage of " + what + " ===" );
         Formatter fmt = new Formatter( System.out );
         for ( Map.Entry<String, Integer> entry : use.entrySet() ) {
             fmt.format( "%4d %s%n",
@@ -191,9 +196,9 @@ public class DefaultExpander
                                            nlPos ) );
                 offset = nlPos + 1;
             }
-            System.out.println( "=== DRL xpanded from DSLR ===" );
-            System.out.println( show.toString() );
-            System.out.println( "=============================" );
+            logger.info( "=== DRL xpanded from DSLR ===" );
+            logger.info( show.toString() );
+            logger.info( "=============================" );
         }
 
         return buf.toString();
@@ -208,7 +213,7 @@ public class DefaultExpander
         int pos = start;
         while ( (pos = drl.indexOf( nl,
                                     pos )) >= 0 ) {
-            //      System.out.println( "pos at " + pos );
+            //      logger.info( "pos at " + pos );
             if ( pos >= end ) break;
             pos += nl.length();
             count++;
@@ -226,21 +231,21 @@ public class DefaultExpander
         // display keys if requested
         if ( showKeyword ) {
             for ( DSLMappingEntry entry : this.keywords ) {
-                System.out.println( "keyword: " + entry.getMappingKey() );
-                System.out.println( "         " + entry.getKeyPattern() );
+                logger.info( "keyword: " + entry.getMappingKey() );
+                logger.info( "         " + entry.getKeyPattern() );
             }
         }
         if ( showWhen ) {
             for ( DSLMappingEntry entry : this.condition ) {
-                System.out.println( "when: " + entry.getMappingKey() );
-                System.out.println( "      " + entry.getKeyPattern() );
-                //                System.out.println( "      " + entry.getValuePattern() );
+                logger.info( "when: " + entry.getMappingKey() );
+                logger.info( "      " + entry.getKeyPattern() );
+                //                logger.info( "      " + entry.getValuePattern() );
             }
         }
         if ( showThen ) {
             for ( DSLMappingEntry entry : this.consequence ) {
-                System.out.println( "then: " + entry.getMappingKey() );
-                System.out.println( "      " + entry.getKeyPattern() );
+                logger.info( "then: " + entry.getMappingKey() );
+                logger.info( "      " + entry.getKeyPattern() );
             }
         }
 
@@ -429,7 +434,7 @@ public class DefaultExpander
             return exp;
         }
         if ( showSingleSteps ) {
-            System.out.println( "to expand: |" + exp + "|" );
+            logger.info( "to expand: |" + exp + "|" );
         }
         Map<String, String> key2value = new HashMap<String, String>();
         for ( final DSLMappingEntry entry : entries ) {
@@ -448,7 +453,7 @@ public class DefaultExpander
             while ( startPos < exp.length() && m.find( startPos ) ) {
                 match = true;
                 if ( showSingleSteps ) {
-                    System.out.println( "  matches: " + kp.toString() );
+                    logger.info( "  matches: " + kp.toString() );
                 }
                 if ( showUsage ) {
                     use.put( mappingKey,
@@ -512,7 +517,7 @@ public class DefaultExpander
                 exp = exp.substring( 0,
                                      m.start() ) + vp + exp.substring( m.end() );
                 if ( match && showSingleSteps ) {
-                    System.out.println( "   result: |" + exp + "|" );
+                    logger.info( "   result: |" + exp + "|" );
                 }
                 startPos = m.start() + vp.length();
                 m.reset( exp );
@@ -532,7 +537,7 @@ public class DefaultExpander
                              int lineOffset) {
         substitutions = new ArrayList<Map<String, String>>();
 
-        //        System.out.println( "*** LHS>" + lhs + "<" );
+        //        logger.info( "*** LHS>" + lhs + "<" );
         final StringBuilder buf = new StringBuilder();
         final String[] lines = lhs.split( "\n",
                                           -1 ); // since we assembled the string, we know line breaks are \n

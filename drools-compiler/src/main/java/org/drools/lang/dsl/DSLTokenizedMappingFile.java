@@ -87,8 +87,8 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         if( inEntry ) sb.append( '\n' );
 
         lnr.close();
-//        System.out.println( "====== DSL definition:" );
-//        System.out.println( sb.toString() );
+//        logger.info( "====== DSL definition:" );
+//        logger.info( sb.toString() );
 
         return sb.toString();
     }
@@ -125,7 +125,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         setErrors( errors );
 
         //        for( ParserError err: errors ){
-        //            System.err.println( "[" + err.getRow() + "," + err.getCol() + "]: " + err.getMessage() );
+        //            logger.error( "[" + err.getRow() + "," + err.getCol() + "]: " + err.getMessage() );
         //        }
 
         return errors.isEmpty();
@@ -145,7 +145,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         DSLMapParser parser = new DSLMapParser(tokens);
         DSLMapParser.mapping_file_return example = parser.mapping_file();
         CommonTree tree = (CommonTree) example.getTree();
-        //        System.out.println(tree.toStringTree());
+        //        logger.info(tree.toStringTree());
 
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         DSLMapWalker walker = new DSLMapWalker(nodes);
