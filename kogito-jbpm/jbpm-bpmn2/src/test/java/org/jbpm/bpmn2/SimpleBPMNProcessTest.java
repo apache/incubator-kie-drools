@@ -2632,6 +2632,43 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
+    public void testCallActivityWithBoundaryEvent() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+                .newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory
+                .newClassPathResource("BPMN2-CallActivityWithBoundaryEvent.bpmn2"),
+                ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory
+                .newClassPathResource("BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2"),
+                ResourceType.BPMN2);
+        if (!kbuilder.getErrors().isEmpty()) {
+            for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                logger.error(error.toString());
+            }
+            throw new IllegalArgumentException(
+                    "Errors while parsing knowledge base");
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "oldValue");
+        ProcessInstance processInstance = ksession.startProcess(
+                "ParentProcess", params);
+        
+        Thread.sleep(3000);
+        
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertEquals("new timer value",
+                ((WorkflowProcessInstance) processInstance).getVariable("y"));
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "CallActivity", "Boundary event", 
+                "Script Task", "end", "StartProcess2", "User Task");
+
+    }
+
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBaseFactory
 				.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());

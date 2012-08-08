@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <itemDefinition id="_xItem"/>
+  <itemDefinition id="_yItem"/>
+  <process id="ParentProcess" name="Parent Process" isExecutable="true" processType="Private">
+    <property id="x" itemSubjectRef="_xItem"/>
+    <property id="y" itemSubjectRef="_yItem"/>
+    <startEvent id="_1" name="StartProcess">
+      <outgoing>_1-_2</outgoing>
+    </startEvent>
+    <callActivity id="_2" name="CallActivity" calledElement="SubProcess">
+      <incoming>_1-_2</incoming>
+      <outgoing>_2-_3</outgoing>
+      <ioSpecification id="InputOutputSpecification_1">
+        <dataInput id="_2_subXInput" name="subX"/>
+        <dataOutput id="_2_subYOutput" name="subY"/>
+        <inputSet id="InputSet_1">
+          <dataInputRefs>_2_subXInput</dataInputRefs>
+        </inputSet>
+        <outputSet id="OutputSet_1">
+          <dataOutputRefs>_2_subYOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation id="DataInputAssociation_1">
+        <sourceRef>x</sourceRef>
+        <targetRef>_2_subXInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation id="DataOutputAssociation_1">
+        <sourceRef>_2_subYOutput</sourceRef>
+        <targetRef>y</targetRef>
+      </dataOutputAssociation>
+    </callActivity>
+    <endEvent id="_3" name="EndProcess">
+      <incoming>_2-_3</incoming>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <boundaryEvent id="BoundaryEvent_1" name="Boundary event" attachedToRef="_2">
+      <outgoing>SequenceFlow_2</outgoing>
+      <timerEventDefinition id="TimerEventDefinition_1">
+        <timeDuration xsi:type="tFormalExpression" id="_FormalExpression_2">2s</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="BoundaryEvent_1" targetRef="ScriptTask_1"/>
+    <scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.java.com/java">
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+      <script>System.out.println(&quot;Timer handled&quot;);
+kcontext.setVariable(&quot;y&quot;, &quot;new timer value&quot;);</script>
+    </scriptTask>
+    <sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="ScriptTask_1" targetRef="EndEvent_1"/>
+    <endEvent id="EndEvent_1" name="end">
+      <incoming>SequenceFlow_1</incoming>
+    </endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="ParentProcess">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="16.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_CallActivity_1" bpmnElement="_2" isExpanded="true">
+        <dc:Bounds height="48.0" width="110.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3">
+        <dc:Bounds height="48.0" width="48.0" x="238.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="BoundaryEvent_1">
+        <dc:Bounds height="48.0" width="48.0" x="132.0" y="40.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="48.0" width="110.0" x="207.0" y="131.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
+        <dc:Bounds height="48.0" width="48.0" x="370.0" y="131.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_CallActivity_1">
+        <di:waypoint xsi:type="dc:Point" x="64.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="96.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_3" sourceElement="BPMNShape_CallActivity_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="206.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="238.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="317.0" y="155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="370.0" y="155.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="156.0" y="88.0"/>
+        <di:waypoint xsi:type="dc:Point" x="155.0" y="154.0"/>
+        <di:waypoint xsi:type="dc:Point" x="207.0" y="155.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
