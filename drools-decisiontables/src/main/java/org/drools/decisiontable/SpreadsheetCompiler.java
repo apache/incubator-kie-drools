@@ -29,6 +29,8 @@ import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.template.model.DRLOutput;
 import org.drools.template.model.Package;
 import org.drools.template.parser.DataListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -36,6 +38,8 @@ import org.drools.template.parser.DataListener;
  * pumping into drools.
  */
 public class SpreadsheetCompiler {
+
+    protected static transient Logger logger = LoggerFactory.getLogger(SpreadsheetCompiler.class);
 
     /**
      * Generates DRL from the input stream containing the spreadsheet.
@@ -152,7 +156,7 @@ public class SpreadsheetCompiler {
         try {
             stream.close();
         } catch ( final Exception e ) {
-            System.err.print( "WARNING: Wasn't able to " + "correctly close stream for decision table. " + e.getMessage() );
+            logger.warn("WARNING: Wasn't able to " + "correctly close stream for decision table. " + e.getMessage());
         }
     }
 
