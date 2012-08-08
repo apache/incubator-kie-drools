@@ -600,6 +600,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
     protected boolean initFieldWithDefaultValue( MethodVisitor mv, ClassDefinition classDef, FieldDefinition field ) {
+        if ( field.getInitExpr() == null && field.isInherited() ) {
+            return false;
+        }
         // get simple init expression value
         Object val = BuildUtils.getDefaultValue(field);
         boolean hasObjects = false;
