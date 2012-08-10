@@ -70,52 +70,6 @@
     <section>
       <title>A move</title>
 
-      <para>A move is the change from a solution A to a solution B. For example, below you can see a single move on the
-      starting solution of 4 queens that moves a single queen to another row:</para>
-
-      <figure>
-        <title>A single move (4 queens example)</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Local_search/singleMoveNQueens04.png" format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>A move can have a small or large impact. In the above example, the move of queen <emphasis>C0 to
-      C2</emphasis> is a small move. Some moves are the same move type. These are some possibilities for move types in n
-      queens:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Move a single queen to another row. This is a small move. For example, move queen <emphasis>C0 to
-          C2</emphasis>.</para>
-        </listitem>
-
-        <listitem>
-          <para>Move all queens a number of rows down or up. This a big move.</para>
-        </listitem>
-
-        <listitem>
-          <para>Move a single queen to another column. This is a small move. For example, move queen <emphasis>C2 to
-          A0</emphasis> (placing it on top of queen A0).</para>
-        </listitem>
-
-        <listitem>
-          <para>Add a queen to the board at a certain row and column.</para>
-        </listitem>
-
-        <listitem>
-          <para>Remove a queen from the board.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Because we have decided that all queens will be on the board at all times and each queen has an appointed
-      column (for performance reasons), only the first 2 move types are usable in our example. Furthermore, we 're only
-      using the first move type in the example because we think it gives the best performance, but you are welcome to
-      prove us wrong.</para>
-
       <para>Each of your move types will be an implementation of the <literal>Move</literal> interface:</para>
 
       <programlisting language="java">public interface Move {
@@ -279,21 +233,7 @@
       solution. It's up to you to generate those moves. Let's take a look at all the possible moves on the starting
       solution of 4 queens:</para>
 
-      <figure>
-        <title>Possible moves at step 0 (4 queens example)</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Local_search/possibleMovesNQueens04.png" format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>As you can see, not all the moves are doable. At the starting solution we have 12 doable moves (<literal>n *
-      (n - 1)</literal>), one of which will be move which changes the starting solution into the next solution. Notice
-      that the number of possible solutions is 256 (<literal>n ^ n</literal>), much more that the amount of doable
-      moves. Don't create a move to every possible solution. Instead use moves which can be sequentially combined to
-      reach every possible solution.</para>
+      <para></para>
 
       <para>It's highly recommended that you verify all solutions are connected by your move set. This means that by
       combining a finite number of moves you can reach any solution from any solution. Otherwise you're already
@@ -635,8 +575,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <title>Simulated annealing acceptor</title>
 
         <para>Simulated annealing does not always pick the move with the highest score, neither does it evaluate many
-        moves per step. At least at first. Instead, it gives non improving moves also a chance to be picked, depending on
-        its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into a
+        moves per step. At least at first. Instead, it gives non improving moves also a chance to be picked, depending
+        on its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into a
         hill climber, only accepting improving moves.</para>
 
         <para>In many use cases, simulated annealing surpasses tabu search. By changing a few lines of configuration,
@@ -674,8 +614,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       <section>
         <title>Late acceptance acceptor</title>
 
-        <para>Late acceptance accepts any move that has a score which is higher than the best score of a number of
-        steps ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
+        <para>Late acceptance accepts any move that has a score which is higher than the best score of a number of steps
+        ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
 
         <programlisting language="xml">    &lt;acceptor&gt;
       &lt;lateAcceptanceSize&gt;500&lt;/lateAcceptanceSize&gt;

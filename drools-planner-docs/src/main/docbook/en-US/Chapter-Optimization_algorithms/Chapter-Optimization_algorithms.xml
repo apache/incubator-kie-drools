@@ -593,7 +593,7 @@
     </section>
 
     <section>
-      <title>Combining Terminations</title>
+      <title>Combining multiple Terminations</title>
 
       <para>Terminations can be combined, for example: terminate after 100 steps or if a score of 0 has been
       reached:</para>
