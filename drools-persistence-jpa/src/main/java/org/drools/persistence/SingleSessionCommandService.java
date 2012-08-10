@@ -327,6 +327,12 @@ public class SingleSessionCommandService
     }
 
     public synchronized <T> T execute(Command<T> command) {
+        if (command instanceof DisposeCommand) {
+            T result = commandService.execute( (GenericCommand<T>) command );
+            this.jpm.dispose();
+            return result;
+        }
+
         // Open the entity manager before the transaction begins. 
         PersistenceContext persistenceContext = this.jpm.getApplicationScopedPersistenceContext();
 
@@ -345,15 +351,13 @@ public class SingleSessionCommandService
             registerRollbackSync();
 
             T result = null;
-            if ( !(command instanceof DisposeCommand) ) {
-                if( command instanceof BatchExecutionCommand ) { 
-                    // Batch execution requires the extra logic in 
-                    //  StatefulSessionKnowledgeImpl.execute(Context,Command);
-                    result = ksession.execute(command);
-                }
-                else { 
-                    result = commandService.execute( (GenericCommand<T>) command );
-                }
+            if( command instanceof BatchExecutionCommand ) { 
+                // Batch execution requires the extra logic in 
+                //  StatefulSessionKnowledgeImpl.execute(Context,Command);
+                result = ksession.execute(command);
+            }
+            else { 
+                result = commandService.execute( (GenericCommand<T>) command );
             }
 
             txm.commit(transactionOwner);
