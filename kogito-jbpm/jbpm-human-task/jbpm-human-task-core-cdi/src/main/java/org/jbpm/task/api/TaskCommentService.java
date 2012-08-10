@@ -16,7 +16,7 @@ public interface TaskCommentService {
 
     void deleteComment(long taskId, long commentId);
 
-    List<Comment> getComments(long taskId);
+    List<Comment> getAllCommentsByTaskId(long taskId);
 
     Comment getCommentById(long commentId);
 }

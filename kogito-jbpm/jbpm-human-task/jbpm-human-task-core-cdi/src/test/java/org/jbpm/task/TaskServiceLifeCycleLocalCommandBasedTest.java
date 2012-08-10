@@ -35,6 +35,8 @@ public class TaskServiceLifeCycleLocalCommandBasedTest extends TaskServiceLifeCy
                 //This two packages are required for the command based implementation
                 .addPackage("org.jbpm.task.commands") 
                 .addPackage("org.jbpm.task.impl.command") 
+                .addPackage("org.jbpm.task.deadlines") // deadlines
+                .addPackage("org.jbpm.task.deadlines.notifications.impl")
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans-commandbased.xml", ArchivePaths.create("beans.xml"));

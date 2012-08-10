@@ -86,17 +86,7 @@ public abstract class BaseTest {
         return result;
     }
 
-//    protected Map<String, Object> fillVariables() {
-//        return fillVariables(users, groups);
-//    }
 
-//    public static Map<String, Object> fillVariables(Map<String, User> users, Map<String, Group> groups) {
-//        Map<String, Object> vars = new HashMap<String, Object>();
-//        vars.put("users", users);
-//        vars.put("groups", groups);
-//        vars.put("now", new Date());
-//        return vars;
-//    }
 //    protected static void testDeadlines(long now, MockEscalatedDeadlineHandler handler) throws Exception { 
 //        int sleep = 8000;
 //        handler.wait(3, sleep);
@@ -129,7 +119,7 @@ public abstract class BaseTest {
 //        // Wait for deadlines to finish
 //        Thread.sleep(1000); 
 //    }
-//    
+
     protected final static String mySubject = "My Subject";
     protected final static String myBody = "My Body";
 

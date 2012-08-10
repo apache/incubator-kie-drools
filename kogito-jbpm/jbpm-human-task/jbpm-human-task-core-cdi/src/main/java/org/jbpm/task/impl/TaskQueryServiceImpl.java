@@ -113,8 +113,4 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Content getContentById(long contentId) {
-        Content content = em.find(Content.class, contentId);
-        return content;
-    }
 }

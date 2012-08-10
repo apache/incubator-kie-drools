@@ -4,10 +4,10 @@
  */
 package org.jbpm.task.api;
 
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.jbpm.task.Attachment;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
@@ -21,15 +21,12 @@ import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
 import org.jbpm.task.query.TaskSummary;
 
-
 /**
  *
  */
-
 public interface TaskServiceEntryPoint {
-    
-    //Main Service
 
+    //Main Service
     TaskAdminService getTaskAdminService();
 
     TaskDefService getTaskDefService();
@@ -41,7 +38,7 @@ public interface TaskServiceEntryPoint {
     TaskQueryService getTaskQueryService();
 
     TaskEventsService getTaskEventsService();
-    
+
     void setTaskAdminService(TaskAdminService adminService);
 
     void setTaskDefService(TaskDefService defService);
@@ -51,11 +48,10 @@ public interface TaskServiceEntryPoint {
     void setTaskInstanceService(TaskInstanceService taskInstanceService);
 
     void setTaskQueryService(TaskQueryService queryService);
-    
-    void setTaskEventsService(TaskEventsService eventsService);
-    
-    // Delegates
 
+    void setTaskEventsService(TaskEventsService eventsService);
+
+    // Delegates
     void activate(long taskId, String userId);
 
     void addGroup(Group group);
@@ -102,8 +98,6 @@ public interface TaskServiceEntryPoint {
 
     List<TaskSummary> getCompletedTasksByProcessId(Long processId);
 
-    Content getContentById(long contentId);
-
     Group getGroupById(String groupId);
 
     List<Group> getGroups();
@@ -147,13 +141,13 @@ public interface TaskServiceEntryPoint {
     List<User> getUsers();
 
     long newTask(String name, Map<String, Object> params);
-    
+
     long newTask(TaskDef def, Map<String, Object> params);
-    
+
     long newTask(TaskDef def, Map<String, Object> params, boolean deploy);
-    
+
     long addTask(Task task, Map<String, Object> params);
-    
+
     long addTask(Task task, ContentData data);
 
     void release(long taskId, String userId);
@@ -183,17 +177,32 @@ public interface TaskServiceEntryPoint {
     void suspend(long taskId, String userId);
 
     void undeployTaskDef(String id);
-    
+
     public List<TaskEvent> getTaskEventsById(long taskId);
-    
+
     public UserInfo getUserInfo();
 
     public void setUserInfo(UserInfo userInfo);
-    
+
     public void addUsersAndGroups(Map<String, User> users, Map<String, Group> groups);
-    
+
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners);
 
     public int removeAllTasks();
 
+    long addContent(long taskId, Content content);
+
+    void deleteContent(long taskId, long contentId);
+
+    List<Content> getAllContentByTaskId(long taskId);
+
+    Content getContentById(long contentId);
+
+    long addAttachment(long taskId, Attachment attachment, Content content);
+
+    void deleteAttachment(long taskId, long attachmentId);
+
+    List<Attachment> getAllAttachmentsByTaskId(long taskId);
+
+    Attachment getAttachmentById(long attachId);
 }

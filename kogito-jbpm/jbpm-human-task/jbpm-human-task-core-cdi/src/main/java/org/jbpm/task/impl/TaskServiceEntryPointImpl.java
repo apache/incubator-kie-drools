@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jbpm.task.Attachment;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
@@ -22,6 +23,8 @@ import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
 import org.jbpm.task.annotations.Persistent;
 import org.jbpm.task.api.TaskAdminService;
+import org.jbpm.task.api.TaskAttachmentService;
+import org.jbpm.task.api.TaskContentService;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskEventsService;
 import org.jbpm.task.api.TaskIdentityService;
@@ -49,6 +52,12 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     private TaskQueryService taskQueryService;
     @Inject @Persistent
     private TaskEventsService taskEventsService;
+    @Inject
+    private TaskContentService taskContentService;
+    @Inject
+    private TaskAttachmentService taskAttachmentService;
+    
+    
     
     private UserInfo userInfo;
     
@@ -318,10 +327,6 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         return taskQueryService.getTaskInstanceById(taskId);
     }
 
-    public Content getContentById(long contentId) {
-        return taskQueryService.getContentById(contentId);
-    }
-
     public Task getTaskByWorkItemId(long workItemId) {
         return taskQueryService.getTaskByWorkItemId(workItemId);
     }
@@ -396,6 +401,38 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     public int removeAllTasks() {
         return this.taskAdminService.removeAllTasks();
+    }
+
+    public long addContent(long taskId, Content content) {
+        return this.taskContentService.addContent(taskId, content);
+    }
+
+    public void deleteContent(long taskId, long contentId) {
+        this.taskContentService.deleteContent(taskId, contentId);
+    }
+
+    public List<Content> getAllContentByTaskId(long taskId) {
+        return this.taskContentService.getAllContentByTaskId(taskId);
+    }
+
+    public Content getContentById(long contentId) {
+        return this.taskContentService.getContentById(contentId);
+    }
+
+    public long addAttachment(long taskId, Attachment attachment, Content content) {
+        return this.taskAttachmentService.addAttachment(taskId, attachment, content);
+    }
+
+    public void deleteAttachment(long taskId, long attachmentId) {
+        this.taskAttachmentService.deleteAttachment(taskId, attachmentId);
+    }
+
+    public List<Attachment> getAllAttachmentsByTaskId(long taskId) {
+        return this.taskAttachmentService.getAllAttachmentsByTaskId(taskId);
+    }
+
+    public Attachment getAttachmentById(long attachId) {
+        return this.taskAttachmentService.getAttachmentById(attachId);
     }
     
 }

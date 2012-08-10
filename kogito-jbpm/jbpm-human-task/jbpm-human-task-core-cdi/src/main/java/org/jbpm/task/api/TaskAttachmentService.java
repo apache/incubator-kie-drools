@@ -6,6 +6,7 @@ package org.jbpm.task.api;
 
 import java.util.List;
 import org.jbpm.task.Attachment;
+import org.jbpm.task.Content;
 
 /**
  *
@@ -13,11 +14,11 @@ import org.jbpm.task.Attachment;
 
 public interface TaskAttachmentService {
 
-    long addAttachment(long taskId, Attachment attachment);
+    long addAttachment(long taskId, Attachment attachment, Content content);
 
     void deleteAttachment(long taskId, long attachmentId);
 
-    List<Attachment> getAttachments(long taskId);
+    List<Attachment> getAllAttachmentsByTaskId(long taskId);
 
     Attachment getAttachmentById(long attachId);
 }

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jbpm.task.lifecycle.listeners;
+package org.jbpm.task.deadlines;
 
 import org.jbpm.task.Task;
 

@@ -84,7 +84,7 @@ public class TaskFactory {
 
         Status assignedStatus = null;
 
-        if (task.getPeopleAssignments().getPotentialOwners().size() == 1) {
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() == 1) {
             // if there is a single potential owner, assign and set status to Reserved
             OrganizationalEntity potentialOwner = task.getPeopleAssignments().getPotentialOwners().get(0);
             // if there is a single potential user owner, assign and set status to Reserved
@@ -98,11 +98,12 @@ public class TaskFactory {
 
                 assignedStatus = Status.Ready;
             }
-        } else if (task.getPeopleAssignments().getPotentialOwners().size() > 1) {
+        } else if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() > 1) {
             // multiple potential owners, so set to Ready so one can claim.
             assignedStatus = Status.Ready;
         } else {
             //@TODO we have no potential owners
+            System.out.println(" XXX @TODO we have no potential owners");
         }
 
         if (assignedStatus != null) {

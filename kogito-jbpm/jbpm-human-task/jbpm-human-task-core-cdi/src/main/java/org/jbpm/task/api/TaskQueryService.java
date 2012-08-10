@@ -46,7 +46,5 @@ public interface TaskQueryService {
 
     Task getTaskInstanceById(long taskId);
     
-    Content getContentById(long contentId);
-    
     Task getTaskByWorkItemId(long workItemId);
 }
