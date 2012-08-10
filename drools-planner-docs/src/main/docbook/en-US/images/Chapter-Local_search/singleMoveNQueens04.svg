@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -62,7 +62,7 @@
      inkscape:zoom="3.8032258"
      inkscape:cx="155"
      inkscape:cy="75"
-     inkscape:window-x="1729"
+     inkscape:window-x="49"
      inkscape:window-y="24"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
@@ -573,7 +573,7 @@
        sodipodi:type="arc" />
   </g>
   <path
-     style="fill:#00ffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+     style="fill:#729fcf;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
      d="M 101.27372,86.567557 L 103.26229,96.512207 L 93.38339,99.499997 L 96.38339,94.499997 C 88.972,90.986137 88.11736,69.608487 96.38339,40.499997 L 98.38339,41.499997 C 90.98186,70.572047 90.35267,88.293277 98.38339,91.499997 L 101.27372,86.567557 z"
      id="rect3222"
      sodipodi:nodetypes="cccccccc" />

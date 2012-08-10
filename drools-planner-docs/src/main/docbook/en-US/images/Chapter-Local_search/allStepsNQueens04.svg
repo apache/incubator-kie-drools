@@ -4779,18 +4779,18 @@
   <g
      transform="matrix(-0.8649123,0,0,1,699.34211,-449.65536)"
      id="g3134"
-     style="fill:none;stroke:#009900;stroke-width:2.15052247;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+     style="fill:none;stroke:#73d216;stroke-width:2.15052246999999985;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
     <g
        id="g3770"
-       style="stroke:#009900;stroke-linejoin:round;stroke-opacity:1">
+       style="stroke:#73d216;stroke-linejoin:round;stroke-opacity:1">
       <path
          sodipodi:nodetypes="cc"
-         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#009900;stroke-width:2.15052247;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;fill-opacity:0.75000000000000000;fill-rule:evenodd;stroke:#73d216;stroke-width:2.15052246999999985;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="M 294.06694,792.36218 C 294.06694,822.36218 294.06694,822.36218 294.06694,822.36218"
          id="path3136" />
     </g>
     <path
-       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#009900;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="opacity:1;fill:none;fill-opacity:0.75000000000000000;fill-rule:evenodd;stroke:#73d216;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        d="M 430,622.36218 C 445,632.36218 445,632.36218 445,632.36218 L 460,622.36218"
        id="path4746"
        transform="matrix(-1.1561866,0,0,1,808.56997,190)" />
@@ -6915,7 +6915,7 @@
        sodipodi:role="line">Score -4</tspan></text>
   <path
      sodipodi:type="arc"
-     style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#00ff00;stroke-width:1.89466202;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#73d216;stroke-width:1.89466201999999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="path3762"
      sodipodi:cx="445"
      sodipodi:cy="967.36218"
