@@ -16,7 +16,7 @@
    height="400"
    sodipodi:docname="deltaBasedScoreCalculationNQueens04.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/ge0ffrey/projects/jboss/drools/drools-docs/drools-docs-planner/src/main/docbook/images/Chapter-Score_calculation/deltaBasedScoreCalculationNQueens04.png"
+   inkscape:export-filename="deltaBasedScoreCalculationNQueens04.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    version="1.0">
@@ -1287,10 +1287,7 @@
   </g>
   <g
      transform="translate(125.50001,-792.86224)"
-     id="g4074"
-     inkscape:export-xdpi="90"
-     inkscape:export-ydpi="90"
-     inkscape:export-filename="D:\projects\jboss\drools\documentation\manual\en\Chapter-Solver\singleMoveNQueens04.png">
+     id="g4074">
     <text
        xml:space="preserve"
        style="font-size:16.19810677px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"

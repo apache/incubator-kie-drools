@@ -1933,10 +1933,7 @@
        xml:space="preserve"
        id="flowRoot6718-9"
        style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="translate(234.8125,207.92176)"
-       inkscape:export-filename="employeeShiftRosteringHardConstraints.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"><flowRegion
+       transform="translate(234.8125,207.92176)"><flowRegion
          id="flowRegion6720-3"><rect
            id="rect6722-3"
            width="740"
