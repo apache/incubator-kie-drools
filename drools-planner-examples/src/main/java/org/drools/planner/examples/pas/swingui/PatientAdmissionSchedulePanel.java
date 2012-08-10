@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Night;
 import org.drools.planner.examples.pas.domain.Bed;
@@ -44,7 +45,7 @@ import org.drools.planner.examples.pas.solver.move.BedChangeMove;
  */
 public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = Color.YELLOW;
+    private static final Color HEADER_COLOR = TangoColors.BUTTER_1;
 
     private GridLayout gridLayout;
 

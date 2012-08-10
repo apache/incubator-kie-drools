@@ -187,14 +187,14 @@ public class CloudComputerPanel extends JPanel {
     private void updateTotals(int usedCpuPower, int usedMemory, int usedNetworkBandwidth, boolean used) {
         computerLabel.setEnabled(used);
         cpuPowerField.setText(usedCpuPower + " GHz / " + getComputerCpuPower() + " GHz");
-        cpuPowerField.setForeground(usedCpuPower > getComputerCpuPower() ? Color.RED : Color.BLACK);
+        cpuPowerField.setForeground(usedCpuPower > getComputerCpuPower() ? TangoColors.SCARLET_3 : Color.BLACK);
         cpuPowerField.setEnabled(used);
         memoryField.setText(usedMemory + " GB / " + getComputerMemory() + " GB");
-        memoryField.setForeground(usedMemory > getComputerMemory() ? Color.RED : Color.BLACK);
+        memoryField.setForeground(usedMemory > getComputerMemory() ? TangoColors.SCARLET_3 : Color.BLACK);
         memoryField.setEnabled(used);
         networkBandwidthField.setText(usedNetworkBandwidth + " GB / " + getComputerNetworkBandwidth() + " GB");
         networkBandwidthField.setForeground(usedNetworkBandwidth > getComputerNetworkBandwidth()
-                ? Color.RED : Color.BLACK);
+                ? TangoColors.SCARLET_3 : Color.BLACK);
         networkBandwidthField.setEnabled(used);
         costField.setEnabled(used);
     }
@@ -259,7 +259,7 @@ public class CloudComputerPanel extends JPanel {
                 colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_1.length;
             }
             if (this.computerValue > 0) {
-                g.setColor(isEnabled() ? Color.BLACK : Color.DARK_GRAY);
+                g.setColor(isEnabled() ? Color.BLACK : TangoColors.ALUMINIUM_5);
                 g.drawRect(0, 0, computerWidth, rectHeight - 1);
             }
         }

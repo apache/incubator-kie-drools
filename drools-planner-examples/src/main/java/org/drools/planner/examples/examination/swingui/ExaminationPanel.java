@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.Period;
@@ -45,7 +46,7 @@ import org.drools.planner.examples.examination.solver.move.RoomChangeMove;
  */
 public class ExaminationPanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = Color.YELLOW;
+    private static final Color HEADER_COLOR = TangoColors.BUTTER_1;
 
     private GridLayout gridLayout;
 
