@@ -113,8 +113,8 @@ public class ShiftAssignment {
 }</programlisting>
 
       <warning>
-        <para>Custom <literal>MoveListFactory</literal> implementations must make sure that they don't move immovable
-        entities.</para>
+        <para>Custom <literal>MoveListFactory</literal> and <literal>MoveIteratorFactory</literal> implementations must
+        make sure that they don't move immovable entities.</para>
       </warning>
     </section>
   </section>
