@@ -249,6 +249,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                       this,
                                       workingMemory )) ||
              (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
+            leftTuple.setObject( Boolean.TRUE );
             return;
         }
 
@@ -282,7 +283,10 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     	}
 
         // if the current Rule is no-loop and the origin rule is the same then return
-        if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
+        if ( (!this.rule.isEffective( leftTuple,
+                                      this,
+                                      workingMemory )) ||
+             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
             agenda.increaseDormantActivations();
             return;
         }
