@@ -49,8 +49,11 @@
       </mediaobject>
 
       <note>
-        <para>There are many other types of moves besides <literal>changeMove</literal>'s. Some moves affect multiple
-        entities or even create/delete entities. For a complete list, see the rest of this chapter.</para>
+        <para>There are many other types of moves besides <literal>changeMove</literal>'s. Many move types are included
+        out-of-the-box, but you can also implement custom moves.</para>
+
+        <para>A <literal>Move</literal> can affect multiple entities or even create/delete entities. But it must not
+        change the problem facts.</para>
       </note>
 
       <para>All optimization algorithms use <literal>Move</literal>'s to transition from one solution to a neighbor
@@ -60,17 +63,23 @@
     </section>
 
     <section>
-      <title>Configuring a <literal>MoveSelector</literal></title>
+      <title>What is a <literal>MoveSelector</literal>? </title>
 
-      <para>Here's an example how to configure a <literal>changeMoveSelector</literal> for Local Search:</para>
+      <para>A <literal>MoveSelector</literal>'s main function is to create <literal>Iterator&lt;Move&gt;</literal> when
+      needed. An optimization algorithm will iterate through a subset of those moves.</para>
+
+      <para>Here's an example how to configure a <literal>changeMoveSelector</literal> for the optimization algorithm
+      Local Search:</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     &lt;changeMoveSelector/&gt;
     ...
   &lt;/localSearch&gt;</programlisting>
 
-      <para>Out of the box, this works and all properties are defaulted (unless it fails fast due to ambiguity). But if
-      you so desire, you can customize the configuration significantly.</para>
+      <para>Out of the box, this works and all properties of the <literal>changeMoveSelector</literal> are defaulted
+      sensibly (unless that fails fast due to ambiguity). On the other hand, the configuration can be customized
+      significantly for specific use cases. For example: you want want to configure a filter to discard pointless
+      moves.</para>
     </section>
 
     <section>
@@ -82,22 +91,32 @@
       Therefor, they implement a common interface <literal>Selector</literal> and they are configured similarly.</para>
 
       <para>A MoveSelector is often composed out of <literal>EntitySelector</literal>s,
-      <literal>ValueSelector</literal>s or even <literal>MoveSelector</literal>s, which you can configure if so desired:
-      </para>
+      <literal>ValueSelector</literal>s or even other <literal>MoveSelector</literal>s, which you can configure if so
+      desired:</para>
 
-      <programlisting language="xml">    &lt;changeMoveSelector&gt;
-      &lt;entitySelectorConfig&gt;
-        &lt;planningEntityClass&gt;...Lecture&lt;/planningEntityClass&gt;
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;changeMoveSelector&gt;
+        &lt;entitySelectorConfig&gt;
+          ...
+        &lt;/entitySelectorConfig&gt;
+        &lt;valueSelector&gt;
+          ...
+        &lt;/valueSelector&gt;
         ...
-      &lt;/entitySelectorConfig&gt;
-      &lt;valueSelector&gt;
-        &lt;planningVariableName&gt;period&lt;/planningVariableName&gt;
-        ...
-      &lt;/valueSelector&gt;
+      &lt;/changeMoveSelector&gt;
       ...
-    &lt;/changeMoveSelector&gt;</programlisting>
+    &lt;/unionMoveSelector&gt;</programlisting>
 
-      <para>Together, this structure forms a <literal>Selector</literal> tree.</para>
+      <para>Together, this structure forms a <literal>Selector</literal> tree:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/selectorTree.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>The root of this tree is a <literal>MoveSelector</literal> which is injected into the optimization algorithm
+      implementation.</para>
     </section>
   </section>
 
