@@ -35,6 +35,7 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
+import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
@@ -43,6 +44,7 @@ import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
@@ -522,6 +524,18 @@ public class DefaultKnowledgeHelper
         boolean needsWrapping = ! ( core instanceof TraitableBean );
 
         TraitableBean inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean) core;
+        if ( needsWrapping ) {
+            InternalFactHandle h = (InternalFactHandle) getFactHandle( core );
+            InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) h.getEntryPoint();
+            ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
+
+            ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
+
+            ObjectTypeConf innerConf = reg.getObjectTypeConf( ep.getEntryPoint(), inner );
+            if ( coreConf.isTMSEnabled() ) {
+                innerConf.enableTMS();
+            }
+        }
 
         return processTraits( core, trait, builder, needsWrapping, inner, logical );
     }
