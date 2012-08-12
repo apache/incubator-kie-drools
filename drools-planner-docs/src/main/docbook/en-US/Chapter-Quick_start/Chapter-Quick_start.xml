@@ -20,7 +20,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>Every computer must be able to handle the minimal hardware requirements of the sum of its
+          <para>Every computer must be able to handle the minimum hardware requirements of the sum of its
           processes:</para>
 
           <itemizedlist>
@@ -462,7 +462,7 @@ public class CloudProcess ... {
         needed for the other score calculation types.</para>
 
         <para>The method <literal>clone()</literal> is required. Planner uses it to make a clone of the best
-        <literal>Solution</literal> in encounters during searching.</para>
+        <literal>Solution</literal> in encounters during search.</para>
       </section>
     </section>
 
