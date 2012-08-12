@@ -55,12 +55,9 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     protected List<Status> validStatuses = new ArrayList<Status>();
     @Inject
     private EntityManager em;
-    
     @Inject
     private Event<NotificationEvent> notificationEvents;
-    
-    
-    
+
     public TaskDeadlinesServiceImpl() {
     }
 
@@ -148,8 +145,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             }
         }
     }
-    
-    
+
 //     public void executeEmailNotification(EmailNotification notification,
 //                                         Task task,
 //                                         Content content) {
@@ -177,7 +173,6 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 //        }
 //
 //        Map<String, Object> doc = null;
-
 //        if ( content != null ) {
 //            Object objectFromBytes = null;
 //            try {
@@ -260,10 +255,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 //
 //            handler.executeWorkItem( workItem,
 //                                     manager );
-
 //        }
 //    }
-
     public class ScheduledTaskDeadline
             implements
             Callable {
@@ -287,12 +280,10 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         }
 
         public Object call() throws Exception {
-            try {
-                executeEscalatedDeadline(taskId,
-                        deadlineId);
-            } catch (Exception e) {
-                System.out.println("XXXX EX: " + e);
-            }
+
+            executeEscalatedDeadline(taskId,
+                    deadlineId);
+
             return null;
         }
 
@@ -326,7 +317,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             return true;
         }
     }
-    
+
 //     private void buildMapByLanguage(Map<String, List<User>> map,
 //                                    Group group) {
 //        for ( Iterator<OrganizationalEntity> it = userInfo.getMembersForGroup( group ); it.hasNext(); ) {
@@ -352,7 +343,6 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 //        }
 //        list.add( user );
 //    }
-
     protected void setValidStatuses() {
         validStatuses.add(Status.Created);
         validStatuses.add(Status.Ready);

@@ -117,6 +117,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
 
     public void fail(long taskId, String userId, Map<String, Object> faultData) {
         instanceService.fail(taskId, userId, faultData);
+        clearDeadlines(taskId);
     }
 
     public void forward(long taskId, String userId, String targetEntityId) {

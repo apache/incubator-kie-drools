@@ -30,16 +30,12 @@
     <class>org.jbpm.task.Status</class>
     <class>org.jbpm.task.Task</class>
     <class>org.jbpm.task.TaskData</class>
-    <!--class>org.jbpm.task.SubTasksStrategy</class>
-    <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
-    <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class-->
+    <class>org.jbpm.task.SubTasksStrategy</class>
     <class>org.jbpm.task.User</class>
     
     <!-- Event Classes -->
     <class>org.jbpm.task.TaskEvent</class>
-    
-    
- 
+  
    
     <properties>
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />

@@ -73,9 +73,9 @@ public class Task implements Externalizable {
     @Embedded
     private Deadlines            deadlines;
 
-//    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "Task_Id", nullable = true)
-//    private List<SubTasksStrategy> subTaskStrategies = Collections.emptyList();
+    @Enumerated(EnumType.STRING)
+    // Default Behaviour
+    private SubTasksStrategy subTaskStrategy = SubTasksStrategy.EndAllSubTasksOnParentEnd;
     
     private String               taskType;
     
@@ -95,6 +95,13 @@ public class Task implements Externalizable {
         CollectionUtils.writeI18NTextList( subjects, out );
         CollectionUtils.writeI18NTextList( descriptions, out );
 
+        if (subTaskStrategy != null) {
+            out.writeBoolean(true);
+            out.writeUTF(subTaskStrategy.toString());
+        } else {
+            out.writeBoolean(false);
+        }
+        
         if ( peopleAssignments != null ) {
             out.writeBoolean( true );
             peopleAssignments.writeExternal( out );
@@ -123,11 +130,6 @@ public class Task implements Externalizable {
             out.writeBoolean( false );
         }
 
-//        out.writeInt( subTaskStrategies.size() );
-//        for( SubTasksStrategy strategy : subTaskStrategies ) {
-//            out.writeUTF(strategy.getName());
-//            strategy.writeExternal( out );
-//        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -139,7 +141,11 @@ public class Task implements Externalizable {
         names = CollectionUtils.readI18NTextList( in );
         subjects = CollectionUtils.readI18NTextList( in );
         descriptions = CollectionUtils.readI18NTextList( in );
-
+        
+        if (in.readBoolean()) {
+            subTaskStrategy = SubTasksStrategy.valueOf(in.readUTF());
+        }
+        
         if ( in.readBoolean() ) {
             peopleAssignments = new PeopleAssignments();
             peopleAssignments.readExternal( in );
@@ -159,16 +165,6 @@ public class Task implements Externalizable {
             deadlines = new Deadlines();
             deadlines.readExternal( in );
         }
-
-//        int size = in.readInt();
-//        List<SubTasksStrategy> list = new ArrayList<SubTasksStrategy>(size);
-//        for ( int i = 0; i < size; i++ ) {
-//            String name = in.readUTF();
-//            SubTasksStrategy strategy = SubTasksStrategyFactory.newStrategy(name) ;
-//            strategy.readExternal( in );
-//            list.add( strategy );
-//        }
-//       subTaskStrategies = list;
 
     }
     
@@ -329,20 +325,12 @@ public class Task implements Externalizable {
         && CollectionUtils.equals( subjects, other.subjects ));
     }
 
-//    /**
-//     * @return the subTaskStrategies
-//     */
-//    public List<SubTasksStrategy> getSubTaskStrategies() {
-//        return subTaskStrategies;
-//    }
-//
-//    /**
-//     * @param subTaskStrategies the subTaskStrategies to set
-//     */
-//    public void setSubTaskStrategies(List<SubTasksStrategy> subTaskStrategies) {
-//        this.subTaskStrategies = subTaskStrategies;
-//    }
-//
-//   
+    public SubTasksStrategy getSubTaskStrategy() {
+        return subTaskStrategy;
+    }
+
+    public void setSubTaskStrategy(SubTasksStrategy subTaskStrategy) {
+        this.subTaskStrategy = subTaskStrategy;
+    }
 
 }

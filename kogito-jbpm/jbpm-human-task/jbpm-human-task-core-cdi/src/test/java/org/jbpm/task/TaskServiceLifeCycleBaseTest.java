@@ -1845,30 +1845,16 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
             assertNotNull(ex);
         }
 
-
-
-
-
-
-
     }
 
     @Test
     public void testClaimNextAvailable() {
-
-
-
-
-
         
         // Create a local instance of the TaskService
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy'), new User('Bobba Fet') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-
-
-
 
         // Deploy the Task Definition to the Task Component
         taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
@@ -1882,10 +1868,6 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         status.add(Status.Ready);
         List<TaskSummary> salaboyTasks = taskService.getTasksAssignedAsPotentialOwnerByStatus("salaboy", status, "en-UK");
         assertEquals(0, salaboyTasks.size());
-
-
-
-
 
     }
 }

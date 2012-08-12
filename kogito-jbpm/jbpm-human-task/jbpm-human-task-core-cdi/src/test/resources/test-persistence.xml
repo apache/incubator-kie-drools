@@ -29,7 +29,7 @@
     <class>org.jbpm.task.Status</class>
     <class>org.jbpm.task.Task</class>
     <class>org.jbpm.task.TaskData</class>
-    
+    <class>org.jbpm.task.SubTasksStrategy</class>
     <class>org.jbpm.task.User</class>
     
     <!-- Event Classes -->
