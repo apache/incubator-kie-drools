@@ -27,7 +27,7 @@
       <title>Negative and positive constraints</title>
 
       <para>Most planning problems use negative scores, because they have negative constraints. In that case, the score
-      is usually the sum of the weight of the negative constraints being broken, with an perfect score of 0. This
+      is usually the sum of the weight of the negative constraints being broken, with a perfect score of 0. This
       explains why the score of a solution of 4 queens is the negative (and not the positive!) of the number of queen
       couples which can attack each other.</para>
 
@@ -67,7 +67,7 @@
     <section>
       <title>Score level</title>
 
-      <para>Sometimes score constraints are in different level. If breaking one constraint is always worse than another,
+      <para>Sometimes score constraints are in different levels. If breaking one constraint is always worse than another,
       no matter how much another constraint is broken, then those 2 constraints are in a different level.</para>
 
       <para>Most use cases have 2 score levels: hard and soft. When comparing 2 scores, the higher score level gets
@@ -131,7 +131,7 @@
 
       <para>The <literal>Score</literal> implementation to use depends on your use case. Your score might not
       efficiently fit in a single <literal>double</literal> value. Planner has several build-in Score implementations,
-      but you can also implement a custom Score too. Most use cases will just use the build-in
+      but you can implement a custom Score too. Most use cases will just use the build-in
       <literal>HardAndSoftScore</literal>.</para>
 
       <para>The <literal>Score</literal> implementation (for example <literal>DefaultHardAndSoftScore</literal>) must be
@@ -143,7 +143,7 @@
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>Based on your score constraints and score level requirements, you 'll choose a certain
+      <para>Based on your score constraints and score level requirements, you'll choose a certain
       <literal>ScoreDefinition</literal>:</para>
     </section>
   </section>
@@ -156,7 +156,7 @@
 
       <para>The <literal>SimpleScoreDefinition</literal> defines the <literal>Score</literal> as a
       <literal>SimpleScore</literal> which has a single <literal>int</literal> value, for example
-      <literal>-123</literal>. It has 1 score level.</para>
+      <literal>-123</literal>. It has a single score level.</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
@@ -203,7 +203,7 @@
 
       <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
 
-      <para>To implement a custom Score, you 'll also need to implement a custom <literal>ScoreDefinition</literal>.
+      <para>To implement a custom Score, you'll also need to implement a custom <literal>ScoreDefinition</literal>.
       Extend <literal>AbstractScoreDefinition</literal> (preferable by copy pasting
       <literal>HardAndSoftScoreDefinition</literal> or <literal>SimpleScoreDefinition</literal>) and start from
       there.</para>
@@ -630,7 +630,7 @@
       <section>
         <title>Drools score rules configuration</title>
 
-        <para>There are sever ways to define where your score rules live.</para>
+        <para>There are several ways to define where your score rules live.</para>
 
         <section>
           <title>A scoreDrl resource on the classpath</title>
@@ -643,7 +643,7 @@
     &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-          <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed, but normally you 'll define
+          <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed, but normally you'll define
           all your score rules in 1 file.</para>
         </section>
 
@@ -700,7 +700,7 @@ end</programlisting>
 
         <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>WorkingMemory</literal> as a
         global called <literal>scoreHolder</literal>. Your score rules need to (directly or indirectly) update that
-        instance. Usually you 'll make a single rule as an aggregation of the other rules to update the score:</para>
+        instance. Usually you'll make a single rule as an aggregation of the other rules to update the score:</para>
 
         <programlisting>global SimpleScoreHolder scoreHolder;
 

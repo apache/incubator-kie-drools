@@ -10,7 +10,7 @@
     <title>Overview</title>
 
     <para>Exact methods will always find the global optimum and recognize it too. That being said, they don't scale (not
-    even beyond toy problems) and are therefor mostly useless.</para>
+    even beyond toy problems) and are therefore mostly useless.</para>
   </section>
 
   <section>
@@ -63,9 +63,9 @@
       problem size increases. <emphasis role="bold">Branch and bound is mostly unusable for a real-world problem due to
       time limitations.</emphasis></para>
 
-      <para>It can determine a <emphasis>lower bound</emphasis> of problem. A lower bound is a score which is proven to
+      <para>It can determine a <emphasis>lower bound</emphasis> of a problem. A lower bound is a score which is proven to
       be higher than the optimal score of a problem. So it gives an indication of the quality of any best solution found
-      for that problem: the closer to best score is to the lower bound, the better.</para>
+      for that problem: the closer the best score is to the lower bound, the better.</para>
     </section>
 
     <section>

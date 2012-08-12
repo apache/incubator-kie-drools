@@ -45,7 +45,7 @@
           </listitem>
         </itemizedlist>
 
-        <para>The most common n queens puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>. We 'll explain
+        <para>The most common n queens puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>. We'll explain
         Drools Planner using the 4 queens puzzle as the primary example.</para>
 
         <para>A proposed solution could be:</para>
@@ -63,7 +63,7 @@
         </figure>
 
         <para>The above solution is wrong because queens <literal>A1</literal> and <literal>B0</literal> can attack each
-        other (as can queens <literal>B0</literal> and <literal>D0</literal>). Removing queen <literal>B0</literal>
+        other (so can queens <literal>B0</literal> and <literal>D0</literal>). Removing queen <literal>B0</literal>
         would respect the "no 2 queens can attack each other" constraint, but would break the "place n queens"
         constraint.</para>
       </section>
@@ -84,7 +84,7 @@
         </figure>
 
         <para>All the constraints have been met, so the solution is correct. Note that most n queens puzzles have
-        multiple correct solutions. We 'll focus on finding a single correct solution for a given n, not on finding the
+        multiple correct solutions. We'll focus on finding a single correct solution for a given n, not on finding the
         number of possible correct solutions for a given n.</para>
       </section>
 
@@ -107,7 +107,7 @@
       <section>
         <title>Problem size</title>
 
-        <para>These numbers might give you some insight on the size of this problem.</para>
+        <para>These numbers might give you some insight in the size of this problem.</para>
 
         <table>
           <title>NQueens problem size</title>
@@ -203,7 +203,7 @@
           </tgroup>
         </table>
 
-        <para>The Drools Planner implementation has not been optimized because it functions as a beginner example.
+        <para>The Drools Planner implementation of the N queens example has not been optimized because it functions as a beginner example.
         Nevertheless, it can easily handle 64 queens.</para>
       </section>
 

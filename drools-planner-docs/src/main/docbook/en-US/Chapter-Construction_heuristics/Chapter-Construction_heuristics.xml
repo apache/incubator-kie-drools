@@ -22,7 +22,7 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>The <emphasis>First Fit</emphasis> algorithm cycles through all the planning entity (in default order),
+      <para>The <emphasis>First Fit</emphasis> algorithm cycles through all the planning entities (in default order),
       initializing 1 planning entity at a time. It assigns the planning entity to the best available planning value,
       taking the already initialized planning entities into account. It terminates when all planning entities have been
       initialized. It never changes a planning entity after it has been assigned.</para>
@@ -34,7 +34,7 @@
       </mediaobject>
 
       <para>Notice that it starts with putting <literal>Queen</literal> A into row 0 (and never moving it later), which
-      makes it impossible reach the optimal solution. Suffixing this construction heuristic with metaheurstics can
+      makes it impossible to reach the optimal solution. Suffixing this construction heuristic with metaheurstics can
       remedy that.</para>
     </section>
 
@@ -52,7 +52,7 @@
       <note>
         <para>The <literal>constructionHeuristicPickEarlyType</literal> of
         <literal>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</literal> is a big speedup, which should be applied when
-        initializing a planning entity can only make the score lower or equal. So if:</para>
+        initializing a planning entity which can only make the score lower or equal. So if:</para>
 
         <itemizedlist>
           <listitem>
@@ -60,8 +60,8 @@
           </listitem>
 
           <listitem>
-            <para>There is no negative constraint that can stop been broken by adding a planning entity (except if
-            another negative constraint gets broken which outweighs it the first negative constraint).</para>
+            <para>There is no negative constraint that can stop being broken by adding a planning entity (except if
+            another negative constraint gets broken which outweighs the first negative constraint).</para>
           </listitem>
         </itemizedlist>
 
