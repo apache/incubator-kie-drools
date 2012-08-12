@@ -13,12 +13,12 @@
     <para>Local search starts from an initial solution and evolves that single solution into a mostly better and better
     solution. It uses a single search path of solutions, not a search tree. At each solution in this path it evaluates a
     number of moves on the solution and applies the most suitable move to take the step to the next solution. It does
-    that for high number of iterations until its terminated (usually because its time has run out).</para>
+    that for a high number of iterations until it's terminated (usually because its time has run out).</para>
 
     <para>Local search acts a lot like a human planner: it uses a single search path and moves facts around to find a
     good feasible solution. Therefore it's pretty natural to implement.</para>
 
-    <para><emphasis role="bold">Local search needs to start from an initialized solution</emphasis>, therefor it's
+    <para><emphasis role="bold">Local search needs to start from an initialized solution</emphasis>, therefore it's
     recommended to configure a construction heuristic solver phase before it.</para>
   </section>
 
@@ -290,7 +290,7 @@
       </figure>
 
       <para>As you can see, not all the moves are doable. At the starting solution we have 12 doable moves (<literal>n *
-      (n - 1)</literal>), one of which will be move which changes the starting solution into the next solution. Notice
+      (n - 1)</literal>), one of which will be a move which changes the starting solution into the next solution. Notice
       that the number of possible solutions is 256 (<literal>n ^ n</literal>), much more that the amount of doable
       moves. Don't create a move to every possible solution. Instead use moves which can be sequentially combined to
       reach every possible solution.</para>
