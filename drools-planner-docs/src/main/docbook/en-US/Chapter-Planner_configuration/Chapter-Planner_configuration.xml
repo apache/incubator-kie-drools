@@ -95,7 +95,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>We 'll explain these various parts of a configuration later in this manual.</para>
+      <para>We'll explain these various parts of a configuration later in this manual.</para>
 
       <para><emphasis role="bold">Drools Planner makes it relatively easy to switch optimization algorithm(s) just by
       changing the configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to
@@ -325,7 +325,7 @@ public class Lecture {
         <para>Some optimization algorithms work more efficiently if they have an estimation of which planning entities
         are more difficult to plan. For example: in bin packing bigger items are harder to fit, in course scheduling
         lectures with more students are more difficult to schedule and in n queens the middle queens are more
-        difficult.</para>
+        difficult to fit on the board.</para>
 
         <para>Therefore, you can set a <literal>difficultyComparatorClass</literal> to the
         <literal>@PlanningEntity</literal> annotation:</para>
@@ -441,7 +441,7 @@ public class Queen {
       <section>
         <title>When is a planning entity initialized?</title>
 
-        <para>A planning entity is considered initialized if all its planning variables are initialized.</para>
+        <para>A planning entity is considered initialized if all of its planning variables are initialized.</para>
 
         <para>By default, a planning variable is considered initialized if its value is not
         <literal>null</literal>.</para>
@@ -454,7 +454,7 @@ public class Queen {
       <section>
         <title>Planning value</title>
 
-        <para>A planning value is a possible value for a planning variable. Usually, a planning value is problem fact,
+        <para>A planning value is a possible value for a planning variable. Usually, a planning value is a problem fact,
         but it can also be any object, for example a double. It can even be another planning entity or even a interface
         implemented by a planning entity and a problem fact.</para>
 
@@ -939,7 +939,7 @@ public class Visit ... implements Appearance {
         the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster score
         constraints.</para>
 
-        <para>For example in examination, a cache problem fact <literal>TopicConflict</literal> is created for every 2
+        <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every 2
         <literal>Topic</literal>'s which share at least 1 <literal>Student</literal>.</para>
 
         <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
@@ -1155,7 +1155,7 @@ public class Visit ... implements Appearance {
 
       <para>The <literal>solve()</literal> method can take a long time (depending on the problem size and the solver
       configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it encounters
-      during its solving. Depending on a number factors (including problem size, how time the <literal>Solver</literal>
+      during its solving. Depending on a number factors (including problem size, how much time the <literal>Solver</literal>
       has, the solver configuration, ...), that best solution will be a feasible or even an optimal solution.</para>
 
       <note>
@@ -1169,7 +1169,7 @@ public class Visit ... implements Appearance {
 
       <note>
         <para>The <literal>Solution</literal> instance given to the method <literal>setPlanningProblem()</literal> does
-        not need to be uninitialized. It can be partially or fully initialized, which is likely in <link
+        not need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
         linkend="repeatedPlanning">repeated planning</link>.</para>
       </note>
     </section>
@@ -1242,7 +1242,7 @@ public class Visit ... implements Appearance {
         <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
         unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in
         most use cases the impact of the random seed is relatively low on the result (even with simulated annealing). An
-        occasional bad result is far more likely caused by another issue (such as a score trap).</para>
+        occasional bad result is far more likely to be caused by another issue (such as a score trap).</para>
       </section>
     </section>
 
