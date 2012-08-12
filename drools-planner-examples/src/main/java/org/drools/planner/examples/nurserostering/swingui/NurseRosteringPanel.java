@@ -19,6 +19,7 @@ package org.drools.planner.examples.nurserostering.swingui;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -183,18 +184,55 @@ public class NurseRosteringPanel extends SolutionPanel {
                 NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
                 NurseRosterInfo nurseRosterInfo = nurseRoster.getNurseRosterInfo();
                 List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
-                int index = shiftDateList.indexOf(nurseRosterInfo.getPlanningWindowStart());
-                if (index < 0) {
+                ShiftDate planningWindowStart = nurseRosterInfo.getPlanningWindowStart();
+                int windowStartIndex = shiftDateList.indexOf(planningWindowStart);
+                if (windowStartIndex < 0) {
                     throw new IllegalStateException("The planningWindowStart ("
-                            + nurseRosterInfo.getPlanningWindowStart() + ") must be in the shiftDateList ("
+                            + planningWindowStart + ") must be in the shiftDateList ("
                             + shiftDateList +").");
                 }
-                index++;
-                if (index >= shiftDateList.size()) {
-                    logger.warn("Cannot advance planningWindowStart any further.");
-                    return;
+                ShiftDate oldLastShiftDate = shiftDateList.get(shiftDateList.size() - 1);
+                ShiftDate newShiftDate = new ShiftDate();
+                newShiftDate.setId(oldLastShiftDate.getId() + 1L);
+                newShiftDate.setDayIndex(oldLastShiftDate.getDayIndex() + 1);
+                newShiftDate.setDateString(oldLastShiftDate.determineNextDateString());
+                newShiftDate.setDayOfWeek(oldLastShiftDate.getDayOfWeek().determineNextDayOfWeek());
+                List<Shift> refShiftList = planningWindowStart.getShiftList();
+                List<Shift> newShiftList = new ArrayList<Shift>(refShiftList.size());
+                newShiftDate.setShiftList(newShiftList);
+                nurseRoster.getShiftDateList().add(newShiftDate);
+                scoreDirector.afterProblemFactAdded(newShiftDate);
+                Shift oldLastShift = nurseRoster.getShiftList().get(nurseRoster.getShiftList().size() - 1);
+                long shiftId = oldLastShift.getId() + 1L;
+                int shiftIndex = oldLastShift.getIndex() + 1;
+                long shiftAssignmentId = nurseRoster.getShiftAssignmentList().get(
+                        nurseRoster.getShiftAssignmentList().size() - 1).getId() + 1L;
+                for (Shift refShift : refShiftList) {
+                    Shift newShift = new Shift();
+                    newShift.setId(shiftId);
+                    shiftId++;
+                    newShift.setShiftDate(newShiftDate);
+                    newShift.setShiftType(refShift.getShiftType());
+                    newShift.setIndex(shiftIndex);
+                    shiftIndex++;
+                    newShift.setRequiredEmployeeSize(refShift.getRequiredEmployeeSize());
+                    newShiftList.add(newShift);
+                    nurseRoster.getShiftList().add(newShift);
+                    scoreDirector.afterProblemFactAdded(newShift);
+                    for (int indexInShift = 0; indexInShift < newShift.getRequiredEmployeeSize(); indexInShift++) {
+                        ShiftAssignment newShiftAssignment = new ShiftAssignment();
+                        newShiftAssignment.setId(shiftAssignmentId);
+                        shiftAssignmentId++;
+                        newShiftAssignment.setShift(newShift);
+                        newShiftAssignment.setIndexInShift(indexInShift);
+                        nurseRoster.getShiftAssignmentList().add(newShiftAssignment);
+                        scoreDirector.afterEntityAdded(newShiftAssignment);
+                    }
                 }
-                nurseRosterInfo.setPlanningWindowStart(shiftDateList.get(index));
+                windowStartIndex++;
+                ShiftDate newPlanningWindowStart = shiftDateList.get(windowStartIndex);
+                nurseRosterInfo.setPlanningWindowStart(newPlanningWindowStart);
+                nurseRosterInfo.setLastShiftDate(newShiftDate);
                 scoreDirector.afterProblemFactChanged(nurseRosterInfo);
             }
         });

@@ -44,7 +44,8 @@ public enum DayOfWeek {
             case Calendar.SATURDAY:
                 return SATURDAY;
             default:
-                throw new IllegalArgumentException("The calendarDayInWeek (" + calendarDayInWeek + ") is not valid.");
+                throw new IllegalArgumentException("The calendarDayInWeek (" + calendarDayInWeek
+                        + ") is not supported.");
         }
     }
 
@@ -73,6 +74,27 @@ public enum DayOfWeek {
             distance += 7;
         }
         return distance;
+    }
+
+    public DayOfWeek determineNextDayOfWeek() {
+        switch (this) {
+            case MONDAY:
+                return TUESDAY;
+            case TUESDAY:
+                return WEDNESDAY;
+            case WEDNESDAY:
+                return THURSDAY;
+            case THURSDAY:
+                return FRIDAY;
+            case FRIDAY:
+                return SATURDAY;
+            case SATURDAY:
+                return SUNDAY;
+            case SUNDAY:
+                return MONDAY;
+            default:
+                throw new IllegalArgumentException("The dayOfWeek (" + this + ") is not supported.");
+        }
     }
 
     public String getLabel() {

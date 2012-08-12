@@ -16,9 +16,13 @@
 
 package org.drools.planner.examples.nurserostering.domain;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -63,6 +67,25 @@ public class ShiftDate extends AbstractPersistable {
 
     public void setShiftList(List<Shift> shiftList) {
         this.shiftList = shiftList;
+    }
+
+    public String determineNextDateString() {
+        TimeZone LOCAL_TIMEZONE = TimeZone.getTimeZone("GMT");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(LOCAL_TIMEZONE);
+        calendar.clear();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setCalendar(calendar);
+        Date date;
+        try {
+            date = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            throw new IllegalStateException("Could not parse shiftDate (" + this
+                    + ")'s dateString (" + dateString + ").");
+        }
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        return dateFormat.format(calendar.getTime());
     }
 
     public String getLabel() {
