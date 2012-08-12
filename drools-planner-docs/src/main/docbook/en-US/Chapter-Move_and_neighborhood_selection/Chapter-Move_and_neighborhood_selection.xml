@@ -267,6 +267,20 @@
       <title>The interface <literal>Move</literal></title>
 
       <para>TODO</para>
+
+      <para>Your custom moves must implement the <literal>Move</literal> interface:</para>
+
+      <programlisting language="java">public interface Move {
+
+    boolean isMoveDoable(ScoreDirector scoreDirector);
+
+    Move createUndoMove(ScoreDirector scoreDirector);
+    void doMove(ScoreDirector scoreDirector);
+
+    Collection&lt;? extends Object&gt; getPlanningEntities();
+    Collection&lt;? extends Object&gt; getPlanningValues();
+
+}</programlisting>
     </section>
 
     <section>

@@ -70,17 +70,7 @@
     <section>
       <title>A move</title>
 
-      <para>Each of your move types will be an implementation of the <literal>Move</literal> interface:</para>
-
-      <programlisting language="java">public interface Move {
-
-    boolean isMoveDoable(ScoreDirector scoreDirector);
-
-    Move createUndoMove(ScoreDirector scoreDirector);
-
-    void doMove(ScoreDirector scoreDirector);
-
-}</programlisting>
+      <para></para>
 
       <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
       different row:</para>
