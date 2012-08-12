@@ -18,6 +18,7 @@ package org.drools.planner.examples.nurserostering.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -31,15 +32,26 @@ import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
+import org.drools.planner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 public class ShiftAssignmentSequenceSwitchLength2MoveFactory implements MoveListFactory {
+
+    private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
     public List<Move> createMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         // This code assumes the shiftAssignmentList is sorted
-        List<ShiftAssignment> shiftAssignmentList = nurseRoster.getShiftAssignmentList();
+        // Filter out every immovable ShiftAssignment
+        List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(
+                nurseRoster.getShiftAssignmentList());
+        for (Iterator<ShiftAssignment> it = shiftAssignmentList.iterator(); it.hasNext(); ) {
+            ShiftAssignment shiftAssignment = it.next();
+            if (!filter.accept(nurseRoster, shiftAssignment)) {
+                it.remove();
+            }
+        }
 
         // Hash the assignments per employee
         Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap

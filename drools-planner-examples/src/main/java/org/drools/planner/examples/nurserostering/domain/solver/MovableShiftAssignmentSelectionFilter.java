@@ -25,8 +25,12 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<ShiftAssignment> {
 
     public boolean accept(ScoreDirector scoreDirector, ShiftAssignment shiftAssignment) {
-        ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
         NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
+        return accept(nurseRoster, shiftAssignment);
+    }
+
+    public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
+        ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
         return nurseRoster.getNurseRosterInfo().isInPlanningWindow(shiftDate);
     }
 

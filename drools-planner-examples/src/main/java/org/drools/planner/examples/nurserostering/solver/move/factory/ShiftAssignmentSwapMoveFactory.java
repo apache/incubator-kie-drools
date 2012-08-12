@@ -17,6 +17,7 @@
 package org.drools.planner.examples.nurserostering.solver.move.factory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -26,13 +27,24 @@ import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
+import org.drools.planner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.drools.planner.examples.nurserostering.solver.move.ShiftAssignmentSwapMove;
 
 public class ShiftAssignmentSwapMoveFactory implements MoveListFactory {
 
+    private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
+
     public List<Move> createMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
-        List<ShiftAssignment> shiftAssignmentList = nurseRoster.getShiftAssignmentList();
+        // Filter out every immovable ShiftAssignment
+        List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(
+                nurseRoster.getShiftAssignmentList());
+        for (Iterator<ShiftAssignment> it = shiftAssignmentList.iterator(); it.hasNext(); ) {
+            ShiftAssignment shiftAssignment = it.next();
+            if (!filter.accept(nurseRoster, shiftAssignment)) {
+                it.remove();
+            }
+        }
         List<Move> moveList = new ArrayList<Move>();
         for (ListIterator<ShiftAssignment> leftIt = shiftAssignmentList.listIterator(); leftIt.hasNext();) {
             ShiftAssignment leftShiftAssignment = leftIt.next();

@@ -26,17 +26,22 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
+import org.drools.planner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 public class EmployeeChangeMoveFactory implements MoveListFactory {
+
+    private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
     public List<Move> createMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<Move> moveList = new ArrayList<Move>();
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
-            for (Employee employee : employeeList) {
-                moveList.add(new EmployeeChangeMove(shiftAssignment, employee));
+            if (filter.accept(nurseRoster, shiftAssignment)) {
+                for (Employee employee : employeeList) {
+                    moveList.add(new EmployeeChangeMove(shiftAssignment, employee));
+                }
             }
         }
         return moveList;
