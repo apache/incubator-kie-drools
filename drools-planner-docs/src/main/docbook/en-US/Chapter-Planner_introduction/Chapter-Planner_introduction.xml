@@ -161,7 +161,7 @@
       <itemizedlist>
         <listitem>
           <para>A <emphasis>possible solution</emphasis> is any solution, whether or not it breaks any number of
-          constraints. Planning problems tend to have a incredibly large number of possible solutions. Many of those
+          constraints. Planning problems tend to have an incredibly large number of possible solutions. Many of those
           solutions are worthless.</para>
         </listitem>
 
@@ -248,7 +248,7 @@ $ runExamples.bat</programlisting>
       </mediaobject>
 
       <note>
-        <para>Planner itself has no GUI dependencies. It runs just as well on a server or a mobile JVM as on the
+        <para>Planner itself has no GUI dependencies. It runs just as well on a server or a mobile JVM as it does on the
         desktop.</para>
       </note>
     </section>
@@ -301,7 +301,7 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section>
-      <title>Use it with maven, gradle, ivy, buildr or ANT</title>
+      <title>Use Drools Planner with maven, gradle, ivy, buildr or ANT</title>
 
       <para>The Drools Planner jars are available in <link
       xlink:href="http://search.maven.org/#search|ga|1|org.drools.planner">the central maven repository</link> (and also
@@ -334,9 +334,9 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section>
-      <title>Build it from source</title>
+      <title>Build Drools Planner from source</title>
 
-      <para>You can also easily build it from source yourself.</para>
+      <para>You can also easily build Drools Planner from source yourself.</para>
 
       <para><link xlink:href="http://help.github.com/set-up-git-redirect">Set up Git</link> and clone
       <literal>drools-planner</literal> from GitHub (or alternatively, download <link
