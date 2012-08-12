@@ -10,7 +10,7 @@
   <section>
     <title>The size of real world problems</title>
 
-    <para>In number of possible solutions for a planning problem can be mind blowing. For example:</para>
+    <para>The number of possible solutions for a planning problem can be mind blowing. For example:</para>
 
     <itemizedlist>
       <listitem>
@@ -59,9 +59,9 @@
     <itemizedlist>
       <listitem>
         <para>A rule engine such as Drools Expert is <emphasis role="bold">great for calculating the score</emphasis> of
-        a solution of a planning problem. It make it easy and scalable to add additional soft or hard constraints such
+        a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such
         as "a teacher shouldn't teach more then 7 hours a day". It does delta based score calculation without any extra
-        code. However it tends to be not suited to use to actually find new solutions.</para>
+        code. However it tends to be not suitable to actually find new solutions.</para>
       </listitem>
 
       <listitem>
@@ -490,7 +490,7 @@
     thread.</para>
 
     <para>Especially metaheuristics phases will need to be told when to stop solving. This can be because of a number of
-    reasons: the time is up, the perfect score has been reached, ... The only thing you can't depend on is on finding
+    reasons: the time is up, the perfect score has been reached, ... The only thing you can't depend on, is on finding
     the optimal solution (unless you know the optimal score), because a metaheuristics algorithm generally doesn't know
     it when it finds the optimal solution. For real-life problems this doesn't turn out to be much of a problem, because
     finding the optimal solution could take billions of years, so you 'll want to terminate sooner anyway. The only
@@ -584,9 +584,9 @@
         &lt;maximumUnimprovedStepCount&gt;100&lt;/maximumUnimprovedStepCount&gt;
     &lt;/termination&gt;</programlisting>
 
-      <para>If it hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort
+      <para>If the score hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort
       to continue. We have observed that once a new best solution is found (even after a long time of no improvement on
-      the best solution), the next few step tend to improve the best solution too.</para>
+      the best solution), the next few steps tend to improve the best solution too.</para>
 
       <para>This <literal>Termination</literal> can only be used for a <literal>SolverPhase</literal>, not for the
       <literal>Solver</literal> itself.</para>
@@ -620,9 +620,9 @@
     <section>
       <title>Asynchronous termination from another thread</title>
 
-      <para>Sometimes you 'll want to terminate a Solver early from another thread, for example because a user action or
-      a server restart. That cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
-      and if it will occur. Therefor the <literal>Solver</literal> interface has these 2 thread-safe methods:</para>
+      <para>Sometimes you'll want to terminate a Solver early from another thread, for example because a user action or
+      a server restart. This cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
+      and if it will occur. Therefore the <literal>Solver</literal> interface has these 2 thread-safe methods:</para>
 
       <programlisting language="java">public interface Solver {
 
