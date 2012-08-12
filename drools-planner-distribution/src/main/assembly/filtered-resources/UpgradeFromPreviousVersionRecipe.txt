@@ -272,7 +272,7 @@ After in *.java:
     workingMemory.update(queenHandle, queen); // after changes are made
 
 
-Environment mode DEBUG now checks more and therefor it is slower than before.
+Environment mode DEBUG now checks more and therefore it is slower than before.
 
 
 JBRULES-1804 has been fixed. The HACK to fix wierd truth maintenance behavior is now obsolete.
@@ -851,7 +851,7 @@ After in *.java:
     }
 
 [README] A planning entity is considered uninitialized if one if at least on of its planning variables is null.
-Therefor it's now possible to start planning from a partially initialized starting solution,
+Therefore it's now possible to start planning from a partially initialized starting solution,
 for example during real-time re-planning after facts change.
 
 [MAJOR] The StartingSolutionInitializer no longer has a isSolutionInitialized(AbstractSolverScope) method.
