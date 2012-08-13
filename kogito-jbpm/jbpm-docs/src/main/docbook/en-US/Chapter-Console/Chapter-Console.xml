@@ -120,8 +120,13 @@
     <title>Configure management console</title>
     
     <para>Management console can be configured to suit deployment needs of the environment.
-    Its main configuration is done via property file - jbpm.console.properties, which can
-    be found in jbpm-gwt-console-server.war/WEB-INF/classes. It allows administrators to 
+    Its main configuration is done via property file - default.jbpm.console.properties, which can
+    be found in jbpm-gwt-console-server.war/WEB-INF/classes. This configuration is sample setup for default installation
+    if there is a need to configure it differently a custom file should be provided: jbpm.console.properties
+    that can be placed on any directory of the file system where console will have access to. Console by default will
+    look for it inside JBoss AS configuration directory that is given as jboss.server.config.dir system property. If
+    jBPM console is deployed to other servers or default location is not acceptable custom location can be provided as 
+    jbpm.conf.dir system property. It allows administrators to 
     configure following aspects of management console:
       <itemizedlist>
         <listitem>task server connectivity</listitem>
@@ -144,9 +149,9 @@
      
      Task server connectivity
      <itemizedlist>
-        <listitem>jbpm.console.task.service.strategy : transport used to connect to task server (default Mina and accepts Mina|HornetQ|JMS)</listitem>
+        <listitem>jbpm.console.task.service.strategy : transport used to connect to task server (default HornetQ and accepts Mina|HornetQ|JMS)</listitem>
         <listitem>jbpm.console.task.service.host : host where Task Server is deployed (default localhost) applies to all transports</listitem>
-        <listitem>jbpm.console.task.service.port : port where Task Server is deployed (default 9123) applies to all transports</listitem>
+        <listitem>jbpm.console.task.service.port : port where Task Server is deployed (default 5445) applies to all transports</listitem>
         <listitem>JMSTaskClient.connectionFactory :  JNDI name of connection factory only for JMS (no default)</listitem>
         <listitem>JMSTaskClient.acknowledgeMode : acknowledgment mode only for JMS (no default)</listitem>
         <listitem>JMSTaskClient.transactedQueue :  transacted queue name only for JMS (no default)</listitem>
@@ -168,6 +173,109 @@
       </itemizedlist>
      
      </para>
+     <para>
+      Once the overall configuration is done, next step is to be able to control runtime behavior of management console that consists of:
+       <itemizedlist>
+        <listitem>knowledge base setup</listitem>
+        <listitem>stateful session setup</listitem>
+        </itemizedlist>
+        
+        These runtime components are configured via dedicated managers that are extensible and can be configured with system properties, 
+        note that configuration of managers is optional and required only if default managers are not suitable for particular environment
+        <itemizedlist>
+        <listitem>knowledge base manager: -Djbpm.knowledgebase.manager=com.company.CustomKnowledgeBaseManager</listitem>
+        <listitem>stateful session manager: -Djbpm.session.manager=com.company.CustomSessionManager</listitem>
+        </itemizedlist>
+        
+        Be default knowledge base manager will build knowledge base according to configuration given in jbpm.console.properties 
+        (or default.jbpm.console.properties) file and stateful session will be build based on session template, that is MVEL file
+        named session.template (default.session.template that is bundled in jBPM console). 
+        session.teplate file, same as jbpm.console.properties is an extension point to configure jBPM console without changing its
+        internal files and can be placed on any directory on the file system.
+        Session template is intended to provide following configuration for stateful session:
+        <itemizedlist>
+        <listitem>businessKey - a unique key that will be used to bind session into JNDI</listitem>
+        <listitem>persistenceUnit - name of the persistence unit to be used</listitem>
+        <listitem>properties - list of key value pairs of session configuration</listitem>
+        <listitem>workItemHandlers - list of key value pairs (work item name: class name of work item handler)</listitem>
+        <listitem>eventListeners - list of event listener classes to be registered on the session</listitem>
+        <listitem>environmentEntries - list of key value pairs of environment entires to be put before session is created</listitem>
+        <listitem>imported - true|false if set to true session will be looked up from JNDI using business key instead of creating new one
+         - it means that session should be build by another application and console will use it as well</listitem>
+        </itemizedlist>
+        session template is dedicated to default session manager implementation and can be substituted with anyother mechanism
+        together with custom implementation of SessionManager interface. See next section about custom managers.
+        </para>
+        <programlisting language="java">
+new SessionTemplate().{  
+    businessKey = "jbpmConsole",
+    imported = false,
+    persistenceUnit = "org.jbpm.persistence.jpa",
+    
+    properties = ["drools.processInstanceManagerFactory":"org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory",
+                  "drools.processSignalManagerFactory" : "org.jbpm.persistence.processinstance.JPASignalManagerFactory"  
+                    ],
+                    
+    workItemHandlers = ["Human Task" : "new org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler(\"jbpmConsoleHTHandler\", taskClient, ksession, org.jbpm.task.utils.OnErrorAction.LOG)",
+                        "Service Task" : "new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler(ksession)"],
+                        
+    eventListeners = ["new org.jbpm.process.audit.JPAWorkingMemoryDbLogger(ksession)",
+                      "new org.jbpm.integration.console.listeners.TriggerRulesEventListener(ksession)"  ]
+};
+        </programlisting>
+        <para>
+        Default session template is present above and configures most important elements of the environment. As you can see
+        there are option to refer to some already existing object when registering work item handlers and event listeners:
+        <itemizedlist>
+        <listitem>ksession - session instance that is being built</listitem>
+        <listitem>taskClient - talk client that is configured based on settings given in jbpm.console.properties (default.jbpm.console.properties)</listitem>
+        </itemizedlist>
+        </para>
+        <note>
+        <para>
+        Important to note is that if someone provides custom implementation of work item handler for Human Task, keep in mind that it is 
+        important to connect handler as soon as session is created to be able to receive task events and move process forward. 
+        Default manager invokes three methods on human task handler:
+        <itemizedlist>
+        <listitem>setIpAddress with single String argument</listitem>
+        <listitem>setPort with single int argument</listitem>
+        <listitem>connect no arguments</listitem>
+        </itemizedlist>
+        so ensure you have them to be properly initialized
+        </para> 
+        </note>
+        
+        <para>
+           To sum up, jbpm console comes with two files inside its server component (gwt-console-server.war), 
+           these are default.jbpm.console.properties and default.session.template. These two files should not be modified
+           but in case a change to configuration is required they should be copied and renamed to jbpm.console.properties
+           and session.template respectively.
+           Location of these custom files can be decided by administrator but recommended for JBoss AS is to put them into
+           jboss configuration directory (jboss_home/standalone/configuration for AS 7). If custom location is used it must 
+           be provided as system property -Djbpm.conf.dir.
+           
+           Any changes applied to custom configuration will be preserved between jbpm upgrades as they do not reside inside 
+           jbpm applications. 
+        </para>
+     
+        <section>
+            <title>Implementing custom managers</title>
+            
+            To implement custom managers that are responsible for building knowledge base and session certain 
+            requirements must be met:
+            Knolwedge Base Manager
+            <itemizedlist>
+              <listitem>Custom class must implement org.jbpm.integration.console.kbase.KnowledgeBaseManager</listitem>
+              <listitem>it must be configured with -Djbpm.knowledgebase.manager=[classname]</listitem>
+            </itemizedlist>
+            
+            Session Manager
+            <itemizedlist>
+              <listitem>Custom class must implement org.jbpm.integration.console.session.SessionManager</listitem>
+              <listitem>Custom class must provide constructor that accepts KnowledgeBase argument</listitem>
+              <listitem>it must be configured with -Djbpm.session.manager=[classname]</listitem>
+            </itemizedlist>
+        </section>
     </section>
 
   </section>

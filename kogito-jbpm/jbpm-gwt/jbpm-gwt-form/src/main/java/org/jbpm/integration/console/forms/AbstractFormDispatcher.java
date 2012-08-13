@@ -37,6 +37,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
 import org.jbpm.integration.console.shared.GuvnorConnectionUtils;
+import org.jbpm.integration.console.shared.PropertyLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +54,7 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
     
     public URL getDispatchUrl(FormAuthorityRef ref) {
         StringBuffer sb = new StringBuffer();
-        Properties properties = new Properties();
-        try {
-            properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load jbpm.console.properties", e);
-        }
+        Properties properties = PropertyLoader.getJbpmConsoleProperties();
         sb.append("http://");
         sb.append(properties.getProperty("jbpm.console.server.host", "localhost").trim());
         sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port", "8080").trim()));

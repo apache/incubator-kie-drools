@@ -33,12 +33,14 @@ import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
 import org.jboss.bpm.console.client.model.TaskRef;
+import org.jbpm.integration.console.shared.PropertyLoader;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public class TaskManagement extends SessionInitializer implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
@@ -54,7 +56,7 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 
 	    if (service == null) {
 	        
-    	    Properties jbpmConsoleProperties = StatefulKnowledgeSessionUtil.getJbpmConsoleProperties();   
+    	    Properties jbpmConsoleProperties = PropertyLoader.getJbpmConsoleProperties();   
             service = TaskClientFactory.newInstance(jbpmConsoleProperties, "org.jbpm.integration.console.TaskManagement"+clientCounter);
             clientCounter++;
        
@@ -91,18 +93,8 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 		
 		ContentData contentData = null;
 		if (data != null) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out;
-			try {
-				out = new ObjectOutputStream(bos);
-				out.writeObject(data);
-				out.close();
-				contentData = new ContentData();
-				contentData.setContent(bos.toByteArray());
-				contentData.setAccessType(AccessType.Inline);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		    
+		    contentData = ContentMarshallerHelper.marshal(data, StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession().getEnvironment());
 		}
   
 		service.complete(taskId, userId, contentData);

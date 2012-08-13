@@ -33,16 +33,12 @@ import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 
 public class TaskClientFactory {
-    
-    public static final String DEFAULT_TASK_SERVICE_STRATEGY = "Mina";
-    public static final String DEFAULT_IP_ADDRESS = "127.0.0.1";
-    public static final int DEFAULT_PORT = 9123;
 
     /**
      * Produces new instance of TaskClient based on given properties and assignes as connector identifier given connectorId.
      * <br/>
      * Main property that drives type of a client (mina, hornetq, jms) is <code>jbpm.console.task.service.strategy</code>. If not given
-     * it will apply <code>DEFAULT_TASK_SERVICE_STRATEGY</code> which is mina.<br/>
+     * it will apply <code>DEFAULT_TASK_SERVICE_STRATEGY</code> which is hornetq.<br/>
      * 
      * Other transport specific properties must be given as part of the properties.
      * <br/>
@@ -58,7 +54,7 @@ public class TaskClientFactory {
      */
     public static TaskService newInstance(Properties properties, String connectorId) {
         TaskService service = null;
-        String strategy = properties.getProperty("jbpm.console.task.service.strategy", DEFAULT_TASK_SERVICE_STRATEGY);
+        String strategy = properties.getProperty("jbpm.console.task.service.strategy", Utils.DEFAULT_TASK_SERVICE_STRATEGY);
         if ("Local".equalsIgnoreCase(strategy)) {
 
             org.jbpm.task.service.TaskService taskService = HumanTaskService.getService();
@@ -72,21 +68,19 @@ public class TaskClientFactory {
         return service;
     }
     
-    public static TaskClient newAsyncInstance(Properties properties, String connectorId) {
+    public static TaskClient newAsyncInstance(Properties properties, String connectorId, boolean connect) {
         TaskClient client = null;
-        String defaultPort = null;
-        String strategy = properties.getProperty("jbpm.console.task.service.strategy", DEFAULT_TASK_SERVICE_STRATEGY);
+        
+        String strategy = properties.getProperty("jbpm.console.task.service.strategy", Utils.DEFAULT_TASK_SERVICE_STRATEGY);
         if ("Mina".equalsIgnoreCase(strategy)) {
             if (client == null) {
                 client = new TaskClient(new MinaTaskClientConnector(connectorId,
                                         new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-                defaultPort = "9123";
             }
         } else if ("HornetQ".equalsIgnoreCase(strategy)) {
             if (client == null) {
                 client = new TaskClient(new HornetQTaskClientConnector(connectorId,
                                         new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-                defaultPort = "5445";
             }
         } else if ("JMS".equalsIgnoreCase(strategy)) {
             if (client == null) {
@@ -101,15 +95,21 @@ public class TaskClientFactory {
         } else {
             throw new IllegalArgumentException("Unknown TaskClient type was specified: " + strategy);
         }
-        
-        String host = properties.getProperty("jbpm.console.task.service.host", DEFAULT_IP_ADDRESS);
-        String port = properties.getProperty("jbpm.console.task.service.port", defaultPort);
-        boolean connected = client.connect(host, Integer.parseInt(port));
-        if (!connected) {
-            throw new IllegalArgumentException("Could not connect task client " + strategy + "(" + host + ":" + port + ")");
+        if (connect) {
+            String host = properties.getProperty("jbpm.console.task.service.host", Utils.DEFAULT_IP_ADDRESS);
+            int port = Utils.getTaskServicePort(properties);
+            boolean connected = client.connect(host, port);
+            if (!connected) {
+                throw new IllegalArgumentException("Could not connect task client " + strategy + "(" + host + ":" + port + ")");
+            }
         }
         
         return client;
     }
     
+    public static TaskClient newAsyncInstance(Properties properties, String connectorId) {
+        return newAsyncInstance(properties, connectorId, true);
+    }
+    
+
 }

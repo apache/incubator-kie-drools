@@ -59,11 +59,7 @@ public class GuvnorConnectionUtils {
     private static Properties properties = new Properties();
     
     static {
-        try {
-            properties.load(GuvnorConnectionUtils.class.getResourceAsStream("/jbpm.console.properties"));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load jbpm.console.properties", e);
-        }
+        properties = PropertyLoader.getJbpmConsoleProperties();
     }
     
     public String getProcessImageURLFromGuvnor(String processId) {

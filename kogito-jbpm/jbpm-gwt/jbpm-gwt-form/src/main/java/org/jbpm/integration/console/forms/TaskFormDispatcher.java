@@ -16,10 +16,7 @@
 
 package org.jbpm.integration.console.forms;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +26,7 @@ import javax.activation.DataHandler;
 
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jbpm.integration.console.TaskClientFactory;
+import org.jbpm.integration.console.shared.PropertyLoader;
 import org.jbpm.task.Content;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
@@ -43,20 +41,14 @@ public class TaskFormDispatcher extends AbstractFormDispatcher {
     private static int clientCounter = 0;
     
     private TaskService service;
-    private boolean local = false;
 
     public void connect() {
         if (service == null) {
 
-            Properties properties = new Properties();
-            try {
-                properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
-            } catch (IOException e) {
-                throw new RuntimeException("Could not load jbpm.console.properties", e);
-            }
+            Properties properties = PropertyLoader.getJbpmConsoleProperties();
 
             service =TaskClientFactory.newInstance(properties, "org.jbpm.integration.console.forms.TaskFormDispatcher"+clientCounter);
-	    clientCounter++;
+            clientCounter++;
         }
     }
 

@@ -111,7 +111,7 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			    if(guvnorUtils.guvnorExists()) {
 			    	try {
 						
-    					kbase = StatefulKnowledgeSessionUtil.getKagent().getKnowledgeBase();
+    					kbase = StatefulKnowledgeSessionUtil.getKnowledgeBaseManager().getKnowledgeBase();
 						
 					} catch (Throwable t) {
 						logger.error("Could not build kbase from Guvnor assets: " + t.getMessage());
