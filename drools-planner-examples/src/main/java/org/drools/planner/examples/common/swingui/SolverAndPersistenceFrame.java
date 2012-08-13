@@ -355,7 +355,7 @@ public class SolverAndPersistenceFrame extends JFrame {
             JFileChooser fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
-                    return solutionBusiness.acceptImportFile(file);
+                    return file.isDirectory() || solutionBusiness.acceptImportFile(file);
                 }
                 public String getDescription() {
                     return "Import files";
