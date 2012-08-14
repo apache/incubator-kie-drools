@@ -87,6 +87,61 @@ public abstract class SubTasksBaseTest extends BaseTest{
         assertEquals(Status.Completed, parentTask1.getTaskData().getStatus() );
         
     }
+    
+    @Test
+    public void onSubtaskCompletionAutoCompleteParentStrategy() throws Exception {
+
+  
+         // One potential owner, should go straight to state Reserved
+        String parentTaskstr = "(with (new Task()) { subTaskStrategy = SubTasksStrategy.EndAllSubTasksOnParentEnd,  priority = 55, taskData = (with( new TaskData()) { } ), ";
+        parentTaskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')  ], }),";
+        parentTaskstr += "names = [ new I18NText( 'en-UK', 'This is my task Parent name')] })";
+        // By default the task will contain a SubTask SubTasksStrategy.NoAction
+
+        Task parentTask = TaskFactory.evalTask(new StringReader(parentTaskstr));
+        taskService.addTask(parentTask, new HashMap<String, Object>());
+
+        long taskParentId = parentTask.getId();
+
+        // Task should remain in Created state with no actual owner
+
+        Task parentTask1 = taskService.getTaskById(taskParentId);
+        assertEquals(parentTask1.getTaskData().getStatus(), Status.Reserved);
+        
+        taskService.start(taskParentId, "salaboy");
+        
+        String child1Taskstr = "(with (new Task()) { priority = 55,  taskData = (with( new TaskData()) { parentId= "+taskParentId+" } ), ";
+        child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ], }),";
+        child1Taskstr += "names = [ new I18NText( 'en-UK', 'This is my task Child 1 name')] })";
+
+        Task child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));
+        taskService.addTask(child1Task, new HashMap<String, Object>());
+
+        long child1TaskId = child1Task.getId();
+
+        //Test if the task is succesfully created
+        
+        assertEquals(1, taskService.getPendingSubTasksByParent(taskParentId));
+        
+        Task childTask1 = taskService.getTaskById(child1TaskId);
+        
+        assertEquals(taskParentId, childTask1.getTaskData().getParentId());
+        
+        taskService.start(child1TaskId, "Darth Vader");
+        
+        taskService.complete(child1TaskId, "Darth Vader", null);
+        
+        childTask1 = taskService.getTaskById(child1TaskId);
+        
+        assertEquals(Status.Completed, childTask1.getTaskData().getStatus());
+        
+        parentTask1 = taskService.getTaskById(taskParentId);
+        assertEquals(0, taskService.getPendingSubTasksByParent(taskParentId));
+        
+        assertEquals(Status.Completed, parentTask1.getTaskData().getStatus() );
+        
+        
+    }
 
 //    @Test
 //    public void testOnParentAbortAllSubTasksEndStrategy() throws Exception {

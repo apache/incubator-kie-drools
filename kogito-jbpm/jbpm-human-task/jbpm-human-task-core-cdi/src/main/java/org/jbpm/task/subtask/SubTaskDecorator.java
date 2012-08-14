@@ -169,7 +169,7 @@ public class SubTaskDecorator implements TaskInstanceService {
             parentTask = em.find(Task.class, task.getTaskData().getParentId());
         }
         if(parentTask != null){
-            if(task.getSubTaskStrategy().equals(SubTasksStrategy.EndAllSubTasksOnParentEnd)){
+            if(parentTask.getSubTaskStrategy().equals(SubTasksStrategy.EndAllSubTasksOnParentEnd)){
                 List<TaskSummary> subTasks = queryService.getSubTasksByParent(parentTask.getId());
 
                     if (subTasks.isEmpty()) {

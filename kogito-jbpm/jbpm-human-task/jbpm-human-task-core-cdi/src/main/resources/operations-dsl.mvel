@@ -8,7 +8,7 @@
     Operation.Start 
         : [ new OperationCommand().{ 
                 status = [ Status.Ready ],
-                allowed = [ Allowed.PotentialOwner ],  
+                allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator ],  
                 setNewOwnerToUser = true,              
                 newStatus = Status.InProgress
             },
@@ -108,25 +108,16 @@
     Operation.Complete 
         : [ new OperationCommand().{ 
                 status = [ Status.InProgress ],
-                allowed = [ Allowed.Owner  ],      
+                allowed = [ Allowed.Owner, Allowed.BusinessAdministrator  ],      
                 newStatus = Status.Completed
             } ],
     Operation.Fail 
         : [ new OperationCommand().{ 
                 status = [ Status.InProgress ],
-                allowed = [ Allowed.Owner  ],      
+                    allowed = [ Allowed.Owner, Allowed.BusinessAdministrator  ],      
                 newStatus = Status.Failed
             } ],
-    Operation.Register
-    	: [ new OperationCommand().{
-    			status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],
-    			allowed = [ Allowed.Anyone ]
-    	    } ], 
-    Operation.Remove
-    	: [ new OperationCommand().{
-    			status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],
-    			allowed = [ Allowed.Anyone ]
-    		} ],
+    
     Operation.Activate
     	: [ new OperationCommand().{
     			status = [ Status.Created ],
