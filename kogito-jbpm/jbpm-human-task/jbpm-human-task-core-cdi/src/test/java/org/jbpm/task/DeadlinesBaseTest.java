@@ -41,7 +41,7 @@ import org.junit.Test;
 
 
 
-public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
+public abstract class DeadlinesBaseTest extends BaseTest {
 
     @Inject
     private NotificationListener notificationListener;
@@ -94,7 +94,7 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         assertEquals(0, MockNotificationListener.getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 15000) {
+        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -155,7 +155,7 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         // nor yet
         assertEquals(0, MockNotificationListener.getEventsRecieved().size());
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 15000) {
+        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -236,7 +236,7 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         assertEquals(0, MockNotificationListener.getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 15000) {
+        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -306,7 +306,7 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         assertEquals(0, MockNotificationListener.getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 15000) {
+        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -369,7 +369,7 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         assertEquals(0, MockNotificationListener.getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 15000) {
+        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -433,7 +433,7 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         assertEquals(0, MockNotificationListener.getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 15000) {
+        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -485,7 +485,7 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
 
         // should have re-assigned by now
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 15000) {
+        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }

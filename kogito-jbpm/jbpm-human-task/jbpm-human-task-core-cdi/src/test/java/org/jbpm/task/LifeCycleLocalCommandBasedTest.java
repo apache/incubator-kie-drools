@@ -1,19 +1,5 @@
-/*
- * Copyright 2012 JBoss by Red Hat.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.jbpm.task;
+
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,13 +9,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.runner.RunWith;
 
-/**
- *
- *
- */
+
 @RunWith(Arquillian.class)
-public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseTest {
-    
+public class LifeCycleLocalCommandBasedTest extends LifeCycleBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -40,6 +22,7 @@ public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseTest 
                 .addPackage("org.jbpm.task.annotations") 
                 .addPackage("org.jbpm.task.api") 
                 .addPackage("org.jbpm.task.impl") 
+                
                 .addPackage("org.jbpm.task.events") 
                 .addPackage("org.jbpm.task.exception") 
                 .addPackage("org.jbpm.task.identity") 
@@ -49,16 +32,16 @@ public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseTest 
                 .addPackage("org.jbpm.task.lifecycle.listeners") 
                 .addPackage("org.jbpm.task.query") 
                 .addPackage("org.jbpm.task.util") 
+                //This two packages are required for the command based implementation
+                .addPackage("org.jbpm.task.commands") 
+                .addPackage("org.jbpm.task.impl.command") 
                 .addPackage("org.jbpm.task.deadlines") // deadlines
                 .addPackage("org.jbpm.task.deadlines.notifications.impl")
-                //.addPackage("org.jbpm.task.commands") // This should not be required here 
+                .addPackage("org.jbpm.task.subtask")
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("META-INF/beans-commandbased.xml", ArchivePaths.create("beans.xml"));
 
     }
     
-  
-    
-   
 }

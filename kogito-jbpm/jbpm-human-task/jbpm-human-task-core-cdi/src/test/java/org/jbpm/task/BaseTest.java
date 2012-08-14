@@ -51,7 +51,7 @@ public abstract class BaseTest {
                 taskService.addUser(new User("Administrator"));
                 usersLoaded = true;
             } catch (Exception ex) {
-                java.util.logging.Logger.getLogger(TaskServiceLifeCycleBaseTest.class.getName()).log(Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(LifeCycleBaseTest.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

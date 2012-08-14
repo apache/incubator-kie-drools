@@ -434,5 +434,9 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public Attachment getAttachmentById(long attachId) {
         return this.taskAttachmentService.getAttachmentById(attachId);
     }
+
+    public int getPendingSubTasksByParent(long parentId) {
+        return this.taskQueryService.getPendingSubTasksByParent(parentId);
+    }
     
 }

@@ -105,6 +105,8 @@ public interface TaskServiceEntryPoint {
     List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language);
 
     List<TaskSummary> getSubTasksByParent(long parentId);
+    
+    int getPendingSubTasksByParent(long parentId);
 
     Task getTaskByWorkItemId(long workItemId);
 

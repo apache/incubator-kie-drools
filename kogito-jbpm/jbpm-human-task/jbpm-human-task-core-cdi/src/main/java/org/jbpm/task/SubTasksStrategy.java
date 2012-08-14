@@ -23,5 +23,5 @@ package org.jbpm.task;
  */
 
 public enum SubTasksStrategy{
-    EndAllSubTasksOnParentEnd, EndAllSubTasksOnParentAbort
+    NoAction, EndAllSubTasksOnParentEnd, EndAllSubTasksOnParentAbort
 }

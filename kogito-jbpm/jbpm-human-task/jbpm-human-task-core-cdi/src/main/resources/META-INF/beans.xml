@@ -29,6 +29,7 @@
     </alternatives>
     <decorators>
         <class>org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator</class>
+        <class>org.jbpm.task.subtask.SubTaskDecorator</class>
     </decorators>
     <interceptors>
         <class>org.jboss.seam.transaction.TransactionInterceptor</class>

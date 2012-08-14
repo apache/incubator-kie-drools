@@ -75,7 +75,7 @@ public class Task implements Externalizable {
 
     @Enumerated(EnumType.STRING)
     // Default Behaviour
-    private SubTasksStrategy subTaskStrategy = SubTasksStrategy.EndAllSubTasksOnParentEnd;
+    private SubTasksStrategy subTaskStrategy = SubTasksStrategy.NoAction;
     
     private String               taskType;
     

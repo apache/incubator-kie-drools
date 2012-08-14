@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(Arquillian.class)
-public class TaskServiceDeadlinesLocalTest extends TaskServiceDeadlinesBaseTest {
+public class DeadlinesLocalTest extends DeadlinesBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -51,6 +51,7 @@ public class TaskServiceDeadlinesLocalTest extends TaskServiceDeadlinesBaseTest 
                 .addPackage("org.jbpm.task.commands") // This should not be required here
                 .addPackage("org.jbpm.task.deadlines") // deadlines
                 .addPackage("org.jbpm.task.deadlines.notifications.impl")
+                .addPackage("org.jbpm.task.subtask")
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans-deadlines.xml", ArchivePaths.create("beans.xml"));

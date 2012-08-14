@@ -28,7 +28,7 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
+public abstract class LifeCycleBaseTest extends BaseTest {
 
     
     @Test

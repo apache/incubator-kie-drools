@@ -43,6 +43,8 @@ public interface TaskQueryService {
     List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language);
 
     List<TaskSummary> getSubTasksByParent(long parentId);
+    
+    public int getPendingSubTasksByParent(long parentId);
 
     Task getTaskInstanceById(long taskId);
     
