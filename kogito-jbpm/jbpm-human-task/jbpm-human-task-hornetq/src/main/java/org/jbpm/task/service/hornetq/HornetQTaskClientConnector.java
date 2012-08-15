@@ -202,9 +202,13 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
                 try {
                 	logger.warn("Connection lost, trying to reconnect...");
 					disconnect();
-					connect();
-					// retry sending
-					write(object);
+					boolean connected = connect();
+					if (connected) {
+    					// retry sending
+    					write(object);
+					} else {
+					    throw e;
+					}
 				} catch (Exception e1) {
 					throw new RuntimeException("Error writing message (Reconnecting failed, exiting...)", e);
 				}
