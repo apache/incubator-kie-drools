@@ -257,7 +257,8 @@ public class Accumulate extends ConditionalElement
     }
 
     public Accumulate clone() {
-        Accumulate clone = new Accumulate( (RuleConditionElement) this.source.clone(),
+        RuleConditionElement clonedSource = source instanceof GroupElement ? ((GroupElement) source).cloneOnlyGroup() : source.clone();
+        Accumulate clone = new Accumulate( clonedSource,
                                            this.requiredDeclarations,
                                            this.accumulators,
                                            this.multiFunction );
