@@ -4,11 +4,14 @@
  */
 package org.jbpm.task.api;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
+import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
 
@@ -22,13 +25,13 @@ public interface TaskInstanceService {
      *
      */
     long newTask(String name, Map<String, Object> params);
-    
+
     long newTask(TaskDef def, Map<String, Object> params);
-    
+
     long newTask(TaskDef def, Map<String, Object> params, boolean deploy);
-    
+
     long addTask(Task task, Map<String, Object> params);
-    
+
     long addTask(Task task, ContentData data);
 
     void activate(long taskId, String userId);
@@ -40,16 +43,10 @@ public interface TaskInstanceService {
     void claimNextAvailable(String userId, String language);
 
     void claimNextAvailable(String userId, List<String> groupIds, String language);
-    // We can force a map here.. a task with a single return type which cannot be encapsulated
-    // in a map doesn't sounds as a valid option
 
     void complete(long taskId, String userId, Map<String, Object> data);
 
     void delegate(long taskId, String userId, String targetUserId);
-
-    void deleteFault(long taskId, String userId);
-
-    void deleteOutput(long taskId, String userId);
 
     void exit(long taskId, String userId);
 
@@ -63,12 +60,6 @@ public interface TaskInstanceService {
 
     void resume(long taskId, String userId);
 
-    void setFault(long taskId, String userId, FaultData fault);
-
-    void setOutput(long taskId, String userId, Object outputContentData);
-
-    void setPriority(long taskId, String userId, int priority);
-
     void skip(long taskId, String userId);
 
     void start(long taskId, String userId);
@@ -76,6 +67,36 @@ public interface TaskInstanceService {
     void stop(long taskId, String userId);
 
     void suspend(long taskId, String userId);
-    
+
     void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners);
+
+    void setFault(long taskId, String userId, FaultData fault);
+
+    void setOutput(long taskId, String userId, Object outputContentData);
+
+    void deleteFault(long taskId, String userId);
+
+    void deleteOutput(long taskId, String userId);
+
+    void setPriority(long taskId, int priority);
+    
+    void setExpirationDate(long taskId, Date date);
+    
+    public void setDescriptions(long taskId, List<I18NText> descriptions);
+    
+    public void setSkipable(long taskId, boolean skipable);
+    
+    void setSubTaskStrategy(long taskId, SubTasksStrategy strategy);
+    
+    int getPriority(long taskId);
+    
+    Date getExpirationDate(long taskId);
+    
+    List<I18NText> getDescriptions(long taskId);
+    
+    boolean isSkipable(long taskId);
+    
+    SubTasksStrategy getSubTaskStrategy(long taskId);
+    
+    
 }

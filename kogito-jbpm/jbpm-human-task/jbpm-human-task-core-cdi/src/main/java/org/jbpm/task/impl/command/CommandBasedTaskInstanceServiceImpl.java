@@ -15,6 +15,7 @@
  */
 package org.jbpm.task.impl.command;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.inject.Alternative;
@@ -22,7 +23,9 @@ import javax.inject.Inject;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
+import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.annotations.CommandBased;
@@ -165,6 +168,46 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
         executor.executeTaskCommand(new NominateTaskCommand(taskId, userId, potentialOwners));        
+    }
+
+    public void setPriority(long taskId, int priority) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setExpirationDate(long taskId, Date date) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setDescriptions(long taskId, List<I18NText> descriptions) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSkipable(long taskId, boolean skipable) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getPriority(long taskId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Date getExpirationDate(long taskId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<I18NText> getDescriptions(long taskId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isSkipable(long taskId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public SubTasksStrategy getSubTaskStrategy(long taskId) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

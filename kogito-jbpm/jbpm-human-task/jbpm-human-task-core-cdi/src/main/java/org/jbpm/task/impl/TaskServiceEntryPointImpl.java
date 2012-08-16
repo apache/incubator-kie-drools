@@ -246,8 +246,8 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         taskInstanceService.setOutput(taskId, userId, outputContentData);
     }
 
-    public void setPriority(long taskId, String userId, int priority) {
-        taskInstanceService.setPriority(taskId, userId, priority);
+    public void setPriority(long taskId, int priority) {
+        taskInstanceService.setPriority(taskId, priority);
     }
 
     public void skip(long taskId, String userId) {

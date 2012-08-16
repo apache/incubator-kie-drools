@@ -26,7 +26,9 @@ import javax.persistence.EntityManager;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.FaultData;
+import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskDeadlinesService;
@@ -144,8 +146,8 @@ public class DeadlinesDecorator implements TaskInstanceService {
         instanceService.setOutput(taskId, userId, outputContentData);
     }
 
-    public void setPriority(long taskId, String userId, int priority) {
-        instanceService.setPriority(taskId, userId, priority);
+    public void setPriority(long taskId, int priority) {
+        instanceService.setPriority(taskId, priority);
     }
 
     public void skip(long taskId, String userId) {
@@ -218,5 +220,41 @@ public class DeadlinesDecorator implements TaskInstanceService {
                 it.remove();
             }
         }
+    }
+
+    public void setExpirationDate(long taskId, Date date) {
+        instanceService.setExpirationDate(taskId, date);
+    }
+
+    public void setDescriptions(long taskId, List<I18NText> descriptions) {
+        instanceService.setDescriptions(taskId, descriptions);
+    }
+
+    public void setSkipable(long taskId, boolean skipable) {
+        instanceService.setSkipable(taskId, skipable);
+    }
+
+    public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
+        instanceService.setSubTaskStrategy(taskId, strategy);
+    }
+
+    public int getPriority(long taskId) {
+        return instanceService.getPriority(taskId);
+    }
+
+    public Date getExpirationDate(long taskId) {
+        return instanceService.getExpirationDate(taskId);
+    }
+
+    public List<I18NText> getDescriptions(long taskId) {
+        return instanceService.getDescriptions(taskId);
+    }
+
+    public boolean isSkipable(long taskId) {
+        return instanceService.isSkipable(taskId);
+    }
+
+    public SubTasksStrategy getSubTaskStrategy(long taskId) {
+        return instanceService.getSubTaskStrategy(taskId);
     }
 }
