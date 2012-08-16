@@ -11391,4 +11391,31 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testRHSClone() {
+        // JBRULES-3539
+        String str = "import java.util.Map;\n"+
+                "dialect \"mvel\"\n"+
+                "rule \"RHSClone\"\n"+
+                "when\n"+
+                "   Map($valOne : this['keyOne'] !=null)\n"+
+                "then\n"+
+                "   System.out.println( $valOne.clone() );\n"+
+                "end\n";
+
+        PackageBuilderConfiguration pkgBuilderCfg = new PackageBuilderConfiguration();
+        MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
+        mvelConf.setStrict(false);
+        mvelConf.setLangLevel(5);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pkgBuilderCfg);
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() > 0) {
+            for (KnowledgeBuilderError error: errors) {
+                System.err.println(error);
+            }
+            fail("Could not parse knowledge");
+        }
+    }
 }
