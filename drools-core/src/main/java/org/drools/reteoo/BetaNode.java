@@ -166,21 +166,21 @@ public abstract class BetaNode extends LeftTupleSource
             Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
             ObjectType objectType = pattern.getObjectType();
 
-            if ( !(objectType instanceof ClassObjectType) ) {
+            if ( objectType instanceof ClassObjectType ) {
+                Class objectClass = ((ClassObjectType) objectType).getClassType();
+                if ( isPropertyReactive(context, objectClass) ) {
+                    rightListenedProperties = pattern.getListenedProperties();
+                    List<String> settableProperties = getSettableProperties( context.getRuleBase(), objectClass );
+                    rightDeclaredMask = calculatePositiveMask(rightListenedProperties, settableProperties );
+                    rightDeclaredMask |= constraints.getListenedPropertyMask( settableProperties );
+                    rightNegativeMask = calculateNegativeMask(rightListenedProperties, settableProperties );
+                } else {
+                    // if property reactive is not on, then accept all modification propagations
+                    rightDeclaredMask = Long.MAX_VALUE;
+                }
+            } else {
                 // InitialFact has no type declaration and cannot be property specific
                 // Only ClassObjectType can use property specific
-                rightDeclaredMask = Long.MAX_VALUE;
-            }
-
-            Class objectClass = ((ClassObjectType) objectType).getClassType();
-            if ( isPropertyReactive(context, objectClass) ) {
-                rightListenedProperties = pattern.getListenedProperties();
-                List<String> settableProperties = getSettableProperties( context.getRuleBase(), objectClass );
-                rightDeclaredMask = calculatePositiveMask(rightListenedProperties, settableProperties );
-                rightDeclaredMask |= constraints.getListenedPropertyMask( settableProperties );
-                rightNegativeMask = calculateNegativeMask(rightListenedProperties, settableProperties );
-            } else {
-                // if property reactive is not on, then accept all modification propagations
                 rightDeclaredMask = Long.MAX_VALUE;
             }
         } else {
