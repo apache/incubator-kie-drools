@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +28,10 @@ import org.drools.OrderItem;
 import org.drools.OuterClass;
 import org.drools.Person;
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.StatefulSession;
+import org.drools.StatelessSession;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
@@ -2305,6 +2310,90 @@ public class AccumulateTest extends CommonTestMethodBase {
         for ( int j = 0; j < 33; j++ ) {
             ksession.getWorkingMemoryEntryPoint( "data" ).insert(1.0 * j);
             ksession.fireAllRules();
+        }
+    }
+
+    @Test
+    public void test2AccumulatesWithOr() throws Exception {
+        // JBRULES-3538
+        String str =
+                "import java.util.*;\n" +
+                "import org.drools.integrationtests.AccumulateTest.MyPerson;\n" +
+                "dialect \"mvel\"\n" +
+                "\n" +
+                "rule \"Test\"\n" +
+                "    when\n" +
+                "        $total : Number()\n" +
+                "             from accumulate( MyPerson( $age: age ),\n" +
+                "                              sum( $age ) )\n" +
+                "\n" +
+                "        $p: MyPerson();\n" +
+                "        $k: List( size > 0 ) from accumulate( MyPerson($kids: kids) from $p.kids,\n" +
+                "            init( ArrayList myList = new ArrayList(); ),\n" +
+                "            action( myList.addAll($kids); ),\n" +
+                "            reverse( myList.removeAll($kids); ),\n" +
+                "            result( myList )\n" +
+                "        )\n" +
+                "\n" +
+                "        MyPerson(name == \"Jos Jr Jr\")\n" +
+
+                "        or\n" +
+                "        MyPerson(name == \"Jos\")\n" +
+
+                "    then\n" +
+                "        System.out.println(\"hello\");\n" +
+                "end\n";
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(ResourceFactory.newByteArrayResource(str.getBytes()));
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackages(builder.getPackages());
+        StatelessSession ss = rb.newStatelessSession();
+        ss.execute(new Object[]{
+                new MyPerson("John", 20, Arrays.asList(
+                        new MyPerson("John Jr 1st", 10, Arrays.asList(new MyPerson("John Jr Jr", 4, Collections.<MyPerson>emptyList()))),
+                        new MyPerson("John Jr 2nd", 8, Collections.<MyPerson>emptyList())))
+                , new MyPerson("Jeff", 30, Arrays.asList(
+                new MyPerson("Jeff Jr 1st", 10, Collections.<MyPerson>emptyList()),
+                new MyPerson("Jeff Jr 2nd", 8, Collections.<MyPerson>emptyList())))
+        });
+    }
+
+    public static class MyPerson {
+        public MyPerson(String name, Integer age, Collection<MyPerson> kids) {
+            this.name = name;
+            this.age = age;
+            this.kids = kids;
+        }
+
+        private String name;
+
+        private Integer age;
+
+        private Collection<MyPerson> kids;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+
+        public Collection<MyPerson> getKids() {
+            return kids;
+        }
+
+        public void setKids(Collection<MyPerson> kids) {
+            this.kids = kids;
         }
     }
 }

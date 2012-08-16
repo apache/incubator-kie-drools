@@ -165,7 +165,7 @@ public class Pattern
             clone.setSource( (PatternSource) this.getSource().clone() );
             if ( source instanceof From ) {
                 ((From)clone.getSource()).setResultPattern( this );
-            }            
+            }
         }
 
         if( this.declarations != null ) {
@@ -176,22 +176,22 @@ public class Pattern
             }
         }
 
-        for ( Constraint constr : this.constraints ) {
-            Constraint constraint = constr.clone();
+        for ( Constraint oldConstr : this.constraints ) {
+            Constraint clonedConstr = oldConstr.clone();
 
             // we must update pattern references in cloned declarations
-            Declaration[] oldDecl = constr.getRequiredDeclarations();
-            Declaration[] newDecl = constraint.getRequiredDeclarations();
+            Declaration[] oldDecl = oldConstr.getRequiredDeclarations();
+            Declaration[] newDecl = clonedConstr.getRequiredDeclarations();
             for ( int i = 0; i < newDecl.length; i++ ) {
                 if ( newDecl[i].getPattern() == this ) {
                     newDecl[i].setPattern( clone );
                     // we still need to call replace because there might be nested declarations to replace
-                    constraint.replaceDeclaration( oldDecl[i],
-                                                   newDecl[i] );
+                    clonedConstr.replaceDeclaration( oldDecl[i],
+                                                     newDecl[i] );
                 }
             }
 
-            clone.addConstraint(constraint);
+            clone.addConstraint(clonedConstr);
         }
         
         if ( behaviors != null ) {
