@@ -16,10 +16,17 @@
 
 package org.drools.planner.examples.nurserostering.domain;
 
+import java.util.List;
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 
 @XStreamAlias("Employee")
 public class Employee extends AbstractPersistable {
@@ -27,6 +34,11 @@ public class Employee extends AbstractPersistable {
     private String code;
     private String name;
     private Contract contract;
+
+    private Map<ShiftDate, DayOffRequest> dayOffRequestMap;
+    private Map<ShiftDate, DayOnRequest> dayOnRequestMap;
+    private Map<Shift, ShiftOffRequest> shiftOffRequestMap;
+    private Map<Shift, ShiftOnRequest> shiftOnRequestMap;
 
     public String getCode() {
         return code;
@@ -55,7 +67,39 @@ public class Employee extends AbstractPersistable {
     public int getWeekendLength() {
         return getContract().getWeekendLength();
     }
-    
+
+    public Map<ShiftDate, DayOffRequest> getDayOffRequestMap() {
+        return dayOffRequestMap;
+    }
+
+    public void setDayOffRequestMap(Map<ShiftDate, DayOffRequest> dayOffRequestMap) {
+        this.dayOffRequestMap = dayOffRequestMap;
+    }
+
+    public Map<ShiftDate, DayOnRequest> getDayOnRequestMap() {
+        return dayOnRequestMap;
+    }
+
+    public void setDayOnRequestMap(Map<ShiftDate, DayOnRequest> dayOnRequestMap) {
+        this.dayOnRequestMap = dayOnRequestMap;
+    }
+
+    public Map<Shift, ShiftOffRequest> getShiftOffRequestMap() {
+        return shiftOffRequestMap;
+    }
+
+    public void setShiftOffRequestMap(Map<Shift, ShiftOffRequest> shiftOffRequestMap) {
+        this.shiftOffRequestMap = shiftOffRequestMap;
+    }
+
+    public Map<Shift, ShiftOnRequest> getShiftOnRequestMap() {
+        return shiftOnRequestMap;
+    }
+
+    public void setShiftOnRequestMap(Map<Shift, ShiftOnRequest> shiftOnRequestMap) {
+        this.shiftOnRequestMap = shiftOnRequestMap;
+    }
+
     public String getLabel() {
         return "Employee " + name;
     }

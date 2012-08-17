@@ -769,6 +769,11 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                             + ") of employee (" + employee.getCode() + ") does not exist.");
                 }
                 employee.setContract(contract);
+                int estimatedRequestSize = (shiftDateMap.size() / employeeElementList.size()) + 1;
+                employee.setDayOffRequestMap(new HashMap<ShiftDate, DayOffRequest>(estimatedRequestSize));
+                employee.setDayOnRequestMap(new HashMap<ShiftDate, DayOnRequest>(estimatedRequestSize));
+                employee.setShiftOffRequestMap(new HashMap<Shift, ShiftOffRequest>(estimatedRequestSize));
+                employee.setShiftOnRequestMap(new HashMap<Shift, ShiftOnRequest>(estimatedRequestSize));
 
                 Element skillsElement = element.getChild("Skills");
                 if (skillsElement != null) {
@@ -890,6 +895,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     dayOffRequest.setWeight(element.getAttribute("weight").getIntValue());
 
                     dayOffRequestList.add(dayOffRequest);
+                    employee.getDayOffRequestMap().put(shiftDate, dayOffRequest);
                     id++;
                 }
             }
@@ -928,6 +934,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     dayOnRequest.setWeight(element.getAttribute("weight").getIntValue());
 
                     dayOnRequestList.add(dayOnRequest);
+                    employee.getDayOnRequestMap().put(shiftDate, dayOnRequest);
                     id++;
                 }
             }
@@ -968,6 +975,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     shiftOffRequest.setWeight(element.getAttribute("weight").getIntValue());
 
                     shiftOffRequestList.add(shiftOffRequest);
+                    employee.getShiftOffRequestMap().put(shift, shiftOffRequest);
                     id++;
                 }
             }
@@ -1008,6 +1016,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     shiftOnRequest.setWeight(element.getAttribute("weight").getIntValue());
 
                     shiftOnRequestList.add(shiftOnRequest);
+                    employee.getShiftOnRequestMap().put(shift, shiftOnRequest);
                     id++;
                 }
             }
