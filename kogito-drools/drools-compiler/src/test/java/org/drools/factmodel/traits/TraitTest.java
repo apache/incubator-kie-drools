@@ -39,6 +39,9 @@ import org.drools.builder.ResourceType;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
 import org.drools.common.AbstractRuleBase;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.definition.type.FactType;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
@@ -46,6 +49,8 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
+import org.drools.reteoo.ObjectTypeConf;
+import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -1916,5 +1921,57 @@ public class TraitTest extends CommonTestMethodBase {
     public void testLogicalRemovalMap() {
         traitLogicalRemoval( TraitFactory.VirtualPropertyMode.MAP );
     }
+
+
+
+    @Test
+    public void testTMSConsistencyWithNonTraitableBeans() {
+
+        String s1 = "package org.drools.test;\n" +
+                "import org.drools.Person; \n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insertLogical( new Person( \"x\", 18 ) );\n" +
+                "end\n" +
+                "\n" +
+                "declare trait Student\n" +
+                "  age  : int\n" +
+                "  name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Trait\"\n" +
+                "when\n" +
+                "    $p : Person( )\n" +
+                "then\n" +
+                "    don( $p, Student.class, true );\n" +
+                "end\n";
+
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        FactHandle personHandle = ksession.getFactHandles( new ClassObjectFilter( Person.class ) ).iterator().next();
+        InternalFactHandle h = ((InternalFactHandle) personHandle);
+        ObjectTypeConfigurationRegistry reg = ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).getObjectTypeConfigurationRegistry();
+        ObjectTypeConf conf = reg.getObjectTypeConf( ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).getEntryPoint(), ((InternalFactHandle) personHandle).getObject() );
+        assertTrue( conf.isTMSEnabled() );
+
+        ksession.dispose();
+    }
+
+
+
+
+
 
 }
