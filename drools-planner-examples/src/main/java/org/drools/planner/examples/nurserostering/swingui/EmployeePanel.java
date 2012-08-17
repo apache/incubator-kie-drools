@@ -124,9 +124,16 @@ public class EmployeePanel extends JPanel {
         shiftDatePanelMap = new LinkedHashMap<ShiftDate, JPanel>(shiftDateList.size());
         for (ShiftDate shiftDate : shiftDateList) {
             JPanel shiftDatePanel = new JPanel(new GridLayout(1, 0));
-            if (weekendDefinition.isWeekend(shiftDate.getDayOfWeek())) {
-                shiftDatePanel.setBackground(TangoColors.ALUMINIUM_2);
+            Color backgroundColor = weekendDefinition.isWeekend(shiftDate.getDayOfWeek())
+                    ? TangoColors.ALUMINIUM_2 : shiftDatePanel.getBackground();
+            if (employee != null) {
+                if (employee.getDayOffRequestMap().containsKey(shiftDate)) {
+                    backgroundColor = TangoColors.ORANGE_1;
+                } else if (employee.getDayOnRequestMap().containsKey(shiftDate)) {
+                    backgroundColor = TangoColors.SCARLET_1;
+                }
             }
+            shiftDatePanel.setBackground(backgroundColor);
             boolean inPlanningWindow = nurseRosteringPanel.getNurseRoster().getNurseRosterInfo()
                     .isInPlanningWindow(shiftDate);
             shiftDatePanel.setEnabled(inPlanningWindow);
@@ -152,7 +159,15 @@ public class EmployeePanel extends JPanel {
             JPanel shiftPanel = new JPanel();
             shiftPanel.setEnabled(shiftDatePanel.isEnabled());
             shiftPanel.setLayout(new BoxLayout(shiftPanel, BoxLayout.Y_AXIS));
-            shiftPanel.setBackground(shiftDatePanel.getBackground());
+            Color backgroundColor = shiftDatePanel.getBackground();
+            if (employee != null) {
+                if (employee.getShiftOffRequestMap().containsKey(shift)) {
+                    backgroundColor = TangoColors.ORANGE_1;
+                } else if (employee.getShiftOnRequestMap().containsKey(shift)) {
+                    backgroundColor = TangoColors.SCARLET_1;
+                }
+            }
+            shiftPanel.setBackground(backgroundColor);
             shiftPanel.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
                     + " on " + shift.getLabel());
             shiftPanelMap.put(shift, shiftPanel);
@@ -167,6 +182,12 @@ public class EmployeePanel extends JPanel {
         JButton shiftAssignmentButton = new JButton(new ShiftAssignmentAction(shiftAssignment));
         shiftAssignmentButton.setEnabled(shiftPanel.isEnabled());
         shiftAssignmentButton.setMargin(new Insets(0, 0, 0, 0));
+        if (employee != null) {
+            if (employee.getDayOffRequestMap().containsKey(shift.getShiftDate())
+                    || employee.getShiftOffRequestMap().containsKey(shift)) {
+                shiftAssignmentButton.setForeground(TangoColors.SCARLET_1);
+            }
+        }
         int colorIndex = shift.getShiftType().getIndex() % TangoColors.SEQUENCE_1.length;
         shiftAssignmentButton.setBackground(TangoColors.SEQUENCE_1[colorIndex]);
         shiftAssignmentButton.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
