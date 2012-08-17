@@ -47,6 +47,8 @@ import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
 import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1;
 import org.drools.examples.workitemconsequence.WorkItemConsequenceExample2;
 import org.drools.games.adventures.TextAdventure;
+import org.drools.games.pong.PongMain;
+import org.drools.games.wumpus.WumpusWorldMain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +91,16 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("TextAdventure") {
             public void actionPerformed(ActionEvent e) {
                 TextAdventure.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("Pong") {
+            public void actionPerformed(ActionEvent e) {
+                PongMain.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("WumpusWorld") {
+            public void actionPerformed(ActionEvent e) {
+                WumpusWorldMain.main(new String[0]);
             }
         }));
         
