@@ -32,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -178,6 +179,12 @@ public class NurseRosteringPanel extends SolutionPanel {
 
     private void advancePlanningWindowStart() {
         logger.info("Advancing planningWindowStart.");
+        if (solutionBusiness.isSolving()) {
+            JOptionPane.showMessageDialog(this,
+                    "The GUI does not support this action yet during solving.\nPlanner itself does support it.",
+                    "Unsupported in GUI", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();

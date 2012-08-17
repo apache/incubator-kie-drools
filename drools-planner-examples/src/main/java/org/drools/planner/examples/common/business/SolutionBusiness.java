@@ -176,6 +176,10 @@ public class SolutionBusiness {
         return guiScoreDirector.calculateScore();
     }
 
+    public boolean isSolving() {
+        return solver.isSolving();
+    }
+
     public void registerForBestSolutionChanges(final SolverAndPersistenceFrame solverAndPersistenceFrame) {
         solver.addEventListener(new SolverEventListener() {
             // Not called on the event thread
