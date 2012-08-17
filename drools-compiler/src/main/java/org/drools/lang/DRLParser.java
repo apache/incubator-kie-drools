@@ -3015,7 +3015,8 @@ public class DRLParser {
      */
     private void positionalConstraints( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         constraint( pattern,
-                    true );
+                    true,
+                    "" );
         if ( state.failed ) return;
 
         while ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -3027,7 +3028,8 @@ public class DRLParser {
             if ( state.failed ) return;
 
             constraint( pattern,
-                        true );
+                        true,
+                        "" );
             if ( state.failed ) return;
         }
 
@@ -3045,8 +3047,13 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void constraints( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        constraints( pattern, "" );
+    }
+
+    private void constraints( PatternDescrBuilder< ? > pattern, String prefix ) throws RecognitionException {
         constraint( pattern,
-                    false );
+                    false,
+                    prefix );
         if ( state.failed ) return;
 
         while ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -3059,18 +3066,25 @@ public class DRLParser {
             if ( state.failed ) return;
 
             constraint( pattern,
-                        false );
+                        false,
+                        prefix );
             if ( state.failed ) return;
         }
     }
 
     /**
-     * constraint := conditionalOrExpression
+     * constraint := nestedConstraint | conditionalOrExpression
      * @param pattern
      * @throws RecognitionException 
      */
     private void constraint( PatternDescrBuilder< ? > pattern,
-                             boolean positional ) throws RecognitionException {
+                             boolean positional,
+                             String prefix ) throws RecognitionException {
+        if ( speculateNestedConstraint() ) {
+            nestedConstraint( pattern, prefix );
+            return;
+        }
+
         if ( state.backtracking == 0 ) {
             helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_START );
         }
@@ -3107,8 +3121,7 @@ public class DRLParser {
         if ( state.backtracking == 0 && input.index() > first ) {
             // expression consumed something
             int last = input.LT( -1 ).getTokenIndex();
-            String expr = input.toString( first,
-                                          last );
+            String expr = toExpression(prefix, first, last);
             pattern.constraint( expr,
                                 positional );
             BaseDescr constrDescr = pattern.getDescr().getDescrs().get( pattern.getDescr().getDescrs().size() - 1 );
@@ -3118,6 +3131,68 @@ public class DRLParser {
                                         input.get( last ).getCharPositionInLine() );
             constrDescr.setStartCharacter( ((CommonToken)input.get( first )).getStartIndex() );
             constrDescr.setEndCharacter( ((CommonToken)input.get( last )).getStopIndex() );
+        }
+    }
+
+    private String toExpression(String prefix, int first, int last) {
+        String expr = input.toString( first, last );
+        if (prefix.length() == 0) {
+            return expr;
+        }
+        int colonPos = expr.indexOf(":");
+        return colonPos < 0 ? prefix + expr : expr.substring(0, colonPos+1) + " " + prefix + expr.substring(colonPos+1).trim();
+    }
+
+    private boolean speculateNestedConstraint() throws RecognitionException {
+        return getNestedConstraintPrefixLenght() > 0;
+    }
+
+    /**
+     * nestedConstraint := ( ID ( DOT | SHARP ) )* ID DOT LEFT_PAREN constraints RIGHT_PAREN
+     * @param pattern
+     * @throws RecognitionException
+     */
+    private void nestedConstraint( PatternDescrBuilder< ? > pattern, String prefix ) throws RecognitionException {
+        int prefixLenght = getNestedConstraintPrefixLenght();
+
+        int prefixStart = input.index();
+        prefix += input.toString( prefixStart, prefixStart + prefixLenght - 2 );
+        for (int i = 0; i < prefixLenght; i++) {
+            input.consume();
+        }
+
+        constraints( pattern, prefix );
+        match( input,
+                DRLLexer.RIGHT_PAREN,
+                null,
+                null,
+                DroolsEditorType.SYMBOL );
+    }
+
+    private int getNestedConstraintPrefixLenght() {
+        int cursor = 0;
+        int lastToken = input.LA( ++cursor );
+        while (true) {
+            int nextToken = input.LA( ++cursor );
+            switch (lastToken) {
+                case DRLLexer.ID:
+                    if ( nextToken != DRLLexer.DOT && nextToken != DRLLexer.SHARP ) {
+                        return -1;
+                    }
+                    break;
+                case DRLLexer.DOT:
+                    if ( nextToken == DRLLexer.LEFT_PAREN ) {
+                        return cursor;
+                    }
+                case DRLLexer.SHARP:
+                    if ( nextToken != DRLLexer.ID ) {
+                        return -1;
+                    }
+                    break;
+                default:
+                    return -1;
+            }
+            lastToken = nextToken;
         }
     }
 
