@@ -21,12 +21,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 public class WumpusWorldMain {
 
-    public static void main(String[] args) throws InterruptedException  {
+    public static void main(String[] args) {
         WumpusWorldMain ww = new WumpusWorldMain();
         ww.init();
     }
 
-    public void init() throws InterruptedException {
+    public void init() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.batch().add( newClassPathResource( "init.drl", getClass() ), DRL )
