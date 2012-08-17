@@ -128,7 +128,7 @@ public class EmployeePanel extends JPanel {
                     ? TangoColors.ALUMINIUM_2 : shiftDatePanel.getBackground();
             if (employee != null) {
                 if (employee.getDayOffRequestMap().containsKey(shiftDate)) {
-                    backgroundColor = TangoColors.ORANGE_1;
+                    backgroundColor = TangoColors.ALUMINIUM_4;
                 } else if (employee.getDayOnRequestMap().containsKey(shiftDate)) {
                     backgroundColor = TangoColors.SCARLET_1;
                 }
@@ -162,7 +162,7 @@ public class EmployeePanel extends JPanel {
             Color backgroundColor = shiftDatePanel.getBackground();
             if (employee != null) {
                 if (employee.getShiftOffRequestMap().containsKey(shift)) {
-                    backgroundColor = TangoColors.ORANGE_1;
+                    backgroundColor = TangoColors.ALUMINIUM_4;
                 } else if (employee.getShiftOnRequestMap().containsKey(shift)) {
                     backgroundColor = TangoColors.SCARLET_1;
                 }
