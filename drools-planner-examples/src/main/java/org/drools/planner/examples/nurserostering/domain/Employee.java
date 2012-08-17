@@ -57,7 +57,7 @@ public class Employee extends AbstractPersistable {
     }
     
     public String getLabel() {
-        return name;
+        return "Employee " + name;
     }
 
     @Override
