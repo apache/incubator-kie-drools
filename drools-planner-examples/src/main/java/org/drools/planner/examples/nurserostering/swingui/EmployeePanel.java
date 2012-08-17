@@ -127,16 +127,18 @@ public class EmployeePanel extends JPanel {
             if (weekendDefinition.isWeekend(shiftDate.getDayOfWeek())) {
                 shiftDatePanel.setBackground(TangoColors.ALUMINIUM_2);
             }
-            Color borderColor = nurseRosteringPanel.getNurseRoster().getNurseRosterInfo().isInPlanningWindow(shiftDate)
-                    ? TangoColors.ALUMINIUM_6 : TangoColors.ORANGE_1;
+            boolean inPlanningWindow = nurseRosteringPanel.getNurseRoster().getNurseRosterInfo()
+                    .isInPlanningWindow(shiftDate);
+            shiftDatePanel.setEnabled(inPlanningWindow);
             shiftDatePanel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(borderColor),
+                    BorderFactory.createLineBorder(inPlanningWindow ? TangoColors.ALUMINIUM_6 : TangoColors.ALUMINIUM_3),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             shiftDatePanelMap.put(shiftDate, shiftDatePanel);
             if (employee == null) {
                 // TODO HACK should be in NurseRosterPanel.createHeaderPanel
                 JPanel wrappingShiftDatePanel = new JPanel(new BorderLayout());
                 JLabel shiftDateLabel = new JLabel(shiftDate.getLabel(), JLabel.CENTER);
+                shiftDateLabel.setEnabled(shiftDatePanel.isEnabled());
                 wrappingShiftDatePanel.add(shiftDateLabel, BorderLayout.NORTH);
                 wrappingShiftDatePanel.add(shiftDatePanel, BorderLayout.CENTER);
                 shiftDateListPanel.add(wrappingShiftDatePanel);
@@ -148,6 +150,7 @@ public class EmployeePanel extends JPanel {
         for (Shift shift : shiftList) {
             JPanel shiftDatePanel = shiftDatePanelMap.get(shift.getShiftDate());
             JPanel shiftPanel = new JPanel();
+            shiftPanel.setEnabled(shiftDatePanel.isEnabled());
             shiftPanel.setLayout(new BoxLayout(shiftPanel, BoxLayout.Y_AXIS));
             shiftPanel.setBackground(shiftDatePanel.getBackground());
             shiftPanel.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
@@ -162,6 +165,7 @@ public class EmployeePanel extends JPanel {
         Shift shift = shiftAssignment.getShift();
         JPanel shiftPanel = shiftPanelMap.get(shift);
         JButton shiftAssignmentButton = new JButton(new ShiftAssignmentAction(shiftAssignment));
+        shiftAssignmentButton.setEnabled(shiftPanel.isEnabled());
         shiftAssignmentButton.setMargin(new Insets(0, 0, 0, 0));
         int colorIndex = shift.getShiftType().getIndex() % TangoColors.SEQUENCE_1.length;
         shiftAssignmentButton.setBackground(TangoColors.SEQUENCE_1[colorIndex]);

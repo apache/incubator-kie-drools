@@ -80,7 +80,6 @@ public class NurseRosteringPanel extends SolutionPanel {
         headerPanel.add(new JLabel("Planning window start:"));
         planningWindowStartField = new JTextField(10);
         planningWindowStartField.setEditable(false);
-        planningWindowStartField.setForeground(TangoColors.ORANGE_3);
         headerPanel.add(planningWindowStartField);
         advancePlanningWindowStartButton = new JButton("Advance 1 day into the future");
         advancePlanningWindowStartButton.setEnabled(false);
