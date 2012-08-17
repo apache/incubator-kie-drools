@@ -353,14 +353,14 @@ public class SolverAndPersistenceFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
-//            fileChooser.setFileFilter(new FileFilter() {
-//                public boolean accept(File file) {
-//                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO Not all import files are xml
-//                }
-//                public String getDescription() {
-//                    return "Import files";
-//                }
-//            });
+            fileChooser.setFileFilter(new FileFilter() {
+                public boolean accept(File file) {
+                    return file.isDirectory() || solutionBusiness.acceptImportFile(file);
+                }
+                public String getDescription() {
+                    return "Import files";
+                }
+            });
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

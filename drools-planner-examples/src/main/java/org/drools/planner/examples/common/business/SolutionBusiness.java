@@ -292,4 +292,8 @@ public class SolutionBusiness {
 
     }
 
+    public boolean acceptImportFile(File file) {
+        return importer.acceptInputFile(file);
+    }
+
 }
