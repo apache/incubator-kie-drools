@@ -171,7 +171,7 @@ public class SubTaskDecorator implements TaskInstanceService {
             parentTask = em.find(Task.class, task.getTaskData().getParentId());
         }
         if(parentTask != null){
-            if(parentTask.getSubTaskStrategy().equals(SubTasksStrategy.EndAllSubTasksOnParentEnd)){
+            if(parentTask.getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){
                 List<TaskSummary> subTasks = queryService.getSubTasksByParent(parentTask.getId());
 
                     if (subTasks.isEmpty()) {
@@ -180,12 +180,12 @@ public class SubTaskDecorator implements TaskInstanceService {
                     }
             }
         }
-        if(task.getSubTaskStrategy().equals(SubTasksStrategy.EndAllSubTasksOnParentAbort)){
+        if(task.getSubTaskStrategy().equals(SubTasksStrategy.SkipAllSubTasksOnParentSkip)){
             List<TaskSummary> subTasks = queryService.getSubTasksByParent(task.getId());
             for(TaskSummary taskSummary : subTasks){
                 Task subTask = queryService.getTaskInstanceById(taskSummary.getId());
-                // COmpleting each sub task because the parent task was aborted
-                complete(subTask.getId(), "Administrator", data);
+                // Exit each sub task because the parent task was aborted
+                skip(subTask.getId(), "Administrator");
             }
         }
     }
