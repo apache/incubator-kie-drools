@@ -37,7 +37,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         super(solutionDao);
     }
 
-    protected String getInputFileSuffix() {
+    public String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 

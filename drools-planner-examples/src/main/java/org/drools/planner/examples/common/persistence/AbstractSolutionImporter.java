@@ -36,7 +36,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         return new File(solutionDao.getDataDir(), "input");
     }
 
-    protected abstract String getInputFileSuffix();
+    public abstract String getInputFileSuffix();
 
     protected File getOutputDir() {
         return new File(solutionDao.getDataDir(), "unsolved");

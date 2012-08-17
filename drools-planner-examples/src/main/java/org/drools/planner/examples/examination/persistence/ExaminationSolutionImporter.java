@@ -63,7 +63,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
     }
 
     @Override
-    protected String getInputFileSuffix() {
+    public String getInputFileSuffix() {
         return INPUT_FILE_SUFFIX;
     }
 

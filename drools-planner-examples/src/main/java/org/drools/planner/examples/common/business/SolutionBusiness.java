@@ -134,6 +134,14 @@ public class SolutionBusiness {
         return importDataDir;
     }
 
+    public boolean acceptImportFile(File file) {
+        return importer.acceptInputFile(file);
+    }
+
+    public String getImportFileSuffix() {
+        return importer.getInputFileSuffix();
+    }
+
     public File getUnsolvedDataDir() {
         return unsolvedDataDir;
     }
@@ -294,10 +302,6 @@ public class SolutionBusiness {
             return file.getName().endsWith(".xml");
         }
 
-    }
-
-    public boolean acceptImportFile(File file) {
-        return importer.acceptInputFile(file);
     }
 
 }

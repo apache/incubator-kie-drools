@@ -358,7 +358,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                     return file.isDirectory() || solutionBusiness.acceptImportFile(file);
                 }
                 public String getDescription() {
-                    return "Import files";
+                    return "Import files (*" + solutionBusiness.getImportFileSuffix() + ")";
                 }
             });
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
