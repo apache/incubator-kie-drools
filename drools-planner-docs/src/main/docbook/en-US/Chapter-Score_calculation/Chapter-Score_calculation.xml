@@ -50,6 +50,12 @@
       level). For example in vehicle routing, you can make 5 broken "avoid crossroads" soft constraints count as much as
       1 broken "avoid highways at rush hour" soft constraint.</para>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreWeighting.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
       <para>The weight of a constraint occurrence is often dynamically based on the planning entities involved. For
       example in cloud balance: the weight of the soft constraint occurrence for an active <literal>Computer</literal>
       is the <literal>cost</literal> of that <literal>Computer</literal>.</para>
@@ -67,24 +73,30 @@
     <section>
       <title>Score level</title>
 
-      <para>Sometimes score constraints are in different levels. If breaking one constraint is always worse than another,
-      no matter how much another constraint is broken, then those 2 constraints are in a different level.</para>
+      <para>Sometimes score constraints are in different levels. If breaking one constraint is always worse than
+      another, no matter how much another constraint is broken, then those 2 constraints are in a different
+      level.</para>
 
       <para>Most use cases have 2 score levels: hard and soft. When comparing 2 scores, the higher score level gets
       compared first. If those differ, the lower score levels are ignored. For example: a score that breaks 0 hard
       constraints and 1000000 soft constraints is better than a score that breaks 1 hard constraint and 0 soft
       constraints.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreLevels.png"></imagedata>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section>
       <title>Pareto scoring (AKA multi-objective optimization scoring)</title>
 
       <para>Less common is the use case of pareto optimization, which is also known under the more confusing term
-      multi-objective optimization. In pareto
-      scoring, score constraints are in the same score level, yet they are not weighted against each other. When 2
-      scores are compared, each of the score constraints are compared individually and the score with the most
-      dominating score constraints wins.
-      Pareto scoring can even be combined with score levels and score constraint weighting.</para>
+      multi-objective optimization. In pareto scoring, score constraints are in the same score level, yet they are not
+      weighted against each other. When 2 scores are compared, each of the score constraints are compared individually
+      and the score with the most dominating score constraints wins. Pareto scoring can even be combined with score
+      levels and score constraint weighting.</para>
 
       <para>Consider this example with positive constraints, where we want to get the most apples and oranges. Since
       it's impossible to compare apples and oranges, we can't weight them against each other. Yet, despite that we can't
@@ -110,12 +122,11 @@
       out-of-the-box support.</para>
 
       <note>
-        <para>A pareto <literal>Score</literal>'s method <literal>compareTo</literal> is not
-        transitive because it does a pareto comparison. For example: 2 apples is greater than 1 apple. 1 apples is equal
-        to 1 orange. Yet, 2 apples are not greater than 1 orange (but actually equal). Pareto comparison violates the
-        contract of the interface <literal>java.lang.Comparable</literal>'s method <literal>compareTo</literal>, but
-        Planner's systems are <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
-        documentation.</para>
+        <para>A pareto <literal>Score</literal>'s method <literal>compareTo</literal> is not transitive because it does
+        a pareto comparison. For example: 2 apples is greater than 1 apple. 1 apples is equal to 1 orange. Yet, 2 apples
+        are not greater than 1 orange (but actually equal). Pareto comparison violates the contract of the interface
+        <literal>java.lang.Comparable</literal>'s method <literal>compareTo</literal>, but Planner's systems are
+        <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this documentation.</para>
       </note>
     </section>
 
