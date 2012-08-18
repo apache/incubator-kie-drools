@@ -22,7 +22,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -74,7 +75,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -126,7 +128,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t
     left join t.taskData.createdBy as createdBy 
@@ -180,7 +183,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy                   )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -234,7 +238,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -288,7 +293,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -342,7 +348,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -397,7 +404,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -453,7 +461,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t
     left join t.taskData.createdBy as createdBy
@@ -507,7 +516,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -559,7 +569,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -611,7 +622,8 @@ select
      t.taskData.expirationTime,
      t.taskData.processId,
      t.taskData.processSessionId,
-     t.subTaskStrategy         )
+     t.subTaskStrategy,
+     t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -663,7 +675,8 @@ select
     t.taskData.expirationTime,
     t.taskData.processId,
     t.taskData.processSessionId,
-    t.subTaskStrategy          )
+    t.subTaskStrategy,
+    t.taskData.parentId              )
 from
     Task t 
     left join t.taskData.createdBy as createdBy
@@ -714,7 +727,8 @@ where
             t.taskData.expirationTime,
             t.taskData.processId,
             t.taskData.processSessionId,
-            t.subTaskStrategy )
+            t.subTaskStrategy,
+            t.taskData.parentId            )
             from
             Task t 
             left join t.taskData.createdBy as createdBy
@@ -764,7 +778,8 @@ where
             t.taskData.expirationTime,
             t.taskData.processId,
             t.taskData.processSessionId,
-            t.subTaskStrategy)
+            t.subTaskStrategy,
+            t.taskData.parentId          )
             from
             Task t 
             left join t.taskData.createdBy as createdBy
@@ -814,7 +829,8 @@ where
             t.taskData.expirationTime,
             t.taskData.processId,
             t.taskData.processSessionId,
-            t.subTaskStrategy)
+            t.subTaskStrategy,
+            t.taskData.parentId         )
             from
             Task t 
             left join t.taskData.createdBy as createdBy
@@ -865,7 +881,8 @@ where
             t.taskData.expirationTime,
             t.taskData.processId,
             t.taskData.processSessionId,
-            t.subTaskStrategy)
+            t.subTaskStrategy,
+            t.taskData.parentId       )
             from
             Task t 
             left join t.taskData.createdBy as createdBy
@@ -916,7 +933,8 @@ select
     t.taskData.expirationTime,
     t.taskData.processId,
     t.taskData.processSessionId,
-    t.subTaskStrategy)
+    t.subTaskStrategy,
+    t.taskData.parentId          )
 from
     Task t 
     left join t.taskData.createdBy as createdBy

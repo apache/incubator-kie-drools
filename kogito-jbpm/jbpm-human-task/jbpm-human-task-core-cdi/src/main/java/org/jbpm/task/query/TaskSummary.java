@@ -45,6 +45,7 @@ public class TaskSummary
     private String processId;
     private int processSessionId;
     private SubTasksStrategy subTaskStrategy;
+    private long parentId;
 
     public TaskSummary(long id,
             long processInstanceId,
@@ -61,7 +62,8 @@ public class TaskSummary
             Date expirationTime,
             String processId,
             int processSessionId,
-            SubTasksStrategy subTaskStrategy) {
+            SubTasksStrategy subTaskStrategy,
+            long parentId) {
         super();
         this.id = id;
         this.processInstanceId = processInstanceId;
@@ -79,6 +81,7 @@ public class TaskSummary
         this.processId = processId;
         this.processSessionId = processSessionId;
         this.subTaskStrategy = subTaskStrategy;
+        this.parentId = parentId;
     }
 
     public TaskSummary() {
@@ -118,6 +121,7 @@ public class TaskSummary
         }
 
         out.writeInt(priority);
+        out.writeLong(parentId);
         out.writeBoolean(skipable);
 
         if (actualOwner != null) {
@@ -194,6 +198,7 @@ public class TaskSummary
         }
 
         priority = in.readInt();
+        parentId = in.readLong();
         skipable = in.readBoolean();
 
         if (in.readBoolean()) {
@@ -356,6 +361,15 @@ public class TaskSummary
     public void setSubTaskStrategy(SubTasksStrategy subTaskStrategy) {
         this.subTaskStrategy = subTaskStrategy;
     }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
+    }
+    
     
     @Override
     public int hashCode() {
@@ -372,6 +386,7 @@ public class TaskSummary
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((subTaskStrategy == null) ? 0 : subTaskStrategy.hashCode());
         result = prime * result + priority;
+        result = prime * result + (int) (parentId ^ (parentId >>> 32));
         result = prime * result + (skipable ? 1231 : 1237);
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((subject == null) ? 0 : subject.hashCode());
@@ -452,6 +467,9 @@ public class TaskSummary
             return false;
         }
         if (priority != other.priority) {
+            return false;
+        }
+        if (parentId != other.parentId) {
             return false;
         }
         if (skipable != other.skipable) {
