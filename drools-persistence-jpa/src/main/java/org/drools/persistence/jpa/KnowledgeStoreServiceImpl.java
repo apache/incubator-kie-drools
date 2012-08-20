@@ -24,14 +24,12 @@ import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
-import org.drools.persistence.jpa.KnowledgeStoreService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.time.TimerService;
 
 public class KnowledgeStoreServiceImpl
     implements
@@ -145,7 +143,7 @@ public class KnowledgeStoreServiceImpl
     }
 
     private KnowledgeSessionConfiguration mergeConfig(KnowledgeSessionConfiguration configuration) {
-        ((SessionConfiguration) configuration).addProperties( configProps );
+        ((SessionConfiguration) configuration).addDefaultProperties(configProps);
         ((SessionConfiguration) configuration).setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
         return configuration;
     }
