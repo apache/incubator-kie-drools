@@ -180,6 +180,12 @@ public class SessionConfiguration
         }
     }
 
+    public void addPropertiesLast(Properties properties) {
+        if ( properties != null ) {
+            this.chainedProperties.addPropertiesLast( properties );
+        }
+    }
+
     public void setProperty(String name,
                             String value) {
         name = name.trim();

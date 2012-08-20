@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,6 +34,7 @@ import javax.transaction.UserTransaction;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
+import org.drools.SessionConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -45,6 +47,7 @@ import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.junit.After;
@@ -371,6 +374,21 @@ public class JpaPersistentStatefulSessionTest {
 
         assertSame( ref1.get( 0 ), ref2.get( 0 ) );
 
+    }
+
+    @Test
+    public void testMergeConfig() {
+        // JBRULES-3155
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        Properties properties = new Properties();
+        properties.put("drools.processInstanceManagerFactory", "com.example.CustomJPAProcessInstanceManagerFactory");
+        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, config, env );
+        SessionConfiguration sessionConfig = (SessionConfiguration)ksession.getSessionConfiguration();
+
+        assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
     }
 
 }
