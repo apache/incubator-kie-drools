@@ -296,15 +296,16 @@ PLUS	:	'+'
     ;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
-    :	'#' (~('\r'|'\n'))* EOL
+    :	'#' (~('\r'|'\n'))* (EOL|EOF)
                 { $channel=HIDDEN; setText("//"+getText().substring(1));}
     ;
-        
-        
+
+
 C_STYLE_SINGLE_LINE_COMMENT	
-    :	'//' (~('\r'|'\n'))* EOL
+    :	'//' (~('\r'|'\n'))* (EOL|EOF)
                 { $channel=HIDDEN; }
     ;
+
 
 MULTI_LINE_COMMENT
     :	'/*' (options{greedy=false;} : .)* '*/'
