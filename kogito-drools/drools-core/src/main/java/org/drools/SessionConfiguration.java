@@ -174,9 +174,16 @@ public class SessionConfiguration
         this.timerJobFactoryManager = timerJobFactoryManager;
     }
 
-    public void addProperties(Properties properties) {
+    public void addDefaultProperties(Properties properties) {
+        Properties defaultProperties = new Properties();
+        for ( Map.Entry<Object, Object> prop : properties.entrySet() ) {
+            if ( chainedProperties.getProperty( (String) prop.getKey(), null) == null ) {
+                defaultProperties.put( prop.getKey(), prop.getValue() );
+            }
+        }
+
         if ( properties != null ) {
-            this.chainedProperties.addProperties( properties );
+            this.chainedProperties.addProperties( defaultProperties );
         }
     }
 
