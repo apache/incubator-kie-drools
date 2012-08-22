@@ -35,11 +35,17 @@ public class PacmanExample {
     PacMan                   pacMan;
 
     public static void main(String[] args) {
-        PacmanExample pacmanExample = new PacmanExample();
-        pacmanExample.initKsession();
-        pacmanExample.buildGrid();
-        pacmanExample.initGui();
-        pacmanExample.runKSession();
+        new PacmanExample().init(true);
+    }
+
+    public PacmanExample() {
+    }
+
+    public void init(boolean exitOnClose) {
+        initKsession();
+        buildGrid();
+        initGui(exitOnClose);
+        runKSession();
     }
 
     public void initKsession() {
@@ -159,8 +165,8 @@ public class PacmanExample {
         }
     }
 
-    public void initGui() {
-        PacmanGui.createAndShowGUI( this.ksession );
+    public void initGui(boolean exitOnClose) {
+        PacmanGui.createAndShowGUI( this.ksession, exitOnClose );
     }
 
     public void runKSession() {

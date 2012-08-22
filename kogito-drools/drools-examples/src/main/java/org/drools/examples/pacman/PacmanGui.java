@@ -42,17 +42,18 @@ public class PacmanGui extends JFrame
     static final String     newline = System.getProperty( "line.separator" );
     WorkingMemoryEntryPoint keyListenerEntryPoint;
 
-    public static void createAndShowGUI(StatefulKnowledgeSession ksession) {
+    public static void createAndShowGUI(StatefulKnowledgeSession ksession, boolean exitOnClose) {
         //Create and set up the window.
         PacmanGui frame = new PacmanGui( "KeyEventDemo",
                                          ksession );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
 
         //Set up the content pane.
         frame.addComponentsToPane();
 
         //Display the window.
         frame.pack();
+        frame.setLocationRelativeTo(null); // Center in screen
         frame.setVisible( true );
     }
 

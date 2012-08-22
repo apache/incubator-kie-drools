@@ -26,7 +26,7 @@ import org.drools.io.ResourceFactory;
 
 public class DroolsUtil {
 
-    public static KnowledgeBase readKnowledgeBase(String... drlFileNames) throws Exception {
+    public static KnowledgeBase readKnowledgeBase(String... drlFileNames) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         // This parses and compiles a DRL file.

@@ -55,33 +55,36 @@ import org.drools.runtime.StatefulKnowledgeSession;
 public class PetStoreExample {
 
     public static void main(String[] args) {
-        try {
-            KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+        new PetStoreExample().init(true);
+    }
 
-            kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
-                                                                        PetStoreExample.class ),
-                                  ResourceType.DRL );
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    public PetStoreExample() {
+    }
 
-            //RuleB
-            Vector<Product> stock = new Vector<Product>();
-            stock.add( new Product( "Gold Fish",
-                                    5 ) );
-            stock.add( new Product( "Fish Tank",
-                                    25 ) );
-            stock.add( new Product( "Fish Food",
-                                    2 ) );
+    public void init(boolean exitOnClose) {
+        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 
-            //The callback is responsible for populating working memory and
-            // fireing all rules
-            PetStoreUI ui = new PetStoreUI( stock,
-                                            new CheckoutCallback( kbase ) );
-            ui.createAndShowGUI();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
+        kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
+                                                                    PetStoreExample.class ),
+                              ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //RuleB
+        Vector<Product> stock = new Vector<Product>();
+        stock.add( new Product( "Gold Fish",
+                                5 ) );
+        stock.add( new Product( "Fish Tank",
+                                25 ) );
+        stock.add( new Product( "Fish Food",
+                                2 ) );
+
+        //The callback is responsible for populating working memory and
+        // fireing all rules
+        PetStoreUI ui = new PetStoreUI( stock,
+                                        new CheckoutCallback( kbase ) );
+        ui.createAndShowGUI(exitOnClose);
     }
 
     /**
@@ -219,16 +222,17 @@ public class PetStoreExample {
         /**
          * Create and show the GUI
          */
-        public void createAndShowGUI() {
+        public void createAndShowGUI(boolean exitOnClose) {
             //Create and set up the window.
             JFrame frame = new JFrame( "Pet Store Demo" );
-            frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            frame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
 
             setOpaque( true );
             frame.setContentPane( this );
 
             //Display the window.
             frame.pack();
+            frame.setLocationRelativeTo(null); // Center in screen
             frame.setVisible( true );
         }
 
