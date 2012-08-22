@@ -13,6 +13,7 @@ import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.event.rule.DefaultWorkingMemoryEventListener;
+import org.drools.games.pong.PongConfiguration;
 import org.drools.games.wumpus.view.GameView;
 import org.drools.io.ResourceFactory;
 import static org.drools.io.ResourceFactory.newClassPathResource;
@@ -22,11 +23,13 @@ import org.drools.runtime.StatefulKnowledgeSession;
 public class WumpusWorldMain {
 
     public static void main(String[] args) {
-        WumpusWorldMain ww = new WumpusWorldMain();
-        ww.init();
+        new WumpusWorldMain().init(true);
     }
 
-    public void init() {
+    public WumpusWorldMain() {
+    }
+
+    public void init(boolean exitOnClose) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.batch().add( newClassPathResource( "init.drl", getClass() ), DRL )
@@ -67,8 +70,11 @@ public class WumpusWorldMain {
                 serverKsession.insert( object ); 
                 serverKsession.fireAllRules();
             }
-        } );        
-        
+        } );
+
+        WumpusWorldConfiguration wumpusWorldConfiguration = new WumpusWorldConfiguration();
+        wumpusWorldConfiguration.setExitOnClose(exitOnClose);
+        serverKsession.setGlobal("wumpusWorldConfiguration", wumpusWorldConfiguration);
         serverKsession.setGlobal("randomInteger",new java.util.Random() );
         serverKsession.fireAllRules();        
         clientKsession.fireAllRules();

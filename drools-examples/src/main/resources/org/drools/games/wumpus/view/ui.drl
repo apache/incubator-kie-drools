@@ -20,12 +20,14 @@ import javax.swing.JOptionPane
 
 import java.util.ArrayList
 
-dialect "mvel"  
+global org.drools.games.wumpus.WumpusWorldConfiguration wumpusWorldConfiguration;
+
+dialect "mvel"
 
 rule "Create GUI" when
     not GameUI()
 then
-    insert( new GameUI( ) );     
+    insert( new GameUI(wumpusWorldConfiguration) );
 end          
 
 rule "Reset View" when

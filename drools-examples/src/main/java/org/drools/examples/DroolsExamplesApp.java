@@ -95,12 +95,12 @@ public class DroolsExamplesApp extends JFrame {
         }));
         contentPane.add(new JButton(new AbstractAction("Pong") {
             public void actionPerformed(ActionEvent e) {
-                PongMain.main(new String[0]);
+                new PongMain().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WumpusWorld") {
             public void actionPerformed(ActionEvent e) {
-                WumpusWorldMain.main(new String[0]);
+                new WumpusWorldMain().init(false);
             }
         }));
         

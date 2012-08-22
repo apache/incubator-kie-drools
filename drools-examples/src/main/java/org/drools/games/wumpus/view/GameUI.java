@@ -30,6 +30,7 @@ import org.drools.games.wumpus.Reset;
 import org.drools.games.wumpus.Score;
 import org.drools.games.wumpus.ShootCommand;
 import org.drools.games.wumpus.Wumpus;
+import org.drools.games.wumpus.WumpusWorldConfiguration;
 import org.drools.runtime.Channel;
 import org.drools.runtime.rule.FactHandle;
 import javax.swing.JScrollPane;
@@ -37,6 +38,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class GameUI {
+
+    private final WumpusWorldConfiguration wumpusWorldConfiguration;
 
     private JFrame      frame;
 
@@ -46,13 +49,15 @@ public class GameUI {
 
     private SensorPanel sensorPanel;
 
-    public GameUI() {
+    public GameUI(WumpusWorldConfiguration wumpusWorldConfiguration) {
+        this.wumpusWorldConfiguration = wumpusWorldConfiguration;
     }
 
     /**
      * @wbp.parser.entryPoint
      */
-    public GameUI(GameView gameView) {
+    public GameUI(WumpusWorldConfiguration wumpusWorldConfiguration, GameView gameView) {
+        this(wumpusWorldConfiguration);
         this.gameView = gameView;
         if (this.gameView == null ) {
                 this.gameView = new GameView();
@@ -90,7 +95,7 @@ public class GameUI {
     private void initialize() {
         frame = new JFrame( "Wumpus World" );
         frame.getContentPane().setBackground( Color.WHITE );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setDefaultCloseOperation(wumpusWorldConfiguration.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
 
         frame.setSize( 926, 603 );
         frame.getContentPane().setLayout( new MigLayout("", "[540px:n][grow,fill]", "[30px,top][300px,top][100px,top][grow]") );
@@ -142,6 +147,8 @@ public class GameUI {
         JPanel blank = new JPanel();
         blank.setBackground(Color.WHITE);
         frame.getContentPane().add(blank, "cell 0 3,grow");
+
+        frame.setLocationRelativeTo(null); // Center in screen
         frame.setVisible( true );
         
         updateCave();

@@ -1,6 +1,9 @@
 package org.drools.games.pong;
 
 public class PongConfiguration {
+
+    private boolean exitOnClose;
+
     private int tableWidth;
     private int tableHeight;
     private int padding;
@@ -31,6 +34,14 @@ public class PongConfiguration {
         setBatSpeed( 15 );
         setPadding( 10 );
         setNet( 2, 20, 10 );
+    }
+
+    public boolean isExitOnClose() {
+        return exitOnClose;
+    }
+
+    public void setExitOnClose(boolean exitOnClose) {
+        this.exitOnClose = exitOnClose;
     }
 
     public int getTableWidth() {

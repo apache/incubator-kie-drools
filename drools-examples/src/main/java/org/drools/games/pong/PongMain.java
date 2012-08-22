@@ -20,11 +20,13 @@ public class PongMain {
      * @param args
      */
     public static void main(String[] args) {
-        PongMain pongMain = new PongMain();
-        pongMain.init();
+        new PongMain().init(true);
     }
-    
-    public void init() {
+
+    public PongMain() {
+    }
+
+    public void init(boolean exitOnClose) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.batch().add( newClassPathResource( "init.drl", getClass()  ), DRL )
@@ -49,6 +51,7 @@ public class PongMain {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         //ksession.addEventListener( new DebugAgendaEventListener() );
         PongConfiguration pconf = new PongConfiguration();
+        pconf.setExitOnClose(exitOnClose);
         ksession.setGlobal("pconf", pconf);
         
 //        ksession.addEventListener( new DefaultAgendaEventListener() {
