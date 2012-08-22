@@ -68,22 +68,22 @@ public class DroolsExamplesApp extends JFrame {
 
         contentPane.add(new JButton(new AbstractAction("SudokuExample") {
             public void actionPerformed(ActionEvent e) {
-                SudokuExample.main(new String[0]);
+                new SudokuExample().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("PetStoreExample") {
             public void actionPerformed(ActionEvent e) {
-                PetStoreExample.main(new String[0]);
+                new PetStoreExample().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("PacmanExample") {
             public void actionPerformed(ActionEvent e) {
-                PacmanExample.main(new String[0]);
+                new PacmanExample().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("TextAdventure") {
             public void actionPerformed(ActionEvent e) {
-                TextAdventure.main(new String[0]);
+                new TextAdventure().init(false);
             }
         }));
         
