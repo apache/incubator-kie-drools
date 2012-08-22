@@ -10,19 +10,21 @@ import org.drools.adventures.AdventureFrame.JComboBoxChannel;
 
 public class TextAdventure {
 
-    public static void main(String[] args) {              
+    public static void main(String[] args) {
+        new TextAdventure().init(true);
+    }
+
+    public TextAdventure() {
+    }
+
+    public void init(final boolean exitOnClose) {
         
         EventQueue.invokeLater( new Runnable() {
             public void run() {
-                try {
-                    GameEngine engine = new GameEngine();
-                    engine.createGame();
-                    
-                    
-                    TextAdventure.createFrame(engine, JFrame.EXIT_ON_CLOSE);
-                } catch ( Exception e ) {
-                    e.printStackTrace();
-                }
+                GameEngine engine = new GameEngine();
+                engine.createGame();
+
+                createFrame(engine, exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
             }
         } );
         

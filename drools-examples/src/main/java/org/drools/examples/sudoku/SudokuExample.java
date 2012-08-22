@@ -32,6 +32,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import org.drools.KnowledgeBase;
 import org.drools.examples.sudoku.rules.DroolsUtil;
@@ -78,15 +79,13 @@ public class SudokuExample implements ActionListener {
     private JFileChooser fileChooser;
 
     public static void main(String[] args) {
-        try {
-            @SuppressWarnings("unused")
-            SudokuExample main = new SudokuExample();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new SudokuExample().init(true);
     }
 
-    public SudokuExample() throws Exception {
+    public SudokuExample() {
+    }
+
+    public void init(boolean exitOnClose) {
         mainFrame = new JFrame("Drools Sudoku Example");
         for (String sampleName : SudokuGridSamples.getInstance().getSampleNames()){
             JMenuItem menuItem = new JMenuItem(sampleName);
@@ -103,7 +102,7 @@ public class SudokuExample implements ActionListener {
         sudokuGridView = new SudokuGridView();
 
         KnowledgeBase kBase = DroolsUtil.readKnowledgeBase("/org/drools/examples/sudoku/sudoku.drl",
-        "/org/drools/examples/sudoku/validate.drl");
+                "/org/drools/examples/sudoku/validate.drl");
         sudoku = new Sudoku( kBase );
 
         mainFrame.setLayout(borderLayout);
@@ -118,8 +117,9 @@ public class SudokuExample implements ActionListener {
         dumpButton.addActionListener(this);
         mainFrame.add(BorderLayout.SOUTH, buttonPanel);
         mainFrame.setSize(400,400);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setResizable( false );       
+        mainFrame.setLocationRelativeTo(null); // Center in screen
+        mainFrame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
+        mainFrame.setResizable( false );
         mainFrame.setVisible(true);
         sudokuGridView.setModel(sudoku);
     }
@@ -195,7 +195,11 @@ public class SudokuExample implements ActionListener {
             }
 
         } else if (ev.getSource().equals(exitMenuItem)) {
-            System.exit(0);
+            if (mainFrame.getDefaultCloseOperation() == WindowConstants.EXIT_ON_CLOSE) {
+                System.exit(0);
+            } else {
+                mainFrame.dispose();
+            }
 
         } else if (ev.getSource() instanceof JMenuItem) {
             JMenuItem menuItem = (JMenuItem) ev.getSource();
