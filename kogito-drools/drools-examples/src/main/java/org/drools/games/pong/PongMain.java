@@ -13,6 +13,10 @@ import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.ConsequenceException;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PongMain {
 
@@ -69,8 +73,18 @@ public class PongMain {
 ////            }                      
 //            
 //        });
-        
-        ksession.fireUntilHalt();
-    }    
+
+        runKSession(ksession);
+    }
+
+    public void runKSession(final StatefulKnowledgeSession ksession) {
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        executorService.submit(new Runnable() {
+            public void run() {
+                // run forever
+                ksession.fireUntilHalt();
+            }
+        });
+    }
 
 }
