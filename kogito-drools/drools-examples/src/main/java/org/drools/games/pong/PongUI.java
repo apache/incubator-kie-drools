@@ -80,7 +80,7 @@ public class PongUI {
         
         frame = new JFrame();
         frame.setResizable(false);
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setDefaultCloseOperation(pconf.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout( new BorderLayout() );
 
         tablePanel = new TablePanel( this );
@@ -89,6 +89,7 @@ public class PongUI {
         frame.getContentPane().add( tablePanel );
         tablePanel.setLayout( new BorderLayout( ) );
         frame.pack();
+        frame.setLocationRelativeTo(null); // Center in screen
 
         frame.setVisible( true );
         
