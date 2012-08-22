@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -170,18 +172,13 @@ public class PacmanExample {
     }
 
     public void runKSession() {
-        Runnable runnable = new Runnable() {
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        executorService.submit(new Runnable() {
             public void run() {
-                try {
-                    // run forever
-                    ksession.fireUntilHalt();
-                } catch ( ConsequenceException e ) {
-                    throw e;
-                }
+                // run forever
+                ksession.fireUntilHalt();
             }
-        };
-        Thread thread = new Thread(runnable); // In java 6 use Executors instead
-        thread.start();
+        });
     }
 
 }
