@@ -28,22 +28,6 @@ public class PongUI {
     StatefulKnowledgeSession ksession;
 
     /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater( new Runnable() {
-            public void run() {
-                try {
-                    PongUI window = new PongUI();
-                    window.frame.setVisible( true );
-                } catch ( Exception e ) {
-                    e.printStackTrace();
-                }
-            }
-        } );
-    }
-
-    /**
      * @wbp.parser.entryPoint
      */
     public PongUI() {
