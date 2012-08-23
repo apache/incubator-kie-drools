@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_FNr5sGhrEeGMT7sG7hEI2w" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:process id="defaultPackage.TimerProcess" drools:packageName="defaultPackage" name="TimerProcess" isExecutable="true">
+    <bpmn2:scriptTask id="_F3AC9894-09DE-4843-B067-10C517748321" name="Start" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_A3317C84-4084-4AD3-AEC2-B05731E3F8FB</bpmn2:incoming>
+      <bpmn2:outgoing>_D50AB330-24FD-4949-A212-4345842ACBFC</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("timer process start");]]></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:intermediateCatchEvent id="_F85E4F62-3894-464A-B5A8-5BA641BF8981" drools:bgcolor="#ffffff" drools:boundaryca="false" name="">
+      <bpmn2:incoming>_D50AB330-24FD-4949-A212-4345842ACBFC</bpmn2:incoming>
+      <bpmn2:outgoing>_4428B579-D616-4B1D-BCEC-0ECD6E062822</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_FNr5sWhrEeGMT7sG7hEI2w">
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_FNr5smhrEeGMT7sG7hEI2w">10000</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="_D50AB330-24FD-4949-A212-4345842ACBFC" sourceRef="_F3AC9894-09DE-4843-B067-10C517748321" targetRef="_F85E4F62-3894-464A-B5A8-5BA641BF8981"/>
+    <bpmn2:scriptTask id="_E76AD186-6FA6-4378-B45B-C8F73E2C497C" name="End" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_4428B579-D616-4B1D-BCEC-0ECD6E062822</bpmn2:incoming>
+      <bpmn2:outgoing>_85A5CC49-2B8B-440F-9F1D-145C7D807F6B</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("timer process end");]]></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_4428B579-D616-4B1D-BCEC-0ECD6E062822" sourceRef="_F85E4F62-3894-464A-B5A8-5BA641BF8981" targetRef="_E76AD186-6FA6-4378-B45B-C8F73E2C497C"/>
+    <bpmn2:endEvent id="_7232FBCC-81DD-4DEF-91DD-5D1D415117F8" drools:bgcolor="#ffffff" name="">
+      <bpmn2:incoming>_85A5CC49-2B8B-440F-9F1D-145C7D807F6B</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_85A5CC49-2B8B-440F-9F1D-145C7D807F6B" sourceRef="_E76AD186-6FA6-4378-B45B-C8F73E2C497C" targetRef="_7232FBCC-81DD-4DEF-91DD-5D1D415117F8"/>
+    <bpmn2:startEvent id="_F9AC8B12-8E75-49B5-B799-292F66270627" drools:bgcolor="#ffffff" name="">
+      <bpmn2:outgoing>_A3317C84-4084-4AD3-AEC2-B05731E3F8FB</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_FNr5s2hrEeGMT7sG7hEI2w">
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_FNr5tGhrEeGMT7sG7hEI2w">2000</bpmn2:timeCycle>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="_A3317C84-4084-4AD3-AEC2-B05731E3F8FB" sourceRef="_F9AC8B12-8E75-49B5-B799-292F66270627" targetRef="_F3AC9894-09DE-4843-B067-10C517748321"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_FNr5tWhrEeGMT7sG7hEI2w">
+    <bpmndi:BPMNPlane id="_FNr5tmhrEeGMT7sG7hEI2w" bpmnElement="defaultPackage.TimerProcess">
+      <bpmndi:BPMNShape id="_FNr5t2hrEeGMT7sG7hEI2w" bpmnElement="_F3AC9894-09DE-4843-B067-10C517748321">
+        <dc:Bounds height="80.0" width="100.0" x="182.0" y="104.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_FNr5uGhrEeGMT7sG7hEI2w" bpmnElement="_F85E4F62-3894-464A-B5A8-5BA641BF8981">
+        <dc:Bounds height="30.0" width="30.0" x="327.0" y="129.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_FNr5uWhrEeGMT7sG7hEI2w" bpmnElement="_D50AB330-24FD-4949-A212-4345842ACBFC">
+        <di:waypoint xsi:type="dc:Point" x="232.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="342.0" y="144.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_FNr5umhrEeGMT7sG7hEI2w" bpmnElement="_E76AD186-6FA6-4378-B45B-C8F73E2C497C">
+        <dc:Bounds height="80.0" width="100.0" x="402.0" y="104.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_FNsgwGhrEeGMT7sG7hEI2w" bpmnElement="_4428B579-D616-4B1D-BCEC-0ECD6E062822">
+        <di:waypoint xsi:type="dc:Point" x="342.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="452.0" y="144.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_FNsgwWhrEeGMT7sG7hEI2w" bpmnElement="_7232FBCC-81DD-4DEF-91DD-5D1D415117F8">
+        <dc:Bounds height="28.0" width="28.0" x="531.0" y="129.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_FNsgwmhrEeGMT7sG7hEI2w" bpmnElement="_85A5CC49-2B8B-440F-9F1D-145C7D807F6B">
+        <di:waypoint xsi:type="dc:Point" x="452.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="545.0" y="143.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_FNsgw2hrEeGMT7sG7hEI2w" bpmnElement="_F9AC8B12-8E75-49B5-B799-292F66270627">
+        <dc:Bounds height="30.0" width="30.0" x="75.0" y="129.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_FNsgxGhrEeGMT7sG7hEI2w" bpmnElement="_A3317C84-4084-4AD3-AEC2-B05731E3F8FB">
+        <di:waypoint xsi:type="dc:Point" x="90.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="232.0" y="144.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

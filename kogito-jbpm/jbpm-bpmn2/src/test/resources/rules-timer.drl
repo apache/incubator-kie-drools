@@ -1,0 +1,12 @@
+package org.jbpm.rules;
+
+global java.util.List list;
+
+rule "Start Timer"
+       timer (int:2000 2000) 
+    when
+
+    then
+        System.out.println(" Executing Rule ");
+        list.add("Rule Executed");
+end
