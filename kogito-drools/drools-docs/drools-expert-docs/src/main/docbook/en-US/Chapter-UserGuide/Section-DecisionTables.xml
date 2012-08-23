@@ -339,6 +339,12 @@ end
         </tgroup>
       </table>
 
+      <warning>
+        <para>In some locales, MS Office, LibreOffice and OpenOffice will encode a double quoth <literal>"</literal>
+        differently, which will cause a compilation error. The difference is often hard to see. For example:
+        <literal>“A”</literal> will fail, but <literal>"A"</literal> will work.</para>
+      </warning>
+
       <para>For defining rule attributes that apply to all rules in the generated DRL file you can use any of the
       entries in the following table. Notice, however, that the proper keyword must be used. Also, each of these
       attributes may be used only once.</para>
