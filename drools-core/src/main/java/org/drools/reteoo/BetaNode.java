@@ -345,9 +345,9 @@ public abstract class BetaNode extends LeftTupleSource
             removeTupleSink( (LeftTupleSink) node );
         }
         if ( !this.isInUse() || context.getCleanupAdapter() != null ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+            for (InternalWorkingMemory workingMemory : workingMemories) {
                 BetaMemory memory = null;
-                Object object = workingMemories[i].getNodeMemory( this );
+                Object object = workingMemory.getNodeMemory( this );
                 
                 // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
@@ -356,6 +356,7 @@ public abstract class BetaNode extends LeftTupleSource
                 } else {
                     memory = ( BetaMemory ) object;
                 }
+/*
                 
                 FastIterator it = memory.getLeftTupleMemory().fullFastIterator(); 
                 for ( LeftTuple leftTuple = getFirstLeftTuple( memory.getLeftTupleMemory(), it ); leftTuple != null; ) {
@@ -363,11 +364,21 @@ public abstract class BetaNode extends LeftTupleSource
                     if( context.getCleanupAdapter() != null ) {                        
                         for( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getLeftParentNext() ) {
                             if( child.getLeftTupleSink() == this ) {
+*/
+
+                FastIterator it = memory.getLeftTupleMemory().fullFastIterator();
+                for (LeftTuple leftTuple = getFirstLeftTuple(memory.getLeftTupleMemory(), it); leftTuple != null; ) {
+                    LeftTuple tmp = (LeftTuple) it.next(leftTuple);
+                    if (context.getCleanupAdapter() != null) {
+                        LeftTuple child;
+                        while ( (child = leftTuple.getFirstChild()) != null ) {
+                            if (child.getLeftTupleSink() == this) {
                                 // this is a match tuple on collect and accumulate nodes, so just unlink it
-                                leftTuple.unlinkFromLeftParent();
-                                leftTuple.unlinkFromRightParent();
+                                child.unlinkFromLeftParent();
+                                child.unlinkFromRightParent();
                             } else {
-                                context.getCleanupAdapter().cleanUp( child, workingMemories[i] );
+                                // the cleanupAdapter will take care of the unlinking
+                                context.getCleanupAdapter().cleanUp(child, workingMemory);
                             }
                         }
                     }
@@ -380,7 +391,7 @@ public abstract class BetaNode extends LeftTupleSource
                 // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
                 if ( object instanceof AccumulateMemory ) {
-                    ((AccumulateNode) this).doRemove( workingMemories[i], ( AccumulateMemory ) object );
+                    ((AccumulateNode) this).doRemove( workingMemory, ( AccumulateMemory ) object );
                 }
 
                 if( ! this.isInUse() ) {
@@ -403,7 +414,7 @@ public abstract class BetaNode extends LeftTupleSource
                         rightTuple.unlinkFromRightParent();                        
                         rightTuple = tmp;                        
                     }
-                    workingMemories[i].clearNodeMemory( this );
+                    workingMemory.clearNodeMemory( this );
                 }
             }
             context.setCleanupAdapter( null );
