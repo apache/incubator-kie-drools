@@ -85,4 +85,11 @@ public class EvalDescr extends BaseDescr
         return content.toString();
     }
 
+    public static final EvalDescr TRUE = new DummyEvalDescr();
+
+    private static class DummyEvalDescr extends EvalDescr {
+        private DummyEvalDescr() {
+            super("true");
+        }
+    }
 }

@@ -34,7 +34,7 @@ public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilde
 
     private Map<String, Object> consequenceContext(RuleBuildContext context, String consequenceName) {
         String className = consequenceName + "Consequence";
-        Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
+        Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule(), consequenceName);
         JavaAnalysisResult analysis = createJavaAnalysisResult(context, consequenceName, decls);
 
         if ( analysis == null ) {

@@ -183,18 +183,25 @@ public class DeclarationScopeResolver {
         return false;
     }
 
+    public Map<String, Declaration> getDeclarations(Rule rule) {
+        return getDeclarations(rule, Rule.DEFAULT_CONSEQUENCE_NAME);
+    }
+
     /**
      * Return all declarations scoped to the current
      * RuleConditionElement in the build stack
-     * 
+     *
      * @return
      */
-    public Map<String, Declaration> getDeclarations(Rule rule) {
+    public Map<String, Declaration> getDeclarations(Rule rule, String consequenceName) {
         final Map<String, Declaration> declarations = new HashMap<String, Declaration>();
         for (RuleConditionElement aBuildStack : this.buildStack) {
             // this may be optimized in the future to only re-add elements at
             // scope breaks, like "NOT" and "EXISTS"
-            declarations.putAll(aBuildStack.getInnerDeclarations());
+            Map<String,Declaration> innerDeclarations = aBuildStack instanceof GroupElement ?
+                    ((GroupElement)aBuildStack).getInnerDeclarations(consequenceName) :
+                    aBuildStack.getInnerDeclarations();
+            declarations.putAll(innerDeclarations);
         }
         if ( null != rule.getParent() ) {
             return getAllExtendedDeclaration( rule.getParent(),

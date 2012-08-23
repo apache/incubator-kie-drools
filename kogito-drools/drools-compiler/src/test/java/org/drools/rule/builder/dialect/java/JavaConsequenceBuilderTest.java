@@ -51,7 +51,7 @@ public class JavaConsequenceBuilderTest {
         ruleDescr.setConsequence( consequence );
         
         for ( Entry<String, Object> entry : namedConsequences.entrySet() ) {
-            ruleDescr.getNamedConsequences().put( entry.getKey(), entry.getValue() );
+            ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
         Rule rule = new Rule( ruleDescr.getName() );
@@ -87,7 +87,7 @@ public class JavaConsequenceBuilderTest {
         
         context.getBuildStack().push( rule.getLhs() );
         
-        context.getDialect().getConsequenceBuilder().build( context, "default" );
+        context.getDialect().getConsequenceBuilder().build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
         for ( String name : namedConsequences.keySet() ) {
             context.getDialect().getConsequenceBuilder().build( context, name );
         }

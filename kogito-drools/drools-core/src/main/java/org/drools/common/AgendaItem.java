@@ -38,6 +38,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -151,6 +152,11 @@ public class AgendaItem
      */
     public Rule getRule() {
         return this.rtn.getRule();
+    }
+
+    public Consequence getConsequence() {
+        String consequenceName = rtn.getConsequenceName();
+        return consequenceName.equals(Rule.DEFAULT_CONSEQUENCE_NAME) ? rtn.getRule().getConsequence() : rtn.getRule().getNamedConsequence(consequenceName);
     }
 
     /**

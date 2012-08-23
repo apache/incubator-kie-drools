@@ -44,6 +44,8 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     private String                      className;
 
+    private List<String>                errors;
+
     public RuleDescr() {
         this( null,
               "" );
@@ -156,6 +158,17 @@ public class RuleDescr extends AnnotatedBaseDescr
         return this.namedConsequence;
     }
 
+    public void addNamedConsequences(String name, Object consequence) {
+        if ( namedConsequence.containsKey(name) ) {
+            if (errors == null) {
+                errors = new ArrayList<String>();
+            }
+            errors.add("Duplicate consequence name: " + name);
+        } else {
+            namedConsequence.put(name, consequence);
+        }
+    }
+
     public void setConsequenceLocation(final int line,
                                        final int pattern) {
         this.consequenceLine = line;
@@ -198,9 +211,16 @@ public class RuleDescr extends AnnotatedBaseDescr
     public boolean isQuery() {
         return false;
     }
-    
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public boolean hasErrors() {
+        return errors != null;
+    }
+
     public String toString() {
         return "[Rule name='" + this.name + "']";
     }
-    
 }

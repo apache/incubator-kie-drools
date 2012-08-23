@@ -3,6 +3,7 @@ package org.drools.testframework;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drools.spi.Consequence;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,6 +111,10 @@ class MockActivation
 
     public Rule getRule() {
         return new Rule( ruleName );
+    }
+
+    public Consequence getConsequence() {
+        return getRule().getConsequence();
     }
 
     public ActivationNode getActivationNode() {

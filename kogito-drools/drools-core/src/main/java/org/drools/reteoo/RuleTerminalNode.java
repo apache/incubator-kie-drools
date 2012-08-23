@@ -16,13 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
-
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
@@ -44,7 +37,12 @@ import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.time.impl.ExpressionIntervalTimer;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -84,6 +82,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     private int                           leftInputOtnId;
 
+    private String                        consequenceName;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -114,16 +114,9 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
 
-        Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
-        this.declarations = new Declaration[rule.getRequiredDeclarations().length];
-        int i = 0;
-        for ( String str : rule.getRequiredDeclarations() ) {
-            this.declarations[i++] = decls.get( str );
-        }
-        Arrays.sort( this.declarations, SortDeclarations.instance );
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
-        
-        setDeclarations(decls);
+
+        setDeclarations( this.subrule.getOuterDeclarations() );
 
         initDeclaredMask(context);        
         initInferredMask();
@@ -194,10 +187,11 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         timerDelayDeclarations = ( Declaration[]) in.readObject();
         timerPeriodDeclarations = ( Declaration[]) in.readObject();
         salienceDeclarations = ( Declaration[]) in.readObject();
-        enabledDeclarations = ( Declaration[]) in.readObject();        
-        
+        enabledDeclarations = ( Declaration[]) in.readObject();
+        consequenceName = (String) in.readObject();
+
         fireDirect = rule.getActivationListener().equals( "direct" );
-        
+
         leftInputOtnId = in.readInt();
     }
 
@@ -214,8 +208,9 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         out.writeObject( timerDelayDeclarations );
         out.writeObject( timerPeriodDeclarations );
         out.writeObject( salienceDeclarations );
-        out.writeObject( enabledDeclarations );  
-        
+        out.writeObject( enabledDeclarations );
+        out.writeObject( consequenceName );
+
         out.writeLong(leftInputOtnId);
     }
 
@@ -385,11 +380,17 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     }
 
-    public void setDeclarations(Declaration[] declarations) {
-        this.declarations = declarations;
-    }
-
     public Declaration[] getDeclarations() {
+        if ( this.declarations == null ) {
+            Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
+            String[] requiredDeclarations = rule.getRequiredDeclarationsForConsequence(getConsequenceName());
+            this.declarations = new Declaration[requiredDeclarations.length];
+            int i = 0;
+            for ( String str : requiredDeclarations ) {
+                declarations[i++] = decls.get( str );
+            }
+            Arrays.sort( this.declarations, SortDeclarations.instance );
+        }
         return this.declarations;
     }
     
@@ -425,6 +426,13 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.enabledDeclarations = enabledDeclarations;
     }
 
+    public String getConsequenceName() {
+        return consequenceName == null ? Rule.DEFAULT_CONSEQUENCE_NAME : consequenceName;
+    }
+
+    public void setConsequenceName(String consequenceName) {
+        this.consequenceName = consequenceName;
+    }
 
 
     public static class SortDeclarations
@@ -483,12 +491,15 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             return true;
         }
 
-        if ( object == null || !(object instanceof RuleTerminalNode) ) {
+        if ( !(object instanceof RuleTerminalNode) ) {
             return false;
         }
 
         final RuleTerminalNode other = (RuleTerminalNode) object;
-        return this.rule.equals(other.rule);
+        if ( !this.rule.equals(other.rule) ) {
+            return false;
+        }
+        return consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName);
     }
 
     public short getType() {
@@ -498,7 +509,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public static class RTNCleanupAdapter
             implements
             CleanupAdapter {
-        private RuleTerminalNode node;
+        private final RuleTerminalNode node;
 
         public RTNCleanupAdapter(RuleTerminalNode node) {
             this.node = node;

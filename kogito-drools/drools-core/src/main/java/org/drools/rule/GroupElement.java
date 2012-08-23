@@ -105,17 +105,25 @@ public class GroupElement extends ConditionalElement
         return this.type.getInnerDeclarations( this.children );
     }
 
+    public Map<String,Declaration> getInnerDeclarations(String consequenceName) {
+        return this.type.getInnerDeclarations( this.children, consequenceName );
+    }
+
     /**
      * @inheritDoc
      */
     public Map<String, Declaration> getOuterDeclarations() {
+        return getOuterDeclarations( Rule.DEFAULT_CONSEQUENCE_NAME );
+    }
+
+    public Map<String, Declaration> getOuterDeclarations(String consequenceName) {
         if ( outerDeclrarations != null ) {
             return outerDeclrarations;
         } else if ( root ) {
-            outerDeclrarations = this.type.getOuterDeclarations( this.children );
+            outerDeclrarations = this.type.getOuterDeclarations( this.children, consequenceName );
             return outerDeclrarations;
         }
-        return this.type.getOuterDeclarations( this.children );
+        return this.type.getOuterDeclarations( this.children, consequenceName );
     }
 
     /**
@@ -379,38 +387,81 @@ public class GroupElement extends ConditionalElement
          * Returns a map of declarations that are
          * visible inside of an element of this type
          */
-        public Map<String, Declaration> getInnerDeclarations(List<RuleConditionElement> children) {
-            return getDeclarations(children, ScopeDelimiter.NEVER);
+        private Map<String, Declaration> getInnerDeclarations(List<RuleConditionElement> children) {
+            return getInnerDeclarations(children, Rule.DEFAULT_CONSEQUENCE_NAME);
+        }
+
+        /**
+         * Returns a map of declarations that are
+         * visible inside of an element of this type
+         * for the consequence with the given name
+         */
+        private Map<String, Declaration> getInnerDeclarations(List<RuleConditionElement> children, String consequenceName) {
+            return getDeclarations(children, ScopeDelimiter.NEVER, consequenceName);
         }
 
         /**
          * Returns a map of declarations that are
          * visible outside of an element of this type
          */
-        public Map<String, Declaration> getOuterDeclarations(List<RuleConditionElement> children) {
-            return getDeclarations(children, this.scopeDelimiter);
+        private Map<String, Declaration> getOuterDeclarations(List<RuleConditionElement> children, String consequenceName) {
+            return getDeclarations(children, this.scopeDelimiter, consequenceName);
         }
 
-        private Map<String, Declaration> getDeclarations(List<RuleConditionElement> children, ScopeDelimiter scopeDelimiter) {
+        private Map<String, Declaration> getDeclarations(List<RuleConditionElement> children, ScopeDelimiter scopeDelimiter, String consequenceName) {
             if ( scopeDelimiter == ScopeDelimiter.ALWAYS || children.isEmpty() ) {
                 return Collections.EMPTY_MAP;
             } else if ( children.size() == 1 ) {
-                return children.get(0).getOuterDeclarations();
+                return getOuterDeclarations(children.get(0), consequenceName);
             } else {
                 Map<String, Declaration> declarations = new HashMap<String, Declaration>();
                 if ( scopeDelimiter == ScopeDelimiter.NEVER ) {
-                    for ( RuleConditionElement re : children ) {
-                        declarations.putAll( re.getOuterDeclarations() );
+                    for ( RuleConditionElement rce : children ) {
+                        declarations.putAll( getOuterDeclarations( rce, consequenceName ) );
+                        if ( isConsequenceInvoker(rce, consequenceName) ) {
+                            break;
+                        }
                     }
                 } else if ( scopeDelimiter == ScopeDelimiter.CONSENSUS ) {
                     Iterator<RuleConditionElement> i = children.iterator();
-                    declarations.putAll( i.next().getOuterDeclarations() );
+                    RuleConditionElement rce = i.next();
+                    Map<String, Declaration> elementDeclarations = getOuterDeclarations( rce, consequenceName );
+                    if ( isConsequenceInvoker(rce, consequenceName) ) {
+                        return elementDeclarations;
+                    }
+                    declarations.putAll( elementDeclarations );
                     while ( i.hasNext() ) {
-                        declarations.keySet().retainAll( i.next().getOuterDeclarations().keySet() );
+                        rce = i.next();
+                        elementDeclarations = getOuterDeclarations( rce, consequenceName );
+                        if ( isConsequenceInvoker(rce, consequenceName) ) {
+                            return elementDeclarations;
+                        }
+                        declarations.keySet().retainAll( elementDeclarations.keySet() );
                     }
                 }
                 return declarations;
             }
+        }
+
+        private Map<String, Declaration> getOuterDeclarations(RuleConditionElement rce, String consequenceName) {
+            return rce instanceof GroupElement ? ((GroupElement) rce).getOuterDeclarations(consequenceName) : rce.getOuterDeclarations();
+        }
+
+        private boolean isConsequenceInvoker(RuleConditionElement rce, String consequenceName) {
+            if ( consequenceName == Rule.DEFAULT_CONSEQUENCE_NAME ) {
+                return false;
+            }
+            if ( rce instanceof NamedConsequenceInvoker && ((NamedConsequenceInvoker)rce).invokesConsequence(consequenceName) ) {
+                return true;
+            }
+            if ( rce instanceof GroupElement ) {
+                for ( RuleConditionElement child : ((GroupElement) rce).getChildren() ) {
+                    if ( isConsequenceInvoker(child, consequenceName) ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /**

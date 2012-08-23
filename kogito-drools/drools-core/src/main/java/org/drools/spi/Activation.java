@@ -46,7 +46,8 @@ public interface Activation
      *     The rule that was activated.
      */
     Rule getRule();
-    
+
+    Consequence getConsequence();
     
     int getSalience();
 

@@ -37,6 +37,7 @@ import org.drools.lang.api.AttributeSupportBuilder;
 import org.drools.lang.api.BehaviorDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.CollectDescrBuilder;
+import org.drools.lang.api.ConditionalBranchDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
@@ -49,6 +50,7 @@ import org.drools.lang.api.ForallDescrBuilder;
 import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
+import org.drools.lang.api.NamedConsequenceDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.PatternContainerDescrBuilder;
 import org.drools.lang.api.PatternDescrBuilder;
@@ -58,6 +60,7 @@ import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.rule.ConditionalBranch;
 
 /**
  * This is a class to hold all the helper functions/methods used
@@ -757,6 +760,14 @@ public class ParserHelper {
                 BehaviorDescrBuilder< ? > behavior = ((PatternDescrBuilder< ? >) ctxBuilder).behavior();
                 setStart( behavior );
                 return (T) behavior;
+            } else if ( NamedConsequenceDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                NamedConsequenceDescrBuilder< ? > namedConsequence = ((CEDescrBuilder< ? , ? >) ctxBuilder).namedConsequence();
+                setStart( namedConsequence );
+                return (T) namedConsequence;
+            } else if ( ConditionalBranchDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                ConditionalBranchDescrBuilder< ? > conditionalBranch = ((CEDescrBuilder< ? , ? >) ctxBuilder).conditionalBranch();
+                setStart( conditionalBranch );
+                return (T) conditionalBranch;
             }
         }
         return null;
@@ -771,8 +782,10 @@ public class ParserHelper {
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
                    AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || 
-                   BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   ForallDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   BehaviorDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   ConditionalBranchDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   NamedConsequenceDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd( builder );

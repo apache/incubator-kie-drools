@@ -75,7 +75,9 @@ public final class JavaRuleBuilderHelper {
                                                          null,
                                                          KnowledgeHelper.class );
 
-        String consequenceStr = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
+        String consequenceStr = ( Rule.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) ?
+                (String) ruleDescr.getConsequence() :
+                (String) ruleDescr.getNamedConsequences().get( consequenceName );
         consequenceStr = consequenceStr + "\n";
 
         return ( JavaAnalysisResult) context.getDialect().analyzeBlock( context,
@@ -102,7 +104,7 @@ public final class JavaRuleBuilderHelper {
         for ( int i = 0; i < declrStr.length; i++) {
             declrStr[i] = declarations[i].getIdentifier();
         }
-        context.getRule().setRequiredDeclarations( declrStr );
+        context.getRule().setRequiredDeclarationsForConsequence( consequenceName, declrStr );
 
         final Map<String, Object> map = createVariableContext( className,
                                                                consequenceText,
@@ -210,10 +212,10 @@ public final class JavaRuleBuilderHelper {
     public static void generateMethodTemplate(final String ruleTemplate, final RuleBuildContext context, final Map vars) {
         TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
 
-        context.getMethods().add(TemplateRuntime.execute(registry.getNamedTemplate(ruleTemplate),
-                null,
-                new MapVariableResolverFactory(vars),
-                registry));
+        context.addMethod((String) TemplateRuntime.execute( registry.getNamedTemplate(ruleTemplate),
+                                                            null,
+                                                            new MapVariableResolverFactory(vars),
+                                                            registry) );
     }
 
     public static void generateInvokerTemplate(final String invokerTemplate,

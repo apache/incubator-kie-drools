@@ -32,12 +32,14 @@ import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.WindowNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
+import org.drools.rule.ConditionalBranch;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Forall;
 import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.NamedConsequence;
 import org.drools.rule.Pattern;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
@@ -74,6 +76,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new EntryPointBuilder() );
         this.utils.addBuilder( WindowReference.class, 
                                new WindowReferenceBuilder() );
+        this.utils.addBuilder( NamedConsequence.class,
+                               new NamedConsequenceBuilder() );
+        this.utils.addBuilder( ConditionalBranch.class,
+                               new ConditionalBranchBuilder() );
     }
 
     /**
@@ -139,9 +145,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
     }
 
     private TerminalNode addSubRule( final BuildContext context,
-            final GroupElement subrule,
-            final int subruleIndex,
-            final Rule rule ) throws InvalidPatternException {
+                                     final GroupElement subrule,
+                                     final int subruleIndex,
+                                     final Rule rule ) throws InvalidPatternException {
         // gets the appropriate builder
         final ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
 

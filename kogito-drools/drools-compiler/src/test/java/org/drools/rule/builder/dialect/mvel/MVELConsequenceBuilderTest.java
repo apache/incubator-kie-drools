@@ -99,7 +99,7 @@ public class MVELConsequenceBuilderTest {
         context.setDeclarationResolver( declarationResolver );
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        builder.build( context, "default" );
+        builder.build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
 
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
@@ -176,7 +176,7 @@ public class MVELConsequenceBuilderTest {
         context.setDeclarationResolver( declarationResolver );
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        builder.build( context, "default" );
+        builder.build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -355,7 +355,7 @@ public class MVELConsequenceBuilderTest {
         ruleDescr.addAttribute( new AttributeDescr("dialect", "mvel") );
         
         for ( Entry<String, Object> entry : namedConsequences.entrySet() ) {
-            ruleDescr.getNamedConsequences().put( entry.getKey(), entry.getValue() );
+            ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
         Rule rule = new Rule( ruleDescr.getName() );
@@ -376,7 +376,7 @@ public class MVELConsequenceBuilderTest {
                                         reg.getDialect( pkgRegistry.getDialect() ) );
         context.getBuildStack().push( rule.getLhs() );
         
-        context.getDialect().getConsequenceBuilder().build( context, "default" );
+        context.getDialect().getConsequenceBuilder().build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
         for ( String name : namedConsequences.keySet() ) {
             context.getDialect().getConsequenceBuilder().build( context, name );
         }

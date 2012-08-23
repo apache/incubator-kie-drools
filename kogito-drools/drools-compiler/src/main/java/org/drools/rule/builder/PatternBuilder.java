@@ -1197,10 +1197,10 @@ public class PatternBuilder
         }
 
         createImplicitBindings( context,
-                pattern,
-                analysis.getNotBoundedIdentifiers(),
-                analysis.getBoundIdentifiers(),
-                factDeclarations );
+                                pattern,
+                                analysis.getNotBoundedIdentifiers(),
+                                analysis.getBoundIdentifiers(),
+                                factDeclarations );
 
         Declaration[][] usedDeclarations = new Declaration[2][];
         usedDeclarations[0] = tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
@@ -1309,11 +1309,11 @@ public class PatternBuilder
      * @param unboundIdentifiers
      * @param factDeclarations
      */
-    protected static void createImplicitBindings( final RuleBuildContext context,
-                                         final Pattern pattern,
-                                         final Set<String> unboundIdentifiers,
-                                         final BoundIdentifiers boundIdentifiers,
-                                         final List<Declaration> factDeclarations ) {
+    public static void createImplicitBindings( final RuleBuildContext context,
+                                               final Pattern pattern,
+                                               final Set<String> unboundIdentifiers,
+                                               final BoundIdentifiers boundIdentifiers,
+                                               final List<Declaration> factDeclarations ) {
         for ( Iterator<String> it = unboundIdentifiers.iterator(); it.hasNext(); ) {
             String identifier = it.next();
             Declaration declaration = createDeclarationObject( context,

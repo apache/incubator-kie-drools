@@ -11232,8 +11232,8 @@ public class MiscTest extends CommonTestMethodBase {
         
         assertEquals( 3, res.size() );
         assertTrue( res.contains( "mark" ) );
-        assertTrue( res.contains( "mario" ) );
-        assertTrue( res.contains( 44 ) );
+        assertTrue(res.contains("mario"));
+        assertTrue(res.contains(44));
     }
 
     @Test
@@ -11262,9 +11262,9 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert( new Person() );
-        ksession.insert( new Cheese("gorgonzola") );
-        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup( "group1" );
+        ksession.insert(new Person());
+        ksession.insert(new Cheese("gorgonzola"));
+        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("group1");
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }

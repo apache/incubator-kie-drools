@@ -1,5 +1,6 @@
 package org.drools.core.reteoo;
 
+import org.drools.spi.Consequence;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -306,6 +307,11 @@ public class BinaryHeapQueueTest {
         }
 
         public Rule getRule() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public Consequence getConsequence() {
             // TODO Auto-generated method stub
             return null;
         }

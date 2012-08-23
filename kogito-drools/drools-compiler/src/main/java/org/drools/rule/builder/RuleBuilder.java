@@ -100,13 +100,12 @@ public class RuleBuilder {
             // do not build the consequence if we have a query
 
             ConsequenceBuilder consequenceBuilder = context.getDialect().getConsequenceBuilder();
-            consequenceBuilder.build( context, "default" );
+            consequenceBuilder.build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
             
             for ( String name : ruleDescr.getNamedConsequences().keySet() ) {
                 consequenceBuilder.build( context, name );
             }
         }
-
     }
 
     public void buildMetaAttributes(final RuleBuildContext context ) {
