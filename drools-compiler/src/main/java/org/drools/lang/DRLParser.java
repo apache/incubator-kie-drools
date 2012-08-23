@@ -38,6 +38,7 @@ import org.drools.lang.api.AttributeSupportBuilder;
 import org.drools.lang.api.BehaviorDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.CollectDescrBuilder;
+import org.drools.lang.api.ConditionalBranchDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
@@ -50,6 +51,7 @@ import org.drools.lang.api.ForallDescrBuilder;
 import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
+import org.drools.lang.api.NamedConsequenceDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.ParameterSupportBuilder;
 import org.drools.lang.api.PatternContainerDescrBuilder;
@@ -65,10 +67,12 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.EntryPointDeclarationDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.NamedConsequenceDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -2181,7 +2185,7 @@ public class DRLParser {
                         if ( state.failed ) return null;
                     }
                 } else {
-                    if ( state.backtracking == 0 ) {
+                    if ( state.backtracking == 0 && and.getDescr().getDescrs().size() < 2 ) {
                         // if no AND present, then remove it and add children to parent
                         ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( and.getDescr() );
                         for ( BaseDescr base : and.getDescr().getDescrs() ) {
@@ -2207,8 +2211,8 @@ public class DRLParser {
      *           | lhsEval
      *           | lhsForall
      *           | lhsAccumulate
-     *           | LEFT_PAREN lhsOr RIGHT_PAREN
-     *           | lhsPatternBind
+     *           | LEFT_PAREN lhsOr RIGHT_PAREN namedConsequence?
+     *           | lhsPatternBind consequenceInvocation?
      *           ) 
      *           SEMICOLON?
      * 
@@ -2234,9 +2238,13 @@ public class DRLParser {
             // the order here is very important: this if branch must come before the lhsPatternBind below
             result = lhsParen( ce,
                                allowOr );
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.DO ) ) {
+                namedConsequence( ce, null );
+            }
         } else if ( input.LA( 1 ) == DRLLexer.ID || input.LA( 1 ) == DRLLexer.QUESTION ) {
             result = lhsPatternBind( ce,
                                      allowOr );
+            consequenceInvocation( ce );
         } else {
             failMismatchedTokenException();
         }
@@ -2250,6 +2258,175 @@ public class DRLParser {
         }
 
         return result;
+    }
+
+    /**
+     * consequenceInvocation := conditionalBranch | namedConsequence
+     *
+     * @param ce
+     * @return
+     */
+    private BaseDescr consequenceInvocation( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+        BaseDescr result = null;
+        if ( helper.validateIdentifierKey( DroolsSoftKeywords.IF ) ) {
+            result = conditionalBranch( ce, null );
+        } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DO ) ) {
+            result = namedConsequence( ce, null );
+        }
+        return result;
+    }
+
+    /**
+     * conditionalBranch := IF LEFT_PAREN conditionalExpression RIGHT_PAREN
+     *                      ( namedConsequence | breakingNamedConsequence )
+     *                      ( ELSE ( namedConsequence | breakingNamedConsequence | conditionalBranch ) )?
+     */
+    private BaseDescr conditionalBranch( CEDescrBuilder< ? , ? > ce, ConditionalBranchDescrBuilder<?> conditionalBranch ) throws RecognitionException {
+        if ( conditionalBranch == null ) {
+            conditionalBranch = helper.start( (DescrBuilder< ? , ? >) ce,
+                                              ConditionalBranchDescrBuilder.class,
+                                              null );
+        }
+
+        try {
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.IF,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            EvalDescrBuilder<?> eval = conditionalBranch.condition();
+            if ( !parseEvalExpression(eval) ) return null;
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.DO ) ) {
+                if ( namedConsequence( null, conditionalBranch.consequence() ) == null ) return null;
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.BREAK ) ) {
+                if ( breakingNamedConsequence( null, conditionalBranch.consequence() ) == null ) return null;
+            } else {
+                return null;
+            }
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.ELSE ) ) {
+                match( input,
+                        DRLLexer.ID,
+                        DroolsSoftKeywords.ELSE,
+                        null,
+                        DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+
+                ConditionalBranchDescrBuilder<?> elseBranch = conditionalBranch.otherwise();
+                if ( helper.validateIdentifierKey( DroolsSoftKeywords.DO ) ) {
+                    if ( namedConsequence( null, elseBranch.consequence() ) == null ) return null;
+                } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.BREAK ) ) {
+                    if ( breakingNamedConsequence( null, elseBranch.consequence() ) == null ) return null;
+                } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.IF ) ) {
+                    if ( conditionalBranch( null, elseBranch ) == null ) return null;
+                } else {
+                    return null;
+                }
+            }
+        } finally {
+            helper.end( ConditionalBranchDescrBuilder.class,
+                        conditionalBranch );
+        }
+        return conditionalBranch.getDescr();
+    }
+
+    /**
+     * namedConsequence := DO LEFT_SQUARE ID RIGHT_SQUARE BREAK?
+     */
+    private BaseDescr namedConsequence( CEDescrBuilder< ? , ? > ce, NamedConsequenceDescrBuilder<?> namedConsequence ) throws RecognitionException {
+        if ( namedConsequence == null ) {
+            namedConsequence = helper.start( (DescrBuilder< ? , ? >) ce,
+                                              NamedConsequenceDescrBuilder.class,
+                                              null );
+        }
+
+        try {
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.DO,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            match( input,
+                   DRLLexer.LEFT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+
+            Token label = match( input,
+                                 DRLLexer.ID,
+                                 null,
+                                 null,
+                                 DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+
+            namedConsequence.name( label.getText() );
+
+            match( input,
+                   DRLLexer.RIGHT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+        } finally {
+            helper.end( NamedConsequenceDescrBuilder.class,
+                        namedConsequence );
+        }
+        return namedConsequence.getDescr();
+    }
+
+    /**
+     * breakingNamedConsequence := BREAK LEFT_SQUARE ID RIGHT_SQUARE
+     */
+    private BaseDescr breakingNamedConsequence( CEDescrBuilder< ? , ? > ce, NamedConsequenceDescrBuilder<?> namedConsequence ) throws RecognitionException {
+        if ( namedConsequence == null ) {
+            namedConsequence = helper.start( (DescrBuilder< ? , ? >) ce,
+                                             NamedConsequenceDescrBuilder.class,
+                                             null );
+        }
+
+        try {
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.BREAK,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            match( input,
+                   DRLLexer.LEFT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+
+            Token label = match( input,
+                                 DRLLexer.ID,
+                                 null,
+                                 null,
+                                 DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+
+            namedConsequence.name( label.getText() );
+            namedConsequence.breaking(true);
+
+            match( input,
+                   DRLLexer.RIGHT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+
+        } finally {
+            helper.end( NamedConsequenceDescrBuilder.class,
+                        namedConsequence );
+        }
+        return namedConsequence.getDescr();
     }
 
     /**
@@ -2482,49 +2659,7 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
-            match( input,
-                   DRLLexer.LEFT_PAREN,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return null;
-
-            if ( state.backtracking == 0 ) {
-                helper.emit( Location.LOCATION_LHS_INSIDE_EVAL );
-            }
-
-            int idx = input.index();
-            final String expr;
-            try{
-                expr = conditionalExpression();
-            } catch (RecognitionException e){
-                final Token tempToken = helper.getLastTokenOnList(helper.getEditorInterface().getLast().getContent());
-                if (tempToken != null){
-                    for (int i = tempToken.getTokenIndex() + 1; i < input.size(); i++) {
-                        final Token token = input.get(i);
-                        if (token.getType() == DRLLexer.EOF){
-                            break;
-                        }
-                        helper.emit(token, DroolsEditorType.CODE_CHUNK);
-                    }
-                }
-
-                throw e;
-            }
-
-
-            if ( state.backtracking == 0 ) {
-                eval.constraint( expr );
-            }
-
-            match( input,
-                   DRLLexer.RIGHT_PAREN,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return null;
-
-            helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+            if ( !parseEvalExpression(eval) ) return null;
 
         } catch (RecognitionException e) {
             throw e;
@@ -2534,6 +2669,53 @@ public class DRLParser {
         }
 
         return eval != null ? eval.getDescr() : null;
+    }
+
+    private boolean parseEvalExpression(EvalDescrBuilder<?> eval) throws RecognitionException {
+        match( input,
+               DRLLexer.LEFT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return false;
+
+        if ( state.backtracking == 0 ) {
+            helper.emit( Location.LOCATION_LHS_INSIDE_EVAL );
+        }
+
+        int idx = input.index();
+        final String expr;
+        try{
+            expr = conditionalExpression();
+        } catch (RecognitionException e){
+            final Token tempToken = helper.getLastTokenOnList(helper.getEditorInterface().getLast().getContent());
+            if (tempToken != null){
+                for (int i = tempToken.getTokenIndex() + 1; i < input.size(); i++) {
+                    final Token token = input.get(i);
+                    if (token.getType() == DRLLexer.EOF){
+                        break;
+                    }
+                    helper.emit(token, DroolsEditorType.CODE_CHUNK);
+                }
+            }
+
+            throw e;
+        }
+
+
+        if ( state.backtracking == 0 ) {
+            eval.constraint( expr );
+        }
+
+        match( input,
+               DRLLexer.RIGHT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return false;
+
+        helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+        return true;
     }
 
     /**
@@ -3752,16 +3934,23 @@ public class DRLParser {
     }
 
     /**
-     * rhs := THEN (~END)*
+     * rhs := defaultConsequence namedConsequence* (~END)*
      * @param rule
-     * @throws RecognitionException
      */
-    private void rhs( RuleDescrBuilder rule ) throws RecognitionException {
-        String chunk = "";
-        int first = -1;
-        Token last = null;
+    private void rhs( RuleDescrBuilder rule ) {
+        defaultConsequence( rule );
+        while ( input.LA( 1 ) != DRLLexer.EOF && helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) ) {
+            namedConsequence( rule );
+        }
+    }
+
+    /**
+     * defaultConsequence := THEN chunk
+     * @param rule
+     */
+    public void defaultConsequence( RuleDescrBuilder rule ) {
         try {
-            first = input.index();
+            int first = input.index();
             Token t = match( input,
                              DRLLexer.ID,
                              DroolsSoftKeywords.THEN,
@@ -3775,23 +3964,12 @@ public class DRLParser {
                 helper.emit( Location.LOCATION_RHS );
             }
 
-            while ( input.LA( 1 ) != DRLLexer.EOF && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
-                helper.emit( input.LT(1), DroolsEditorType.CODE_CHUNK );
-                input.consume();
-            }
-            last = input.LT( 1 );
-            if ( last.getTokenIndex() > first ) {
-                chunk = input.toString( first,
-                                        last.getTokenIndex() );
-                if ( chunk.endsWith( DroolsSoftKeywords.END ) ) {
-                    chunk = chunk.substring( 0,
-                                             chunk.length() - DroolsSoftKeywords.END.length() );
-                }
-                // remove the "then" keyword and any subsequent spaces and line breaks
-                // keep indentation of 1st non-blank line
-                chunk = chunk.replaceFirst( "^then\\s*\\r?\\n?",
-                                            "" );
-            }
+            String chunk = getConsequenceCode( first );
+
+            // remove the "then" keyword and any subsequent spaces and line breaks
+            // keep indentation of 1st non-blank line
+            chunk = chunk.replaceFirst( "^then\\s*\\r?\\n?",
+                                        "" );
             rule.rhs( chunk );
 
         } catch ( RecognitionException re ) {
@@ -3799,9 +3977,77 @@ public class DRLParser {
         }
     }
 
+    /**
+     * namedConsequence := THEN LEFT_SQUARE ID RIGHT_SQUARE chunk
+     * @param rule
+     */
+    public void namedConsequence( RuleDescrBuilder rule ) {
+        try {
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.THEN,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            match( input,
+                   DRLLexer.LEFT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            Token label = match( input,
+                                 DRLLexer.ID,
+                                 null,
+                                 null,
+                                 DroolsEditorType.SYMBOL );
+            int first = input.index();
+            match( input,
+                    DRLLexer.RIGHT_SQUARE,
+                    null,
+                    null,
+                    DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+
+            String name = label.getText();
+            String chunk = getConsequenceCode( first );
+
+            // remove the closing squqre bracket "]" and any subsequent spaces and line breaks
+            // keep indentation of 1st non-blank line
+            chunk = chunk.replaceFirst( "^\\]\\s*\\r?\\n?",
+                                        "" );
+            rule.namedRhs( name, chunk );
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+    }
+
+    private String getConsequenceCode( int first ) {
+        while ( input.LA( 1 ) != DRLLexer.EOF &&
+                !helper.validateIdentifierKey( DroolsSoftKeywords.END ) &&
+                !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) ) {
+            helper.emit( input.LT(1), DroolsEditorType.CODE_CHUNK );
+            input.consume();
+        }
+
+        int last = input.LT(1).getTokenIndex();
+        if ( last <= first ) {
+            return "";
+        }
+
+        String chunk = input.toString( first,
+                                       last );
+        if ( chunk.endsWith( DroolsSoftKeywords.END ) ) {
+            chunk = chunk.substring( 0,
+                                     chunk.length() - DroolsSoftKeywords.END.length() );
+        } else if ( chunk.endsWith( DroolsSoftKeywords.THEN ) ) {
+            chunk = chunk.substring( 0,
+                                     chunk.length() - DroolsSoftKeywords.THEN.length() );
+        }
+        return chunk;
+    }
+
     /* ------------------------------------------------------------------------------------------------
-     *                         ANNOTATION
-     * ------------------------------------------------------------------------------------------------ */
+  *                         ANNOTATION
+  * ------------------------------------------------------------------------------------------------ */
 
     /**
      * annotation := fullAnnotation | AT ID chunk_(_)?

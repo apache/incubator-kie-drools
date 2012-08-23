@@ -31,6 +31,7 @@ import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
@@ -83,6 +84,11 @@ public class BaseQueueable
     }
 
     public Rule getRule() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Consequence getConsequence() {
         // TODO Auto-generated method stub
         return null;
     }

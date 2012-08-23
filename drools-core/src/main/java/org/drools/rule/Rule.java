@@ -21,7 +21,6 @@ import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
 import org.drools.io.Resource;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
@@ -40,7 +39,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -59,6 +57,8 @@ public class Rule
     org.drools.definition.rule.Rule,
     org.drools.definition.rule.Query {
     private static final long        serialVersionUID = 510l;
+
+    public static final String DEFAULT_CONSEQUENCE_NAME = "default";
 
     /**   */
     // ------------------------------------------------------------
@@ -81,7 +81,7 @@ public class Rule
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
     private Map<String, Declaration> declarations;
-    private String[]                 requiredDeclarations = new String[0];
+    private Map<String, String[]>    requiredDeclarations = new HashMap<String, String[]>();
 
     private GroupElement             lhsRoot;    
 
@@ -186,7 +186,7 @@ public class Rule
         dialect = (String) in.readObject();
         agendaGroup = (String) in.readObject();
         metaAttributes = (Map<String, Object>) in.readObject();
-        requiredDeclarations = (String[]) in.readObject();
+        requiredDeclarations = (Map<String, String[]>) in.readObject();
 
         consequence = (Consequence) in.readObject();
         namedConsequence = (Map<String, Consequence>) in.readObject();
@@ -226,7 +226,7 @@ public class Rule
                 final String agendaGroup) {
         this.name = name;
         this.pkg = pkg;
-        this.agendaGroup = agendaGroup;
+        this.agendaGroup = agendaGroup == null ? AgendaGroup.MAIN : agendaGroup;
         this.lhsRoot = GroupElementFactory.newAndInstance();
         this.semanticallyValid = true;
         this.enabled = EnabledBoolean.ENABLED_TRUE;
@@ -361,7 +361,7 @@ public class Rule
     }
 
     public String getAgendaGroup() {
-        if ( this.agendaGroup == null || this.agendaGroup.equals( "" ) ) {
+        if ( this.agendaGroup.equals( "" ) ) {
             return AgendaGroup.MAIN;
         }
         return this.agendaGroup;
@@ -452,12 +452,13 @@ public class Rule
         return this.declarations.get( identifier );
     }
 
-    public String[] getRequiredDeclarations() {
-        return requiredDeclarations != null ? requiredDeclarations : new String[0];
+    public String[] getRequiredDeclarationsForConsequence(String consequenceName) {
+        String[] declarations = requiredDeclarations.get(consequenceName);
+        return declarations != null ? declarations : new String[0];
     }
 
-    public void setRequiredDeclarations(String[] requiredDeclarations) {
-        this.requiredDeclarations = requiredDeclarations;
+    public void setRequiredDeclarationsForConsequence(String consequenceName, String[] requiredDeclarations) {
+        this.requiredDeclarations.put(consequenceName, requiredDeclarations);
     }
 
     /**
@@ -595,12 +596,11 @@ public class Rule
             setEnabled( (Enabled) object );
         } else if ( object instanceof Consequence ) {
             Consequence c = (Consequence) object;
-            if ( "default".equals( c.getName() ) ) {
+            if ( DEFAULT_CONSEQUENCE_NAME.equals( c.getName() ) ) {
                 setConsequence( c );
             } else {
                 addNamedConsequence(c.getName(), c);
             }
-
         }
     }
 
@@ -632,6 +632,10 @@ public class Rule
 
     public Map<String, Consequence> getNamedConsequences() {
         return this.namedConsequence;
+    }
+
+    public Consequence getNamedConsequence(String consequenceName) {
+        return this.namedConsequence.get(consequenceName);
     }
 
     public void addNamedConsequence(String name, Consequence consequence) {
@@ -788,9 +792,9 @@ public class Rule
         java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource );
 
         java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
-        byte[] data = new byte[1024];
-        int byteCount;
         try {
+            byte[] data = new byte[1024];
+            int byteCount;
             while ( (byteCount = is.read( data,
                                  0,
                                  1024 )) > -1 )

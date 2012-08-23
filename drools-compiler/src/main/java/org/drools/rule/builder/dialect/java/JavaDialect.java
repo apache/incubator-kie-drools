@@ -32,6 +32,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.ConditionalBranchDescr;
 import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -39,6 +40,7 @@ import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.NamedConsequenceDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -53,6 +55,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.CollectBuilder;
+import org.drools.rule.builder.ConditionalBranchBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.EngineElementBuilder;
@@ -61,6 +64,7 @@ import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.NamedConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
@@ -117,6 +121,8 @@ public class JavaDialect
     protected static EntryPointBuilder           ENTRY_POINT_BUILDER           = new EntryPointBuilder();
     protected static WindowReferenceBuilder      WINDOW_REFERENCE_BUILDER      = new WindowReferenceBuilder();
     protected static GroupElementBuilder         GE_BUILDER                    = new GroupElementBuilder();
+    protected static NamedConsequenceBuilder     NAMED_CONSEQUENCE_BUILDER     = new NamedConsequenceBuilder();
+    protected static ConditionalBranchBuilder    CONDITIONAL_BRANCH_BUILDER    = new ConditionalBranchBuilder();
 
     // a map of registered builders
     private static Map<Class<?>, EngineElementBuilder> builders;
@@ -236,6 +242,12 @@ public class JavaDialect
 
         builders.put( WindowReferenceDescr.class,
                       WINDOW_REFERENCE_BUILDER );
+
+        builders.put( NamedConsequenceDescr.class,
+                      NAMED_CONSEQUENCE_BUILDER );
+
+        builders.put( ConditionalBranchDescr.class,
+                      CONDITIONAL_BRANCH_BUILDER );
     }
 
     public Map<Class<?>, EngineElementBuilder> getBuilders() {

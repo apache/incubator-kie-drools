@@ -49,7 +49,7 @@ public class PackageBuildContext {
     private List<DroolsError>           errors;
 
     // list of generated methods
-    private List                        methods;
+    private List<String>                methods;
 
     // map<String invokerClassName, String invokerCode> of generated invokers
     private Map<String, String>         invokers;
@@ -197,12 +197,12 @@ public class PackageBuildContext {
      * Returns the list of generated methods
      * @return
      */
-    public List getMethods() {
+    public List<String> getMethods() {
         return this.methods;
     }
 
-    public void setMethods(final List methods) {
-        this.methods = methods;
+    public void addMethod(String method) {
+        this.methods.add(method);
     }
 
     /**

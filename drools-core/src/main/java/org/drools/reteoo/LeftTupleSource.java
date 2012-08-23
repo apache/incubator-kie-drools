@@ -29,7 +29,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Pattern;
-import org.drools.rule.TypeDeclaration;
+import org.drools.spi.ClassWireable;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
@@ -119,16 +119,22 @@ public abstract class LeftTupleSource extends BaseNode
      *            <code>Tuples</code>.
      */
     protected void addTupleSink(final LeftTupleSink tupleSink, final BuildContext context) {
-        if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
+        this.sink = addTupleSink(this.sink, tupleSink, context);
+    }
+
+    protected LeftTupleSinkPropagator addTupleSink(final LeftTupleSinkPropagator sinkPropagator, final LeftTupleSink tupleSink, final BuildContext context) {
+        if ( sinkPropagator instanceof EmptyLeftTupleSinkAdapter ) {
             if ( this.partitionsEnabled && !this.partitionId.equals( tupleSink.getPartitionId() ) ) {
                 // if partitions are enabled and the next node belongs to a different partition,
                 // we need to use the asynchronous propagator
-                this.sink = new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
-            } else {
-                // otherwise, we use the lighter synchronous propagator
-                this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
+                return new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
             }
-        } else if ( this.sink instanceof SingleLeftTupleSinkAdapter ) {
+
+            // otherwise, we use the lighter synchronous propagator
+            return new SingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
+        }
+
+        if ( sinkPropagator instanceof SingleLeftTupleSinkAdapter ) {
             final CompositeLeftTupleSinkAdapter sinkAdapter;
             if ( this.partitionsEnabled ) {
                 // a composite propagator may propagate to both nodes in the same partition
@@ -139,12 +145,13 @@ public abstract class LeftTupleSource extends BaseNode
                 // if partitions are disabled, then it is safe to use the lighter synchronous propagator
                 sinkAdapter = new CompositeLeftTupleSinkAdapter( this.getPartitionId() );
             }
-            sinkAdapter.addTupleSink( this.sink.getSinks()[0] );
+            sinkAdapter.addTupleSink( sinkPropagator.getSinks()[0] );
             sinkAdapter.addTupleSink( tupleSink );
-            this.sink = sinkAdapter;
-        } else {
-            ((CompositeLeftTupleSinkAdapter) this.sink).addTupleSink( tupleSink );
+            return sinkAdapter;
         }
+
+        ((CompositeLeftTupleSinkAdapter) sinkPropagator).addTupleSink( tupleSink );
+        return sinkPropagator;
     }
 
     /**
@@ -228,7 +235,7 @@ public abstract class LeftTupleSource extends BaseNode
             return;
         }
 
-        Class objectClass = ((ClassObjectType) objectType).getClassType();
+        Class objectClass = ((ClassWireable) objectType).getClassType();
         if ( isPropertyReactive(context, objectClass) ) {
             // TODO: at the moment if pattern is null (e.g. for eval node) we cannot calculate the mask, so we leave it to 0
             if ( pattern != null ) {
@@ -259,7 +266,7 @@ public abstract class LeftTupleSource extends BaseNode
 
     protected LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {
         if ( leftInput instanceof FromNode ) {
-            return ((FromNode) leftInput).getLeftTupleSource();
+            return ((LeftTupleSink) leftInput).getLeftTupleSource();
         }
         return leftInput;
     }
@@ -280,7 +287,7 @@ public abstract class LeftTupleSource extends BaseNode
                                          int leftInputOtnId,
                                          long leftInferredMask) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
-        while ( leftTuple != null && ((LeftTupleSink) leftTuple.getLeftTupleSink()).getLeftInputOtnId() < leftInputOtnId ) {
+        while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() < leftInputOtnId ) {
             modifyPreviousTuples.removeLeftTuple();
             // we skipped this node, due to alpha hashing, so retract now
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
@@ -289,7 +296,7 @@ public abstract class LeftTupleSource extends BaseNode
             leftTuple = modifyPreviousTuples.peekLeftTuple();
         }
 
-        if ( leftTuple != null && ((LeftTupleSink) leftTuple.getLeftTupleSink()).getLeftInputOtnId() == leftInputOtnId ) {
+        if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() == leftInputOtnId ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
             if ( intersect( context.getModificationMask(), leftInferredMask ) ) {

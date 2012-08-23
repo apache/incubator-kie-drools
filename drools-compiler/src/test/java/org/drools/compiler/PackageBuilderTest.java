@@ -73,6 +73,7 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
 import org.drools.spi.Constraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ClassLoaderUtil;
@@ -1373,6 +1374,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         public Rule getRule() {
             return this.rule;
+        }
+
+        public Consequence getConsequence() {
+            return getRule().getConsequence();
         }
 
         public int getSalience() {

@@ -1,15 +1,5 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.Map.Entry;
-
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -29,6 +19,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.ConditionalBranchDescr;
 import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -36,6 +27,7 @@ import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.NamedConsequenceDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -49,14 +41,15 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.CollectBuilder;
+import org.drools.rule.builder.ConditionalBranchBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
-import org.drools.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.EngineElementBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.NamedConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
@@ -70,6 +63,20 @@ import org.drools.rule.builder.WindowReferenceBuilder;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.MVEL;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
@@ -102,6 +109,8 @@ public class MVELDialect
     protected static WindowReferenceBuilder          WINDOW_REFERENCE_BUILDER       = new WindowReferenceBuilder();
 
     protected static GroupElementBuilder             GE_BUILDER                     = new GroupElementBuilder();
+    protected static NamedConsequenceBuilder         NAMED_CONSEQUENCE_BUILDER      = new NamedConsequenceBuilder();
+    protected static ConditionalBranchBuilder        CONDITIONAL_BRANCH_BUILDER     = new ConditionalBranchBuilder();
 
     // a map of registered builders
     private static Map<Class< ? >, EngineElementBuilder>   builders;
@@ -130,7 +139,7 @@ public class MVELDialect
     protected Package                                      pkg;
     private MVELDialectConfiguration                       configuration;
 
-    private PackageBuilder                                 pkgBuilder;
+    private final PackageBuilder                           pkgBuilder;
 
     private PackageRegistry                                packageRegistry;
 
@@ -283,6 +292,12 @@ public class MVELDialect
 
         builders.put( WindowReferenceDescr.class,
                       WINDOW_REFERENCE_BUILDER );
+
+        builders.put( NamedConsequenceDescr.class,
+                      NAMED_CONSEQUENCE_BUILDER );
+
+        builders.put( ConditionalBranchDescr.class,
+                      CONDITIONAL_BRANCH_BUILDER );
     }
 
     public void init(RuleDescr ruleDescr) {

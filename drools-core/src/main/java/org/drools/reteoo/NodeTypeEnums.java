@@ -37,4 +37,5 @@ public class NodeTypeEnums {
     public static final short PropagationQueueingNode = 17;
     public static final short QueryElementNode        = 18;
     public static final short OperatorNode            = 19;
+    public static final short ConditionalBranchNode   = 20;
 }

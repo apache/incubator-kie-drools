@@ -13,6 +13,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.Rule;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.DeclarationScopeResolver;
@@ -104,7 +105,9 @@ public class MVELConsequenceBuilder
             
             final RuleDescr ruleDescr = context.getRuleDescr();
             
-            String text = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
+            String text = ( Rule.DEFAULT_CONSEQUENCE_NAME.equals(consequenceName) ) ?
+                    (String) ruleDescr.getConsequence() :
+                    (String) ruleDescr.getNamedConsequences().get( consequenceName );
 
             text = processMacros( text );
             
@@ -140,7 +143,7 @@ public class MVELConsequenceBuilder
             for ( int i = 0; i < declrStr.length; i++) {
                 declrStr[i] = declarations[i].getIdentifier();
             }
-            context.getRule().setRequiredDeclarations( declrStr );
+            context.getRule().setRequiredDeclarationsForConsequence(consequenceName, declrStr);
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        declarations,
@@ -154,7 +157,7 @@ public class MVELConsequenceBuilder
             MVELConsequence expr = new MVELConsequence( unit,
                                                         dialect.getId() );
             
-            if ( "default".equals( consequenceName ) ) {
+            if ( Rule.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) {
                 context.getRule().setConsequence( expr );
             } else {
                 context.getRule().addNamedConsequence(consequenceName, expr);
@@ -167,10 +170,10 @@ public class MVELConsequenceBuilder
             expr.compile( data );
         } catch ( final Exception e ) {
             copyErrorLocation(e, context.getRuleDescr());
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                                                          context.getRuleDescr(),
-                                                          null,
-                                                          "Unable to build expression for 'consequence': " + e.getMessage() + " '" + context.getRuleDescr().getConsequence() + "'" ) );
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                    context.getRuleDescr(),
+                    null,
+                    "Unable to build expression for 'consequence': " + e.getMessage() + " '" + context.getRuleDescr().getConsequence() + "'"));
         }
     }
 

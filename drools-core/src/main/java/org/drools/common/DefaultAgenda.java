@@ -1274,8 +1274,8 @@ public class DefaultAgenda
             try {
                                
                 this.knowledgeHelper.setActivation( activation );
-                activation.getRule().getConsequence().evaluate( this.knowledgeHelper,
-                                                                this.workingMemory );
+                activation.getConsequence().evaluate( this.knowledgeHelper,
+                                                      this.workingMemory );
                 this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
                 this.knowledgeHelper.reset();
             } catch ( final Exception e ) {

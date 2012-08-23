@@ -36,7 +36,7 @@ public interface RuleDescrBuilder
      * 
      * @return itself
      */
-    public RuleDescrBuilder name( String name );
+    RuleDescrBuilder name( String name );
 
     /**
      * Defines the name of the rule this rule extends. It will cause the rule
@@ -46,10 +46,10 @@ public interface RuleDescrBuilder
      * 
      * @return itself
      */
-    public RuleDescrBuilder extendsRule( String name );
+    RuleDescrBuilder extendsRule( String name );
 
     /**
-     * The right hand side (consequence) of the rule. This is a code block
+     * The default right hand side (consequence) of the rule. This is a code block
      * that must be valid according to the used dialect (java or MVEL). In particular,
      * the deprecated '#' character, that was used for one line comments is not supported.
      * For one line comments, please use standard '//'.
@@ -58,13 +58,26 @@ public interface RuleDescrBuilder
      * 
      * @return itself
      */
-    public RuleDescrBuilder rhs( String rhs );
+    RuleDescrBuilder rhs( String rhs );
+
+    /**
+     * An additional named right hand side (consequence) of the rule. This is a code block
+     * that must be valid according to the used dialect (java or MVEL). In particular,
+     * the deprecated '#' character, that was used for one line comments is not supported.
+     * For one line comments, please use standard '//'.
+     *
+     * @param name the name of the consequence
+     * @param rhs the code block
+     *
+     * @return itself
+     */
+    RuleDescrBuilder namedRhs( String name, String rhs );
 
     /**
      * Defines the LHS (condition) of the rule.
      * 
      * @return a Conditional Element descriptor builder with the AND CE semantic.
      */
-    public CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs();
+    CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs();
 
 }

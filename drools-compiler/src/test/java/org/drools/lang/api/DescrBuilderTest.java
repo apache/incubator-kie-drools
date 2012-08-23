@@ -19,6 +19,7 @@ package org.drools.lang.api;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -178,6 +179,87 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         int rules = ksession.fireAllRules();
         assertEquals( 1,
+                      rules );
+    }
+
+    @Test
+    public void testNamedConsequence() {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                .newRule().name( "test" )
+                    .lhs()
+                        .pattern("Cheese").constraint( "type == \"stilton\"" ).end()
+                        .namedConsequence().name("c1").end()
+                        .pattern("Cheese").constraint( "type == \"cheddar\"" ).end()
+                    .end()
+                    .rhs( "// do something" )
+                    .namedRhs( "c1", "// do something else" )
+                .end()
+                .getDescr();
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                kpkg.getName() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        Cheese stilton = new Cheese( "stilton", 5 );
+        Cheese cheddar = new Cheese( "cheddar", 7 );
+        Cheese brie = new Cheese( "brie", 5 );
+
+        ksession.insert( stilton );
+        ksession.insert( cheddar );
+        ksession.insert( brie );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 2,
+                      rules );
+    }
+
+    @Test
+    public void testConditionalBranch() {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                .newRule().name( "test" )
+                    .lhs()
+                        .pattern("Cheese").constraint( "type == \"stilton\"" ).end()
+                        .conditionalBranch()
+                            .condition().constraint("price < 10").end()
+                            .consequence().name("c1").end()
+                        .end()
+                        .pattern("Cheese").constraint( "type == \"cheddar\"" ).end()
+                    .end()
+                    .rhs( "// do something" )
+                    .namedRhs( "c1", "// do something else" )
+                .end()
+                .getDescr();
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                kpkg.getName() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        Cheese stilton = new Cheese( "stilton", 5 );
+        Cheese cheddar = new Cheese( "cheddar", 7 );
+        Cheese brie = new Cheese( "brie", 5 );
+
+        ksession.insert( stilton );
+        ksession.insert( cheddar );
+        ksession.insert( brie );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 2,
                       rules );
     }
 

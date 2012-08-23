@@ -1167,6 +1167,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             pkg = packageRegistry.getPackage();
         }
         for (final RuleDescr rule : packageDescr.getRules()) {
+            validateRule(packageDescr, rule);
+
             final String name = rule.getName();
             if (names.contains( name )) {
                 this.results.add( new ParserError( rule.getResource(),
@@ -1181,6 +1183,18 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                      this.configuration ) );
             }
             names.add( name );
+        }
+    }
+
+    private void validateRule(PackageDescr packageDescr, RuleDescr rule) {
+        if (rule.hasErrors()) {
+            for (String error : rule.getErrors()) {
+                this.results.add( new ParserError( rule.getResource(),
+                                                   error + " in rule " + rule.getName(),
+                                                   rule.getLine(),
+                                                   rule.getColumn(),
+                                                   packageDescr.getNamespace() ) );
+            }
         }
     }
 

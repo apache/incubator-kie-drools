@@ -66,6 +66,11 @@ public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuild
         return this;
     }
 
+    public RuleDescrBuilder namedRhs( String name, String rhs ) {
+        descr.addNamedConsequences( name, rhs );
+        return this;
+    }
+
     public CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs() {
         CEDescrBuilder<RuleDescrBuilder, AndDescr> ce = new CEDescrBuilderImpl<RuleDescrBuilder, AndDescr>( this,
                                                                                                             new AndDescr() );
