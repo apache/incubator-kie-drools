@@ -16,6 +16,12 @@
 
 package org.drools.definition.type;
 
+import java.util.List;
+import java.util.Map;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * A field from a declared fact type
  */
@@ -65,8 +71,30 @@ public interface FactField
     public Object get(Object bean);
 
 
-
-
+    /**
+     * Returns the index of this field in the field list for
+     * the defining fact type. The list (and thus the index)
+     * takes into account the fields inherited from the parent
+     * class, if any.
+     *
+     * @return  the index of this field in the defining type
+     */
     public int getIndex();
+
+    /**
+     * Returns the list of field-level annotations
+     * used in this field definition
+     *
+     * @return  the list of field-level annotations
+     */
+    public List<Annotation> getFieldAnnotations();
+
+    /**
+     * Returns the annotations of this field definition as
+     * key-value pairs.
+     *
+     * @return a key-value map of the field-level annotations
+     */
+    public Map<String,Object> getMetaData();
 
 }
