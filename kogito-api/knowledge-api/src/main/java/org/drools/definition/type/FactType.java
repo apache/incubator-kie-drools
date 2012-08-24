@@ -36,11 +36,25 @@ public interface FactType
     java.io.Externalizable {
 
     /**
-     * Returns the name of the FactType.
-     * 
+     * Returns the fully qualified name of the FactType.
+     *
      * @return the name of the fact type.
      */
     public String getName();
+
+    /**
+     * Returns the unqualified name of the FactType.
+     *
+     * @return the name of the fact type.
+     */
+    public String getSimpleName();
+
+    /**
+     * Returns the package this FactType is defined in.
+     *
+     * @return the name of the fact type's package.
+     */
+    public String getPackageName();
 
     /**
      * Returns the name of the FactType's super type
@@ -118,4 +132,22 @@ public interface FactType
      */
     public void setFromMap(Object bean,
                            Map<String, Object> values);
+
+
+    /**
+     * Returns the list of class-level annotations
+     * used in this class definition
+     *
+     * @return  the list of class-level annotations
+     */
+    public List<Annotation> getClassAnnotations();
+
+    /**
+     * Returns the annotations of this class definition as
+     * key-value pairs.
+     *
+     * @return a key-value map of the class-level annotations
+     */
+    public Map<String, Object> getMetaData();
+
 }
