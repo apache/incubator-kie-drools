@@ -55,7 +55,7 @@ public class SubTasksLocalTest extends SubTasksBaseTest {
                 //.addPackage("org.jbpm.task.commands") // This should not be required here 
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("beans-default.xml", ArchivePaths.create("beans.xml"));
 
     }
     

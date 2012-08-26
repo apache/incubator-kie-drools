@@ -13,6 +13,7 @@
   <packaging>pom</packaging>
   
   <modules>
+    <module>jbpm-human-task-core-cdi</module>
     <module>jbpm-human-task-core</module>
     <module>jbpm-human-task-hornetq</module>
     <module>jbpm-human-task-mina</module>

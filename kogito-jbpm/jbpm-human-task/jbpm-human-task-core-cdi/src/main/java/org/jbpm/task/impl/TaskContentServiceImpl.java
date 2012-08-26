@@ -22,6 +22,7 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskContentService;
+import org.jbpm.task.annotations.TaskPersistence;
 
 /**
  *
@@ -29,7 +30,7 @@ import org.jbpm.task.api.TaskContentService;
 @Transactional
 public class TaskContentServiceImpl implements TaskContentService {
 
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
 
     public long addContent(long taskId, Content content) {

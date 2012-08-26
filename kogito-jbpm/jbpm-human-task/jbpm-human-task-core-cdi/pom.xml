@@ -28,7 +28,6 @@
 		<dependency>
 			<groupId>org.jboss.weld.se</groupId>
 			<artifactId>weld-se</artifactId>
-			<version>${weld.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -156,10 +155,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
-		<repository>
-			<id>jboos</id>
-			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
 </project>

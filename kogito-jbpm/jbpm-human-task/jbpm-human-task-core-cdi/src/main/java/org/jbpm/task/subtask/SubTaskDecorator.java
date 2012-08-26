@@ -29,6 +29,7 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
+import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.query.TaskSummary;
@@ -42,7 +43,7 @@ public class SubTaskDecorator implements TaskInstanceService {
     @Delegate 
     private TaskInstanceService instanceService;
     
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
     
     @Inject 

@@ -21,12 +21,13 @@ import javax.persistence.EntityManager;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskCommentService;
+import org.jbpm.task.annotations.TaskPersistence;
 
 /**
  *
  */
 public class TaskCommentServiceImpl implements TaskCommentService{
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
     
     public long addComment(long taskId, Comment comment) {

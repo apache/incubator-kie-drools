@@ -4,6 +4,7 @@
  */
 package org.jbpm.task.internals;
 
+import org.jbpm.task.annotations.TaskPersistence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManagerFactory;
@@ -13,8 +14,9 @@ import org.jboss.solder.core.ExtensionManaged;
 /**
  *
  */
-public class TaskDatabaseProducer {
 
+public class TaskDatabaseProducer {
+    @TaskPersistence
     @PersistenceUnit(unitName = "org.jbpm.task")
     @ExtensionManaged
     @ApplicationScoped

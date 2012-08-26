@@ -31,6 +31,7 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.annotations.Internal;
+import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
@@ -75,7 +76,7 @@ import org.mvel2.ParserContext;
 @Transactional
 public class MVELLifeCycleManager implements LifeCycleManager {
     
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
     @Inject
     private TaskDefService taskDefService;
@@ -121,7 +122,8 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
                         commands(command, task, user, targetEntity);
                     } else {
-                        System.out.println("No match on status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
+                        // LOG THIS:
+                        //System.out.println("No match on status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
                     }
                 }
             }

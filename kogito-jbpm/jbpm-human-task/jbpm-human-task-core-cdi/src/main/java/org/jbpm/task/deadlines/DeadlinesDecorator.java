@@ -31,6 +31,7 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
+import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.api.TaskDeadlinesService;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
@@ -48,7 +49,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
     private TaskQueryService queryService;
     @Inject
     private TaskDeadlinesService deadlineService;
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
 
     public long newTask(String name, Map<String, Object> params) {

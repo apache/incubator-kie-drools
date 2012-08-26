@@ -21,6 +21,7 @@
 <beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:s="urn:java:ee"
        xmlns:t="urn:java:org.jboss.seam.transaction"
+       xmlns:task="urn:java:org.jbpm.task.annotations"
        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd">
     
     <alternatives>
@@ -41,6 +42,9 @@
 
     <t:EntityTransaction>
         <s:modifies />
+        <t:entityManager>
+            <task:TaskPersistence/>
+        </t:entityManager>
     </t:EntityTransaction>
     
     

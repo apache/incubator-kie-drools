@@ -54,7 +54,7 @@ public class DeadlinesLocalTest extends DeadlinesBaseTest {
                 .addPackage("org.jbpm.task.subtask")
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("META-INF/beans-deadlines.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("beans-deadlines.xml", ArchivePaths.create("beans.xml"));
 
     }
 }

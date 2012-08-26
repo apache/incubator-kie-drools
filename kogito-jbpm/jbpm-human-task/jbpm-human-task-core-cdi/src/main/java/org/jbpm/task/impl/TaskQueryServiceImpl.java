@@ -14,6 +14,7 @@ import org.jbpm.task.Content;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.query.TaskSummary;
 
 /**
@@ -23,7 +24,7 @@ import org.jbpm.task.query.TaskSummary;
 @Transactional
 public class TaskQueryServiceImpl implements TaskQueryService {
 
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
 
     public TaskQueryServiceImpl() {

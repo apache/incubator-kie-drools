@@ -12,13 +12,12 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import org.drools.core.util.StringUtils;
 
 import org.jbpm.task.Group;
 import org.jbpm.task.Operation;
-import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.User;
+import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.exception.TaskException;
 import org.jbpm.task.internals.lifecycle.LifeCycleManager;
 
@@ -32,7 +31,7 @@ public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleMan
     @Delegate
     @Mvel
     private LifeCycleManager manager;
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
     @Inject
     private UserGroupCallback userGroupCallback;

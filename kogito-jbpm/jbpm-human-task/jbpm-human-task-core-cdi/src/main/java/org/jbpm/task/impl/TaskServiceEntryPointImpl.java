@@ -21,7 +21,6 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.annotations.Persistent;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.api.TaskAttachmentService;
 import org.jbpm.task.api.TaskContentService;
@@ -50,7 +49,7 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     private TaskAdminService taskAdminService;
     @Inject
     private TaskQueryService taskQueryService;
-    @Inject @Persistent
+    @Inject
     private TaskEventsService taskEventsService;
     @Inject
     private TaskContentService taskContentService;

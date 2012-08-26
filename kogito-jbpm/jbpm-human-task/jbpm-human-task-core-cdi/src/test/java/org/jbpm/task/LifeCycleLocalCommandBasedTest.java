@@ -40,7 +40,7 @@ public class LifeCycleLocalCommandBasedTest extends LifeCycleBaseTest {
                 .addPackage("org.jbpm.task.subtask")
                 .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("META-INF/beans-commandbased.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("beans-commandbased.xml", ArchivePaths.create("beans.xml"));
 
     }
     

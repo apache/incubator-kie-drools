@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskDefService;
+import org.jbpm.task.annotations.TaskPersistence;
 
 /**
  *
@@ -18,7 +19,7 @@ import org.jbpm.task.api.TaskDefService;
 @Transactional
 public class TaskDefServiceImpl implements TaskDefService{
     
-    @Inject
+    @Inject @TaskPersistence
     private EntityManager em;
 
     public TaskDefServiceImpl() {
