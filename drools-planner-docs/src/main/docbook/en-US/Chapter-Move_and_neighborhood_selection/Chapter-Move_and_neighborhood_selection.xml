@@ -133,6 +133,18 @@
       <title>Caching or Just In Time selection</title>
 
       <para>TODO</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/jitRandomSelection.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/cachedRandomSelection.png"></imagedata>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section>
