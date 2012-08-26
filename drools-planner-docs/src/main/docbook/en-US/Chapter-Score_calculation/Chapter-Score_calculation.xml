@@ -24,7 +24,7 @@
     </section>
 
     <section>
-      <title>Negative and positive constraints</title>
+      <title>Positive and negative constraints</title>
 
       <para>Most planning problems use negative scores, because they have negative constraints. In that case, the score
       is usually the sum of the weight of the negative constraints being broken, with a perfect score of 0. This
@@ -40,6 +40,12 @@
 
       <para>When a constraint activates (because the negative constraint is broken or the positive constraint is
       fulfilled) on a certain planning entity set, it is called a <emphasis>constraint occurrence</emphasis>.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/positiveAndNegativeConstraints.png"></imagedata>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section>
