@@ -31,4 +31,8 @@ public class MapPersistenceContextManager
         persistenceContext.close();
     }
 
+    public void clearPersistenceContext() {
+
+    }
+
 }
