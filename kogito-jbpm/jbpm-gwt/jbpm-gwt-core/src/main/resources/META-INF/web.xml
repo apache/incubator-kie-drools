@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment>
+  <listener>
+    <listener-class>org.jbpm.integration.console.StatefulKnowledgeSessionUtilListener</listener-class>
+  </listener>
+</web-fragment>

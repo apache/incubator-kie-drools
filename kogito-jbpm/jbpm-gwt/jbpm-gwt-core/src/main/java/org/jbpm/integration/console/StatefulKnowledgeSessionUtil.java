@@ -95,21 +95,26 @@ public class StatefulKnowledgeSessionUtil {
     
     private static int ksessionId = 0;
     private static Properties _jbpmConsoleProperties = new Properties();
-    private static KnowledgeAgent kagent;
+    private static KnowledgeAgent kagent = null;
     private static Set<String> knownPackages;
    
     protected StatefulKnowledgeSessionUtil() {
     }
-   
-    @Override
-    protected void finalize() throws Throwable { 
-        dispose();
-    }
     
-    protected void dispose() { 
-       SessionHolder.statefulKnowledgeSession.dispose(); 
-       _jbpmConsoleProperties = null;
-       SessionHolder.statefulKnowledgeSession = null;
+    public static void dispose() {
+        
+        if (SessionHolder.statefulKnowledgeSession != null) {
+            logger.debug("Disposing stateful session");
+            SessionHolder.statefulKnowledgeSession.dispose();
+            SessionHolder.statefulKnowledgeSession = null;
+        }
+        
+        if (kagent != null) {
+            logger.debug("Disposing knowledge agent");
+            kagent.dispose();
+            kagent = null;
+        }
+        _jbpmConsoleProperties = null;
     }
    
     /**

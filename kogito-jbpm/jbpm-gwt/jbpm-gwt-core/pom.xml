@@ -120,7 +120,12 @@
       <version>1.0</version>
       <scope>provided</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Following 2 dependencies needed for making the build work with JDK5 -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
