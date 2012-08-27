@@ -111,4 +111,11 @@ public class JpaPersistenceContextManager
         }
     }
 
+    public void clearPersistenceContext() {
+        if (this.cmdScopedEntityManager != null && this.cmdScopedEntityManager.isOpen()) {
+            this.cmdScopedEntityManager.clear();
+        }
+        
+    }
+
 }

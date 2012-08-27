@@ -445,6 +445,8 @@ public class SingleSessionCommandService
             // always cleanup thread local whatever the result
             Object removedSynchronization = SingleSessionCommandService.synchronizations.remove( this.service );
 
+            this.service.jpm.clearPersistenceContext();
+            
             this.service.jpm.endCommandScopedEntityManager();
 
             StatefulKnowledgeSession ksession = this.service.ksession;
@@ -456,7 +458,7 @@ public class SingleSessionCommandService
                 }
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
             }
-
+            
         }
 
         public void beforeCompletion() {
