@@ -9,4 +9,8 @@ public interface FileSystem {
     
     Folder getFolder(Path path);
     Folder getFolder(String path);    
+    
+    boolean remove(File file);
+    
+    boolean remove(Folder folder);
 }

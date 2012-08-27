@@ -25,7 +25,7 @@ public class ProjectReader {
 
     public ProjectReader(FileSystem fs) {
         this.fs = fs;
-        this.kproject = new KProject();
+        this.kproject = new KProjectImpl();
     }    
     
     public KProject getKproject() {
@@ -88,7 +88,7 @@ public class ProjectReader {
             files.add(  str.trim() );
         }
         
-        KBase kbase = new KBase( namespace, name, files );
+        KBaseImpl kbase = new KBaseImpl( namespace, name, files );
         
         kbase.setEventProcessingMode( EventProcessingOption.determineEventProcessingMode(  props.getProperty( "eventProcessingMode" ) ) );
         
@@ -111,7 +111,7 @@ public class ProjectReader {
     }
     
     public void readKSession(String ksessionQName, Map<String, String> map, KBase kbase, KProject kproject) {
-        KSession ksession = new KSession( map.get( "namespace" ), map.get( "name ") );
+        KSessionImpl ksession = new KSessionImpl( map.get( "namespace" ), map.get( "name ") );
         ksession.setType( map.get( "type" ) );
         
         List<String> list = Arrays.asList( map.get( "annotations" ).split( "," ) );

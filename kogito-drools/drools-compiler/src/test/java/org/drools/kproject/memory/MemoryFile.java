@@ -25,6 +25,9 @@ public class MemoryFile implements File {
     }         
     
     public InputStream getContents()  throws IOException {
+        if ( !exists() ) {
+            throw new IOException("File does not exist, unable to open InputStream" );
+        }
         return new ByteArrayInputStream( mfs.getFileContents( this ) );
     }
     
