@@ -16,3 +16,4 @@ runtime/
 workspace/
 repository.xml
 derby.log
+data/
