@@ -6,8 +6,6 @@ import static junit.framework.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
@@ -26,8 +24,6 @@ import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
 import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
 import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.event.rule.DebugAgendaEventListener;
-import org.drools.event.rule.DebugKnowledgeAgentEventListener;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
@@ -37,13 +33,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for BZ-813547 / JBRULES-3467
+ * Test case for BZ-813547 / JBRULES-3467 / BZ-814415
  */
 public class FusionIncrementalKbaseTest {
 
 	FileManager fileManager;
 	KnowledgeBase kbase;
-    private KnowledgeAgent kagent;
 
 	@Before
 	@SuppressWarnings("restriction")
@@ -74,20 +69,23 @@ public class FusionIncrementalKbaseTest {
 		List<String> list = new ArrayList<String>();
 		ksession.setGlobal("list", list);
 
-		Event firtEvent = new Event();
-		ksession.insert(firtEvent);
+		//inserting some events
+		
+		Event firtEventA = new Event();
+		Event firtEventB = new Event();
+		Event firtEventC = new Event();
+		
+		ksession.insert(firtEventA);
+		ksession.insert(firtEventB);
+		ksession.insert(firtEventC);
+		
 		ksession.fireAllRules();
-		assertEquals( 1, list.size() );
-        assertTrue(list.contains("initialRHSPrintMessage"));
-
-        // make sure the first event expired
-        Thread.sleep( 3000 );
 
 		// now changing the rule resource
 		fileManager.write("rule1.drl", createRule("changedRHSPrintMessage"));
-		
-		// wait for the agent to reload the resource
-		scan( kagent );
+
+		// sleeping 3 seconds to run ResourceChangeScanner automatically
+		Thread.sleep(3000);
 
 		// the first event should be expired (2 seconds defined by the rule) but
 		// I still should be able to add others
@@ -97,64 +95,12 @@ public class FusionIncrementalKbaseTest {
 		// NPE
 		ksession.fireAllRules();
 
-		assertEquals(2, list.size());
 		assertTrue(list.contains("initialRHSPrintMessage"));
 		assertTrue(list.contains("changedRHSPrintMessage"));
 
 		logger.close();
 
 	}
-	
-    public void scan(KnowledgeAgent kagent) {
-        // Calls the Resource Scanner and sets up a listener and a latch so we can wait until it's finished processing, instead of using timers
-        final CountDownLatch latch = new CountDownLatch( 1 );
-        final List<ResourceCompilationFailedEvent> resourceCompilationFailedEvents = new ArrayList<ResourceCompilationFailedEvent>();
-        KnowledgeAgentEventListener l = new KnowledgeAgentEventListener() {
-            public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
-                //It is not correct to throw an exception from a listener becuase
-                //it will interfere with the agent's logic.
-                //throw new RuntimeException("Unable to compile Knowledge"+ event );
-                
-                //It is better to use a list and then check if it is empty.
-                resourceCompilationFailedEvents.add(event);
-            }
-            
-            public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
-            }
-            public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
-            }
-            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
-            }
-            public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
-            }
-            public void afterResourceProcessed(AfterResourceProcessedEvent event) {
-            }
-            public void afterChangeSetProcessed(AfterChangeSetProcessedEvent event) {
-            }
-            public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
-                latch.countDown();
-            }
-        };
-        
-        kagent.addEventListener( l );
-        
-        try {
-            latch.await( 10, TimeUnit.SECONDS );
-        } catch ( InterruptedException e ) {
-            throw new RuntimeException( "Unable to wait for latch countdown", e);
-        }
-        
-        if ( latch.getCount() > 0 ) {
-            throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
-        }
-        
-        kagent.removeEventListener( l );
-        if (!resourceCompilationFailedEvents.isEmpty()){
-            //A compilation error occured
-            throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0).getKnowledgeBuilder().getErrors() );
-        }
-    }
-	
 
 	@SuppressWarnings("restriction")
 	public File createChangeSet() throws Exception {
@@ -180,8 +126,42 @@ public class FusionIncrementalKbaseTest {
 		KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
 		kaconf.setProperty("drools.agent.newInstance", "false");
 
-		kagent = KnowledgeAgentFactory.newKnowledgeAgent("theAgent", kbase, kaconf);
+		KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("theAgent", kbase, kaconf);
+		System.out.println(changeset.toURI().toURL());
 		kagent.applyChangeSet(ResourceFactory.newUrlResource(changeset.toURI().toURL()));
+		kagent.addEventListener( new KnowledgeAgentEventListener() {
+            public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
+                System.out.println(event);
+            }
+            
+            public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
+                System.out.println(event);
+            }
+            
+            public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
+                System.out.println(event);
+            }
+            
+            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
+                System.out.println(event);
+            }
+            
+            public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
+                System.out.println(event);
+            }
+            
+            public void afterResourceProcessed(AfterResourceProcessedEvent event) {
+                System.out.println(event);
+            }
+            
+            public void afterChangeSetProcessed(AfterChangeSetProcessedEvent event) {
+                System.out.println(event);
+            }
+            
+            public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
+                System.out.println(event);
+            }
+        } );
 		kbase = kagent.getKnowledgeBase();
 	}
 
@@ -189,7 +169,7 @@ public class FusionIncrementalKbaseTest {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("\n\npackage com.sample\n");
-		sb.append("import "+Event.class.getCanonicalName()+"\n");
+		sb.append("import org.drools.integrationtests.FusionIncrementalKbaseTest.Event\n\n");
 		sb.append("global java.util.ArrayList<String> list\n\n");
 
 		sb.append("declare Event\n");
@@ -205,7 +185,7 @@ public class FusionIncrementalKbaseTest {
 		sb.append(rhsMessage);
 		sb.append("\");\n");
 		sb.append("end\n\n");
-		//System.out.println(sb.toString());
+		System.out.println(sb.toString());
 
 		return sb.toString();
 	}
