@@ -36,8 +36,7 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
     }
     
     public File getFile(Path path) {
-        //return new MemoryFile( project.getFile( ((MemoryPath)path ).getRawPath() ) );
-        return null;
+        return getFile(path.toPortableString());
     }
     
     public File getFile(String path) {
@@ -96,8 +95,35 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
             
             Folder parent = folder.getParent();
             folders.get( parent.getPath().toPortableString() ).add( folder );
-            
-            
+        }
+    }
+    
+    public boolean remove(Folder folder) {
+        if ( folder.exists() ) {
+            remove( folders.remove( folder.getPath().toPortableString() ) );
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public void remove(Set<Resource> members) {
+        for( Resource res : folder.getMembers() ) {
+            if ( res instanceof Folder ) {
+                remove( folders.remove( res.getPath().toPortableString() ) );
+            } else {
+                remove( (File) res);
+            }
+        }
+    }
+    
+    public boolean remove(File file) {
+        if ( file.exists() ) {
+            fileContents.remove( file.getPath().toPortableString() );            
+            folders.get( ((MemoryFile)file).getFolder().getPath().toPortableString() ).remove( file );
+            return true;
+        } else {
+            return false;
         }
     }
 

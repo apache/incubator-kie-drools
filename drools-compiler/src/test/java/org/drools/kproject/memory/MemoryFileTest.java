@@ -50,6 +50,31 @@ public class MemoryFileTest {
         assertEquals( "DEF", StringUtils.toString( f1.getContents() ) );
     }
     
+    @Test
+    public void testFileRemoval() throws IOException {
+        FileSystem fs = new MemoryFileSystem();
+        
+        Folder mres = fs.getFolder( "src/main/java/org/domain" );  
+        mres.create();
+        
+        File f1 = mres.getFile( "MyClass.java" );                
+        f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );        
+        assertTrue( f1.exists() );        
+        assertEquals( "ABC", StringUtils.toString( f1.getContents() ) );
+        
+        fs.remove( f1 );
+        
+        f1 = mres.getFile( "MyClass.java" );  
+        assertFalse( f1.exists() );
+        
+        try {
+            f1.getContents();
+            fail( "Should throw IOException" );
+        } catch( IOException e ) {
+            
+        }      
+    }
+    
     public void testFilePath() {
         FileSystem fs = new MemoryFileSystem();
         

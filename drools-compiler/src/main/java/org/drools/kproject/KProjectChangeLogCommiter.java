@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class KProjectChangeLogCommiter {    
-    private KProject kproject;
+    private KProject kProject;
     private KProjectChangeLog changeLog;
     private FileSystem fs;
     
@@ -22,20 +22,27 @@ public class KProjectChangeLogCommiter {
                                      KProjectChangeLog changeLog,
                                      FileSystem fs) {
         super();
-        this.kproject = kproject;
+        this.kProject = kproject;
         this.changeLog = changeLog;
         this.fs = fs;
     }
 
+    public void commitRemovedKBases() {
+        for ( String kBaseQName: changeLog.getRemovedKBases() ) {
+            Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/"  + kBaseQName );
+            //commitRemovedKBase( kProject.getKBases().get( kBaseQName ) );
+        }
+    }
+    
     public void commitAddedKBases() {
-        for ( KBase kbase : changeLog.getAddedKBases().values() ) {
-            commitAddedKBase( kbase );
+        for ( String kBaseQName: changeLog.getAddedKBases() ) {
+            commitAddedKBase( kProject.getKBases().get( kBaseQName ) );
         }
     }
     
     public void commitAddedKBase(KBase kbase) {        
         // create new KBase root folder
-        Folder rootFld = fs.getFolder( kproject.getKBasesPath() + "/"  + kbase.getQName() );
+        Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/"  + kbase.getQName() );
         rootFld.create();
         
         // create new KBase folder for CDI Qualifier and Producer
@@ -43,7 +50,7 @@ public class KProjectChangeLogCommiter {
         namespaceFld.create();
         
         // generate KBase root properties file
-        String filesStr = GenerateKBaseProjectFiles.generateKBaseFiles( kproject, kbase, fs );
+        String filesStr = GenerateKBaseProjectFiles.generateKBaseFiles( kProject, kbase, fs );
         File rootFile = rootFld.getFile( kbase.getQName() + ".files.dat" );
         try {
             if ( !rootFile.exists() ) {

@@ -3,8 +3,10 @@ package org.drools.kproject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class KProjectChangeLog
         implements
@@ -12,13 +14,11 @@ public class KProjectChangeLog
 
     private boolean               kProjectDirty;
 
-    private Map<String, String>   modifiedKBases;
-    private Map<String, KBase>    removedKBases;
-    private Map<String, KBase>    addedKBases;
+    private Set<String>    addedKBases;
+    private Set<String>    removedKBases;
 
-    private Map<String, String>   modifiedKSessions;
-    private Map<String, KSession> removedKSessions;
-    private Map<String, KSession> addedKSessions;
+    private Set<String> removedKSessions;
+    private Set<String> addedKSessions;
 
     public KProjectChangeLog() {
         reset();
@@ -32,95 +32,68 @@ public class KProjectChangeLog
         this.kProjectDirty = kProjectDirty;
     }
 
-    public Map<String, String> getModifiedKBases() {
-        return modifiedKBases;
+    public boolean iskProjectDirty() {
+        return kProjectDirty;
     }
 
-    public void setModifiedKBases(Map<String, String> modifiedKBases) {
-        this.modifiedKBases = modifiedKBases;
+    public void setkProjectDirty(boolean kProjectDirty) {
+        this.kProjectDirty = kProjectDirty;
     }
 
-    public Map<String, KBase> getRemovedKBases() {
-        return removedKBases;
-    }
-
-    public void setRemovedKBases(Map<String, KBase> removedKBases) {
-        this.removedKBases = removedKBases;
-    }
-
-    public Map<String, KBase> getAddedKBases() {
+    public Set<String> getAddedKBases() {
         return addedKBases;
     }
 
-    public void setAddedKBases(Map<String, KBase> addedKBases) {
+    public void setAddedKBases(Set<String> addedKBases) {
         this.addedKBases = addedKBases;
     }
 
-    public Map<String, String> getModifiedKSessions() {
-        return modifiedKSessions;
+    public Set<String> getRemovedKBases() {
+        return removedKBases;
     }
 
-    public void setModifiedKSessions(Map<String, String> modifiedKSessions) {
-        this.modifiedKSessions = modifiedKSessions;
+    public void setRemovedKBases(Set<String> removedKBases) {
+        this.removedKBases = removedKBases;
     }
 
-    public Map<String, KSession> getRemovedKSessions() {
+    public Set<String> getRemovedKSessions() {
         return removedKSessions;
     }
 
-    public void setRemovedKSessions(Map<String, KSession> removedKSessions) {
+    public void setRemovedKSessions(Set<String> removedKSessions) {
         this.removedKSessions = removedKSessions;
     }
 
-    public Map<String, KSession> getAddedKSessions() {
+    public Set<String> getAddedKSessions() {
         return addedKSessions;
     }
 
-    public void setAddedKSessions(Map<String, KSession> addedKSessions) {
+    public void setAddedKSessions(Set<String> addedKSessions) {
         this.addedKSessions = addedKSessions;
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if ( evt.getSource() instanceof KProject ) {
+        if ( evt.getSource() instanceof KProjectImpl ) {
             KProject kProject = (KProject) evt.getSource();
             if ( "kBases".equals( evt.getPropertyName() ) ) {
-                Map<String, KBase> oldKBases = (Map<String, KBase>) evt.getOldValue();
-                Map<String, KBase> newKBases = (Map<String, KBase>) evt.getNewValue();
+                Map<String, KBaseImpl> oldKBases = (Map<String, KBaseImpl>) evt.getOldValue();
+                Map<String, KBaseImpl> newKBases = (Map<String, KBaseImpl>) evt.getNewValue();
                 if ( oldKBases.size() < newKBases.size() ) {
                     // kBase added
-                    for ( Entry<String, KBase> entry : newKBases.entrySet() ) {
+                    for ( Entry<String, KBaseImpl> entry : newKBases.entrySet() ) {
                         if ( !oldKBases.containsKey( entry.getKey() ) ) {
-                            if ( modifiedKBases.containsKey( entry.getKey() ) ) {
-                                if ( removedKBases.remove( entry.getKey() ) != null ) {
-                                    // this already exists, as we just to remove it, so just delete the remove
-                                    return;
-                                }
-
-                                // actually part of a modification, so ignore                                
-                                removedKBases.remove( modifiedKBases.get( entry.getKey() ) ); // but delete remove too
-                                return;
-                            }
-
-                            if ( removedKBases.remove( entry.getKey() ) != null ) {
-                                // this already exists, as we just to remove it, so just delete the remove
-                                return;
-                            }
-
-                            addedKBases.put( entry.getKey(), entry.getValue() );
+                            removedKBases.remove( entry.getKey() );               
+                            addedKBases.add( entry.getKey() );
                             return;
                         }
                     }
                     throw new IllegalStateException( "Maps are different sizes, yet we can't find the new KBase" );
                 } else if ( oldKBases.size() > newKBases.size() ) {
                     // kBase removed
-                    for ( Entry<String, KBase> entry : oldKBases.entrySet() ) {
+                    for ( Entry<String, KBaseImpl> entry : oldKBases.entrySet() ) {
                         if ( !newKBases.containsKey( entry.getKey() ) ) {
-                            if ( addedKBases.remove( entry.getKey() ) != null ) {
-                                // doesn't exist, as we just added it, so just delete the added
-                                return;
-                            }
-
-                            removedKBases.put( entry.getKey(), entry.getValue() );
+                            addedKBases.remove( entry.getKey() );
+                            removedKBases.add( entry.getKey() );
                             return;
                         }
                     }
@@ -130,46 +103,27 @@ public class KProjectChangeLog
                 kProjectDirty = true;
             }
 
-        } else if ( evt.getSource() instanceof KBase ) {
-            KBase kBase = (KBase) evt.getSource();
+        } else if ( evt.getSource() instanceof KBaseImpl ) {
+            KBaseImpl kBase = (KBaseImpl) evt.getSource();
             if ( "kSessions".equals( evt.getPropertyName() ) ) {
-                Map<String, KSession> oldKBases = (Map<String, KSession>) evt.getOldValue();
-                Map<String, KSession> newKBases = (Map<String, KSession>) evt.getNewValue();
-                if ( oldKBases.size() < newKBases.size() ) {
+                Map<String, KSessionImpl> oldKSession = (Map<String, KSessionImpl>) evt.getOldValue();
+                Map<String, KSessionImpl> newKSession = (Map<String, KSessionImpl>) evt.getNewValue();
+                if ( oldKSession.size() < newKSession.size() ) {
                     // KSession added
-                    for ( Entry<String, KSession> entry : newKBases.entrySet() ) {
-                        if ( !oldKBases.containsKey( entry.getKey() ) ) {
-                            if ( modifiedKSessions.containsKey( entry.getKey() ) ) {
-                                if ( removedKSessions.remove( entry.getKey() ) != null ) {
-                                    // this already exists, as we just to remove it, so just delete the remove
-                                    return;
-                                }
-
-                                // actually part of a modification, so ignore                                
-                                removedKSessions.remove( modifiedKSessions.get( entry.getKey() ) ); // but delete remove too
-                                return;
-                            }
-
-                            if ( removedKSessions.remove( entry.getKey() ) != null ) {
-                                // this already exists, as we just to remove it, so just delete the remove
-                                return;
-                            }
-
-                            addedKSessions.put( entry.getKey(), entry.getValue() );
+                    for ( Entry<String, KSessionImpl> entry : newKSession.entrySet() ) {
+                        if ( !oldKSession.containsKey( entry.getKey() ) ) {
+                            removedKSessions.remove( entry.getKey() );
+                            addedKSessions.add( entry.getKey() );
                             return;
                         }
                     }
                     throw new IllegalStateException( "Maps are different sizes, yet we can't find the new KBase" );
-                } else if ( oldKBases.size() > newKBases.size() ) {
+                } else if ( oldKSession.size() > newKSession.size() ) {
                     // KSession removed
-                    for ( Entry<String, KSession> entry : oldKBases.entrySet() ) {
-                        if ( !newKBases.containsKey( entry.getKey() ) ) {
-                            if ( addedKSessions.remove( entry.getKey() ) != null ) {
-                                // doesn't exist, as we just added it, so just delete the added
-                                return;
-                            }
-
-                            removedKSessions.put( entry.getKey(), entry.getValue() );
+                    for ( Entry<String, KSessionImpl> entry : oldKSession.entrySet() ) {
+                        if ( !newKSession.containsKey( entry.getKey() ) ) {
+                            addedKSessions.remove( entry.getKey() ); 
+                            removedKSessions.add( entry.getKey() );
                             return;
                         }
                     }
@@ -181,107 +135,71 @@ public class KProjectChangeLog
 
                 String oldQName = oldV + "." + kBase.getName();
                 String newQName = newV + "." + kBase.getName();
+                
+                kBase.getKProject().moveKBase( oldQName, newQName );
 
-                if ( !removedKBases.containsKey( oldQName ) ) {
-                    // not currently added
-                    return;
-                }
-
-                String origQName = modifiedKBases.remove( oldQName );
-                if ( origQName != null ) {
-                    // was already previously modified
-                    modifiedKBases.put( newQName, origQName );
-                } else {
-                    modifiedKBases.put( newQName, oldV + "." + kBase.getName() );
-                }
+                removedKBases.remove( newQName );
+                removedKBases.add( oldQName );
+                addedKBases.remove( oldQName );
+                addedKBases.add( newQName );
             } else if ( "name".equals( evt.getPropertyName() ) ) {
                 String oldV = (String) evt.getOldValue();
                 String newV = (String) evt.getNewValue();
 
                 String oldQName = kBase.getNamespace() + "." + oldV;
                 String newQName = kBase.getNamespace() + "." + newV;
+                
+                kBase.getKProject().moveKBase( oldQName, newQName );
 
-                if ( !removedKBases.containsKey( oldQName ) ) {
-                    // not currently added
-                    return;
-                }
-
-                String origQName = modifiedKBases.remove( oldQName );
-                if ( origQName != null ) {
-                    // was already previously modified
-                    modifiedKBases.put( newQName, origQName );
-                } else {
-                    modifiedKBases.put( newQName, kBase.getNamespace() + "." + oldV );
-                }
+                removedKBases.remove( newQName );                
+                removedKBases.add( oldQName );
+                addedKBases.remove( oldQName );
+                addedKBases.add( newQName );
             } else {
-                String oldQName = modifiedKBases.remove( kBase.getQName() );
-                if ( oldQName != null ) {
-                    modifiedKBases.put( kBase.getQName(), oldQName );
-                } else {
-                    modifiedKBases.put( kBase.getQName(), kBase.getQName() );
-                }
+                addedKBases.add( kBase.getQName() );
             }
 
-        } else if ( evt.getSource() instanceof KSession ) {
-            KSession kSession = (KSession) evt.getSource();
+        } else if ( evt.getSource() instanceof KSessionImpl ) {
+            KSessionImpl kSession = (KSessionImpl) evt.getSource();
             if ( "namespace".equals( evt.getPropertyName() ) ) {
                 String oldV = (String) evt.getOldValue();
                 String newV = (String) evt.getNewValue();
 
                 String oldQName = oldV + "." + kSession.getName();
                 String newQName = newV + "." + kSession.getName();
+                
+                kSession.getKBase().moveKSession( oldQName, newQName );
 
-                if ( !removedKSessions.containsKey( oldQName ) ) {
-                    // not currently added
-                    return;
-                }
-
-                String origQName = modifiedKBases.remove( oldQName );
-                if ( origQName != null ) {
-                    // was already previously modified
-                    modifiedKSessions.put( newQName, origQName );
-                } else {
-                    modifiedKSessions.put( newQName, oldV + "." + kSession.getName() );
-                }
+                removedKSessions.remove( newQName );
+                removedKSessions.add( oldQName );
+                addedKSessions.remove( oldQName );
+                addedKSessions.add( newQName );
             } else if ( "name".equals( evt.getPropertyName() ) ) {
                 String oldV = (String) evt.getOldValue();
                 String newV = (String) evt.getNewValue();
 
                 String oldQName = kSession.getNamespace() + "." + oldV;
                 String newQName = kSession.getNamespace() + "." + newV;
+                
+                kSession.getKBase().moveKSession( oldQName, newQName );
 
-                if ( !removedKSessions.containsKey( oldQName ) ) {
-                    // not currently added
-                    return;
-                }
-
-                String origQName = modifiedKSessions.remove( oldQName );
-                if ( origQName != null ) {
-                    // was already previously modified
-                    modifiedKSessions.put( newQName, origQName );
-                } else {
-                    modifiedKSessions.put( newQName, kSession.getNamespace() + "." + oldV );
-                }
+                removedKSessions.remove( newQName );
+                removedKSessions.add( oldQName );
+                addedKSessions.remove( oldQName );
+                addedKSessions.add( newQName );
             } else {
-                String oldQName = modifiedKSessions.remove( kSession.getQName() );
-                if ( oldQName != null ) {
-                    modifiedKSessions.put( kSession.getQName(), oldQName );
-                } else {
-                    modifiedKSessions.put( kSession.getQName(), kSession.getQName() );
-                }
+                addedKSessions.add( kSession.getQName() );
             }
         }
     }
 
     public void reset() {
         kProjectDirty = false;
-        modifiedKBases = new HashMap<String, String>();
-        removedKBases = new HashMap<String, KBase>();
-        addedKBases = new HashMap<String, KBase>();
+        removedKBases = new HashSet<String>();
+        addedKBases = new HashSet<String>();
 
-        modifiedKSessions = new HashMap<String, String>();
-        removedKSessions = new HashMap<String, KSession>();
-        addedKSessions = new HashMap<String, KSession>();
+        removedKSessions = new HashSet<String>();
+        addedKSessions = new HashSet<String>();
     }
 
 }

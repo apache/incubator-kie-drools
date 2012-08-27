@@ -3,6 +3,7 @@ package org.drools.kproject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map.Entry;
 
 import org.drools.core.util.StringUtils;
 
-public class KProject {
+public class KProjectImpl implements KProject {
     // qualifier to path
     private String              kProjectPath;
     private String              kBasesPath;
@@ -21,14 +22,20 @@ public class KProject {
     private  transient PropertyChangeListener listener;
     
     
-    public KProject() {
-        kBases = new HashMap<String, KBase>();
+    public KProjectImpl() {
+        kBases = Collections.emptyMap();
     }    
     
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#getListener()
+     */
     public PropertyChangeListener getListener() {
         return listener;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#setListener(java.beans.PropertyChangeListener)
+     */
     public void setListener(PropertyChangeListener listener) {
         this.listener = listener;
         for ( KBase kbase : kBases.values() ) {
@@ -39,10 +46,16 @@ public class KProject {
 
 
 
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#getKProjectPath()
+     */
     public String getKProjectPath() {
         return kProjectPath;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#setKProjectPath(java.lang.String)
+     */
     public void setKProjectPath(String kprojectPath) {
         if ( listener != null ) {
             listener.propertyChange( new java.beans.PropertyChangeEvent( this, "kProjectPath", this.kProjectPath, kProjectPath ) );
@@ -50,10 +63,16 @@ public class KProject {
         this.kProjectPath = kprojectPath;
     }
     
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#getKBasesPath()
+     */
     public String getKBasesPath() {
         return kBasesPath;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#setKBasesPath(java.lang.String)
+     */
     public void setKBasesPath(String kprojectPath) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "kBasesPath", this.kBasesPath, kBasesPath ) );     
@@ -61,25 +80,52 @@ public class KProject {
         this.kBasesPath = kprojectPath;
     }  
     
-    public void addKBase(KBase kbase) {
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#addKBase(org.drools.kproject.KBaseImpl)
+     */
+    public KBase newKBase(String namespace,
+                         String name) {
+        KBase kbase = new KBaseImpl(this, namespace, name);
         Map<String, KBase> newMap = new HashMap<String, KBase>();
         newMap.putAll( this.kBases );        
         newMap.put( kbase.getQName(), kbase );
-        setKBases( newMap );        
+        setKBases( newMap );   
+        
+        return kbase;
     }
     
-    public void removeKBase(KBase kbase) {
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#removeKBase(org.drools.kproject.KBase)
+     */
+    public void removeKBase(String qName) {
         Map<String, KBase> newMap = new HashMap<String, KBase>();
         newMap.putAll( this.kBases );
-        newMap.remove( kbase.getQName() );
+        newMap.remove( qName );
         setKBases( newMap );
     }    
+    
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#removeKBase(org.drools.kproject.KBase)
+     */
+    public void moveKBase(String oldQName, String newQName) {
+        Map<String, KBase> newMap = new HashMap<String, KBase>();
+        newMap.putAll( this.kBases );
+        KBase kBase = newMap.remove( oldQName );
+        newMap.put( newQName, kBase );
+        setKBases( newMap );
+    }        
 
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#getKBases()
+     */
     public Map<String, KBase> getKBases() {
-        return kBases;
+        return Collections.unmodifiableMap( kBases );
     }
 
-    public void setKBases(Map<String, KBase> kBases) {        
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#setKBases(java.util.Map)
+     */
+    private void setKBases(Map<String, KBase> kBases) {        
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "kBases", this.kBases, kBases ) );
             
@@ -109,6 +155,9 @@ public class KProject {
         return problems;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.kproject.KProject#toString()
+     */
     @Override
     public String toString() {
         return "KProject [kprojectPath=" + kProjectPath + ", kbases=" + kBases + "]";
