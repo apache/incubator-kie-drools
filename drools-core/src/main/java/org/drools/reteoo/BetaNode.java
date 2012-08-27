@@ -412,7 +412,7 @@ public abstract class BetaNode extends LeftTupleSource
                         }                                                
                         behavior.retractRightTuple( memory.getBehaviorContext(),
                                                     rightTuple,
-                                                    workingMemories[i] );
+                                                    workingMemory );
                         
                         memory.getRightTupleMemory().remove( rightTuple );
                         rightTuple.unlinkFromRightParent();                        
