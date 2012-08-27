@@ -8,6 +8,8 @@ public interface PersistenceContextManager {
     void beginCommandScopedEntityManager();
     
     void endCommandScopedEntityManager();
+    
+    void clearPersistenceContext();
 
     void dispose();
 }
