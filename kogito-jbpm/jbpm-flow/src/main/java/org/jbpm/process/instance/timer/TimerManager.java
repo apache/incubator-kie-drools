@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.common.InternalKnowledgeRuntime;
@@ -42,6 +43,7 @@ import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 import org.drools.time.impl.IntervalTrigger;
+import org.drools.time.impl.JDKTimerService.JDKJobHandle;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
 import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
@@ -229,7 +231,16 @@ public class TimerManager {
             if (!tm.getTimerMap().containsKey(timerInstance.getId())) {
                 ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
     
+                Date date = trigger.hasNextFireTime();
                 
+                if (date != null) {
+                    long then = date.getTime();
+                    long now = pctx.getKnowledgeRuntime().getSessionClock().getCurrentTime();
+                    // overdue timer
+                    if (then < now) {
+                        trigger = new OverdueTrigger(trigger, pctx.getKnowledgeRuntime());
+                    }
+                }
                 JobHandle jobHandle = ts.scheduleJob( processJob,
                                                       pctx,
                                                       trigger );
@@ -260,7 +271,16 @@ public class TimerManager {
             // check if the timer instance is not already registered to avoid duplicated timers
             if (!tm.getTimerMap().containsKey(timerInstance.getId())) {
                 ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
+                Date date = trigger.hasNextFireTime();
                 
+                if (date != null) {
+                    long then = date.getTime();
+                    long now = pctx.getKnowledgeRuntime().getSessionClock().getCurrentTime();
+                    // overdue timer
+                    if (then < now) {
+                        trigger = new OverdueTrigger(trigger, pctx.getKnowledgeRuntime());
+                    }
+                }
                 JobHandle jobHandle = ts.scheduleJob( processJob,
                                                       pctx,
                                                       trigger );
@@ -359,6 +379,45 @@ public class TimerManager {
             return timer;
         }
 
+    }
+    
+    /**
+     * Overdue aware trigger that introduces fixed delay to allow completion of session initialization
+     *
+     */
+    public static class OverdueTrigger implements Trigger {
+
+        private static final long serialVersionUID = -2368476147776308013L;
+
+        public static final long OVERDUE_DELAY = Long.parseLong(System.getProperty("jbpm.overdue.timer.delay", "2000"));
+        
+        private Trigger orig;
+        private InternalKnowledgeRuntime kruntime;
+        
+        public OverdueTrigger(Trigger orig, InternalKnowledgeRuntime kruntime) {
+            this.orig = orig;
+            this.kruntime = kruntime;
+        }
+
+        public Date hasNextFireTime() {
+            Date date = orig.hasNextFireTime();
+            if (date == null) {
+                return null;
+            }
+            long then = date.getTime();
+            long now = kruntime.getSessionClock().getCurrentTime();
+            // overdue timer
+            if (then < now) {
+                return new Date((now + OVERDUE_DELAY));
+            } else {
+                return orig.hasNextFireTime();
+            }
+        }
+
+        public Date nextFireTime() {
+            return orig.nextFireTime();
+        }
+        
     }
 
 }
