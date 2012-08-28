@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.*;
+import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.definition.process.Process;
@@ -192,6 +193,9 @@ public class Package
                                                 ClassNotFoundException {
         boolean isDroolsStream = stream instanceof DroolsObjectInputStream;
         DroolsObjectInputStream in = isDroolsStream ? (DroolsObjectInputStream) stream : new DroolsObjectInputStream( new ByteArrayInputStream( (byte[]) stream.readObject() ) );
+        
+        // make sure the evaluators cache is initialised - this is a temporary solution though.
+        new EvaluatorRegistry(); 
 
         // setting parent classloader for dialect datas
         this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
