@@ -56,6 +56,7 @@ public class IntervalTimer
         out.writeObject( endTime );
         out.writeLong( delay );
         out.writeLong( period );
+        out.writeInt( repeatLimit );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -64,6 +65,7 @@ public class IntervalTimer
         this.endTime = (Date) in.readObject();
         this.delay = in.readLong();
         this.period = in.readLong();
+        this.repeatLimit = in.readInt();
     }
 
     public Date getStartTime() {

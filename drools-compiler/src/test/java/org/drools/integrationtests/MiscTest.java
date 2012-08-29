@@ -10396,8 +10396,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
     
-    
-     @Test
+    @Test
     public void getPackageFromFS() throws Exception {
           String str = "package org.drools;\n"
                 +  "global java.util.List list;\n"
@@ -10414,7 +10413,6 @@ public class MiscTest extends CommonTestMethodBase {
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-
        
         ksession.fireAllRules();
 
@@ -10423,11 +10421,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(2, list.size());
         
         ksession.dispose();
-
-       
-        
     }
-     @Test
+
+    @Test
     public void getPackageFromClasspath() throws Exception {
          String str = "package org.drools;\n"
                 +  "global java.util.List list;\n"
@@ -10453,9 +10449,6 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(2, list.size());
         
         ksession.dispose();
-
-       
-        
     }
      
     private KnowledgeBase loadKnowledgeBaseFromStringFromFS(String str) throws IOException{
