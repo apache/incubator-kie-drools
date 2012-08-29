@@ -273,6 +273,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         if (session != null) {
             session.removeEventListener(workingMemoryListener);
             session.dispose();
+            steppingFactHandle = null;
         }
         
         this.session = kBase.newStatefulKnowledgeSession();
