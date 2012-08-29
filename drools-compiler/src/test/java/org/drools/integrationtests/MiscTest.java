@@ -32,6 +32,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -137,6 +140,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.xml.XmlDumper;
 import org.drools.conf.AssertBehaviorOption;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
@@ -10391,4 +10395,100 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+    
+    
+     @Test
+    public void getPackageFromFS() throws Exception {
+          String str = "package org.drools;\n"
+                +  "global java.util.List list;\n"
+                + " rule 'Start Timer'\n"
+                + "   timer (int:2000 2000) \n"
+                + "     when\n"
+                + "     then	\n"
+                + "         list.add('Rule Executed');\n"
+                + "end";
+        // load up the knowledge base
+        KnowledgeBase kbase = loadKnowledgeBaseFromStringFromFS(str);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+       
+        ksession.fireAllRules();
+
+        Thread.sleep(5000);
+
+        assertEquals(2, list.size());
+        
+        ksession.dispose();
+
+       
+        
+    }
+     @Test
+    public void getPackageFromClasspath() throws Exception {
+         String str = "package org.drools;\n"
+                +  "global java.util.List list;\n"
+                + " rule 'Start Timer'\n"
+                + "   timer (int:2000 2000) \n"
+                + "     when\n"
+                + "     then	\n"
+                + "         list.add('Rule Executed');\n"
+                + "end";
+        // load up the knowledge base
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+       
+        ksession.fireAllRules();
+
+        Thread.sleep(5000);
+
+        assertEquals(2, list.size());
+        
+        ksession.dispose();
+
+       
+        
+    }
+     
+    private KnowledgeBase loadKnowledgeBaseFromStringFromFS(String str) throws IOException{
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+         if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        File packageFile = null;
+        // build and store compiled package
+        for (KnowledgePackage pkg : kbuilder.getKnowledgePackages()) {
+            packageFile = new File(System.getProperty("java.io.tmpdir") + File.separator + pkg.getName() + ".pkg");
+            writePackage(pkg, packageFile);
+
+            // store first package only
+            break;
+        }
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newFileResource(packageFile), ResourceType.PKG);
+
+        return kbuilder.newKnowledgeBase();
+    } 
+    
+    private void writePackage(KnowledgePackage kpackage, File p1file)
+            throws IOException, FileNotFoundException {
+        FileOutputStream out = new FileOutputStream(p1file);
+        try {
+            DroolsStreamUtils.streamOut(out, kpackage);
+        } finally {
+            out.close();
+        }
+    }
+     
 }
