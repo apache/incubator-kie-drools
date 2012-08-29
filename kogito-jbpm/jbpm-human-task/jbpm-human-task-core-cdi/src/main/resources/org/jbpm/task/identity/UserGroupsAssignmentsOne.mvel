@@ -1,0 +1,22 @@
+usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],  
+                new User( 'Bobba Fet') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],     
+                new User('Jabba Hutt') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('Dalai Lama') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],     
+                new User('Christoper Columbus') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('Stuart Little') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],  
+                new User('Jane Austin') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('Peter Parker') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],   
+                new User('Steve Rogers') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('Sly Stalone') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],    
+                new User('Elizabeth Windsor') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('Bruce Wayne' ) : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],   
+                new User('Tony Stark') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('salaboy') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('Luke Cage') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],      
+                new User('Administrator') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('krisv') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],          
+                new User('john') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('mary') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],           
+                new User('sales-rep') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )]
+              ];       
+return usersgroups;
