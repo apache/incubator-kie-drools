@@ -40,6 +40,7 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.Calendar;
 import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TimerAndCalendarTest {
@@ -993,7 +994,7 @@ public class TimerAndCalendarTest {
         assertEquals( 3, list.size() );
     }
     
-    @Test
+    @Test @Ignore
     public void testTimerWithNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Timer_With_Not.drl" ) ) );
@@ -1011,7 +1012,7 @@ public class TimerAndCalendarTest {
         assertEquals( 2, workingMemory.getFactCount() );
     }
 
-    @Test
+    @Test @Ignore
     public void testHaltWithTimer() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Halt_With_Timer.drl" ) ) );
