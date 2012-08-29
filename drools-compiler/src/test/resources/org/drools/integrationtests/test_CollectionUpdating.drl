@@ -1,0 +1,14 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+import java.util.Collection;
+
+global java.util.List results;
+
+rule "collection adding" 
+    when
+        $collection: Collection()
+        $cheese : Cheese() from $collection
+    then
+        results.add( $cheese );
+end  
