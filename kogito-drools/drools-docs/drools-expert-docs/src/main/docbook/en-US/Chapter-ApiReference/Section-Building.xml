@@ -384,7 +384,7 @@ if ( kbuilder.hasErrors() ) {
     </example>
   </section>
 
-  <section>
+  <section id="changingTheDefaultBuildResultSeverity">
     <title>Changing the Default Build Result Severity</title>
 
     <para>In some cases, it is possible to change the default severity of a
