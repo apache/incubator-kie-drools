@@ -45,29 +45,68 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
+            <id>zips</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <finalName>jbpm-${project.version}</finalName>
+              <descriptors>
+                <!-- basic zips -->
+                <descriptor>src/main/assembly/pre-bin.xml</descriptor>
+                <descriptor>src/main/assembly/bin.xml</descriptor>
+                <descriptor>src/main/assembly/src.xml</descriptor>
+                <descriptor>src/main/assembly/docs-build.xml</descriptor>
+                <descriptor>src/main/assembly/docs.xml</descriptor>
+                <descriptor>src/main/assembly/assembly-jbpm.xml</descriptor>
+                <!-- installer and examples -->
+                <descriptor>src/main/assembly/installer.xml</descriptor>
+                <descriptor>src/main/assembly/examples.xml</descriptor>
+                <!-- war zips -->
+                <descriptor>src/main/assembly/gwt-console.xml</descriptor>
+                <descriptor>src/main/assembly/human-task-war.xml</descriptor>
+                <!--descriptor>src/main/assembly/form-builder.xml</descriptor-->
+              </descriptors>
+            </configuration>
+          </execution>
+          <execution>
+            <id>console-server-wars</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>jbpm-gwt-console-server-${project.version}</finalName>
+              <descriptors>
+                <descriptor>src/main/assembly/gwt-console-server-ee6.xml</descriptor>
+              </descriptors>
+              <archive>
+                <manifestEntries>
+                  <Dependencies>org.jboss.netty</Dependencies>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </execution>
+          <execution>
+            <id>human-task-wars</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>jbpm-human-task-${project.version}</finalName>
+              <descriptors>
+                <descriptor>src/main/assembly/human-task-war-ee6.xml</descriptor>
+              </descriptors>
+              <archive>
+                <manifestEntries>
+                  <Dependencies>org.jboss.netty</Dependencies>
+                </manifestEntries>
+              </archive>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <finalName>jbpm-${project.version}</finalName>
-          <descriptors>
-            <descriptor>src/main/assembly/pre-bin.xml</descriptor>
-            <descriptor>src/main/assembly/bin.xml</descriptor>
-            <descriptor>src/main/assembly/src.xml</descriptor>
-            <descriptor>src/main/assembly/gwt-console.xml</descriptor>
-            <!--descriptor>src/main/assembly/form-builder.xml</descriptor-->
-            <descriptor>src/main/assembly/human-task-war.xml</descriptor>
-            <descriptor>src/main/assembly/installer.xml</descriptor>
-            <descriptor>src/main/assembly/docs-build.xml</descriptor>
-            <descriptor>src/main/assembly/docs.xml</descriptor>
-            <descriptor>src/main/assembly/examples.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-jbpm.xml</descriptor>
-          </descriptors>
-          <!--<appendAssemblyId>false</appendAssemblyId>-->
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -226,6 +265,19 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- EE 6 compatibility -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-gwt-console-server</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-war</artifactId>
+      <type>war</type>
+      <version>${jbpm.version}</version>
     </dependency>
   </dependencies>
 
