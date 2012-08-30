@@ -90,6 +90,35 @@ public class ChangeSetTest {
     }
 
     @Test
+    public void multipleSheets() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "multipleSheetsChangeSet.xml", getClass()), ResourceType.CHANGE_SET );
+        assertFalse( kbuilder.hasErrors() );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Cheese( "cheddar",
+                                    42 ) );
+        ksession.insert( new Person( "michael",
+                                    "stilton",
+                                    25 ) );
+        ksession.insert( new Person( "Jane",
+                                    "stilton",
+                                    55 ) );
+
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2, list.size() );
+
+        assertTrue(list.contains("Young man cheddar"));
+        assertTrue(list.contains("Jane eats cheddar"));
+    }
+
+    @Test
     public void testCSV() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeSetTestCSV.xml", getClass()), ResourceType.CHANGE_SET );
