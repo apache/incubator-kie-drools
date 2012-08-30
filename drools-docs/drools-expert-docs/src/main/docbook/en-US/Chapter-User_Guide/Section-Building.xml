@@ -357,8 +357,8 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     </example>
   </section>
 
-  <section>
-    <title>Changing default building result severity</title>
+  <section id="changingTheDefaultBuildResultSeverity">
+    <title>Changing the Default Build Result Severity</title>
 
     <para>In some cases, it is possible to change the default severity of a
     type of building result. For instance, when a new rule with the same name
