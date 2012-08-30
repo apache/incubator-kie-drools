@@ -6,7 +6,7 @@
     <version>5.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbpm-gwt-console-tomcat-integration</artifactId>
-  <name>jBPM :: Tomcat integration</name>
+  <name>jBPM GWT Tomcat integration</name>
   <dependencies>
   	<dependency>
   		<groupId>org.apache.tomcat</groupId>

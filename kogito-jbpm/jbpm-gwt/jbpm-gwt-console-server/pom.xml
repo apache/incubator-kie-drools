@@ -20,8 +20,6 @@
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-jbpm</artifactId>
       <type>war</type>
-      <!-- overwrite parent pom version -->
-      <version>${console.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.bpm</groupId>
@@ -30,14 +28,6 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-integration</artifactId>
-      <!-- overwrite parent pom version -->
-      <version>${console.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.code.gson</groupId>
-          <artifactId>gson</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>

@@ -52,12 +52,6 @@
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- for BlobUserType.BlobImpl (hib 3 compatibility) -->
-    <dependency>
-      <groupId>net.sf.trove4j</groupId>
-      <artifactId>trove4j</artifactId>
-      <version>3.0.2</version>
-    </dependency>
     
     <!--  Test -->
     <dependency>

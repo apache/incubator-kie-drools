@@ -26,36 +26,4 @@
     <module>jbpm-gwt-console-tomcat-integration</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.bpm</groupId>
-        <artifactId>activity-monitor-model</artifactId>
-        <version>1.0.0-Beta2</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-common-annotations</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-tools</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  
 </project>

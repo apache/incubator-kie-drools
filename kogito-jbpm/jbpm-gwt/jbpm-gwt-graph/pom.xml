@@ -26,14 +26,21 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-integration</artifactId>
-      <!-- overwrite parent pom version -->
-      <version>${console.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>activity-monitor-model</artifactId>
-      <version>1.0.0-Beta2</version>
-  </dependency>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-gwt-shared</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-gwt-core</artifactId>
+    </dependency>
+
     <!-- Following 2 dependencies needed for making the build work with JDK5 -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -44,15 +51,6 @@
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-gwt-shared</artifactId>
-      <scope>compile</scope>
-   </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-gwt-core</artifactId>
     </dependency>
   </dependencies>
 </project>

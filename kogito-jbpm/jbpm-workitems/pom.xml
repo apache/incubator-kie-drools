@@ -46,11 +46,6 @@
       <scope>test</scope>
     </dependency>
     <!-- Commons -->
-    <!--dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-finder</artifactId>
-      <version>1.0-20080905.033643-1</version>
-    </dependency-->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -70,7 +65,7 @@
     <dependency>
       <groupId>jivesoftware</groupId>
       <artifactId>smack</artifactId>
-      <version>3.0.4</version>
+      <version>3.1.0</version>
     </dependency>
     <!-- RSS -->
     <dependency>
