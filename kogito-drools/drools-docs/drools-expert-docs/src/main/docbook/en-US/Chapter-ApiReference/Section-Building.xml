@@ -391,7 +391,7 @@ if ( kbuilder.hasErrors() ) {
     type of build result. For instance, when a new rule with the same name
     of an existing rule is added to a package, the default behavior is to
     replace the old rule by the new rule and report it as an INFO. This is
-    probably ideal for most use cases, but in some deployements the user
+    probably ideal for most use cases, but in some deployments the user
     might want to prevent the rule update and report it as an error.</para>
 
     <para>Changing the default severity for a result type is configured
