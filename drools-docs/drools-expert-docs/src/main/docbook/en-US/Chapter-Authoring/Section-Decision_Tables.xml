@@ -154,14 +154,14 @@
 
     <para>The other keywords visible in Column C are Import and Sequential which will be covered later. The RuleTable
     keyword is important as it indicates that a chunk of rules will follow, based on some rule templates. After the
-    RuleTable keyword there is a name, used to prefix the names of the generated rules. The row numbers are appended to
-    guarantee unique rule names.</para>
+    RuleTable keyword there is a name, used to prefix the names of the generated rules. The sheet name and row numbers
+    are appended to guarantee unique rule names.</para>
 
     <warning>
-      <para>The RuleTable name must be unique across all sheets and all spreadsheet files in the same KnowledgeBase.
-      If that's not the case, some rules might have the same name and only 1 of them will be applied. To show such
-      ignored rules, <link linkend="changingTheDefaultBuildResultSeverity">raise the severity of such rule name
-      conflicts</link>.</para>
+      <para>The RuleTable name combined with the sheet name must be unique across all spreadsheet files in the same
+      KnowledgeBase. If that's not the case, some rules might have the same name and only 1 of them will be applied.
+      To show such ignored rules, <link linkend="changingTheDefaultBuildResultSeverity">raise the severity of such rule
+      name conflicts</link>.</para>
     </warning>
 
     <para> The column of RuleTable indicates the column in which the rules start; columns to the
