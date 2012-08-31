@@ -207,8 +207,22 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         	}
         }
         if (connections == null || connections.isEmpty()) {
-        	((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+        	boolean hidden = false;
+        	if (getNode().getMetaData().get("hidden") != null) {
+        		hidden = true;
+        	}
+        	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+        	if (!hidden) {
+        		((InternalProcessRuntime) kruntime.getProcessRuntime())
+        			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
+        	}
+        	// notify container
+            ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
         		.nodeInstanceCompleted(this, type);
+            if (!hidden) {
+            	((InternalProcessRuntime) kruntime.getProcessRuntime())
+            		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
+            }
         } else {
         	Map<org.jbpm.workflow.instance.NodeInstance, String> nodeInstances = 
         		new HashMap<org.jbpm.workflow.instance.NodeInstance, String>();
