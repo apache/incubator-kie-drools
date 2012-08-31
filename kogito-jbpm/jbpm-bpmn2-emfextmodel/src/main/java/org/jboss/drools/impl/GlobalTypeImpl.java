@@ -81,6 +81,7 @@ public class GlobalTypeImpl extends EObjectImpl implements GlobalType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	protected EClass eStaticClass() {
 		return DroolsPackage.Literals.GLOBAL_TYPE;
 	}
@@ -132,6 +133,7 @@ public class GlobalTypeImpl extends EObjectImpl implements GlobalType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DroolsPackage.GLOBAL_TYPE__IDENTIFIER:
@@ -147,6 +149,7 @@ public class GlobalTypeImpl extends EObjectImpl implements GlobalType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DroolsPackage.GLOBAL_TYPE__IDENTIFIER:
@@ -164,6 +167,7 @@ public class GlobalTypeImpl extends EObjectImpl implements GlobalType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.GLOBAL_TYPE__IDENTIFIER:
@@ -181,6 +185,7 @@ public class GlobalTypeImpl extends EObjectImpl implements GlobalType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.GLOBAL_TYPE__IDENTIFIER:
@@ -196,6 +201,7 @@ public class GlobalTypeImpl extends EObjectImpl implements GlobalType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 

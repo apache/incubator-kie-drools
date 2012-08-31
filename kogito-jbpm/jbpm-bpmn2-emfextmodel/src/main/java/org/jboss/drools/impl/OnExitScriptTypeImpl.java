@@ -81,6 +81,7 @@ public class OnExitScriptTypeImpl extends EObjectImpl implements OnExitScriptTyp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	protected EClass eStaticClass() {
 		return DroolsPackage.Literals.ON_EXIT_SCRIPT_TYPE;
 	}
@@ -132,6 +133,7 @@ public class OnExitScriptTypeImpl extends EObjectImpl implements OnExitScriptTyp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE__SCRIPT:
@@ -147,6 +149,7 @@ public class OnExitScriptTypeImpl extends EObjectImpl implements OnExitScriptTyp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE__SCRIPT:
@@ -164,6 +167,7 @@ public class OnExitScriptTypeImpl extends EObjectImpl implements OnExitScriptTyp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE__SCRIPT:
@@ -181,6 +185,7 @@ public class OnExitScriptTypeImpl extends EObjectImpl implements OnExitScriptTyp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE__SCRIPT:
@@ -196,6 +201,7 @@ public class OnExitScriptTypeImpl extends EObjectImpl implements OnExitScriptTyp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 

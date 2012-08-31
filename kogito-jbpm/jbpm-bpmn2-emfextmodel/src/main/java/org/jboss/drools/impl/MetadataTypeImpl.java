@@ -42,7 +42,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList metaentry;
+	protected EList<MetaentryType> metaentry;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -58,6 +58,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	protected EClass eStaticClass() {
 		return DroolsPackage.Literals.METADATA_TYPE;
 	}
@@ -67,9 +68,9 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList getMetaentry() {
+	public EList<MetaentryType> getMetaentry() {
 		if (metaentry == null) {
-			metaentry = new EObjectContainmentEList(MetaentryType.class, this, DroolsPackage.METADATA_TYPE__METAENTRY);
+			metaentry = new EObjectContainmentEList<MetaentryType>(MetaentryType.class, this, DroolsPackage.METADATA_TYPE__METAENTRY);
 		}
 		return metaentry;
 	}
@@ -79,10 +80,11 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case DroolsPackage.METADATA_TYPE__METAENTRY:
-				return ((InternalEList)getMetaentry()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getMetaentry()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -92,6 +94,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DroolsPackage.METADATA_TYPE__METAENTRY:
@@ -105,11 +108,13 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DroolsPackage.METADATA_TYPE__METAENTRY:
 				getMetaentry().clear();
-				getMetaentry().addAll((Collection)newValue);
+				getMetaentry().addAll((Collection<? extends MetaentryType>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -120,6 +125,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.METADATA_TYPE__METAENTRY:
@@ -134,6 +140,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.METADATA_TYPE__METAENTRY:

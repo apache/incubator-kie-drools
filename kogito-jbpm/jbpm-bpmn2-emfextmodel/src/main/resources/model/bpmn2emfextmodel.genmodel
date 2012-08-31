@@ -1,31 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/jbpm-bpmn2-emfextmodel/src/main/java" modelPluginID="jbpm-bpmn2-emfextmodel"
-    modelName="Bpmn2emfextmodel" testsDirectory="/jbpm-bpmn2-emfextmodel/src/test/java"
-    importerID="org.eclipse.xsd.ecore.importer" copyrightFields="false">
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/jbpm-bpmn2-emfextmodel/src/main/java" editDirectory="/jbpm-bpmn2-emfextmodel/src/main/java"
+    editorDirectory="/jbpm-bpmn2-emfextmodel/src/main/java" modelPluginID="jbpm-bpmn2-emfextmodel"
+    modelName="Bpmn2emfextmodel" codeFormatting="true" testsDirectory="/jbpm-bpmn2-emfextmodel/src/test/java"
+    importerID="org.eclipse.xsd.ecore.importer" complianceLevel="5.0" copyrightFields="false"
+    runtimeVersion="2.2">
   <foreignModel>bpmn2emfextmodel.xsd</foreignModel>
   <genPackages prefix="Drools" basePackage="org.jboss" resource="XML" disposableProviderFactory="true"
       ecorePackage="drools.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="drools.ecore#//ResultType">
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//ResultType/enum"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//ResultType/min"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//ResultType/max"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//ResultType/mean"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//ResultType/count"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//ResultType/sum"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="drools.ecore#//TimeUnit">
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//TimeUnit/ms"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//TimeUnit/s"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//TimeUnit/min"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//TimeUnit/hour"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//TimeUnit/day"/>
+      <genEnumLiterals ecoreEnumLiteral="drools.ecore#//TimeUnit/year"/>
+    </genEnums>
     <genDataTypes ecoreDataType="drools.ecore#//PackageNameType"/>
     <genDataTypes ecoreDataType="drools.ecore#//PriorityType"/>
+    <genDataTypes ecoreDataType="drools.ecore#//ResultTypeObject"/>
     <genDataTypes ecoreDataType="drools.ecore#//RuleFlowGroupType"/>
     <genDataTypes ecoreDataType="drools.ecore#//TaskNameType"/>
+    <genDataTypes ecoreDataType="drools.ecore#//TimeUnitObject"/>
     <genDataTypes ecoreDataType="drools.ecore#//VersionType"/>
+    <genClasses ecoreClass="drools.ecore#//BetaDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//BetaDistributionType/scale"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//BetaDistributionType/shape"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//BinomialDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//BinomialDistributionType/probability"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//BinomialDistributionType/trials"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//BooleanParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//BooleanParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//Calendar">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Calendar/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Calendar/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Calendar/name"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ConstantParameter"/>
+    <genClasses ecoreClass="drools.ecore#//ControlParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ControlParameters/probability"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ControlParameters/interTriggerTimer"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ControlParameters/maxTriggerCount"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//CostParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//CostParameters/fixedCost"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//CostParameters/unitCost"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//DateTimeParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DateTimeParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//DistributionParameter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DistributionParameter/discrete"/>
+    </genClasses>
     <genClasses ecoreClass="drools.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/betaDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/parameterValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/binomialDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/booleanParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/dateTimeParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/durationParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/enumParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/erlangDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/expressionParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/floatingParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/gammaDistribution"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/global"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/import"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/logNormalDistribution"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/metadata"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/metaentry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/negativeExponentialDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/normalDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/numericParameter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onEntryScript"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onExitScript"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/poissonDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/processAnalysisData"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/stringParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/triangularDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/truncatedNormalDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/uniformDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/userDistribution"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/userDistributionDataPoint"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/weibullDistribution"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/packageName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/priority"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/ruleFlowGroup"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/taskName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/version"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//DurationParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DurationParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ElementParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ElementParameters/timeParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ElementParameters/controlParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ElementParameters/resourceParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ElementParameters/priorityParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ElementParameters/costParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ElementParameters/instanceParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ElementParameters/vendorExtension"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ElementParameters/elementId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ElementParameters/id"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ElementParametersType"/>
+    <genClasses ecoreClass="drools.ecore#//EnumParameterType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//EnumParameterType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//EnumParameterType/parameterValueGroup"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//EnumParameterType/parameterValue"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ErlangDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ErlangDistributionType/k"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ErlangDistributionType/mean"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ExpressionParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ExpressionParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//FloatingParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//FloatingParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//GammaDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//GammaDistributionType/scale"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//GammaDistributionType/shape"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//GlobalParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//GlobalParameterType/property"/>
     </genClasses>
     <genClasses ecoreClass="drools.ecore#//GlobalType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//GlobalType/identifier"/>
@@ -34,12 +147,29 @@
     <genClasses ecoreClass="drools.ecore#//ImportType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ImportType/name"/>
     </genClasses>
+    <genClasses ecoreClass="drools.ecore#//InstanceParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//InstanceParameters/property"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//LogNormalDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//LogNormalDistributionType/mean"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//LogNormalDistributionType/standardDeviation"/>
+    </genClasses>
     <genClasses ecoreClass="drools.ecore#//MetadataType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//MetadataType/metaentry"/>
     </genClasses>
     <genClasses ecoreClass="drools.ecore#//MetaentryType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaentryType/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaentryType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//NegativeExponentialDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//NegativeExponentialDistributionType/mean"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//NormalDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//NormalDistributionType/mean"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//NormalDistributionType/standardDeviation"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//NumericParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//NumericParameterType/value"/>
     </genClasses>
     <genClasses ecoreClass="drools.ecore#//OnEntryScriptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnEntryScriptType/script"/>
@@ -48,6 +178,108 @@
     <genClasses ecoreClass="drools.ecore#//OnExitScriptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnExitScriptType/script"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnExitScriptType/scriptFormat"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//Parameter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Parameter/resultRequest"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//Parameter/parameterValueGroup"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//Parameter/parameterValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Parameter/kpi"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Parameter/sla"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ParameterValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ParameterValue/instance"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ParameterValue/result"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ParameterValue/validFor"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//PoissonDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//PoissonDistributionType/mean"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//PriorityParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//PriorityParameters/interruptible"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//PriorityParameters/priority"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ProcessAnalysisDataType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//ProcessAnalysisDataType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//ProcessAnalysisDataType/scenario"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//PropertyType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//PropertyType/name"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ResourceParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ResourceParameters/selection"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ResourceParameters/availability"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ResourceParameters/quantity"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ResourceParameters/role"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//Scenario">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//Scenario/scenarioParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//Scenario/elementParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//Scenario/calendar"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//Scenario/vendorExtension"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/author"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/created"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/inherits"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/modified"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/result"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//Scenario/version"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ScenarioParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ScenarioParameters/start"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ScenarioParameters/duration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//ScenarioParameters/globalParameter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ScenarioParameters/baseCurrencyUnit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ScenarioParameters/baseTimeUnit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ScenarioParameters/replication"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ScenarioParameters/seed"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ScenarioParametersType"/>
+    <genClasses ecoreClass="drools.ecore#//StringParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//StringParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//TimeParameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/transferTime"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/queueTime"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/waitTime"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/setUpTime"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/processingTime"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/validationTime"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/reworkTime"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//TriangularDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TriangularDistributionType/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TriangularDistributionType/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TriangularDistributionType/mostLikely"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//TruncatedNormalDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TruncatedNormalDistributionType/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TruncatedNormalDistributionType/mean"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TruncatedNormalDistributionType/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TruncatedNormalDistributionType/standardDeviation"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//UniformDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//UniformDistributionType/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//UniformDistributionType/min"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//UserDistributionDataPointType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//UserDistributionDataPointType/parameterValueGroup"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//UserDistributionDataPointType/parameterValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//UserDistributionDataPointType/probability"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//UserDistributionType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//UserDistributionType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//UserDistributionType/userDistributionDataPoint"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//VendorExtension">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//VendorExtension/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//VendorExtension/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//VendorExtension/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//WeibullDistributionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//WeibullDistributionType/scale"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//WeibullDistributionType/shape"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

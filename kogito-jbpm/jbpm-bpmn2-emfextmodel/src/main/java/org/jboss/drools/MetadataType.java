@@ -34,10 +34,10 @@ public interface MetadataType extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Metaentry</em>' containment reference list.
 	 * @see org.jboss.drools.DroolsPackage#getMetadataType_Metaentry()
-	 * @model type="org.jboss.drools.MetaentryType" containment="true" required="true"
+	 * @model containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='metaentry' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList getMetaentry();
+	EList<MetaentryType> getMetaentry();
 
 } // MetadataType
