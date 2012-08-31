@@ -295,6 +295,31 @@ public class PropagationQueuingNode extends ObjectSource
     public Memory createMemory( RuleBaseConfiguration config ) {
         return new PropagationQueueingNodeMemory();
     }
+    
+    public int hashCode() {
+        return this.source.hashCode();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(final Object object) {
+        if ( this == object ) {
+            return true;
+        }
+
+        if ( object == null || !(object instanceof PropagationQueuingNode) ) {
+            return false;
+        }
+
+        final PropagationQueuingNode other = (PropagationQueuingNode) object;
+
+        return this.source.equals( other.source );
+    }
+
+    
 
     /**
      * Memory implementation for the node
