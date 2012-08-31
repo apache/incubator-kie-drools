@@ -102,6 +102,7 @@ implements RuleSheetListener {
     private final PropertiesSheetListener _propertiesListener     = new PropertiesSheetListener();
 
     private boolean showPackage;
+    private String worksheetName = null;
 
     /**
      * Constructor.
@@ -118,9 +119,13 @@ implements RuleSheetListener {
         this.showPackage = showPackage;
     }
 
+    public void setWorksheetName(String worksheetName) {
+        this.worksheetName = worksheetName;
+    }
+
     /* (non-Javadoc)
-     * @see org.drools.decisiontable.parser.RuleSheetListener#getProperties()
-     */
+    * @see org.drools.decisiontable.parser.RuleSheetListener#getProperties()
+    */
     public CaseInsensitiveMap getProperties() {
         return this._propertiesListener.getProperties();
     }
@@ -342,6 +347,9 @@ implements RuleSheetListener {
         // setup stuff for the rules to come.. (the order of these steps are
         // important !)
         this._currentRulePrefix = RuleSheetParserUtil.getRuleName( value );
+        if (this.worksheetName != null) {
+            this._currentRulePrefix += " " + worksheetName;
+        }
         this._currentSequentialFlag = getSequentialFlag();
         this._currentEscapeQuotesFlag = getEscapeQuotesFlag();
 

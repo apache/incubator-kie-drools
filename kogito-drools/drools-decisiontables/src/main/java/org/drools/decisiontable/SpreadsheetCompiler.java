@@ -141,7 +141,8 @@ public class SpreadsheetCompiler {
 
     private RuleSheetListener getRuleSheetListener(final InputStream stream,
                                                    final String worksheetName) {
-        final RuleSheetListener listener = new DefaultRuleSheetListener();
+        final DefaultRuleSheetListener listener = new DefaultRuleSheetListener();
+        listener.setWorksheetName(worksheetName);
         final Map<String, List<DataListener>> sheetListeners = new HashMap<String, List<DataListener>>();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         listeners.add(listener);
