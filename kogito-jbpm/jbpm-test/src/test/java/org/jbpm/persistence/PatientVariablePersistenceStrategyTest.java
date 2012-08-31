@@ -260,7 +260,9 @@ public class PatientVariablePersistenceStrategyTest {
         
         this.localTaskService.complete(managerTasks.get(0).getId(), "manager", null);
         
-        Assert.assertEquals(ProcessInstance.STATE_COMPLETED, process.getState());
+        // since persisted process instance is completed it should be null
+        process = ksession.getProcessInstance(process.getId());
+        Assert.assertNull(process);
         
         
         

@@ -208,7 +208,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
         if (connections == null || connections.isEmpty()) {
         	boolean hidden = false;
-        	if (getNode().getMetaData().get("hidden") != null) {
+        	Node currentNode = getNode();
+        	if (currentNode != null && currentNode.getMetaData().get("hidden") != null) {
         		hidden = true;
         	}
         	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
