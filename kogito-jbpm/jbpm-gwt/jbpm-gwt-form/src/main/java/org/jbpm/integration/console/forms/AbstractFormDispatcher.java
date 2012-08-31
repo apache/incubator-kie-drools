@@ -60,8 +60,8 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
             throw new RuntimeException("Could not load jbpm.console.properties", e);
         }
         sb.append("http://");
-        sb.append(properties.getProperty("jbpm.console.server.host").trim());
-        sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port").trim()));
+        sb.append(properties.getProperty("jbpm.console.server.host", "localhost").trim());
+        sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port", "8080").trim()));
         sb.append("/" + properties.getProperty("jbpm.console.server.context", "gwt-console-server") + "/rs/form/" + getType(ref) + "/");
         sb.append(ref.getReferenceId());
         sb.append("/render");
