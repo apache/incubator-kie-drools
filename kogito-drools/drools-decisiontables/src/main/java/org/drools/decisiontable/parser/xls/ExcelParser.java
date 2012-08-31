@@ -19,6 +19,7 @@ package org.drools.decisiontable.parser.xls;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,10 @@ public class ExcelParser
             } else {
                 for ( String sheetName : _listeners.keySet() ) {
                     Sheet sheet = workbook.getSheet( sheetName );
+                    if (sheet == null) {
+                        throw new IllegalStateException("Could not find the sheetName (" + sheetName
+                                + ") in the workbook sheetNames (" + Arrays.toString(workbook.getSheetNames()) + ").");
+                    }
                     processSheet( sheet,
                                   _listeners.get( sheetName ) );
 
