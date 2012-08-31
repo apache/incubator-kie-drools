@@ -596,6 +596,7 @@ public class DefaultAgenda
                                  final Activation activation,
                                  final RuleTerminalNode rtn ) {
         AgendaItem item = (AgendaItem) activation;
+        item.cancel();
         item.removeAllBlockersAndBlocked( this );               
 
         if ( isDeclarativeAgenda() && activation.getFactHandle() == null ) {
@@ -1375,6 +1376,10 @@ public class DefaultAgenda
     public void halt() {
         this.halt.set( true );
         notifyHalt();
+    }
+
+    public boolean isHalted() {
+        return halt.get();
     }
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {

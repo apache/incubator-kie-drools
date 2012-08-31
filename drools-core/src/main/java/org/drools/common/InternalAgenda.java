@@ -146,6 +146,8 @@ public interface InternalAgenda
      * execution though.
      */
     public void halt();
+
+    public boolean isHalted();
     
     public void notifyHalt();
 
