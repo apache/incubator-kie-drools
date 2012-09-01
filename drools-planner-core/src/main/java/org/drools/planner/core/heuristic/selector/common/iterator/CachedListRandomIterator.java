@@ -28,14 +28,16 @@ public class CachedListRandomIterator<S> implements Iterator<S>  {
 
     protected final List<S> cachedList;
     protected final Random workingRandom;
+    protected final boolean notEmpty;
 
     public CachedListRandomIterator(List<S> cachedList, Random workingRandom) {
         this.cachedList = cachedList;
         this.workingRandom = workingRandom;
+        notEmpty = !cachedList.isEmpty();
     }
 
     public boolean hasNext() {
-        return true;
+        return notEmpty;
     }
 
     public S next() {
