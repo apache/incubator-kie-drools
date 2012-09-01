@@ -202,11 +202,11 @@ public class NamedEntryPoint
                         } else {
                             // this was object is already justified, so just add new logical dependency
                             tms.addLogicalDependency( handle,
-                                                              activation,
-                                                              activation.getPropagationContext(),
-                                                              rule );
+                                                      activation,
+                                                      activation.getPropagationContext(),
+                                                      rule,
+                                                      typeConf );
                         }
-
                         return handle;
                     }
 
@@ -225,9 +225,11 @@ public class NamedEntryPoint
                         } else {
                             key.setStatus( EqualityKey.JUSTIFIED );
                             tms.addLogicalDependency( handle,
-                                                           activation,
-                                                           activation.getPropagationContext(),
-                                                           rule );
+                                                      activation,
+                                                      activation.getPropagationContext(),
+                                                      rule,
+                                                      typeConf );
+                            return handle;
                         }
                     } else if ( !logical ) {
                         if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
@@ -274,9 +276,10 @@ public class NamedEntryPoint
                         if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                             // only add as logical dependency if this wasn't previously stated
                             tms.addLogicalDependency( key.getFactHandle(),
-                                                           activation,
-                                                           activation.getPropagationContext(),
-                                                           rule );
+                                                      activation,
+                                                      activation.getPropagationContext(),
+                                                      rule,
+                                                      typeConf );
                             return key.getFactHandle();
                         } else {
                             // You cannot justify a previously stated equality equal object, so return null
