@@ -223,7 +223,7 @@ public class DefaultKnowledgeHelper
         }
 
         if ( dep != null ) {
-            // Add the previous matching logical dependency back into the list
+            // Add the previous matching logical dependency back into the list           
             this.activation.addLogicalDependency( dep );
         } else {
             // no previous matching logical dependency, so create a new one

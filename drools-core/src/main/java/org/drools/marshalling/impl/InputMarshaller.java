@@ -1068,10 +1068,13 @@ public class InputMarshaller {
         while (stream.readShort() == PersisterEnums.LOGICAL_DEPENDENCY) {
             int factHandleId = stream.readInt();
             InternalFactHandle handle = (InternalFactHandle) context.handles.get( factHandleId );
+            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint)handle.getEntryPoint()).getEntryPoint(),
+                                                                                                         handle.getObject() );            
             tms.addLogicalDependency( handle,
                                       activation,
                                       pc,
-                                      rule );
+                                      rule,
+                                      typeConf );
         }
 
         return activation;

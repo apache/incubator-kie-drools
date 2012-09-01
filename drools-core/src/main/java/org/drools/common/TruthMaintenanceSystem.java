@@ -31,6 +31,7 @@ import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
@@ -44,91 +45,25 @@ import org.drools.spi.PropagationContext;
  */
 public class TruthMaintenanceSystem {
 
-    private AbstractWorkingMemory workingMemory;
+    private AbstractWorkingMemory        wm;
 
-    private ObjectHashMap         justifiedMap;
+    private ObjectHashMap                justifiedMap;
 
-    private ObjectHashMap         assertMap;
+    private ObjectHashMap                assertMap;
 
-    public TruthMaintenanceSystem() {
-    }
+    private BeliefSystem beliefSystem;
 
-    public TruthMaintenanceSystem(final AbstractWorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public TruthMaintenanceSystem() {}
+
+    public TruthMaintenanceSystem(final AbstractWorkingMemory wm) {
+        this.wm = wm;
 
         this.justifiedMap = new ObjectHashMap();
         this.assertMap = new ObjectHashMap();
         this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
+        
+        beliefSystem = new SimpleBeliefSystem(wm, this);
     }
-
-    //    public void write(WMSerialisationOutContext context) throws IOException {
-    //        ObjectOutputStream stream = context.stream;
-    //        
-    //        EqualityKey[] keys = new EqualityKey[ this.assertMap.size() ];
-    //        org.drools.util.Iterator it = this.assertMap.iterator();
-    //        int i = 0;
-    //        for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
-    //            EqualityKey key = ( EqualityKey ) entry.getKey();
-    //            keys[i++] = key;
-    //        }
-    //        
-    //        Arrays.sort( keys, EqualityKeySorter.instance );
-    //        
-    //        // write the assert map of Equality keys
-    //        for ( EqualityKey key : keys ) {
-    //            stream.writeInt( PersisterEnums.EQUALITY_KEY );
-    //            stream.writeInt( key.getStatus() );
-    //            InternalFactHandle handle = key.getFactHandle();
-    //            stream.writeInt( handle.getId() );
-    //            context.out.println( "EqualityKey int:" + key.getStatus() + " int:" + handle.getId() );
-    //            if ( key.getOtherFactHandle() != null && !key.getOtherFactHandle().isEmpty() ) {
-    //                for ( InternalFactHandle handle2 : key.getOtherFactHandle() ) {
-    //                    stream.writeInt( PersisterEnums.FACT_HANDLE );
-    //                    stream.writeInt( handle2.getId() );
-    //                    context.out.println( "OtherHandle int:" +  handle2.getId() );
-    //                }
-    //            }
-    //            stream.writeInt( PersisterEnums.END );
-    //        }
-    //        stream.writeInt( PersisterEnums.END );
-    //    }
-    //    
-    //    public static class EqualityKeySorter implements Comparator<EqualityKey> {
-    //        public static final EqualityKeySorter instance = new EqualityKeySorter();
-    //        public int compare(EqualityKey key1,
-    //                           EqualityKey key2) {
-    //            return key1.getFactHandle().getId() - key2.getFactHandle().getId();
-    //        }
-    //    }
-    //    
-    //    public void read(WMSerialisationInContext context) throws IOException {
-    //        ObjectInputStream stream = context.stream;
-    //        
-    //        while ( stream.readInt() == PersisterEnums.EQUALITY_KEY ) {
-    //            int status = stream.readInt();
-    //            InternalFactHandle handle = ( InternalFactHandle ) context.handles.get( stream.readInt() );
-    //            EqualityKey key = new EqualityKey(handle, status);
-    //            handle.setEqualityKey( key );
-    //            while ( stream.readInt() == PersisterEnums.FACT_HANDLE ) {
-    //                handle = ( InternalFactHandle ) context.wm.getFactHandle( stream.readInt() );
-    //                key.addFactHandle( handle );
-    //                handle.setEqualityKey( key );
-    //            }
-    //            put( key );
-    //        }
-    //    }
-
-    //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    //        workingMemory   = (AbstractWorkingMemory)in.readObject();
-    //        justifiedMap   = (PrimitiveLongMap)in.readObject();
-    //        assertMap   = (ObjectHashMap)in.readObject();
-    //    }
-    //
-    //    public void writeExternal(ObjectOutput out) throws IOException {
-    //        out.writeObject(workingMemory);
-    //        out.writeObject(justifiedMap);
-    //        out.writeObject(assertMap);
-    //    }
 
     public ObjectHashMap getJustifiedMap() {
         return this.justifiedMap;
@@ -157,6 +92,28 @@ public class TruthMaintenanceSystem {
     }
 
     /**
+     * The FactHandle is being removed from the system so remove any logical dependencies
+     * between the  justified FactHandle and its justifiers. Removes the FactHandle key
+     * from the justifiedMap. It then iterates over all the LogicalDependency nodes, if any,
+     * in the returned Set and removes the LogicalDependency node from the LinkedList maintained
+     * by the Activation.
+     *
+     * @see LogicalDependency
+     *
+     * @param handle - The FactHandle to be removed
+     * @throws FactException
+     */
+    public void removeLogicalDependencies(final InternalFactHandle handle) throws FactException {
+        final BeliefSet beliefSet = (BeliefSet) this.justifiedMap.remove( handle.getId() );
+        if ( beliefSet != null && !beliefSet.isEmpty() ) {
+            for ( LinkedListEntry entry = (LinkedListEntry) beliefSet.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+                final LogicalDependency node = (LogicalDependency) entry.getObject();
+                node.getJustifier().getLogicalDependencies().remove( node );
+            }
+        }
+    }    
+    
+    /**
      * An Activation is no longer true so it no longer justifies  any  of the logical facts
      * it logically  asserted. It iterates  over the Activation's LinkedList of DependencyNodes
      * it retrieves the justitication  set for each  DependencyNode's FactHandle and  removes
@@ -170,39 +127,88 @@ public class TruthMaintenanceSystem {
     public void removeLogicalDependencies(final Activation activation,
                                           final PropagationContext context,
                                           final Rule rule) throws FactException {
-        final org.drools.core.util.LinkedList list = activation.getLogicalDependencies();
+        final LinkedList list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;
         }
-        
+
         for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
             removeLogicalDependency( activation, node, context );
         }
     }
-    
+
     public void removeLogicalDependency(final Activation activation,
                                         final LogicalDependency node,
                                         final PropagationContext context) {
         final InternalFactHandle handle = (InternalFactHandle) node.getJustified();
-        final LinkedList list = (LinkedList) this.justifiedMap.get( handle.getId() );
-        if ( list != null ) {
-            list.remove( node.getJustifierEntry() );
-            WorkingMemoryAction action = new LogicalRetractCallback( this,
-                                                                     node,
-                                                                     list,
-                                                                     handle,
-                                                                     context,
-                                                                     activation );
-            workingMemory.queueWorkingMemoryAction( action );
+        final BeliefSet beliefSet = (BeliefSet) this.justifiedMap.get( handle.getId() );
+        
+        if ( beliefSet != null ) {
+            beliefSystem.delete( node, beliefSet, context );
         }
+    }    
+
+    /**
+     * Adds a justification for the FactHandle to the justifiedMap.
+     *
+     * @param handle
+     * @param activation
+     * @param context
+     * @param rule
+     * @param typeConf 
+     * @throws FactException
+     */
+    public void readLogicalDependency(final InternalFactHandle handle,
+                                      final Activation activation,
+                                      final PropagationContext context,
+                                      final Rule rule,
+                                      final ObjectTypeConf typeConf) throws FactException {
+        addLogicalDependency(handle, activation, context, rule, typeConf, true);
     }
+    
+    public void addLogicalDependency(final InternalFactHandle handle,
+                                      final Activation activation,
+                                      final PropagationContext context,
+                                      final Rule rule,
+                                      final ObjectTypeConf typeConf) throws FactException {
+        addLogicalDependency(handle, activation, context, rule, typeConf, false);
+    }
+    
+    public void addLogicalDependency(final InternalFactHandle handle,
+                                     final Activation activation,
+                                     final PropagationContext context,
+                                     final Rule rule,
+                                     final ObjectTypeConf typeConf,
+                                     final boolean read) throws FactException {
+        final LogicalDependency node = new LogicalDependency( activation,
+                                                              handle );
+        activation.getRule().setHasLogicalDependency( true );
+
+        activation.addLogicalDependency( node );
+
+        BeliefSet beliefSet = (BeliefSet) this.justifiedMap.get( handle.getId() );
+        if ( beliefSet == null ) {
+            if ( context.getType() == PropagationContext.MODIFICATION ) {
+                // if this was a  update, chances  are its trying  to retract a logical assertion
+            }
+            beliefSet = beliefSystem.newBeliefSet();
+            this.justifiedMap.put( handle.getId(),
+                                   beliefSet );
+        }
+        if ( read ) {
+            // used when deserialising
+            beliefSystem.read( node, beliefSet, context, typeConf );            
+        } else {
+            beliefSystem.insert( node, beliefSet, context, typeConf );
+        }
+    }   
 
     public static class LogicalRetractCallback
-        implements
-        WorkingMemoryAction {
+            implements
+            WorkingMemoryAction {
         private TruthMaintenanceSystem tms;
         private LogicalDependency      node;
-        private LinkedList             list;
+        private BeliefSet         beliefSet;
         private InternalFactHandle     handle;
         private PropagationContext     context;
         private Activation             activation;
@@ -213,32 +219,32 @@ public class TruthMaintenanceSystem {
 
         public LogicalRetractCallback(final TruthMaintenanceSystem tms,
                                       final LogicalDependency node,
-                                      final LinkedList list,
+                                      final BeliefSet beliefSet,
                                       final InternalFactHandle handle,
                                       final PropagationContext context,
                                       final Activation activation) {
             this.tms = tms;
             this.node = node;
-            this.list = list;
+            this.beliefSet = beliefSet;
             this.handle = handle;
             this.context = context;
         }
 
         public LogicalRetractCallback(MarshallerReaderContext context) throws IOException {
             this.tms = context.wm.getTruthMaintenanceSystem();
-            
+
             this.handle = context.handles.get( context.readInt() );
             this.context = context.propagationContexts.get( context.readLong() );
             this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getObject();
-            
-            this.list = ( LinkedList ) this.tms.getJustifiedMap().get( handle.getId() );
-            
-            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+
+            this.beliefSet = (BeliefSet) this.tms.getJustifiedMap().get( handle.getId() );
+
+            for ( LinkedListEntry entry = (LinkedListEntry) beliefSet.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
                 final LogicalDependency node = (LogicalDependency) entry.getObject();
                 if ( node.getJustifier() == this.activation ) {
-                   this.node = node;
-                   break;
-                }                
+                    this.node = node;
+                    break;
+                }
             }
         }
 
@@ -246,22 +252,22 @@ public class TruthMaintenanceSystem {
                                       Action _action) {
             LogicalRetract _retract = _action.getLogicalRetract();
             this.tms = context.wm.getTruthMaintenanceSystem();
-            
+
             this.handle = context.handles.get( _retract.getHandleId() );
-            this.activation = (Activation) context.filter.getTuplesCache().get( 
-                                           PersisterHelper.createActivationKey( _retract.getActivation().getPackageName(), 
-                                                                                _retract.getActivation().getRuleName(), 
-                                                                                _retract.getActivation().getTuple() ) ).getObject();
+            this.activation = (Activation) context.filter
+                                                  .getTuplesCache().get( PersisterHelper.createActivationKey( _retract.getActivation().getPackageName(),
+                                                                                                              _retract.getActivation().getRuleName(),
+                                                                                                              _retract.getActivation().getTuple() ) ).getObject();
             this.context = this.activation.getPropagationContext();
-            
-            this.list = ( LinkedList ) this.tms.getJustifiedMap().get( handle.getId() );
-            
-            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+
+            this.beliefSet = (BeliefSet) this.tms.getJustifiedMap().get( handle.getId() );
+
+            for ( LinkedListEntry entry = (LinkedListEntry) beliefSet.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
                 final LogicalDependency node = (LogicalDependency) entry.getObject();
                 if ( node.getJustifier() == this.activation ) {
-                   this.node = node;
-                   break;
-                }                
+                    this.node = node;
+                    break;
+                }
             }
         }
 
@@ -272,8 +278,8 @@ public class TruthMaintenanceSystem {
             context.writeLong( this.context.getPropagationNumber() );
             context.writeInt( context.terminalTupleMap.get( this.activation.getTuple() ) );
         }
-        
-        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context)  {
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
             LogicalRetract _retract = ProtobufMessages.ActionQueue.LogicalRetract.newBuilder()
                     .setHandleId( this.handle.getId() )
                     .setActivation( PersisterHelper.createActivation( this.activation.getRule().getPackageName(),
@@ -290,7 +296,7 @@ public class TruthMaintenanceSystem {
                                                 ClassNotFoundException {
             tms = (TruthMaintenanceSystem) in.readObject();
             node = (LogicalDependency) in.readObject();
-            list = (LinkedList) in.readObject();
+            beliefSet = (BeliefSet) in.readObject();
             handle = (InternalFactHandle) in.readObject();
             context = (PropagationContext) in.readObject();
             activation = (Activation) in.readObject();
@@ -299,15 +305,14 @@ public class TruthMaintenanceSystem {
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( tms );
             out.writeObject( node );
-            out.writeObject( list );
+            out.writeObject( beliefSet );
             out.writeObject( handle );
             out.writeObject( context );
             out.writeObject( activation );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-            if ( list.isEmpty() ) {
-                this.tms.getJustifiedMap().remove( handle.getId() );
+            if ( beliefSet.isEmpty() ) {                
                 // this needs to be scheduled so we don't upset the current
                 // working memory operation
                 workingMemory.retract( this.handle,
@@ -319,65 +324,18 @@ public class TruthMaintenanceSystem {
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
-            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+            execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
         }
     }
 
-    /**
-     * The FactHandle is being removed from the system so remove any logical dependencies
-     * between the  justified FactHandle and its justifiers. Removes the FactHandle key
-     * from the justifiedMap. It then iterates over all the LogicalDependency nodes, if any,
-     * in the returned Set and removes the LogicalDependency node from the LinkedList maintained
-     * by the Activation.
-     *
-     * @see LogicalDependency
-     *
-     * @param handle - The FactHandle to be removed
-     * @throws FactException
-     */
-    public void removeLogicalDependencies(final InternalFactHandle handle) throws FactException {
-        final LinkedList list = (LinkedList) this.justifiedMap.remove( handle.getId() );
-        if ( list != null && !list.isEmpty() ) {
-            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                final LogicalDependency node = (LogicalDependency) entry.getObject();
-                node.getJustifier().getLogicalDependencies().remove( node );
-            }
-        }
-    }
 
-    /**
-     * Adds a justification for the FactHandle to the justifiedMap.
-     *
-     * @param handle
-     * @param activation
-     * @param context
-     * @param rule
-     * @throws FactException
-     */
-    public void addLogicalDependency(final InternalFactHandle handle,
-                                     final Activation activation,
-                                     final PropagationContext context,
-                                     final Rule rule) throws FactException {
-        final LogicalDependency node = new LogicalDependency( activation,
-                                                              handle );
-        activation.getRule().setHasLogicalDependency( true );
-
-        activation.addLogicalDependency( node );
-        
-        LinkedList list = (LinkedList) this.justifiedMap.get( handle.getId() );
-        if ( list == null ) {
-            if ( context.getType() == PropagationContext.MODIFICATION ) {
-                // if this was a  update, chances  are its trying  to retract a logical assertion
-            }
-            list = new LinkedList();
-            this.justifiedMap.put( handle.getId(),
-                                   list );
-        }
-        list.add( node.getJustifierEntry() );
-    }
-    
     public void clear() {
         this.justifiedMap.clear();
         this.assertMap.clear();
     }
+
+    public BeliefSet newTMSbeliefSet() {
+        return beliefSystem.newBeliefSet();
+    }
+
 }

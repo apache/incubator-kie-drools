@@ -571,10 +571,13 @@ public class ProtobufInputMarshaller {
                                                                    _activation.getRuleName(), 
                                                                    _activation.getTuple() ) ).getObject();
                 PropagationContext pc = activation.getPropagationContext();
-                tms.addLogicalDependency( handle, 
-                                          activation, 
-                                          pc, 
-                                          activation.getRule() );
+                ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint)handle.getEntryPoint()).getEntryPoint(),
+                                                                                                             handle.getObject() );                
+                tms.readLogicalDependency( handle, 
+                                           activation, 
+                                           pc, 
+                                           activation.getRule(),
+                                           typeConf );
             }
         }
     }

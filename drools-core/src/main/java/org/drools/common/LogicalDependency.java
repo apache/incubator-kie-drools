@@ -27,6 +27,7 @@ import org.drools.spi.Activation;
 public class LogicalDependency extends AbstractBaseLinkedListNode {
     private Activation justifier;
     private Object justified;
+    private Object value;
     
     private LinkedListEntry justifierEntry = new LinkedListEntry( this );
     
@@ -39,6 +40,15 @@ public class LogicalDependency extends AbstractBaseLinkedListNode {
         this.justified = object;
     }
     
+    public LogicalDependency(final Activation justifier,
+                             final Object object,
+                             final Object value) {
+        super();
+        this.justifier = justifier;
+        this.justified = object;
+        this.value = value;
+    }    
+    
     public LinkedListEntry getJustifierEntry() {
         return this.justifierEntry;
     }
@@ -49,6 +59,10 @@ public class LogicalDependency extends AbstractBaseLinkedListNode {
 
     public Activation getJustifier() {
         return this.justifier;
+    }
+    
+    public Object getValue() {
+        return this.value;
     }
 
     public boolean equals(final Object object) {

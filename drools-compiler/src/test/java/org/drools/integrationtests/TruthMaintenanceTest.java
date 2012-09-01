@@ -261,7 +261,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         session = getSerialisedStatefulKnowledgeSession( session,
                                                          true ); 
-        
+
+        System.out.println( list );
         assertEquals( 3,
                       list.size() );
 
