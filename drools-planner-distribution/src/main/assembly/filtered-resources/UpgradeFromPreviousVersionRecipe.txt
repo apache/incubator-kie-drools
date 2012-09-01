@@ -2093,18 +2093,27 @@ If you want to use JUST_IN_TIME caching for your custom moves, take a look at Mo
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <localSearch>
         <selector>
-          <selector>...</selector>
-          <selector>...</selector>
-          <selector>...</selector>
+          <selector>
+            <moveFactoryClass>...BedDesignationPillarPartSwapMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>...GenericChangeMoveFactory</moveFactoryClass>
+          </selector>
+          ...
         </selector>
         ...
       </localSearch>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>...</changeMoveSelector>
-          <swapMoveSelector>...</swapMoveSelector>
-          <moveListFactory>...</moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>...BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+          </changeMoveSelector>
+          ...
         </unionMoveSelector>
         ...
       </localSearch>
@@ -2206,7 +2215,7 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 If you used this undocumented feature anyway, vote for https://issues.jboss.org/browse/JBRULES-3598
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <selector>
-    <topSize>...</topSize>
+        <topSize>...</topSize>
       </selector>
 
 TODO custom Selector

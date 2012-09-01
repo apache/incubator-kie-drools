@@ -14,24 +14,39 @@
       <title>What is a score?</title>
 
       <para>Every initialized <literal>Solution</literal> has a score. That score is an objective way to compare 2
-      solutions: the solution with the highest score is better. The <literal>Solver</literal> aims to find the
-      <literal>Solution</literal> with the highest <literal>Score</literal>. The <emphasis>best solution</emphasis> is
-      the <literal>Solution</literal> with the highest <literal>Score</literal> that it has encountered during solving,
-      so it might be the <emphasis>optimal solution</emphasis>.</para>
+      solutions: the solution with the higher score is better. The <literal>Solver</literal> aims to find the
+      <literal>Solution</literal> with the highest <literal>Score</literal> of all possible solutions. The
+      <emphasis>best solution</emphasis> is the <literal>Solution</literal> with the highest <literal>Score</literal>
+      that <literal>Solver</literal> has encountered during solving, which might be the <emphasis>optimal
+      solution</emphasis>.</para>
 
-      <para>Planner cannot automatically know which <literal>Solution</literal> your business prefers, so you need to
-      tell it how to calculate the score of a <literal>Solution</literal>.</para>
+      <para>Planner cannot automatically know which <literal>Solution</literal> is best for your business, so you need
+      to tell it how to calculate the score of a given <literal>Solution</literal> according to your business needs.
+      There are multiple score techniques that you can use and combine.</para>
     </section>
 
     <section>
       <title>Positive and negative constraints</title>
 
-      <para>Most planning problems use negative scores, because they have negative constraints. In that case, the score
-      is usually the sum of the weight of the negative constraints being broken, with a perfect score of 0. This
+      <para>All score techniques are based on constraints. Such a constraint can be a simple pattern (such as
+      <emphasis>Maximize the apple harvest in the solution</emphasis>) or a more complex pattern. a positive constraint
+      is a constraint you're trying to maximize. A negative constraint is a constraint you're trying to minimize.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/positiveAndNegativeConstraints.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Notice in the image above, that the optimal solution always has the highest score, regardless if the
+      constraints are positive or negative.</para>
+
+      <para>Most planning problems have only negative constraints and therefore have a negative score. In that case, the
+      score is usually the sum of the weight of the negative constraints being broken, with a perfect score of 0. This
       explains why the score of a solution of 4 queens is the negative (and not the positive!) of the number of queen
       couples which can attack each other.</para>
 
-      <para>Negative and positive constraints can be combined, even in the same level.</para>
+      <para>Negative and positive constraints can be combined, even in the same score level.</para>
 
       <note>
         <para>Don't presume your business knows all its score constraints in advance. Expect score constraints to be
@@ -40,12 +55,6 @@
 
       <para>When a constraint activates (because the negative constraint is broken or the positive constraint is
       fulfilled) on a certain planning entity set, it is called a <emphasis>constraint occurrence</emphasis>.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Score_calculation/positiveAndNegativeConstraints.png"></imagedata>
-        </imageobject>
-      </mediaobject>
     </section>
 
     <section>
@@ -53,8 +62,8 @@
 
       <para>Not all score constraints are equally important. If breaking one constraint is equally bad as breaking
       another constraint x times, then those 2 constraints have a different weight (but they are in the same score
-      level). For example in vehicle routing, you can make 5 broken "avoid crossroads" soft constraints count as much as
-      1 broken "avoid highways at rush hour" soft constraint.</para>
+      level). For example in vehicle routing, you can make 2 "unhappy driver" constraint occurrences count as much as 1
+      "fuel tank usage" constraint occurrence:</para>
 
       <mediaobject>
         <imageobject>
@@ -62,9 +71,36 @@
         </imageobject>
       </mediaobject>
 
-      <para>The weight of a constraint occurrence is often dynamically based on the planning entities involved. For
+      <para>Score weighting is often used in use cases where you can put a price tag on everything. In that case, the
+      positive constraints maximize revenue and the negative constraints minimize expenses: together they maximize
+      profit. Alternatively, score weighting is also often used to create social fairness. For example: nurses that
+      request a free day on New Year's eve pay a higher weight than on a normal day.</para>
+
+      <para>The weight of a constraint occurrence can be dynamically based on the planning entities involved. For
       example in cloud balance: the weight of the soft constraint occurrence for an active <literal>Computer</literal>
       is the <literal>cost</literal> of that <literal>Computer</literal>.</para>
+    </section>
+
+    <section>
+      <title>Score level</title>
+
+      <para>Sometimes a score constraint outranks another score constraint, no matter how many times the other is
+      broken. In that case, those score constraints are in different levels. For example: a nurse cannot do 2 shifts at
+      the same time (due to the constraints of physical reality), this outranks nurse happiness constraints.</para>
+
+      <para>Most use cases have only 2 score levels: hard and soft. When comparing 2 scores, they are compared
+      lexicographically: the first score level gets compared first. If those differ, the others score levels are
+      ignored. For example: a score that breaks 0 hard constraints and 1000000 soft constraints is better than a score
+      that breaks 1 hard constraint and 0 soft constraints.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreLevels.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Score levels often employ score weighting per level. In such case, the hard constraint level usually makes
+      the solution feasible and the soft constraint level maximizes profit by weighting the constraints on price.</para>
 
       <note>
         <para>Your business will probably tell you that your hard constraints all have the same weight, because they
@@ -74,31 +110,15 @@
         CPU too little. This way, there is an incentive to move a <literal>Process</literal> with 6 CPU or less away
         from that Computer.</para>
       </note>
-    </section>
 
-    <section>
-      <title>Score level</title>
-
-      <para>Sometimes score constraints are in different levels. If breaking one constraint is always worse than
-      another, no matter how much another constraint is broken, then those 2 constraints are in a different
-      level.</para>
-
-      <para>Most use cases have 2 score levels: hard and soft. When comparing 2 scores, the higher score level gets
-      compared first. If those differ, the lower score levels are ignored. For example: a score that breaks 0 hard
-      constraints and 1000000 soft constraints is better than a score that breaks 1 hard constraint and 0 soft
-      constraints.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Score_calculation/scoreLevels.png"></imagedata>
-        </imageobject>
-      </mediaobject>
+      <para>3 or more score levels is supported. For example: a company might decide that profit outranks employee
+      satisfaction (or visa versa), while both are outranked by the constraints of physical reality.</para>
     </section>
 
     <section>
       <title>Pareto scoring (AKA multi-objective optimization scoring)</title>
 
-      <para>Less common is the use case of pareto optimization, which is also known under the more confusing term
+      <para>Far less common is the use case of pareto optimization, which is also known under the more confusing term
       multi-objective optimization. In pareto scoring, score constraints are in the same score level, yet they are not
       weighted against each other. When 2 scores are compared, each of the score constraints are compared individually
       and the score with the most dominating score constraints wins. Pareto scoring can even be combined with score
