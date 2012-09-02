@@ -181,7 +181,7 @@
 }</programlisting>
 
         <warning>
-          <para>Your input files need to have been written with the same <literal>ProblemIO</literal> instance as they
+          <para>Your input files need to have been written with the same <literal>ProblemIO</literal> class as they
           are being read by the benchmarker.</para>
         </warning>
       </section>
