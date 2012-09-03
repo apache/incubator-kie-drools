@@ -40,14 +40,10 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
 
     protected ScoreDirector scoreDirector = null;
 
-    public JustInTimeFilteringEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
+    public JustInTimeFilteringEntitySelector(EntitySelector childEntitySelector,
             List<SelectionFilter> entityFilterList) {
         this.childEntitySelector = childEntitySelector;
         this.entityFilterList = entityFilterList;
-        if (cacheType != SelectionCacheType.JUST_IN_TIME) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
-        }
         solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
     }
 

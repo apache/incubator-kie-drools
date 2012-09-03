@@ -39,7 +39,6 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.CachingFilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.JustInTimeFilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ProbabilityMoveSelector;
@@ -135,16 +134,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             for (Class<? extends SelectionFilter> moveFilterClass : moveFilterClassList) {
                 moveFilterList.add(ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass));
             }
-            MoveSelector filteringMoveSelector;
-            if (resolvedCacheType.isNotCached()) {
-                filteringMoveSelector = new JustInTimeFilteringMoveSelector(moveSelector,
-                        resolvedCacheType, moveFilterList);
-            } else {
-                filteringMoveSelector = new CachingFilteringMoveSelector(moveSelector,
-                        resolvedCacheType, moveFilterList);
-                alreadyCached = true;
-            }
-            moveSelector = filteringMoveSelector;
+            moveSelector = new JustInTimeFilteringMoveSelector(moveSelector, moveFilterList);
         }
         // TODO moveSorterClass
         if (moveProbabilityWeightFactoryClass != null) {

@@ -24,6 +24,7 @@ import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
@@ -70,9 +71,10 @@ public class FilteringEntitySelectorTest {
             }
         };
         List<SelectionFilter> entityFilterList = Arrays.<SelectionFilter>asList(entityFilter);
-        EntitySelector entitySelector = cacheType.isNotCached()
-                ? new JustInTimeFilteringEntitySelector(childEntitySelector, cacheType, entityFilterList)
-                : new CachingFilteringEntitySelector(childEntitySelector, cacheType, entityFilterList);
+        EntitySelector entitySelector = new JustInTimeFilteringEntitySelector(childEntitySelector, entityFilterList);
+        if (cacheType.isCached()) {
+            entitySelector = new CachingEntitySelector(entitySelector, cacheType);
+        }
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);

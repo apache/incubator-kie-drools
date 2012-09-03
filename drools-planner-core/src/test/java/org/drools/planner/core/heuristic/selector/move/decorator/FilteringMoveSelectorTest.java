@@ -74,9 +74,10 @@ public class FilteringMoveSelectorTest {
             }
         };
         List<SelectionFilter> moveFilterList = Arrays.<SelectionFilter>asList(moveFilter);
-        MoveSelector moveSelector = cacheType.isNotCached()
-                ? new JustInTimeFilteringMoveSelector(childMoveSelector, cacheType, moveFilterList)
-                : new CachingFilteringMoveSelector(childMoveSelector, cacheType, moveFilterList);
+        MoveSelector moveSelector = new JustInTimeFilteringMoveSelector(childMoveSelector, moveFilterList);
+        if (cacheType.isCached()) {
+            moveSelector = new CachingMoveSelector(moveSelector, cacheType);
+        }
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);

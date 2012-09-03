@@ -29,14 +29,12 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.decorator.CachingFilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.JustInTimeFilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
@@ -143,16 +141,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             if (entityDescriptor.hasMovableEntitySelectionFilter()) {
                 entityFilterList.add(entityDescriptor.getMovableEntitySelectionFilter());
             }
-            EntitySelector filteringEntitySelector;
-            if (resolvedCacheType.isNotCached()) {
-                filteringEntitySelector = new JustInTimeFilteringEntitySelector(entitySelector,
-                        resolvedCacheType, entityFilterList);
-            } else {
-                filteringEntitySelector = new CachingFilteringEntitySelector(entitySelector,
-                        resolvedCacheType, entityFilterList);
-                alreadyCached = true;
-            }
-            entitySelector = filteringEntitySelector;
+            entitySelector = new JustInTimeFilteringEntitySelector(entitySelector, entityFilterList);
         }
         // TODO entitySorterClass
         if (entityProbabilityWeightFactoryClass != null) {

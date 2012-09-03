@@ -36,15 +36,10 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
 
     protected ScoreDirector scoreDirector = null;
 
-    public JustInTimeFilteringMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
-            List<SelectionFilter> moveFilterList) {
+    public JustInTimeFilteringMoveSelector(MoveSelector childMoveSelector, List<SelectionFilter> moveFilterList) {
         this.childMoveSelector = childMoveSelector;
         this.moveFilterList = moveFilterList;
         solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
-        if (cacheType != SelectionCacheType.JUST_IN_TIME) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
-        }
     }
 
     // ************************************************************************
