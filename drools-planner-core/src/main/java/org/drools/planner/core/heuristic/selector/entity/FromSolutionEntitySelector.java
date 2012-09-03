@@ -33,16 +33,16 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 public class FromSolutionEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
 
     protected final PlanningEntityDescriptor entityDescriptor;
-    protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
+    protected final boolean randomSelection;
 
     protected List<Object> cachedEntityList = null;
 
-    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor, boolean randomSelection,
-            SelectionCacheType cacheType) {
+    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor,
+            SelectionCacheType cacheType, boolean randomSelection) {
         this.entityDescriptor = entityDescriptor;
-        this.randomSelection = randomSelection;
         this.cacheType = cacheType;
+        this.randomSelection = randomSelection;
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");

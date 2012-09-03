@@ -25,13 +25,14 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 // TODO Refactor to general purpose SortingEntitySelector
+@Deprecated
 public class DecreasingDifficultyEntitySelector extends CachingEntitySelector {
 
     protected final PlanningEntitySorter planningEntitySorter;
 
     public DecreasingDifficultyEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
             PlanningEntitySorter planningEntitySorter) {
-        super(childEntitySelector, cacheType);
+        super(childEntitySelector, cacheType, false);
         this.planningEntitySorter = planningEntitySorter;
         if (!planningEntitySorter.isSortDifficultySupported()) {
             throw new IllegalStateException("Decreasing difficulty entity selection" +

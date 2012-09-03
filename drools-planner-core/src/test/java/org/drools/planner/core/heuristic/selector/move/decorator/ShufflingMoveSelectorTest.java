@@ -132,7 +132,7 @@ public class ShufflingMoveSelectorTest {
         verify(childMoveSelector, times(timesCalled)).getSize();
     }
 
-    private void runAsserts(CachingMoveSelector moveSelector, String... codes) {
+    private void runAsserts(ShufflingMoveSelector moveSelector, String... codes) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
         for (String code : codes) {

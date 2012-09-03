@@ -74,7 +74,7 @@ public class FilteringMoveSelectorTest {
         List<SelectionFilter> moveFilterList = Arrays.<SelectionFilter>asList(moveFilter);
         MoveSelector moveSelector = new FilteringMoveSelector(childMoveSelector, moveFilterList);
         if (cacheType.isCached()) {
-            moveSelector = new CachingMoveSelector(moveSelector, cacheType);
+            moveSelector = new CachingMoveSelector(moveSelector, cacheType, false);
         }
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

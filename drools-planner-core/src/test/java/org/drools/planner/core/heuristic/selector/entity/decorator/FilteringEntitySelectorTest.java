@@ -70,7 +70,7 @@ public class FilteringEntitySelectorTest {
         List<SelectionFilter> entityFilterList = Arrays.<SelectionFilter>asList(entityFilter);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, entityFilterList);
         if (cacheType.isCached()) {
-            entitySelector = new CachingEntitySelector(entitySelector, cacheType);
+            entitySelector = new CachingEntitySelector(entitySelector, cacheType, false);
         }
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

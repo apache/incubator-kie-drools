@@ -16,93 +16,64 @@
 
 package org.drools.planner.core.heuristic.selector.entity.decorator;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
+import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
+import org.drools.planner.core.move.Move;
 
 /**
  * A {@link EntitySelector} that caches the result of its child {@link EntitySelector}.
  * <p/>
- * Keep this code in sync with {@link CachingMoveSelector}.
+ * Keep this code in sync with {@link CachingValueSelector} and {@link CachingMoveSelector}.
  */
-public class CachingEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
+public class CachingEntitySelector extends AbstractCachingEntitySelector {
 
-    protected final EntitySelector childEntitySelector;
-    protected final SelectionCacheType cacheType;
+    protected final boolean randomSelection;
 
-    protected List<Object> cachedEntityList = null;
-
-    public CachingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType) {
-        this.childEntitySelector = childEntitySelector;
-        this.cacheType = cacheType;
-        if (childEntitySelector.isNeverEnding()) {
-            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
-                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
-        }
-        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
-        if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
-        }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+    public CachingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
+            boolean randomSelection) {
+        super(childEntitySelector, cacheType);
+        this.randomSelection = randomSelection;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public void constructCache(DefaultSolverScope solverScope) {
-        long childSize = childEntitySelector.getSize();
-        if (childSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The entitySelector (" + this + ") has a childEntitySelector ("
-                    + childEntitySelector + ") with childSize (" + childSize
-                    + ") which is higher than Integer.MAX_VALUE.");
-        }
-        cachedEntityList = new ArrayList<Object>((int) childSize);
-        CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
-    }
-
-    public void disposeCache(DefaultSolverScope solverScope) {
-        cachedEntityList = null;
-    }
-
-    public PlanningEntityDescriptor getEntityDescriptor() {
-        return childEntitySelector.getEntityDescriptor();
-    }
-
-    public boolean isContinuous() {
-        return false;
-    }
-
     public boolean isNeverEnding() {
-        return false;
-    }
-
-    public long getSize() {
-        return cachedEntityList.size();
+        // CachedListRandomIterator is neverEnding
+        return randomSelection;
     }
 
     public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
+        if (!randomSelection) {
+            return cachedEntityList.iterator();
+        } else {
+            return new CachedListRandomIterator<Object>(cachedEntityList, workingRandom);
+        }
     }
 
     public ListIterator<Object> listIterator() {
-        return cachedEntityList.listIterator();
+        if (!randomSelection) {
+            return cachedEntityList.listIterator();
+        } else {
+            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
+                    + randomSelection + ").");
+        }
     }
 
     public ListIterator<Object> listIterator(int index) {
-        return cachedEntityList.listIterator(index);
+        if (!randomSelection) {
+            return cachedEntityList.listIterator(index);
+        } else {
+            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
+                    + randomSelection + ").");
+        }
     }
 
     @Override

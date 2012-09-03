@@ -24,76 +24,43 @@ import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * A {@link MoveSelector} that caches the result of its child {@link MoveSelector}.
  * <p/>
- * Keep this code in sync with {@link CachingEntitySelector}.
+ * Keep this code in sync with {@link CachingEntitySelector} and {@link CachingValueSelector}.
  */
-public class CachingMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {
+public class CachingMoveSelector extends AbstractCachingMoveSelector {
 
-    protected final MoveSelector childMoveSelector;
-    protected final SelectionCacheType cacheType;
+    protected final boolean randomSelection;
 
-    protected List<Move> cachedMoveList = null;
-
-    public CachingMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType) {
-        this.childMoveSelector = childMoveSelector;
-        this.cacheType = cacheType;
-        if (childMoveSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childMoveSelector (" + childMoveSelector + ") has neverEnding ("
-                    + childMoveSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
-        }
-        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
-        if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
-        }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
-    }
-
-    public MoveSelector getChildMoveSelector() {
-        return childMoveSelector;
+    public CachingMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType, boolean randomSelection) {
+        super(childMoveSelector, cacheType);
+        this.randomSelection = randomSelection;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public void constructCache(DefaultSolverScope solverScope) {
-        long childSize = childMoveSelector.getSize();
-        if (childSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The moveSelector (" + this + ") has a childMoveSelector ("
-                    + childMoveSelector + ") with childSize (" + childSize
-                    + ") which is higher than Integer.MAX_VALUE.");
-        }
-        cachedMoveList = new ArrayList<Move>((int) childSize);
-        CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
-    }
-
-    public void disposeCache(DefaultSolverScope solverScope) {
-        cachedMoveList = null;
-    }
-
-    public boolean isContinuous() {
-        return false;
-    }
-
     public boolean isNeverEnding() {
-        return false;
-    }
-
-    public long getSize() {
-        return cachedMoveList.size();
+        // CachedListRandomIterator is neverEnding
+        return randomSelection;
     }
 
     public Iterator<Move> iterator() {
-        return cachedMoveList.iterator();
+        if (!randomSelection) {
+            return cachedMoveList.iterator();
+        } else {
+            return new CachedListRandomIterator<Move>(cachedMoveList, workingRandom);
+        }
     }
 
     @Override

@@ -110,23 +110,11 @@ public class EntitySelectorConfig extends SelectorConfig {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
-        // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
-        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-            // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
-            minimumCacheType = SelectionCacheType.STEP;
-        }
-        if (minimumCacheType == SelectionCacheType.SOLVER) {
-            // TODO Solver cached entities are not compatible with DroolsScoreCalculator
-            // because between phases the entities get cloned and the WorkingMemory contains those clones afterwards
-            // https://issues.jboss.org/browse/JBRULES-3557
-            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
-                    + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
-        }
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
-        EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
-                (resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder)
-                        == SelectionOrder.RANDOM,
-                minimumCacheType);
+
+        // baseEntitySelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
+        EntitySelector entitySelector = buildBaseEntitySelector(environmentMode, entityDescriptor,
+                minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
         boolean alreadyCached = false;
         if (!CollectionUtils.isEmpty(entityFilterClassList)
@@ -142,14 +130,15 @@ public class EntitySelectorConfig extends SelectorConfig {
                 entityFilterList.add(entityDescriptor.getMovableEntitySelectionFilter());
             }
             entitySelector = new FilteringEntitySelector(entitySelector, entityFilterList);
+            alreadyCached = false;
         }
         // TODO entitySorterClass
         if (entityProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
                         + ") with entityProbabilityWeightFactoryClass ("
-                        + entityProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
-                        + resolvedSelectionOrder + ").");
+                        + entityProbabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
+                        + resolvedSelectionOrder + ") that is not " + SelectionOrder.RANDOM + ".");
             }
             SelectionProbabilityWeightFactory entityProbabilityWeightFactory = ConfigUtils.newInstance(this,
                     "entityProbabilityWeightFactoryClass", entityProbabilityWeightFactoryClass);
@@ -157,14 +146,14 @@ public class EntitySelectorConfig extends SelectorConfig {
                     resolvedCacheType, entityProbabilityWeightFactory);
             alreadyCached = true;
         }
+        if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
+            entitySelector = new ShufflingEntitySelector(entitySelector, resolvedCacheType);
+            alreadyCached = true;
+        }
         if (resolvedCacheType.isCached() && !alreadyCached) {
-            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                // TODO this is pretty pointless, because FromSolutionEntitySelector caches
-                entitySelector = new CachingEntitySelector(entitySelector, resolvedCacheType);
-            } else {
-                // Not pointless, because FromSolutionEntitySelector does not shuffle
-                entitySelector = new ShufflingEntitySelector(entitySelector, resolvedCacheType);
-            }
+            // TODO this might be pretty pointless, because FromSolutionEntitySelector caches
+            entitySelector = new CachingEntitySelector(entitySelector, resolvedCacheType,
+                    resolvedSelectionOrder == SelectionOrder.RANDOM);
         }
         return entitySelector;
     }
@@ -194,6 +183,26 @@ public class EntitySelectorConfig extends SelectorConfig {
             entityDescriptor = planningEntityDescriptors.iterator().next();
         }
         return entityDescriptor;
+    }
+
+    private EntitySelector buildBaseEntitySelector(
+            EnvironmentMode environmentMode, PlanningEntityDescriptor entityDescriptor,
+            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+        // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
+        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+            // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
+            minimumCacheType = SelectionCacheType.STEP;
+        }
+        if (minimumCacheType == SelectionCacheType.SOLVER) {
+            // TODO Solver cached entities are not compatible with DroolsScoreCalculator
+            // because between phases the entities get cloned and the WorkingMemory contains those clones afterwards
+            // https://issues.jboss.org/browse/JBRULES-3557
+            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
+                    + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
+        }
+        return new FromSolutionEntitySelector(entityDescriptor,
+                minimumCacheType, resolvedSelectionOrder == SelectionOrder.RANDOM
+        );
     }
 
     public void inherit(EntitySelectorConfig inheritedConfig) {

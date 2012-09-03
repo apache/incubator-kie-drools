@@ -57,7 +57,7 @@ public class CachingMoveSelectorTest {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
 
-        CachingMoveSelector moveSelector = new CachingMoveSelector(childMoveSelector, cacheType);
+        CachingMoveSelector moveSelector = new CachingMoveSelector(childMoveSelector, cacheType, false);
         verify(childMoveSelector, times(1)).isNeverEnding();
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

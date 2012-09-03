@@ -124,7 +124,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 
-        // baseMoveSelector and lower should not be SelectionOrder.RANDOM as they are going to get cached completely
+        // baseMoveSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
                 minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
@@ -135,14 +135,15 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                 moveFilterList.add(ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass));
             }
             moveSelector = new FilteringMoveSelector(moveSelector, moveFilterList);
+            alreadyCached = false;
         }
         // TODO moveSorterClass
         if (moveProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
                         + ") with moveProbabilityWeightFactoryClass ("
-                        + moveProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
-                        + resolvedSelectionOrder + ").");
+                        + moveProbabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
+                        + resolvedSelectionOrder + ") that is not " + SelectionOrder.RANDOM + ".");
             }
             SelectionProbabilityWeightFactory entityProbabilityWeightFactory = ConfigUtils.newInstance(this,
                     "moveProbabilityWeightFactoryClass", moveProbabilityWeightFactoryClass);
@@ -150,13 +151,14 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                     resolvedCacheType, entityProbabilityWeightFactory);
             alreadyCached = true;
         }
+        if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
+            moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
+            alreadyCached = true;
+        }
         if (resolvedCacheType.isCached() && !alreadyCached) {
-            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                // TODO this is pretty pointless for MoveListFactoryConfig, because MoveListFactory caches
-                moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType);
-            } else {
-                moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
-            }
+            // TODO this might be pretty pointless for MoveListFactoryConfig, because MoveListFactory caches
+            moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType,
+                    resolvedSelectionOrder == SelectionOrder.RANDOM);
         }
         return moveSelector;
     }

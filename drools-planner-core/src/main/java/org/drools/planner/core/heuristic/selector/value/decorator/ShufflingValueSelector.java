@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.decorator;
+package org.drools.planner.core.heuristic.selector.value.decorator;
 
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.ListIterator;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
+import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
+import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
-public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
+public class ShufflingValueSelector extends AbstractCachingValueSelector {
 
-    public ShufflingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType) {
-        super(childEntitySelector, cacheType);
+    public ShufflingValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType) {
+        super(childValueSelector, cacheType);
     }
 
     // ************************************************************************
@@ -38,28 +40,20 @@ public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
     public void stepStarted(AbstractStepScope stepScope) {
         super.stepStarted(stepScope);
         // Shuffle every step, even if the cacheType is PHASE
-        Collections.shuffle(cachedEntityList, stepScope.getWorkingRandom());
+        Collections.shuffle(cachedValueList, stepScope.getWorkingRandom());
     }
 
     public boolean isNeverEnding() {
         return false;
     }
 
-    public Iterator<Object> iterator() {
-        return cachedEntityList.iterator();
-    }
-
-    public ListIterator<Object> listIterator() {
-        return cachedEntityList.listIterator();
-    }
-
-    public ListIterator<Object> listIterator(int index) {
-        return cachedEntityList.listIterator(index);
+    public ValueIterator iterator() {
+        return new IteratorToValueIteratorBridge(cachedValueList.iterator());
     }
 
     @Override
     public String toString() {
-        return "Shuffling(" + childEntitySelector + ")";
+        return "Shuffling(" + childValueSelector + ")";
     }
 
 }

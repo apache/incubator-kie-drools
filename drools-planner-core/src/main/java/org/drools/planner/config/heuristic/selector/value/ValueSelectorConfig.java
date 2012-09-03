@@ -28,9 +28,13 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
+import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {
@@ -93,6 +97,45 @@ public class ValueSelectorConfig extends SelectorConfig {
     public ValueSelector buildValueSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
             PlanningEntityDescriptor entityDescriptor) {
+        PlanningVariableDescriptor variableDescriptor = fetchVariableDescriptor(entityDescriptor);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
+        minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+
+        // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
+        ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
+                minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
+
+        boolean alreadyCached = false;
+        // TODO filterclass
+
+        if (valueProbabilityWeightFactoryClass != null) {
+            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+                throw new IllegalArgumentException("The variableSelectorConfig (" + this
+                        + ") with valueProbabilityWeightFactoryClass ("
+                        + valueProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
+                        + resolvedSelectionOrder + ").");
+            }
+            SelectionProbabilityWeightFactory valueProbabilityWeightFactory = ConfigUtils.newInstance(this,
+                    "valueProbabilityWeightFactoryClass", valueProbabilityWeightFactoryClass);
+            valueSelector = new ProbabilityValueSelector(valueSelector,
+                    resolvedCacheType, valueProbabilityWeightFactory);
+            alreadyCached = true;
+        }
+        if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
+            valueSelector = new ShufflingValueSelector(valueSelector, resolvedCacheType);
+            alreadyCached = true;
+        }
+        if (resolvedCacheType.isCached() && !alreadyCached) {
+            // TODO this might be pretty pointless, because FromSolutionPropertyValueSelector caches
+            valueSelector = new CachingValueSelector(valueSelector, resolvedCacheType,
+                    resolvedSelectionOrder == SelectionOrder.RANDOM);
+        }
+        return valueSelector;
+    }
+
+    private PlanningVariableDescriptor fetchVariableDescriptor(PlanningEntityDescriptor entityDescriptor) {
         PlanningVariableDescriptor variableDescriptor;
         if (planningVariableName != null) {
             variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(planningVariableName);
@@ -118,35 +161,19 @@ public class ValueSelectorConfig extends SelectorConfig {
             }
             variableDescriptor = planningVariableDescriptors.iterator().next();
         }
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
-        minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
+        return variableDescriptor;
+    }
+
+    private ValueSelector buildBaseValueSelector(
+            EnvironmentMode environmentMode, PlanningVariableDescriptor variableDescriptor,
+            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
         // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
             // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
             minimumCacheType = SelectionCacheType.PHASE;
         }
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
-                inheritedSelectionOrder);
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
-                && valueProbabilityWeightFactoryClass == null;
-        ValueSelector valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
-                minimumCacheType);
-
-        // TODO filterclass
-
-        if (valueProbabilityWeightFactoryClass != null) {
-            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                throw new IllegalArgumentException("The variableSelectorConfig (" + this
-                        + ") with valueProbabilityWeightFactoryClass ("
-                        + valueProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
-                        + resolvedSelectionOrder + ").");
-            }
-            SelectionProbabilityWeightFactory valueProbabilityWeightFactory = ConfigUtils.newInstance(this,
-                    "valueProbabilityWeightFactoryClass", valueProbabilityWeightFactoryClass);
-            valueSelector = new ProbabilityValueSelector(valueSelector,
-                    resolvedCacheType, valueProbabilityWeightFactory);
-        }
-        return valueSelector;
+        return new FromSolutionPropertyValueSelector(variableDescriptor,
+                    minimumCacheType, resolvedSelectionOrder == SelectionOrder.RANDOM);
     }
 
     public void inherit(ValueSelectorConfig inheritedConfig) {

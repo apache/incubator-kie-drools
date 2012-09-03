@@ -17,27 +17,40 @@
 package org.drools.planner.config.heuristic.selector.common;
 
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 
 /**
  * Defines in which order
  */
 public enum SelectionOrder {
     /**
-     * Inherit the value from the parent {@value SelectorConfig}. This is the default.
-     * If there is no such parent, then it defaults to {@link #RANDOM}.
+     * Inherit the value from the parent {@value SelectorConfig}. If the parent is {@link #SHUFFLED},
+     * the value is set to {@link #ORIGINAL}.
+     * <p/>
+     * This is the default. If there is no such parent, then it defaults to {@link #RANDOM}.
      */
     INHERIT,
     /**
-     * Select in random order.
+     * Select in the elements in original order.
+     */
+    ORIGINAL,
+    /**
+     * Select in random order, without shuffling the elements at the beginning of the step.
+     * Each element might be selected multiple times.
      */
     RANDOM,
     /**
-     * Select in the elements in original order.
+     * Select in random order, with shuffling the elements at the beginning of the step.
+     * Each element will be selected exactly once (if all elements end up being selected).
+     * Requires {@link SelectionCacheType#STEP} or higher.
      */
-    ORIGINAL;
+    SHUFFLED;
 
     public static SelectionOrder resolve(SelectionOrder selectionOrder, SelectionOrder inheritedSelectionOrder) {
         if (selectionOrder == null || selectionOrder == INHERIT) {
+            if (inheritedSelectionOrder == SHUFFLED) {
+                return ORIGINAL;
+            }
             return inheritedSelectionOrder;
         } else {
             return selectionOrder;

@@ -60,7 +60,7 @@ public class FromSolutionEntitySelectorTest {
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, false, cacheType);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, cacheType, false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getWorkingSolution()).thenReturn(workingSolution);
@@ -147,7 +147,7 @@ public class FromSolutionEntitySelectorTest {
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, true, cacheType);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, cacheType, true);
 
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextInt(3)).thenReturn(1, 0, 0, 2, 1, 2, 2, 1, 0);

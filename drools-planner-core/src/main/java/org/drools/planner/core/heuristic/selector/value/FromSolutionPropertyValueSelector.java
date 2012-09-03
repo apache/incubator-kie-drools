@@ -34,16 +34,16 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 public class FromSolutionPropertyValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
 
     protected final PlanningVariableDescriptor variableDescriptor;
-    protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
+    protected final boolean randomSelection;
 
     protected List<Object> cachedValueList = null;
 
-    public FromSolutionPropertyValueSelector(PlanningVariableDescriptor variableDescriptor, boolean randomSelection,
-            SelectionCacheType cacheType) {
+    public FromSolutionPropertyValueSelector(PlanningVariableDescriptor variableDescriptor,
+            SelectionCacheType cacheType, boolean randomSelection) {
         this.variableDescriptor = variableDescriptor;
-        this.randomSelection = randomSelection;
         this.cacheType = cacheType;
+        this.randomSelection = randomSelection;
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");

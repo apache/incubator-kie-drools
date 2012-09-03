@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.entity.decorator;
+package org.drools.planner.core.heuristic.selector.value.decorator;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
+import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
+import org.drools.planner.core.testdata.domain.TestdataValue;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
@@ -39,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class CachingEntitySelectorTest {
+public class CachingValueSelectorTest {
 
     @Test
     public void cacheTypeSolver() {
@@ -57,71 +56,71 @@ public class CachingEntitySelectorTest {
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
-        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
+        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
+                new TestdataValue("e1"), new TestdataValue("e2"), new TestdataValue("e3"));
 
-        CachingEntitySelector entitySelector = new CachingEntitySelector(childEntitySelector, cacheType, false);
-        verify(childEntitySelector, times(1)).isNeverEnding();
+        CachingValueSelector valueSelector = new CachingValueSelector(childValueSelector, cacheType, false);
+        verify(childValueSelector, times(1)).isNeverEnding();
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
-        entitySelector.solvingStarted(solverScope);
+        valueSelector.solvingStarted(solverScope);
 
         AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        entitySelector.phaseStarted(phaseScopeA);
+        valueSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
-        entitySelector.stepStarted(stepScopeA1);
-        runAsserts(entitySelector);
-        entitySelector.stepEnded(stepScopeA1);
+        valueSelector.stepStarted(stepScopeA1);
+        runAsserts(valueSelector);
+        valueSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
-        entitySelector.stepStarted(stepScopeA2);
-        runAsserts(entitySelector);
-        entitySelector.stepEnded(stepScopeA2);
+        valueSelector.stepStarted(stepScopeA2);
+        runAsserts(valueSelector);
+        valueSelector.stepEnded(stepScopeA2);
 
-        entitySelector.phaseEnded(phaseScopeA);
+        valueSelector.phaseEnded(phaseScopeA);
 
         AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        entitySelector.phaseStarted(phaseScopeB);
+        valueSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB1);
-        runAsserts(entitySelector);
-        entitySelector.stepEnded(stepScopeB1);
+        valueSelector.stepStarted(stepScopeB1);
+        runAsserts(valueSelector);
+        valueSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB2);
-        runAsserts(entitySelector);
-        entitySelector.stepEnded(stepScopeB2);
+        valueSelector.stepStarted(stepScopeB2);
+        runAsserts(valueSelector);
+        valueSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB3);
-        runAsserts(entitySelector);
-        entitySelector.stepEnded(stepScopeB3);
+        valueSelector.stepStarted(stepScopeB3);
+        runAsserts(valueSelector);
+        valueSelector.stepEnded(stepScopeB3);
 
-        entitySelector.phaseEnded(phaseScopeB);
+        valueSelector.phaseEnded(phaseScopeB);
 
-        entitySelector.solvingEnded(solverScope);
+        valueSelector.solvingEnded(solverScope);
 
-        verify(childEntitySelector, times(1)).solvingStarted(solverScope);
-        verify(childEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(childEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(childEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childEntitySelector, times(1)).solvingEnded(solverScope);
-        verify(childEntitySelector, times(timesCalled)).iterator();
-        verify(childEntitySelector, times(timesCalled)).getSize();
+        verify(childValueSelector, times(1)).solvingStarted(solverScope);
+        verify(childValueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childValueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(childValueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(childValueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childValueSelector, times(1)).solvingEnded(solverScope);
+        verify(childValueSelector, times(timesCalled)).iterator();
+        verify(childValueSelector, times(timesCalled)).getSize();
     }
 
-    private void runAsserts(CachingEntitySelector entitySelector) {
-        Iterator<Object> iterator = entitySelector.iterator();
+    private void runAsserts(CachingValueSelector valueSelector) {
+        Iterator<Object> iterator = valueSelector.iterator();
         assertNotNull(iterator);
         assertTrue(iterator.hasNext());
         assertCode("e1", iterator.next());
@@ -130,9 +129,9 @@ public class CachingEntitySelectorTest {
         assertTrue(iterator.hasNext());
         assertCode("e3", iterator.next());
         assertFalse(iterator.hasNext());
-        assertEquals(false, entitySelector.isContinuous());
-        assertEquals(false, entitySelector.isNeverEnding());
-        assertEquals(3L, entitySelector.getSize());
+        assertEquals(false, valueSelector.isContinuous());
+        assertEquals(false, valueSelector.isNeverEnding());
+        assertEquals(3L, valueSelector.getSize());
     }
 
 }

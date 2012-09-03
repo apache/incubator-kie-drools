@@ -17,12 +17,14 @@
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
-public class ShufflingMoveSelector extends CachingMoveSelector {
+public class ShufflingMoveSelector extends AbstractCachingMoveSelector {
 
     public ShufflingMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType) {
         super(childMoveSelector, cacheType);
@@ -37,6 +39,14 @@ public class ShufflingMoveSelector extends CachingMoveSelector {
         super.stepStarted(stepScope);
         // Shuffle every step, even if the cacheType is PHASE
         Collections.shuffle(cachedMoveList, stepScope.getWorkingRandom());
+    }
+
+    public boolean isNeverEnding() {
+        return false;
+    }
+
+    public Iterator<Move> iterator() {
+        return cachedMoveList.iterator();
     }
 
     @Override
