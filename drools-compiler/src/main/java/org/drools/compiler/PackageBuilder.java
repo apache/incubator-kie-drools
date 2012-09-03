@@ -2445,6 +2445,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                 annotationName + ": " +
                                                                 nsme.getMessage() + ";" ) );
                 }
+            } else {
+                def.addMetaData( annotationName, typeDescr.getAnnotation( annotationName ).getSingleValue() );
             }
         }
 
@@ -2759,6 +2761,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                         "  - undefined property in @annotation " +
                                                                         annotationName + ": " + nsme.getMessage() + ";" ) );
                         }
+                    } else {
+                        fieldDef.addMetaData( annotationName, field.getAnnotation( annotationName ).getSingleValue() );
                     }
                 }
 

@@ -16,11 +16,16 @@
 
 package org.drools.factmodel;
 
+import org.drools.definition.type.Annotation;
+import org.drools.definition.type.FactField;
+import org.drools.definition.type.FactType;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,10 +33,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
-
-import org.drools.definition.type.FactField;
-import org.drools.definition.type.FactType;
 
 /**
  * Declares a class to be dynamically created
@@ -46,6 +47,7 @@ public class ClassDefinition
     private transient Class< ? >         definedClass;
     private boolean                      traitable;
     private boolean                      abstrakt       = false;
+    private Map<String, Object>          metaData;
 
     private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
@@ -91,6 +93,7 @@ public class ClassDefinition
         this.modifiedPropsByMethod = (Map<String, List<String>>) in.readObject();
         this.traitable = in.readBoolean();
         this.abstrakt = in.readBoolean();
+        this.metaData = (HashMap<String,Object>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -102,6 +105,7 @@ public class ClassDefinition
         out.writeObject( this.modifiedPropsByMethod);
         out.writeBoolean( this.traitable );
         out.writeBoolean( this.abstrakt );
+        out.writeObject( this.metaData );
     }
 
     /**
@@ -208,6 +212,14 @@ public class ClassDefinition
         return getClassName();
     }
 
+    public String getSimpleName() {
+        return getClassName().substring( getClassName().lastIndexOf( '.' ) + 1 );
+    }
+
+    public String getPackageName() {
+        return getClassName().substring( 0, getClassName().lastIndexOf( '.' ) );
+    }
+
     public Object newInstance() throws InstantiationException,
                                IllegalAccessException {
         return this.definedClass.newInstance();
@@ -261,6 +273,21 @@ public class ClassDefinition
 
     public List<AnnotationDefinition> getAnnotations() {
         return annotations;
+    }
+
+    public List<Annotation> getClassAnnotations() {
+        return Collections.unmodifiableList( new ArrayList( annotations ) );
+    }
+
+    public Map<String, Object> getMetaData() {
+        return metaData;
+    }
+
+    public void addMetaData( String key, Object value ) {
+        if ( this.metaData == null ) {
+            metaData = new HashMap<String,Object>();
+        }
+        metaData.put( key, value );
     }
 
     public void addModifiedPropsByMethod(Method method, List<String> props) {

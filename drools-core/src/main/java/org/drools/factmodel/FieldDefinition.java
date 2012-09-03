@@ -16,17 +16,21 @@
 
 package org.drools.factmodel;
 
+import org.drools.base.ClassFieldAccessor;
+import org.drools.core.util.StringUtils;
+import org.drools.definition.type.Annotation;
+import org.drools.definition.type.FactField;
+import org.drools.factmodel.traits.Alias;
+import org.mvel2.MVEL;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
-import org.drools.base.ClassFieldAccessor;
-import org.drools.core.util.StringUtils;
-import org.drools.definition.type.FactField;
-import org.drools.factmodel.traits.Alias;
-import org.mvel2.MVEL;
+import java.util.Map;
 
 /**
  * Declares a field to be dynamically generated.
@@ -43,6 +47,7 @@ public class FieldDefinition
     private int                index      = -1;
     private String             initExpr   = null;
     private boolean            recursive  = false;
+    private Map<String,Object> metaData;
 
     private List<AnnotationDefinition> annotations;
 
@@ -92,6 +97,7 @@ public class FieldDefinition
         this.inherited = in.readBoolean();
         this.index = in.readInt();
         this.initExpr = (String) in.readObject();
+        this.metaData = (Map<String, Object>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -103,6 +109,7 @@ public class FieldDefinition
         out.writeBoolean( this.inherited );
         out.writeInt( this.index );
         out.writeObject( this.initExpr );
+        out.writeObject( this.metaData );
     }
 
     /**
@@ -274,7 +281,20 @@ public class FieldDefinition
         return annotations;
     }
 
+    public List<Annotation> getFieldAnnotations() {
+        return Collections.unmodifiableList( new ArrayList( annotations ) );
+    }
 
+    public Map<String, Object> getMetaData() {
+        return metaData;
+    }
+
+    public void addMetaData( String key, Object value ) {
+        if ( this.metaData == null ) {
+            metaData = new HashMap<String,Object>();
+        }
+        metaData.put( key, value );
+    }
 
     public String getDefaultValueAsString() {
         return (String) MVEL.eval( initExpr );

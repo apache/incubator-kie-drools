@@ -400,6 +400,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKEVIRTUAL, internalProxy, "setTripleFactory", "(" + Type.getDescriptor( TripleFactory.class ) + ")V" );
 
+
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitTypeInsn( NEW, internalWrapper );
         mv.visitInsn( DUP );
@@ -409,17 +410,34 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitMethodInsn( INVOKESPECIAL, internalWrapper, "<init>", "(" + descrCore + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V" );
         mv.visitFieldInsn( PUTFIELD, internalProxy, "fields", Type.getDescriptor( Map.class ) );
 
+
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getDynamicProperties", "()" + Type.getDescriptor( Map.class ) );
+        Label l0 = new Label();
+        mv.visitJumpInsn( IFNONNULL, l0 );
+
         mv.visitVarInsn( ALOAD, 1 );
         mv.visitTypeInsn( NEW, Type.getInternalName( TripleBasedBean.class ) );
         mv.visitInsn( DUP );
         mv.visitVarInsn( ALOAD, 1 );
         mv.visitVarInsn( ALOAD, 2 );
-        mv.visitVarInsn( ALOAD, 3 );        
-        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedBean.class ), "<init>", 
+        mv.visitVarInsn( ALOAD, 3 );
+        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedBean.class ), "<init>",
                             "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V" );
         mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
+        mv.visitLabel( l0 );
+
+
+
         mv.visitVarInsn( ALOAD, 1 );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getTraitMap", "()" + Type.getDescriptor( Map.class ) );
+        Label l1 = new Label();
+        mv.visitJumpInsn( IFNONNULL, l1 );
+
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitTypeInsn( NEW, Type.getInternalName( VetoableTypedMap.class ) );
+        mv.visitInsn(DUP);
         mv.visitTypeInsn( NEW, Type.getInternalName( TripleBasedTypes.class ) );
         mv.visitInsn( DUP );
         mv.visitVarInsn( ALOAD, 1 );
@@ -427,9 +445,13 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedTypes.class ), "<init>",
                             "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class )  + Type.getDescriptor( TripleFactory.class ) + ")V" );
+        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( VetoableTypedMap.class ), "<init>", "(" + Type.getDescriptor( Map.class )+ ")V" );
         mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
-        return 1;
+        mv.visitLabel( l1 );
+
+
+        return 3;
     }
 
     private Class getPossibleConstructor(Class klass, Class arg) throws NoSuchMethodException {

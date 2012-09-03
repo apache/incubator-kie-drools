@@ -165,6 +165,18 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "<init>", "()V" );
+
+
+            mv.visitVarInsn( ALOAD, 2 );
+            Label l0 = new Label();
+            mv.visitJumpInsn( IFNONNULL, l0 );
+            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
+            mv.visitInsn( DUP );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
+            mv.visitVarInsn( ASTORE, 2  );
+            mv.visitLabel( l0 );
+
+
             if ( mixinClass != null ) {
                 try {
                     Class actualArg = getPossibleConstructor( mixinClass, trait.getDefinedClass() );
@@ -196,9 +208,11 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitFieldInsn( PUTFIELD, internalProxy, "object", descrCore );
+
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitFieldInsn( PUTFIELD, internalProxy, "map", Type.getDescriptor( Map.class ) );
+
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitTypeInsn( NEW, internalWrapper );
             mv.visitInsn( DUP );
@@ -206,6 +220,31 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitMethodInsn( INVOKESPECIAL, internalWrapper, "<init>", "(" + descrCore + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitFieldInsn( PUTFIELD, internalProxy, "fields", Type.getDescriptor( Map.class ) );
+
+
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getDynamicProperties", "()" + Type.getDescriptor( Map.class ) );
+            Label l1 = new Label();
+            mv.visitJumpInsn( IFNONNULL, l1 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitVarInsn( ALOAD, 2 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
+            mv.visitLabel( l1 );
+
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getTraitMap",  "()" + Type.getDescriptor( Map.class ) );
+            Label l2 = new Label();
+            mv.visitJumpInsn( IFNONNULL, l2 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitTypeInsn( NEW, Type.getInternalName( VetoableTypedMap.class ) );
+            mv.visitInsn( DUP );
+            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
+            mv.visitInsn( DUP );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( VetoableTypedMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
+            mv.visitLabel( l2 );
+
             mv.visitInsn( RETURN );
             mv.visitMaxs( 5, 3 );
             mv.visitEnd();

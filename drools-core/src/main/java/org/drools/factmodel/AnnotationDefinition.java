@@ -18,6 +18,7 @@ package org.drools.factmodel;
 
 
 import org.drools.base.TypeResolver;
+import org.drools.definition.type.Annotation;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class AnnotationDefinition implements Externalizable {
+public class AnnotationDefinition implements Externalizable, Annotation {
 
     private String name;
 
@@ -84,6 +85,21 @@ public class AnnotationDefinition implements Externalizable {
         this.name = name;
     }
 
+    public Object getPropertyValue( String key ) {
+        if ( values.containsKey( key ) ) {
+            return values.get( key ).getValue();
+        } else {
+            return null;
+        }
+    }
+
+    public Class getPropertyType( String key ) {
+        if ( values.containsKey( key ) ) {
+            return values.get( key ).getType();
+        } else {
+            return null;
+        }
+    }
 
     public static AnnotationDefinition build(Class annotationClass, Map<String, String> valueMap, TypeResolver resolver) throws NoSuchMethodException {
         AnnotationDefinition annotationDefinition = new AnnotationDefinition(annotationClass.getName());
