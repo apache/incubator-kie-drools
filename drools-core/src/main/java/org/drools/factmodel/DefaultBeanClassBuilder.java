@@ -324,16 +324,16 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
         mv = cw.visitMethod(ACC_PUBLIC, "getTraitMap", "()Ljava/util/Map;", "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null);
         mv.visitCode();
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
-        Label l0 = new Label();
-        mv.visitJumpInsn(IFNONNULL, l0);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitTypeInsn(NEW, "java/util/HashMap");
-        mv.visitInsn(DUP);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
-        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
-        mv.visitLabel(l0);
+//        mv.visitVarInsn(ALOAD, 0);
+//        mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+//        Label l0 = new Label();
+//        mv.visitJumpInsn(IFNONNULL, l0);
+//        mv.visitVarInsn(ALOAD, 0);
+//        mv.visitTypeInsn(NEW, "java/util/HashMap");
+//        mv.visitInsn(DUP);
+//        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
+//        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+//        mv.visitLabel(l0);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
         mv.visitInsn(ARETURN);
@@ -378,6 +378,13 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
         mv = cw.visitMethod(ACC_PUBLIC, "hasTrait", "(Ljava/lang/String;)Z", null, null);
         mv.visitCode();
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "getTraitMap", "()Ljava/util/Map;");
+        Label l0 = new Label();
+        mv.visitJumpInsn(IFNONNULL, l0);
+        mv.visitInsn(ICONST_0);
+        mv.visitInsn(IRETURN);
+        mv.visitLabel(l0);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "getTraitMap", "()Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
@@ -670,16 +677,16 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      * @param classDef
      */
     protected void initializeDynamicTypeStructures( MethodVisitor mv, ClassDefinition classDef) {
-        mv.visitVarInsn(ALOAD, 0);
-                        mv.visitTypeInsn(NEW, "java/util/HashMap");
-                        mv.visitInsn(DUP);
-                        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
-                        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.MAP_FIELD_NAME, "Ljava/util/Map;");
-                        mv.visitVarInsn(ALOAD, 0);
-                        mv.visitTypeInsn(NEW, "java/util/HashMap");
-                        mv.visitInsn(DUP);
-                        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
-                        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+//        mv.visitVarInsn(ALOAD, 0);
+//                        mv.visitTypeInsn(NEW, "java/util/HashMap");
+//                        mv.visitInsn(DUP);
+//                        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
+//                        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.MAP_FIELD_NAME, "Ljava/util/Map;");
+//                        mv.visitVarInsn(ALOAD, 0);
+//                        mv.visitTypeInsn(NEW, "java/util/HashMap");
+//                        mv.visitInsn(DUP);
+//                        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
+//                        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
 
     }
 

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.rule.Declaration;
@@ -145,4 +146,12 @@ public interface KnowledgeHelper
     <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait );
 
     <T,K> Thing<K> shed( TraitableBean<K> core, Class<T> trait );
+
+    <T, K> Thing<K> ward( Thing<K> core, Class<T> trait );
+
+    <T, K> Thing<K> ward( K core, Class<T> trait );
+
+    <T, K> Thing<K> grant( Thing<K> core, Class<T> trait );
+
+    <T, K> Thing<K> grant( K core, Class<T> trait );
 }

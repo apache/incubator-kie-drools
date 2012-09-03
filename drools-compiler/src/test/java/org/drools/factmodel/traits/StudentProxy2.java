@@ -35,13 +35,23 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
 
 
 
-    public StudentProxy2(Imp2 obj, final Map<String, Object> m) {
+    public StudentProxy2(Imp2 obj, Map<String, Object> m) {
+        if ( m == null ) {
+            m = new HashMap<String,Object>();
+        }
 
         this.object = obj;
         this.map = m;
 
         fields = new StudentProxyWrapper2( obj, m );
 
+        if ( obj.getDynamicProperties() == null ) {
+            obj.setDynamicProperties( m );
+        }
+
+        if ( obj.getTraitMap() == null ) {
+            obj.setTraitMap( new VetoableTypedMap( new HashMap() ) );
+        }
     }
 
     public Imp2 getCore() {

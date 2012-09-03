@@ -78,7 +78,8 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
         String internalWrapper  = BuildUtils.getInternalType(name);
-        String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
+        String descrCore        = Type.getDescriptor( core.getDefinedClass() );
+        String internalCore     = Type.getInternalName( core.getDefinedClass() );
 
 
         aliases = new HashMap<String, FieldDefinition>();
@@ -157,7 +158,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                     "(" + 
                             descrCore + 
                             Type.getDescriptor( TripleStore.class ) +
-                            Type.getDescriptor(TripleFactory.class ) +
+                            Type.getDescriptor( TripleFactory.class ) +
                     ")V",
                     null,
                     null);

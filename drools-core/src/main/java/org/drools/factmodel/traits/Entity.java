@@ -49,9 +49,9 @@ public class Entity implements TraitableBean, Serializable {
     }
 
     public Map<String, Object> getDynamicProperties() {
-        if ( __$$dynamic_properties_map$$ == null ) {
-            __$$dynamic_properties_map$$ = new HashMap<String,Object>(5);
-        }
+//        if ( __$$dynamic_properties_map$$ == null ) {
+//            __$$dynamic_properties_map$$ = new HashMap<String,Object>(5) ;
+//        }
         return  __$$dynamic_properties_map$$;
     }
 
@@ -62,19 +62,19 @@ public class Entity implements TraitableBean, Serializable {
 
 
     public void setTraitMap(Map map) {
-        __$$dynamic_traits_map$$ = map;
+        __$$dynamic_traits_map$$ = new VetoableTypedMap( map );
     }
 
 
     public Map<String, Thing> getTraitMap() {
-        if ( __$$dynamic_traits_map$$ == null ) {
-            __$$dynamic_traits_map$$ = new HashMap<String, Thing>(5);
-        }
+//        if ( __$$dynamic_traits_map$$ == null ) {
+//            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing>(5) );
+//        }
         return __$$dynamic_traits_map$$;
     }
 
-    public void addTrait(String type, Thing proxy) {
-        getTraitMap().put(type, proxy);
+    public void addTrait(String type, Thing proxy) throws LogicalTypeInconsistencyException {
+       ((VetoableTypedMap) getTraitMap()).putSafe(type, proxy);
     }
 
     public Thing getTrait(String type) {
@@ -99,6 +99,14 @@ public class Entity implements TraitableBean, Serializable {
         } else {
             return Collections.emptySet();
         }
+    }
+
+    public void denyTrait(Class trait) throws LogicalTypeInconsistencyException {
+        ((VetoableTypedMap) __$$dynamic_traits_map$$).addToVetoable( trait );
+    }
+
+    public void allowTrait(Class trait) {
+        ((VetoableTypedMap) __$$dynamic_traits_map$$).removeFromVetoable(trait);
     }
 
     public boolean equals(Object o) {
