@@ -117,7 +117,8 @@ public class TaskQueryServiceImpl implements TaskQueryService {
 
     }
 
-    public Task getTaskByWorkItemId(long workItemId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Task getTaskByWorkItemId(long workItemId) {  
+        return (Task) em.createNamedQuery("TaskByWorkItemId").setParameter("workItemId", workItemId).setMaxResults(1).getResultList().get(0);
+                
     }
 }

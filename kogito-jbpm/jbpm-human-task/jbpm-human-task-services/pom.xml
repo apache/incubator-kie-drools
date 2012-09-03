@@ -6,8 +6,8 @@
 		<artifactId>jbpm-human-task</artifactId>
 		<version>5.4.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>jbpm-human-task-core-cdi</artifactId>
-	<name>jBPM :: Human Task Core CDI</name>
+	<artifactId>jbpm-human-task-services</artifactId>
+	<name>jBPM :: Human Task Services</name>
 	<url>http://jbpm.org</url>
 	<properties>
 		<seam.version>3.1.0.Final</seam.version>

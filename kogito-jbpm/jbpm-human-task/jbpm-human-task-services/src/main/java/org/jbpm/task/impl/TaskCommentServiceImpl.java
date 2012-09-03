@@ -18,6 +18,7 @@ package org.jbpm.task.impl;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskCommentService;
@@ -26,6 +27,7 @@ import org.jbpm.task.annotations.TaskPersistence;
 /**
  *
  */
+@Transactional
 public class TaskCommentServiceImpl implements TaskCommentService{
     @Inject @TaskPersistence
     private EntityManager em;
