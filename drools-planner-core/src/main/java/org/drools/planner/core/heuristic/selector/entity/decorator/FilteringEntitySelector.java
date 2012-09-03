@@ -32,7 +32,7 @@ import org.drools.planner.core.score.director.ScoreDirector;
 /**
  * TODO This class isn't used because {@link EntitySelector}'s are upgraded to {@link SelectionCacheType#STEP}.
  */
-public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
+public class FilteringEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
 
@@ -40,7 +40,7 @@ public class JustInTimeFilteringEntitySelector extends AbstractEntitySelector {
 
     protected ScoreDirector scoreDirector = null;
 
-    public JustInTimeFilteringEntitySelector(EntitySelector childEntitySelector,
+    public FilteringEntitySelector(EntitySelector childEntitySelector,
             List<SelectionFilter> entityFilterList) {
         this.childEntitySelector = childEntitySelector;
         this.entityFilterList = entityFilterList;

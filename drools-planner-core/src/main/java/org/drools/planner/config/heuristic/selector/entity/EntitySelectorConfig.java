@@ -35,7 +35,7 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProb
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.FromSolutionEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.decorator.JustInTimeFilteringEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.FilteringEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 
@@ -141,7 +141,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             if (entityDescriptor.hasMovableEntitySelectionFilter()) {
                 entityFilterList.add(entityDescriptor.getMovableEntitySelectionFilter());
             }
-            entitySelector = new JustInTimeFilteringEntitySelector(entitySelector, entityFilterList);
+            entitySelector = new FilteringEntitySelector(entitySelector, entityFilterList);
         }
         // TODO entitySorterClass
         if (entityProbabilityWeightFactoryClass != null) {

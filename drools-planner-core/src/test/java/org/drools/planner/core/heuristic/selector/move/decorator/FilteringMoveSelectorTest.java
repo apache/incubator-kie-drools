@@ -32,8 +32,6 @@ import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
@@ -74,7 +72,7 @@ public class FilteringMoveSelectorTest {
             }
         };
         List<SelectionFilter> moveFilterList = Arrays.<SelectionFilter>asList(moveFilter);
-        MoveSelector moveSelector = new JustInTimeFilteringMoveSelector(childMoveSelector, moveFilterList);
+        MoveSelector moveSelector = new FilteringMoveSelector(childMoveSelector, moveFilterList);
         if (cacheType.isCached()) {
             moveSelector = new CachingMoveSelector(moveSelector, cacheType);
         }

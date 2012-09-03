@@ -24,7 +24,6 @@ import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
@@ -32,8 +31,6 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
 import static org.junit.Assert.*;
@@ -71,7 +68,7 @@ public class FilteringEntitySelectorTest {
             }
         };
         List<SelectionFilter> entityFilterList = Arrays.<SelectionFilter>asList(entityFilter);
-        EntitySelector entitySelector = new JustInTimeFilteringEntitySelector(childEntitySelector, entityFilterList);
+        EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, entityFilterList);
         if (cacheType.isCached()) {
             entitySelector = new CachingEntitySelector(entitySelector, cacheType);
         }

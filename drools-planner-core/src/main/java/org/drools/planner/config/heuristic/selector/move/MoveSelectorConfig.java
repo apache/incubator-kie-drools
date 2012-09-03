@@ -40,7 +40,7 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilt
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.JustInTimeFilteringMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.FilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ProbabilityMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
@@ -134,7 +134,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             for (Class<? extends SelectionFilter> moveFilterClass : moveFilterClassList) {
                 moveFilterList.add(ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass));
             }
-            moveSelector = new JustInTimeFilteringMoveSelector(moveSelector, moveFilterList);
+            moveSelector = new FilteringMoveSelector(moveSelector, moveFilterList);
         }
         // TODO moveSorterClass
         if (moveProbabilityWeightFactoryClass != null) {

@@ -28,7 +28,7 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 
-public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
+public class FilteringMoveSelector extends AbstractMoveSelector {
 
     protected final MoveSelector childMoveSelector;
 
@@ -36,7 +36,7 @@ public class JustInTimeFilteringMoveSelector extends AbstractMoveSelector {
 
     protected ScoreDirector scoreDirector = null;
 
-    public JustInTimeFilteringMoveSelector(MoveSelector childMoveSelector, List<SelectionFilter> moveFilterList) {
+    public FilteringMoveSelector(MoveSelector childMoveSelector, List<SelectionFilter> moveFilterList) {
         this.childMoveSelector = childMoveSelector;
         this.moveFilterList = moveFilterList;
         solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
