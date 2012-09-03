@@ -74,7 +74,7 @@ public class FilteringMoveSelectorTest {
             }
         };
         List<SelectionFilter> moveFilterList = Arrays.<SelectionFilter>asList(moveFilter);
-        MoveSelector moveSelector = cacheType == SelectionCacheType.JUST_IN_TIME
+        MoveSelector moveSelector = cacheType.isNotCached()
                 ? new JustInTimeFilteringMoveSelector(childMoveSelector, cacheType, moveFilterList)
                 : new CachingFilteringMoveSelector(childMoveSelector, cacheType, moveFilterList);
 
@@ -147,7 +147,7 @@ public class FilteringMoveSelectorTest {
         assertFalse(iterator.hasNext());
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(false, moveSelector.isNeverEnding());
-        assertEquals((cacheType == SelectionCacheType.JUST_IN_TIME ? 4L : 3L), moveSelector.getSize());
+        assertEquals((cacheType.isNotCached() ? 4L : 3L), moveSelector.getSize());
     }
 
 }

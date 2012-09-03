@@ -70,7 +70,7 @@ public class FilteringEntitySelectorTest {
             }
         };
         List<SelectionFilter> entityFilterList = Arrays.<SelectionFilter>asList(entityFilter);
-        EntitySelector entitySelector = cacheType == SelectionCacheType.JUST_IN_TIME
+        EntitySelector entitySelector = cacheType.isNotCached()
                 ? new JustInTimeFilteringEntitySelector(childEntitySelector, cacheType, entityFilterList)
                 : new CachingFilteringEntitySelector(childEntitySelector, cacheType, entityFilterList);
 
@@ -143,7 +143,7 @@ public class FilteringEntitySelectorTest {
         assertFalse(iterator.hasNext());
         assertEquals(false, entitySelector.isContinuous());
         assertEquals(false, entitySelector.isNeverEnding());
-        assertEquals((cacheType == SelectionCacheType.JUST_IN_TIME ? 4L : 3L), entitySelector.getSize());
+        assertEquals((cacheType.isNotCached() ? 4L : 3L), entitySelector.getSize());
     }
 
 }

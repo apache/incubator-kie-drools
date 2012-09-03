@@ -136,7 +136,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                 moveFilterList.add(ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass));
             }
             MoveSelector filteringMoveSelector;
-            if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
+            if (resolvedCacheType.isNotCached()) {
                 filteringMoveSelector = new JustInTimeFilteringMoveSelector(moveSelector,
                         resolvedCacheType, moveFilterList);
             } else {

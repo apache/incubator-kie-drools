@@ -144,7 +144,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                 entityFilterList.add(entityDescriptor.getMovableEntitySelectionFilter());
             }
             EntitySelector filteringEntitySelector;
-            if (resolvedCacheType == SelectionCacheType.JUST_IN_TIME) {
+            if (resolvedCacheType.isNotCached()) {
                 filteringEntitySelector = new JustInTimeFilteringEntitySelector(entitySelector,
                         resolvedCacheType, entityFilterList);
             } else {
