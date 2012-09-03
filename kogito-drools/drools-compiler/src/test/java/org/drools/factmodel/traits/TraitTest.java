@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -477,6 +478,9 @@ public class TraitTest extends CommonTestMethodBase {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             fail( e.getMessage() );
+        } catch (LogicalTypeInconsistencyException e) {
+            e.printStackTrace();
+            fail( e.getMessage() );
         }
     }
 
@@ -534,9 +538,9 @@ public class TraitTest extends CommonTestMethodBase {
             assertEquals( 1,
                           virtualFields.size() );
 
-            impClass.set( imp,
-                          "name",
-                          "john" );
+            impClass.set(imp,
+                    "name",
+                    "john");
             assertEquals( 3,
                           wrapper.size() );
             assertEquals( 1,
@@ -1975,7 +1979,402 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+    public void traitWard( TraitFactory.VirtualPropertyMode mode ) {
 
+        String s1 = "package org.drools.test;\n" +
+                "import org.drools.Person; \n" +
+                "import org.drools.factmodel.traits.Thing; \n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insertLogical( new Person( \"x\", 18 ) );\n" +
+                "end\n" +
+                "\n" +
+                "declare trait Student\n" +
+                "  age  : int\n" +
+                "  name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Trait\"\n" +
+                "when\n" +
+                "    $p : Person( )\n" +
+                "then\n" +
+                "    Thing t = ward( $p, Student.class );\n" +
+                "    Student s = (Student) don( t, Student.class );\n" +
+                "end\n";
+
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( mode, kbase );
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects( new ClassObjectFilter( Thing.class ) ) ) {
+            Thing t = (Thing) o;
+            Object core = t.getCore();
+            assertTrue( core instanceof Person );
+            assertTrue( core instanceof TraitableBean );
+            assertEquals( 1, ( (TraitableBean) core).getTraitMap().size() );
+            assertTrue( ( (TraitableBean) core ).hasTrait( Thing.class.getName() ) );
+        }
+
+    }
+
+    @Test
+    public void testTraitWardTriple() {
+        traitWard( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitWardMap() {
+        traitWard( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+
+
+    public void traitGrant( TraitFactory.VirtualPropertyMode mode ) {
+
+        String s1 = "package org.drools.test;\n" +
+                "import org.drools.Person; \n" +
+                "import org.drools.factmodel.traits.Thing; \n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insertLogical( new Person( \"x\", 18 ) );\n" +
+                "end\n" +
+                "\n" +
+                "declare trait Student\n" +
+                "  age  : int\n" +
+                "  name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Trait\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    $p : Person( )\n" +
+                "then\n" +
+                "    Thing t = ward( $p, Student.class );\n" +
+                "    Student s = (Student) don( t, Student.class );\n" +
+                "       grant( t, Student.class ); \n" +
+                "   System.out.println( \"HERE WE GO \"); \n" +
+                "    s = (Student) don( t, Student.class );\n" +
+                "end\n";
+
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( mode, kbase );
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects( new ClassObjectFilter( Thing.class ) ) ) {
+            Thing t = (Thing) o;
+            Object core = t.getCore();
+            assertTrue( core instanceof Person );
+            assertTrue( core instanceof TraitableBean );
+            assertEquals( 2, ( (TraitableBean) core).getTraitMap().size() );
+            assertTrue( ( (TraitableBean) core ).hasTrait( Thing.class.getName() ) );
+        }
+
+    }
+
+    @Test
+    public void testTraitGrantTriple() {
+        traitGrant( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitGrantMap() {
+        traitGrant( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+
+    @Test
+    public void testInternalComponentsMap(  ) {
+          String source = "org/drools/factmodel/traits/testTraitDon.drl";
+
+          KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+          Resource res = ResourceFactory.newClassPathResource( source );
+          assertNotNull( res );
+          kbuilder.add( res,
+                        ResourceType.DRL );
+          if (kbuilder.hasErrors()) {
+              fail( kbuilder.getErrors().toString() );
+          }
+          KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+          kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+          TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kb );
+          TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+
+
+          try {
+              FactType impClass = kb.getFactType( "org.test",
+                                                  "Imp" );
+              TraitableBean imp = (TraitableBean) impClass.newInstance();
+              FactType traitClass = kb.getFactType( "org.test",
+                                                    "Student" );
+              Class trait = traitClass.getFactClass();
+              TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
+                                                                     trait );
+              Object proxyFields = proxy.getFields();
+              Object coreTraits = imp.getTraitMap();
+              Object coreProperties = imp.getDynamicProperties();
+
+              assertTrue( proxy.getObject() instanceof TraitableBean );
+
+              assertNotNull( proxyFields );
+              assertNotNull( coreTraits );
+              assertNotNull( coreProperties );
+
+              assertTrue( proxyFields instanceof MapWrapper );
+              assertTrue( coreTraits instanceof VetoableTypedMap );
+              assertTrue( coreProperties instanceof HashMap);
+
+
+              StudentProxy2 sp2 = new StudentProxy2( new Imp2(), null );
+              System.out.println( sp2.toString() );
+
+          } catch ( Exception e ) {
+              e.printStackTrace();
+              fail( e.getMessage() );
+          }
+    }
+
+
+    @Test
+    public void testInternalComponentsTriple(  ) {
+        String source = "org/drools/factmodel/traits/testTraitDon.drl";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        Resource res = ResourceFactory.newClassPathResource( source );
+        assertNotNull( res );
+        kbuilder.add( res,
+                ResourceType.DRL );
+        if (kbuilder.hasErrors()) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, kb );
+        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+
+
+        try {
+            FactType impClass = kb.getFactType( "org.test",
+                    "Imp" );
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
+            FactType traitClass = kb.getFactType( "org.test",
+                    "Student" );
+            Class trait = traitClass.getFactClass();
+            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
+                    trait );
+            Object proxyFields = proxy.getFields();
+            Object coreTraits = imp.getTraitMap();
+            Object coreProperties = imp.getDynamicProperties();
+
+            assertTrue( proxy.getObject() instanceof TraitableBean );
+
+            assertNotNull( proxyFields );
+            assertNotNull( coreTraits );
+            assertNotNull( coreProperties );
+
+            assertEquals(proxyFields.getClass().getName(), "org.test.StudentorgtestImpProxyWrapper");
+
+            assertTrue(proxyFields instanceof TripleBasedStruct);
+            assertTrue( coreTraits instanceof VetoableTypedMap );
+            assertTrue( coreProperties instanceof TripleBasedBean );
+
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+
+        }
+    }
+
+
+
+    public void traitWardOnHierarchy( TraitFactory.VirtualPropertyMode mode ) {
+
+        String s1 = "package org.drools.test;\n" +
+                "import org.drools.Person; \n" +
+                "import org.drools.factmodel.traits.Thing; \n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insertLogical( new Person( \"x\", 18 ) );\n" +
+                "end\n" +
+                "\n" +
+                "declare trait Student\n" +
+                "  age  : int\n" +
+                "  name : String\n" +
+                "end\n" +
+                "declare trait UniversityStudent extends Student\n" +
+                "  uni  : String\n" +
+                "end\n" +
+                "declare trait PhDStudent extends UniversityStudent\n" +
+                "  year : int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Trait\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    $p : Person( )\n" +
+                "then\n" +
+                "    Thing t = ward( $p, UniversityStudent.class );\n" +
+                "    grant( t, PhDStudent.class );\n" +
+                "    Student s = (Student) don( t, Student.class );\n" +
+                "    UniversityStudent u = (UniversityStudent) don( t, UniversityStudent.class );\n" +
+                "    PhDStudent p = (PhDStudent) don( t, PhDStudent.class );\n" +
+                "end\n";
+
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( mode, kbase );
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects( new ClassObjectFilter( Thing.class ) ) ) {
+            Thing t = (Thing) o;
+            Object core = t.getCore();
+            assertTrue( core instanceof Person );
+            assertTrue( core instanceof TraitableBean );
+            assertEquals( 3, ( (TraitableBean) core).getTraitMap().size() );
+            assertTrue( ( (TraitableBean) core ).hasTrait( Thing.class.getName() ) );
+        }
+
+    }
+
+    @Test
+    public void testTraitWardOnHierarchyTriple() {
+        traitWardOnHierarchy( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitWardOnHierarchyMap() {
+        traitWardOnHierarchy( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+
+
+
+
+
+
+    public void traitsLegacyWrapperCoherence( TraitFactory.VirtualPropertyMode mode ) {
+        String str = "package org.drools.trait.test; \n" +
+                "global java.util.List list; \n" +
+                "" +                "" +
+                "declare TBean \n" +
+                "  fld : String \n" +
+                "end \n " +
+                "" +
+                "declare trait Mask \n" +
+                "  fld : String \n" +
+                "  xyz : int  \n" +
+                "end \n" +
+                "\n " +
+                "rule Init \n" +
+                "when \n" +
+                "then \n" +
+                "  insert( new TBean(\"abc\") ); \n" +
+                "end \n" +
+                "" +
+                "rule Don \n" +
+                "no-loop \n" +
+                "when \n" +
+                "  $b : TBean( ) \n" +
+                "then \n" +
+                "  Mask m = don( $b, Mask.class ); \n" +
+                "  modify (m) { setXyz( 10 ); } \n" +
+                "  list.add( m ); \n" +
+                "  System.out.println( \"Don result : \" + m ); \n " +
+                "end \n" +
+                "\n" +
+                "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        List<?> list = new ArrayList<Object>();
+
+        ksession.setGlobal("list",
+                list);
+
+        ksession.fireAllRules();
+
+
+        Collection yOld = ksession.getObjects();
+        assertEquals( 3, yOld.size() );
+
+        TraitableBean coreOld = null;
+        for ( Object o : yOld ) {
+            if ( o instanceof TraitableBean ) {
+                coreOld = (TraitableBean) o;
+                break;
+            }
+        }
+        assertNotNull( coreOld );
+
+
+        FactType tBeanType = kbase.getFactType( "org.drools.trait.test", "TBean" );
+        assertNotNull( tBeanType );
+
+        assertSame( tBeanType.getFactClass(), coreOld.getClass().getSuperclass() );
+
+        assertEquals( "abc", tBeanType.get( coreOld, "fld" ) );
+        assertEquals( 1, coreOld.getDynamicProperties().size() );
+        assertEquals( 2, coreOld.getTraitMap().size() );
+    }
+
+
+    @Test
+    public void testTraitsBeanWrapperDataStructuresTriples() {
+        traitsLegacyWrapperCoherence( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitsBeanWrapperDataStructuresMap() {
+        traitsLegacyWrapperCoherence( TraitFactory.VirtualPropertyMode.MAP );
+    }
 
 
 }

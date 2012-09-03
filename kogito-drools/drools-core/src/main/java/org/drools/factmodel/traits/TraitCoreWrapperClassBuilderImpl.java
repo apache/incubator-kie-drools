@@ -81,26 +81,33 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         {
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
+
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKESPECIAL, BuildUtils.getInternalType( coreName ), "<init>", "()V" );
-            mv.visitVarInsn( ALOAD, 0 );
-            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
-            mv.visitInsn( DUP );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
-            mv.visitFieldInsn( PUTFIELD,
-                    BuildUtils.getInternalType( wrapperName ),
-                    TraitableBean.MAP_FIELD_NAME,
-                    Type.getDescriptor( Map.class ) );
-            mv.visitVarInsn( ALOAD, 0 );
-            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
-            mv.visitInsn( DUP );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
-            mv.visitFieldInsn( PUTFIELD,
-                    BuildUtils.getInternalType( wrapperName ),
-                    TraitableBean.TRAITSET_FIELD_NAME,
-                    Type.getDescriptor( Map.class ) );
+
+//            mv.visitVarInsn( ALOAD, 0 );
+//            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
+//            mv.visitInsn( DUP );
+//            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
+//            mv.visitFieldInsn( PUTFIELD,
+//                    BuildUtils.getInternalType( wrapperName ),
+//                    TraitableBean.MAP_FIELD_NAME,
+//                    Type.getDescriptor( Map.class ) );
+
+//            mv.visitVarInsn( ALOAD, 0 );
+//            mv.visitTypeInsn( NEW, Type.getInternalName( VetoableTypedMap.class ) );
+//            mv.visitInsn( DUP );
+//            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
+//            mv.visitInsn( DUP );
+//            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
+//            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( VetoableTypedMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
+//            mv.visitFieldInsn( PUTFIELD,
+//                    BuildUtils.getInternalType( wrapperName ),
+//                    TraitableBean.TRAITSET_FIELD_NAME,
+//                    Type.getDescriptor( Map.class ) );
+
             mv.visitInsn( RETURN );
-            mv.visitMaxs( 3, 1 );
+            mv.visitMaxs( 5, 1 );
             mv.visitEnd();
         }
         {
@@ -149,25 +156,31 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             Label l0 = new Label();
             mv.visitJumpInsn( IFNONNULL, l0 );
             mv.visitVarInsn( ALOAD, 0 );
+            mv.visitTypeInsn( NEW, Type.getInternalName( VetoableTypedMap.class ) );
+            mv.visitInsn( DUP );
             mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
             mv.visitInsn( DUP );
             mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( VetoableTypedMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
             mv.visitInsn( ARETURN );
-            mv.visitMaxs( 3, 1 );
+            mv.visitMaxs( 6, 1 );
             mv.visitEnd();
         }
         {
             mv = cw.visitMethod( ACC_PUBLIC, "setTraitMap", "(Ljava/util/Map;)V", null, null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
+            mv.visitTypeInsn( NEW, Type.getInternalName( VetoableTypedMap.class ) );
+            mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( VetoableTypedMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
             mv.visitInsn( RETURN );
-            mv.visitMaxs( 2, 2 );
+            mv.visitMaxs( 4, 2 );
             mv.visitEnd();
         }
         {
@@ -178,10 +191,11 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "getTraitMap", "()" + Type.getDescriptor( Map.class ) );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( VetoableTypedMap.class ) );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put",
-                                "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( VetoableTypedMap.class ), "putSafe",
+                                "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Thing.class ) + ")" + Type.getDescriptor( Thing.class ) );
             mv.visitInsn( POP );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 3, 3 );
@@ -350,6 +364,32 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                     BuildUtils.getInternalType( wrapperName ),
                     "init",
                     "(" + BuildUtils.getTypeDescriptor( coreName ) + ")V" );
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 2, 2 );
+            mv.visitEnd();
+        }
+
+        {
+            mv = cw.visitMethod( ACC_PUBLIC, "denyTrait", "(" + Type.getDescriptor( Class.class )+ ")V", null,
+                    new String[]{ Type.getInternalName( LogicalTypeInconsistencyException.class )} );
+            mv.visitCode();
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( VetoableTypedMap.class ) );
+            mv.visitVarInsn( ALOAD, 1);
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( VetoableTypedMap.class ), "addToVetoable", "(" + Type.getDescriptor( Class.class )+ ")V" );
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 2, 2 );
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod( ACC_PUBLIC, "allowTrait", "(" + Type.getDescriptor( Class.class ) + ")V", null, null );
+            mv.visitCode();
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( VetoableTypedMap.class ) );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( VetoableTypedMap.class ), "removeFromVetoable", "(" + Type.getDescriptor( Class.class )+ ")V" );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 2, 2 );
             mv.visitEnd();

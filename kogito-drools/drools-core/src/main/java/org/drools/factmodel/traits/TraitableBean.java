@@ -33,7 +33,7 @@ public interface TraitableBean<K> {
     public void setTraitMap( Map<String,Thing> map );
 
 
-    public void addTrait(String type, Thing<K> proxy);
+    public void addTrait(String type, Thing<K> proxy) throws LogicalTypeInconsistencyException;
 
     public Thing<K> getTrait( String type );
 
@@ -42,5 +42,9 @@ public interface TraitableBean<K> {
     public Thing<K> removeTrait( String type );
 
     public Collection<String> getTraits();
+
+    public void denyTrait( Class trait ) throws LogicalTypeInconsistencyException;
+
+    public void allowTrait( Class trait );
 
 }

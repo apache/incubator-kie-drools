@@ -69,7 +69,8 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
         String internalWrapper  = BuildUtils.getInternalType( name );
-        String descrCore        = BuildUtils.getTypeDescriptor( core.getClassName() );
+        String descrCore        = Type.getDescriptor( core.getDefinedClass() );
+        String internalCore     = Type.getInternalName( core.getDefinedClass() );
 
 
         aliases = new HashMap<String, FieldDefinition>();
@@ -125,6 +126,10 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitFieldInsn( PUTFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
+
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitVarInsn( ALOAD, 2 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
             int stackSize = initSoftFields( mv, trait, mask, 2 );
 

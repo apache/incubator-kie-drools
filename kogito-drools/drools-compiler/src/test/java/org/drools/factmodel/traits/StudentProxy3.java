@@ -24,6 +24,8 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 import org.kie.runtime.rule.Variable;
 
+import java.util.Map;
+
 
 public class StudentProxy3 extends TraitProxy implements IStudent {
 
@@ -42,9 +44,10 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
 
     public StudentProxy3(Imp2 obj, final TripleStore m, TripleFactory factory) {
 
+        System.out.println( "ABSCS" );
 
         this.object = obj;
-         m.getId();
+        m.getId();
 
         setTripleFactory( factory );
 
@@ -52,9 +55,13 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         (( TripleBasedStruct ) fields).setTripleFactory( factory );
 
 
-        obj.setDynamicProperties( new TripleBasedBean(obj,m,factory) );
+        if ( obj.getDynamicProperties() == null ) {
+            obj.setDynamicProperties( new TripleBasedBean(obj,m,factory) );
+        }
 
-        obj.setTraitMap( new TripleBasedTypes(obj,m,factory) );
+        if ( obj.getTraitMap() == null ) {
+            obj.setTraitMap( new VetoableTypedMap( new TripleBasedTypes(obj,m,factory) ) );
+        }
 
     }
 
@@ -71,8 +78,17 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         return "(@Student) : " + getFields().entrySet().toString();
     }
 
+     public boolean getX( String k ) {
+         if ( getMap() == null ) {
+             return false;
+         }
+         return getMap().containsKey( k );
+     }
 
 
+    public Map getMap() {
+        return null;
+    }
 
     public double getD() {
         return bit_reader.getDoubleValue( object );
