@@ -46,8 +46,8 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     protected Class<?> planningEntityClass = null;
 
-    protected SelectionOrder selectionOrder = null;
     protected SelectionCacheType cacheType = null;
+    protected SelectionOrder selectionOrder = null;
     @XStreamImplicit(itemFieldName = "entityFilterClass")
     protected List<Class<? extends SelectionFilter>> entityFilterClassList = null;
     protected Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass = null;
@@ -61,20 +61,20 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.planningEntityClass = planningEntityClass;
     }
 
-    public SelectionOrder getSelectionOrder() {
-        return selectionOrder;
-    }
-
-    public void setSelectionOrder(SelectionOrder selectionOrder) {
-        this.selectionOrder = selectionOrder;
-    }
-
     public SelectionCacheType getCacheType() {
         return cacheType;
     }
 
     public void setCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
+    }
+
+    public SelectionOrder getSelectionOrder() {
+        return selectionOrder;
+    }
+
+    public void setSelectionOrder(SelectionOrder selectionOrder) {
+        this.selectionOrder = selectionOrder;
     }
 
     public List<Class<? extends SelectionFilter>> getEntityFilterClassList() {
@@ -98,19 +98,18 @@ public class EntitySelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     /**
+     *
      * @param environmentMode never null
      * @param solutionDescriptor never null
-     * @param inheritedSelectionOrder never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
+     * @param inheritedSelectionOrder never null
      * @return never null
      */
     public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType) {
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
-                inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
@@ -125,6 +124,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
         EntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
                 (resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder)
                         == SelectionOrder.RANDOM,
@@ -211,8 +211,8 @@ public class EntitySelectorConfig extends SelectorConfig {
         super.inherit(inheritedConfig);
         planningEntityClass = ConfigUtils.inheritOverwritableProperty(planningEntityClass,
                 inheritedConfig.getPlanningEntityClass());
-        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
+        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         entityFilterClassList = ConfigUtils.inheritOverwritableProperty
                 (entityFilterClassList, inheritedConfig.getEntityFilterClassList());
         entityProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(

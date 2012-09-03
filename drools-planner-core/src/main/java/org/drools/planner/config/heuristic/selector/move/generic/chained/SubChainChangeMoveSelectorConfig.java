@@ -28,7 +28,6 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
@@ -82,12 +81,12 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
+            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SubChainSelector subChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
-                solutionDescriptor, resolvedSelectionOrder, minimumCacheType, entityDescriptor);
+                solutionDescriptor, minimumCacheType, resolvedSelectionOrder, entityDescriptor);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
-                resolvedSelectionOrder, minimumCacheType, entityDescriptor);
+                minimumCacheType, resolvedSelectionOrder, entityDescriptor);
         return new SubChainChangeMoveSelector(subChainSelector, valueSelector,
                 resolvedSelectionOrder == SelectionOrder.RANDOM,
                 selectReversingMoveToo == null ? true : selectReversingMoveToo);

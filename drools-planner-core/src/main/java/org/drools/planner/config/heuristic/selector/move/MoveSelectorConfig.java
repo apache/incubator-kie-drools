@@ -56,8 +56,8 @@ import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSe
 })
 public abstract class MoveSelectorConfig extends SelectorConfig {
 
-    protected SelectionOrder selectionOrder = null;
     protected SelectionCacheType cacheType = null;
+    protected SelectionOrder selectionOrder = null;
     @XStreamImplicit(itemFieldName = "moveFilterClass")
     protected List<Class<? extends SelectionFilter>> moveFilterClassList = null;
     protected Class<? extends SelectionProbabilityWeightFactory> moveProbabilityWeightFactoryClass = null;
@@ -65,20 +65,20 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     private Double fixedProbabilityWeight = null;
 
-    public SelectionOrder getSelectionOrder() {
-        return selectionOrder;
-    }
-
-    public void setSelectionOrder(SelectionOrder selectionOrder) {
-        this.selectionOrder = selectionOrder;
-    }
-
     public SelectionCacheType getCacheType() {
         return cacheType;
     }
 
     public void setCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
+    }
+
+    public SelectionOrder getSelectionOrder() {
+        return selectionOrder;
+    }
+
+    public void setSelectionOrder(SelectionOrder selectionOrder) {
+        this.selectionOrder = selectionOrder;
     }
 
     public List<Class<? extends SelectionFilter>> getMoveFilterClassList() {
@@ -110,23 +110,24 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     /**
+     *
      * @param environmentMode never null
      * @param solutionDescriptor never null
-     * @param inheritedSelectionOrder never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
+     * @param inheritedSelectionOrder never null
      * @return never null
      */
     public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType) {
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 
         // baseMoveSelector and lower should not be SelectionOrder.RANDOM as they are going to get cached completely
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
-                resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder, minimumCacheType);
+                minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
         boolean alreadyCached = false;
         if (!CollectionUtils.isEmpty(moveFilterClassList)) {
@@ -171,22 +172,23 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     }
 
     /**
+     *
      * @param environmentMode never null
      * @param solutionDescriptor never null
-     * @param resolvedSelectionOrder never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
+     * @param resolvedSelectionOrder never null
      * @return never null
      */
     protected abstract MoveSelector buildBaseMoveSelector(
             EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType);
+            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder);
 
     protected void inherit(MoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
+        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         moveFilterClassList = ConfigUtils.inheritOverwritableProperty(
                 moveFilterClassList, inheritedConfig.getMoveFilterClassList());
         moveProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(

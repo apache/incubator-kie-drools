@@ -45,7 +45,7 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
+            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
         MoveListFactory moveListFactory = ConfigUtils.newInstance(this,
                 "moveListFactoryClass", moveListFactoryClass);
         // MoveListFactoryToMoveSelectorBridge caches by design, so it uses the minimumCacheType
@@ -54,7 +54,7 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
             minimumCacheType = SelectionCacheType.STEP;
         }
         return new MoveListFactoryToMoveSelectorBridge(moveListFactory,
-                resolvedSelectionOrder == SelectionOrder.RANDOM, minimumCacheType);
+                minimumCacheType, resolvedSelectionOrder == SelectionOrder.RANDOM);
     }
 
     public void inherit(MoveListFactoryConfig inheritedConfig) {

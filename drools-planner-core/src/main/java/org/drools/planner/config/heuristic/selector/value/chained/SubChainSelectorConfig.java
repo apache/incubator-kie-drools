@@ -16,8 +16,6 @@
 
 package org.drools.planner.config.heuristic.selector.value.chained;
 
-import java.util.Collection;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
@@ -26,18 +24,13 @@ import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.SwapMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
 
 @XStreamAlias("subChainSelector")
 public class SubChainSelectorConfig extends SelectorConfig {
@@ -75,17 +68,18 @@ public class SubChainSelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     /**
+     *
      * @param environmentMode never null
      * @param solutionDescriptor never null
-     * @param inheritedSelectionOrder never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
+     * @param inheritedSelectionOrder never null
      * @param entityDescriptor never null
      * @return never null
      */
     public SubChainSelector buildSubChainSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
             PlanningEntityDescriptor entityDescriptor) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The subChainChangeMoveSelector's minimumCacheType (" + minimumCacheType
@@ -94,7 +88,7 @@ public class SubChainSelectorConfig extends SelectorConfig {
         }
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode, solutionDescriptor,
-                SelectionOrder.ORIGINAL, minimumCacheType, entityDescriptor);
+                minimumCacheType, SelectionOrder.ORIGINAL, entityDescriptor);
         return new DefaultSubChainSelector(valueSelector, inheritedSelectionOrder == SelectionOrder.RANDOM,
                 minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize);
     }

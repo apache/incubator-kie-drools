@@ -26,10 +26,8 @@ import org.drools.planner.config.heuristic.selector.value.chained.SubChainSelect
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.PillarSwapMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector;
 
@@ -81,14 +79,14 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder resolvedSelectionOrder, SelectionCacheType minimumCacheType) {
+            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SubChainSelector leftSubChainSelector = subChainSelectorConfig.buildSubChainSelector(
-                environmentMode, solutionDescriptor, resolvedSelectionOrder, minimumCacheType, entityDescriptor);
+                environmentMode, solutionDescriptor, minimumCacheType, resolvedSelectionOrder, entityDescriptor);
         SubChainSelectorConfig rightSubChainSelectorConfig = secondarySubChainSelectorConfig == null
                 ? subChainSelectorConfig : secondarySubChainSelectorConfig;
         SubChainSelector rightSubChainSelector = rightSubChainSelectorConfig.buildSubChainSelector(
-                environmentMode, solutionDescriptor, resolvedSelectionOrder, minimumCacheType, entityDescriptor);
+                environmentMode, solutionDescriptor, minimumCacheType, resolvedSelectionOrder, entityDescriptor);
         return new SubChainSwapMoveSelector(leftSubChainSelector, rightSubChainSelector,
                 resolvedSelectionOrder == SelectionOrder.RANDOM,
                 selectReversingMoveToo == null ? true : selectReversingMoveToo);

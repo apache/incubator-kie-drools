@@ -35,16 +35,16 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
         implements SelectionCacheLifecycleListener {
 
     protected final MoveListFactory moveListFactory;
-    protected final boolean randomSelection;
     protected final SelectionCacheType cacheType;
+    protected final boolean randomSelection;
 
     protected List<Move> cachedMoveList = null;
 
     public MoveListFactoryToMoveSelectorBridge(MoveListFactory moveListFactory,
-            boolean randomSelection, SelectionCacheType cacheType) {
+            SelectionCacheType cacheType, boolean randomSelection) {
         this.moveListFactory = moveListFactory;
-        this.randomSelection = randomSelection;
         this.cacheType = cacheType;
+        this.randomSelection = randomSelection;
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
                     + ") is not supported on the class (" + getClass().getName() + ").");

@@ -37,8 +37,8 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     protected String planningVariableName = null;
 
-    protected SelectionOrder selectionOrder = null;
     protected SelectionCacheType cacheType = null;
+    protected SelectionOrder selectionOrder = null;
     // TODO filterClass
     protected Class<? extends SelectionProbabilityWeightFactory> valueProbabilityWeightFactoryClass = null;
     // TODO sorterClass, increasingStrength
@@ -51,20 +51,20 @@ public class ValueSelectorConfig extends SelectorConfig {
         this.planningVariableName = planningVariableName;
     }
 
-    public SelectionOrder getSelectionOrder() {
-        return selectionOrder;
-    }
-
-    public void setSelectionOrder(SelectionOrder selectionOrder) {
-        this.selectionOrder = selectionOrder;
-    }
-
     public SelectionCacheType getCacheType() {
         return cacheType;
     }
 
     public void setCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
+    }
+
+    public SelectionOrder getSelectionOrder() {
+        return selectionOrder;
+    }
+
+    public void setSelectionOrder(SelectionOrder selectionOrder) {
+        this.selectionOrder = selectionOrder;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getValueProbabilityWeightFactoryClass() {
@@ -80,17 +80,18 @@ public class ValueSelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     /**
+     *
      * @param environmentMode never null
      * @param solutionDescriptor never null
-     * @param inheritedSelectionOrder never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
+     * @param inheritedSelectionOrder never null
      * @param entityDescriptor never null
      * @return never null
      */
     public ValueSelector buildValueSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionOrder inheritedSelectionOrder, SelectionCacheType minimumCacheType,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
             PlanningEntityDescriptor entityDescriptor) {
         PlanningVariableDescriptor variableDescriptor;
         if (planningVariableName != null) {
@@ -117,17 +118,17 @@ public class ValueSelectorConfig extends SelectorConfig {
             }
             variableDescriptor = planningVariableDescriptors.iterator().next();
         }
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
-                inheritedSelectionOrder);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
-                && valueProbabilityWeightFactoryClass == null;
         // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
             // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
             minimumCacheType = SelectionCacheType.PHASE;
         }
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM
+                && valueProbabilityWeightFactoryClass == null;
         ValueSelector valueSelector = new FromSolutionPropertyValueSelector(variableDescriptor, randomSelection,
                 minimumCacheType);
 
@@ -153,8 +154,8 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (planningVariableName == null) {
             planningVariableName = inheritedConfig.getPlanningVariableName();
         }
-        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
+        selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         valueProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 valueProbabilityWeightFactoryClass, inheritedConfig.getValueProbabilityWeightFactoryClass());
     }

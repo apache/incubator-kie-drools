@@ -16,7 +16,6 @@
 
 package org.drools.planner.config.localsearch;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,8 +35,6 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.composite.CartesianProductMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.composite.UnionMoveSelector;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;
@@ -103,18 +100,18 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
             ScoreDefinition scoreDefinition, Termination termination) {
         DefaultDecider decider = new DefaultDecider();
         MoveSelector moveSelector;
-        SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
+        SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
         if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
             unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
                     new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
             moveSelector = unionMoveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
-                    defaultSelectionOrder, defaultCacheType);
+                    defaultCacheType, defaultSelectionOrder);
         } else if (moveSelectorConfigList.size() == 1) {
             moveSelector = moveSelectorConfigList.get(0).buildMoveSelector(
-                    environmentMode, solutionDescriptor, defaultSelectionOrder, defaultCacheType);
+                    environmentMode, solutionDescriptor, defaultCacheType, defaultSelectionOrder);
         } else {
             // TODO moveSelectorConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
