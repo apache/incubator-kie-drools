@@ -2013,20 +2013,26 @@ It replaces LocalSearch's Selector (which selected moves) and it will also repla
 The new Selector architecture supports Just In Time selection, caching (step, phase, solver), filtering,
 probability selection, selector composition (union, cartesian product) and more. Read about it in the manual.
 
-[README] Selectors can cache the moves they generate based on the cacheType:
- JUST_IN_TIME: No caching, generate the moves just before its evaluated. This did not exist before.
- STEP: Cache at the beginning of every step. This is the old default mostly.
- PHASE: Cache at the beginning of every phase.
+[README] A selector now has a cacheType:
+ JUST_IN_TIME: No caching, generate the moves just before its evaluated. This did not exist before. This is the new default except for MoveListFactory's.
+ STEP: Cache at the beginning of every step. This is the old AbstractMoveFactory.
+ PHASE: Cache at the beginning of every phase. This is the old CachedMoveFactory.
  SOLVER: Cache at the beginning of the solver run. This did not exist before.
 All new Selector configurations default to the lowest possible cacheType, which is usually JUST_IN_TIME.
-JUST_IN_TIME is the preferred cacheType for very big problems, but not always so for medium or small problems.
-During the migration, it's recommended to leave the caching unchanged (don't switch to JUST_IN_TIME just yet),
-but after the migration, it's recommended to play with it aggressively in the Benchmarker
+JUST_IN_TIME is the preferred cacheType for very big problems, but not for medium or small problems.
+During the migration, it's recommended to keep the caching STEP or PHASE as before (don't switch to JUST_IN_TIME just yet),
+but after the migration, it's recommended to play with these settings aggressively in the Benchmarker
 because it can really improve your results.
+
+[README] A selector now has a selectionOrder:
+ ORIGINAL: Select the moves in the default order, not random. This did not really exist before.
+ RANDOM: Select the moves in random order without shuffling. This did not exist before. This is the new default.
+ SHUFFLED: Select the moves in random order with shuffling. This is the old default.
+During the migration, it's recommended to keep the selectionOrder SHUFFLED as before (don't switch to RANDOM just yet),
 
 [MAJOR] The interface MoveFactory has been replaced by the interface MoveListFactory and the configuration has changed.
 Depending on whether your implementation extended CachedMoveFactory or AbstractMoveFactory, the migration differs.
-If your implementation extended CachedMoveFactory, you were actually using PHASE caching.
+1) If your implementation extended CachedMoveFactory, you were actually using PHASE caching.
 Before in *.java:
     import org.drools.planner.core.move.factory.CachedMoveFactory;
 
@@ -2054,9 +2060,10 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <moveListFactory>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
         <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
-If your implementation extended AbstractMoveFactory, you were actually using STEP caching.
+2) If your implementation extended AbstractMoveFactory, you were actually using STEP caching.
 Before in *.java:
     import org.drools.planner.core.move.factory.AbstractMoveFactory;
 
@@ -2083,6 +2090,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <moveListFactory>
         <cacheType>STEP</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
         <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
 Note that MoveListFactory cannot really do JUST_IN_TIME caching because by design
@@ -2108,10 +2116,12 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
             <moveListFactoryClass>...BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <changeMoveSelector>
             <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
           </changeMoveSelector>
           ...
         </unionMoveSelector>
@@ -2120,7 +2130,8 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 
 [MAJOR] The generic MoveFactory classes have been replaced by generic MoveSelector implementations.
 The generic MoveFactories used to use PHASE or STEP caching (depending on the implementation),
-but now the generic MoveSelector implementations default to JUST_IN_TIME, unless a cacheType specifies otherwise.
+but now the generic MoveSelector implementations default to cacheType JUST_IN_TIME and selectionOrder RANDOM.
+To make no additional changes during the migration, overwrite to cacheType PHASE (or STEP) and selectionOrder SHUFFLED.
 If you have multiple planning entities or multiple planning variables,
 you will often need to create separate selectors and union them.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
@@ -2130,10 +2141,12 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <changeMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </changeMoveSelector>
 After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple planning variables:
       <unionMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
         <changeMoveSelector>
           <valueSelector>
             <planningVariableName>period</planningVariableName>
@@ -2148,6 +2161,7 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple plannin
 After in *SolverConfig.xml and *BenchmarkConfig.xml if you have multiple planning entities and multiple planning variables:
       <unionMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
         <changeMoveSelector>
           <entitySelector>
             <planningEntityClass>...Cat</planningEntityClass>
@@ -2177,6 +2191,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <swapMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </swapMoveSelector>
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <selector>
@@ -2185,6 +2200,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <pillarSwapMoveSelector>
         <cacheType>STEP</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </pillarSwapMoveSelector>
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <selector>
@@ -2193,6 +2209,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <changeMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </changeMoveSelector>
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <selector>
@@ -2201,6 +2218,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <swapMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </swapMoveSelector>
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <selector>
@@ -2209,6 +2227,7 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <subChainChangeMoveSelector>
         <cacheType>STEP</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </subChainChangeMoveSelector>
 
 [MINOR] topSize is not longer supported

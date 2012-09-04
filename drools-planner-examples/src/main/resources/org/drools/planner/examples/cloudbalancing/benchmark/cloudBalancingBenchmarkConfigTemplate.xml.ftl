@@ -40,14 +40,10 @@
     <name>entityTabu ${planningEntityTabuSize} acceptedSelection ${minimalAcceptedSelection}</name>
     <solver>
       <localSearch>
-          <unionMoveSelector>
-              <changeMoveSelector>
-                  <cacheType>PHASE</cacheType>
-              </changeMoveSelector>
-              <swapMoveSelector>
-                  <cacheType>PHASE</cacheType>
-              </swapMoveSelector>
-          </unionMoveSelector>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
         </acceptor>

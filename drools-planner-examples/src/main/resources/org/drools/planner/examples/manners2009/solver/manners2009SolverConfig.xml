@@ -20,6 +20,7 @@
   <localSearch>
     <swapMoveSelector>
       <cacheType>PHASE</cacheType>
+      <selectionOrder>SHUFFLED</selectionOrder>
       <moveFilterClass>org.drools.planner.examples.manners2009.solver.move.DifferentGenderSwapMoveFilter</moveFilterClass>
     </swapMoveSelector>
     <acceptor>

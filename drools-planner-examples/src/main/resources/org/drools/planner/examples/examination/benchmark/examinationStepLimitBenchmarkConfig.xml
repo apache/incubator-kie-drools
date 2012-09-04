@@ -21,10 +21,13 @@
 
   <solverBenchmark>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <!--<customSolverPhase>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>-->
+      <!--</customSolverPhase>-->
       <localSearch>
+        <termination>
+          <maximumStepCount>100</maximumStepCount>
+        </termination>
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>

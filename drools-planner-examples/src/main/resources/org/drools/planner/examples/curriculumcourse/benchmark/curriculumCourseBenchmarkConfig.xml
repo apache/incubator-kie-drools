@@ -46,7 +46,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>entityTabu10-custom</name>
+    <name>entityTabu10-custom-phase-random</name>
     <solver>
       <localSearch>
         <unionMoveSelector>
@@ -73,26 +73,25 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>entityTabu10-generic</name>
+    <name>entityTabu10-custom-phase-shuffled</name>
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>
+          <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <valueSelector>
-              <planningVariableName>period</planningVariableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <changeMoveSelector>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <valueSelector>
-              <planningVariableName>room</planningVariableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <swapMoveSelector>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveFilterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</moveFilterClass>
-          </swapMoveSelector>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
         </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>10</planningEntityTabuSize>
@@ -108,60 +107,6 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <planningVariableName>period</planningVariableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <planningVariableName>room</planningVariableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <swapMoveSelector>
-            <moveFilterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</moveFilterClass>
-          </swapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>entityTabu10-custom_unionCached</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <cacheType>PHASE</cacheType>
-          <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-        </unionMoveSelector>
-        <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>entityTabu10-generic_unionCached</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <cacheType>PHASE</cacheType>
           <changeMoveSelector>
             <valueSelector>
               <planningVariableName>period</planningVariableName>

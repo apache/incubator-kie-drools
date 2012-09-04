@@ -24,6 +24,9 @@
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
     </solver>
   </inheritedSolverBenchmark>
 
@@ -55,23 +58,16 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>Tabu Search with FFD for 5 minutes</name>
+    <name>Tabu Search</name>
     <solver>
-      <termination>
-        <maximumMinutesSpend>5</maximumMinutesSpend>
-      </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </changeMoveSelector>
-          <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </swapMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <planningEntityTabuSize>7</planningEntityTabuSize>
@@ -83,79 +79,16 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Simulated Annealing with FFD for 5 minutes</name>
+    <name>Simulated Annealing</name>
     <solver>
-      <termination>
-        <maximumMinutesSpend>5</maximumMinutesSpend>
-      </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </changeMoveSelector>
-          <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </swapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>Tabu Search with FFD for 10 minutes</name>
-    <solver>
-      <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-      </termination>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </changeMoveSelector>
-          <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </swapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>Simulated Annealing with FFD for 10 minutes</name>
-    <solver>
-      <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-      </termination>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </changeMoveSelector>
-          <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
-          </swapMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
