@@ -152,6 +152,11 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             alreadyCached = true;
         }
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
+            if (resolvedCacheType.isNotCached()) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") has a resolvedCacheType (" + resolvedCacheType + ") that is not cached.");
+            }
             moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
             alreadyCached = true;
         }
