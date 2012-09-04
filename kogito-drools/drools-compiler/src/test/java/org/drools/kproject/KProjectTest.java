@@ -68,7 +68,7 @@ public class KProjectTest {
     }    
     
     @Test
-    public void testAddRemove() throws IOException, ClassNotFoundException, InterruptedException, InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    public void testAddModifyRemoveKBase() throws IOException, ClassNotFoundException, InterruptedException, InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         KProject kproj = new KProjectImpl();       
         
         KProjectChangeLog klog = new KProjectChangeLog();
@@ -79,92 +79,105 @@ public class KProjectTest {
         
         List<String> files = asList( new String[] {  } );
         
-        KBase kbase1 = kproj.newKBase("org.test1", "KBase1");
-        kbase1.setFiles( files );
-        kbase1.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
-        kbase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
-        kbase1.setEventProcessingMode( EventProcessingOption.STREAM );               
+        // create and add the KBase
+        KBase kBase1 = kproj.newKBase("org.test1", "kBase1");
+        kBase1.setFiles( files );
+        kBase1.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
+        kBase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
+        kBase1.setEventProcessingMode( EventProcessingOption.STREAM );               
                
         MemoryFileSystem mfs = new MemoryFileSystem();
         KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+                
+        Folder fld = mfs.getFolder( "src/kbases/org.test1.kBase1" );
+        assertTrue( fld.exists() );
         
-        MemoryFile mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java" );
+        // Modify the KBase
+        MemoryFile mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.kBase1/org/test1/kBase1Producer.java" );
         String s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
         assertTrue( s.contains( "EventProcessingOption.STREAM" ) );
         
-        kbase1.setEventProcessingMode( EventProcessingOption.CLOUD );
+        kBase1.setEventProcessingMode( EventProcessingOption.CLOUD );
         KProjectChangeLogCommiter.commit( kproj, klog, mfs ); 
-        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java" );
+        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.kBase1/org/test1/kBase1Producer.java" );
         s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
         assertTrue( s.contains( "EventProcessingOption.CLOUD" ) );
         
-        kproj.removeKBase( kbase1.getQName() );
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
-        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java" );
-        assertFalse( mf.exists() );
         
-//        String fldKB1 = kproj.getKBasesPath() + "/" + kbase1.getQName() + "/" + kbase1.getNamespace().replace( '.', '/' );
-//        mfs.getFolder( fldKB1 ).create();
-//               
-//        MemoryFileSystem srcMfs = mfs;   
-//        MemoryFileSystem trgMfs = new MemoryFileSystem();
-//                          
-//        compile(kproj, srcMfs, trgMfs, new ArrayList<String>());
-//        MemoryFileSystemClassLoader classLoader = new MemoryFileSystemClassLoader(trgMfs);
+        // Remove the KBase
+        kproj.removeKBase( kBase1.getQName() );
+        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+        
+        fld = mfs.getFolder( "src/kbases/org.test1.kBase1" );
+        assertFalse( fld.exists() );
+        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.kBase1/org/test1/kBase1Producer.java" );
+        assertFalse( mf.exists() );                
+    }
+    
+    @Test
+    public void testAddModifyRemoveKSession() throws IOException,
+                                             ClassNotFoundException,
+                                             InterruptedException,
+                                             InstantiationException,
+                                             IllegalAccessException,
+                                             SecurityException,
+                                             NoSuchMethodException,
+                                             IllegalArgumentException,
+                                             InvocationTargetException {
+        KProject kproj = new KProjectImpl();
+
+        KProjectChangeLog klog = new KProjectChangeLog();
+        kproj.setListener( klog );
+
+        kproj.setKProjectPath( "src/main/resources/" );
+        kproj.setKBasesPath( "src/kbases" );
+
+        List<String> files = asList( new String[]{} );
+
+        // create and add the KBase
+        KBase kBase1 = kproj.newKBase( "org.test1", "kBase1" );
+        kBase1.setFiles( files );
+        kBase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
+        kBase1.setEventProcessingMode( EventProcessingOption.STREAM );
+
+        MemoryFileSystem mfs = new MemoryFileSystem();
+        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+        Folder fld = mfs.getFolder( "src/kbases/org.test1.kBase1" );
+        assertTrue( fld.exists() );
+
+        KSession kSession1 = kBase1.newKSession( "org.test1", "KSession1" );
+        kSession1.setType( "stateful" );
+        kSession1.setClockType( ClockTypeOption.get( "realtime" ) );
+        
+        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+               
+//        MemoryFileSystem mfs = new MemoryFileSystem();
+//        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+//                
+//        Folder fld = mfs.getFolder( "src/kbases/org.test1.kBase1" );
+//        assertTrue( fld.exists() );
 //        
-//        ClassLoader origCl = Thread.currentThread().getContextClassLoader();
-//        try {
-//            Thread.currentThread().setContextClassLoader( classLoader );
-//            Class cls1 = classLoader.loadClass( "org.test1.KBase1Producer" );
-//            Object o = cls1.newInstance();
-//            
-//            KnowledgeBaseImpl kbase = ( KnowledgeBaseImpl ) o.getClass().getMethod( "newKnowledgeBase", new Class[] {}  ).invoke( o, new Object[0] );
-//            assertEquals( EventProcessingOption.STREAM, ((ReteooRuleBase) kbase.getRuleBase()).getConfiguration().getEventProcessingMode() );
-//        } finally {
-//            Thread.currentThread().setContextClassLoader( origCl );
-//        }       
+//        // Modify the KBase
+//        MemoryFile mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.kBase1/org/test1/kBase1Producer.java" );
+//        String s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
+//        assertTrue( s.contains( "EventProcessingOption.STREAM" ) );
 //        
-//        kbase1.setEventProcessingMode( EventProcessingOption.CLOUD );
+//        kBase1.setEventProcessingMode( EventProcessingOption.CLOUD );
+//        KProjectChangeLogCommiter.commit( kproj, klog, mfs ); 
+//        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.kBase1/org/test1/kBase1Producer.java" );
+//        s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
+//        assertTrue( s.contains( "EventProcessingOption.CLOUD" ) );
+//        
+//        
+//        // Remove the KBase
+//        kproj.removeKBase( kBase1.getQName() );
 //        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
 //        
-//        trgMfs = new MemoryFileSystem();
-//        
-//        compile(kproj, srcMfs, trgMfs, new ArrayList<String>());
-//        classLoader = new MemoryFileSystemClassLoader(trgMfs);
-//        
-//        origCl = Thread.currentThread().getContextClassLoader();
-//        try {
-//            Thread.currentThread().setContextClassLoader( classLoader );
-//            Class cls1 = classLoader.loadClass( "org.test1.KBase1Producer" );
-//            Object o = cls1.newInstance();
-//            
-//            KnowledgeBaseImpl kbase = ( KnowledgeBaseImpl ) o.getClass().getMethod( "newKnowledgeBase", new Class[] {}  ).invoke( o, new Object[0] );
-//            assertEquals( EventProcessingOption.CLOUD, ((ReteooRuleBase) kbase.getRuleBase()).getConfiguration().getEventProcessingMode() );
-//        } finally {
-//            Thread.currentThread().setContextClassLoader( origCl );
-//        } 
-//        
-//        kproj.removeKBase( kbase1.getQName() );
-//        trgMfs = new MemoryFileSystem();
-//        
-//        //printFs(  mfs, mfs.getProjectFolder() );
-//        
-//        compile(kproj, srcMfs, trgMfs, Arrays.asList( new String[] { "org/test1/KBase1Producer.java", "org/test1/KBase1.java" } ) );
-//        classLoader = new MemoryFileSystemClassLoader(trgMfs);
-//        
-//        origCl = Thread.currentThread().getContextClassLoader();
-//        try {
-//            Thread.currentThread().setContextClassLoader( classLoader );
-//            try {
-//                Class cls1 = classLoader.loadClass( "org.test1.KBase1Producer" );
-//                fail( "Should not find the class" );
-//            } catch( Exception e ) {
-//                
-//            }
-//        } finally {
-//            Thread.currentThread().setContextClassLoader( origCl );
-//        }         
-    }
+//        fld = mfs.getFolder( "src/kbases/org.test1.kBase1" );
+//        assertFalse( fld.exists() );
+//        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.kBase1/org/test1/kBase1Producer.java" );
+//        assertFalse( mf.exists() );                
+    }    
     
     public List<String> compile(KProject kproj, MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, List<String> classes) {        
         for ( KBase kbase : kproj.getKBases().values() ) {
@@ -209,19 +222,19 @@ public class KProjectTest {
         
         List<String> files = asList( new String[] { "org/test1/rule1.drl", "org/test1/rule2.drl" } );
         
-        KBase kbase1 = kproj.newKBase("org.test1", "KBase1");
-        kbase1.setFiles( files );
-        kbase1.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
-        kbase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
-        kbase1.setEventProcessingMode( EventProcessingOption.STREAM );
+        KBase kBase1 = kproj.newKBase("org.test1", "kBase1");
+        kBase1.setFiles( files );
+        kBase1.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
+        kBase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
+        kBase1.setEventProcessingMode( EventProcessingOption.STREAM );
         
-        KSession ksession1 = kbase1.newKSession( "org.test1", "KSession1" );
+        KSession ksession1 = kBase1.newKSession( "org.test1", "KSession1" );
         ksession1.setType( "stateless" );
         ksession1.setAnnotations(  asList( "@ApplicationScoped; @Inject" ) );
         ksession1.setClockType( ClockTypeOption.get( "realtime" ) );
         
 
-        KSession ksession2 = kbase1.newKSession( "org.test1", "KSession2" );
+        KSession ksession2 = kBase1.newKSession( "org.test1", "KSession2" );
         ksession2.setType( "stateful" );
         ksession2.setAnnotations(  asList( "@ApplicationScoped; @Inject" ) );
         ksession2.setClockType( ClockTypeOption.get( "pseudo" ) );
@@ -252,20 +265,20 @@ public class KProjectTest {
         MemoryFileSystem mfs = new MemoryFileSystem();
         KProjectChangeLogCommiter.commit( kproj, klog, mfs );     
        
-        String kbase1R1 = getRule( "org.test1", "rule1" );
-        String kbase1R2 = getRule( "org.test1", "rule2" );
+        String kBase1R1 = getRule( "org.test1", "rule1" );
+        String kBase1R2 = getRule( "org.test1", "rule2" );
         
         String kbase2R1 = getRule( "org.test2", "rule1" );
         String kbase2R2 = getRule( "org.test2", "rule2" );        
         
-        String fldKB1 = kproj.getKBasesPath() + "/" + kbase1.getQName() + "/" + kbase1.getNamespace().replace( '.', '/' );
+        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getQName() + "/" + kBase1.getNamespace().replace( '.', '/' );
         String fldKB2 = kproj.getKBasesPath() + "/" + kbase2.getQName() + "/" + kbase2.getNamespace().replace( '.', '/' );
         
         mfs.getFolder( fldKB1 ).create();
         mfs.getFolder( fldKB2 ).create();
         
-        mfs.getFile( fldKB1 + "/rule1.drl" ).create( new ByteArrayInputStream( kbase1R1.getBytes() ) );
-        mfs.getFile( fldKB1 + "/rule2.drl" ).create( new ByteArrayInputStream( kbase1R2.getBytes() ) );
+        mfs.getFile( fldKB1 + "/rule1.drl" ).create( new ByteArrayInputStream( kBase1R1.getBytes() ) );
+        mfs.getFile( fldKB1 + "/rule2.drl" ).create( new ByteArrayInputStream( kBase1R2.getBytes() ) );
         mfs.getFile( fldKB2 + "/rule1.drl" ).create( new ByteArrayInputStream( kbase2R1.getBytes() ) );
         mfs.getFile( fldKB2 + "/rule2.drl" ).create( new ByteArrayInputStream( kbase2R2.getBytes() ) );
         
@@ -401,14 +414,14 @@ public class KProjectTest {
                 "import " + KnowledgeBase.class.getName() + ";\n" +
                 "import " + StatefulKnowledgeSession.class.getName() + ";\n" +
                 "import " + StatelessKnowledgeSession.class.getName() + ";\n" +
-                "import org.test1.KBase1;\n" +
+                "import org.test1.kBase1;\n" +
                 "import org.test1.KSession1;\n" +
                 "import org.test1.KSession2;\n" +
                 "import org.test2.KSession3;\n" +
                 "import org.test2.KBase2;\n" +
                 
                 "public class KProjectTestClassImpl implements org.drools.kproject.KProjectTestClass {\n" +
-                "    private @Inject @KBase1 KnowledgeBase kBase1; \n" +
+                "    private @Inject @kBase1 KnowledgeBase kBase1; \n" +
                 "    public KnowledgeBase getKBase1() {\n" +
                 "        return kBase1;\n" +
                 "    }\n" +

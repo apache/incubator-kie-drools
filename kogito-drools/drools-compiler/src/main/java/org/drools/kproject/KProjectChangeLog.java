@@ -12,13 +12,16 @@ public class KProjectChangeLog
         implements
         PropertyChangeListener {
 
-    private boolean               kProjectDirty;
+    private boolean        kProjectDirty;
 
     private Set<String>    addedKBases;
     private Set<String>    removedKBases;
 
-    private Set<String> removedKSessions;
-    private Set<String> addedKSessions;
+    private Set<String>    removedKSessions;
+    private Set<String>    addedKSessions;
+    
+    private Map<String, KSession> kSessions;
+    private Map<String, KBase>    kBases;
 
     public KProjectChangeLog() {
         reset();
@@ -72,6 +75,22 @@ public class KProjectChangeLog
         this.addedKSessions = addedKSessions;
     }
 
+    public Map<String, KSession> getKSessions() {
+        return kSessions;
+    }
+
+    public void setKSessions(Map<String, KSession> kSessions) {
+        this.kSessions = kSessions;
+    }
+
+    public Map<String, KBase> getKBases() {
+        return kBases;
+    }
+
+    public void setKBases(Map<String, KBase> kBases) {
+        this.kBases = kBases;
+    }
+
     public void propertyChange(PropertyChangeEvent evt) {
         if ( evt.getSource() instanceof KProjectImpl ) {
             KProject kProject = (KProject) evt.getSource();
@@ -84,6 +103,7 @@ public class KProjectChangeLog
                         if ( !oldKBases.containsKey( entry.getKey() ) ) {
                             removedKBases.remove( entry.getKey() );               
                             addedKBases.add( entry.getKey() );
+                            kBases.put( entry.getKey(), newKBases.get( entry.getKey() ) );
                             return;
                         }
                     }
@@ -94,6 +114,7 @@ public class KProjectChangeLog
                         if ( !newKBases.containsKey( entry.getKey() ) ) {
                             addedKBases.remove( entry.getKey() );
                             removedKBases.add( entry.getKey() );
+                            kBases.put( entry.getKey(), oldKBases.get( entry.getKey() ) );
                             return;
                         }
                     }
@@ -114,6 +135,7 @@ public class KProjectChangeLog
                         if ( !oldKSession.containsKey( entry.getKey() ) ) {
                             removedKSessions.remove( entry.getKey() );
                             addedKSessions.add( entry.getKey() );
+                            kSessions.put( entry.getKey(), newKSession.get( entry.getKey() ) );
                             return;
                         }
                     }
@@ -124,6 +146,7 @@ public class KProjectChangeLog
                         if ( !newKSession.containsKey( entry.getKey() ) ) {
                             addedKSessions.remove( entry.getKey() ); 
                             removedKSessions.add( entry.getKey() );
+                            kSessions.put( entry.getKey(), oldKSession.get( entry.getKey() ) );
                             return;
                         }
                     }
@@ -200,6 +223,10 @@ public class KProjectChangeLog
 
         removedKSessions = new HashSet<String>();
         addedKSessions = new HashSet<String>();
+        
+        kBases = new HashMap<String, KBase>();
+        kSessions = new HashMap<String, KSession>();
+        
     }
 
 }

@@ -184,11 +184,7 @@ public class KProjectDirtyLogTest {
         
         assertTrue( dirtyLog.getRemovedKBases().contains( "org.test1.KBase1" ) ); 
         assertTrue( dirtyLog.getRemovedKBases().contains( "org.test1.KBase2" ) );      
-        assertTrue( dirtyLog.getAddedKBases().contains( "org.test2.KBase1" ) );         
-//        
-//        kproj.addKBase( kbase2 );
-//        assertFalse( dirtyLog.getRemovedKBases().containsKey( kbase2.getQName() ) );
-//        assertFalse( dirtyLog.getAddedKBases().containsKey( kbase2.getQName() ) );        
+        assertTrue( dirtyLog.getAddedKBases().contains( "org.test2.KBase1" ) );               
     }          
 
     @Test
