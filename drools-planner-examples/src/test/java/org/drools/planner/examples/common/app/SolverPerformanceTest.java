@@ -62,7 +62,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     protected abstract SolutionDao createSolutionDao();
 
     protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString) {
-        runSpeedTest(unsolvedDataFile, scoreAttainedString, EnvironmentMode.PRODUCTION);
+        runSpeedTest(unsolvedDataFile, scoreAttainedString, EnvironmentMode.REPRODUCIBLE);
     }
 
     protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString, EnvironmentMode environmentMode) {
