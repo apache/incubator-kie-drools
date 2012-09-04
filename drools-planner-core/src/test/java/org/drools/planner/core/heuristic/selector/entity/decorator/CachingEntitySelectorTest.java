@@ -16,9 +16,7 @@
 
 package org.drools.planner.core.heuristic.selector.entity.decorator;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -29,8 +27,6 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
@@ -42,21 +38,21 @@ import static org.mockito.Mockito.*;
 public class CachingEntitySelectorTest {
 
     @Test
-    public void cacheTypeSolver() {
-        runCacheType(SelectionCacheType.SOLVER, 1);
+    public void originalSelectionCacheTypeSolver() {
+        runOriginalSelection(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void cacheTypePhase() {
-        runCacheType(SelectionCacheType.PHASE, 2);
+    public void originalSelectionCacheTypePhase() {
+        runOriginalSelection(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void cacheTypeStep() {
-        runCacheType(SelectionCacheType.STEP, 5);
+    public void originalSelectionCacheTypeStep() {
+        runOriginalSelection(SelectionCacheType.STEP, 5);
     }
 
-    public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void runOriginalSelection(SelectionCacheType cacheType, int timesCalled) {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
 

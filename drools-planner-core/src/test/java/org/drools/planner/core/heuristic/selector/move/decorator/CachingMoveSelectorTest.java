@@ -16,9 +16,8 @@
 
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Random;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -30,8 +29,6 @@ import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
@@ -39,21 +36,21 @@ import static org.mockito.Mockito.*;
 public class CachingMoveSelectorTest {
 
     @Test
-    public void cacheTypeSolver() {
-        runCacheType(SelectionCacheType.SOLVER, 1);
+    public void originalSelectionCacheTypeSolver() {
+        runOriginalSelection(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void cacheTypePhase() {
-        runCacheType(SelectionCacheType.PHASE, 2);
+    public void originalSelectionCacheTypePhase() {
+        runOriginalSelection(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void cacheTypeStep() {
-        runCacheType(SelectionCacheType.STEP, 5);
+    public void originalSelectionCacheTypeStep() {
+        runOriginalSelection(SelectionCacheType.STEP, 5);
     }
 
-    public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void runOriginalSelection(SelectionCacheType cacheType, int timesCalled) {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
 
@@ -70,13 +67,13 @@ public class CachingMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        runAsserts(moveSelector);
+        runAsserts(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        runAsserts(moveSelector);
+        runAsserts(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -88,19 +85,19 @@ public class CachingMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        runAsserts(moveSelector);
+        runAsserts(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        runAsserts(moveSelector);
+        runAsserts(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        runAsserts(moveSelector);
+        runAsserts(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -117,18 +114,98 @@ public class CachingMoveSelectorTest {
         verify(childMoveSelector, times(timesCalled)).getSize();
     }
 
-    private void runAsserts(CachingMoveSelector moveSelector) {
+    @Test
+    public void randomSelectionCacheTypeSolver() {
+        runRandomSelection(SelectionCacheType.SOLVER, 1);
+    }
+
+    @Test
+    public void randomSelectionCacheTypePhase() {
+        runRandomSelection(SelectionCacheType.PHASE, 2);
+    }
+
+    @Test
+    public void randomSelectionCacheTypeStep() {
+        runRandomSelection(SelectionCacheType.STEP, 3);
+    }
+
+    public void runRandomSelection(SelectionCacheType cacheType, int timesCalled) {
+        MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
+                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
+
+        CachingMoveSelector moveSelector = new CachingMoveSelector(childMoveSelector, cacheType, true);
+        verify(childMoveSelector, times(1)).isNeverEnding();
+
+        Random workingRandom = mock(Random.class);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.stepStarted(stepScopeA1);
+        when(workingRandom.nextInt(3)).thenReturn(1, 0, 2);
+        runAsserts(moveSelector, true, "a2", "a1", "a3");
+        moveSelector.stepEnded(stepScopeA1);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.stepStarted(stepScopeA2);
+        when(workingRandom.nextInt(3)).thenReturn(2, 0, 1);
+        runAsserts(moveSelector, true, "a3", "a1", "a2");
+        moveSelector.stepEnded(stepScopeA2);
+
+        moveSelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeB.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.stepStarted(stepScopeB1);
+        when(workingRandom.nextInt(3)).thenReturn(1, 2, 0);
+        runAsserts(moveSelector, true, "a2", "a3", "a1");
+        moveSelector.stepEnded(stepScopeB1);
+
+        moveSelector.phaseEnded(phaseScopeB);
+
+        moveSelector.solvingEnded(solverScope);
+
+        verify(childMoveSelector, times(1)).solvingStarted(solverScope);
+        verify(childMoveSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childMoveSelector, times(3)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(childMoveSelector, times(3)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(childMoveSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(childMoveSelector, times(1)).solvingEnded(solverScope);
+        verify(childMoveSelector, times(timesCalled)).iterator();
+        verify(childMoveSelector, times(timesCalled)).getSize();
+    }
+
+    private void runAsserts(MoveSelector moveSelector, String... codes) {
+        runAsserts(moveSelector, false, codes);
+    }
+
+    private void runAsserts(MoveSelector moveSelector, boolean neverEnding, String... codes) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
-        assertTrue(iterator.hasNext());
-        assertCode("a1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("a2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("a3", iterator.next());
-        assertFalse(iterator.hasNext());
+        for (String code : codes) {
+            assertTrue(iterator.hasNext());
+            assertCode(code, iterator.next());
+        }
+        assertEquals(neverEnding, iterator.hasNext());
         assertEquals(false, moveSelector.isContinuous());
-        assertEquals(false, moveSelector.isNeverEnding());
+        assertEquals(neverEnding, moveSelector.isNeverEnding());
         assertEquals(3L, moveSelector.getSize());
     }
 

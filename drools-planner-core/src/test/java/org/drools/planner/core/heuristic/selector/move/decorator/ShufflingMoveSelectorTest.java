@@ -16,9 +16,7 @@
 
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
@@ -31,8 +29,6 @@ import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
@@ -41,20 +37,20 @@ public class ShufflingMoveSelectorTest {
 
     @Test
     public void cacheTypeSolver() {
-        runCacheType(SelectionCacheType.SOLVER, 1);
+        run(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
     public void cacheTypePhase() {
-        runCacheType(SelectionCacheType.PHASE, 2);
+        run(SelectionCacheType.PHASE, 2);
     }
 
     @Test
     public void cacheTypeStep() {
-        runCacheType(SelectionCacheType.STEP, 3);
+        run(SelectionCacheType.STEP, 3);
     }
 
-    public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void run(SelectionCacheType cacheType, int timesCalled) {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
 
@@ -132,7 +128,7 @@ public class ShufflingMoveSelectorTest {
         verify(childMoveSelector, times(timesCalled)).getSize();
     }
 
-    private void runAsserts(ShufflingMoveSelector moveSelector, String... codes) {
+    private void runAsserts(MoveSelector moveSelector, String... codes) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertNotNull(iterator);
         for (String code : codes) {

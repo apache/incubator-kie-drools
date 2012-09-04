@@ -20,8 +20,6 @@ import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -41,21 +39,21 @@ import static org.mockito.Mockito.*;
 public class CachingValueSelectorTest {
 
     @Test
-    public void cacheTypeSolver() {
-        runCacheType(SelectionCacheType.SOLVER, 1);
+    public void originalSelectionCacheTypeSolver() {
+        runOriginalSelection(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void cacheTypePhase() {
-        runCacheType(SelectionCacheType.PHASE, 2);
+    public void originalSelectionCacheTypePhase() {
+        runOriginalSelection(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void cacheTypeStep() {
-        runCacheType(SelectionCacheType.STEP, 5);
+    public void originalSelectionCacheTypeStep() {
+        runOriginalSelection(SelectionCacheType.STEP, 5);
     }
 
-    public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void runOriginalSelection(SelectionCacheType cacheType, int timesCalled) {
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
                 new TestdataValue("e1"), new TestdataValue("e2"), new TestdataValue("e3"));
 
