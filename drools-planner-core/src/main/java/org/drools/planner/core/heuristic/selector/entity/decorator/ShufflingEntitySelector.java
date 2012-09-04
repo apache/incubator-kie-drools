@@ -34,18 +34,12 @@ public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
     // Worker methods
     // ************************************************************************
 
-    @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        // Shuffle every step, even if the cacheType is PHASE
-        Collections.shuffle(cachedEntityList, stepScope.getWorkingRandom());
-    }
-
     public boolean isNeverEnding() {
         return false;
     }
 
     public Iterator<Object> iterator() {
+        Collections.shuffle(cachedEntityList, workingRandom);
         return cachedEntityList.iterator();
     }
 

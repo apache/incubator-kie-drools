@@ -36,18 +36,12 @@ public class ShufflingValueSelector extends AbstractCachingValueSelector {
     // Worker methods
     // ************************************************************************
 
-    @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        // Shuffle every step, even if the cacheType is PHASE
-        Collections.shuffle(cachedValueList, stepScope.getWorkingRandom());
-    }
-
     public boolean isNeverEnding() {
         return false;
     }
 
     public ValueIterator iterator() {
+        Collections.shuffle(cachedValueList, workingRandom);
         return new IteratorToValueIteratorBridge(cachedValueList.iterator());
     }
 

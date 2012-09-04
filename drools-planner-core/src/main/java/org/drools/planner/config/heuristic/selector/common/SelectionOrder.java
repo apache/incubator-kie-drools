@@ -35,12 +35,12 @@ public enum SelectionOrder {
      */
     ORIGINAL,
     /**
-     * Select in random order, without shuffling the elements at the beginning of the step.
+     * Select in random order, without shuffling the elements.
      * Each element might be selected multiple times.
      */
     RANDOM,
     /**
-     * Select in random order, with shuffling the elements at the beginning of the step.
+     * Select in random order by shuffling the elements when a selection iterator is created.
      * Each element will be selected exactly once (if all elements end up being selected).
      * Requires {@link SelectionCacheType#STEP} or higher.
      */

@@ -34,18 +34,12 @@ public class ShufflingMoveSelector extends AbstractCachingMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
-        // Shuffle every step, even if the cacheType is PHASE
-        Collections.shuffle(cachedMoveList, stepScope.getWorkingRandom());
-    }
-
     public boolean isNeverEnding() {
         return false;
     }
 
     public Iterator<Move> iterator() {
+        Collections.shuffle(cachedMoveList, workingRandom);
         return cachedMoveList.iterator();
     }
 
