@@ -14,6 +14,7 @@
   <localSearch>
     <moveListFactory>
       <cacheType>PHASE</cacheType>
+      <selectionOrder>SHUFFLED</selectionOrder>
       <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveListFactoryClass>
     </moveListFactory>
     <acceptor>

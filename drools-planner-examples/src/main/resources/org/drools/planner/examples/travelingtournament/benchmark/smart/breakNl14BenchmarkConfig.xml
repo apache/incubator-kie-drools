@@ -14,10 +14,12 @@
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
             <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>STEP</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
             <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
