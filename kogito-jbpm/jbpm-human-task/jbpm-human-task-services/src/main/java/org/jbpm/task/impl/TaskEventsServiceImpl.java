@@ -12,24 +12,24 @@ import org.jbpm.task.TaskEvent;
 import org.jbpm.task.api.TaskEventsService;
 import org.jbpm.task.annotations.TaskPersistence;
 
-
 /**
  *
  */
 @Transactional
-public class TaskEventsServiceImpl implements TaskEventsService{
-    @Inject @TaskPersistence
+public class TaskEventsServiceImpl implements TaskEventsService {
+
+    @Inject
+    @TaskPersistence
     private EntityManager em;
-    
+
     public List<TaskEvent> getTaskEventsById(long taskId) {
         return em.createQuery("select te from TaskEvent te where te.taskId =:taskId ").setParameter("taskId", taskId).getResultList();
     }
 
     public void removeTaskEventsById(long taskId) {
         List<TaskEvent> taskEventsById = getTaskEventsById(taskId);
-        for(TaskEvent e : taskEventsById){
+        for (TaskEvent e : taskEventsById) {
             em.remove(e);
         }
     }
-    
 }

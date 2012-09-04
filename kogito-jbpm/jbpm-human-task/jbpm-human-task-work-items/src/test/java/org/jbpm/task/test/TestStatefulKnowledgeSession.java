@@ -1,4 +1,4 @@
-package org.jbpm.task;
+package org.jbpm.task.test;
 
 import java.util.Collection;
 import java.util.Map;

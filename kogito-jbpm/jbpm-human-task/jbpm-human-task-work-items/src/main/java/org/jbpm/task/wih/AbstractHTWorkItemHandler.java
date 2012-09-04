@@ -13,30 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jbpm.process.workitem.wsht;
+package org.jbpm.task.wih;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.drools.SystemEventListenerFactory;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
-import org.jbpm.eventmessaging.EventResponseHandler;
+import org.jbpm.task.ContentData;
 import org.jbpm.task.Group;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.SubTasksStrategy;
-import org.jbpm.task.SubTasksStrategyFactory;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
-import org.jbpm.task.event.TaskEventKey;
-import org.jbpm.task.service.ContentData;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
@@ -51,7 +45,9 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHTWorkItemHandler.class);
     protected KnowledgeRuntime session;
     protected OnErrorAction action;
-    protected Map<TaskEventKey, EventResponseHandler> eventHandlers = new HashMap<TaskEventKey, EventResponseHandler>();
+
+    public AbstractHTWorkItemHandler() {
+    }
 
     public AbstractHTWorkItemHandler(KnowledgeRuntime session) {
         this.session = session;
@@ -66,6 +62,16 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     public void setAction(OnErrorAction action) {
         this.action = action;
     }
+
+    public KnowledgeRuntime getSession() {
+        return session;
+    }
+
+    public void setSession(KnowledgeRuntime session) {
+        this.session = session;
+    }
+    
+    
     
     protected Task createTaskBasedOnWorkItemParams(WorkItem workItem) {
         Task task = new Task();
@@ -111,15 +117,15 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             taskData.setParentId(parentId);
         }
         String subTaskStrategiesCommaSeparated = (String) workItem.getParameter("SubTaskStrategies");
-        if (subTaskStrategiesCommaSeparated != null && !subTaskStrategiesCommaSeparated.equals("")) {
-            String[] subTaskStrategies = subTaskStrategiesCommaSeparated.split(",");
-            List<SubTasksStrategy> strategies = new ArrayList<SubTasksStrategy>();
-            for (String subTaskStrategyString : subTaskStrategies) {
-                SubTasksStrategy subTaskStrategy = SubTasksStrategyFactory.newStrategy(subTaskStrategyString);
-                strategies.add(subTaskStrategy);
-            }
-            task.setSubTaskStrategies(strategies);
-        }
+//        if (subTaskStrategiesCommaSeparated != null && !subTaskStrategiesCommaSeparated.equals("")) {
+//            String[] subTaskStrategies = subTaskStrategiesCommaSeparated.split(",");
+//            List<SubTasksStrategy> strategies = new ArrayList<SubTasksStrategy>();
+//            for (String subTaskStrategyString : subTaskStrategies) {
+//                SubTasksStrategy subTaskStrategy = SubTasksStrategyFactory.newStrategy(subTaskStrategyString);
+//                strategies.add(subTaskStrategy);
+//            }
+//            task.setSubTaskStrategies(strategies);
+//        }
         PeopleAssignments assignments = new PeopleAssignments();
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         String actorId = (String) workItem.getParameter("ActorId");
@@ -146,7 +152,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         assignments.setBusinessAdministrators(businessAdministrators);
         task.setPeopleAssignments(assignments);
         task.setTaskData(taskData);
-        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
+//        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
         return task;
     }
 

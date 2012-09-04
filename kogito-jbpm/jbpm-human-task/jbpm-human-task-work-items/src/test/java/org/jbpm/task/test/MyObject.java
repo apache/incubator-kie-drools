@@ -1,4 +1,4 @@
-package org.jbpm.process.workitem.wsht;
+package org.jbpm.task.test;
 
 import java.io.Serializable;
 

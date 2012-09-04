@@ -21,6 +21,7 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
+import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.api.TaskAttachmentService;
 import org.jbpm.task.api.TaskContentService;
@@ -30,6 +31,7 @@ import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.query.TaskSummary;
 
 
@@ -56,7 +58,8 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     @Inject
     private TaskAttachmentService taskAttachmentService;
     
-    
+    @Inject @External
+    private TaskLifeCycleEventListener taskLifeCycleEventListener;
     
     private UserInfo userInfo;
     
@@ -436,6 +439,10 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     public int getPendingSubTasksByParent(long parentId) {
         return this.taskQueryService.getPendingSubTasksByParent(parentId);
+    }
+
+    public TaskLifeCycleEventListener getTaskLifeCycleEventListener() {
+        return taskLifeCycleEventListener;
     }
     
 }

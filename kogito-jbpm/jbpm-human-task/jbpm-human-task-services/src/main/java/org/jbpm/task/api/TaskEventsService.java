@@ -14,6 +14,10 @@ import org.jbpm.task.TaskEvent;
  *
  */
 public interface TaskEventsService {
+    
     List<TaskEvent> getTaskEventsById(long taskId);
+    
     void removeTaskEventsById(long taskId);
+    
+  
 }

@@ -18,16 +18,6 @@ package org.jbpm.task.event;
 
 import java.util.EventListener;
 
-import org.jbpm.task.event.entity.TaskClaimedEvent;
-import org.jbpm.task.event.entity.TaskCompletedEvent;
-import org.jbpm.task.event.entity.TaskCreatedEvent;
-import org.jbpm.task.event.entity.TaskEvent;
-import org.jbpm.task.event.entity.TaskFailedEvent;
-import org.jbpm.task.event.entity.TaskForwardedEvent;
-import org.jbpm.task.event.entity.TaskReleasedEvent;
-import org.jbpm.task.event.entity.TaskSkippedEvent;
-import org.jbpm.task.event.entity.TaskStartedEvent;
-import org.jbpm.task.event.entity.TaskStoppedEvent;
 import org.jbpm.task.event.entity.TaskUserEvent;
 /* 
  * Events Defined by the WS-HT Specification 1.1 Page 61

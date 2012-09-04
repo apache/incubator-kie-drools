@@ -19,7 +19,7 @@ public class TaskEvent implements Serializable {
     
     public enum TaskEventType{STARTED, ACTIVATED, COMPLETED, 
                                 STOPPED, EXITED, FAILED, ADDED,
-                                CLAIMED, SKIPPED, SUSPENDED};
+                                CLAIMED, SKIPPED, SUSPENDED, CREATED, FORWARDED, RELEASED};
     @Id
     @GeneratedValue
     private long id;

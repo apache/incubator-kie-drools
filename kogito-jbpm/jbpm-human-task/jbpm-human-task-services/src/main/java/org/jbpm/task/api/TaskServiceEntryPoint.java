@@ -19,6 +19,7 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
+import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.query.TaskSummary;
 
 /**
@@ -207,4 +208,9 @@ public interface TaskServiceEntryPoint {
     List<Attachment> getAllAttachmentsByTaskId(long taskId);
 
     Attachment getAttachmentById(long attachId);
+    
+    
+    //Listeners
+    
+    TaskLifeCycleEventListener getTaskLifeCycleEventListener();
 }

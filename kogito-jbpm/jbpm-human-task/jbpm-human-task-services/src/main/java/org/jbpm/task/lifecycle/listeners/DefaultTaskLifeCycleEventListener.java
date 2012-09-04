@@ -9,6 +9,7 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Singleton;
 import org.jbpm.task.Task;
+import org.jbpm.task.annotations.External;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
 import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.events.AfterTaskClaimedEvent;
@@ -24,7 +25,7 @@ import org.jbpm.task.events.AfterTaskStoppedEvent;
  *
  */
 
-@Alternative @Singleton
+@Singleton @External
 public class DefaultTaskLifeCycleEventListener implements TaskLifeCycleEventListener{
 
     public DefaultTaskLifeCycleEventListener() {
