@@ -19,9 +19,11 @@
     <unionMoveSelector>
       <changeMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </changeMoveSelector>
       <swapMoveSelector>
         <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
       </swapMoveSelector>
     </unionMoveSelector>
     <acceptor>
