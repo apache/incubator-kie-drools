@@ -7,48 +7,49 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-public class KProjectChangeLogCommiter {    
-    private KProject kProject;
+public class KProjectChangeLogCommiter {
+    private KProject          kProject;
     private KProjectChangeLog changeLog;
-    private FileSystem fs;
-    
-    public static void commit(KProject kproject, KProjectChangeLog changeLog, FileSystem fs) {
-        KProjectChangeLogCommiter committer = new KProjectChangeLogCommiter(kproject, changeLog, fs);
-        
+    private FileSystem        fs;
+
+    public static void commit(KProject kproject,
+                              KProjectChangeLog changeLog,
+                              FileSystem fs) {
+        KProjectChangeLogCommiter committer = new KProjectChangeLogCommiter( kproject, changeLog, fs );
+
+        committer.commitRemovedKBases();
         committer.commitAddedKBases();
+        
+        committer.commitRemovedKSessions();
+        committer.commitAddedKSessions();        
+
+        changeLog.reset();
     }
-            
+
     private KProjectChangeLogCommiter(KProject kproject,
-                                     KProjectChangeLog changeLog,
-                                     FileSystem fs) {
+                                      KProjectChangeLog changeLog,
+                                      FileSystem fs) {
         super();
         this.kProject = kproject;
         this.changeLog = changeLog;
         this.fs = fs;
     }
 
-    public void commitRemovedKBases() {
-        for ( String kBaseQName: changeLog.getRemovedKBases() ) {
-            Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/"  + kBaseQName );
-            //commitRemovedKBase( kProject.getKBases().get( kBaseQName ) );
-        }
-    }
-    
     public void commitAddedKBases() {
-        for ( String kBaseQName: changeLog.getAddedKBases() ) {
+        for ( String kBaseQName : changeLog.getAddedKBases() ) {
             commitAddedKBase( kProject.getKBases().get( kBaseQName ) );
         }
     }
-    
-    public void commitAddedKBase(KBase kbase) {        
+
+    public void commitAddedKBase(KBase kbase) {
         // create new KBase root folder
-        Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/"  + kbase.getQName() );
+        Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kbase.getQName() );
         rootFld.create();
-        
+
         // create new KBase folder for CDI Qualifier and Producer
-        Folder namespaceFld = fs.getFolder( rootFld.getPath().toPortableString() + "/"  + kbase.getNamespace().replace( '.', '/' ) );
+        Folder namespaceFld = fs.getFolder( rootFld.getPath().toPortableString() + "/" + kbase.getNamespace().replace( '.', '/' ) );
         namespaceFld.create();
-        
+
         // generate KBase root properties file
         String filesStr = GenerateKBaseProjectFiles.generateKBaseFiles( kProject, kbase, fs );
         File rootFile = rootFld.getFile( kbase.getQName() + ".files.dat" );
@@ -62,7 +63,7 @@ public class KProjectChangeLogCommiter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         // generate Qualifiers
         String qualifierStr = GenerateKBaseProjectFiles.generateQualifier( kbase );
         File qualifieFile = namespaceFld.getFile( kbase.getName() + ".java" );
@@ -89,20 +90,44 @@ public class KProjectChangeLogCommiter {
         } catch ( IOException e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }        
-        
-        commitAddedKsessions(rootFld, kbase);
-    } 
+        }
+
+        //commitAddedKsessions( rootFld, kbase );
+    }
     
-    public void commitAddedKsessions(Folder rootFld, KBase kBase) {
-        for ( KSession kSession : kBase.getKSessions().values() ) {
-            commitAddedKSession( rootFld, kBase, kSession );
+    public void commitRemovedKBases() {
+        for ( String kBaseQName : changeLog.getRemovedKBases() ) {
+            commitRemovedKBase( kProject.getKBases().get( kBaseQName ) );
         }
     }
 
-    public void commitAddedKSession(Folder rootFld, KBase kBase, KSession kSession) {        
-        // create new KBase folder for CDI Qualifier and Producer
-        Folder namespaceFld = fs.getFolder( rootFld.getPath().toPortableString() + "/"  + kSession.getNamespace().replace( '.', '/' ) );
+    public void commitRemovedKBase(KBase kbase) {
+        for ( String kBaseQName : changeLog.getRemovedKBases() ) {
+            Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kBaseQName );
+            fs.remove( rootFld );
+        }
+    }    
+
+    public void commitAddedKSessions() {
+        for ( String kSessionQName : changeLog.getAddedKSessions() ) {
+            KSessionImpl kSession = (KSessionImpl) changeLog.getKSessions().get( kSessionQName );
+            Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kSession.getKBase().getQName() );
+            commitAddedKSession( rootFld, kSession.getKBase(), kSession );
+        }
+    }
+
+    //    public void commitAddedKsessions(Folder rootFld,
+    //                                     KBase kBase) {
+    //        for ( KSession kSession : kBase.getKSessions().values() ) {
+    //            commitAddedKSession( rootFld, kBase, kSession );
+    //        }
+    //    }
+
+    public void commitAddedKSession(Folder rootFld,
+                                    KBase kBase,
+                                    KSession kSession) {
+        // create new KSession folder for CDI Qualifier and Producer
+        Folder namespaceFld = fs.getFolder( rootFld.getPath().toPortableString() + "/" + kSession.getNamespace().replace( '.', '/' ) );
         namespaceFld.create();
 
         // generate Qualifiers
@@ -131,7 +156,31 @@ public class KProjectChangeLogCommiter {
         } catch ( IOException e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }    
+        }
     }
-   
+
+    public void commitRemovedKSessions() {
+        for ( String kSessionQName : changeLog.getRemovedKSessions() ) {
+            KSessionImpl kSession = (KSessionImpl) changeLog.getKSessions().get( kSessionQName );
+            Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kSession.getKBase().getQName() );
+            commitRemovedKSession( rootFld, kSession.getKBase(), kSession );
+        }
+    }
+
+    public void commitRemovedKSession(Folder rootFld,
+                                      KBase kBase,
+                                      KSession kSession) {
+        // @TODO currently leaves nested folders, need to delete, if no nested KSession folders.
+        // get KSession folder for CDI Qualifier and Producer
+        Folder namespaceFld = fs.getFolder( rootFld.getPath().toPortableString() + "/" + kSession.getNamespace().replace( '.', '/' ) );
+
+        // generate Qualifiers
+        File qualifieFile = namespaceFld.getFile( kSession.getName() + ".java" );
+        fs.remove( qualifieFile );
+
+        // generate Producer
+        File producerFile = namespaceFld.getFile( kSession.getName() + "Producer.java" );
+        fs.remove( producerFile );
+    }
+
 }

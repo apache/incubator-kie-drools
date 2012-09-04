@@ -3,6 +3,7 @@ package org.drools.kproject.memory;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,7 +101,8 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
     
     public boolean remove(Folder folder) {
         if ( folder.exists() ) {
-            remove( folders.remove( folder.getPath().toPortableString() ) );
+            remove( folders.get( folder.getPath().toPortableString() ) );
+            folders.remove( folder.getPath().toPortableString() );
             return true;
         } else {
             return false;
@@ -108,18 +110,22 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
     }
     
     public void remove(Set<Resource> members) {
-        for( Resource res : folder.getMembers() ) {
+        for ( Iterator<Resource> it = members.iterator(); it.hasNext(); ) {
+            Resource res = it.next();
+        //for( Resource res : members ) {
             if ( res instanceof Folder ) {
-                remove( folders.remove( res.getPath().toPortableString() ) );
+                remove( folders.get( res.getPath().toPortableString() ) );
+                //folders.remove( folder.getPath().toPortableString() );
             } else {
-                remove( (File) res);
+                fileContents.remove( res.getPath().toPortableString() );
             }
+            it.remove();
         }
     }
     
     public boolean remove(File file) {
         if ( file.exists() ) {
-            fileContents.remove( file.getPath().toPortableString() );            
+            fileContents.remove( file.getPath().toPortableString() );          
             folders.get( ((MemoryFile)file).getFolder().getPath().toPortableString() ).remove( file );
             return true;
         } else {

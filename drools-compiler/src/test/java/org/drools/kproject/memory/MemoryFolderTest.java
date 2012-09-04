@@ -21,8 +21,8 @@ public class MemoryFolderTest {
         mres.create();
         assertTrue( mres.exists() );
         
-        Folder smain = fs.getFolder( "src/main" );
-        assertTrue( smain.exists() );  
+        Folder fld = fs.getFolder( "src/main" );
+        assertTrue( fld.exists() );  
         
         Folder src = fs.getFolder( "src" );
         assertTrue( src.exists() );         
@@ -114,29 +114,42 @@ public class MemoryFolderTest {
     public void testFolderRemoval() throws IOException {
         FileSystem fs = new MemoryFileSystem();
         
-        Folder folder = fs.getFolder( "src/main/resources/org/domain" );
-        folder.create();
+        Folder fld = fs.getFolder( "src/main/resources/org/domain" );
+        fld.create();
         
-        Folder smain = fs.getFolder( "src/main" );
-        File file = smain.getFile( "MyClass1.java" );                
+        fld = fs.getFolder( "src/main" );
+        File file = fld.getFile( "MyClass1.java" );                
         file.create( new ByteArrayInputStream( "ABC1".getBytes() ) );  
-        file = smain.getFile( "MyClass2.java" );                
+        file = fld.getFile( "MyClass2.java" );                
         file.create( new ByteArrayInputStream( "ABC2".getBytes() ) ); 
         
-        smain = fs.getFolder( "src/main/reaources/org" );
-        file = smain.getFile( "MyClass3.java" );                
+        fld = fs.getFolder( "src/main/resources/org" );
+        file = fld.getFile( "MyClass3.java" );                
         file.create( new ByteArrayInputStream( "ABC3".getBytes() ) );  
-        file = smain.getFile( "MyClass3.java" );                
+        file = fld.getFile( "MyClass4.java" );                
         file.create( new ByteArrayInputStream( "ABC4".getBytes() ) ); 
           
         
-        smain = fs.getFolder( "src/main/reaources/org.domain" );
-        file = smain.getFile( "MyClass4.java" );                
-        file.create( new ByteArrayInputStream( "ABC5".getBytes() ) );        
-        
-        
+        fld = fs.getFolder( "src/main/resources/org/domain" );
+        file = fld.getFile( "MyClass4.java" );                
+        file.create( new ByteArrayInputStream( "ABC5".getBytes() ) );                        
 
+        assertTrue( fs.getFolder( "src/main" ).exists() );
         assertTrue( fs.getFile( "src/main/MyClass1.java" ).exists() );
+        assertTrue( fs.getFile( "src/main/MyClass2.java" ).exists() );
+        assertTrue( fs.getFile( "src/main/resources/org/MyClass3.java" ).exists() );
+        assertTrue( fs.getFile( "src/main/resources/org/MyClass4.java" ).exists() );        
+        assertTrue( fs.getFile( "src/main/resources/org/domain/MyClass4.java" ).exists() );
+                
+        fs.remove( fs.getFolder( "src/main" ) );
+        
+        assertFalse( fs.getFolder( "src/main" ).exists() );
+        assertFalse( fs.getFile( "src/main/MyClass1.java" ).exists() );
+        assertFalse( fs.getFile( "src/main/MyClass2.java" ).exists() );
+        assertFalse( fs.getFile( "src/main/resources/org/MyClass3.java" ).exists() );
+        assertFalse( fs.getFile( "src/main/resources/org/MyClass4.java" ).exists() );        
+        assertFalse( fs.getFile( "src/main/resources/org/domain/MyClass4.java" ).exists() );
+
                  
     }
 }

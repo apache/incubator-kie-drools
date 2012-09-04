@@ -88,37 +88,37 @@ public class ProjectReader {
             files.add(  str.trim() );
         }
         
-        KBaseImpl kbase = new KBaseImpl( namespace, name, files );
-        
-        kbase.setEventProcessingMode( EventProcessingOption.determineEventProcessingMode(  props.getProperty( "eventProcessingMode" ) ) );
-        
-        kbase.setEqualsBehavior( AssertBehaviorOption.valueOf( props.getProperty( "equalsBehavior" ) ) );
-        List<String> list = Arrays.asList( props.getProperty( "annotations" ).split( "," ) );
-        kbase.setAnnotations( list );
-        
-        list = Arrays.asList( props.getProperty( "ksessions" ).split( "," ) );
-        for ( String ksessionQName : list ) {
-            if ( StringUtils.isEmpty( ksessionQName ) ) {
-                continue;
-            }
-            ksessionQName = ksessionQName.trim();            
-            Map<String, String> map = new HashMap<String, String>();            
-            mapStartsWith( map, props, ksessionQName );
-            readKSession(ksessionQName, map, kbase, kproject);
-        }
-                
-        kproject.getKBases().put( kbaseQName, kbase );
+//        KBaseImpl kbase = new KBaseImpl( namespace, name, files );
+//        
+//        kbase.setEventProcessingMode( EventProcessingOption.determineEventProcessingMode(  props.getProperty( "eventProcessingMode" ) ) );
+//        
+//        kbase.setEqualsBehavior( AssertBehaviorOption.valueOf( props.getProperty( "equalsBehavior" ) ) );
+//        List<String> list = Arrays.asList( props.getProperty( "annotations" ).split( "," ) );
+//        kbase.setAnnotations( list );
+//        
+//        list = Arrays.asList( props.getProperty( "ksessions" ).split( "," ) );
+//        for ( String ksessionQName : list ) {
+//            if ( StringUtils.isEmpty( ksessionQName ) ) {
+//                continue;
+//            }
+//            ksessionQName = ksessionQName.trim();            
+//            Map<String, String> map = new HashMap<String, String>();            
+//            mapStartsWith( map, props, ksessionQName );
+//            readKSession(ksessionQName, map, kbase, kproject);
+//        }
+//                
+//        kproject.getKBases().put( kbaseQName, kbase );
     }
     
     public void readKSession(String ksessionQName, Map<String, String> map, KBase kbase, KProject kproject) {
-        KSessionImpl ksession = new KSessionImpl( map.get( "namespace" ), map.get( "name ") );
-        ksession.setType( map.get( "type" ) );
-        
-        List<String> list = Arrays.asList( map.get( "annotations" ).split( "," ) );
-        ksession.setAnnotations( list );
-        
-        ksession.setClockType( ClockTypeOption.get( map.get( "clockType" ) ) );
-        kbase.getKSessions().put( ksessionQName, ksession );
+//        KSessionImpl ksession = new KSessionImpl( map.get( "namespace" ), map.get( "name ") );
+//        ksession.setType( map.get( "type" ) );
+//        
+//        List<String> list = Arrays.asList( map.get( "annotations" ).split( "," ) );
+//        ksession.setAnnotations( list );
+//        
+//        ksession.setClockType( ClockTypeOption.get( map.get( "clockType" ) ) );
+//        kbase.getKSessions().put( ksessionQName, ksession );
     }
 
         
