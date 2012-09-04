@@ -17,6 +17,7 @@
 package org.drools.planner.core.testdata.util;
 
 import org.junit.Assert;
+import org.junit.ComparisonFailure;
 
 public class PlannerAssert extends Assert {
 
@@ -36,6 +37,30 @@ public class PlannerAssert extends Assert {
 
     public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
         assertEquals(message, expectedCode, codeAssertable.getCode());
+    }
+
+    public static void assertInstanceOf(Class expectedClass, Object actualInstance) {
+        assertInstanceOf(null, expectedClass, actualInstance);
+    }
+
+    public static void assertInstanceOf(String message, Class expectedClass, Object actualInstance) {
+        if (!expectedClass.isInstance(actualInstance)) {
+            String cleanMessage = message == null ? "" : message;
+            throw new ComparisonFailure(cleanMessage, expectedClass.getName(),
+                    actualInstance == null ? "null" : actualInstance.getClass().getName());
+        }
+    }
+
+    public static void assertNotInstanceOf(Class expectedClass, Object actualInstance) {
+        assertNotInstanceOf(null, expectedClass, actualInstance);
+    }
+
+    public static void assertNotInstanceOf(String message, Class expectedClass, Object actualInstance) {
+        if (expectedClass.isInstance(actualInstance)) {
+            String cleanMessage = message == null ? "" : message;
+            throw new ComparisonFailure(cleanMessage, "not " + expectedClass.getName(),
+                    actualInstance == null ? "null" : actualInstance.getClass().getName());
+        }
     }
 
     private PlannerAssert() {

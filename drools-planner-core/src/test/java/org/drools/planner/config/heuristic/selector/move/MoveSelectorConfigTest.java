@@ -50,8 +50,8 @@ public class MoveSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertTrue(moveSelector instanceof CachingMoveSelector);
-        assertFalse(moveSelector instanceof ShufflingMoveSelector);
+        assertInstanceOf(CachingMoveSelector.class, moveSelector);
+        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -74,8 +74,8 @@ public class MoveSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertTrue(moveSelector instanceof CachingMoveSelector);
-        assertFalse(moveSelector instanceof ShufflingMoveSelector);
+        assertInstanceOf(CachingMoveSelector.class, moveSelector);
+        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -120,8 +120,8 @@ public class MoveSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertTrue(moveSelector instanceof CachingMoveSelector);
-        assertFalse(moveSelector instanceof ShufflingMoveSelector);
+        assertInstanceOf(CachingMoveSelector.class, moveSelector);
+        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -144,8 +144,8 @@ public class MoveSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertTrue(moveSelector instanceof CachingMoveSelector);
-        assertFalse(moveSelector instanceof ShufflingMoveSelector);
+        assertInstanceOf(CachingMoveSelector.class, moveSelector);
+        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -190,7 +190,7 @@ public class MoveSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertTrue(moveSelector instanceof ShufflingMoveSelector);
+        assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertSame(baseMoveSelector, ((ShufflingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -213,7 +213,7 @@ public class MoveSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertTrue(moveSelector instanceof ShufflingMoveSelector);
+        assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertSame(baseMoveSelector, ((ShufflingMoveSelector) moveSelector).getChildMoveSelector());
     }
 

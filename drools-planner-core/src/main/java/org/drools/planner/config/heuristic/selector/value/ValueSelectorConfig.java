@@ -87,16 +87,16 @@ public class ValueSelectorConfig extends SelectorConfig {
      *
      * @param environmentMode never null
      * @param solutionDescriptor never null
+     * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
      * @param inheritedSelectionOrder never null
-     * @param entityDescriptor never null
      * @return never null
      */
-    public ValueSelector buildValueSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
-            PlanningEntityDescriptor entityDescriptor) {
+    public ValueSelector buildValueSelector(EnvironmentMode environmentMode,
+            SolutionDescriptor solutionDescriptor, PlanningEntityDescriptor entityDescriptor,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         PlanningVariableDescriptor variableDescriptor = fetchVariableDescriptor(entityDescriptor);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
