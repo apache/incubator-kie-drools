@@ -38,7 +38,70 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>entityTabu10_2000</name>
+    <name>2000_entityTabu10_random</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>2000_entityTabu10_shuffled</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>2000_entityTabu10_random_union</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
@@ -66,23 +129,22 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>entityTabu10_2000_no_union_caching</name>
+    <name>2000_entityTabu10_shuffled_union</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
+          <cacheType>PHASE</cacheType>
+          <selectionOrder>SHUFFLED</selectionOrder>
           <moveListFactory>
-            <cacheType>PHASE</cacheType>
             <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
-            <cacheType>PHASE</cacheType>
             <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
-            <cacheType>PHASE</cacheType>
             <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
