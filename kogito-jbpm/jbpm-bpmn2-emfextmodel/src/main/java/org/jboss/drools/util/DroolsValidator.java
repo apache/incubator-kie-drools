@@ -169,6 +169,8 @@ public class DroolsValidator extends EObjectValidator {
 				return validateProcessAnalysisDataType((ProcessAnalysisDataType)value, diagnostics, context);
 			case DroolsPackage.PROPERTY_TYPE:
 				return validatePropertyType((PropertyType)value, diagnostics, context);
+			case DroolsPackage.RANDOM_DISTRIBUTION_TYPE:
+				return validateRandomDistributionType((RandomDistributionType)value, diagnostics, context);
 			case DroolsPackage.RESOURCE_PARAMETERS:
 				return validateResourceParameters((ResourceParameters)value, diagnostics, context);
 			case DroolsPackage.SCENARIO:
@@ -540,6 +542,15 @@ public class DroolsValidator extends EObjectValidator {
 	 */
 	public boolean validatePropertyType(PropertyType propertyType, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(propertyType, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateRandomDistributionType(RandomDistributionType randomDistributionType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(randomDistributionType, diagnostics, context);
 	}
 
 	/**

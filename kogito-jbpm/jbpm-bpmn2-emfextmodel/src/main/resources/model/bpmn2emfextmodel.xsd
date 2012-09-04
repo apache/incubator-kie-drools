@@ -203,6 +203,7 @@
 			<element name="Selection" type="drools:Parameter" minOccurs="0"/>
 			<element name="Availability" type="drools:Parameter" minOccurs="0"/>
 			<element name="Quantity" type="drools:Parameter" minOccurs="0"/>
+			<element name="Workinghours" type="drools:Parameter" minOccurs="0"/>
 			<element name="Role" type="drools:Parameter" minOccurs="0" maxOccurs="unbounded"/>
 		</sequence>
 	</complexType>
@@ -366,6 +367,16 @@
 		</complexType>
 	</element>
 	<element name="UniformDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="min" type="double"/>
+					<attribute name="max" type="double"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="RandomDistribution" substitutionGroup="drools:ParameterValue">
 		<complexType>
 			<complexContent>
 				<extension base="drools:DistributionParameter">

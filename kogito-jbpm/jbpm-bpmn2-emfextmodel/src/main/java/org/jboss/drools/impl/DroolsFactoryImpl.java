@@ -98,6 +98,7 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.PRIORITY_PARAMETERS: return createPriorityParameters();
 			case DroolsPackage.PROCESS_ANALYSIS_DATA_TYPE: return createProcessAnalysisDataType();
 			case DroolsPackage.PROPERTY_TYPE: return createPropertyType();
+			case DroolsPackage.RANDOM_DISTRIBUTION_TYPE: return createRandomDistributionType();
 			case DroolsPackage.RESOURCE_PARAMETERS: return createResourceParameters();
 			case DroolsPackage.SCENARIO: return createScenario();
 			case DroolsPackage.SCENARIO_PARAMETERS: return createScenarioParameters();
@@ -536,6 +537,16 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public PropertyType createPropertyType() {
 		PropertyTypeImpl propertyType = new PropertyTypeImpl();
 		return propertyType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public RandomDistributionType createRandomDistributionType() {
+		RandomDistributionTypeImpl randomDistributionType = new RandomDistributionTypeImpl();
+		return randomDistributionType;
 	}
 
 	/**

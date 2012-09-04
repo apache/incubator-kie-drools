@@ -48,6 +48,7 @@ import org.jboss.drools.OnExitScriptType;
 import org.jboss.drools.ParameterValue;
 import org.jboss.drools.PoissonDistributionType;
 import org.jboss.drools.ProcessAnalysisDataType;
+import org.jboss.drools.RandomDistributionType;
 import org.jboss.drools.StringParameterType;
 import org.jboss.drools.TriangularDistributionType;
 import org.jboss.drools.TruncatedNormalDistributionType;
@@ -89,6 +90,7 @@ import org.jboss.drools.WeibullDistributionType;
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getPoissonDistribution <em>Poisson Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getProcessAnalysisData <em>Process Analysis Data</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getRandomDistribution <em>Random Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getStringParameter <em>String Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getTriangularDistribution <em>Triangular Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getTruncatedNormalDistribution <em>Truncated Normal Distribution</em>}</li>
@@ -918,6 +920,33 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public RandomDistributionType getRandomDistribution() {
+		return (RandomDistributionType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__RANDOM_DISTRIBUTION, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetRandomDistribution(RandomDistributionType newRandomDistribution, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(DroolsPackage.Literals.DOCUMENT_ROOT__RANDOM_DISTRIBUTION, newRandomDistribution, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setRandomDistribution(RandomDistributionType newRandomDistribution) {
+		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__RANDOM_DISTRIBUTION, newRandomDistribution);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public StringParameterType getStringParameter() {
 		return (StringParameterType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__STRING_PARAMETER, true);
 	}
@@ -1267,6 +1296,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return basicSetPoissonDistribution(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__PROCESS_ANALYSIS_DATA:
 				return basicSetProcessAnalysisData(null, msgs);
+			case DroolsPackage.DOCUMENT_ROOT__RANDOM_DISTRIBUTION:
+				return basicSetRandomDistribution(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__STRING_PARAMETER:
 				return basicSetStringParameter(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__TRIANGULAR_DISTRIBUTION:
@@ -1348,6 +1379,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getPoissonDistribution();
 			case DroolsPackage.DOCUMENT_ROOT__PROCESS_ANALYSIS_DATA:
 				return getProcessAnalysisData();
+			case DroolsPackage.DOCUMENT_ROOT__RANDOM_DISTRIBUTION:
+				return getRandomDistribution();
 			case DroolsPackage.DOCUMENT_ROOT__STRING_PARAMETER:
 				return getStringParameter();
 			case DroolsPackage.DOCUMENT_ROOT__TRIANGULAR_DISTRIBUTION:
@@ -1461,6 +1494,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__PROCESS_ANALYSIS_DATA:
 				setProcessAnalysisData((ProcessAnalysisDataType)newValue);
+				return;
+			case DroolsPackage.DOCUMENT_ROOT__RANDOM_DISTRIBUTION:
+				setRandomDistribution((RandomDistributionType)newValue);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__STRING_PARAMETER:
 				setStringParameter((StringParameterType)newValue);
@@ -1588,6 +1624,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case DroolsPackage.DOCUMENT_ROOT__PROCESS_ANALYSIS_DATA:
 				setProcessAnalysisData((ProcessAnalysisDataType)null);
 				return;
+			case DroolsPackage.DOCUMENT_ROOT__RANDOM_DISTRIBUTION:
+				setRandomDistribution((RandomDistributionType)null);
+				return;
 			case DroolsPackage.DOCUMENT_ROOT__STRING_PARAMETER:
 				setStringParameter((StringParameterType)null);
 				return;
@@ -1688,6 +1727,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getPoissonDistribution() != null;
 			case DroolsPackage.DOCUMENT_ROOT__PROCESS_ANALYSIS_DATA:
 				return getProcessAnalysisData() != null;
+			case DroolsPackage.DOCUMENT_ROOT__RANDOM_DISTRIBUTION:
+				return getRandomDistribution() != null;
 			case DroolsPackage.DOCUMENT_ROOT__STRING_PARAMETER:
 				return getStringParameter() != null;
 			case DroolsPackage.DOCUMENT_ROOT__TRIANGULAR_DISTRIBUTION:

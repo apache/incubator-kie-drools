@@ -5,22 +5,22 @@ package org.jboss.drools;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Uniform Distribution Type</b></em>'.
+ * A representation of the model object '<em><b>Random Distribution Type</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.jboss.drools.UniformDistributionType#getMax <em>Max</em>}</li>
- *   <li>{@link org.jboss.drools.UniformDistributionType#getMin <em>Min</em>}</li>
+ *   <li>{@link org.jboss.drools.RandomDistributionType#getMax <em>Max</em>}</li>
+ *   <li>{@link org.jboss.drools.RandomDistributionType#getMin <em>Min</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.jboss.drools.DroolsPackage#getUniformDistributionType()
- * @model extendedMetaData="name='UniformDistribution_._type' kind='empty'"
+ * @see org.jboss.drools.DroolsPackage#getRandomDistributionType()
+ * @model extendedMetaData="name='RandomDistribution_._type' kind='empty'"
  * @generated
  */
-public interface UniformDistributionType extends DistributionParameter {
+public interface RandomDistributionType extends DistributionParameter {
 	/**
 	 * Returns the value of the '<em><b>Max</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -33,7 +33,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	 * @see #isSetMax()
 	 * @see #unsetMax()
 	 * @see #setMax(double)
-	 * @see org.jboss.drools.DroolsPackage#getUniformDistributionType_Max()
+	 * @see org.jboss.drools.DroolsPackage#getRandomDistributionType_Max()
 	 * @model unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.Double"
 	 *        extendedMetaData="kind='attribute' name='max'"
 	 * @generated
@@ -41,7 +41,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	double getMax();
 
 	/**
-	 * Sets the value of the '{@link org.jboss.drools.UniformDistributionType#getMax <em>Max</em>}' attribute.
+	 * Sets the value of the '{@link org.jboss.drools.RandomDistributionType#getMax <em>Max</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Max</em>' attribute.
@@ -53,7 +53,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	void setMax(double value);
 
 	/**
-	 * Unsets the value of the '{@link org.jboss.drools.UniformDistributionType#getMax <em>Max</em>}' attribute.
+	 * Unsets the value of the '{@link org.jboss.drools.RandomDistributionType#getMax <em>Max</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #isSetMax()
@@ -64,7 +64,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	void unsetMax();
 
 	/**
-	 * Returns whether the value of the '{@link org.jboss.drools.UniformDistributionType#getMax <em>Max</em>}' attribute is set.
+	 * Returns whether the value of the '{@link org.jboss.drools.RandomDistributionType#getMax <em>Max</em>}' attribute is set.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return whether the value of the '<em>Max</em>' attribute is set.
@@ -87,7 +87,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	 * @see #isSetMin()
 	 * @see #unsetMin()
 	 * @see #setMin(double)
-	 * @see org.jboss.drools.DroolsPackage#getUniformDistributionType_Min()
+	 * @see org.jboss.drools.DroolsPackage#getRandomDistributionType_Min()
 	 * @model unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.Double"
 	 *        extendedMetaData="kind='attribute' name='min'"
 	 * @generated
@@ -95,7 +95,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	double getMin();
 
 	/**
-	 * Sets the value of the '{@link org.jboss.drools.UniformDistributionType#getMin <em>Min</em>}' attribute.
+	 * Sets the value of the '{@link org.jboss.drools.RandomDistributionType#getMin <em>Min</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Min</em>' attribute.
@@ -107,7 +107,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	void setMin(double value);
 
 	/**
-	 * Unsets the value of the '{@link org.jboss.drools.UniformDistributionType#getMin <em>Min</em>}' attribute.
+	 * Unsets the value of the '{@link org.jboss.drools.RandomDistributionType#getMin <em>Min</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #isSetMin()
@@ -118,7 +118,7 @@ public interface UniformDistributionType extends DistributionParameter {
 	void unsetMin();
 
 	/**
-	 * Returns whether the value of the '{@link org.jboss.drools.UniformDistributionType#getMin <em>Min</em>}' attribute is set.
+	 * Returns whether the value of the '{@link org.jboss.drools.RandomDistributionType#getMin <em>Min</em>}' attribute is set.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return whether the value of the '<em>Min</em>' attribute is set.
@@ -129,4 +129,4 @@ public interface UniformDistributionType extends DistributionParameter {
 	 */
 	boolean isSetMin();
 
-} // UniformDistributionType
+} // RandomDistributionType

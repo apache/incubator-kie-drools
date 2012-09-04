@@ -2,6 +2,7 @@
  */
 package org.jboss.drools;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Normal Distribution Type</b></em>'.

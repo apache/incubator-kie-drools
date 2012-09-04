@@ -332,6 +332,14 @@ public class DroolsSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case DroolsPackage.RANDOM_DISTRIBUTION_TYPE: {
+				RandomDistributionType randomDistributionType = (RandomDistributionType)theEObject;
+				T result = caseRandomDistributionType(randomDistributionType);
+				if (result == null) result = caseDistributionParameter(randomDistributionType);
+				if (result == null) result = caseParameterValue(randomDistributionType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case DroolsPackage.RESOURCE_PARAMETERS: {
 				ResourceParameters resourceParameters = (ResourceParameters)theEObject;
 				T result = caseResourceParameters(resourceParameters);
@@ -964,6 +972,21 @@ public class DroolsSwitch<T> {
 	 * @generated
 	 */
 	public T casePropertyType(PropertyType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Random Distribution Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Random Distribution Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRandomDistributionType(RandomDistributionType object) {
 		return null;
 	}
 

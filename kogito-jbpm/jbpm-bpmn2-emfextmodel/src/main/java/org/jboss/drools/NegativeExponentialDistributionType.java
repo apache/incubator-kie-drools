@@ -2,6 +2,7 @@
  */
 package org.jboss.drools;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Negative Exponential Distribution Type</b></em>'.
@@ -18,8 +19,7 @@ package org.jboss.drools;
  * @model extendedMetaData="name='NegativeExponentialDistribution_._type' kind='empty'"
  * @generated
  */
-public interface NegativeExponentialDistributionType extends
-		DistributionParameter {
+public interface NegativeExponentialDistributionType extends DistributionParameter {
 	/**
 	 * Returns the value of the '<em><b>Mean</b></em>' attribute.
 	 * <!-- begin-user-doc -->

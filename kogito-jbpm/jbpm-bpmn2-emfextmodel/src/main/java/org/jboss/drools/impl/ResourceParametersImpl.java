@@ -32,6 +32,7 @@ import org.jboss.drools.ResourceParameters;
  *   <li>{@link org.jboss.drools.impl.ResourceParametersImpl#getSelection <em>Selection</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ResourceParametersImpl#getAvailability <em>Availability</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ResourceParametersImpl#getQuantity <em>Quantity</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.ResourceParametersImpl#getWorkinghours <em>Workinghours</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ResourceParametersImpl#getRole <em>Role</em>}</li>
  * </ul>
  * </p>
@@ -68,6 +69,16 @@ public class ResourceParametersImpl extends EObjectImpl implements ResourceParam
 	 * @ordered
 	 */
 	protected Parameter quantity;
+
+	/**
+	 * The cached value of the '{@link #getWorkinghours() <em>Workinghours</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getWorkinghours()
+	 * @generated
+	 * @ordered
+	 */
+	protected Parameter workinghours;
 
 	/**
 	 * The cached value of the '{@link #getRole() <em>Role</em>}' containment reference list.
@@ -232,6 +243,49 @@ public class ResourceParametersImpl extends EObjectImpl implements ResourceParam
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Parameter getWorkinghours() {
+		return workinghours;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetWorkinghours(Parameter newWorkinghours, NotificationChain msgs) {
+		Parameter oldWorkinghours = workinghours;
+		workinghours = newWorkinghours;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS, oldWorkinghours, newWorkinghours);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setWorkinghours(Parameter newWorkinghours) {
+		if (newWorkinghours != workinghours) {
+			NotificationChain msgs = null;
+			if (workinghours != null)
+				msgs = ((InternalEObject)workinghours).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS, null, msgs);
+			if (newWorkinghours != null)
+				msgs = ((InternalEObject)newWorkinghours).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS, null, msgs);
+			msgs = basicSetWorkinghours(newWorkinghours, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS, newWorkinghours, newWorkinghours));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EList<Parameter> getRole() {
 		if (role == null) {
 			role = new EObjectContainmentEList<Parameter>(Parameter.class, this, DroolsPackage.RESOURCE_PARAMETERS__ROLE);
@@ -253,6 +307,8 @@ public class ResourceParametersImpl extends EObjectImpl implements ResourceParam
 				return basicSetAvailability(null, msgs);
 			case DroolsPackage.RESOURCE_PARAMETERS__QUANTITY:
 				return basicSetQuantity(null, msgs);
+			case DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS:
+				return basicSetWorkinghours(null, msgs);
 			case DroolsPackage.RESOURCE_PARAMETERS__ROLE:
 				return ((InternalEList<?>)getRole()).basicRemove(otherEnd, msgs);
 		}
@@ -273,6 +329,8 @@ public class ResourceParametersImpl extends EObjectImpl implements ResourceParam
 				return getAvailability();
 			case DroolsPackage.RESOURCE_PARAMETERS__QUANTITY:
 				return getQuantity();
+			case DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS:
+				return getWorkinghours();
 			case DroolsPackage.RESOURCE_PARAMETERS__ROLE:
 				return getRole();
 		}
@@ -296,6 +354,9 @@ public class ResourceParametersImpl extends EObjectImpl implements ResourceParam
 				return;
 			case DroolsPackage.RESOURCE_PARAMETERS__QUANTITY:
 				setQuantity((Parameter)newValue);
+				return;
+			case DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS:
+				setWorkinghours((Parameter)newValue);
 				return;
 			case DroolsPackage.RESOURCE_PARAMETERS__ROLE:
 				getRole().clear();
@@ -322,6 +383,9 @@ public class ResourceParametersImpl extends EObjectImpl implements ResourceParam
 			case DroolsPackage.RESOURCE_PARAMETERS__QUANTITY:
 				setQuantity((Parameter)null);
 				return;
+			case DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS:
+				setWorkinghours((Parameter)null);
+				return;
 			case DroolsPackage.RESOURCE_PARAMETERS__ROLE:
 				getRole().clear();
 				return;
@@ -343,6 +407,8 @@ public class ResourceParametersImpl extends EObjectImpl implements ResourceParam
 				return availability != null;
 			case DroolsPackage.RESOURCE_PARAMETERS__QUANTITY:
 				return quantity != null;
+			case DroolsPackage.RESOURCE_PARAMETERS__WORKINGHOURS:
+				return workinghours != null;
 			case DroolsPackage.RESOURCE_PARAMETERS__ROLE:
 				return role != null && !role.isEmpty();
 		}

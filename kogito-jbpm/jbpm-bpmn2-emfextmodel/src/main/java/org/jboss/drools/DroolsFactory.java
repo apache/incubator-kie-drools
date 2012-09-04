@@ -346,6 +346,15 @@ public interface DroolsFactory extends EFactory {
 	PropertyType createPropertyType();
 
 	/**
+	 * Returns a new object of class '<em>Random Distribution Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Random Distribution Type</em>'.
+	 * @generated
+	 */
+	RandomDistributionType createRandomDistributionType();
+
+	/**
 	 * Returns a new object of class '<em>Resource Parameters</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

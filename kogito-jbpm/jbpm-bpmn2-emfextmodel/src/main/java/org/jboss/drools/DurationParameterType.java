@@ -2,6 +2,7 @@
  */
 package org.jboss.drools;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Duration Parameter Type</b></em>'.

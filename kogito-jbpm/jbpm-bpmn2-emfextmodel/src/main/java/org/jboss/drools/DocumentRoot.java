@@ -44,6 +44,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.jboss.drools.DocumentRoot#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getPoissonDistribution <em>Poisson Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getProcessAnalysisData <em>Process Analysis Data</em>}</li>
+ *   <li>{@link org.jboss.drools.DocumentRoot#getRandomDistribution <em>Random Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getStringParameter <em>String Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getTriangularDistribution <em>Triangular Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getTruncatedNormalDistribution <em>Truncated Normal Distribution</em>}</li>
@@ -737,6 +738,33 @@ public interface DocumentRoot extends EObject {
 	 * @generated
 	 */
 	void setProcessAnalysisData(ProcessAnalysisDataType value);
+
+	/**
+	 * Returns the value of the '<em><b>Random Distribution</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Random Distribution</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Random Distribution</em>' containment reference.
+	 * @see #setRandomDistribution(RandomDistributionType)
+	 * @see org.jboss.drools.DroolsPackage#getDocumentRoot_RandomDistribution()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='RandomDistribution' namespace='##targetNamespace' affiliation='ParameterValue'"
+	 * @generated
+	 */
+	RandomDistributionType getRandomDistribution();
+
+	/**
+	 * Sets the value of the '{@link org.jboss.drools.DocumentRoot#getRandomDistribution <em>Random Distribution</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Random Distribution</em>' containment reference.
+	 * @see #getRandomDistribution()
+	 * @generated
+	 */
+	void setRandomDistribution(RandomDistributionType value);
 
 	/**
 	 * Returns the value of the '<em><b>String Parameter</b></em>' containment reference.

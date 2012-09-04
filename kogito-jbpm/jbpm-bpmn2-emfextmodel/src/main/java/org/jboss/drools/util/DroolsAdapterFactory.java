@@ -212,6 +212,10 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 				return createPropertyTypeAdapter();
 			}
 			@Override
+			public Adapter caseRandomDistributionType(RandomDistributionType object) {
+				return createRandomDistributionTypeAdapter();
+			}
+			@Override
 			public Adapter caseResourceParameters(ResourceParameters object) {
 				return createResourceParametersAdapter();
 			}
@@ -784,6 +788,20 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createPropertyTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.jboss.drools.RandomDistributionType <em>Random Distribution Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.jboss.drools.RandomDistributionType
+	 * @generated
+	 */
+	public Adapter createRandomDistributionTypeAdapter() {
 		return null;
 	}
 
