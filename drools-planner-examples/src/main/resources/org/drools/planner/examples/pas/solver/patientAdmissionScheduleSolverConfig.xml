@@ -7,6 +7,8 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+    <!-- TODO SameBedInSameNightScoreRule should only be checked for construction heuristics -->
+    <!--<scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>-->
   </scoreDirectorFactory>
 
   <termination>
