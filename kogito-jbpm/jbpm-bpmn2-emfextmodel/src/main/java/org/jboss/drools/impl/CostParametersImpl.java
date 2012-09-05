@@ -24,6 +24,7 @@ import org.jboss.drools.Parameter;
  * <ul>
  *   <li>{@link org.jboss.drools.impl.CostParametersImpl#getFixedCost <em>Fixed Cost</em>}</li>
  *   <li>{@link org.jboss.drools.impl.CostParametersImpl#getUnitCost <em>Unit Cost</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.CostParametersImpl#getCurrencyUnit <em>Currency Unit</em>}</li>
  * </ul>
  * </p>
  *
@@ -49,6 +50,26 @@ public class CostParametersImpl extends EObjectImpl implements CostParameters {
 	 * @ordered
 	 */
 	protected Parameter unitCost;
+
+	/**
+	 * The default value of the '{@link #getCurrencyUnit() <em>Currency Unit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCurrencyUnit()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CURRENCY_UNIT_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getCurrencyUnit() <em>Currency Unit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCurrencyUnit()
+	 * @generated
+	 * @ordered
+	 */
+	protected String currencyUnit = CURRENCY_UNIT_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -160,6 +181,27 @@ public class CostParametersImpl extends EObjectImpl implements CostParameters {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getCurrencyUnit() {
+		return currencyUnit;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCurrencyUnit(String newCurrencyUnit) {
+		String oldCurrencyUnit = currencyUnit;
+		currencyUnit = newCurrencyUnit;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.COST_PARAMETERS__CURRENCY_UNIT, oldCurrencyUnit, currencyUnit));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -183,6 +225,8 @@ public class CostParametersImpl extends EObjectImpl implements CostParameters {
 				return getFixedCost();
 			case DroolsPackage.COST_PARAMETERS__UNIT_COST:
 				return getUnitCost();
+			case DroolsPackage.COST_PARAMETERS__CURRENCY_UNIT:
+				return getCurrencyUnit();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -200,6 +244,9 @@ public class CostParametersImpl extends EObjectImpl implements CostParameters {
 				return;
 			case DroolsPackage.COST_PARAMETERS__UNIT_COST:
 				setUnitCost((Parameter)newValue);
+				return;
+			case DroolsPackage.COST_PARAMETERS__CURRENCY_UNIT:
+				setCurrencyUnit((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -219,6 +266,9 @@ public class CostParametersImpl extends EObjectImpl implements CostParameters {
 			case DroolsPackage.COST_PARAMETERS__UNIT_COST:
 				setUnitCost((Parameter)null);
 				return;
+			case DroolsPackage.COST_PARAMETERS__CURRENCY_UNIT:
+				setCurrencyUnit(CURRENCY_UNIT_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -235,8 +285,26 @@ public class CostParametersImpl extends EObjectImpl implements CostParameters {
 				return fixedCost != null;
 			case DroolsPackage.COST_PARAMETERS__UNIT_COST:
 				return unitCost != null;
+			case DroolsPackage.COST_PARAMETERS__CURRENCY_UNIT:
+				return CURRENCY_UNIT_EDEFAULT == null ? currencyUnit != null : !CURRENCY_UNIT_EDEFAULT.equals(currencyUnit);
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (currencyUnit: ");
+		result.append(currencyUnit);
+		result.append(')');
+		return result.toString();
 	}
 
 } //CostParametersImpl

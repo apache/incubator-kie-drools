@@ -94,6 +94,15 @@ public interface DroolsFactory extends EFactory {
 	DateTimeParameterType createDateTimeParameterType();
 
 	/**
+	 * Returns a new object of class '<em>Decimal Parameter Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Decimal Parameter Type</em>'.
+	 * @generated
+	 */
+	DecimalParameterType createDecimalParameterType();
+
+	/**
 	 * Returns a new object of class '<em>Distribution Parameter</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

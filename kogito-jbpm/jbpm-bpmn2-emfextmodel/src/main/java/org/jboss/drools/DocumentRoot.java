@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.jboss.drools.DocumentRoot#getBinomialDistribution <em>Binomial Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getBooleanParameter <em>Boolean Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getDateTimeParameter <em>Date Time Parameter</em>}</li>
+ *   <li>{@link org.jboss.drools.DocumentRoot#getDecimalParameter <em>Decimal Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getDurationParameter <em>Duration Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getEnumParameter <em>Enum Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getErlangDistribution <em>Erlang Distribution</em>}</li>
@@ -252,6 +253,33 @@ public interface DocumentRoot extends EObject {
 	 * @generated
 	 */
 	void setDateTimeParameter(DateTimeParameterType value);
+
+	/**
+	 * Returns the value of the '<em><b>Decimal Parameter</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Decimal Parameter</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Decimal Parameter</em>' containment reference.
+	 * @see #setDecimalParameter(DecimalParameterType)
+	 * @see org.jboss.drools.DroolsPackage#getDocumentRoot_DecimalParameter()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='DecimalParameter' namespace='##targetNamespace' affiliation='ParameterValue'"
+	 * @generated
+	 */
+	DecimalParameterType getDecimalParameter();
+
+	/**
+	 * Sets the value of the '{@link org.jboss.drools.DocumentRoot#getDecimalParameter <em>Decimal Parameter</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Decimal Parameter</em>' containment reference.
+	 * @see #getDecimalParameter()
+	 * @generated
+	 */
+	void setDecimalParameter(DecimalParameterType value);
 
 	/**
 	 * Returns the value of the '<em><b>Duration Parameter</b></em>' containment reference.

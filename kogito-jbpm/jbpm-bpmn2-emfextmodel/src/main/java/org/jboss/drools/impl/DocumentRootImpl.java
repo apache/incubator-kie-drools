@@ -27,6 +27,7 @@ import org.jboss.drools.BetaDistributionType;
 import org.jboss.drools.BinomialDistributionType;
 import org.jboss.drools.BooleanParameterType;
 import org.jboss.drools.DateTimeParameterType;
+import org.jboss.drools.DecimalParameterType;
 import org.jboss.drools.DocumentRoot;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.DurationParameterType;
@@ -72,6 +73,7 @@ import org.jboss.drools.WeibullDistributionType;
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getBinomialDistribution <em>Binomial Distribution</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getBooleanParameter <em>Boolean Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getDateTimeParameter <em>Date Time Parameter</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getDecimalParameter <em>Decimal Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getDurationParameter <em>Duration Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getEnumParameter <em>Enum Parameter</em>}</li>
  *   <li>{@link org.jboss.drools.impl.DocumentRootImpl#getErlangDistribution <em>Erlang Distribution</em>}</li>
@@ -427,6 +429,33 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 */
 	public void setDateTimeParameter(DateTimeParameterType newDateTimeParameter) {
 		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__DATE_TIME_PARAMETER, newDateTimeParameter);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DecimalParameterType getDecimalParameter() {
+		return (DecimalParameterType)getMixed().get(DroolsPackage.Literals.DOCUMENT_ROOT__DECIMAL_PARAMETER, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetDecimalParameter(DecimalParameterType newDecimalParameter, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(DroolsPackage.Literals.DOCUMENT_ROOT__DECIMAL_PARAMETER, newDecimalParameter, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDecimalParameter(DecimalParameterType newDecimalParameter) {
+		((FeatureMap.Internal)getMixed()).set(DroolsPackage.Literals.DOCUMENT_ROOT__DECIMAL_PARAMETER, newDecimalParameter);
 	}
 
 	/**
@@ -1260,6 +1289,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return basicSetBooleanParameter(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__DATE_TIME_PARAMETER:
 				return basicSetDateTimeParameter(null, msgs);
+			case DroolsPackage.DOCUMENT_ROOT__DECIMAL_PARAMETER:
+				return basicSetDecimalParameter(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__DURATION_PARAMETER:
 				return basicSetDurationParameter(null, msgs);
 			case DroolsPackage.DOCUMENT_ROOT__ENUM_PARAMETER:
@@ -1343,6 +1374,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getBooleanParameter();
 			case DroolsPackage.DOCUMENT_ROOT__DATE_TIME_PARAMETER:
 				return getDateTimeParameter();
+			case DroolsPackage.DOCUMENT_ROOT__DECIMAL_PARAMETER:
+				return getDecimalParameter();
 			case DroolsPackage.DOCUMENT_ROOT__DURATION_PARAMETER:
 				return getDurationParameter();
 			case DroolsPackage.DOCUMENT_ROOT__ENUM_PARAMETER:
@@ -1440,6 +1473,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__DATE_TIME_PARAMETER:
 				setDateTimeParameter((DateTimeParameterType)newValue);
+				return;
+			case DroolsPackage.DOCUMENT_ROOT__DECIMAL_PARAMETER:
+				setDecimalParameter((DecimalParameterType)newValue);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__DURATION_PARAMETER:
 				setDurationParameter((DurationParameterType)newValue);
@@ -1570,6 +1606,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case DroolsPackage.DOCUMENT_ROOT__DATE_TIME_PARAMETER:
 				setDateTimeParameter((DateTimeParameterType)null);
 				return;
+			case DroolsPackage.DOCUMENT_ROOT__DECIMAL_PARAMETER:
+				setDecimalParameter((DecimalParameterType)null);
+				return;
 			case DroolsPackage.DOCUMENT_ROOT__DURATION_PARAMETER:
 				setDurationParameter((DurationParameterType)null);
 				return;
@@ -1691,6 +1730,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getBooleanParameter() != null;
 			case DroolsPackage.DOCUMENT_ROOT__DATE_TIME_PARAMETER:
 				return getDateTimeParameter() != null;
+			case DroolsPackage.DOCUMENT_ROOT__DECIMAL_PARAMETER:
+				return getDecimalParameter() != null;
 			case DroolsPackage.DOCUMENT_ROOT__DURATION_PARAMETER:
 				return getDurationParameter() != null;
 			case DroolsPackage.DOCUMENT_ROOT__ENUM_PARAMETER:

@@ -100,6 +100,10 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 				return createDateTimeParameterTypeAdapter();
 			}
 			@Override
+			public Adapter caseDecimalParameterType(DecimalParameterType object) {
+				return createDecimalParameterTypeAdapter();
+			}
+			@Override
 			public Adapter caseDistributionParameter(DistributionParameter object) {
 				return createDistributionParameterAdapter();
 			}
@@ -396,6 +400,20 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createDateTimeParameterTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.jboss.drools.DecimalParameterType <em>Decimal Parameter Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.jboss.drools.DecimalParameterType
+	 * @generated
+	 */
+	public Adapter createDecimalParameterTypeAdapter() {
 		return null;
 	}
 

@@ -140,6 +140,14 @@ public class DroolsSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case DroolsPackage.DECIMAL_PARAMETER_TYPE: {
+				DecimalParameterType decimalParameterType = (DecimalParameterType)theEObject;
+				T result = caseDecimalParameterType(decimalParameterType);
+				if (result == null) result = caseConstantParameter(decimalParameterType);
+				if (result == null) result = caseParameterValue(decimalParameterType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case DroolsPackage.DISTRIBUTION_PARAMETER: {
 				DistributionParameter distributionParameter = (DistributionParameter)theEObject;
 				T result = caseDistributionParameter(distributionParameter);
@@ -552,6 +560,21 @@ public class DroolsSwitch<T> {
 	 * @generated
 	 */
 	public T caseDateTimeParameterType(DateTimeParameterType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Decimal Parameter Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Decimal Parameter Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDecimalParameterType(DecimalParameterType object) {
 		return null;
 	}
 

@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.Parameter;
 import org.jboss.drools.TimeParameters;
+import org.jboss.drools.TimeUnit;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,6 +30,7 @@ import org.jboss.drools.TimeParameters;
  *   <li>{@link org.jboss.drools.impl.TimeParametersImpl#getProcessingTime <em>Processing Time</em>}</li>
  *   <li>{@link org.jboss.drools.impl.TimeParametersImpl#getValidationTime <em>Validation Time</em>}</li>
  *   <li>{@link org.jboss.drools.impl.TimeParametersImpl#getReworkTime <em>Rework Time</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.TimeParametersImpl#getTimeUnit <em>Time Unit</em>}</li>
  * </ul>
  * </p>
  *
@@ -104,6 +106,35 @@ public class TimeParametersImpl extends EObjectImpl implements TimeParameters {
 	 * @ordered
 	 */
 	protected Parameter reworkTime;
+
+	/**
+	 * The default value of the '{@link #getTimeUnit() <em>Time Unit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeUnit()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final TimeUnit TIME_UNIT_EDEFAULT = TimeUnit.MS;
+
+	/**
+	 * The cached value of the '{@link #getTimeUnit() <em>Time Unit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeUnit()
+	 * @generated
+	 * @ordered
+	 */
+	protected TimeUnit timeUnit = TIME_UNIT_EDEFAULT;
+
+	/**
+	 * This is true if the Time Unit attribute has been set.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean timeUnitESet;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -430,6 +461,52 @@ public class TimeParametersImpl extends EObjectImpl implements TimeParameters {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public TimeUnit getTimeUnit() {
+		return timeUnit;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTimeUnit(TimeUnit newTimeUnit) {
+		TimeUnit oldTimeUnit = timeUnit;
+		timeUnit = newTimeUnit == null ? TIME_UNIT_EDEFAULT : newTimeUnit;
+		boolean oldTimeUnitESet = timeUnitESet;
+		timeUnitESet = true;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.TIME_PARAMETERS__TIME_UNIT, oldTimeUnit, timeUnit, !oldTimeUnitESet));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void unsetTimeUnit() {
+		TimeUnit oldTimeUnit = timeUnit;
+		boolean oldTimeUnitESet = timeUnitESet;
+		timeUnit = TIME_UNIT_EDEFAULT;
+		timeUnitESet = false;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, DroolsPackage.TIME_PARAMETERS__TIME_UNIT, oldTimeUnit, TIME_UNIT_EDEFAULT, oldTimeUnitESet));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isSetTimeUnit() {
+		return timeUnitESet;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -473,6 +550,8 @@ public class TimeParametersImpl extends EObjectImpl implements TimeParameters {
 				return getValidationTime();
 			case DroolsPackage.TIME_PARAMETERS__REWORK_TIME:
 				return getReworkTime();
+			case DroolsPackage.TIME_PARAMETERS__TIME_UNIT:
+				return getTimeUnit();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -505,6 +584,9 @@ public class TimeParametersImpl extends EObjectImpl implements TimeParameters {
 				return;
 			case DroolsPackage.TIME_PARAMETERS__REWORK_TIME:
 				setReworkTime((Parameter)newValue);
+				return;
+			case DroolsPackage.TIME_PARAMETERS__TIME_UNIT:
+				setTimeUnit((TimeUnit)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -539,6 +621,9 @@ public class TimeParametersImpl extends EObjectImpl implements TimeParameters {
 			case DroolsPackage.TIME_PARAMETERS__REWORK_TIME:
 				setReworkTime((Parameter)null);
 				return;
+			case DroolsPackage.TIME_PARAMETERS__TIME_UNIT:
+				unsetTimeUnit();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -565,8 +650,26 @@ public class TimeParametersImpl extends EObjectImpl implements TimeParameters {
 				return validationTime != null;
 			case DroolsPackage.TIME_PARAMETERS__REWORK_TIME:
 				return reworkTime != null;
+			case DroolsPackage.TIME_PARAMETERS__TIME_UNIT:
+				return isSetTimeUnit();
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (timeUnit: ");
+		if (timeUnitESet) result.append(timeUnit); else result.append("<unset>");
+		result.append(')');
+		return result.toString();
 	}
 
 } //TimeParametersImpl

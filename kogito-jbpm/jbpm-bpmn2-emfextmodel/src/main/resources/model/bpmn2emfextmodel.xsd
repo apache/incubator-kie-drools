@@ -183,6 +183,7 @@
 			<element name="ProcessingTime" type="drools:Parameter" minOccurs="0"/>
 			<element name="ValidationTime" type="drools:Parameter" minOccurs="0"/>
 			<element name="ReworkTime" type="drools:Parameter" minOccurs="0"/>
+			<element name="TimeUnit" type="drools:TimeUnit"/>
 		</sequence>
 	</complexType>
 	<complexType name="ControlParameters">
@@ -196,6 +197,7 @@
 		<sequence minOccurs="0">
 			<element name="FixedCost" type="drools:Parameter" minOccurs="0"/>
 			<element name="UnitCost" type="drools:Parameter" minOccurs="0"/>
+			<element name="CurrencyUnit" type="string" minOccurs="0"/>
 		</sequence>
 	</complexType>
 	<complexType name="ResourceParameters">
@@ -290,6 +292,15 @@
 			<complexContent>
 				<extension base="drools:ConstantParameter">
 					<attribute name="value" type="long"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="DecimalParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="decimal"/>
 				</extension>
 			</complexContent>
 		</complexType>

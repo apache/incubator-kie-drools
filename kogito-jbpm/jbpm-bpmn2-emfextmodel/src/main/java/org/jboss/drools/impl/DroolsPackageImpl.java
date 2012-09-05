@@ -24,6 +24,7 @@ import org.jboss.drools.ConstantParameter;
 import org.jboss.drools.ControlParameters;
 import org.jboss.drools.CostParameters;
 import org.jboss.drools.DateTimeParameterType;
+import org.jboss.drools.DecimalParameterType;
 import org.jboss.drools.DistributionParameter;
 import org.jboss.drools.DocumentRoot;
 import org.jboss.drools.DroolsFactory;
@@ -135,6 +136,13 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * @generated
 	 */
 	private EClass dateTimeParameterTypeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass decimalParameterTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -751,6 +759,15 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getCostParameters_CurrencyUnit() {
+		return (EAttribute)costParametersEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getDateTimeParameterType() {
 		return dateTimeParameterTypeEClass;
 	}
@@ -762,6 +779,24 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 */
 	public EAttribute getDateTimeParameterType_Value() {
 		return (EAttribute)dateTimeParameterTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDecimalParameterType() {
+		return decimalParameterTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDecimalParameterType_Value() {
+		return (EAttribute)decimalParameterTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -868,7 +903,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_DurationParameter() {
+	public EReference getDocumentRoot_DecimalParameter() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(8);
 	}
 
@@ -877,7 +912,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_EnumParameter() {
+	public EReference getDocumentRoot_DurationParameter() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(9);
 	}
 
@@ -886,7 +921,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_ErlangDistribution() {
+	public EReference getDocumentRoot_EnumParameter() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(10);
 	}
 
@@ -895,7 +930,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_ExpressionParameter() {
+	public EReference getDocumentRoot_ErlangDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(11);
 	}
 
@@ -904,7 +939,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_FloatingParameter() {
+	public EReference getDocumentRoot_ExpressionParameter() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(12);
 	}
 
@@ -913,7 +948,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_GammaDistribution() {
+	public EReference getDocumentRoot_FloatingParameter() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(13);
 	}
 
@@ -922,7 +957,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Global() {
+	public EReference getDocumentRoot_GammaDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(14);
 	}
 
@@ -931,7 +966,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Import() {
+	public EReference getDocumentRoot_Global() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(15);
 	}
 
@@ -940,7 +975,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_LogNormalDistribution() {
+	public EReference getDocumentRoot_Import() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(16);
 	}
 
@@ -949,7 +984,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Metadata() {
+	public EReference getDocumentRoot_LogNormalDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(17);
 	}
 
@@ -958,7 +993,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Metaentry() {
+	public EReference getDocumentRoot_Metadata() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(18);
 	}
 
@@ -967,7 +1002,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_NegativeExponentialDistribution() {
+	public EReference getDocumentRoot_Metaentry() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(19);
 	}
 
@@ -976,7 +1011,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_NormalDistribution() {
+	public EReference getDocumentRoot_NegativeExponentialDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(20);
 	}
 
@@ -985,7 +1020,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_NumericParameter() {
+	public EReference getDocumentRoot_NormalDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(21);
 	}
 
@@ -994,7 +1029,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_OnEntryScript() {
+	public EReference getDocumentRoot_NumericParameter() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(22);
 	}
 
@@ -1003,7 +1038,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_OnExitScript() {
+	public EReference getDocumentRoot_OnEntryScript() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(23);
 	}
 
@@ -1012,7 +1047,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_PoissonDistribution() {
+	public EReference getDocumentRoot_OnExitScript() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(24);
 	}
 
@@ -1021,7 +1056,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_ProcessAnalysisData() {
+	public EReference getDocumentRoot_PoissonDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(25);
 	}
 
@@ -1030,7 +1065,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_RandomDistribution() {
+	public EReference getDocumentRoot_ProcessAnalysisData() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(26);
 	}
 
@@ -1039,7 +1074,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_StringParameter() {
+	public EReference getDocumentRoot_RandomDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(27);
 	}
 
@@ -1048,7 +1083,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_TriangularDistribution() {
+	public EReference getDocumentRoot_StringParameter() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(28);
 	}
 
@@ -1057,7 +1092,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_TruncatedNormalDistribution() {
+	public EReference getDocumentRoot_TriangularDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(29);
 	}
 
@@ -1066,7 +1101,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_UniformDistribution() {
+	public EReference getDocumentRoot_TruncatedNormalDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(30);
 	}
 
@@ -1075,7 +1110,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_UserDistribution() {
+	public EReference getDocumentRoot_UniformDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(31);
 	}
 
@@ -1084,7 +1119,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_UserDistributionDataPoint() {
+	public EReference getDocumentRoot_UserDistribution() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(32);
 	}
 
@@ -1093,7 +1128,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_WeibullDistribution() {
+	public EReference getDocumentRoot_UserDistributionDataPoint() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(33);
 	}
 
@@ -1102,8 +1137,8 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_PackageName() {
-		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(34);
+	public EReference getDocumentRoot_WeibullDistribution() {
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(34);
 	}
 
 	/**
@@ -1111,7 +1146,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Priority() {
+	public EAttribute getDocumentRoot_PackageName() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(35);
 	}
 
@@ -1120,7 +1155,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_RuleFlowGroup() {
+	public EAttribute getDocumentRoot_Priority() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(36);
 	}
 
@@ -1129,7 +1164,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_TaskName() {
+	public EAttribute getDocumentRoot_RuleFlowGroup() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(37);
 	}
 
@@ -1138,8 +1173,17 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Version() {
+	public EAttribute getDocumentRoot_TaskName() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(38);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDocumentRoot_Version() {
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(39);
 	}
 
 	/**
@@ -2218,6 +2262,15 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getTimeParameters_TimeUnit() {
+		return (EAttribute)timeParametersEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getTriangularDistributionType() {
 		return triangularDistributionTypeEClass;
 	}
@@ -2582,9 +2635,13 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		costParametersEClass = createEClass(COST_PARAMETERS);
 		createEReference(costParametersEClass, COST_PARAMETERS__FIXED_COST);
 		createEReference(costParametersEClass, COST_PARAMETERS__UNIT_COST);
+		createEAttribute(costParametersEClass, COST_PARAMETERS__CURRENCY_UNIT);
 
 		dateTimeParameterTypeEClass = createEClass(DATE_TIME_PARAMETER_TYPE);
 		createEAttribute(dateTimeParameterTypeEClass, DATE_TIME_PARAMETER_TYPE__VALUE);
+
+		decimalParameterTypeEClass = createEClass(DECIMAL_PARAMETER_TYPE);
+		createEAttribute(decimalParameterTypeEClass, DECIMAL_PARAMETER_TYPE__VALUE);
 
 		distributionParameterEClass = createEClass(DISTRIBUTION_PARAMETER);
 		createEAttribute(distributionParameterEClass, DISTRIBUTION_PARAMETER__DISCRETE);
@@ -2598,6 +2655,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEReference(documentRootEClass, DOCUMENT_ROOT__BINOMIAL_DISTRIBUTION);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__BOOLEAN_PARAMETER);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__DATE_TIME_PARAMETER);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__DECIMAL_PARAMETER);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__DURATION_PARAMETER);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__ENUM_PARAMETER);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__ERLANG_DISTRIBUTION);
@@ -2781,6 +2839,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEReference(timeParametersEClass, TIME_PARAMETERS__PROCESSING_TIME);
 		createEReference(timeParametersEClass, TIME_PARAMETERS__VALIDATION_TIME);
 		createEReference(timeParametersEClass, TIME_PARAMETERS__REWORK_TIME);
+		createEAttribute(timeParametersEClass, TIME_PARAMETERS__TIME_UNIT);
 
 		triangularDistributionTypeEClass = createEClass(TRIANGULAR_DISTRIBUTION_TYPE);
 		createEAttribute(triangularDistributionTypeEClass, TRIANGULAR_DISTRIBUTION_TYPE__MAX);
@@ -2865,6 +2924,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		booleanParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
 		constantParameterEClass.getESuperTypes().add(this.getParameterValue());
 		dateTimeParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
+		decimalParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
 		distributionParameterEClass.getESuperTypes().add(this.getParameterValue());
 		durationParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
 		elementParametersTypeEClass.getESuperTypes().add(this.getElementParameters());
@@ -2916,9 +2976,13 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEClass(costParametersEClass, CostParameters.class, "CostParameters", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getCostParameters_FixedCost(), this.getParameter(), null, "fixedCost", null, 0, 1, CostParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCostParameters_UnitCost(), this.getParameter(), null, "unitCost", null, 0, 1, CostParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCostParameters_CurrencyUnit(), theXMLTypePackage.getString(), "currencyUnit", null, 0, 1, CostParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dateTimeParameterTypeEClass, DateTimeParameterType.class, "DateTimeParameterType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDateTimeParameterType_Value(), theXMLTypePackage.getDateTime(), "value", null, 0, 1, DateTimeParameterType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(decimalParameterTypeEClass, DecimalParameterType.class, "DecimalParameterType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDecimalParameterType_Value(), theXMLTypePackage.getDecimal(), "value", null, 0, 1, DecimalParameterType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(distributionParameterEClass, DistributionParameter.class, "DistributionParameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDistributionParameter_Discrete(), theXMLTypePackage.getBoolean(), "discrete", "false", 0, 1, DistributionParameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2932,6 +2996,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEReference(getDocumentRoot_BinomialDistribution(), this.getBinomialDistributionType(), null, "binomialDistribution", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_BooleanParameter(), this.getBooleanParameterType(), null, "booleanParameter", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_DateTimeParameter(), this.getDateTimeParameterType(), null, "dateTimeParameter", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_DecimalParameter(), this.getDecimalParameterType(), null, "decimalParameter", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_DurationParameter(), this.getDurationParameterType(), null, "durationParameter", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_EnumParameter(), this.getEnumParameterType(), null, "enumParameter", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_ErlangDistribution(), this.getErlangDistributionType(), null, "erlangDistribution", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
@@ -3115,6 +3180,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEReference(getTimeParameters_ProcessingTime(), this.getParameter(), null, "processingTime", null, 0, 1, TimeParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTimeParameters_ValidationTime(), this.getParameter(), null, "validationTime", null, 0, 1, TimeParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTimeParameters_ReworkTime(), this.getParameter(), null, "reworkTime", null, 0, 1, TimeParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTimeParameters_TimeUnit(), this.getTimeUnit(), "timeUnit", null, 0, 1, TimeParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(triangularDistributionTypeEClass, TriangularDistributionType.class, "TriangularDistributionType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTriangularDistributionType_Max(), theXMLTypePackage.getDouble(), "max", null, 0, 1, TriangularDistributionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3337,6 +3403,14 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
+		  (getCostParameters_CurrencyUnit(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "CurrencyUnit",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
 		  (dateTimeParameterTypeEClass, 
 		   source, 
 		   new String[] {
@@ -3345,6 +3419,20 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   });		
 		addAnnotation
 		  (getDateTimeParameterType_Value(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "value"
+		   });		
+		addAnnotation
+		  (decimalParameterTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "DecimalParameter_._type",
+			 "kind", "empty"
+		   });		
+		addAnnotation
+		  (getDecimalParameterType_Value(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
@@ -3433,6 +3521,15 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "DateTimeParameter",
+			 "namespace", "##targetNamespace",
+			 "affiliation", "ParameterValue"
+		   });		
+		addAnnotation
+		  (getDocumentRoot_DecimalParameter(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "DecimalParameter",
 			 "namespace", "##targetNamespace",
 			 "affiliation", "ParameterValue"
 		   });		
@@ -4619,6 +4716,14 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "ReworkTime",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (getTimeParameters_TimeUnit(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "TimeUnit",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation

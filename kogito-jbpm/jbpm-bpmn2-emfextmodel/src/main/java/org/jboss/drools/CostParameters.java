@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.jboss.drools.CostParameters#getFixedCost <em>Fixed Cost</em>}</li>
  *   <li>{@link org.jboss.drools.CostParameters#getUnitCost <em>Unit Cost</em>}</li>
+ *   <li>{@link org.jboss.drools.CostParameters#getCurrencyUnit <em>Currency Unit</em>}</li>
  * </ul>
  * </p>
  *
@@ -75,5 +76,32 @@ public interface CostParameters extends EObject {
 	 * @generated
 	 */
 	void setUnitCost(Parameter value);
+
+	/**
+	 * Returns the value of the '<em><b>Currency Unit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Currency Unit</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Currency Unit</em>' attribute.
+	 * @see #setCurrencyUnit(String)
+	 * @see org.jboss.drools.DroolsPackage#getCostParameters_CurrencyUnit()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='element' name='CurrencyUnit' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	String getCurrencyUnit();
+
+	/**
+	 * Sets the value of the '{@link org.jboss.drools.CostParameters#getCurrencyUnit <em>Currency Unit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Currency Unit</em>' attribute.
+	 * @see #getCurrencyUnit()
+	 * @generated
+	 */
+	void setCurrencyUnit(String value);
 
 } // CostParameters

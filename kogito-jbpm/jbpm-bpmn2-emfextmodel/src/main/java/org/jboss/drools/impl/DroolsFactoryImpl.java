@@ -70,6 +70,7 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.CONTROL_PARAMETERS: return createControlParameters();
 			case DroolsPackage.COST_PARAMETERS: return createCostParameters();
 			case DroolsPackage.DATE_TIME_PARAMETER_TYPE: return createDateTimeParameterType();
+			case DroolsPackage.DECIMAL_PARAMETER_TYPE: return createDecimalParameterType();
 			case DroolsPackage.DISTRIBUTION_PARAMETER: return createDistributionParameter();
 			case DroolsPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case DroolsPackage.DURATION_PARAMETER_TYPE: return createDurationParameterType();
@@ -257,6 +258,16 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public DateTimeParameterType createDateTimeParameterType() {
 		DateTimeParameterTypeImpl dateTimeParameterType = new DateTimeParameterTypeImpl();
 		return dateTimeParameterType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DecimalParameterType createDecimalParameterType() {
+		DecimalParameterTypeImpl decimalParameterType = new DecimalParameterTypeImpl();
+		return decimalParameterType;
 	}
 
 	/**

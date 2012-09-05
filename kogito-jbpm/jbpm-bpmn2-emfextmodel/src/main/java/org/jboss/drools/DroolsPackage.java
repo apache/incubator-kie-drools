@@ -65,7 +65,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getParameterValue()
 	 * @generated
 	 */
-	int PARAMETER_VALUE = 31;
+	int PARAMETER_VALUE = 32;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -111,7 +111,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getDistributionParameter()
 	 * @generated
 	 */
-	int DISTRIBUTION_PARAMETER = 8;
+	int DISTRIBUTION_PARAMETER = 9;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -526,13 +526,22 @@ public interface DroolsPackage extends EPackage {
 	int COST_PARAMETERS__UNIT_COST = 1;
 
 	/**
+	 * The feature id for the '<em><b>Currency Unit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int COST_PARAMETERS__CURRENCY_UNIT = 2;
+
+	/**
 	 * The number of structural features of the '<em>Cost Parameters</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int COST_PARAMETERS_FEATURE_COUNT = 2;
+	int COST_PARAMETERS_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link org.jboss.drools.impl.DateTimeParameterTypeImpl <em>Date Time Parameter Type</em>}' class.
@@ -590,6 +599,61 @@ public interface DroolsPackage extends EPackage {
 	int DATE_TIME_PARAMETER_TYPE_FEATURE_COUNT = CONSTANT_PARAMETER_FEATURE_COUNT + 1;
 
 	/**
+	 * The meta object id for the '{@link org.jboss.drools.impl.DecimalParameterTypeImpl <em>Decimal Parameter Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.jboss.drools.impl.DecimalParameterTypeImpl
+	 * @see org.jboss.drools.impl.DroolsPackageImpl#getDecimalParameterType()
+	 * @generated
+	 */
+	int DECIMAL_PARAMETER_TYPE = 8;
+
+	/**
+	 * The feature id for the '<em><b>Instance</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DECIMAL_PARAMETER_TYPE__INSTANCE = CONSTANT_PARAMETER__INSTANCE;
+
+	/**
+	 * The feature id for the '<em><b>Result</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DECIMAL_PARAMETER_TYPE__RESULT = CONSTANT_PARAMETER__RESULT;
+
+	/**
+	 * The feature id for the '<em><b>Valid For</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DECIMAL_PARAMETER_TYPE__VALID_FOR = CONSTANT_PARAMETER__VALID_FOR;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DECIMAL_PARAMETER_TYPE__VALUE = CONSTANT_PARAMETER_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Decimal Parameter Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DECIMAL_PARAMETER_TYPE_FEATURE_COUNT = CONSTANT_PARAMETER_FEATURE_COUNT + 1;
+
+	/**
 	 * The meta object id for the '{@link org.jboss.drools.impl.DocumentRootImpl <em>Document Root</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -597,7 +661,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getDocumentRoot()
 	 * @generated
 	 */
-	int DOCUMENT_ROOT = 9;
+	int DOCUMENT_ROOT = 10;
 
 	/**
 	 * The feature id for the '<em><b>Mixed</b></em>' attribute list.
@@ -672,13 +736,22 @@ public interface DroolsPackage extends EPackage {
 	int DOCUMENT_ROOT__DATE_TIME_PARAMETER = 7;
 
 	/**
+	 * The feature id for the '<em><b>Decimal Parameter</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__DECIMAL_PARAMETER = 8;
+
+	/**
 	 * The feature id for the '<em><b>Duration Parameter</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__DURATION_PARAMETER = 8;
+	int DOCUMENT_ROOT__DURATION_PARAMETER = 9;
 
 	/**
 	 * The feature id for the '<em><b>Enum Parameter</b></em>' containment reference.
@@ -687,7 +760,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__ENUM_PARAMETER = 9;
+	int DOCUMENT_ROOT__ENUM_PARAMETER = 10;
 
 	/**
 	 * The feature id for the '<em><b>Erlang Distribution</b></em>' containment reference.
@@ -696,7 +769,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__ERLANG_DISTRIBUTION = 10;
+	int DOCUMENT_ROOT__ERLANG_DISTRIBUTION = 11;
 
 	/**
 	 * The feature id for the '<em><b>Expression Parameter</b></em>' containment reference.
@@ -705,7 +778,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__EXPRESSION_PARAMETER = 11;
+	int DOCUMENT_ROOT__EXPRESSION_PARAMETER = 12;
 
 	/**
 	 * The feature id for the '<em><b>Floating Parameter</b></em>' containment reference.
@@ -714,7 +787,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__FLOATING_PARAMETER = 12;
+	int DOCUMENT_ROOT__FLOATING_PARAMETER = 13;
 
 	/**
 	 * The feature id for the '<em><b>Gamma Distribution</b></em>' containment reference.
@@ -723,7 +796,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__GAMMA_DISTRIBUTION = 13;
+	int DOCUMENT_ROOT__GAMMA_DISTRIBUTION = 14;
 
 	/**
 	 * The feature id for the '<em><b>Global</b></em>' containment reference.
@@ -732,7 +805,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__GLOBAL = 14;
+	int DOCUMENT_ROOT__GLOBAL = 15;
 
 	/**
 	 * The feature id for the '<em><b>Import</b></em>' containment reference.
@@ -741,7 +814,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__IMPORT = 15;
+	int DOCUMENT_ROOT__IMPORT = 16;
 
 	/**
 	 * The feature id for the '<em><b>Log Normal Distribution</b></em>' containment reference.
@@ -750,7 +823,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__LOG_NORMAL_DISTRIBUTION = 16;
+	int DOCUMENT_ROOT__LOG_NORMAL_DISTRIBUTION = 17;
 
 	/**
 	 * The feature id for the '<em><b>Metadata</b></em>' containment reference.
@@ -759,7 +832,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__METADATA = 17;
+	int DOCUMENT_ROOT__METADATA = 18;
 
 	/**
 	 * The feature id for the '<em><b>Metaentry</b></em>' containment reference.
@@ -768,7 +841,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__METAENTRY = 18;
+	int DOCUMENT_ROOT__METAENTRY = 19;
 
 	/**
 	 * The feature id for the '<em><b>Negative Exponential Distribution</b></em>' containment reference.
@@ -777,7 +850,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__NEGATIVE_EXPONENTIAL_DISTRIBUTION = 19;
+	int DOCUMENT_ROOT__NEGATIVE_EXPONENTIAL_DISTRIBUTION = 20;
 
 	/**
 	 * The feature id for the '<em><b>Normal Distribution</b></em>' containment reference.
@@ -786,7 +859,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__NORMAL_DISTRIBUTION = 20;
+	int DOCUMENT_ROOT__NORMAL_DISTRIBUTION = 21;
 
 	/**
 	 * The feature id for the '<em><b>Numeric Parameter</b></em>' containment reference.
@@ -795,7 +868,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__NUMERIC_PARAMETER = 21;
+	int DOCUMENT_ROOT__NUMERIC_PARAMETER = 22;
 
 	/**
 	 * The feature id for the '<em><b>On Entry Script</b></em>' containment reference.
@@ -804,7 +877,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__ON_ENTRY_SCRIPT = 22;
+	int DOCUMENT_ROOT__ON_ENTRY_SCRIPT = 23;
 
 	/**
 	 * The feature id for the '<em><b>On Exit Script</b></em>' containment reference.
@@ -813,7 +886,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__ON_EXIT_SCRIPT = 23;
+	int DOCUMENT_ROOT__ON_EXIT_SCRIPT = 24;
 
 	/**
 	 * The feature id for the '<em><b>Poisson Distribution</b></em>' containment reference.
@@ -822,7 +895,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__POISSON_DISTRIBUTION = 24;
+	int DOCUMENT_ROOT__POISSON_DISTRIBUTION = 25;
 
 	/**
 	 * The feature id for the '<em><b>Process Analysis Data</b></em>' containment reference.
@@ -831,7 +904,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__PROCESS_ANALYSIS_DATA = 25;
+	int DOCUMENT_ROOT__PROCESS_ANALYSIS_DATA = 26;
 
 	/**
 	 * The feature id for the '<em><b>Random Distribution</b></em>' containment reference.
@@ -840,7 +913,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__RANDOM_DISTRIBUTION = 26;
+	int DOCUMENT_ROOT__RANDOM_DISTRIBUTION = 27;
 
 	/**
 	 * The feature id for the '<em><b>String Parameter</b></em>' containment reference.
@@ -849,7 +922,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__STRING_PARAMETER = 27;
+	int DOCUMENT_ROOT__STRING_PARAMETER = 28;
 
 	/**
 	 * The feature id for the '<em><b>Triangular Distribution</b></em>' containment reference.
@@ -858,7 +931,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__TRIANGULAR_DISTRIBUTION = 28;
+	int DOCUMENT_ROOT__TRIANGULAR_DISTRIBUTION = 29;
 
 	/**
 	 * The feature id for the '<em><b>Truncated Normal Distribution</b></em>' containment reference.
@@ -867,7 +940,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__TRUNCATED_NORMAL_DISTRIBUTION = 29;
+	int DOCUMENT_ROOT__TRUNCATED_NORMAL_DISTRIBUTION = 30;
 
 	/**
 	 * The feature id for the '<em><b>Uniform Distribution</b></em>' containment reference.
@@ -876,7 +949,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__UNIFORM_DISTRIBUTION = 30;
+	int DOCUMENT_ROOT__UNIFORM_DISTRIBUTION = 31;
 
 	/**
 	 * The feature id for the '<em><b>User Distribution</b></em>' containment reference.
@@ -885,7 +958,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__USER_DISTRIBUTION = 31;
+	int DOCUMENT_ROOT__USER_DISTRIBUTION = 32;
 
 	/**
 	 * The feature id for the '<em><b>User Distribution Data Point</b></em>' containment reference.
@@ -894,7 +967,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__USER_DISTRIBUTION_DATA_POINT = 32;
+	int DOCUMENT_ROOT__USER_DISTRIBUTION_DATA_POINT = 33;
 
 	/**
 	 * The feature id for the '<em><b>Weibull Distribution</b></em>' containment reference.
@@ -903,7 +976,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__WEIBULL_DISTRIBUTION = 33;
+	int DOCUMENT_ROOT__WEIBULL_DISTRIBUTION = 34;
 
 	/**
 	 * The feature id for the '<em><b>Package Name</b></em>' attribute.
@@ -912,7 +985,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__PACKAGE_NAME = 34;
+	int DOCUMENT_ROOT__PACKAGE_NAME = 35;
 
 	/**
 	 * The feature id for the '<em><b>Priority</b></em>' attribute.
@@ -921,7 +994,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__PRIORITY = 35;
+	int DOCUMENT_ROOT__PRIORITY = 36;
 
 	/**
 	 * The feature id for the '<em><b>Rule Flow Group</b></em>' attribute.
@@ -930,7 +1003,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__RULE_FLOW_GROUP = 36;
+	int DOCUMENT_ROOT__RULE_FLOW_GROUP = 37;
 
 	/**
 	 * The feature id for the '<em><b>Task Name</b></em>' attribute.
@@ -939,7 +1012,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__TASK_NAME = 37;
+	int DOCUMENT_ROOT__TASK_NAME = 38;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute.
@@ -948,7 +1021,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__VERSION = 38;
+	int DOCUMENT_ROOT__VERSION = 39;
 
 	/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
@@ -957,7 +1030,7 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 39;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 40;
 
 	/**
 	 * The meta object id for the '{@link org.jboss.drools.impl.DurationParameterTypeImpl <em>Duration Parameter Type</em>}' class.
@@ -967,7 +1040,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getDurationParameterType()
 	 * @generated
 	 */
-	int DURATION_PARAMETER_TYPE = 10;
+	int DURATION_PARAMETER_TYPE = 11;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1022,7 +1095,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getElementParameters()
 	 * @generated
 	 */
-	int ELEMENT_PARAMETERS = 11;
+	int ELEMENT_PARAMETERS = 12;
 
 	/**
 	 * The feature id for the '<em><b>Time Parameters</b></em>' containment reference.
@@ -1122,7 +1195,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getElementParametersType()
 	 * @generated
 	 */
-	int ELEMENT_PARAMETERS_TYPE = 12;
+	int ELEMENT_PARAMETERS_TYPE = 13;
 
 	/**
 	 * The feature id for the '<em><b>Time Parameters</b></em>' containment reference.
@@ -1222,7 +1295,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getEnumParameterType()
 	 * @generated
 	 */
-	int ENUM_PARAMETER_TYPE = 13;
+	int ENUM_PARAMETER_TYPE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1295,7 +1368,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getErlangDistributionType()
 	 * @generated
 	 */
-	int ERLANG_DISTRIBUTION_TYPE = 14;
+	int ERLANG_DISTRIBUTION_TYPE = 15;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1368,7 +1441,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getExpressionParameterType()
 	 * @generated
 	 */
-	int EXPRESSION_PARAMETER_TYPE = 15;
+	int EXPRESSION_PARAMETER_TYPE = 16;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1423,7 +1496,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getFloatingParameterType()
 	 * @generated
 	 */
-	int FLOATING_PARAMETER_TYPE = 16;
+	int FLOATING_PARAMETER_TYPE = 17;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1478,7 +1551,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getGammaDistributionType()
 	 * @generated
 	 */
-	int GAMMA_DISTRIBUTION_TYPE = 17;
+	int GAMMA_DISTRIBUTION_TYPE = 18;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1551,7 +1624,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getParameter()
 	 * @generated
 	 */
-	int PARAMETER = 30;
+	int PARAMETER = 31;
 
 	/**
 	 * The feature id for the '<em><b>Result Request</b></em>' attribute list.
@@ -1615,7 +1688,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getGlobalParameterType()
 	 * @generated
 	 */
-	int GLOBAL_PARAMETER_TYPE = 18;
+	int GLOBAL_PARAMETER_TYPE = 19;
 
 	/**
 	 * The feature id for the '<em><b>Result Request</b></em>' attribute list.
@@ -1688,7 +1761,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getGlobalType()
 	 * @generated
 	 */
-	int GLOBAL_TYPE = 19;
+	int GLOBAL_TYPE = 20;
 
 	/**
 	 * The feature id for the '<em><b>Identifier</b></em>' attribute.
@@ -1725,7 +1798,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getImportType()
 	 * @generated
 	 */
-	int IMPORT_TYPE = 20;
+	int IMPORT_TYPE = 21;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1753,7 +1826,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getInstanceParameters()
 	 * @generated
 	 */
-	int INSTANCE_PARAMETERS = 21;
+	int INSTANCE_PARAMETERS = 22;
 
 	/**
 	 * The feature id for the '<em><b>Property</b></em>' containment reference list.
@@ -1781,7 +1854,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getLogNormalDistributionType()
 	 * @generated
 	 */
-	int LOG_NORMAL_DISTRIBUTION_TYPE = 22;
+	int LOG_NORMAL_DISTRIBUTION_TYPE = 23;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1854,7 +1927,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getMetadataType()
 	 * @generated
 	 */
-	int METADATA_TYPE = 23;
+	int METADATA_TYPE = 24;
 
 	/**
 	 * The feature id for the '<em><b>Metaentry</b></em>' containment reference list.
@@ -1882,7 +1955,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getMetaentryType()
 	 * @generated
 	 */
-	int METAENTRY_TYPE = 24;
+	int METAENTRY_TYPE = 25;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1919,7 +1992,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getNegativeExponentialDistributionType()
 	 * @generated
 	 */
-	int NEGATIVE_EXPONENTIAL_DISTRIBUTION_TYPE = 25;
+	int NEGATIVE_EXPONENTIAL_DISTRIBUTION_TYPE = 26;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -1983,7 +2056,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getNormalDistributionType()
 	 * @generated
 	 */
-	int NORMAL_DISTRIBUTION_TYPE = 26;
+	int NORMAL_DISTRIBUTION_TYPE = 27;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -2056,7 +2129,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getNumericParameterType()
 	 * @generated
 	 */
-	int NUMERIC_PARAMETER_TYPE = 27;
+	int NUMERIC_PARAMETER_TYPE = 28;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -2111,7 +2184,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getOnEntryScriptType()
 	 * @generated
 	 */
-	int ON_ENTRY_SCRIPT_TYPE = 28;
+	int ON_ENTRY_SCRIPT_TYPE = 29;
 
 	/**
 	 * The feature id for the '<em><b>Script</b></em>' attribute.
@@ -2148,7 +2221,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getOnExitScriptType()
 	 * @generated
 	 */
-	int ON_EXIT_SCRIPT_TYPE = 29;
+	int ON_EXIT_SCRIPT_TYPE = 30;
 
 	/**
 	 * The feature id for the '<em><b>Script</b></em>' attribute.
@@ -2185,7 +2258,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getPoissonDistributionType()
 	 * @generated
 	 */
-	int POISSON_DISTRIBUTION_TYPE = 32;
+	int POISSON_DISTRIBUTION_TYPE = 33;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -2249,7 +2322,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getPriorityParameters()
 	 * @generated
 	 */
-	int PRIORITY_PARAMETERS = 33;
+	int PRIORITY_PARAMETERS = 34;
 
 	/**
 	 * The feature id for the '<em><b>Interruptible</b></em>' containment reference.
@@ -2286,7 +2359,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getProcessAnalysisDataType()
 	 * @generated
 	 */
-	int PROCESS_ANALYSIS_DATA_TYPE = 34;
+	int PROCESS_ANALYSIS_DATA_TYPE = 35;
 
 	/**
 	 * The feature id for the '<em><b>Group</b></em>' attribute list.
@@ -2323,7 +2396,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getPropertyType()
 	 * @generated
 	 */
-	int PROPERTY_TYPE = 35;
+	int PROPERTY_TYPE = 36;
 
 	/**
 	 * The feature id for the '<em><b>Result Request</b></em>' attribute list.
@@ -2396,7 +2469,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getRandomDistributionType()
 	 * @generated
 	 */
-	int RANDOM_DISTRIBUTION_TYPE = 36;
+	int RANDOM_DISTRIBUTION_TYPE = 37;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -2469,7 +2542,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getResourceParameters()
 	 * @generated
 	 */
-	int RESOURCE_PARAMETERS = 37;
+	int RESOURCE_PARAMETERS = 38;
 
 	/**
 	 * The feature id for the '<em><b>Selection</b></em>' containment reference.
@@ -2533,7 +2606,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getScenario()
 	 * @generated
 	 */
-	int SCENARIO = 38;
+	int SCENARIO = 39;
 
 	/**
 	 * The feature id for the '<em><b>Scenario Parameters</b></em>' containment reference.
@@ -2669,7 +2742,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getScenarioParameters()
 	 * @generated
 	 */
-	int SCENARIO_PARAMETERS = 39;
+	int SCENARIO_PARAMETERS = 40;
 
 	/**
 	 * The feature id for the '<em><b>Start</b></em>' containment reference.
@@ -2751,7 +2824,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getScenarioParametersType()
 	 * @generated
 	 */
-	int SCENARIO_PARAMETERS_TYPE = 40;
+	int SCENARIO_PARAMETERS_TYPE = 41;
 
 	/**
 	 * The feature id for the '<em><b>Start</b></em>' containment reference.
@@ -2833,7 +2906,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getStringParameterType()
 	 * @generated
 	 */
-	int STRING_PARAMETER_TYPE = 41;
+	int STRING_PARAMETER_TYPE = 42;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -2888,7 +2961,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getTimeParameters()
 	 * @generated
 	 */
-	int TIME_PARAMETERS = 42;
+	int TIME_PARAMETERS = 43;
 
 	/**
 	 * The feature id for the '<em><b>Transfer Time</b></em>' containment reference.
@@ -2954,13 +3027,22 @@ public interface DroolsPackage extends EPackage {
 	int TIME_PARAMETERS__REWORK_TIME = 6;
 
 	/**
+	 * The feature id for the '<em><b>Time Unit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIME_PARAMETERS__TIME_UNIT = 7;
+
+	/**
 	 * The number of structural features of the '<em>Time Parameters</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_PARAMETERS_FEATURE_COUNT = 7;
+	int TIME_PARAMETERS_FEATURE_COUNT = 8;
 
 	/**
 	 * The meta object id for the '{@link org.jboss.drools.impl.TriangularDistributionTypeImpl <em>Triangular Distribution Type</em>}' class.
@@ -2970,7 +3052,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getTriangularDistributionType()
 	 * @generated
 	 */
-	int TRIANGULAR_DISTRIBUTION_TYPE = 43;
+	int TRIANGULAR_DISTRIBUTION_TYPE = 44;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -3052,7 +3134,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getTruncatedNormalDistributionType()
 	 * @generated
 	 */
-	int TRUNCATED_NORMAL_DISTRIBUTION_TYPE = 44;
+	int TRUNCATED_NORMAL_DISTRIBUTION_TYPE = 45;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -3143,7 +3225,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getUniformDistributionType()
 	 * @generated
 	 */
-	int UNIFORM_DISTRIBUTION_TYPE = 45;
+	int UNIFORM_DISTRIBUTION_TYPE = 46;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -3216,7 +3298,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getUserDistributionDataPointType()
 	 * @generated
 	 */
-	int USER_DISTRIBUTION_DATA_POINT_TYPE = 46;
+	int USER_DISTRIBUTION_DATA_POINT_TYPE = 47;
 
 	/**
 	 * The feature id for the '<em><b>Parameter Value Group</b></em>' attribute list.
@@ -3262,7 +3344,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getUserDistributionType()
 	 * @generated
 	 */
-	int USER_DISTRIBUTION_TYPE = 47;
+	int USER_DISTRIBUTION_TYPE = 48;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -3335,7 +3417,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getVendorExtension()
 	 * @generated
 	 */
-	int VENDOR_EXTENSION = 48;
+	int VENDOR_EXTENSION = 49;
 
 	/**
 	 * The feature id for the '<em><b>Any</b></em>' attribute list.
@@ -3381,7 +3463,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getWeibullDistributionType()
 	 * @generated
 	 */
-	int WEIBULL_DISTRIBUTION_TYPE = 49;
+	int WEIBULL_DISTRIBUTION_TYPE = 50;
 
 	/**
 	 * The feature id for the '<em><b>Instance</b></em>' attribute.
@@ -3454,7 +3536,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getResultType()
 	 * @generated
 	 */
-	int RESULT_TYPE = 50;
+	int RESULT_TYPE = 51;
 
 	/**
 	 * The meta object id for the '{@link org.jboss.drools.TimeUnit <em>Time Unit</em>}' enum.
@@ -3464,7 +3546,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getTimeUnit()
 	 * @generated
 	 */
-	int TIME_UNIT = 51;
+	int TIME_UNIT = 52;
 
 	/**
 	 * The meta object id for the '<em>Package Name Type</em>' data type.
@@ -3474,7 +3556,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getPackageNameType()
 	 * @generated
 	 */
-	int PACKAGE_NAME_TYPE = 52;
+	int PACKAGE_NAME_TYPE = 53;
 
 	/**
 	 * The meta object id for the '<em>Priority Type</em>' data type.
@@ -3484,7 +3566,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getPriorityType()
 	 * @generated
 	 */
-	int PRIORITY_TYPE = 53;
+	int PRIORITY_TYPE = 54;
 
 	/**
 	 * The meta object id for the '<em>Result Type Object</em>' data type.
@@ -3494,7 +3576,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getResultTypeObject()
 	 * @generated
 	 */
-	int RESULT_TYPE_OBJECT = 54;
+	int RESULT_TYPE_OBJECT = 55;
 
 	/**
 	 * The meta object id for the '<em>Rule Flow Group Type</em>' data type.
@@ -3504,7 +3586,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getRuleFlowGroupType()
 	 * @generated
 	 */
-	int RULE_FLOW_GROUP_TYPE = 55;
+	int RULE_FLOW_GROUP_TYPE = 56;
 
 	/**
 	 * The meta object id for the '<em>Task Name Type</em>' data type.
@@ -3514,7 +3596,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getTaskNameType()
 	 * @generated
 	 */
-	int TASK_NAME_TYPE = 56;
+	int TASK_NAME_TYPE = 57;
 
 	/**
 	 * The meta object id for the '<em>Time Unit Object</em>' data type.
@@ -3524,7 +3606,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getTimeUnitObject()
 	 * @generated
 	 */
-	int TIME_UNIT_OBJECT = 57;
+	int TIME_UNIT_OBJECT = 58;
 
 	/**
 	 * The meta object id for the '<em>Version Type</em>' data type.
@@ -3534,7 +3616,7 @@ public interface DroolsPackage extends EPackage {
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getVersionType()
 	 * @generated
 	 */
-	int VERSION_TYPE = 58;
+	int VERSION_TYPE = 59;
 
 
 	/**
@@ -3751,6 +3833,17 @@ public interface DroolsPackage extends EPackage {
 	EReference getCostParameters_UnitCost();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.jboss.drools.CostParameters#getCurrencyUnit <em>Currency Unit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Currency Unit</em>'.
+	 * @see org.jboss.drools.CostParameters#getCurrencyUnit()
+	 * @see #getCostParameters()
+	 * @generated
+	 */
+	EAttribute getCostParameters_CurrencyUnit();
+
+	/**
 	 * Returns the meta object for class '{@link org.jboss.drools.DateTimeParameterType <em>Date Time Parameter Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3770,6 +3863,27 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getDateTimeParameterType_Value();
+
+	/**
+	 * Returns the meta object for class '{@link org.jboss.drools.DecimalParameterType <em>Decimal Parameter Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Decimal Parameter Type</em>'.
+	 * @see org.jboss.drools.DecimalParameterType
+	 * @generated
+	 */
+	EClass getDecimalParameterType();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.jboss.drools.DecimalParameterType#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see org.jboss.drools.DecimalParameterType#getValue()
+	 * @see #getDecimalParameterType()
+	 * @generated
+	 */
+	EAttribute getDecimalParameterType_Value();
 
 	/**
 	 * Returns the meta object for class '{@link org.jboss.drools.DistributionParameter <em>Distribution Parameter</em>}'.
@@ -3889,6 +4003,17 @@ public interface DroolsPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getDocumentRoot_DateTimeParameter();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.jboss.drools.DocumentRoot#getDecimalParameter <em>Decimal Parameter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Decimal Parameter</em>'.
+	 * @see org.jboss.drools.DocumentRoot#getDecimalParameter()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_DecimalParameter();
 
 	/**
 	 * Returns the meta object for the containment reference '{@link org.jboss.drools.DocumentRoot#getDurationParameter <em>Duration Parameter</em>}'.
@@ -5508,6 +5633,17 @@ public interface DroolsPackage extends EPackage {
 	EReference getTimeParameters_ReworkTime();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.jboss.drools.TimeParameters#getTimeUnit <em>Time Unit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Time Unit</em>'.
+	 * @see org.jboss.drools.TimeParameters#getTimeUnit()
+	 * @see #getTimeParameters()
+	 * @generated
+	 */
+	EAttribute getTimeParameters_TimeUnit();
+
+	/**
 	 * Returns the meta object for class '{@link org.jboss.drools.TriangularDistributionType <em>Triangular Distribution Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6087,6 +6223,14 @@ public interface DroolsPackage extends EPackage {
 		EReference COST_PARAMETERS__UNIT_COST = eINSTANCE.getCostParameters_UnitCost();
 
 		/**
+		 * The meta object literal for the '<em><b>Currency Unit</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute COST_PARAMETERS__CURRENCY_UNIT = eINSTANCE.getCostParameters_CurrencyUnit();
+
+		/**
 		 * The meta object literal for the '{@link org.jboss.drools.impl.DateTimeParameterTypeImpl <em>Date Time Parameter Type</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6103,6 +6247,24 @@ public interface DroolsPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute DATE_TIME_PARAMETER_TYPE__VALUE = eINSTANCE.getDateTimeParameterType_Value();
+
+		/**
+		 * The meta object literal for the '{@link org.jboss.drools.impl.DecimalParameterTypeImpl <em>Decimal Parameter Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.jboss.drools.impl.DecimalParameterTypeImpl
+		 * @see org.jboss.drools.impl.DroolsPackageImpl#getDecimalParameterType()
+		 * @generated
+		 */
+		EClass DECIMAL_PARAMETER_TYPE = eINSTANCE.getDecimalParameterType();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DECIMAL_PARAMETER_TYPE__VALUE = eINSTANCE.getDecimalParameterType_Value();
 
 		/**
 		 * The meta object literal for the '{@link org.jboss.drools.impl.DistributionParameterImpl <em>Distribution Parameter</em>}' class.
@@ -6195,6 +6357,14 @@ public interface DroolsPackage extends EPackage {
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__DATE_TIME_PARAMETER = eINSTANCE.getDocumentRoot_DateTimeParameter();
+
+		/**
+		 * The meta object literal for the '<em><b>Decimal Parameter</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__DECIMAL_PARAMETER = eINSTANCE.getDocumentRoot_DecimalParameter();
 
 		/**
 		 * The meta object literal for the '<em><b>Duration Parameter</b></em>' containment reference feature.
@@ -7461,6 +7631,14 @@ public interface DroolsPackage extends EPackage {
 		 * @generated
 		 */
 		EReference TIME_PARAMETERS__REWORK_TIME = eINSTANCE.getTimeParameters_ReworkTime();
+
+		/**
+		 * The meta object literal for the '<em><b>Time Unit</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TIME_PARAMETERS__TIME_UNIT = eINSTANCE.getTimeParameters_TimeUnit();
 
 		/**
 		 * The meta object literal for the '{@link org.jboss.drools.impl.TriangularDistributionTypeImpl <em>Triangular Distribution Type</em>}' class.

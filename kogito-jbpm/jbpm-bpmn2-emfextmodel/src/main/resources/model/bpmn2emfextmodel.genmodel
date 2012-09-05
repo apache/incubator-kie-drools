@@ -2,7 +2,7 @@
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/jbpm-bpmn2-emfextmodel/src/main/java" editDirectory="/jbpm-bpmn2-emfextmodel/src/main/java"
     editorDirectory="/jbpm-bpmn2-emfextmodel/src/main/java" modelPluginID="jbpm-bpmn2-emfextmodel"
-    modelName="Bpmn2emfextmodel" testsDirectory="/jbpm-bpmn2-emfextmodel/src/main/java"
+    modelName="Bpmn2emfextmodel" testsDirectory="/jbpm-bpmn2-emfextmodel/src/test/java"
     importerID="org.eclipse.xsd.ecore.importer" complianceLevel="5.0" copyrightFields="false"
     runtimeVersion="2.2">
   <foreignModel>bpmn2emfextmodel.xsd</foreignModel>
@@ -56,9 +56,13 @@
     <genClasses ecoreClass="drools.ecore#//CostParameters">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//CostParameters/fixedCost"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//CostParameters/unitCost"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//CostParameters/currencyUnit"/>
     </genClasses>
     <genClasses ecoreClass="drools.ecore#//DateTimeParameterType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DateTimeParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//DecimalParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DecimalParameterType/value"/>
     </genClasses>
     <genClasses ecoreClass="drools.ecore#//DistributionParameter">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DistributionParameter/discrete"/>
@@ -72,6 +76,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/binomialDistribution"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/booleanParameter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/dateTimeParameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/decimalParameter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/durationParameter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/enumParameter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/erlangDistribution"/>
@@ -253,6 +258,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/processingTime"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/validationTime"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//TimeParameters/reworkTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TimeParameters/timeUnit"/>
     </genClasses>
     <genClasses ecoreClass="drools.ecore#//TriangularDistributionType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//TriangularDistributionType/max"/>

@@ -113,6 +113,8 @@ public class DroolsValidator extends EObjectValidator {
 				return validateCostParameters((CostParameters)value, diagnostics, context);
 			case DroolsPackage.DATE_TIME_PARAMETER_TYPE:
 				return validateDateTimeParameterType((DateTimeParameterType)value, diagnostics, context);
+			case DroolsPackage.DECIMAL_PARAMETER_TYPE:
+				return validateDecimalParameterType((DecimalParameterType)value, diagnostics, context);
 			case DroolsPackage.DISTRIBUTION_PARAMETER:
 				return validateDistributionParameter((DistributionParameter)value, diagnostics, context);
 			case DroolsPackage.DOCUMENT_ROOT:
@@ -290,6 +292,15 @@ public class DroolsValidator extends EObjectValidator {
 	 */
 	public boolean validateDateTimeParameterType(DateTimeParameterType dateTimeParameterType, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(dateTimeParameterType, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateDecimalParameterType(DecimalParameterType decimalParameterType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(decimalParameterType, diagnostics, context);
 	}
 
 	/**
