@@ -42,7 +42,11 @@
         <excludes>
           <exclude>WEB-INF/classes/META-INF/persistence.xml</exclude>
           <exclude>WEB-INF/lib/netty-*.jar</exclude>
-          
+
+          <!-- possible signature info-->
+          <exclude>META-INF/*.SF</exclude>
+          <exclude>META-INF/*.RSA</exclude>
+
           <!-- hibernate 3 transitive deps -->
           <exclude>WEB-INF/lib/hibernate*.jar</exclude>
           <exclude>WEB-INF/lib/dom4j-*.jar</exclude>

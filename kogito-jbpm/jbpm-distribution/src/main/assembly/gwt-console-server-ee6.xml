@@ -43,6 +43,11 @@
       <unpackOptions>
         <excludes>
           <exclude>WEB-INF/classes/META-INF/persistence.xml</exclude>
+
+          <!-- possible signature info-->
+          <exclude>META-INF/*.SF</exclude>
+          <exclude>META-INF/*.RSA</exclude>
+
           <!-- jars -->
           <exclude>WEB-INF/lib/netty-*.jar</exclude>
           
