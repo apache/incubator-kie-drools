@@ -89,7 +89,7 @@
                     </manifestEntries>
                 </archive>
                <!-- exclude old codec version from gwt-console-server -->
-               <dependentWarExcludes>WEB-INF/lib/commons-codec-1.3.jar,WEB-INF/lib/mvel2-2.0.18-RC4.jar</dependentWarExcludes>   
+               <dependentWarExcludes>WEB-INF/lib/commons-codec-1.3.jar,WEB-INF/lib/mvel2-2.0.18-RC4.jar,META-INF/*.SF,META-INF/*.RSA</dependentWarExcludes>   
             </configuration>
           </plugin>
        </plugins>
