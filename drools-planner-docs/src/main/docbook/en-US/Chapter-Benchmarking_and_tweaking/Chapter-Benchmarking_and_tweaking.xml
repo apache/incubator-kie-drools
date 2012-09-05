@@ -141,7 +141,7 @@
       <para>Every <literal>solverBenchmark</literal> element contains a solver configuration (for example with a local
       search solver phase) and one or more <literal>inputSolutionFile</literal> elements. It will run the solver
       configuration on each of those unsolved solution files. The element <literal>name</literal> is optional, because
-      it is generated if absent. The inputSolutionFile is read by a <link linkend="problemIO">ProblemIO</link>. </para>
+      it is generated if absent. The inputSolutionFile is read by a <link linkend="problemIO">ProblemIO</link>.</para>
 
       <para>To lower verbosity, the common part of multiple <literal>solverBenchmark</literal> entities can be extracted
       to the <literal>inheritedSolverBenchmark</literal> element. Yet, every element can still be overwritten per
@@ -181,13 +181,13 @@
 }</programlisting>
 
         <warning>
-          <para>Your input files need to have been written with the same <literal>ProblemIO</literal> class as they
-          are being read by the benchmarker.</para>
+          <para>Your input files need to have been written with the same <literal>ProblemIO</literal> class as they are
+          being read by the benchmarker.</para>
         </warning>
       </section>
 
       <section>
-        <title><literal>XStreamProblemIO</literal></title>
+        <title><literal>XStreamProblemIO</literal>: the default <literal>ProblemIO</literal></title>
 
         <para>By default, a benchmarker uses a <literal>XStreamProblemIO</literal> instance to read and write
         solutions.</para>
@@ -204,6 +204,11 @@
         <para>Your input files need to have been written with a <literal>XStreamProblemIO</literal> instance, not just
         any <literal>XStream</literal> instance, because the <literal>XStreamProblemIO</literal> uses a customized
         <literal>XStream</literal> instance.</para>
+
+        <warning>
+          <para>XStream and XML in general is a very verbose format. Reading or writing large datasets in this format
+          can cause an <literal>OutOfMemoryError</literal> and performance degradation.</para>
+        </warning>
       </section>
 
       <section>
@@ -439,61 +444,79 @@
     <title>Advanced benchmarking</title>
 
     <section>
-      <title>Parallel benchmarking on multiple threads</title>
+      <title>Benchmarking performance tricks</title>
 
-      <para>If you have multiple processors available on your computer, you can run multiple benchmarks in parallel on
-      multiple threads to get your benchmarks results faster:</para>
+      <section>
+        <title>Parallel benchmarking on multiple threads</title>
 
-      <programlisting language="xml">&lt;plannerBenchmark&gt;
+        <para>If you have multiple processors available on your computer, you can run multiple benchmarks in parallel on
+        multiple threads to get your benchmarks results faster:</para>
+
+        <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
   &lt;parallelBenchmarkCount&gt;AUTO&lt;/parallelBenchmarkCount&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <warning>
-        <para>Running too many benchmarks in parallel will affect the results of benchmarks negatively. Leave some
-        processors unused for garbage collection and other processes.</para>
+        <warning>
+          <para>Running too many benchmarks in parallel will affect the results of benchmarks negatively. Leave some
+          processors unused for garbage collection and other processes.</para>
 
-        <para>We tweak <literal>parallelBenchmarkCount</literal> <literal>AUTO</literal> to maximize the reliability and
-        efficiency of the benchmark results.</para>
-      </warning>
+          <para>We tweak <literal>parallelBenchmarkCount</literal> <literal>AUTO</literal> to maximize the reliability
+          and efficiency of the benchmark results.</para>
+        </warning>
 
-      <para>The following <literal>parallelBenchmarkCount</literal>s are supported:</para>
+        <para>The following <literal>parallelBenchmarkCount</literal>s are supported:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para><literal>1</literal>: Run all benchmarks sequentially. This is the default setting.</para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para><literal>1</literal>: Run all benchmarks sequentially. This is the default setting.</para>
+          </listitem>
 
-        <listitem>
-          <para><literal>AUTO</literal>: Let Planner decide how many benchmarks to run in parallel. This formula is
-          based on experience. It's recommended to prefer this over the other parallel enabling options.</para>
-        </listitem>
+          <listitem>
+            <para><literal>AUTO</literal>: Let Planner decide how many benchmarks to run in parallel. This formula is
+            based on experience. It's recommended to prefer this over the other parallel enabling options.</para>
+          </listitem>
 
-        <listitem>
-          <para>Static number: The number of benchmarks to run in parallel.</para>
+          <listitem>
+            <para>Static number: The number of benchmarks to run in parallel.</para>
 
-          <programlisting language="xml">&lt;parallelBenchmarkCount&gt;2&lt;/parallelBenchmarkCount&gt;</programlisting>
-        </listitem>
+            <programlisting language="xml">&lt;parallelBenchmarkCount&gt;2&lt;/parallelBenchmarkCount&gt;</programlisting>
+          </listitem>
 
-        <listitem>
-          <para>JavaScript formula: Formula for the number of benchmarks to run in parallel. It can use the variable
-          <literal>availableProcessorCount</literal>. For example:</para>
+          <listitem>
+            <para>JavaScript formula: Formula for the number of benchmarks to run in parallel. It can use the variable
+            <literal>availableProcessorCount</literal>. For example:</para>
 
-          <programlisting language="xml">&lt;parallelBenchmarkCount&gt;(availableProcessorCount / 2) + 1&lt;/parallelBenchmarkCount&gt;</programlisting>
-        </listitem>
-      </itemizedlist>
+            <programlisting language="xml">&lt;parallelBenchmarkCount&gt;(availableProcessorCount / 2) + 1&lt;/parallelBenchmarkCount&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
 
-      <note>
-        <para>The <literal>parallelBenchmarkCount</literal> is always limited to the number of available processors. If
-        it's higher, it will be automatically decreased.</para>
-      </note>
+        <note>
+          <para>The <literal>parallelBenchmarkCount</literal> is always limited to the number of available processors.
+          If it's higher, it will be automatically decreased.</para>
+        </note>
 
-      <note>
-        <para>In the future, we will also support multi-JVM benchmarking. This feature is independent of <link
-        xlink:href="https://issues.jboss.org/browse/JBRULES-681">multi-threaded solving</link> or multi-JVM
-        solving.</para>
-      </note>
+        <note>
+          <para>In the future, we will also support multi-JVM benchmarking. This feature is independent of <link
+          xlink:href="https://issues.jboss.org/browse/JBRULES-681">multi-threaded solving</link> or multi-JVM
+          solving.</para>
+        </note>
+      </section>
+
+      <section xml:id="disableWriteTheOutputSolution">
+        <title>Disable writing the outputSolution</title>
+
+        <para>On large datasets, writing the output solution of each single benchmark can take quite some time and
+        memory (causing an <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream. You can
+        disable that the output solution is written:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;writeOutputSolutionEnabled&gt;false&lt;/writeOutputSolutionEnabled&gt;
+      ...
+    &lt;/problemBenchmarks&gt;</programlisting>
+      </section>
     </section>
 
     <section>

@@ -40,6 +40,7 @@ public class ProblemBenchmarksConfig {
     private Class<ProblemIO> problemIOClass = null;
     @XStreamImplicit(itemFieldName = "xstreamAnnotatedClass")
     private List<Class> xstreamAnnotatedClassList = null;
+    private Boolean writeOutputSolutionEnabled = null;
 
     @XStreamImplicit(itemFieldName = "inputSolutionFile")
     private List<File> inputSolutionFileList = null;
@@ -61,6 +62,14 @@ public class ProblemBenchmarksConfig {
 
     public void setXstreamAnnotatedClassList(List<Class> xstreamAnnotatedClassList) {
         this.xstreamAnnotatedClassList = xstreamAnnotatedClassList;
+    }
+
+    public Boolean getWriteOutputSolutionEnabled() {
+        return writeOutputSolutionEnabled;
+    }
+
+    public void setWriteOutputSolutionEnabled(Boolean writeOutputSolutionEnabled) {
+        this.writeOutputSolutionEnabled = writeOutputSolutionEnabled;
     }
 
     public List<File> getInputSolutionFileList() {
@@ -142,6 +151,8 @@ public class ProblemBenchmarksConfig {
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
         problemBenchmark.setName(name);
         problemBenchmark.setProblemIO(problemIO);
+        problemBenchmark.setWriteOutputSolutionEnabled(
+                writeOutputSolutionEnabled == null ? true : writeOutputSolutionEnabled);
         problemBenchmark.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
         List<ProblemStatistic> problemStatisticList = new ArrayList<ProblemStatistic>(
@@ -168,6 +179,8 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getProblemIOClass());
         xstreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xstreamAnnotatedClassList,
                 inheritedConfig.getXstreamAnnotatedClassList());
+        writeOutputSolutionEnabled = ConfigUtils.inheritOverwritableProperty(writeOutputSolutionEnabled,
+                inheritedConfig.getWriteOutputSolutionEnabled());
         inputSolutionFileList = ConfigUtils.inheritMergeableListProperty(inputSolutionFileList,
                 inheritedConfig.getInputSolutionFileList());
         problemStatisticTypeList = ConfigUtils.inheritMergeableListProperty(problemStatisticTypeList,

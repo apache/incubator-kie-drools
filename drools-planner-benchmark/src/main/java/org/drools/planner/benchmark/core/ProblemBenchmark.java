@@ -44,6 +44,7 @@ public class ProblemBenchmark {
     private String name = null;
 
     private ProblemIO problemIO = null;
+    private boolean writeOutputSolutionEnabled = true;
     private File inputSolutionFile = null;
     private File problemReportDirectory = null;
 
@@ -74,6 +75,14 @@ public class ProblemBenchmark {
 
     public void setProblemIO(ProblemIO problemIO) {
         this.problemIO = problemIO;
+    }
+
+    public boolean isWriteOutputSolutionEnabled() {
+        return writeOutputSolutionEnabled;
+    }
+
+    public void setWriteOutputSolutionEnabled(boolean writeOutputSolutionEnabled) {
+        this.writeOutputSolutionEnabled = writeOutputSolutionEnabled;
     }
 
     public File getInputSolutionFile() {
@@ -156,7 +165,10 @@ public class ProblemBenchmark {
         return problemIO.read(inputSolutionFile);
     }
 
-    public void writeSolution(SingleBenchmark singleBenchmark, Solution outputSolution) {
+    public void writeOutputSolution(SingleBenchmark singleBenchmark, Solution outputSolution) {
+        if (!writeOutputSolutionEnabled) {
+            return;
+        }
         String filename = singleBenchmark.getName() + "." + problemIO.getFileExtension();
         File outputSolutionFile = new File(problemReportDirectory, filename);
         problemIO.write(outputSolution, outputSolutionFile);

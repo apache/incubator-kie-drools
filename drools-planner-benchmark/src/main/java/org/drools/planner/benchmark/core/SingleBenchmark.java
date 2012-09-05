@@ -162,7 +162,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         for (SingleStatistic singleStatistic : singleStatisticMap.values()) {
             singleStatistic.close();
         }
-        problemBenchmark.writeSolution(this, outputSolution);
+        problemBenchmark.writeOutputSolution(this, outputSolution);
         return this;
     }
 
