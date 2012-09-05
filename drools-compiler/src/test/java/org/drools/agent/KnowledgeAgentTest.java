@@ -985,7 +985,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         list.clear();
         
-        this.unapplyNamedResource((KnowledgeAgentImpl)kagent, namedResourceName);
+        this.removeNamedResource((KnowledgeAgentImpl)kagent, namedResourceName);
         ksession.fireAllRules();
         
         assertTrue(list.isEmpty());

@@ -147,7 +147,7 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
         this.processNamedResource(kagent, name, resource, type, true);
     }
     
-    void unapplyNamedResource(KnowledgeAgentImpl kagent, String name){
+    void removeNamedResource(KnowledgeAgentImpl kagent, String name){
         this.processNamedResource(kagent, name, null, null, false);
     }
     
@@ -195,7 +195,7 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
         if (apply){
             kagent.applyNamedResource(name, resource, type);
         }else{
-            kagent.unapplyNamedResource(name);
+            kagent.removeNamedResource(name);
         }
         
 

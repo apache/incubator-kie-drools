@@ -219,10 +219,10 @@ public class KnowledgeAgentImpl
     }
     
     /**
-     * Unapplies a Resource previously applied using {@link #applyNamedResource(java.lang.String, org.drools.io.Resource) }.  
+     * Removes a Resource previously applied using {@link #applyNamedResource(java.lang.String, org.drools.io.Resource) }.  
      * @param name 
      */
-    public void unapplyNamedResource(String name){
+    public void removeNamedResource(String name){
         
         //find the resource to be removed.
         Set<Resource> allResources = this.registeredResources.getAllResources();
