@@ -165,6 +165,7 @@ public class KProjectChangeLog
                 removedKBases.add( oldQName );
                 addedKBases.remove( oldQName );
                 addedKBases.add( newQName );
+                kBases.put( newQName, kBase );
             } else if ( "name".equals( evt.getPropertyName() ) ) {
                 String oldV = (String) evt.getOldValue();
                 String newV = (String) evt.getNewValue();
@@ -178,6 +179,7 @@ public class KProjectChangeLog
                 removedKBases.add( oldQName );
                 addedKBases.remove( oldQName );
                 addedKBases.add( newQName );
+                kBases.put( newQName, kBase );
             } else {
                 addedKBases.add( kBase.getQName() );
             }
@@ -197,6 +199,7 @@ public class KProjectChangeLog
                 removedKSessions.add( oldQName );
                 addedKSessions.remove( oldQName );
                 addedKSessions.add( newQName );
+                kSessions.put( newQName, kSession );
             } else if ( "name".equals( evt.getPropertyName() ) ) {
                 String oldV = (String) evt.getOldValue();
                 String newV = (String) evt.getNewValue();
@@ -210,8 +213,10 @@ public class KProjectChangeLog
                 removedKSessions.add( oldQName );
                 addedKSessions.remove( oldQName );
                 addedKSessions.add( newQName );
+                kSessions.put( newQName, kSession );
             } else {
                 addedKSessions.add( kSession.getQName() );
+                kSessions.put( kSession.getQName() , kSession );
             }
         }
     }
