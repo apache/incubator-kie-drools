@@ -2,20 +2,22 @@ package org.drools.kproject;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
 
 public class KProjectChangeLogCommiter {
     private KProject          kProject;
     private KProjectChangeLog changeLog;
     private FileSystem        fs;
 
-    public static void commit(KProject kproject,
+    /**  Generates only the qualifiers and producers for the modified items in the KProjectChangeLog
+     * 
+     * @param kProject
+     * @param changeLog
+     * @param fs
+     */
+    public static void commit(KProject kProject,
                               KProjectChangeLog changeLog,
                               FileSystem fs) {
-        KProjectChangeLogCommiter committer = new KProjectChangeLogCommiter( kproject, changeLog, fs );
+        KProjectChangeLogCommiter committer = new KProjectChangeLogCommiter( kProject, changeLog, fs );
 
         committer.commitRemovedKBases();
         committer.commitAddedKBases();
@@ -26,6 +28,24 @@ public class KProjectChangeLogCommiter {
         changeLog.reset();
     }
 
+    /**  Generates qualifiers and producers for the entire KProject
+     * 
+     * @param kProject
+     * @param changeLog
+     * @param fs
+     */
+    public static void commit(KProject kProject,
+                              FileSystem fs) {
+        KProjectChangeLogCommiter committer = new KProjectChangeLogCommiter( kProject, null, fs );
+        for ( KBase kBase : kProject.getKBases().values() ) {
+            committer.commitAddedKBase( kBase);
+            for ( KSession kSession : kBase.getKSessions().values() ) {
+                Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kBase.getQName() );
+                committer.commitAddedKSession( rootFld, kBase, kSession );
+            }
+        }
+    }   
+    
     private KProjectChangeLogCommiter(KProject kproject,
                                       KProjectChangeLog changeLog,
                                       FileSystem fs) {
