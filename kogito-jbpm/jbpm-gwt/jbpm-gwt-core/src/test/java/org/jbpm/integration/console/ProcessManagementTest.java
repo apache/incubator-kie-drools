@@ -141,7 +141,6 @@ public class ProcessManagementTest extends JbpmGwtCoreTestCase {
     @Test 
     public void testNewInstance() throws Exception {
         StatefulKnowledgeSession session = StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession();
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler(session));
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("employee", "krisv");

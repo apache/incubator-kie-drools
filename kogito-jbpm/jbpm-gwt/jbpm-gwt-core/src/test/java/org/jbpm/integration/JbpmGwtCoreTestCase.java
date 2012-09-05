@@ -15,33 +15,12 @@ import junit.framework.Assert;
 
 import org.drools.SystemEventListenerFactory;
 import org.drools.persistence.util.PersistenceUtil;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AllowedToDelegate;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BooleanExpression;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.Delegation;
-import org.jbpm.task.Escalation;
 import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Notification;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
-import org.jbpm.task.service.mina.MinaTaskServer;
+import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.junit.BeforeClass;
-import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
-import org.mvel2.compiler.ExpressionCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +36,7 @@ public abstract class JbpmGwtCoreTestCase extends Assert {
 	private static HashMap<String, Object> context = null;
 	private static EntityManagerFactory emf;
 	
-	static MinaTaskServer minaServer;
+	static HornetQTaskServer minaServer;
 	static Thread minaServerThread;
     
     @BeforeClass
@@ -99,7 +78,7 @@ public abstract class JbpmGwtCoreTestCase extends Assert {
 		} 
 		
         // start server
-        minaServer = new MinaTaskServer(taskService);
+        minaServer = new HornetQTaskServer(taskService, 5445);
         minaServerThread = new Thread(minaServer);
         minaServerThread.start();
         taskSession.dispose();
