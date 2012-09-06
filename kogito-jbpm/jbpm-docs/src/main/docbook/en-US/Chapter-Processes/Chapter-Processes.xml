@@ -1238,6 +1238,10 @@ person.setAge(10);</programlisting>
         example can store the data associated to the event in a variable, etc. 
         Check the properties of the different node types for more information.</para>
         </listitem>
+        <listitem><para>Process variables can be accessed also from the Java code of your application. It is
+        done by casting of <code>ProcessInstance</code> to <code>WorkflowProcessInstance</code>.
+        See the following example:</para>
+        <programlisting language="java">variable = ((WorkflowProcessInstance) processInstance).getVariable("variableName");</programlisting> </listitem>
       </itemizedlist>
 
     <para>Finally, processes (and rules) all have access to globals, i.e.
