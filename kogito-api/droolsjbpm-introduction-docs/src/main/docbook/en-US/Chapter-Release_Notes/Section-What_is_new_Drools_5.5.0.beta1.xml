@@ -17,32 +17,35 @@
 
       <programlisting>Person( name == "mark", address.city == "london", address.country == "uk" )</programlisting>
 
-      <para>Now these accessors to nested objects can be grouped with a '.(...)' syntax providing more
-      readable rules as it follows:</para>
+      <para>Now these accessors to nested objects can be grouped with a '.(...)' syntax providing more readable rules as
+      it follows:</para>
 
       <programlisting>Person( name==  "mark", address.( city == "london", country ==  "uk") )</programlisting>
 
-      <para>Note the '.' prefix, this is necessary to differentiate the nested object constrtaints from a method call.</para>
+      <para>Note the '.' prefix, this is necessary to differentiate the nested object constrtaints from a method
+      call.</para>
     </section>
 
     <section>
       <title>Inline casts and coercion</title>
 
-      <para>When dealing with nested objects, we may need to cast to a subtype. Now it is possible to do that via the # symbol as in:</para>
+      <para>When dealing with nested objects, we may need to cast to a subtype. Now it is possible to do that via the #
+      symbol as in:</para>
 
       <programlisting>Person( name=="mark", address#LongAddress.country == "uk" )</programlisting>
 
-      <para>This example casts Address to LongAddress, making its getters available. If the cast is not possible (instanceof returns false),
-      the evaluation will be considered false. Also fully qualified names are supported:</para>
+      <para>This example casts Address to LongAddress, making its getters available. If the cast is not possible
+      (instanceof returns false), the evaluation will be considered false. Also fully qualified names are
+      supported:</para>
 
       <programlisting>Person( name=="mark", address#org.domain.LongAddress.country == "uk" )</programlisting>
 
       <para>It is possible to use multiple inline casts in the same expression:</para>
 
-      <programlisting>Person( name == "mark", address#LongAddress.country#DetailedCountry.population > 10000000 )</programlisting>
+      <programlisting>Person( name == "mark", address#LongAddress.country#DetailedCountry.population &gt; 10000000 )</programlisting>
 
-      <para>moreover, since we also support the instanceof operator, if that is used we will infer its results for further uses of that field,
-      within that pattern:</para>
+      <para>moreover, since we also support the instanceof operator, if that is used we will infer its results for
+      further uses of that field, within that pattern:</para>
 
       <programlisting>Person(  name=="mark", address instanceof LongAddress, address.country == "uk" )</programlisting>
     </section>
@@ -174,10 +177,10 @@
       <title>Guided Decision Table receives an Audit Log</title>
 
       <para>An audit log has been added to the web-guided Decision Table editor to track additions, deletions and
-      modifications. </para>
+      modifications.</para>
 
       <para>By default the audit log is not configured to record any events, however, users can easily select the events
-      in which they are interested. </para>
+      in which they are interested.</para>
 
       <para>The audit log is persisted whenever the asset is checked in.</para>
 
@@ -205,7 +208,7 @@
       </itemizedlist>
 
       <figure>
-        <title> Example of audit events</title>
+        <title>Example of audit events</title>
 
         <mediaobject>
           <imageobject>
@@ -213,6 +216,39 @@
           </imageobject>
         </mediaobject>
       </figure>
+    </section>
+
+    <section>
+      <title>Simulation Testing (unfinished prototype)</title>
+
+      <para>Simulation testing allows you to test a sequence of events in Guvnor. This is very usefull for testing CEP
+      use cases.</para>
+
+      <para>The example below shows a testcase that calls <literal>fireAllRules</literal> twice: once after a little
+      over 3 seconds and once after a little over 5 seconds:</para>
+
+      <figure>
+        <title>Prototype of the simulation testing GUI</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/simulation-testing1.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Each simulation consists out of a number of paths: in the example above there is only 1 path. Each path
+      consists out of number of steps: in the example above there are 3 steps. Notice how the timeline overview shows
+      the steps and their relative time distance. The timeline can zoom in and out.</para>
+
+      <para>Each step consist out of a number of actions: in the example above, the second step at 3 seconds does 2
+      actions: fire all rules and data assertion. Actions, steps and paths can be added, moved and removed as
+      needed.</para>
+
+      <para>For more information, take a look at <link
+      xlink:href="http://blog.athico.com/2012/08/simulation-testing-in-guvnor-first.html">the simulation testing
+      video</link>. A simulation test asset stored in 5.5.0.Beta1 will not be readable in 5.5.0.Beta2. Feedback is
+      welcome.</para>
     </section>
   </section>
 
