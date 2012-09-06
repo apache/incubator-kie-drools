@@ -25,6 +25,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -58,7 +60,9 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     private EntityManager em;
     @Inject
     private Event<NotificationEvent> notificationEvents;
-
+    @Inject 
+    private Logger logger;
+    
     public TaskDeadlinesServiceImpl() {
     }
 
@@ -104,7 +108,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             }
             for (Notification notification : escalation.getNotifications()) {
                 if (notification.getNotificationType() == NotificationType.Email) {
-                    System.out.println(" ### Sending an Email");
+                    logger.log(Level.INFO, " ### Sending an Email");
                     //@TODO: this should only send an event and a specific NotificationObserver 
                     //     should be implemented for Email Notifications
                     //executeEmailNotification((EmailNotification) notification, task, content);
@@ -142,7 +146,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 }
 
             } catch (Exception e) {
-                System.out.println(" XXX :Error while cancelling scheduled deadline task for Task with id " + taskId + " -> " + e);
+                logger.log(Level.SEVERE," XXX :Error while cancelling scheduled deadline task for Task with id " + taskId + " -> " + e);
             }
         }
     }

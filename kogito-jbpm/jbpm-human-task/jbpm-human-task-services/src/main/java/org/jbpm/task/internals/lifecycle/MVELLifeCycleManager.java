@@ -13,6 +13,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
@@ -69,6 +71,7 @@ import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
+
 /**
  *
  */
@@ -90,6 +93,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     @Internal
     private TaskLifeCycleEventListener eventListener;
     private Map<Operation, List<OperationCommand>> operations;
+    
+    @Inject
+    private Logger logger;
 
     public MVELLifeCycleManager() {
     }
@@ -122,8 +128,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
                         commands(command, task, user, targetEntity);
                     } else {
-                        // LOG THIS:
-                        //System.out.println("No match on status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
+                        logger.log(Level.FINEST, "No match on status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
                     }
                 }
             }
@@ -141,7 +146,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
                         commands(command, task, user, targetEntity);
                     } else {
-                        System.out.println("No match on previous status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
+                        logger.log(Level.FINEST, "No match on previous status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
                     }
                 }
             }
@@ -253,12 +258,10 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             switch (command.getExec()) {
                 case Claim: {
                     taskData.setActualOwner((User) targetEntity);
+                    // @TODO: Ical stuff
                     // Task was reserved so owner should get icals
 //                    SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
-//
-//                    // trigger event support
-//                    service.getEventSupport().fireTaskClaimed(task.getId(),
-//                            task.getTaskData().getActualOwner().getId());
+
                     break;
                 }
             }
@@ -500,7 +503,6 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     public static Object eval(String str, Map<String, Object> vars) {
         ParserConfiguration pconf = new ParserConfiguration();
         pconf.addPackageImport("org.jbpm.task");
-//    	pconf.addPackageImport("org.jbpm.task.service");
         pconf.addPackageImport("org.jbpm.task.query");
         pconf.addPackageImport("org.jbpm.task.internals.lifecycle");
 
@@ -508,9 +510,6 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         pconf.addImport(Allowed.class);
         pconf.addPackageImport("java.util");
 
-//    	for(String entry : getInputs().keySet()){
-//    		pconf.addImport(entry, getInputs().get(entry));
-//        }
         ParserContext context = new ParserContext(pconf);
         Serializable s = MVEL.compileExpression(str.trim(), context);
 

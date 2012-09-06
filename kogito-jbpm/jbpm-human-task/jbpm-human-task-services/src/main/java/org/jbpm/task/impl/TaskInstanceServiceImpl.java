@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
@@ -60,6 +62,9 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     private LifeCycleManager lifeCycleManager;
     @Inject @TaskPersistence
     private EntityManager em;
+    
+    @Inject
+    private Logger logger;
     
     public TaskInstanceServiceImpl() {
     }
@@ -293,7 +298,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 em.persist(user);
             }
         } catch (Throwable t) {
-            //logger.log(Level.SEVERE, "Unable to add user " + userId);
+            logger.log(Level.SEVERE, "Unable to add user " + userId);
         }
     }
     // ALL THIS CODE SHOULD NOT BE HERE>> THIS IS PLACED HERE TO DEMONSTRATE THAT IS WRONG
@@ -343,7 +348,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 em.persist(group);
             }
         } catch (Throwable t) {
-            //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
+            logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
         }
     }
     

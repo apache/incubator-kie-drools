@@ -102,8 +102,7 @@ public class TaskFactory {
             // multiple potential owners, so set to Ready so one can claim.
             assignedStatus = Status.Ready;
         } else {
-            //@TODO we have no potential owners
-            System.out.println(" XXX @TODO we have no potential owners");
+            //@TODO: we have no potential owners
         }
 
         if (assignedStatus != null) {
