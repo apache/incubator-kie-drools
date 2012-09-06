@@ -46,8 +46,9 @@ public class KSessionImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KSession#setListener(java.beans.PropertyChangeListener)
      */
-    public void setListener(PropertyChangeListener listener) {
+    public KSession setListener(PropertyChangeListener listener) {
         this.listener = listener;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -60,11 +61,12 @@ public class KSessionImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KSession#setNamespace(java.lang.String)
      */
-    public void setNamespace(String namespace) {
+    public KSession setNamespace(String namespace) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "namespace", this.namespace, namespace ) );
         }
         this.namespace = namespace;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -77,11 +79,12 @@ public class KSessionImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KSession#setName(java.lang.String)
      */
-    public void setName(String name) {
+    public KSession setName(String name) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "name", this.name, name ) );
         }
         this.name = name;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -101,11 +104,12 @@ public class KSessionImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KSession#setType(java.lang.String)
      */
-    public void setType(String type) {
+    public KSession setType(String type) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "type", this.type, type ) );
         }
         this.type = type;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -118,11 +122,12 @@ public class KSessionImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KSession#setClockType(org.drools.runtime.conf.ClockTypeOption)
      */
-    public void setClockType(ClockTypeOption clockType) {
+    public KSession setClockType(ClockTypeOption clockType) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "clockType", this.clockType, clockType ) );
         }
         this.clockType = clockType;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -135,11 +140,12 @@ public class KSessionImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KSession#setAnnotations(java.util.List)
      */
-    public void setAnnotations(List<String> annotations) {
+    public KSession setAnnotations(List<String> annotations) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "annotations", this.annotations, annotations ) );
         }
         this.annotations = annotations;
+        return this;
     }
 
     @Override

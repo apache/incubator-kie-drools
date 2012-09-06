@@ -79,11 +79,11 @@ public class KProjectTest {
         List<String> files = asList( new String[]{} );
 
         // Create and add the KBase
-        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" );
-        kBase1.setFiles( files );
-        kBase1.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
-        kBase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
-        kBase1.setEventProcessingMode( EventProcessingOption.STREAM );
+        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" )
+                            .setFiles( files )
+                            .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+                            .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                            .setEventProcessingMode( EventProcessingOption.STREAM );
 
         MemoryFileSystem mfs = new MemoryFileSystem();
         KProjectChangeLogCommiter.commit( kproj, klog, mfs );
@@ -133,10 +133,11 @@ public class KProjectTest {
         List<String> files = asList( new String[]{} );
 
         // create and add the KBase
-        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" );
-        kBase1.setFiles( files );
-        kBase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
-        kBase1.setEventProcessingMode( EventProcessingOption.STREAM );
+        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" )
+                .setFiles( files )
+                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEventProcessingMode( EventProcessingOption.STREAM );
 
         MemoryFileSystem mfs = new MemoryFileSystem();
         KProjectChangeLogCommiter.commit( kproj, klog, mfs );
@@ -144,9 +145,9 @@ public class KProjectTest {
         assertTrue( fld.exists() );
 
         // Creat and add KSession
-        KSession kSession1 = kBase1.newKSession( "org.test1", "KSession1" );
-        kSession1.setType( "stateful" );
-        kSession1.setClockType( ClockTypeOption.get( "realtime" ) );
+        KSession kSession1 = kBase1.newKSession( "org.test1", "KSession1" )
+                                   .setType( "stateful" )
+                                   .setClockType( ClockTypeOption.get( "realtime" ) );
 
         KProjectChangeLogCommiter.commit( kproj, klog, mfs );
 
@@ -156,8 +157,8 @@ public class KProjectTest {
         assertTrue( s.contains( "realtime" ) );
 
         // Modify KSession
-        kSession1.setType( "stateless" );
-        kSession1.setClockType( ClockTypeOption.get( "pseudo" ) );
+        kSession1.setType( "stateless" )
+                 .setClockType( ClockTypeOption.get( "pseudo" ) );
         KProjectChangeLogCommiter.commit( kproj, klog, mfs );
 
         mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KSession1Producer.java" );
@@ -184,45 +185,45 @@ public class KProjectTest {
 
         List<String> files = asList( new String[]{"org/test1/rule1.drl", "org/test1/rule2.drl"} );
 
-        KBase kBase1 = kproj.newKBase( "org.test1", "kBase1" );
-        kBase1.setFiles( files );
-        kBase1.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
-        kBase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
-        kBase1.setEventProcessingMode( EventProcessingOption.STREAM );
+        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" )
+                            .setFiles( files )
+                            .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+                            .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                            .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( "org.test1", "KSession1" );
-        ksession1.setType( "stateless" );
-        ksession1.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
-        ksession1.setClockType( ClockTypeOption.get( "realtime" ) );
+        KSession ksession1 = kBase1.newKSession( "org.test1", "KSession1" )
+                                    .setType( "stateless" )
+                                    .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+                                    .setClockType( ClockTypeOption.get( "realtime" ) );
 
-        KSession ksession2 = kBase1.newKSession( "org.test1", "KSession2" );
-        ksession2.setType( "stateful" );
-        ksession2.setAnnotations( asList( "@ApplicationScoped; @Inject" ) );
-        ksession2.setClockType( ClockTypeOption.get( "pseudo" ) );
+        KSession ksession2 = kBase1.newKSession( "org.test1", "KSession2" )
+                                   .setType( "stateful" )
+                                   .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+                                   .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         files = asList( new String[]{"org/test2/rule1.drl", "org/test2/rule2.drl"} );
-        KBase kbase2 = kproj.newKBase( "org.test2", "KBase2" );
-        kbase2.setFiles( files );
+        KBase kbase2 = kproj.newKBase( "org.test2", "KBase2" )
+                            .setFiles( files )
+                            .setAnnotations( asList( "@ApplicationScoped" ) )
+                            .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
+                            .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        kbase2.setAnnotations( asList( "@ApplicationScoped" ) );
-        kbase2.setEqualsBehavior( AssertBehaviorOption.IDENTITY );
-        kbase2.setEventProcessingMode( EventProcessingOption.CLOUD );
+        KSession ksession3 = kbase2.newKSession( "org.test2", "KSession3" )
+                                    .setType( "stateful" )
+                                    .setAnnotations( asList( "@ApplicationScoped" ) )
+                                    .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KSession ksession3 = kbase2.newKSession( "org.test2", "KSession3" );
-        ksession3.setType( "stateful" );
-        ksession3.setAnnotations( asList( "@ApplicationScoped" ) );
-        ksession3.setClockType( ClockTypeOption.get( "pseudo" ) );      
-        
-        //        System.out.println( kproj);
         //        
         //        XStream xstream = new XStream();
         //        String string = xstream.toXML( kproj );
         //        System.out.println( string );
         //      
-        //      printFs(  mfs, mfs.getProjectFolder() );
+
         //                
         MemoryFileSystem mfs = new MemoryFileSystem();
         KProjectChangeLogCommiter.commit( kproj, mfs );
+
+        // printFs(  mfs, mfs.getProjectFolder() );
 
         String kBase1R1 = getRule( "org.test1", "rule1" );
         String kBase1R2 = getRule( "org.test1", "rule2" );
@@ -412,14 +413,14 @@ public class KProjectTest {
                    "import " + KnowledgeBase.class.getName() + ";\n" +
                    "import " + StatefulKnowledgeSession.class.getName() + ";\n" +
                    "import " + StatelessKnowledgeSession.class.getName() + ";\n" +
-                   "import org.test1.kBase1;\n" +
+                   "import org.test1.KBase1;\n" +
                    "import org.test1.KSession1;\n" +
                    "import org.test1.KSession2;\n" +
                    "import org.test2.KSession3;\n" +
                    "import org.test2.KBase2;\n" +
 
                    "public class KProjectTestClassImpl implements org.drools.kproject.KProjectTestClass {\n" +
-                   "    private @Inject @kBase1 KnowledgeBase kBase1; \n" +
+                   "    private @Inject @KBase1 KnowledgeBase kBase1; \n" +
                    "    public KnowledgeBase getKBase1() {\n" +
                    "        return kBase1;\n" +
                    "    }\n" +

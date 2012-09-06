@@ -36,12 +36,13 @@ public class KProjectImpl implements KProject {
     /* (non-Javadoc)
      * @see org.drools.kproject.KProject#setListener(java.beans.PropertyChangeListener)
      */
-    public void setListener(PropertyChangeListener listener) {
+    public KProject setListener(PropertyChangeListener listener) {
         this.listener = listener;
         for ( KBase kbase : kBases.values() ) {
             // make sure the listener is set for each kbase
             kbase.setListener( listener );
-        }        
+        }
+        return this;
     }
 
 
@@ -56,11 +57,12 @@ public class KProjectImpl implements KProject {
     /* (non-Javadoc)
      * @see org.drools.kproject.KProject#setKProjectPath(java.lang.String)
      */
-    public void setKProjectPath(String kprojectPath) {
+    public KProject setKProjectPath(String kprojectPath) {
         if ( listener != null ) {
             listener.propertyChange( new java.beans.PropertyChangeEvent( this, "kProjectPath", this.kProjectPath, kProjectPath ) );
         }
         this.kProjectPath = kprojectPath;
+        return this;
     }
     
     /* (non-Javadoc)
@@ -73,11 +75,12 @@ public class KProjectImpl implements KProject {
     /* (non-Javadoc)
      * @see org.drools.kproject.KProject#setKBasesPath(java.lang.String)
      */
-    public void setKBasesPath(String kprojectPath) {
+    public KProject setKBasesPath(String kprojectPath) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "kBasesPath", this.kBasesPath, kBasesPath ) );     
         }
         this.kBasesPath = kprojectPath;
+        return this;
     }  
     
     /* (non-Javadoc)
