@@ -118,7 +118,7 @@ public class AbstractJavaProcessBuilder {
                                  final BaseDescr descrLookup) {
         TemplateRegistry registry = getRuleTemplateRegistry();
 
-        context.getMethods().add(
+        context.getMethods().add((String)
                 TemplateRuntime.execute(registry.getNamedTemplate(ruleTemplate), null, new MapVariableResolverFactory(vars), registry)
         );
 
