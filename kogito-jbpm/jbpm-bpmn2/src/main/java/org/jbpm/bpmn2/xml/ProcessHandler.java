@@ -24,9 +24,6 @@ import java.util.Map;
 
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.ProcessContext;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -47,7 +44,7 @@ import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
-import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.instance.impl.CancelNodeInstanceAction;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.Constraint;
@@ -470,20 +467,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                 actions = new ArrayList<DroolsAction>();
                             }
                             DroolsConsequenceAction action =  new DroolsConsequenceAction("java", null);
-                            
-                            action.setMetaData("Action", new Action() {
-                                public void execute(ProcessContext context) throws Exception {
-                                    WorkflowProcessInstance pi = context.getNodeInstance().getProcessInstance();
-                                    long nodeInstanceId = -1;
-                                    for (NodeInstance nodeInstance : pi.getNodeInstances()) {
-                                        if (attachedToNodeId == nodeInstance.getNodeId()) {
-                                            nodeInstanceId = nodeInstance.getId();
-                                            break;
-                                        }
-                                    }
-                                    ((org.jbpm.workflow.instance.NodeInstance)context.getNodeInstance().getProcessInstance().getNodeInstance(nodeInstanceId)).cancel();
-                                }
-                            });
+                            action.setMetaData("Action", new CancelNodeInstanceAction(attachedToNodeId));
                             actions.add(action);
                             ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
                         }
@@ -519,20 +503,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                 actions = new ArrayList<DroolsAction>();
                             }
                             DroolsConsequenceAction action =  new DroolsConsequenceAction("java", null);
-                            
-                            action.setMetaData("Action", new Action() {
-                                public void execute(ProcessContext context) throws Exception {
-                                    WorkflowProcessInstance pi = context.getNodeInstance().getProcessInstance();
-                                    long nodeInstanceId = -1;
-                                    for (NodeInstance nodeInstance : pi.getNodeInstances()) {
-                                        if (attachedToNodeId == nodeInstance.getNodeId()) {
-                                            nodeInstanceId = nodeInstance.getId();
-                                            break;
-                                        }
-                                    }
-                                    ((org.jbpm.workflow.instance.NodeInstance)context.getNodeInstance().getProcessInstance().getNodeInstance(nodeInstanceId)).cancel();
-                                }
-                            });
+                            action.setMetaData("Action", new CancelNodeInstanceAction(attachedToNodeId));
                             actions.add(action);
                             ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
                         }
