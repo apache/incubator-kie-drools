@@ -37,10 +37,8 @@ import org.jboss.drools.ErlangDistributionType;
 import org.jboss.drools.ExpressionParameterType;
 import org.jboss.drools.FloatingParameterType;
 import org.jboss.drools.GammaDistributionType;
-import org.jboss.drools.GlobalParameterType;
 import org.jboss.drools.GlobalType;
 import org.jboss.drools.ImportType;
-import org.jboss.drools.InstanceParameters;
 import org.jboss.drools.LogNormalDistributionType;
 import org.jboss.drools.MetadataType;
 import org.jboss.drools.MetaentryType;
@@ -54,6 +52,7 @@ import org.jboss.drools.ParameterValue;
 import org.jboss.drools.PoissonDistributionType;
 import org.jboss.drools.PriorityParameters;
 import org.jboss.drools.ProcessAnalysisDataType;
+import org.jboss.drools.PropertyParameters;
 import org.jboss.drools.PropertyType;
 import org.jboss.drools.RandomDistributionType;
 import org.jboss.drools.ResourceParameters;
@@ -219,13 +218,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass globalParameterTypeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass globalTypeEClass = null;
 
 	/**
@@ -234,13 +226,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * @generated
 	 */
 	private EClass importTypeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass instanceParametersEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -332,6 +317,13 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * @generated
 	 */
 	private EClass processAnalysisDataTypeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass propertyParametersEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1263,7 +1255,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getElementParameters_InstanceParameters() {
+	public EReference getElementParameters_PropertyParameters() {
 		return (EReference)elementParametersEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -1434,24 +1426,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getGlobalParameterType() {
-		return globalParameterTypeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getGlobalParameterType_Property() {
-		return (EAttribute)globalParameterTypeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getGlobalType() {
 		return globalTypeEClass;
 	}
@@ -1490,24 +1464,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 */
 	public EAttribute getImportType_Name() {
 		return (EAttribute)importTypeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getInstanceParameters() {
-		return instanceParametersEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getInstanceParameters_Property() {
-		return (EReference)instanceParametersEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1866,6 +1822,24 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getPropertyParameters() {
+		return propertyParametersEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getPropertyParameters_Property() {
+		return (EReference)propertyParametersEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getPropertyType() {
 		return propertyTypeEClass;
 	}
@@ -2082,8 +2056,17 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getScenario_Version() {
+	public EAttribute getScenario_Vendor() {
 		return (EAttribute)scenarioEClass.getEStructuralFeatures().get(12);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getScenario_Version() {
+		return (EAttribute)scenarioEClass.getEStructuralFeatures().get(13);
 	}
 
 	/**
@@ -2118,7 +2101,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getScenarioParameters_GlobalParameter() {
+	public EReference getScenarioParameters_PropertyParameters() {
 		return (EReference)scenarioParametersEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -2697,7 +2680,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEReference(elementParametersEClass, ELEMENT_PARAMETERS__RESOURCE_PARAMETERS);
 		createEReference(elementParametersEClass, ELEMENT_PARAMETERS__PRIORITY_PARAMETERS);
 		createEReference(elementParametersEClass, ELEMENT_PARAMETERS__COST_PARAMETERS);
-		createEReference(elementParametersEClass, ELEMENT_PARAMETERS__INSTANCE_PARAMETERS);
+		createEReference(elementParametersEClass, ELEMENT_PARAMETERS__PROPERTY_PARAMETERS);
 		createEReference(elementParametersEClass, ELEMENT_PARAMETERS__VENDOR_EXTENSION);
 		createEAttribute(elementParametersEClass, ELEMENT_PARAMETERS__ELEMENT_ID);
 		createEAttribute(elementParametersEClass, ELEMENT_PARAMETERS__ID);
@@ -2723,18 +2706,12 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEAttribute(gammaDistributionTypeEClass, GAMMA_DISTRIBUTION_TYPE__SCALE);
 		createEAttribute(gammaDistributionTypeEClass, GAMMA_DISTRIBUTION_TYPE__SHAPE);
 
-		globalParameterTypeEClass = createEClass(GLOBAL_PARAMETER_TYPE);
-		createEAttribute(globalParameterTypeEClass, GLOBAL_PARAMETER_TYPE__PROPERTY);
-
 		globalTypeEClass = createEClass(GLOBAL_TYPE);
 		createEAttribute(globalTypeEClass, GLOBAL_TYPE__IDENTIFIER);
 		createEAttribute(globalTypeEClass, GLOBAL_TYPE__TYPE);
 
 		importTypeEClass = createEClass(IMPORT_TYPE);
 		createEAttribute(importTypeEClass, IMPORT_TYPE__NAME);
-
-		instanceParametersEClass = createEClass(INSTANCE_PARAMETERS);
-		createEReference(instanceParametersEClass, INSTANCE_PARAMETERS__PROPERTY);
 
 		logNormalDistributionTypeEClass = createEClass(LOG_NORMAL_DISTRIBUTION_TYPE);
 		createEAttribute(logNormalDistributionTypeEClass, LOG_NORMAL_DISTRIBUTION_TYPE__MEAN);
@@ -2788,6 +2765,9 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEAttribute(processAnalysisDataTypeEClass, PROCESS_ANALYSIS_DATA_TYPE__GROUP);
 		createEReference(processAnalysisDataTypeEClass, PROCESS_ANALYSIS_DATA_TYPE__SCENARIO);
 
+		propertyParametersEClass = createEClass(PROPERTY_PARAMETERS);
+		createEReference(propertyParametersEClass, PROPERTY_PARAMETERS__PROPERTY);
+
 		propertyTypeEClass = createEClass(PROPERTY_TYPE);
 		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__NAME);
 
@@ -2815,12 +2795,13 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEAttribute(scenarioEClass, SCENARIO__MODIFIED);
 		createEAttribute(scenarioEClass, SCENARIO__NAME);
 		createEAttribute(scenarioEClass, SCENARIO__RESULT);
+		createEAttribute(scenarioEClass, SCENARIO__VENDOR);
 		createEAttribute(scenarioEClass, SCENARIO__VERSION);
 
 		scenarioParametersEClass = createEClass(SCENARIO_PARAMETERS);
 		createEReference(scenarioParametersEClass, SCENARIO_PARAMETERS__START);
 		createEReference(scenarioParametersEClass, SCENARIO_PARAMETERS__DURATION);
-		createEReference(scenarioParametersEClass, SCENARIO_PARAMETERS__GLOBAL_PARAMETER);
+		createEReference(scenarioParametersEClass, SCENARIO_PARAMETERS__PROPERTY_PARAMETERS);
 		createEAttribute(scenarioParametersEClass, SCENARIO_PARAMETERS__BASE_CURRENCY_UNIT);
 		createEAttribute(scenarioParametersEClass, SCENARIO_PARAMETERS__BASE_TIME_UNIT);
 		createEAttribute(scenarioParametersEClass, SCENARIO_PARAMETERS__REPLICATION);
@@ -2933,7 +2914,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		expressionParameterTypeEClass.getESuperTypes().add(this.getParameterValue());
 		floatingParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
 		gammaDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
-		globalParameterTypeEClass.getESuperTypes().add(this.getParameter());
 		logNormalDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
 		negativeExponentialDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
 		normalDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
@@ -3038,7 +3018,7 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEReference(getElementParameters_ResourceParameters(), this.getResourceParameters(), null, "resourceParameters", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getElementParameters_PriorityParameters(), this.getPriorityParameters(), null, "priorityParameters", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getElementParameters_CostParameters(), this.getCostParameters(), null, "costParameters", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getElementParameters_InstanceParameters(), this.getInstanceParameters(), null, "instanceParameters", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getElementParameters_PropertyParameters(), this.getPropertyParameters(), null, "propertyParameters", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getElementParameters_VendorExtension(), this.getVendorExtension(), null, "vendorExtension", null, 0, -1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getElementParameters_ElementId(), theXMLTypePackage.getString(), "elementId", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getElementParameters_Id(), theXMLTypePackage.getID(), "id", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3064,18 +3044,12 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEAttribute(getGammaDistributionType_Scale(), theXMLTypePackage.getDouble(), "scale", null, 0, 1, GammaDistributionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGammaDistributionType_Shape(), theXMLTypePackage.getDouble(), "shape", null, 0, 1, GammaDistributionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(globalParameterTypeEClass, GlobalParameterType.class, "GlobalParameterType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getGlobalParameterType_Property(), theXMLTypePackage.getString(), "property", null, 0, 1, GlobalParameterType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(globalTypeEClass, GlobalType.class, "GlobalType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getGlobalType_Identifier(), theXMLTypePackage.getString(), "identifier", null, 1, 1, GlobalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGlobalType_Type(), theXMLTypePackage.getString(), "type", null, 1, 1, GlobalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(importTypeEClass, ImportType.class, "ImportType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getImportType_Name(), theXMLTypePackage.getString(), "name", null, 1, 1, ImportType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(instanceParametersEClass, InstanceParameters.class, "InstanceParameters", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInstanceParameters_Property(), this.getPropertyType(), null, "property", null, 0, -1, InstanceParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(logNormalDistributionTypeEClass, LogNormalDistributionType.class, "LogNormalDistributionType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLogNormalDistributionType_Mean(), theXMLTypePackage.getDouble(), "mean", null, 0, 1, LogNormalDistributionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3129,8 +3103,11 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEAttribute(getProcessAnalysisDataType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, ProcessAnalysisDataType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProcessAnalysisDataType_Scenario(), this.getScenario(), null, "scenario", null, 1, -1, ProcessAnalysisDataType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
+		initEClass(propertyParametersEClass, PropertyParameters.class, "PropertyParameters", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getPropertyParameters_Property(), this.getPropertyType(), null, "property", null, 0, -1, PropertyParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPropertyType_Name(), theXMLTypePackage.getString(), "name", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPropertyType_Name(), theXMLTypePackage.getString(), "name", null, 1, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(randomDistributionTypeEClass, RandomDistributionType.class, "RandomDistributionType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getRandomDistributionType_Max(), theXMLTypePackage.getDouble(), "max", null, 0, 1, RandomDistributionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3156,12 +3133,13 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEAttribute(getScenario_Modified(), theXMLTypePackage.getDateTime(), "modified", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenario_Name(), theXMLTypePackage.getString(), "name", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenario_Result(), theXMLTypePackage.getIDREF(), "result", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getScenario_Vendor(), theXMLTypePackage.getString(), "vendor", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenario_Version(), theXMLTypePackage.getString(), "version", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(scenarioParametersEClass, ScenarioParameters.class, "ScenarioParameters", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getScenarioParameters_Start(), this.getParameter(), null, "start", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getScenarioParameters_Duration(), this.getParameter(), null, "duration", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getScenarioParameters_GlobalParameter(), this.getGlobalParameterType(), null, "globalParameter", null, 0, -1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getScenarioParameters_PropertyParameters(), this.getPropertyParameters(), null, "propertyParameters", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenarioParameters_BaseCurrencyUnit(), theXMLTypePackage.getString(), "baseCurrencyUnit", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenarioParameters_BaseTimeUnit(), this.getTimeUnit(), "baseTimeUnit", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenarioParameters_Replication(), theXMLTypePackage.getInt(), "replication", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3861,11 +3839,11 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
-		  (getElementParameters_InstanceParameters(), 
+		  (getElementParameters_PropertyParameters(), 
 		   source, 
 		   new String[] {
 			 "kind", "element",
-			 "name", "InstanceParameters",
+			 "name", "PropertyParameters",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
@@ -4000,20 +3978,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 			 "name", "shape"
 		   });		
 		addAnnotation
-		  (globalParameterTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "GlobalParameter_._type",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getGlobalParameterType_Property(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "property"
-		   });		
-		addAnnotation
 		  (globalTypeEClass, 
 		   source, 
 		   new String[] {
@@ -4047,21 +4011,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "name"
-		   });		
-		addAnnotation
-		  (instanceParametersEClass, 
-		   source, 
-		   new String[] {
-			 "name", "InstanceParameters",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getInstanceParameters_Property(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Property",
-			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (logNormalDistributionTypeEClass, 
@@ -4365,6 +4314,21 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 			 "group", "#group:0"
 		   });		
 		addAnnotation
+		  (propertyParametersEClass, 
+		   source, 
+		   new String[] {
+			 "name", "PropertyParameters",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getPropertyParameters_Property(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "Property",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
 		  (propertyTypeEClass, 
 		   source, 
 		   new String[] {
@@ -4562,6 +4526,13 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 			 "name", "result"
 		   });		
 		addAnnotation
+		  (getScenario_Vendor(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "vendor"
+		   });		
+		addAnnotation
 		  (getScenario_Version(), 
 		   source, 
 		   new String[] {
@@ -4592,11 +4563,11 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
-		  (getScenarioParameters_GlobalParameter(), 
+		  (getScenarioParameters_PropertyParameters(), 
 		   source, 
 		   new String[] {
 			 "kind", "element",
-			 "name", "GlobalParameter",
+			 "name", "PropertyParameters",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation

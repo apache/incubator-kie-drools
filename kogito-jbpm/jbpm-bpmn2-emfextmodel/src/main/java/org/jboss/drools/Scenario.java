@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.jboss.drools.Scenario#getModified <em>Modified</em>}</li>
  *   <li>{@link org.jboss.drools.Scenario#getName <em>Name</em>}</li>
  *   <li>{@link org.jboss.drools.Scenario#getResult <em>Result</em>}</li>
+ *   <li>{@link org.jboss.drools.Scenario#getVendor <em>Vendor</em>}</li>
  *   <li>{@link org.jboss.drools.Scenario#getVersion <em>Version</em>}</li>
  * </ul>
  * </p>
@@ -328,6 +329,33 @@ public interface Scenario extends EObject {
 	 * @generated
 	 */
 	void setResult(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Vendor</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Vendor</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Vendor</em>' attribute.
+	 * @see #setVendor(String)
+	 * @see org.jboss.drools.DroolsPackage#getScenario_Vendor()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='vendor'"
+	 * @generated
+	 */
+	String getVendor();
+
+	/**
+	 * Sets the value of the '{@link org.jboss.drools.Scenario#getVendor <em>Vendor</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Vendor</em>' attribute.
+	 * @see #getVendor()
+	 * @generated
+	 */
+	void setVendor(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Version</b></em>' attribute.

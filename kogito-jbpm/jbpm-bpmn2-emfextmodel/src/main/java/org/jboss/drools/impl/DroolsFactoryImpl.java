@@ -81,10 +81,8 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.EXPRESSION_PARAMETER_TYPE: return createExpressionParameterType();
 			case DroolsPackage.FLOATING_PARAMETER_TYPE: return createFloatingParameterType();
 			case DroolsPackage.GAMMA_DISTRIBUTION_TYPE: return createGammaDistributionType();
-			case DroolsPackage.GLOBAL_PARAMETER_TYPE: return createGlobalParameterType();
 			case DroolsPackage.GLOBAL_TYPE: return createGlobalType();
 			case DroolsPackage.IMPORT_TYPE: return createImportType();
-			case DroolsPackage.INSTANCE_PARAMETERS: return createInstanceParameters();
 			case DroolsPackage.LOG_NORMAL_DISTRIBUTION_TYPE: return createLogNormalDistributionType();
 			case DroolsPackage.METADATA_TYPE: return createMetadataType();
 			case DroolsPackage.METAENTRY_TYPE: return createMetaentryType();
@@ -98,6 +96,7 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.POISSON_DISTRIBUTION_TYPE: return createPoissonDistributionType();
 			case DroolsPackage.PRIORITY_PARAMETERS: return createPriorityParameters();
 			case DroolsPackage.PROCESS_ANALYSIS_DATA_TYPE: return createProcessAnalysisDataType();
+			case DroolsPackage.PROPERTY_PARAMETERS: return createPropertyParameters();
 			case DroolsPackage.PROPERTY_TYPE: return createPropertyType();
 			case DroolsPackage.RANDOM_DISTRIBUTION_TYPE: return createRandomDistributionType();
 			case DroolsPackage.RESOURCE_PARAMETERS: return createResourceParameters();
@@ -375,16 +374,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GlobalParameterType createGlobalParameterType() {
-		GlobalParameterTypeImpl globalParameterType = new GlobalParameterTypeImpl();
-		return globalParameterType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public GlobalType createGlobalType() {
 		GlobalTypeImpl globalType = new GlobalTypeImpl();
 		return globalType;
@@ -398,16 +387,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public ImportType createImportType() {
 		ImportTypeImpl importType = new ImportTypeImpl();
 		return importType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InstanceParameters createInstanceParameters() {
-		InstanceParametersImpl instanceParameters = new InstanceParametersImpl();
-		return instanceParameters;
 	}
 
 	/**
@@ -538,6 +517,16 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public ProcessAnalysisDataType createProcessAnalysisDataType() {
 		ProcessAnalysisDataTypeImpl processAnalysisDataType = new ProcessAnalysisDataTypeImpl();
 		return processAnalysisDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertyParameters createPropertyParameters() {
+		PropertyParametersImpl propertyParameters = new PropertyParametersImpl();
+		return propertyParameters;
 	}
 
 	/**

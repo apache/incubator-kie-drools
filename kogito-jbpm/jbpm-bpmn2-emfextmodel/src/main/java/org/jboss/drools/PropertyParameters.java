@@ -8,21 +8,21 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Instance Parameters</b></em>'.
+ * A representation of the model object '<em><b>Property Parameters</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.jboss.drools.InstanceParameters#getProperty <em>Property</em>}</li>
+ *   <li>{@link org.jboss.drools.PropertyParameters#getProperty <em>Property</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.jboss.drools.DroolsPackage#getInstanceParameters()
- * @model extendedMetaData="name='InstanceParameters' kind='elementOnly'"
+ * @see org.jboss.drools.DroolsPackage#getPropertyParameters()
+ * @model extendedMetaData="name='PropertyParameters' kind='elementOnly'"
  * @generated
  */
-public interface InstanceParameters extends EObject {
+public interface PropertyParameters extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Property</b></em>' containment reference list.
 	 * The list contents are of type {@link org.jboss.drools.PropertyType}.
@@ -33,11 +33,11 @@ public interface InstanceParameters extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Property</em>' containment reference list.
-	 * @see org.jboss.drools.DroolsPackage#getInstanceParameters_Property()
+	 * @see org.jboss.drools.DroolsPackage#getPropertyParameters_Property()
 	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='Property' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	EList<PropertyType> getProperty();
 
-} // InstanceParameters
+} // PropertyParameters

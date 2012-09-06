@@ -22,8 +22,8 @@ import org.jboss.drools.ControlParameters;
 import org.jboss.drools.CostParameters;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.ElementParameters;
-import org.jboss.drools.InstanceParameters;
 import org.jboss.drools.PriorityParameters;
+import org.jboss.drools.PropertyParameters;
 import org.jboss.drools.ResourceParameters;
 import org.jboss.drools.TimeParameters;
 import org.jboss.drools.VendorExtension;
@@ -40,7 +40,7 @@ import org.jboss.drools.VendorExtension;
  *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getResourceParameters <em>Resource Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getPriorityParameters <em>Priority Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getCostParameters <em>Cost Parameters</em>}</li>
- *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getInstanceParameters <em>Instance Parameters</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getPropertyParameters <em>Property Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getVendorExtension <em>Vendor Extension</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getElementId <em>Element Id</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ElementParametersImpl#getId <em>Id</em>}</li>
@@ -101,14 +101,14 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	protected CostParameters costParameters;
 
 	/**
-	 * The cached value of the '{@link #getInstanceParameters() <em>Instance Parameters</em>}' containment reference.
+	 * The cached value of the '{@link #getPropertyParameters() <em>Property Parameters</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getInstanceParameters()
+	 * @see #getPropertyParameters()
 	 * @generated
 	 * @ordered
 	 */
-	protected InstanceParameters instanceParameters;
+	protected PropertyParameters propertyParameters;
 
 	/**
 	 * The cached value of the '{@link #getVendorExtension() <em>Vendor Extension</em>}' containment reference list.
@@ -399,8 +399,8 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InstanceParameters getInstanceParameters() {
-		return instanceParameters;
+	public PropertyParameters getPropertyParameters() {
+		return propertyParameters;
 	}
 
 	/**
@@ -408,11 +408,11 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetInstanceParameters(InstanceParameters newInstanceParameters, NotificationChain msgs) {
-		InstanceParameters oldInstanceParameters = instanceParameters;
-		instanceParameters = newInstanceParameters;
+	public NotificationChain basicSetPropertyParameters(PropertyParameters newPropertyParameters, NotificationChain msgs) {
+		PropertyParameters oldPropertyParameters = propertyParameters;
+		propertyParameters = newPropertyParameters;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS, oldInstanceParameters, newInstanceParameters);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS, oldPropertyParameters, newPropertyParameters);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -423,18 +423,18 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setInstanceParameters(InstanceParameters newInstanceParameters) {
-		if (newInstanceParameters != instanceParameters) {
+	public void setPropertyParameters(PropertyParameters newPropertyParameters) {
+		if (newPropertyParameters != propertyParameters) {
 			NotificationChain msgs = null;
-			if (instanceParameters != null)
-				msgs = ((InternalEObject)instanceParameters).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS, null, msgs);
-			if (newInstanceParameters != null)
-				msgs = ((InternalEObject)newInstanceParameters).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS, null, msgs);
-			msgs = basicSetInstanceParameters(newInstanceParameters, msgs);
+			if (propertyParameters != null)
+				msgs = ((InternalEObject)propertyParameters).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS, null, msgs);
+			if (newPropertyParameters != null)
+				msgs = ((InternalEObject)newPropertyParameters).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS, null, msgs);
+			msgs = basicSetPropertyParameters(newPropertyParameters, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS, newInstanceParameters, newInstanceParameters));
+			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS, newPropertyParameters, newPropertyParameters));
 	}
 
 	/**
@@ -509,8 +509,8 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 				return basicSetPriorityParameters(null, msgs);
 			case DroolsPackage.ELEMENT_PARAMETERS__COST_PARAMETERS:
 				return basicSetCostParameters(null, msgs);
-			case DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS:
-				return basicSetInstanceParameters(null, msgs);
+			case DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS:
+				return basicSetPropertyParameters(null, msgs);
 			case DroolsPackage.ELEMENT_PARAMETERS__VENDOR_EXTENSION:
 				return ((InternalEList<?>)getVendorExtension()).basicRemove(otherEnd, msgs);
 		}
@@ -535,8 +535,8 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 				return getPriorityParameters();
 			case DroolsPackage.ELEMENT_PARAMETERS__COST_PARAMETERS:
 				return getCostParameters();
-			case DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS:
-				return getInstanceParameters();
+			case DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS:
+				return getPropertyParameters();
 			case DroolsPackage.ELEMENT_PARAMETERS__VENDOR_EXTENSION:
 				return getVendorExtension();
 			case DroolsPackage.ELEMENT_PARAMETERS__ELEMENT_ID:
@@ -571,8 +571,8 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 			case DroolsPackage.ELEMENT_PARAMETERS__COST_PARAMETERS:
 				setCostParameters((CostParameters)newValue);
 				return;
-			case DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS:
-				setInstanceParameters((InstanceParameters)newValue);
+			case DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS:
+				setPropertyParameters((PropertyParameters)newValue);
 				return;
 			case DroolsPackage.ELEMENT_PARAMETERS__VENDOR_EXTENSION:
 				getVendorExtension().clear();
@@ -611,8 +611,8 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 			case DroolsPackage.ELEMENT_PARAMETERS__COST_PARAMETERS:
 				setCostParameters((CostParameters)null);
 				return;
-			case DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS:
-				setInstanceParameters((InstanceParameters)null);
+			case DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS:
+				setPropertyParameters((PropertyParameters)null);
 				return;
 			case DroolsPackage.ELEMENT_PARAMETERS__VENDOR_EXTENSION:
 				getVendorExtension().clear();
@@ -645,8 +645,8 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 				return priorityParameters != null;
 			case DroolsPackage.ELEMENT_PARAMETERS__COST_PARAMETERS:
 				return costParameters != null;
-			case DroolsPackage.ELEMENT_PARAMETERS__INSTANCE_PARAMETERS:
-				return instanceParameters != null;
+			case DroolsPackage.ELEMENT_PARAMETERS__PROPERTY_PARAMETERS:
+				return propertyParameters != null;
 			case DroolsPackage.ELEMENT_PARAMETERS__VENDOR_EXTENSION:
 				return vendorExtension != null && !vendorExtension.isEmpty();
 			case DroolsPackage.ELEMENT_PARAMETERS__ELEMENT_ID:

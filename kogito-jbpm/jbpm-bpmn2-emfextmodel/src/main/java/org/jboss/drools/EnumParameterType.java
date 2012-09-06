@@ -31,7 +31,10 @@ public interface EnumParameterType extends ParameterValue {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Even if here we reference a list of Parameter Values, only Constant Parameters are valid here. There is just no real way of expressing it in xsd.
+	 * Even if here we reference a list of Parameter
+	 * 								Values, only Constant Parameters are valid here. There is just
+	 * 								no real way of expressing it in xsd.
+	 * 							
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Group</em>' attribute list.
 	 * @see org.jboss.drools.DroolsPackage#getEnumParameterType_Group()

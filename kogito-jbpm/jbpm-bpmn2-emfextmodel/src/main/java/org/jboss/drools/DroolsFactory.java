@@ -193,15 +193,6 @@ public interface DroolsFactory extends EFactory {
 	GammaDistributionType createGammaDistributionType();
 
 	/**
-	 * Returns a new object of class '<em>Global Parameter Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Global Parameter Type</em>'.
-	 * @generated
-	 */
-	GlobalParameterType createGlobalParameterType();
-
-	/**
 	 * Returns a new object of class '<em>Global Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -218,15 +209,6 @@ public interface DroolsFactory extends EFactory {
 	 * @generated
 	 */
 	ImportType createImportType();
-
-	/**
-	 * Returns a new object of class '<em>Instance Parameters</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Instance Parameters</em>'.
-	 * @generated
-	 */
-	InstanceParameters createInstanceParameters();
 
 	/**
 	 * Returns a new object of class '<em>Log Normal Distribution Type</em>'.
@@ -344,6 +326,15 @@ public interface DroolsFactory extends EFactory {
 	 * @generated
 	 */
 	ProcessAnalysisDataType createProcessAnalysisDataType();
+
+	/**
+	 * Returns a new object of class '<em>Property Parameters</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Property Parameters</em>'.
+	 * @generated
+	 */
+	PropertyParameters createPropertyParameters();
 
 	/**
 	 * Returns a new object of class '<em>Property Type</em>'.

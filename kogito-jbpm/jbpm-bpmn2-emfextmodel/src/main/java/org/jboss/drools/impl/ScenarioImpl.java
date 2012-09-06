@@ -44,6 +44,7 @@ import org.jboss.drools.VendorExtension;
  *   <li>{@link org.jboss.drools.impl.ScenarioImpl#getModified <em>Modified</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ScenarioImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ScenarioImpl#getResult <em>Result</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.ScenarioImpl#getVendor <em>Vendor</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ScenarioImpl#getVersion <em>Version</em>}</li>
  * </ul>
  * </p>
@@ -250,6 +251,26 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * @ordered
 	 */
 	protected String result = RESULT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getVendor() <em>Vendor</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVendor()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String VENDOR_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getVendor() <em>Vendor</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVendor()
+	 * @generated
+	 * @ordered
+	 */
+	protected String vendor = VENDOR_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
@@ -542,6 +563,27 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getVendor() {
+		return vendor;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setVendor(String newVendor) {
+		String oldVendor = vendor;
+		vendor = newVendor;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.SCENARIO__VENDOR, oldVendor, vendor));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public String getVersion() {
 		return version;
 	}
@@ -610,6 +652,8 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 				return getName();
 			case DroolsPackage.SCENARIO__RESULT:
 				return getResult();
+			case DroolsPackage.SCENARIO__VENDOR:
+				return getVendor();
 			case DroolsPackage.SCENARIO__VERSION:
 				return getVersion();
 		}
@@ -664,6 +708,9 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 			case DroolsPackage.SCENARIO__RESULT:
 				setResult((String)newValue);
 				return;
+			case DroolsPackage.SCENARIO__VENDOR:
+				setVendor((String)newValue);
+				return;
 			case DroolsPackage.SCENARIO__VERSION:
 				setVersion((String)newValue);
 				return;
@@ -715,6 +762,9 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 			case DroolsPackage.SCENARIO__RESULT:
 				setResult(RESULT_EDEFAULT);
 				return;
+			case DroolsPackage.SCENARIO__VENDOR:
+				setVendor(VENDOR_EDEFAULT);
+				return;
 			case DroolsPackage.SCENARIO__VERSION:
 				setVersion(VERSION_EDEFAULT);
 				return;
@@ -754,6 +804,8 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case DroolsPackage.SCENARIO__RESULT:
 				return RESULT_EDEFAULT == null ? result != null : !RESULT_EDEFAULT.equals(result);
+			case DroolsPackage.SCENARIO__VENDOR:
+				return VENDOR_EDEFAULT == null ? vendor != null : !VENDOR_EDEFAULT.equals(vendor);
 			case DroolsPackage.SCENARIO__VERSION:
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 		}
@@ -786,6 +838,8 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 		result.append(name);
 		result.append(", result: ");
 		result.append(result);
+		result.append(", vendor: ");
+		result.append(vendor);
 		result.append(", version: ");
 		result.append(version);
 		result.append(')');

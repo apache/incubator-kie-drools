@@ -17,23 +17,23 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.jboss.drools.DroolsPackage;
-import org.jboss.drools.InstanceParameters;
+import org.jboss.drools.PropertyParameters;
 import org.jboss.drools.PropertyType;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Instance Parameters</b></em>'.
+ * An implementation of the model object '<em><b>Property Parameters</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.jboss.drools.impl.InstanceParametersImpl#getProperty <em>Property</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.PropertyParametersImpl#getProperty <em>Property</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class InstanceParametersImpl extends EObjectImpl implements InstanceParameters {
+public class PropertyParametersImpl extends EObjectImpl implements PropertyParameters {
 	/**
 	 * The cached value of the '{@link #getProperty() <em>Property</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -49,7 +49,7 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected InstanceParametersImpl() {
+	protected PropertyParametersImpl() {
 		super();
 	}
 
@@ -60,7 +60,7 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return DroolsPackage.Literals.INSTANCE_PARAMETERS;
+		return DroolsPackage.Literals.PROPERTY_PARAMETERS;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	 */
 	public EList<PropertyType> getProperty() {
 		if (property == null) {
-			property = new EObjectContainmentEList<PropertyType>(PropertyType.class, this, DroolsPackage.INSTANCE_PARAMETERS__PROPERTY);
+			property = new EObjectContainmentEList<PropertyType>(PropertyType.class, this, DroolsPackage.PROPERTY_PARAMETERS__PROPERTY);
 		}
 		return property;
 	}
@@ -83,7 +83,7 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case DroolsPackage.INSTANCE_PARAMETERS__PROPERTY:
+			case DroolsPackage.PROPERTY_PARAMETERS__PROPERTY:
 				return ((InternalEList<?>)getProperty()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -97,7 +97,7 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case DroolsPackage.INSTANCE_PARAMETERS__PROPERTY:
+			case DroolsPackage.PROPERTY_PARAMETERS__PROPERTY:
 				return getProperty();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -112,7 +112,7 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case DroolsPackage.INSTANCE_PARAMETERS__PROPERTY:
+			case DroolsPackage.PROPERTY_PARAMETERS__PROPERTY:
 				getProperty().clear();
 				getProperty().addAll((Collection<? extends PropertyType>)newValue);
 				return;
@@ -128,7 +128,7 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case DroolsPackage.INSTANCE_PARAMETERS__PROPERTY:
+			case DroolsPackage.PROPERTY_PARAMETERS__PROPERTY:
 				getProperty().clear();
 				return;
 		}
@@ -143,10 +143,10 @@ public class InstanceParametersImpl extends EObjectImpl implements InstanceParam
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case DroolsPackage.INSTANCE_PARAMETERS__PROPERTY:
+			case DroolsPackage.PROPERTY_PARAMETERS__PROPERTY:
 				return property != null && !property.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
-} //InstanceParametersImpl
+} //PropertyParametersImpl

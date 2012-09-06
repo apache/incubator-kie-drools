@@ -2,12 +2,8 @@
  */
 package org.jboss.drools.impl;
 
-import java.util.Collection;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -15,12 +11,9 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.jboss.drools.DroolsPackage;
-import org.jboss.drools.GlobalParameterType;
 import org.jboss.drools.Parameter;
+import org.jboss.drools.PropertyParameters;
 import org.jboss.drools.ScenarioParameters;
 import org.jboss.drools.TimeUnit;
 
@@ -33,7 +26,7 @@ import org.jboss.drools.TimeUnit;
  * <ul>
  *   <li>{@link org.jboss.drools.impl.ScenarioParametersImpl#getStart <em>Start</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ScenarioParametersImpl#getDuration <em>Duration</em>}</li>
- *   <li>{@link org.jboss.drools.impl.ScenarioParametersImpl#getGlobalParameter <em>Global Parameter</em>}</li>
+ *   <li>{@link org.jboss.drools.impl.ScenarioParametersImpl#getPropertyParameters <em>Property Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ScenarioParametersImpl#getBaseCurrencyUnit <em>Base Currency Unit</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ScenarioParametersImpl#getBaseTimeUnit <em>Base Time Unit</em>}</li>
  *   <li>{@link org.jboss.drools.impl.ScenarioParametersImpl#getReplication <em>Replication</em>}</li>
@@ -65,14 +58,14 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 	protected Parameter duration;
 
 	/**
-	 * The cached value of the '{@link #getGlobalParameter() <em>Global Parameter</em>}' containment reference list.
+	 * The cached value of the '{@link #getPropertyParameters() <em>Property Parameters</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getGlobalParameter()
+	 * @see #getPropertyParameters()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<GlobalParameterType> globalParameter;
+	protected PropertyParameters propertyParameters;
 
 	/**
 	 * The default value of the '{@link #getBaseCurrencyUnit() <em>Base Currency Unit</em>}' attribute.
@@ -291,11 +284,42 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<GlobalParameterType> getGlobalParameter() {
-		if (globalParameter == null) {
-			globalParameter = new EObjectContainmentEList<GlobalParameterType>(GlobalParameterType.class, this, DroolsPackage.SCENARIO_PARAMETERS__GLOBAL_PARAMETER);
+	public PropertyParameters getPropertyParameters() {
+		return propertyParameters;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetPropertyParameters(PropertyParameters newPropertyParameters, NotificationChain msgs) {
+		PropertyParameters oldPropertyParameters = propertyParameters;
+		propertyParameters = newPropertyParameters;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS, oldPropertyParameters, newPropertyParameters);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
-		return globalParameter;
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPropertyParameters(PropertyParameters newPropertyParameters) {
+		if (newPropertyParameters != propertyParameters) {
+			NotificationChain msgs = null;
+			if (propertyParameters != null)
+				msgs = ((InternalEObject)propertyParameters).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS, null, msgs);
+			if (newPropertyParameters != null)
+				msgs = ((InternalEObject)newPropertyParameters).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS, null, msgs);
+			msgs = basicSetPropertyParameters(newPropertyParameters, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS, newPropertyParameters, newPropertyParameters));
 	}
 
 	/**
@@ -469,8 +493,8 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 				return basicSetStart(null, msgs);
 			case DroolsPackage.SCENARIO_PARAMETERS__DURATION:
 				return basicSetDuration(null, msgs);
-			case DroolsPackage.SCENARIO_PARAMETERS__GLOBAL_PARAMETER:
-				return ((InternalEList<?>)getGlobalParameter()).basicRemove(otherEnd, msgs);
+			case DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS:
+				return basicSetPropertyParameters(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -487,8 +511,8 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 				return getStart();
 			case DroolsPackage.SCENARIO_PARAMETERS__DURATION:
 				return getDuration();
-			case DroolsPackage.SCENARIO_PARAMETERS__GLOBAL_PARAMETER:
-				return getGlobalParameter();
+			case DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS:
+				return getPropertyParameters();
 			case DroolsPackage.SCENARIO_PARAMETERS__BASE_CURRENCY_UNIT:
 				return getBaseCurrencyUnit();
 			case DroolsPackage.SCENARIO_PARAMETERS__BASE_TIME_UNIT:
@@ -506,7 +530,6 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -516,9 +539,8 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 			case DroolsPackage.SCENARIO_PARAMETERS__DURATION:
 				setDuration((Parameter)newValue);
 				return;
-			case DroolsPackage.SCENARIO_PARAMETERS__GLOBAL_PARAMETER:
-				getGlobalParameter().clear();
-				getGlobalParameter().addAll((Collection<? extends GlobalParameterType>)newValue);
+			case DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS:
+				setPropertyParameters((PropertyParameters)newValue);
 				return;
 			case DroolsPackage.SCENARIO_PARAMETERS__BASE_CURRENCY_UNIT:
 				setBaseCurrencyUnit((String)newValue);
@@ -550,8 +572,8 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 			case DroolsPackage.SCENARIO_PARAMETERS__DURATION:
 				setDuration((Parameter)null);
 				return;
-			case DroolsPackage.SCENARIO_PARAMETERS__GLOBAL_PARAMETER:
-				getGlobalParameter().clear();
+			case DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS:
+				setPropertyParameters((PropertyParameters)null);
 				return;
 			case DroolsPackage.SCENARIO_PARAMETERS__BASE_CURRENCY_UNIT:
 				setBaseCurrencyUnit(BASE_CURRENCY_UNIT_EDEFAULT);
@@ -581,8 +603,8 @@ public class ScenarioParametersImpl extends EObjectImpl implements ScenarioParam
 				return start != null;
 			case DroolsPackage.SCENARIO_PARAMETERS__DURATION:
 				return duration != null;
-			case DroolsPackage.SCENARIO_PARAMETERS__GLOBAL_PARAMETER:
-				return globalParameter != null && !globalParameter.isEmpty();
+			case DroolsPackage.SCENARIO_PARAMETERS__PROPERTY_PARAMETERS:
+				return propertyParameters != null;
 			case DroolsPackage.SCENARIO_PARAMETERS__BASE_CURRENCY_UNIT:
 				return BASE_CURRENCY_UNIT_EDEFAULT == null ? baseCurrencyUnit != null : !BASE_CURRENCY_UNIT_EDEFAULT.equals(baseCurrencyUnit);
 			case DroolsPackage.SCENARIO_PARAMETERS__BASE_TIME_UNIT:

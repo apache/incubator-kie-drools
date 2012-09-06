@@ -144,20 +144,12 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 				return createGammaDistributionTypeAdapter();
 			}
 			@Override
-			public Adapter caseGlobalParameterType(GlobalParameterType object) {
-				return createGlobalParameterTypeAdapter();
-			}
-			@Override
 			public Adapter caseGlobalType(GlobalType object) {
 				return createGlobalTypeAdapter();
 			}
 			@Override
 			public Adapter caseImportType(ImportType object) {
 				return createImportTypeAdapter();
-			}
-			@Override
-			public Adapter caseInstanceParameters(InstanceParameters object) {
-				return createInstanceParametersAdapter();
 			}
 			@Override
 			public Adapter caseLogNormalDistributionType(LogNormalDistributionType object) {
@@ -210,6 +202,10 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseProcessAnalysisDataType(ProcessAnalysisDataType object) {
 				return createProcessAnalysisDataTypeAdapter();
+			}
+			@Override
+			public Adapter casePropertyParameters(PropertyParameters object) {
+				return createPropertyParametersAdapter();
 			}
 			@Override
 			public Adapter casePropertyType(PropertyType object) {
@@ -558,20 +554,6 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.jboss.drools.GlobalParameterType <em>Global Parameter Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.jboss.drools.GlobalParameterType
-	 * @generated
-	 */
-	public Adapter createGlobalParameterTypeAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.jboss.drools.GlobalType <em>Global Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -596,20 +578,6 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createImportTypeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.jboss.drools.InstanceParameters <em>Instance Parameters</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.jboss.drools.InstanceParameters
-	 * @generated
-	 */
-	public Adapter createInstanceParametersAdapter() {
 		return null;
 	}
 
@@ -792,6 +760,20 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createProcessAnalysisDataTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.jboss.drools.PropertyParameters <em>Property Parameters</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.jboss.drools.PropertyParameters
+	 * @generated
+	 */
+	public Adapter createPropertyParametersAdapter() {
 		return null;
 	}
 

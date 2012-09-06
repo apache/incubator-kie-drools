@@ -135,14 +135,10 @@ public class DroolsValidator extends EObjectValidator {
 				return validateFloatingParameterType((FloatingParameterType)value, diagnostics, context);
 			case DroolsPackage.GAMMA_DISTRIBUTION_TYPE:
 				return validateGammaDistributionType((GammaDistributionType)value, diagnostics, context);
-			case DroolsPackage.GLOBAL_PARAMETER_TYPE:
-				return validateGlobalParameterType((GlobalParameterType)value, diagnostics, context);
 			case DroolsPackage.GLOBAL_TYPE:
 				return validateGlobalType((GlobalType)value, diagnostics, context);
 			case DroolsPackage.IMPORT_TYPE:
 				return validateImportType((ImportType)value, diagnostics, context);
-			case DroolsPackage.INSTANCE_PARAMETERS:
-				return validateInstanceParameters((InstanceParameters)value, diagnostics, context);
 			case DroolsPackage.LOG_NORMAL_DISTRIBUTION_TYPE:
 				return validateLogNormalDistributionType((LogNormalDistributionType)value, diagnostics, context);
 			case DroolsPackage.METADATA_TYPE:
@@ -169,6 +165,8 @@ public class DroolsValidator extends EObjectValidator {
 				return validatePriorityParameters((PriorityParameters)value, diagnostics, context);
 			case DroolsPackage.PROCESS_ANALYSIS_DATA_TYPE:
 				return validateProcessAnalysisDataType((ProcessAnalysisDataType)value, diagnostics, context);
+			case DroolsPackage.PROPERTY_PARAMETERS:
+				return validatePropertyParameters((PropertyParameters)value, diagnostics, context);
 			case DroolsPackage.PROPERTY_TYPE:
 				return validatePropertyType((PropertyType)value, diagnostics, context);
 			case DroolsPackage.RANDOM_DISTRIBUTION_TYPE:
@@ -398,15 +396,6 @@ public class DroolsValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateGlobalParameterType(GlobalParameterType globalParameterType, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(globalParameterType, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public boolean validateGlobalType(GlobalType globalType, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(globalType, diagnostics, context);
 	}
@@ -418,15 +407,6 @@ public class DroolsValidator extends EObjectValidator {
 	 */
 	public boolean validateImportType(ImportType importType, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(importType, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateInstanceParameters(InstanceParameters instanceParameters, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(instanceParameters, diagnostics, context);
 	}
 
 	/**
@@ -544,6 +524,15 @@ public class DroolsValidator extends EObjectValidator {
 	 */
 	public boolean validateProcessAnalysisDataType(ProcessAnalysisDataType processAnalysisDataType, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(processAnalysisDataType, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validatePropertyParameters(PropertyParameters propertyParameters, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(propertyParameters, diagnostics, context);
 	}
 
 	/**

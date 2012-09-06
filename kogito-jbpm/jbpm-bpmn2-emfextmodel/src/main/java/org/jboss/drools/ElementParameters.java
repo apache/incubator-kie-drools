@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.jboss.drools.ElementParameters#getResourceParameters <em>Resource Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.ElementParameters#getPriorityParameters <em>Priority Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.ElementParameters#getCostParameters <em>Cost Parameters</em>}</li>
- *   <li>{@link org.jboss.drools.ElementParameters#getInstanceParameters <em>Instance Parameters</em>}</li>
+ *   <li>{@link org.jboss.drools.ElementParameters#getPropertyParameters <em>Property Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.ElementParameters#getVendorExtension <em>Vendor Extension</em>}</li>
  *   <li>{@link org.jboss.drools.ElementParameters#getElementId <em>Element Id</em>}</li>
  *   <li>{@link org.jboss.drools.ElementParameters#getId <em>Id</em>}</li>
@@ -167,31 +167,31 @@ public interface ElementParameters extends EObject {
 	void setCostParameters(CostParameters value);
 
 	/**
-	 * Returns the value of the '<em><b>Instance Parameters</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Property Parameters</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Instance Parameters</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Property Parameters</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Instance Parameters</em>' containment reference.
-	 * @see #setInstanceParameters(InstanceParameters)
-	 * @see org.jboss.drools.DroolsPackage#getElementParameters_InstanceParameters()
+	 * @return the value of the '<em>Property Parameters</em>' containment reference.
+	 * @see #setPropertyParameters(PropertyParameters)
+	 * @see org.jboss.drools.DroolsPackage#getElementParameters_PropertyParameters()
 	 * @model containment="true"
-	 *        extendedMetaData="kind='element' name='InstanceParameters' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='element' name='PropertyParameters' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	InstanceParameters getInstanceParameters();
+	PropertyParameters getPropertyParameters();
 
 	/**
-	 * Sets the value of the '{@link org.jboss.drools.ElementParameters#getInstanceParameters <em>Instance Parameters</em>}' containment reference.
+	 * Sets the value of the '{@link org.jboss.drools.ElementParameters#getPropertyParameters <em>Property Parameters</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Instance Parameters</em>' containment reference.
-	 * @see #getInstanceParameters()
+	 * @param value the new value of the '<em>Property Parameters</em>' containment reference.
+	 * @see #getPropertyParameters()
 	 * @generated
 	 */
-	void setInstanceParameters(InstanceParameters value);
+	void setPropertyParameters(PropertyParameters value);
 
 	/**
 	 * Returns the value of the '<em><b>Vendor Extension</b></em>' containment reference list.

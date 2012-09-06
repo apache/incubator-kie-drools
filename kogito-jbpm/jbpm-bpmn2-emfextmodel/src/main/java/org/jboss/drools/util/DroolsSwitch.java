@@ -220,13 +220,6 @@ public class DroolsSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DroolsPackage.GLOBAL_PARAMETER_TYPE: {
-				GlobalParameterType globalParameterType = (GlobalParameterType)theEObject;
-				T result = caseGlobalParameterType(globalParameterType);
-				if (result == null) result = caseParameter(globalParameterType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case DroolsPackage.GLOBAL_TYPE: {
 				GlobalType globalType = (GlobalType)theEObject;
 				T result = caseGlobalType(globalType);
@@ -236,12 +229,6 @@ public class DroolsSwitch<T> {
 			case DroolsPackage.IMPORT_TYPE: {
 				ImportType importType = (ImportType)theEObject;
 				T result = caseImportType(importType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DroolsPackage.INSTANCE_PARAMETERS: {
-				InstanceParameters instanceParameters = (InstanceParameters)theEObject;
-				T result = caseInstanceParameters(instanceParameters);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -330,6 +317,12 @@ public class DroolsSwitch<T> {
 			case DroolsPackage.PROCESS_ANALYSIS_DATA_TYPE: {
 				ProcessAnalysisDataType processAnalysisDataType = (ProcessAnalysisDataType)theEObject;
 				T result = caseProcessAnalysisDataType(processAnalysisDataType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DroolsPackage.PROPERTY_PARAMETERS: {
+				PropertyParameters propertyParameters = (PropertyParameters)theEObject;
+				T result = casePropertyParameters(propertyParameters);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -729,21 +722,6 @@ public class DroolsSwitch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Global Parameter Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Global Parameter Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseGlobalParameterType(GlobalParameterType object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Global Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -770,21 +748,6 @@ public class DroolsSwitch<T> {
 	 * @generated
 	 */
 	public T caseImportType(ImportType object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Instance Parameters</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Instance Parameters</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseInstanceParameters(InstanceParameters object) {
 		return null;
 	}
 
@@ -980,6 +943,21 @@ public class DroolsSwitch<T> {
 	 * @generated
 	 */
 	public T caseProcessAnalysisDataType(ProcessAnalysisDataType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Property Parameters</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Property Parameters</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T casePropertyParameters(PropertyParameters object) {
 		return null;
 	}
 

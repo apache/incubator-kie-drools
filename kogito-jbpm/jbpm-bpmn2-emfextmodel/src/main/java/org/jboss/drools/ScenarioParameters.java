@@ -2,8 +2,6 @@
  */
 package org.jboss.drools;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -16,7 +14,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.jboss.drools.ScenarioParameters#getStart <em>Start</em>}</li>
  *   <li>{@link org.jboss.drools.ScenarioParameters#getDuration <em>Duration</em>}</li>
- *   <li>{@link org.jboss.drools.ScenarioParameters#getGlobalParameter <em>Global Parameter</em>}</li>
+ *   <li>{@link org.jboss.drools.ScenarioParameters#getPropertyParameters <em>Property Parameters</em>}</li>
  *   <li>{@link org.jboss.drools.ScenarioParameters#getBaseCurrencyUnit <em>Base Currency Unit</em>}</li>
  *   <li>{@link org.jboss.drools.ScenarioParameters#getBaseTimeUnit <em>Base Time Unit</em>}</li>
  *   <li>{@link org.jboss.drools.ScenarioParameters#getReplication <em>Replication</em>}</li>
@@ -84,21 +82,31 @@ public interface ScenarioParameters extends EObject {
 	void setDuration(Parameter value);
 
 	/**
-	 * Returns the value of the '<em><b>Global Parameter</b></em>' containment reference list.
-	 * The list contents are of type {@link org.jboss.drools.GlobalParameterType}.
+	 * Returns the value of the '<em><b>Property Parameters</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Global Parameter</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>Property Parameters</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Global Parameter</em>' containment reference list.
-	 * @see org.jboss.drools.DroolsPackage#getScenarioParameters_GlobalParameter()
+	 * @return the value of the '<em>Property Parameters</em>' containment reference.
+	 * @see #setPropertyParameters(PropertyParameters)
+	 * @see org.jboss.drools.DroolsPackage#getScenarioParameters_PropertyParameters()
 	 * @model containment="true"
-	 *        extendedMetaData="kind='element' name='GlobalParameter' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='element' name='PropertyParameters' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<GlobalParameterType> getGlobalParameter();
+	PropertyParameters getPropertyParameters();
+
+	/**
+	 * Sets the value of the '{@link org.jboss.drools.ScenarioParameters#getPropertyParameters <em>Property Parameters</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Property Parameters</em>' containment reference.
+	 * @see #getPropertyParameters()
+	 * @generated
+	 */
+	void setPropertyParameters(PropertyParameters value);
 
 	/**
 	 * Returns the value of the '<em><b>Base Currency Unit</b></em>' attribute.
