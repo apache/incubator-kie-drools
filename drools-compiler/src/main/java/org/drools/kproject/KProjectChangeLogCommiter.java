@@ -8,7 +8,8 @@ public class KProjectChangeLogCommiter {
     private KProjectChangeLog changeLog;
     private FileSystem        fs;
 
-    /**  Generates only the qualifiers and producers for the modified items in the KProjectChangeLog
+    /**  
+     * Generates only the qualifiers and producers for the modified items in the KProjectChangeLog
      * 
      * @param kProject
      * @param changeLog
@@ -28,10 +29,10 @@ public class KProjectChangeLogCommiter {
         changeLog.reset();
     }
 
-    /**  Generates qualifiers and producers for the entire KProject
+    /**  
+     * Generates qualifiers and producers for the entire KProject
      * 
      * @param kProject
-     * @param changeLog
      * @param fs
      */
     public static void commit(KProject kProject,

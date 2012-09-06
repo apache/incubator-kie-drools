@@ -7,15 +7,15 @@ public interface KProject {
 
     public  PropertyChangeListener getListener();
 
-    public  void setListener(PropertyChangeListener listener);
+    public  KProject setListener(PropertyChangeListener listener);
 
     public  String getKProjectPath();
 
-    public  void setKProjectPath(String kprojectPath);
+    public  KProject setKProjectPath(String kprojectPath);
 
     public  String getKBasesPath();
 
-    public  void setKBasesPath(String kprojectPath);
+    public  KProject setKBasesPath(String kprojectPath);
 
     public  KBase newKBase(String namespace,
                            String name);

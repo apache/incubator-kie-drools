@@ -5,8 +5,10 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.conf.AssertBehaviorOption;
@@ -18,6 +20,8 @@ public class KBaseImpl
     private String                           namespace;
 
     private String                           name;
+    
+    private Set<KBase>                       includes;
 
     private List<String>                     files;
 
@@ -27,10 +31,10 @@ public class KBaseImpl
 
     private EventProcessingOption            eventProcessingMode;
 
-    private Map<String, KSession>        kSessions;
+    private Map<String, KSession>            kSessions;
 
-    private KProjectImpl                         kProject;
-    
+    private KProjectImpl                     kProject;
+
     private transient PropertyChangeListener listener;
 
     public KBaseImpl(KProjectImpl kProject,
@@ -38,11 +42,12 @@ public class KBaseImpl
                      String name) {
         this.kProject = kProject;
         this.namespace = namespace;
+        this.includes = new HashSet<KBase>();
         this.name = name;
-        this.files = new ArrayList<String>() ;
+        this.files = new ArrayList<String>();
         this.kSessions = Collections.emptyMap();
     }
-    
+
     public KProjectImpl getKProject() {
         return kProject;
     }
@@ -73,12 +78,12 @@ public class KBaseImpl
      */
     public KSession newKSession(String namespace,
                                 String name) {
-        KSession kSession = new KSessionImpl(this, namespace, name);
+        KSession kSession = new KSessionImpl( this, namespace, name );
         Map<String, KSession> newMap = new HashMap<String, KSession>();
         newMap.putAll( this.kSessions );
         newMap.put( kSession.getQName(), kSession );
         setKSessions( newMap );
-        
+
         return kSession;
     }
 
@@ -91,9 +96,9 @@ public class KBaseImpl
         newMap.remove( qName );
         setKSessions( newMap );
     }
-    
 
-    public void moveKSession(String oldQName, String newQName) {
+    public void moveKSession(String oldQName,
+                             String newQName) {
         Map<String, KSession> newMap = new HashMap<String, KSession>();
         newMap.putAll( this.kSessions );
         KSession kSession = newMap.remove( oldQName );
@@ -111,12 +116,13 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#setListener(java.beans.PropertyChangeListener)
      */
-    public void setListener(PropertyChangeListener listener) {
+    public KBase setListener(PropertyChangeListener listener) {
         this.listener = listener;
         for ( KSession ksession : kSessions.values() ) {
             // make sure the listener is set for each ksession
             ksession.setListener( listener );
         }
+        return this;
     }
 
     /* (non-Javadoc)
@@ -129,11 +135,12 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#setNamespace(java.lang.String)
      */
-    public void setNamespace(String namespace) {
+    public KBase setNamespace(String namespace) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "namespace", this.namespace, namespace ) );
         }
         this.namespace = namespace;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -146,11 +153,12 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#setName(java.lang.String)
      */
-    public void setName(String name) {
+    public KBase setName(String name) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "name", this.name, name ) );
         }
         this.name = name;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -158,6 +166,18 @@ public class KBaseImpl
      */
     public String getQName() {
         return this.namespace + "." + this.name;
+    }
+        
+    public Set<KBase> getIncludes() {
+        return Collections.unmodifiableSet( includes );
+    }
+
+    public void addInclude(KBase kbase) {
+        this.includes.add( kbase );
+    }
+    
+    public void removeInclude(KBase kbase) {
+        this.includes.remove( kbase );
     }
 
     /* (non-Javadoc)
@@ -170,11 +190,12 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#setFiles(java.util.List)
      */
-    public void setFiles(List<String> files) {
+    public KBase setFiles(List<String> files) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "files", this.files, files ) );
         }
         this.files = files;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -187,11 +208,12 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#setEqualsBehavior(org.drools.conf.AssertBehaviorOption)
      */
-    public void setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
+    public KBase setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "equalsBehavior", this.equalsBehavior, equalsBehavior ) );
         }
         this.equalsBehavior = equalsBehaviour;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -204,11 +226,12 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#setEventProcessingMode(org.drools.conf.EventProcessingOption)
      */
-    public void setEventProcessingMode(EventProcessingOption eventProcessingMode) {
+    public KBase setEventProcessingMode(EventProcessingOption eventProcessingMode) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "eventProcessingMode", this.eventProcessingMode, eventProcessingMode ) );
         }
         this.eventProcessingMode = eventProcessingMode;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -221,11 +244,12 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#setAnnotations(java.util.List)
      */
-    public void setAnnotations(List<String> annotations) {
+    public KBase setAnnotations(List<String> annotations) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "annotations", this.annotations, annotations ) );
         }
         this.annotations = annotations;
+        return this;
     }
 
     /* (non-Javadoc)
