@@ -490,19 +490,7 @@
     <title>EntitySelector</title>
 
     <section>
-      <title>ggg</title>
-
-      <para>TODO</para>
-    </section>
-
-    <section>
-      <title>ggg</title>
-
-      <para>TODO</para>
-    </section>
-
-    <section>
-      <title>ggg</title>
+      <title>TODO</title>
 
       <para>TODO</para>
     </section>
@@ -512,19 +500,7 @@
     <title>ValueSelector</title>
 
     <section>
-      <title>ggg</title>
-
-      <para>TODO</para>
-    </section>
-
-    <section>
-      <title>ggg</title>
-
-      <para>TODO</para>
-    </section>
-
-    <section>
-      <title>ggg</title>
+      <title>TODO</title>
 
       <para>TODO</para>
     </section>
@@ -769,7 +745,38 @@
     <section>
       <title><literal>MoveIteratorFactory</literal>: generate custom moves just in time</title>
 
-      <para>TODO</para>
+      <para>Use this advanced form to generate custom moves by implementing the interface
+      <literal>MoveIteratorFactory</literal>:</para>
+
+      <programlisting language="java">public interface MoveIteratorFactory {
+
+    long getSize(ScoreDirector scoreDirector);
+
+    Iterator&lt;Move&gt; createOriginalMoveIterator(ScoreDirector scoreDirector);
+
+    Iterator&lt;Move&gt; createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom);
+
+}</programlisting>
+
+      <para>The method <literal>getSize()</literal> must give an estimation of the size. It doesn't need to be correct.
+      The method <literal>createOriginalMoveIterator</literal> is called if the <literal>selectionOrder is</literal>
+      <literal>ORIGINAL</literal> or if it is cached. The method <literal>createRandomMoveIterator</literal> is called
+      for <literal>selectionOrder</literal> <literal>RANDOM</literal> combined with cacheType
+      <literal>JUST_IN_TIME</literal>.</para>
+
+      <para>Simple configuration (which can be nested in a <literal>unionMoveSelector</literal> just like any other
+      <literal>MoveSelector</literal>):</para>
+
+      <programlisting language="xml">    &lt;moveIteratorFactory&gt;
+      &lt;moveIteratorFactoryClass&gt;...&lt;/moveIteratorFactoryClass&gt;
+    &lt;/moveIteratorFactory&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;moveIteratorFactory&gt;
+      ... &lt;!-- Normal moveSelector properties --&gt;
+      &lt;moveIteratorFactoryClass&gt;...&lt;/moveIteratorFactoryClass&gt;
+    &lt;/moveIteratorFactory&gt;</programlisting>
     </section>
 
     <section>
