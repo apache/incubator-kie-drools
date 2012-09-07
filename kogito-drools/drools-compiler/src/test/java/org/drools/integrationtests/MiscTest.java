@@ -11418,4 +11418,16 @@ public class MiscTest extends CommonTestMethodBase {
             fail("Could not parse knowledge");
         }
     }
+
+    @Test
+    public void testDeclaredTypeWithHundredsProps() {
+        // JBRULES-3621
+        StringBuilder sb = new StringBuilder("declare MyType\n");
+        for (int i = 0; i < 300; i++) {
+            sb.append("i" + i + " : int\n");
+        }
+        sb.append("end");
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(sb.toString());
+    }
 }
