@@ -1241,7 +1241,23 @@ person.setAge(10);</programlisting>
         <listitem><para>Process variables can be accessed also from the Java code of your application. It is
         done by casting of <code>ProcessInstance</code> to <code>WorkflowProcessInstance</code>.
         See the following example:</para>
-        <programlisting language="java">variable = ((WorkflowProcessInstance) processInstance).getVariable("variableName");</programlisting> </listitem>
+        <programlisting language="java">variable = ((WorkflowProcessInstance) processInstance).getVariable("variableName");</programlisting>
+        <para>To list all the process variables see the following code snippet:</para>
+        <programlisting language="java">org.jbpm.process.instance.ProcessInstance processInstance = ...;
+VariableScopeInstance variableScope = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+Map&lt;String, Object&gt; variables = variableScope.getVariables();</programlisting>
+        <para>Note that when you use persistence then you have to use a command based
+        approach to get all process variables:</para>
+            <programlisting language="java">Map&lt;String, Object&gt; variables = ksession.execute(new GenericCommand&lt;Map&lt;String, Object&gt;&gt;() {
+    public Map&lt;String, Object&gt; execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        org.jbpm.process.instance.ProcessInstance processInstance = (org.jbpm.process.instance.ProcessInstance) ksession.getProcessInstance(piId);
+        VariableScopeInstance variableScope = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        Map&lt;String, Object&gt; variables = variableScope.getVariables();
+        return variables;
+    }
+});</programlisting>
+        </listitem>
       </itemizedlist>
 
     <para>Finally, processes (and rules) all have access to globals, i.e.
