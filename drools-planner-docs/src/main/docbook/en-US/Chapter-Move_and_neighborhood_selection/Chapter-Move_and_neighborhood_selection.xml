@@ -764,6 +764,13 @@
       for <literal>selectionOrder</literal> <literal>RANDOM</literal> combined with cacheType
       <literal>JUST_IN_TIME</literal>.</para>
 
+      <important>
+        <para>Don't create a collection (list, array, map, set) of <literal>Move</literal>s when creating the
+        <literal>Iterator&lt;Move&gt;</literal>: the whole purpose of <literal>MoveIteratorFactory</literal> over
+        <literal>MoveListFactory</literal> is giving you the ability to create a <literal>Move</literal> just in time in
+        the <literal>Iterator</literal>'s method <literal>next()</literal>.</para>
+      </important>
+
       <para>Simple configuration (which can be nested in a <literal>unionMoveSelector</literal> just like any other
       <literal>MoveSelector</literal>):</para>
 
