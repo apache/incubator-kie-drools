@@ -322,12 +322,33 @@
       &lt;pillarSwapMoveSelector/&gt;&lt;!-- Does not support cacheType PHASE --&gt;
     &lt;/unionMoveSelector&gt;</programlisting>
       </section>
+
+      <section>
+        <title>Cached random selection</title>
+
+        <para>This combination is often a worthy competitor for medium and even big use cases (if you have a lot of
+        memory at your disposal). It scales up well in performance, but badly in memory.</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+      </section>
     </section>
 
     <section>
       <title>Filtered selection</title>
 
       <para>TODO</para>
+    </section>
+
+    <section>
+      <title>Sorted selection</title>
+
+      <para>TODO Not yet implemented.</para>
     </section>
 
     <section>
@@ -353,13 +374,13 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      ... &lt;!-- Normal moveSelector properties --&gt;
       &lt;entitySelector&gt;
         ...
       &lt;/entitySelector&gt;
       &lt;valueSelector&gt;
         ...
       &lt;/valueSelector&gt;
-      ...
     &lt;/changeMoveSelector&gt;</programlisting>
     </section>
 
@@ -376,13 +397,13 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;swapMoveSelector&gt;
+      ... &lt;!-- Normal moveSelector properties --&gt;
       &lt;entitySelector&gt;
         ...
       &lt;/entitySelector&gt;
       &lt;secondaryEntitySelector&gt;
         ...
       &lt;/secondaryEntitySelector&gt;
-      ...
     &lt;/swapMoveSelector&gt;</programlisting>
 
       <para>The <literal>secondaryEntitySelector</literal> is rarely needed: if it is not specified, entities from the
@@ -392,9 +413,9 @@
     <section>
       <title>pillarSwapMoveSelector</title>
 
-      <para>A pillar is a set of planning entities which have the same planning value(s) for each of their planning
-      variables. The <literal>pillarSwapMove</literal> selects 2 different entity pillars and swaps the values of all
-      their variables for all their entities.</para>
+      <para>A <emphasis>pillar</emphasis> is a set of planning entities which have the same planning value(s) for each
+      of their planning variables. The <literal>pillarSwapMove</literal> selects 2 different entity pillars and swaps
+      the values of all their variables for all their entities.</para>
 
       <para>Simplest configuration:</para>
 
@@ -403,6 +424,7 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;pillarSwapMoveSelector&gt;
+      ... &lt;!-- Normal moveSelector properties --&gt;
       &lt;pillarSelector&gt;
         &lt;entitySelector&gt;
           ...
@@ -413,7 +435,6 @@
           ...
         &lt;/entitySelector&gt;
       &lt;/secondaryPillarSelector&gt;
-      ...
     &lt;/pillarSwapMoveSelector&gt;</programlisting>
 
       <para>The <literal>secondaryPillarSelector</literal> is rarely needed: if it is not specified, entities from the
@@ -445,7 +466,7 @@
     <section>
       <title>cartesianProductMoveSelector</title>
 
-      <para>TODO</para>
+      <para>TODO Not yet implemented.</para>
     </section>
   </section>
 
