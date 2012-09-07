@@ -11,12 +11,12 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.3.1 r9886"
    width="1200"
    height="900"
-   sodipodi:docname="branchAndBoundNQueens04.svg"
+   sodipodi:docname="backtrackingDepthFirstSearchNQueens04.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="branchAndBoundNQueens04.png"
+   inkscape:export-filename="backtrackingDepthFirstSearchNQueens04.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    version="1.0">
@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -48,7 +48,7 @@
        id="perspective4439" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="1000"
+     inkscape:window-height="991"
      inkscape:window-width="1680"
      inkscape:pageshadow="2"
      inkscape:pageopacity="1"
@@ -63,7 +63,7 @@
      inkscape:cx="685.7824"
      inkscape:cy="582.58257"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
      inkscape:object-nodes="true"
@@ -5429,21 +5429,22 @@
        id="flowRegion6720"><rect
          id="rect6722-7"
          width="730"
-         height="60.000008"
+         height="99.999969"
          x="-246.32422"
-         y="271.43814"
+         y="261.43814"
          style="font-size:40px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-       id="flowPara3455">Branch and bound algorithm</flowPara></flowRoot>  <flowRoot
+       id="flowPara3455">Backtracking depth-first search</flowPara><flowPara
+       id="flowPara4880">with pruning</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6718-7"
      style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      transform="translate(426.32422,-171.43815)"><flowRegion
        id="flowRegion6720-2"><rect
          id="rect6722-2"
-         width="730"
-         height="50.000008"
-         x="-246.32422"
-         y="261.43814"
+         width="720"
+         height="59.999969"
+         x="-236.32422"
+         y="301.43814"
          style="font-size:22px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
        id="flowPara3455-6">N queens</flowPara><flowPara
        id="flowPara15747">n = 4</flowPara></flowRoot>  <path

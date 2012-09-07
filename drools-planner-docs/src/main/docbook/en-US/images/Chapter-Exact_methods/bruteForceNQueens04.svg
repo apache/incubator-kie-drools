@@ -11,7 +11,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.3.1 r9886"
    width="1200"
    height="900"
    sodipodi:docname="bruteForceNQueens04.svg"
@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -48,7 +48,7 @@
        id="perspective4439" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="1000"
+     inkscape:window-height="991"
      inkscape:window-width="1680"
      inkscape:pageshadow="2"
      inkscape:pageopacity="1"
@@ -61,9 +61,9 @@
      id="base"
      inkscape:zoom="1.2099383"
      inkscape:cx="577.9337"
-     inkscape:cy="646.88917"
+     inkscape:cy="713.00824"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
      inkscape:object-nodes="true"
@@ -13773,22 +13773,22 @@
      transform="translate(426.32422,-231.43815)"><flowRegion
        id="flowRegion6720"><rect
          id="rect6722-7"
-         width="990"
-         height="60.000008"
+         width="730"
+         height="100.00001"
          x="-246.32422"
-         y="271.43814"
+         y="261.43814"
          style="font-size:40px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-       id="flowPara3455">Brute force algorithm</flowPara></flowRoot>  <flowRoot
+       id="flowPara5120">Brute force </flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6718-7"
      style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      transform="translate(426.32422,-171.43815)"><flowRegion
        id="flowRegion6720-2"><rect
          id="rect6722-2"
-         width="1000"
-         height="60.000008"
+         width="730"
+         height="110.00002"
          x="-246.32422"
-         y="261.43814"
+         y="251.43816"
          style="font-size:22px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
        id="flowPara3455-6">N queens</flowPara><flowPara
        id="flowPara15747">n = 4</flowPara></flowRoot>  <path
