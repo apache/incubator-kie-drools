@@ -70,42 +70,6 @@
               </descriptors>
             </configuration>
           </execution>
-          <execution>
-            <id>console-server-wars</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>jbpm-gwt-console-server-${project.version}</finalName>
-              <descriptors>
-                <descriptor>src/main/assembly/gwt-console-server-ee6.xml</descriptor>
-              </descriptors>
-              <archive>
-                <manifestEntries>
-                  <Dependencies>org.jboss.netty</Dependencies>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-          <execution>
-            <id>human-task-wars</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>jbpm-human-task-${project.version}</finalName>
-              <descriptors>
-                <descriptor>src/main/assembly/human-task-war-ee6.xml</descriptor>
-              </descriptors>
-              <archive>
-                <manifestEntries>
-                  <Dependencies>org.jboss.netty</Dependencies>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
     </plugins>
@@ -266,19 +230,5 @@
       <artifactId>junit</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <!-- EE 6 compatibility -->
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-gwt-console-server</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-war</artifactId>
-      <type>war</type>
-      <version>${jbpm.version}</version>
-    </dependency>
   </dependencies>
-
 </project>

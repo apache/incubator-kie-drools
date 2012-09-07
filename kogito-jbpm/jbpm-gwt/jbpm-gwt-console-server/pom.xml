@@ -94,5 +94,54 @@
           </plugin>
        </plugins>
     </pluginManagement>
+
+    <!--  It's necessary to build the EE6 war here instead of in jbpm-distribution 
+          because of problems caused by signing the wars -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>unpack-war</id>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <unzip
+                  src="${project.build.directory}/${project.artifactId}-${project.version}.war"
+                  dest="${project.build.directory}/upacked-war" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ee6</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/gwt-console-server-ee6.xml</descriptor>
+              </descriptors>
+              <archive>
+                <manifestEntries>
+                  <Dependencies>org.jboss.netty</Dependencies>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>
