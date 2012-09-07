@@ -250,7 +250,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
         }
 
         // Building constructor with all fields
-        if (classDef.getFieldsDefinitions().size() > 0) {
+        if (classDef.getFieldsDefinitions().size() > 0 && classDef.getFieldsDefinitions().size() < 120) {
             this.buildConstructorWithFields( cw,
                     classDef,
                     classDef.getFieldsDefinitions() );
