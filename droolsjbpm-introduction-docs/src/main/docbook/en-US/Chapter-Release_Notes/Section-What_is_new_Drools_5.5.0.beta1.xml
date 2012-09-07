@@ -49,6 +49,98 @@
 
       <programlisting>Person(  name=="mark", address instanceof LongAddress, address.country == "uk" )</programlisting>
     </section>
+
+    <section>
+      <title>Conditional named consequences</title>
+
+      <para>Sometimes the constraint of having one single consequence for each rule can be somewhat limiting and leads
+      to verbose and difficult to be maintained repetitions like in the following example:</para>
+
+      <programlisting>rule "Give 10% discount to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+end</programlisting>
+
+      <para>It is already possible to partially overcome this problem by making the second rule extending the first one like in:</para>
+
+      <programlisting>rule "Give 10% discount to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+    extends "Give 10% discount to customers older than 60"
+when
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+end</programlisting>
+
+      <para>Anyway this feature makes it possible to define more labelled consequences other than the default one in a single rule,
+      so, for example, the 2 former rules can be compacted in only one like it follows:</para>
+
+      <programlisting>rule "Give 10% discount and free parking to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+    do[giveDiscount]
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end</programlisting>
+
+      <para>This last rule has 2 consequences, the usual default one, plus another one named "giveDiscount" that is activated,
+      using the keyword do, as soon as a customer older than 60 is found in the knowledge base, regardless of the fact that he
+      owns a car or not. The activation of a named consequence can be also guarded by an additional condition like in this further example:</para>
+
+      <programlisting>rule "Give free parking to customers older than 60 and 10% discount to golden ones among them"
+when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount]
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end</programlisting>
+
+      <para>The condition in the if statement is always evaluated on the pattern immediately preceding it. In the end this last,
+      a bit more complicated, example shows how it is possible to switch over different conditions using a nested if/else statement:</para>
+
+      <programlisting>rule "Give free parking and 10% discount to over 60 Golden customer and 5% to Silver ones"
+when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount10]
+    else if ( type == "Silver" ) break[giveDiscount5]
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+then[giveDiscount10]
+    modify($customer) { setDiscount( 0.1 ) };
+then[giveDiscount5]
+    modify($customer) { setDiscount( 0.05 ) };
+end</programlisting>
+
+      <para>Here the purpose is to give a 10% discount AND a free parking to Golden customers over 60, but only a 5% discount
+      (without free parking) to the Silver ones. This result is achieved by activating the consequence named "giveDiscount5"
+      using the keyword break instead of do. In fact do just schedules a consequence in the agenda, allowing the remaining
+      part of the LHS to continue of being evaluated as per normal, while break also blocks any further pattern matching evaluation.
+      Note, of course, that the activation of a named consequence not guarded by any condition with break doesn't make sense
+      (and generates a compile time error) since otherwise the LHS part following it would be never reachable.</para>
+    </section>
   </section>
 
   <section xml:id="releaseNotes_5.5.0.beta1_Fusion">
