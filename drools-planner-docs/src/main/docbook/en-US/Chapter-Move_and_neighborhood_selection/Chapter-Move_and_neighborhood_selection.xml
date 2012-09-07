@@ -63,7 +63,7 @@
     </section>
 
     <section>
-      <title>What is a <literal>MoveSelector</literal>? </title>
+      <title>What is a <literal>MoveSelector</literal>?</title>
 
       <para>A <literal>MoveSelector</literal>'s main function is to create <literal>Iterator&lt;Move&gt;</literal> when
       needed. An optimization algorithm will iterate through a subset of those moves.</para>
@@ -116,7 +116,7 @@
       </mediaobject>
 
       <para>The root of this tree is a <literal>MoveSelector</literal> which is injected into the optimization algorithm
-      implementation.</para>
+      implementation to be (partially) iterated in every step.</para>
     </section>
   </section>
 
@@ -124,27 +124,204 @@
     <title>General <literal>Selector</literal> features</title>
 
     <section>
-      <title>Selection order: random, original or sorted</title>
+      <title><literal>CacheType</literal>: Create moves in advance or Just In Time</title>
 
-      <para>TODO</para>
+      <para>A <literal>Selector</literal>'s <literal>cacheType</literal> determines when a selection (such as a
+      <literal>Move</literal>, an entity, a value, ...) is created and how long it lives.</para>
+
+      <para>Almost every <literal>Selector</literal> supports setting a <literal>cacheType</literal>:</para>
+
+      <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      ...
+    &lt;/changeMoveSelector&gt;</programlisting>
+
+      <para>The following <literal>cacheType</literal>s are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>JUST_IN_TIME</literal> (default): Not cached. Construct each selection
+          (<literal>Move</literal>, ...) just before it's used. This scales up well in memory footprint.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>STEP</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
+          of a step and cache them in a list for the remainder of the step. This scales up badly in memory
+          footprint.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>PHASE</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
+          of a <literal>SolverPhase</literal> and cache them in a list for the remainder of the
+          <literal>SolverPhase</literal>. Some selections cannot be phase cached because the list changes every step.
+          This scales up badly in memory footprint, but has a slight performance gain.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>SOLVER</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
+          of a <literal>Solver</literal> and cache them in a list for the remainder of the <literal>Solver</literal>.
+          Some selections cannot be solver cached because the list changes every step. This scales up badly in memory
+          footprint, but has a slight performance gain.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>A <literal>cacheType</literal> can be set on composite selectors too:</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+      ...
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+      <para>Nested selectors of a cached selector cannot be configured to be cached themselves, unless it's a higher
+      <literal>cacheType</literal>. For example: a <literal>STEP</literal> cached <literal>unionMoveSelector</literal>
+      can hold a <literal>PHASE</literal> cached <literal>changeMoveSelector</literal>, but not a
+      <literal>STEP</literal> cached <literal>changeMoveSelector</literal>.</para>
     </section>
 
     <section>
-      <title>Caching or Just In Time selection</title>
+      <title>SelectionOrder: original, random or shuffled selection</title>
 
-      <para>TODO</para>
+      <para>A <literal>Selector</literal>'s <literal>selectionOrder</literal> determines the order in which the
+      selections (such as <literal>Move</literal>s, entities, values, ...) are iterated. An optimization algorithm will
+      usually only iterate through a subset of its <literal>MoveSelector</literal>'s selections, starting from the
+      start, so the <literal>selectionOrder</literal> is critical to decide which <literal>Move</literal>s are
+      evaluated.</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/jitRandomSelection.png"></imagedata>
-        </imageobject>
-      </mediaobject>
+      <para>Almost every <literal>Selector</literal> supports setting a <literal>selectionOrder</literal>:</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/cachedRandomSelection.png"></imagedata>
-        </imageobject>
-      </mediaobject>
+      <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      ...
+      &lt;selectionOrder&gt;ORIGINAL&lt;/selectionOrder&gt;
+      ...
+    &lt;/changeMoveSelector&gt;</programlisting>
+
+      <para>The following <literal>selectionOrder</literal>s are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>ORIGINAL</literal>: Select the selections (<literal>Move</literal>s, ...) in default order.
+          Each selection will be selected only once.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: A0, A1, A2, A3, ..., B0, B1, B2, B3, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>RANDOM (default): Select the selections (<literal>Move</literal>s, ...) in non-shuffled random order. A
+          selection might be selected multiple times. This scales up well in performance.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: C2, A3, C2, B1, A0, C0, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>SHUFFLED: Select the selections (<literal>Move</literal>s, ...) in shuffled random order. Each selection
+          will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. This scales up badly in
+          performance because a random number is generated for each element, even if it's not selected (which is the
+          grand majority when scaling up).</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: C2, A3, B1, A0, C0, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>A <literal>selectionOrder</literal> can be set on composite selectors too.</para>
+
+      <note>
+        <para>When a <literal>Selector</literal> is cached, all of its nested <literal>Selector</literal>s will
+        naturally default to <literal>selectionOrder</literal> <literal>ORIGINAL</literal>. Avoid overwriting the
+        <literal>selectionOrder</literal> of those nested <literal>Selector</literal>s.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>Recommended combinations of <literal>CacheType</literal> and <literal>SelectionOrder</literal></title>
+
+      <section>
+        <title>Just in time random selection (default)</title>
+
+        <para>This combination is great for big use cases (10 000 entities or more), as it scales up well in memory
+        footprint and performance. Other combinations are often not even viable on such sizes. It works for smaller use
+        cases too, so it's a good way to start out. It's the default, so this explicit configuration of
+        <literal>cacheType</literal> and <literal>selectionOrder</literal> is actually obsolete:</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;JUST_IN_TIME&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+        <para>Here's how it works. When <literal>Iterator&lt;Move&gt;.next()</literal> is called, a child
+        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal> is
+        created (2, 3, 4) and is then returned (5):</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/jitRandomSelection.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+
+        <para>Notice that it never creates a list of <literal>Move</literal>s and it generates random numbers only for
+        <literal>Move</literal>s that are actually selected.</para>
+      </section>
+
+      <section>
+        <title>Cached shuffled selection</title>
+
+        <para>This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it
+        scales up badly in memory footprint and performance.</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SHUFFLED&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+        <para>Here's how it works. At the start of the phase (or step depending on the <literal>cacheType</literal>),
+        all moves are created (1) and cached (2). When <literal>MoveSelector.iterator()</literal> is called, the moves
+        are shuffled (3). When <literal>Iterator&lt;Move&gt;.next()</literal> is called, the next element in the
+        shuffled list is returned (4):</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+
+        <para>Notice that each <literal>Move</literal> will only be selected once, even though it is random
+        order.</para>
+
+        <para>Use cacheType PHASE if none of the (possibly nested) Selectors require <literal>STEP</literal>. Otherwise,
+        do something like this:</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;STEP&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SHUFFLED&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector&gt;
+        &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;/changeMoveSelector&gt;
+      &lt;swapMoveSelector/&gt;
+        &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;/swapMoveSelector&gt;
+      &lt;pillarSwapMoveSelector/&gt;&lt;!-- Does not support cacheType PHASE --&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+      </section>
     </section>
 
     <section>

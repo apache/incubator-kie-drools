@@ -647,6 +647,12 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <para>Unlike the n queens problem, real world problems require the use of subset selection. Start from an
         <literal>minimalAcceptedSelection</literal> that takes a step in less then 2 seconds. Turn on INFO logging to
         see the step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
+
+        <important>
+          <para>With a low <literal>minimalAcceptedSelection</literal> it is recommended to avoid using
+          <literal>selectionOrder</literal> SHUFFLED because the shuffling generates a random number for every element
+          in the selector, taking up a lot of time, but only a few are actually selected.</para>
+        </important>
       </section>
 
       <section>

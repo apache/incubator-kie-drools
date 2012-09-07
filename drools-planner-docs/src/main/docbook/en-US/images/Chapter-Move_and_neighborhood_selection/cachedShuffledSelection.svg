@@ -14,8 +14,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="cachedRandomSelection.svg"
-   inkscape:export-filename="cachedRandomSelection.png"
+   sodipodi:docname="cachedShuffledSelection.svg"
+   inkscape:export-filename="cachedShuffledSelection.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -246,8 +246,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.315"
-     inkscape:cx="531.65559"
-     inkscape:cy="300"
+     inkscape:cx="470.41781"
+     inkscape:cy="344.00839"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -282,7 +282,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -303,7 +303,7 @@
            x="50"
            y="220.0002"
            style="font-size:36px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4308">Cached random selection</flowPara></flowRoot>    <flowRoot
+         id="flowPara4308">Cached shuffled selection</flowPara></flowRoot>    <flowRoot
        transform="translate(-20,372.36182)"
        xml:space="preserve"
        id="flowRoot4302-6"
@@ -315,7 +315,7 @@
            x="50"
            y="150.00014"
            style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4308-6">Cache all possible moves and shuffle them when a step starts</flowPara></flowRoot>    <g
+         id="flowPara4308-6">Cache all possible moves. Shuffle them when a Move Iterator is created</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -539,7 +539,7 @@
         <flowRoot
            xml:space="preserve"
            id="flowRoot3663"
-           style="font-size:12.07074069999999999px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+           style="font-size:12.0707407px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
            transform="matrix(1.6568991,0,0,1.6568991,268.45878,674.06561)"><flowRegion
              id="flowRegion3665"><rect
                id="rect3667"
@@ -547,11 +547,11 @@
                height="23.243773"
                x="206.28102"
                y="81.187698"
-               style="font-size:12.07074069999999999px;text-align:start;text-anchor:start;fill:#8f5902" /></flowRegion><flowPara
+               style="font-size:12.0707407px;text-align:start;text-anchor:start;fill:#8f5902" /></flowRegion><flowPara
              id="flowPara3262"
-             style="font-size:8.44951915999999947px;text-align:start;text-anchor:start;fill:#8f5902">Create all moves</flowPara><flowPara
+             style="font-size:8.44951916px;text-align:start;text-anchor:start;fill:#8f5902">Create all moves</flowPara><flowPara
              id="flowPara3266"
-             style="font-size:8.44951915999999947px;text-align:start;text-anchor:start;fill:#8f5902">in original order</flowPara></flowRoot>        <g
+             style="font-size:8.44951916px;text-align:start;text-anchor:start;fill:#8f5902">in original order</flowPara></flowRoot>        <g
            id="g3208"
            transform="translate(552.16201,258.73584)">
           <path
@@ -562,7 +562,7 @@
              sodipodi:cy="110"
              sodipodi:cx="30"
              id="path3198"
-             style="fill:#e9b96e;fill-opacity:1;stroke:#8f5902;stroke-width:1.33333337000000007;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:5.99999985999999996"
+             style="fill:#e9b96e;fill-opacity:1;stroke:#8f5902;stroke-width:1.33333337;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:5.99999986"
              sodipodi:type="arc" />
           <flowRoot
              transform="translate(0,454.84907)"
@@ -587,23 +587,23 @@
          transform="translate(675.23696,-254.28956)">
         <flowRoot
            transform="matrix(1.6568991,0,0,1.6568991,-252.21788,827.36592)"
-           style="font-size:12.07074069999999999px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+           style="font-size:12.0707407px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
            id="flowRoot3248"
            xml:space="preserve"><flowRegion
              id="flowRegion3250"><rect
-               style="font-size:12.07074069999999999px;text-align:start;text-anchor:start;fill:#8f5902"
+               style="font-size:12.0707407px;text-align:start;text-anchor:start;fill:#8f5902"
                y="81.187698"
                x="206.28102"
                height="24.141479"
                width="132.77815"
                id="rect3252" /></flowRegion><flowPara
-             style="font-size:8.44951915999999947px;text-align:start;text-anchor:start;fill:#8f5902"
-             id="flowPara3272">Cache all moves</flowPara></flowRoot>        <g
+             style="font-size:8.44951916px;text-align:start;text-anchor:start;fill:#8f5902"
+             id="flowPara3165">Cache all moves</flowPara></flowRoot>        <g
            transform="translate(31,403.28956)"
            id="g3258">
           <path
              sodipodi:type="arc"
-             style="fill:#e9b96e;fill-opacity:1;stroke:#8f5902;stroke-width:1.33333337000000007;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:5.99999985999999996"
+             style="fill:#e9b96e;fill-opacity:1;stroke:#8f5902;stroke-width:1.33333337;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:5.99999986"
              id="path3260"
              sodipodi:cx="30"
              sodipodi:cy="110"
@@ -631,23 +631,23 @@
        transform="translate(370,-329.28956)">
       <flowRoot
          transform="matrix(1.6568991,0,0,1.6568991,-72.217882,827.36592)"
-         style="font-size:12.0707407px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         style="font-size:12.07074069999999999px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3316"
          xml:space="preserve"><flowRegion
            id="flowRegion3318"><rect
-             style="font-size:12.0707407px;text-align:start;text-anchor:start;fill:#8f5902"
+             style="font-size:12.07074069999999999px;text-align:start;text-anchor:start;fill:#ce5c00"
              y="81.187698"
              x="206.28102"
              height="24.141479"
              width="132.77815"
              id="rect3320" /></flowRegion><flowPara
-           style="font-size:8.44951916px;text-align:start;text-anchor:start;fill:#8f5902"
+           style="font-size:8.44951915999999947px;text-align:start;text-anchor:start;fill:#ce5c00"
            id="flowPara3324">Shuffle all moves</flowPara></flowRoot>      <g
          transform="translate(211,403.28956)"
          id="g3326">
         <path
            sodipodi:type="arc"
-           style="fill:#e9b96e;fill-opacity:1;stroke:#8f5902;stroke-width:1.33333337;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:5.99999986"
+           style="fill:#fcaf3e;fill-opacity:1;stroke:#ce5c00;stroke-width:1.33333337000000007;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:5.99999985999999996"
            id="path3328"
            sodipodi:cx="30"
            sodipodi:cy="110"
@@ -658,7 +658,7 @@
         <flowRoot
            xml:space="preserve"
            id="flowRoot3330"
-           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
            transform="translate(0,454.84907)"><flowRegion
              id="flowRegion3332"><rect
                id="rect3334"
@@ -666,7 +666,7 @@
                height="30"
                x="20"
                y="100"
-               style="text-align:center;text-anchor:middle;fill:#5c3566" /></flowRegion><flowPara
+               style="text-align:center;text-anchor:middle;fill:#ce5c00" /></flowRegion><flowPara
              id="flowPara3336">3</flowPara></flowRoot>      </g>
     </g>
     <g
@@ -721,19 +721,19 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot3526"
-       style="font-size:12.0707407px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-31.899199,532.81221)"><flowRegion
+       style="font-size:12.0707407px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-30.942157,527.81221)"><flowRegion
          id="flowRegion3528"><rect
            id="rect3530"
            width="193.13185"
            height="18.106112"
            x="320.11249"
            y="12.45747"
-           style="font-size:12.0707407px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
+           style="font-size:12.0707407px;text-align:start;text-anchor:start;fill:#a40000" /></flowRegion><flowPara
          id="flowPara3532">Move C2 is only selected once</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3663-0"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        transform="matrix(1.6568991,0,0,1.6568991,-90.394076,481.72095)"><flowRegion
          id="flowRegion3665-4"><rect
            id="rect3667-7"
@@ -741,11 +741,11 @@
            height="36.212219"
            x="72.662285"
            y="72.81118"
-           style="font-size:14.48488902999999972px;fill:#8f5902" /></flowRegion><flowPara
+           style="font-size:14.48488902999999972px;fill:#ce5c00" /></flowRegion><flowPara
          id="flowPara3676">C2, BC, C0, A2, B2, AB, C1, BD,</flowPara><flowPara
          id="flowPara3175"> CD, A1, AC, B0, B1, AD, A0, ...</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,-280.39408,631.7224)"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.29999999999999999"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.4"
        id="flowRoot3620"
        xml:space="preserve"><flowRegion
          id="flowRegion3622"><rect
@@ -761,7 +761,7 @@
          id="flowPara3671">...</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3577"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.29999999999999999"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.4"
        transform="matrix(1.6568991,0,0,1.6568991,-340.39408,841.72161)"><flowRegion
          id="flowRegion3579"><rect
            id="rect3581"
@@ -772,7 +772,7 @@
            style="font-size:14.48488902999999972px;fill:#8f5902" /></flowRegion><flowPara
          id="flowPara3583">A, B, C, D, ...</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,-160.39408,841.72161)"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.29999999999999999"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.4"
        id="flowRoot3586"
        xml:space="preserve"><flowRegion
          id="flowRegion3588"><rect
@@ -784,7 +784,7 @@
            id="rect3590" /></flowRegion><flowPara
          id="flowPara3592">0, 1, 2, ...</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,59.605924,841.72161)"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.29999999999999999"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.4"
        id="flowRoot3594"
        xml:space="preserve"><flowRegion
          id="flowRegion3596"><rect
@@ -797,7 +797,7 @@
          id="flowPara3600">A, B, C, D, ...</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3602"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.29999999999999999"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.4"
        transform="matrix(1.6568991,0,0,1.6568991,239.60592,841.72161)"><flowRegion
          id="flowRegion3604"><rect
            id="rect3607"
@@ -809,7 +809,7 @@
          id="flowPara3609">A, B, C, D, ...</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3628"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.29999999999999999"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:0.4"
        transform="matrix(1.6568991,0,0,1.6568991,99.605924,631.7214)"><flowRegion
          id="flowRegion3630"><rect
            id="rect3632"

@@ -416,8 +416,8 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>TOTAL_SCORE</literal>: Maximize the overall score, so minimize the overall cost if all
-          solutions would be executed. This is the default.</para>
+          <para><literal>TOTAL_SCORE</literal> (default): Maximize the overall score, so minimize the overall cost if
+          all solutions would be executed.</para>
         </listitem>
 
         <listitem>
@@ -470,7 +470,7 @@
 
         <itemizedlist>
           <listitem>
-            <para><literal>1</literal>: Run all benchmarks sequentially. This is the default setting.</para>
+            <para><literal>1</literal> (default): Run all benchmarks sequentially.</para>
           </listitem>
 
           <listitem>
