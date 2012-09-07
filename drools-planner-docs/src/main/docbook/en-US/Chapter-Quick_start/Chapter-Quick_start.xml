@@ -231,10 +231,6 @@
     &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    &lt;unionMoveSelector&gt;
-      &lt;changeMoveSelector/&gt;
-      &lt;swapMoveSelector/&gt;
-    &lt;/unionMoveSelector&gt;
     &lt;acceptor&gt;
       &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
@@ -284,10 +280,6 @@
     &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    &lt;unionMoveSelector&gt;
-      &lt;changeMoveSelector/&gt;
-      &lt;swapMoveSelector/&gt;
-    &lt;/unionMoveSelector&gt;
     &lt;acceptor&gt;
       &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
