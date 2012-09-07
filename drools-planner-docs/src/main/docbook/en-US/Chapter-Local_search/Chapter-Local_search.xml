@@ -68,19 +68,11 @@
     <title>About neighborhoods, moves and steps</title>
 
     <section>
-      <title>A move</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Move generation</title>
+      <title>Move generation tips</title>
 
       <para>At each solution, local search will try all possible moves and pick the best move to change to the next
       solution. It's up to you to generate those moves. Let's take a look at all the possible moves on the starting
       solution of 4 queens:</para>
-
-      <para></para>
 
       <para>It's highly recommended that you verify all solutions are connected by your move set. This means that by
       combining a finite number of moves you can reach any solution from any solution. Otherwise you're already
@@ -202,8 +194,8 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
 
     <itemizedlist>
       <listitem>
-        <para>A <emphasis>selector</emphasis> which selects (or generates) the possible moves of the current
-        solution.</para>
+        <para>A <literal>MoveSelector</literal> which selects the possible moves of the current solution. See the
+        chapter about Move and neighborhood selection.</para>
       </listitem>
 
       <listitem>
@@ -250,31 +242,6 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
     <literal>Solver</literal> remembers the best solution it has encountered through the entire search path. Each time
     the current solution is better than the last best solution, the current solution is cloned and referenced as the new
     best solution.</para>
-
-    <section>
-      <title>Selector</title>
-
-      <para>A selector is currently based on a <literal>MoveFactory</literal>.</para>
-
-      <programlisting language="xml">  &lt;selector&gt;
-    &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
-  &lt;/selector&gt;</programlisting>
-
-      <para>You're not obligated to generate the same set of moves at each step. It's generally a good idea to use
-      several selectors, mixing fine grained moves and course grained moves:</para>
-
-      <programlisting language="xml">  &lt;selector&gt;
-    &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory&lt;/moveFactoryClass&gt;
-    &lt;/selector&gt;
-    &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory&lt;/moveFactoryClass&gt;
-    &lt;/selector&gt;
-    &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory&lt;/moveFactoryClass&gt;
-    &lt;/selector&gt;
-  &lt;/selector&gt;</programlisting>
-    </section>
 
     <section>
       <title>Acceptor</title>
