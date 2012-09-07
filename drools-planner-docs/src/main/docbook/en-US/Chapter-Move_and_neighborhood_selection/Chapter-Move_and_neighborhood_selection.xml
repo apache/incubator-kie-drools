@@ -274,8 +274,8 @@
           </imageobject>
         </mediaobject>
 
-        <para>Notice that it never creates a list of <literal>Move</literal>s and it generates random numbers only for
-        <literal>Move</literal>s that are actually selected.</para>
+        <para>Notice that <emphasis role="bold">it never creates a list of <literal>Move</literal>s</emphasis> and it
+        generates random numbers only for <literal>Move</literal>s that are actually selected.</para>
       </section>
 
       <section>
@@ -303,8 +303,8 @@
           </imageobject>
         </mediaobject>
 
-        <para>Notice that each <literal>Move</literal> will only be selected once, even though it is random
-        order.</para>
+        <para>Notice that <emphasis role="bold">each <literal>Move</literal> will only be selected once</emphasis>, even
+        though they are selected in random order.</para>
 
         <para>Use cacheType PHASE if none of the (possibly nested) Selectors require <literal>STEP</literal>. Otherwise,
         do something like this:</para>
@@ -364,8 +364,8 @@
     <section>
       <title><literal>changeMoveSelector</literal></title>
 
-      <para>For 1 planning variable, the changeMove selects 1 planning entity and 1 planning value and assigns the
-      entity's variable to that value.</para>
+      <para>For 1 planning variable, the <literal>ChangeMove</literal> selects 1 planning entity and 1 planning value
+      and assigns the entity's variable to that value.</para>
 
       <para>Simplest configuration:</para>
 
@@ -382,12 +382,22 @@
         ...
       &lt;/valueSelector&gt;
     &lt;/changeMoveSelector&gt;</programlisting>
+
+      <para>A <literal>ChangeMove</literal> is the finest grained move.</para>
+
+      <important>
+        <para>Almost every <literal>moveSelector</literal> configuration injected into a metaheuristic algorithm should
+        include a changeMoveSelector or a custom implementation. This guarantees that every possible
+        <literal>Solution</literal> can be reached through applying a number of moves in sequence (not taking <link
+        linkend="scoreTrap">score traps</link> into account). Of course, normally it is unioned with other, more course
+        grained moves.</para>
+      </important>
     </section>
 
     <section>
       <title>swapMoveSelector</title>
 
-      <para>The <literal>swapMove</literal> selects 2 different planning entities and swaps the planning values of all
+      <para>The <literal>SwapMove</literal> selects 2 different planning entities and swaps the planning values of all
       their planning variables.</para>
 
       <para>Simplest configuration:</para>
@@ -408,6 +418,12 @@
 
       <para>The <literal>secondaryEntitySelector</literal> is rarely needed: if it is not specified, entities from the
       same <literal>entitySelector</literal> are swapped.</para>
+
+      <para>Although a <literal>SwapMove</literal> on a single variable is essentially just 2
+      <literal>ChangeMove</literal>s, it's often the winning step where the first of the 2
+      <literal>ChangeMove</literal>s would not be the winning step because it leave the solution in a state with broken
+      hard constraints. For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state
+      where both lectures are in the same room which breaks a hard constraint.</para>
     </section>
 
     <section>
@@ -471,48 +487,6 @@
   </section>
 
   <section>
-    <title>Custom <literal>Move</literal>s</title>
-
-    <section>
-      <title>The interface <literal>Move</literal></title>
-
-      <para>TODO</para>
-
-      <para>Your custom moves must implement the <literal>Move</literal> interface:</para>
-
-      <programlisting language="java">public interface Move {
-
-    boolean isMoveDoable(ScoreDirector scoreDirector);
-
-    Move createUndoMove(ScoreDirector scoreDirector);
-    void doMove(ScoreDirector scoreDirector);
-
-    Collection&lt;? extends Object&gt; getPlanningEntities();
-    Collection&lt;? extends Object&gt; getPlanningValues();
-
-}</programlisting>
-    </section>
-
-    <section>
-      <title>ggg</title>
-
-      <para>TODO</para>
-    </section>
-
-    <section>
-      <title>moveListFactory</title>
-
-      <para>TODO</para>
-    </section>
-
-    <section>
-      <title>moveIteratorFactory</title>
-
-      <para>TODO</para>
-    </section>
-  </section>
-
-  <section>
     <title>EntitySelector</title>
 
     <section>
@@ -557,37 +531,251 @@
   </section>
 
   <section>
-    <title>TODO DELETEME Garbage</title>
+    <title>Custom moves</title>
 
-    <para>TODO</para>
+    <section>
+      <title>Custom moves introduction</title>
 
-    <para>These are some possibilities for move types in n queens:</para>
+      <para>Instead of reusing the generic <literal>Move</literal>s (such as <literal>ChangeMove</literal>) you can also
+      implement your own <literal>Move</literal>s. Generic and custom <literal>MoveSelector</literal>s can be combined
+      as wanted.</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>Move a single queen to another row. This is a small move. For example, move queen <emphasis>C0 to
-        C2</emphasis>.</para>
-      </listitem>
+      <para>A custom <literal>Move</literal> can be tailored to work to the advantage of your constraints. For example,
+      in examination scheduling, changing the period of an exam A also changes te period of all the exams that need to
+      coincide with exam A.</para>
 
-      <listitem>
-        <para>Move all queens a number of rows down or up. This a big move.</para>
-      </listitem>
+      <para>A custom <literal>Move</literal> is also slightly faster than a generic <literal>Move</literal>. However,
+      it's far more work to implement and much harder to avoid bugs. After implementing a custom
+      <literal>Move</literal>, make sure to turn on <literal>environmentMode</literal> <literal>TRACE</literal> to check
+      for score corruptions.</para>
+    </section>
 
-      <listitem>
-        <para>Move a single queen to another column. This is a small move. For example, move queen <emphasis>C2 to
-        A0</emphasis> (placing it on top of queen A0).</para>
-      </listitem>
+    <section>
+      <title>The interface <literal>Move</literal></title>
 
-      <listitem>
-        <para>Add a queen to the board at a certain row and column.</para>
-      </listitem>
+      <para>Your custom moves must implement the <literal>Move</literal> interface:</para>
 
-      <listitem>
-        <para>Remove a queen from the board.</para>
-      </listitem>
-    </itemizedlist>
+      <programlisting language="java">public interface Move {
 
-    <para>Because we have decided that all queens will be on the board at all times and each queen has an appointed
-    column (for performance reasons), only the first 2 move types are usable in our example.</para>
+    boolean isMoveDoable(ScoreDirector scoreDirector);
+
+    Move createUndoMove(ScoreDirector scoreDirector);
+    void doMove(ScoreDirector scoreDirector);
+
+    Collection&lt;? extends Object&gt; getPlanningEntities();
+    Collection&lt;? extends Object&gt; getPlanningValues();
+
+}</programlisting>
+
+      <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
+      different row:</para>
+
+      <programlisting language="java">public class RowChangeMove implements Move {
+
+    private Queen queen;
+    private Row toRow;
+
+    public RowChangeMove(Queen queen, Row toRow) {
+        this.queen = queen;
+        this.toRow = toRow;
+    }
+
+    // ... see below
+
+}</programlisting>
+
+      <para>An instance of <literal>RowChangeMove</literal> moves a queen from its current row to a different
+      row.</para>
+
+      <para>Planner calls the <literal>doMove(ScoreDirector)</literal> method to do a move. The <literal>Move</literal>
+      implementation must notify the <literal>ScoreDirector</literal> of any changes it make to the planning entities's
+      variables:</para>
+
+      <programlisting language="java">    public void doMove(ScoreDirector scoreDirector) {
+        scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made to the queen.row
+        queen.setRow(toRow);
+        scoreDirector.afterVariableChanged(queen, "row"); // after changes are made to the queen.row
+    }</programlisting>
+
+      <para>You need to call the methods <literal>scoreDirector.beforeVariableChanged(Object, String)</literal> and
+      <literal>scoreDirector.afterVariableChanged(Object, String)</literal> directly before and after modifying the
+      entity. Alternatively, you can also call the methods
+      <literal>scoreDirector.beforeAllVariablesChanged(Object)</literal> and
+      <literal>scoreDirector.afterAllVariablesChanged(Object)</literal>.</para>
+
+      <note>
+        <para>You can alter multiple entities in a single move and effectively create a big move (also known as a
+        coarse-grained move).</para>
+      </note>
+
+      <warning>
+        <para>A <literal>Move</literal> can only change/add/remove planning entities, it must not change any of the
+        problem facts.</para>
+      </warning>
+
+      <para>Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
+      <literal>isDoable(ScoreDirector)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not
+          doable, because it is already there.</para>
+        </listitem>
+
+        <listitem>
+          <para>A move that is impossible to do on the current solution. For example, moving queen B0 to row 10 is not
+          doable because it would move it outside the board limits.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>In the n queens example, a move which moves the queen from its current row to the same row isn't
+      doable:</para>
+
+      <programlisting language="java">    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+        return !ObjectUtils.equals(queen.getRow(), toRow);
+    }</programlisting>
+
+      <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
+      A move that is currently not doable could become doable on the working <literal>Solution</literal> of a later
+      step.</para>
+
+      <para>Each move has an <emphasis>undo move</emphasis>: a move (normally of the same type) which does the exact
+      opposite. In the example above the undo move of <emphasis>C0 to C2</emphasis> would be the move <emphasis>C2 to
+      C0</emphasis>. An undo move is created from a <literal>Move</literal>, before the <literal>Move</literal> has been
+      done on the current solution.</para>
+
+      <programlisting language="java">    public Move createUndoMove(ScoreDirector scoreDirector) {
+        return new RowChangeMove(queen, queen.getRow());
+    }</programlisting>
+
+      <para>Notice that if C0 would have already been moved to C2, the undo move would create the move <emphasis>C2 to
+      C2</emphasis>, instead of the move <emphasis>C2 to C0</emphasis>.</para>
+
+      <para>The local search solver phase might do and undo the same <literal>Move</literal> more than once, even on
+      different (successive) solutions.</para>
+
+      <para>A <literal>Move</literal> must implement the <literal>getPlanningEntities()</literal> and
+      <literal>getPlanningValues()</literal> methods. They are used by entity tabu and value tabu respectively. When
+      they are called, the <literal>Move</literal> has already been done.</para>
+
+      <programlisting language="java">    public List&lt;? extends Object&gt; getPlanningEntities() {
+        return Collections.singletonList(queen);
+    }
+
+    public Collection&lt;? extends Object&gt; getPlanningValues() {
+        return Collections.singletonList(toRow);
+    }</programlisting>
+
+      <para>If your <literal>Move</literal> changes multiple planning entities, return all them in
+      <literal>getPlanningEntities()</literal> and return all their values (to which they are changing) in
+      <literal>getPlanningValues()</literal>.</para>
+
+      <programlisting language="java">    public Collection&lt;? extends Object&gt; getPlanningEntities() {
+        return Arrays.asList(leftCloudProcess, rightCloudProcess);
+    }
+
+    public Collection&lt;? extends Object&gt; getPlanningValues() {
+        return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
+    }</programlisting>
+
+      <para>A <literal>Move</literal> must implement the <literal>equals()</literal> and <literal>hashCode()</literal>
+      methods. 2 moves which make the same change on a solution, should be equal.</para>
+
+      <programlisting language="java">    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof RowChangeMove) {
+            RowChangeMove other = (RowChangeMove) o;
+            return new EqualsBuilder()
+                    .append(queen, other.queen)
+                    .append(toRow, other.toRow)
+                    .isEquals();
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(queen)
+                .append(toRow)
+                .toHashCode();
+    }</programlisting>
+
+      <para>In the above example, the <literal>Queen</literal> class uses the default <literal>Object</literal>
+      <literal>equals()</literal> and <literal>hashCode()</literal> implementations. Notice that it checks if the other
+      move is an instance of the same move type. This <literal>instanceof</literal> check is important because a move
+      will be compared to a move with another move type if you're using more then 1 move type.</para>
+
+      <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read
+      Planner's logging more easily:</para>
+
+      <programlisting language="java">    public String toString() {
+        return queen + " =&gt; " + toRow;
+    }</programlisting>
+
+      <para>Now that we can implement a single <literal>Move</literal>, let's take a look at generating moves.</para>
+    </section>
+
+    <section>
+      <title><literal>MoveListFactory</literal>: the easy way to generate custom moves</title>
+
+      <para>The easiest way to generate custom moves is by implementing the interface
+      <literal>MoveListFactory</literal>:</para>
+
+      <programlisting language="java">public interface MoveListFactory {
+
+    List&lt;Move&gt; createMoveList(Solution solution);
+
+}</programlisting>
+
+      <para>For example:</para>
+
+      <programlisting language="java">public class RowChangeMoveFactory implements MoveListFactory {
+
+    public List&lt;Move&gt; createMoveList(Solution solution) {
+        NQueens nQueens = (NQueens) solution;
+        List&lt;Move&gt; moveList = new ArrayList&lt;Move&gt;();
+        for (Queen queen : nQueens.getQueenList()) {
+            for (Row toRow : nQueens.getRowList()) {
+                moveList.add(new RowChangeMove(queen, toRow));
+            }
+        }
+        return moveList;
+    }
+
+}</programlisting>
+
+      <para>Simple configuration (which can be nested in a <literal>unionMoveSelector</literal> just like any other
+      <literal>MoveSelector</literal>):</para>
+
+      <programlisting language="xml">    &lt;moveListFactory&gt;
+      &lt;moveListFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveListFactoryClass&gt;
+    &lt;/moveListFactory&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;moveListFactory&gt;
+      ... &lt;!-- Normal moveSelector properties --&gt;
+      &lt;moveListFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveListFactoryClass&gt;
+    &lt;/moveListFactory&gt;</programlisting>
+
+      <para>Because the <literal>MoveListFactory</literal> generates all moves at once in a List&lt;Move&gt;, it does
+      not support <literal>cacheType</literal> <literal>JUST_IN_TIME</literal>. Therefore,
+      <literal>moveListFactory</literal> uses <literal>cacheType</literal> <literal>STEP</literal> by default and it
+      scales badly in memory footprint.</para>
+    </section>
+
+    <section>
+      <title><literal>MoveIteratorFactory</literal>: generate custom moves just in time</title>
+
+      <para>TODO</para>
+    </section>
+
+    <section>
+      <title>Move generation through DRL</title>
+
+      <para>Not yet supported.</para>
+    </section>
   </section>
 </chapter>
