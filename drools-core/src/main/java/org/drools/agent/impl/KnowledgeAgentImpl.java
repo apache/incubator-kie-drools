@@ -19,6 +19,8 @@ package org.drools.agent.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,12 +40,14 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
+import org.drools.agent.ChangeSetHelperImpl;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.ResourceDiffProducer;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
@@ -62,6 +66,7 @@ import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.ResourcedObject;
+import org.drools.io.impl.BaseResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
@@ -179,6 +184,70 @@ public class KnowledgeAgentImpl
         return useKBaseClassLoaderForCompiling;
     }
 
+    /**
+     * Convenient method to apply Resources that can't be applied using change-sets:
+     * i.e. ByteArrayResource.
+     * The name parameter is the name that is going to identify this resource.
+     * If you want to modify the resource you should invoke this method with
+     * the same 'name' you used before and with the new version of Resource you
+     * want to apply.
+     * @param name
+     * @param resource 
+     */
+    public void applyNamedResource(String name, Resource resource, ResourceType type){
+        //set the type to the resource
+        if (resource instanceof InternalResource){
+            ((InternalResource)resource).setResourceType(type);
+        }
+        
+        //convert resource into a NamedResource create a change-set containing it.
+        Resource namedResource = this.convertToNamedResource(name, resource);
+
+        //Create an empty change-set
+        ChangeSetHelperImpl changeSetHelperImpl = new ChangeSetHelperImpl();
+        
+        //if the resource was already registered (using the same 'name'), then
+        //this is a modification, otherwise it is and addition.
+        if(this.registeredResources.isResourceMapped(namedResource)){
+            changeSetHelperImpl.addModifiedResource(namedResource);
+        }else{
+            changeSetHelperImpl.addNewResource(namedResource);
+        }
+        
+        //apply the change-set
+        this.applyChangeSet(changeSetHelperImpl.getChangeSet());
+    }
+    
+    /**
+     * Removes a Resource previously applied using {@link #applyNamedResource(java.lang.String, org.drools.io.Resource) }.  
+     * @param name 
+     */
+    public void removeNamedResource(String name){
+        
+        //find the resource to be removed.
+        Set<Resource> allResources = this.registeredResources.getAllResources();
+        Resource resourceToRemove = null;
+        for (Resource resource : allResources) {
+            if (resource instanceof NamedResource && ((NamedResource)resource).getName().equals(name) ){
+                resourceToRemove = resource;
+                break;
+            }
+        }
+        
+        //resource not found -> do nothing.
+        if (resourceToRemove == null){
+            this.listener.warning("Not resource found for name '"+name+"'");
+            return;
+        }
+
+        //resource found -> create a new change-set and mark the resource as removed.
+        ChangeSetHelperImpl changeSetHelperImpl = new ChangeSetHelperImpl();
+        changeSetHelperImpl.addRemovedResource(resourceToRemove);
+        
+        //apply the change-set
+        this.applyChangeSet(changeSetHelperImpl.getChangeSet());
+    }
+    
     public void applyChangeSet(Resource resource) {
         ChangeSet cs = getChangeSet( resource );
         if ( cs != null ) {
@@ -459,6 +528,108 @@ public class KnowledgeAgentImpl
         return changeSet;
     }
 
+    private Resource convertToNamedResource(String name, Resource resource) {
+        if (!(resource instanceof InternalResource)){
+            throw new IllegalArgumentException("Expecting '"+InternalResource.class.getName()+"' found '"+resource.getClass().getName()+"'");
+        }
+        return new NamedResource(name, (InternalResource)resource);
+    }
+
+    /**
+     * Wrapper class for Resources. The equality method of this class is based
+     * on its name rather than its content.
+     */
+    private static class NamedResource extends BaseResource{
+
+        private final String name;
+        private final InternalResource originalResource;
+
+        public NamedResource(String name, InternalResource originalResource) {
+            this.name = name;
+            this.originalResource = originalResource;
+        }
+
+        @Override
+        public ResourceType getResourceType() {
+            return originalResource.getResourceType();
+        }
+
+        @Override
+        public ResourceConfiguration getConfiguration() {
+            return originalResource.getConfiguration();
+        }
+
+        public URL getURL() throws IOException {
+            return originalResource.getURL();
+        }
+
+        public boolean hasURL() {
+            return originalResource.hasURL();
+        }
+
+        public boolean isDirectory() {
+            return originalResource.isDirectory();
+        }
+
+        public Collection<Resource> listResources() {
+            return originalResource.listResources();
+        }
+
+        public long getLastModified() {
+            return originalResource.getLastModified();
+        }
+
+        public long getLastRead() {
+            return originalResource.getLastRead();
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+        @Override
+        public String getDescription() {
+            return originalResource.getDescription();
+        }
+
+        @Override
+        public List<String> getCategories() {
+            return originalResource.getCategories();
+        }
+
+        public InputStream getInputStream() throws IOException {
+            return originalResource.getInputStream();
+        }
+
+        public Reader getReader() throws IOException {
+            return originalResource.getReader();
+        }
+        
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final NamedResource other = (NamedResource) obj;
+            if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+                return false;
+            }
+            return true;
+        }
+
+    }
+    
     /**
      * Keeps state information during the 'state' of a ChangeSet alteration so
      * past information can be kept along the way.
