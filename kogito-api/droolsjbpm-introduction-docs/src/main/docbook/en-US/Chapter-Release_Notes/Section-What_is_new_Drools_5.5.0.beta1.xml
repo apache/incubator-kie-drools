@@ -363,4 +363,40 @@ end</programlisting>
       <para>TODO</para>
     </section>
   </section>
+
+  <section xml:id="releaseNotes_5.5.0.beta1_Drools Integration">
+    <title>Drools Integration</title>
+
+    <section>
+      <title>Environment Definition</title>
+      <para>
+        drools-spring module now supports declarative definition of Enviornment (org.drools.runtime.Environment)
+
+        <programlisting>
+&lt;drools:environment id="..."&gt;
+  &lt;drools:entity-manager-factory ref=".."/&gt;
+  &lt;drools:transaction-manager ref=".."/&gt;
+  &lt;drools:globals ref=".."/&gt;
+  &lt;drools:object-marshalling-strategies&gt;
+    ...
+  &lt;/drools:object-marshalling-strategies&gt;
+  &lt;drools:scoped-entity-manager scope="app|cmd" ref="..."/&gt;
+&lt;/drools:environment&gt;
+        </programlisting>
+      </para>
+    </section>
+
+    <section>
+      <title>Knowledge Loggers</title>
+      Using Spring XML, you can configure the knowledge runtime loggers (console, file, threaded-file).
+      <para>
+<programlisting>
+  &lt;drools:ksession id="k1" type="stateless" kbase="kbase1"&gt;
+    &lt;drools:consoleLogger id=".."/&gt;
+    &lt;drools:fileLogger file="..." threaded="true|false"/&gt;
+  &lt;/drools:ksession&gt;
+</programlisting>
+      </para>
+    </section>
+  </section>
 </section>
