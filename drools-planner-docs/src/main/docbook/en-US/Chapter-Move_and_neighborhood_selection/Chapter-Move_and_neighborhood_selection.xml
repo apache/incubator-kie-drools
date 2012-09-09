@@ -339,10 +339,85 @@
       </section>
     </section>
 
-    <section>
+    <section xml:id="filteredSelection">
       <title>Filtered selection</title>
 
-      <para>TODO</para>
+      <para>There are certain moves that you don't want to select, because:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The move is pointless and would only waste CPU time. For example, swapping 2 lectures of the same course
+          will result in the same score and the same schedule because all lectures of 1 course are interchangeable (same
+          teacher, same students, same topic).</para>
+        </listitem>
+
+        <listitem>
+          <para>Doing the move would break <link linkend="buildInHardConstraint">a build-in hard constraint</link>, so
+          the solution would be infeasible but the score function doesn't check build-in hard constraints (for
+          performance gain). For example, don't change a gym lecture to a room which is not a gym room. </para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Note that any build-in hard constraint must usually be filtered on every move type. For example,
+              don't swap the room of a gym lecture with another lecture if the other lecture's original room isn't a gym
+              room.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>Filtered selection can happen on any Selector in the selector tree, including any
+      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/filteredSelection.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Filtering us the interface <literal>SelectionFilter</literal>:</para>
+
+      <programlisting language="java">public interface SelectionFilter&lt;T&gt; {
+
+    boolean accept(ScoreDirector scoreDirector, T selection);
+
+}</programlisting>
+
+      <para>Implement the method <literal>accept</literal> to return <literal>false</literal> on a discarded
+      <literal>selection</literal>. Unaccepted moves will not be selected and will therefore never have their method
+      <literal>doMove</literal> called.</para>
+
+      <programlisting language="java">public class DifferentCourseSwapMoveFilter implements SelectionFilter&lt;SwapMove&gt; {
+
+    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
+        Lecture leftLecture = (Lecture) move.getLeftEntity();
+        Lecture rightLecture = (Lecture) move.getRightEntity();
+        return !leftLecture.getCourse().equals(rightLecture.getCourse());
+    }
+
+}</programlisting>
+
+      <para>Apply the filter on the lowest level possible. In most cases, you 'll need to know both the entity and the
+      value involved and you'll have to apply a <literal>moveFilterClass</literal> on the
+      <literal>moveSelector</literal>:</para>
+
+      <programlisting language="xml">    &lt;swapMoveSelector&gt;
+      &lt;moveFilterClass&gt;org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/moveFilterClass&gt;
+    &lt;/swapMoveSelector&gt;</programlisting>
+
+      <para>But if possible apply it on a lower levels, such as an <literal>entityFilterClass</literal> on the
+      <literal>entitySelector</literal> or a <literal>valueFilterClass</literal> on the
+      <literal>valueSelector</literal>:</para>
+
+      <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      &lt;entitySelector&gt;
+        &lt;entityFilterClass&gt;...EntityFilter&lt;/entityFilterClass&gt;
+      &lt;/entitySelector&gt;
+    &lt;/changeMoveSelector&gt;</programlisting>
+
+      <para>Filtered selection works with any kind of <literal>cacheType</literal> and
+      <literal>selectionOrder</literal>. You can configure multiple <literal>*FilterClass</literal> elements on a single
+      selector.</para>
     </section>
 
     <section>
@@ -627,8 +702,9 @@
       <para>Notice that if C0 would have already been moved to C2, the undo move would create the move <emphasis>C2 to
       C2</emphasis>, instead of the move <emphasis>C2 to C0</emphasis>.</para>
 
-      <para>The local search solver phase might do and undo the same <literal>Move</literal> more than once, even on
-      different (successive) solutions.</para>
+      <para>A solver phase might do and undo the same <literal>Move</literal> more than once. In fact, many solver
+      phases will iteratively do an undo a number of moves to evaluate them, before selecting one of those and doing
+      that move again (without undoing it this time).</para>
 
       <para>A <literal>Move</literal> must implement the <literal>getPlanningEntities()</literal> and
       <literal>getPlanningValues()</literal> methods. They are used by entity tabu and value tabu respectively. When
@@ -642,7 +718,7 @@
         return Collections.singletonList(toRow);
     }</programlisting>
 
-      <para>If your <literal>Move</literal> changes multiple planning entities, return all them in
+      <para>If your <literal>Move</literal> changes multiple planning entities, return all of them in
       <literal>getPlanningEntities()</literal> and return all their values (to which they are changing) in
       <literal>getPlanningValues()</literal>.</para>
 
@@ -678,10 +754,9 @@
                 .toHashCode();
     }</programlisting>
 
-      <para>In the above example, the <literal>Queen</literal> class uses the default <literal>Object</literal>
-      <literal>equals()</literal> and <literal>hashCode()</literal> implementations. Notice that it checks if the other
-      move is an instance of the same move type. This <literal>instanceof</literal> check is important because a move
-      will be compared to a move with another move type if you're using more then 1 move type.</para>
+      <para>Notice that it checks if the other move is an instance of the same move type. This
+      <literal>instanceof</literal> check is important because a move will be compared to a move with another move type
+      if you're using more then 1 move type.</para>
 
       <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read
       Planner's logging more easily:</para>
@@ -690,7 +765,8 @@
         return queen + " =&gt; " + toRow;
     }</programlisting>
 
-      <para>Now that we can implement a single <literal>Move</literal>, let's take a look at generating moves.</para>
+      <para>Now that we can implement a single custom <literal>Move</literal>, let's take a look at generating such
+      custom moves.</para>
     </section>
 
     <section>
