@@ -42,6 +42,8 @@ public class ShufflingValueSelector extends AbstractCachingValueSelector {
 
     public ValueIterator iterator() {
         Collections.shuffle(cachedValueList, workingRandom);
+        logger.trace("    Shuffled cachedValueList with size ({}) in valueSelector({}).",
+                cachedValueList.size(), this);
         return new IteratorToValueIteratorBridge(cachedValueList.iterator());
     }
 

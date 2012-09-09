@@ -40,6 +40,8 @@ public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
 
     public Iterator<Object> iterator() {
         Collections.shuffle(cachedEntityList, workingRandom);
+        logger.trace("    Shuffled cachedEntityList with size ({}) in entitySelector({}).",
+                cachedEntityList.size(), this);
         return cachedEntityList.iterator();
     }
 

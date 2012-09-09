@@ -40,6 +40,8 @@ public class ShufflingMoveSelector extends AbstractCachingMoveSelector {
 
     public Iterator<Move> iterator() {
         Collections.shuffle(cachedMoveList, workingRandom);
+        logger.trace("    Shuffled cachedMoveList with size ({}) in moveSelector({}).",
+                cachedMoveList.size(), this);
         return cachedMoveList.iterator();
     }
 

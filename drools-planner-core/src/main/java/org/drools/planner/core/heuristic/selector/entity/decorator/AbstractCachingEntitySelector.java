@@ -51,6 +51,8 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
         }
         cachedEntityList = new ArrayList<Object>((int) childSize);
         CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
+        logger.trace("    Created cachedEntityList with size ({}) in entitySelector({}).",
+                cachedEntityList.size(), this);
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {

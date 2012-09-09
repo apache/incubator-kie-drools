@@ -51,6 +51,8 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
         }
         cachedValueList = new ArrayList<Object>((int) childSize);
         CollectionUtils.addAll(cachedValueList, childValueSelector.iterator());
+        logger.trace("    Created cachedValueList with size ({}) in valueSelector({}).",
+                cachedValueList.size(), this);
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {
@@ -68,4 +70,5 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
     public long getSize() {
         return cachedValueList.size();
     }
+
 }
