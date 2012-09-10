@@ -145,6 +145,13 @@ end</programlisting>
       any condition with break doesn't make sense (and generates a compile time error) since otherwise the LHS part
       following it would be never reachable.</para>
     </section>
+
+    <section>
+      <title>Logging support</title>
+
+      <para>Drools now has logging support. It can log to your favorite logger (such as logback, log4j, commons-logging,
+      JDK logger, no logging, ...) through the SFL4J API.</para>
+    </section>
   </section>
 
   <section xml:id="releaseNotes_5.5.0.beta1_Fusion">
