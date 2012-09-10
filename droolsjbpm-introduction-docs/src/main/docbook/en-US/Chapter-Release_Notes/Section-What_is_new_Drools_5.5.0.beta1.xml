@@ -58,24 +58,25 @@
 
       <programlisting>rule "Give 10% discount to customers older than 60"
 when
-    $customer : Customer( age > 60 )
+    $customer : Customer( age &gt; 60 )
 then
     modify($customer) { setDiscount( 0.1 ) };
 end
 
 rule "Give free parking to customers older than 60"
 when
-    $customer : Customer( age > 60 )
+    $customer : Customer( age &gt; 60 )
     $car : Car ( owner == $customer )
 then
     modify($car) { setFreeParking( true ) };
 end</programlisting>
 
-      <para>It is already possible to partially overcome this problem by making the second rule extending the first one like in:</para>
+      <para>It is already possible to partially overcome this problem by making the second rule extending the first one
+      like in:</para>
 
       <programlisting>rule "Give 10% discount to customers older than 60"
 when
-    $customer : Customer( age > 60 )
+    $customer : Customer( age &gt; 60 )
 then
     modify($customer) { setDiscount( 0.1 ) };
 end
@@ -88,12 +89,12 @@ then
     modify($car) { setFreeParking( true ) };
 end</programlisting>
 
-      <para>Anyway this feature makes it possible to define more labelled consequences other than the default one in a single rule,
-      so, for example, the 2 former rules can be compacted in only one like it follows:</para>
+      <para>Anyway this feature makes it possible to define more labelled consequences other than the default one in a
+      single rule, so, for example, the 2 former rules can be compacted in only one like it follows:</para>
 
       <programlisting>rule "Give 10% discount and free parking to customers older than 60"
 when
-    $customer : Customer( age > 60 )
+    $customer : Customer( age &gt; 60 )
     do[giveDiscount]
     $car : Car ( owner == $customer )
 then
@@ -102,13 +103,14 @@ then[giveDiscount]
     modify($customer) { setDiscount( 0.1 ) };
 end</programlisting>
 
-      <para>This last rule has 2 consequences, the usual default one, plus another one named "giveDiscount" that is activated,
-      using the keyword do, as soon as a customer older than 60 is found in the knowledge base, regardless of the fact that he
-      owns a car or not. The activation of a named consequence can be also guarded by an additional condition like in this further example:</para>
+      <para>This last rule has 2 consequences, the usual default one, plus another one named "giveDiscount" that is
+      activated, using the keyword do, as soon as a customer older than 60 is found in the knowledge base, regardless of
+      the fact that he owns a car or not. The activation of a named consequence can be also guarded by an additional
+      condition like in this further example:</para>
 
       <programlisting>rule "Give free parking to customers older than 60 and 10% discount to golden ones among them"
 when
-    $customer : Customer( age > 60 )
+    $customer : Customer( age &gt; 60 )
     if ( type == "Golden" ) do[giveDiscount]
     $car : Car ( owner == $customer )
 then
@@ -117,12 +119,13 @@ then[giveDiscount]
     modify($customer) { setDiscount( 0.1 ) };
 end</programlisting>
 
-      <para>The condition in the if statement is always evaluated on the pattern immediately preceding it. In the end this last,
-      a bit more complicated, example shows how it is possible to switch over different conditions using a nested if/else statement:</para>
+      <para>The condition in the if statement is always evaluated on the pattern immediately preceding it. In the end
+      this last, a bit more complicated, example shows how it is possible to switch over different conditions using a
+      nested if/else statement:</para>
 
       <programlisting>rule "Give free parking and 10% discount to over 60 Golden customer and 5% to Silver ones"
 when
-    $customer : Customer( age > 60 )
+    $customer : Customer( age &gt; 60 )
     if ( type == "Golden" ) do[giveDiscount10]
     else if ( type == "Silver" ) break[giveDiscount5]
     $car : Car ( owner == $customer )
@@ -134,12 +137,13 @@ then[giveDiscount5]
     modify($customer) { setDiscount( 0.05 ) };
 end</programlisting>
 
-      <para>Here the purpose is to give a 10% discount AND a free parking to Golden customers over 60, but only a 5% discount
-      (without free parking) to the Silver ones. This result is achieved by activating the consequence named "giveDiscount5"
-      using the keyword break instead of do. In fact do just schedules a consequence in the agenda, allowing the remaining
-      part of the LHS to continue of being evaluated as per normal, while break also blocks any further pattern matching evaluation.
-      Note, of course, that the activation of a named consequence not guarded by any condition with break doesn't make sense
-      (and generates a compile time error) since otherwise the LHS part following it would be never reachable.</para>
+      <para>Here the purpose is to give a 10% discount AND a free parking to Golden customers over 60, but only a 5%
+      discount (without free parking) to the Silver ones. This result is achieved by activating the consequence named
+      "giveDiscount5" using the keyword break instead of do. In fact do just schedules a consequence in the agenda,
+      allowing the remaining part of the LHS to continue of being evaluated as per normal, while break also blocks any
+      further pattern matching evaluation. Note, of course, that the activation of a named consequence not guarded by
+      any condition with break doesn't make sense (and generates a compile time error) since otherwise the LHS part
+      following it would be never reachable.</para>
     </section>
   </section>
 
@@ -348,9 +352,127 @@ end</programlisting>
     <title>Planner</title>
 
     <section>
-      <title>TODO</title>
+      <title>New selector architecture</title>
 
-      <para>TODO</para>
+      <para>The new selector architecture is far more flexible and powerful. It works great out-of-the-box, but it can
+      also be easily tailored to your use case for additional gain.</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;JUST_IN_TIME&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+      ...
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/selectorTree.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Custom move factories are often no longer needed (but still supported). For now, the new selector
+      architecture is only applied on local search (tabu search, simulated annealing, ...), but it will be applied on
+      construction heuristics too.</para>
+    </section>
+
+    <section>
+      <title>Highly scalable planning with Just In Time random selection</title>
+
+      <para>The new selector architecture allows for Just In Time random selection. For very large use cases, this
+      configuration uses far <emphasis role="bold">less memory</emphasis> and is several times <emphasis
+      role="bold">faster in performance</emphasis> than the older configurations. Every move is generated just in time
+      and there's no move list that needs shuffling:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/jitRandomSelection.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <title>Filtered selection</title>
+
+      <para>Filtered selection allows you to discard specific moves easily, such as a pointless move that swaps 2
+      lectures of the same course:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/filteredSelection.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <title>Probability selection</title>
+
+      <para>Probability selection allows you to favor certain moves more than others.</para>
+    </section>
+
+    <section>
+      <title>Richer benchmarker report</title>
+
+      <para>The benchmarker report has been improved, both visually:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/benchmarkReportTwitterBootstrap.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>... and in content:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Worst score difference percentage graph/table</para>
+        </listitem>
+
+        <listitem>
+          <para>Each graph now has a table with the data too. This is especially useful for matrix benchmarks and the
+          graphs become cluttered.</para>
+        </listitem>
+
+        <listitem>
+          <para>Solver configuration is shown in the report</para>
+        </listitem>
+
+        <listitem>
+          <para>General benchmark information (such as warm up time) is now also recorded</para>
+        </listitem>
+
+        <listitem>
+          <para>The favorite solver configuration is clearly marked</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Matrix benchmarking and parallel benchmarking (thanks to Lukas Petrovicky)</title>
+
+      <para>The benchmarker now supports matrix benchmarking based on a template, which allows you to benchmark a
+      combination of ranges of values easily.</para>
+
+      <para>And if you have multiple CPU's in your computer, the benchmarker can now take advantage of them thanks to
+      parallel benchmarking.</para>
+    </section>
+
+    <section>
+      <title>Improved continuous planning with movableEntitySelectionFilter (AKA entity locking)</title>
+
+      <para>It's now possible to prevent a planning entity from being changed at all. This is very useful for continuous
+      planning where last week's entities shouldn't change.</para>
+
+      <programlisting>@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
+public class ShiftAssignment {
+    ...
+}</programlisting>
+    </section>
+
+    <section>
+      <title>Late acceptance</title>
+
+      <para>There's a new local search algorithm: late acceptance.</para>
     </section>
   </section>
 
@@ -369,10 +491,9 @@ end</programlisting>
 
     <section>
       <title>Environment Definition</title>
-      <para>
-        drools-spring module now supports declarative definition of Enviornment (org.drools.runtime.Environment)
 
-        <programlisting>
+      <para>drools-spring module now supports declarative definition of Enviornment (org.drools.runtime.Environment)
+      <programlisting>
 &lt;drools:environment id="..."&gt;
   &lt;drools:entity-manager-factory ref=".."/&gt;
   &lt;drools:transaction-manager ref=".."/&gt;
@@ -382,21 +503,26 @@ end</programlisting>
   &lt;/drools:object-marshalling-strategies&gt;
   &lt;drools:scoped-entity-manager scope="app|cmd" ref="..."/&gt;
 &lt;/drools:environment&gt;
-        </programlisting>
-      </para>
+        </programlisting></para>
     </section>
 
     <section>
+       
+
       <title>Knowledge Loggers</title>
-      Using Spring XML, you can configure the knowledge runtime loggers (console, file, threaded-file).
+
+       Using Spring XML, you can configure the knowledge runtime loggers (console, file, threaded-file). 
+
       <para>
-<programlisting>
+        <programlisting>
   &lt;drools:ksession id="k1" type="stateless" kbase="kbase1"&gt;
     &lt;drools:consoleLogger id=".."/&gt;
     &lt;drools:fileLogger file="..." threaded="true|false"/&gt;
   &lt;/drools:ksession&gt;
 </programlisting>
       </para>
+
+       
     </section>
   </section>
 </section>
