@@ -308,11 +308,11 @@
                                                 <#if !singleBenchmark.success>
                                                     <td><span class="label warning">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmark.averageCalculateCountPerSecond}</td>
+                                                    <td>${singleBenchmark.averageCalculateCountPerSecond}/s</td>
                                                 </#if>
                                             </#if>
                                         </#list>
-                                        <td>${solverBenchmark.averageAverageCalculateCountPerSecond!""}</td>
+                                        <td>${solverBenchmark.averageAverageCalculateCountPerSecond!""}/s</td>
                                     </tr>
                                 </#list>
                                 </table>
