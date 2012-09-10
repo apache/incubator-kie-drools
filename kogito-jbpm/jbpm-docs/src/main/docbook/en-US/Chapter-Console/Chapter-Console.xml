@@ -194,7 +194,7 @@
         internal files and can be placed on any directory on the file system.
         Session template is intended to provide following configuration for stateful session:
         <itemizedlist>
-        <listitem>businessKey - a unique key that will be used to bind session into JNDI</listitem>
+        <listitem>businessKey - a unique key that will be used to get session from JNDI</listitem>
         <listitem>persistenceUnit - name of the persistence unit to be used</listitem>
         <listitem>properties - list of key value pairs of session configuration</listitem>
         <listitem>workItemHandlers - list of key value pairs (work item name: class name of work item handler)</listitem>

@@ -188,9 +188,6 @@ public class MVELSingleSessionManager extends AbstractSessionManager {
         // add event listeners
         processEventListeners(ksession, variables, template);
         
-        // bind to JNDI
-        bindToJNDI(template.getBusinessKey(), ksession);
-        
         return ksession;
     }
     
