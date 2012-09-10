@@ -229,6 +229,12 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
         
     }
+    
+    public void insertLogical(Object object,
+                              Object value) {
+        // TODO Auto-generated method stub
+        
+    }
 
     public FactHandle getFactHandle(Object object) {
         // TODO Auto-generated method stub

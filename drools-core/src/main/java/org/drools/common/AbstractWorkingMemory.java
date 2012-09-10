@@ -845,6 +845,7 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle insert(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
+                       null,
                        false,
                        false,
                        null,
@@ -856,6 +857,7 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle insertLogical(final Object object) throws FactException {
         return insert( object, // Not-Dynamic
+                       null,
                        false,
                        true,
                        null,
@@ -865,6 +867,7 @@ public abstract class AbstractWorkingMemory
     public FactHandle insert(final Object object,
                              final boolean dynamic) throws FactException {
         return insert( object,
+                       null,
                        dynamic,
                        false,
                        null,
@@ -874,18 +877,31 @@ public abstract class AbstractWorkingMemory
     public FactHandle insertLogical(final Object object,
                                     final boolean dynamic) throws FactException {
         return insert( object,
+                       null,
                        dynamic,
                        true,
                        null,
                        null );
     }
 
+    public FactHandle insertLogical(final Object object,
+                                    final Object value) throws FactException {
+        return insert( object,
+                       value,
+                       false,
+                       true,
+                       null,
+                       null );
+    }
+
     public FactHandle insert(final Object object,
+                             final Object tmsValue,
                              final boolean dynamic,
                              boolean logical,
                              final Rule rule,
                              final Activation activation) throws FactException {
         return this.defaultEntryPoint.insert( object,
+                                              tmsValue,
                                               dynamic,
                                               logical,
                                               rule,

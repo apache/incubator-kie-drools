@@ -35,6 +35,7 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
+import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
@@ -145,7 +146,7 @@ public class DefaultKnowledgeHelper
         }
         
         if ( dep == null ) {
-            dep = new LogicalDependency( activation, targetMatch );
+            dep = new SimpleLogicalDependency( activation, targetMatch );
         }
         this.activation.addBlocked(  dep );
         
@@ -189,6 +190,7 @@ public class DefaultKnowledgeHelper
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
         FactHandle handle = this.workingMemory.insert( object,
+                                                       null,
                                                        dynamic,
                                                        false,
                                                        this.activation.getRule(),
@@ -203,8 +205,21 @@ public class DefaultKnowledgeHelper
         insertLogical( object,
                        false );
     }
+    
+    public void insertLogical(final Object object,final boolean dynamic) {
+        insertLogical( object,
+                       null,
+                       dynamic );
+    }    
 
     public void insertLogical(final Object object,
+                              final Object value) {
+        insertLogical( object,
+                       value,
+                       false );
+    }
+    public void insertLogical(final Object object,
+                              final Object value,
                               final boolean dynamic) {
         
         if ( !activation.isMatched() ) {
@@ -228,6 +243,7 @@ public class DefaultKnowledgeHelper
         } else {
             // no previous matching logical dependency, so create a new one
             FactHandle handle = this.workingMemory.insert( object,
+                                                           value,
                                                            dynamic,
                                                            true,
                                                            this.activation.getRule(),

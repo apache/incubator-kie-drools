@@ -16,6 +16,7 @@ import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
+import org.drools.common.LogicalDependency;
 import org.drools.core.reteoo.*;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
