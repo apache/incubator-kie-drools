@@ -38,6 +38,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
     protected File csvStatisticFile = null;
     protected File graphStatisticFile = null;
+    protected List<String> warningList = null;
 
     protected AbstractProblemStatistic(ProblemBenchmark problemBenchmark, ProblemStatisticType problemStatisticType) {
         this.problemBenchmark = problemBenchmark;
@@ -64,9 +65,26 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
         return problemBenchmark.getProblemReportDirectory().getName() + "/" + graphStatisticFile.getName();
     }
 
+    public List<String> getWarningList() {
+        return warningList;
+    }
+
+    // ************************************************************************
+    // Write methods
+    // ************************************************************************
+
+    public boolean hasWarning() {
+        return !warningList.isEmpty();
+    }
+
     public void writeStatistic() {
         writeCsvStatistic();
         writeGraphStatistic();
+        warningList = new ArrayList<String>();
+        fillWarningList();
+    }
+
+    protected void fillWarningList() {
     }
 
     protected abstract void writeCsvStatistic();

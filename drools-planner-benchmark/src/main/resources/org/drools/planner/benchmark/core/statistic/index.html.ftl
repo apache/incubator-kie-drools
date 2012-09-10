@@ -361,6 +361,13 @@
                                 <#assign firstRow = true>
                                 <#list problemBenchmark.problemStatisticList as problemStatistic>
                                     <div class="tab-pane<#if firstRow> active</#if>" id="problemStatistic_${problemStatistic.anchorId}">
+                                        <#if problemStatistic.hasWarning()>
+                                            <#list problemStatistic.warningList as warning>
+                                                <div class="alert alert-error">
+                                                    <p>${warning}</p>
+                                                </div>
+                                            </#list>
+                                        </#if>
                                         <div class="benchmark-chart">
                                             <img src="${problemStatistic.graphFilePath}"/>
                                         </div>

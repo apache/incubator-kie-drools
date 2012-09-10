@@ -61,6 +61,10 @@ public class ProblemBenchmark {
         this.plannerBenchmark = plannerBenchmark;
     }
 
+    public DefaultPlannerBenchmark getPlannerBenchmark() {
+        return plannerBenchmark;
+    }
+
     public String getName() {
         return name;
     }
