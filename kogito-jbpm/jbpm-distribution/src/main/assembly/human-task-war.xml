@@ -5,13 +5,12 @@
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-  <dependencySets>
-    <dependencySet>
-      <includes>
-        <include>org.jbpm:jbpm-human-task-war:war</include>
-      </includes>
-      <outputDirectory>.</outputDirectory>
-      <unpack>false</unpack>
-    </dependencySet>
-  </dependencySets>
+  <files>
+    <file>
+      <source>../jbpm-human-task/jbpm-human-task-war/target/jbpm-human-task-war-${project.version}-EE6.war</source>
+    </file>
+    <file>
+      <source>../jbpm-human-task/jbpm-human-task-war/target/jbpm-human-task-war-${project.version}.war</source>
+    </file>
+  </files>
 </assembly>

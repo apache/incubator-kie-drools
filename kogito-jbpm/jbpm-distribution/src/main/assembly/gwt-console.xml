@@ -7,6 +7,9 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <files>
     <file>
+      <source>../jbpm-gwt/jbpm-gwt-console-server/target/jbpm-gwt-console-server-${project.version}-EE6.war</source>
+    </file>
+    <file>
       <source>../jbpm-gwt/jbpm-gwt-console-server/target/jbpm-gwt-console-server-${project.version}.war</source>
     </file>
     <file>

@@ -332,7 +332,7 @@
     <chmod perm="a+x" file="${jboss.home}/bin/run.sh" />
     <chmod perm="a+x" file="${jboss.home}/bin/shutdown.sh" />
     <chmod perm="a+x" file="${jboss.home}/bin/standalone.sh" />
-  	<chmod perm="a+x" file="${jboss.home}/bin/jboss-admin.sh" />
+  	<chmod perm="a+x" file="${jboss.home}/bin/jboss-cli.sh" />
   </target>
 
   <!-- Install guvnor -->
@@ -374,34 +374,11 @@
     <mkdir dir="${install.home}/target"/>
     <unzip src="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/target" />
     <mkdir dir="${install.home}/target/jbpm-gwt-console-server-war"/>
-    <unzip src="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
+    <unzip src="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}-EE6.war"
            dest="${install.home}/target/jbpm-gwt-console-server-war"/>
-    <copy file="${install.home}/db/persistence.xml"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/META-INF/persistence.xml"
-          overwrite="true" />
-    <copy file="${install.home}/db/ProcessInstanceInfo.hbm.xml"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/META-INF/ProcessInstanceInfo.hbm.xml"
-          overwrite="true" />
-    <copy file="${install.home}/auth/users.properties"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/users.properties"
-          overwrite="true" />
-    <copy file="${install.home}/auth/roles.properties"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/roles.properties"
-          overwrite="true" />
-    <copy file="${install.home}/jbpm-tm.jar"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-tm.jar"
-          overwrite="true" />
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
     </copy>
-    <!-- Fix for conflicting javassist jar -->
-    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.6.0.GA.jar"/>
-  	<!-- remove hornetq related libs as they are referenced from jboss module -->
-  	<delete>
-      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/" includes="hornetq*.jar,netty*.jar" />
-    </delete>
-  	<delete file="hornetq-core-2.2.10.Final.jar"/>
-  	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/netty-3.1.5.GA.jar"/>
     <!-- Other configuration like work item handlers -->
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>
@@ -421,6 +398,13 @@
     <delete dir="${install.home}/target"/>
     <copy file="${install.home}/standalone.xml"
           tofile="${jboss.home}/standalone/configuration/standalone.xml"
+          overwrite="true" />
+    <!-- authentication configuration -->
+    <copy file="${install.home}/auth/users.properties"
+          tofile="${jboss.server.conf.dir}/users.properties"
+          overwrite="true" />
+    <copy file="${install.home}/auth/roles.properties"
+          tofile="${jboss.server.conf.dir}/roles.properties"
           overwrite="true" />
   </target>
   <target name="install.jBPM-gwt-console.into.jboss5" depends="check.jboss.version" unless="jboss.version.is.7">
@@ -455,6 +439,25 @@
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>
     </copy>
+    <!-- remove beans.xml from drools-compiler and human-task-core as it causes deployment failure on AS5 -->
+    <move tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-compiler.jar">
+        <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib">
+          <include name="drools-compiler-*.jar"/>
+        </fileset>
+      </move>
+    <zip destfile="${install.home}/target/drools-compiler.jar">
+        <zipfileset src="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-compiler.jar" excludes="META-INF/beans.xml"/>
+    </zip>
+    <zip destfile="${install.home}/target/jbpm-human-task-core.jar">
+        <zipfileset src="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-human-task-core-${jBPM.version}.jar" excludes="META-INF/beans.xml"/>
+    </zip>
+    <copy file="${install.home}/target/jbpm-human-task-core.jar" 
+              tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-human-task-core-${jBPM.version}.jar" 
+              overwrite="true" />
+    <copy file="${install.home}/target/drools-compiler.jar" 
+                  tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-compiler.jar" 
+                  overwrite="true" />
+    <!-- end of removing beans.xml -->
     <!-- install reporting -->
     <antcall target="install.reporting.into.jboss5" />
   	<!-- install dependencies -->
@@ -495,12 +498,6 @@
     <copy file="${install.home}/auth/roles.properties"
           tofile="${install.home}/target/jbpm-form-builder-war/WEB-INF/classes/roles.properties" 
           overwrite="true" />
-    <copy file="${install.home}/auth/users.properties"
-          tofile="${jboss.server.conf.dir}/users.properties" 
-          overwrite="true" />
-    <copy file="${install.home}/auth/roles.properties"
-          tofile="${jboss.server.conf.dir}/roles.properties" 
-          overwrite="true" />
     <zip basedir="${install.home}/target/jbpm-form-builder-war"
          destfile="${install.home}/target/jbpm-${jBPM.version}-form-builder.war" />
     <copy file="${install.home}/target/jbpm-${jBPM.version}-form-builder.war" 
@@ -521,19 +518,9 @@
   <target name="install.ht.war.into.jboss7" depends="download.jBPM-ht.war" if="jboss.version.is.7">
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/jbpm-human-task-war"/>
-    <unzip src="${install.home}/lib/jbpm-human-task-war-${jBPM.version}.war" dest="${install.home}/target/jbpm-human-task-war" />
-  	<!-- remove netty related libs as they don't deploy on as7 -->
-    <delete>
-      <fileset dir="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/" includes="netty*.jar" />
-    </delete>
+    <unzip src="${install.home}/lib/jbpm-human-task-war-${jBPM.version}-EE6.war" dest="${install.home}/target/jbpm-human-task-war" />
   	<copy file="${install.home}/task-service/resources/war/web.xml" 
   	          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/web.xml" 
-  	          overwrite="true" />
-  	<copy file="${install.home}/task-service/resources/war/persistence.xml" 
-  	              tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/classes/META-INF/persistence.xml" 
-  	              overwrite="true" />
-  	<copy file="${install.home}/jbpm-tm.jar"
-  	          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/jbpm-tm.jar"
   	          overwrite="true" />
     <zip basedir="${install.home}/target/jbpm-human-task-war"
          destfile="${install.home}/target/jbpm-${jBPM.version}-human-task-war.war" />
@@ -565,6 +552,29 @@
   	<copy file="${install.home}/task-service/resources/war/web.xml" 
   	              tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/web.xml" 
   	              overwrite="true" />
+  	<copy file="${install.home}/task-service/resources/war/persistence.xml" 
+          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/classes/META-INF/persistence.xml" 
+          overwrite="true" />
+  	<!-- remove beans.xml from drools-compiler and human-task-core as it causes deployment failure on AS5 -->
+  	<move tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/drools-compiler.jar">
+  	    <fileset dir="${install.home}/target/jbpm-human-task-war/WEB-INF/lib">
+  	      <include name="drools-compiler-*.jar"/>
+  	    </fileset>
+  	  </move>
+  	<zip destfile="${install.home}/target/drools-compiler.jar">
+  	    <zipfileset src="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/drools-compiler.jar" excludes="META-INF/beans.xml"/>
+  	</zip>
+  	<zip destfile="${install.home}/target/jbpm-human-task-core.jar">
+        <zipfileset src="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/jbpm-human-task-core-${jBPM.version}.jar" excludes="META-INF/beans.xml"/>
+    </zip>
+  	<copy file="${install.home}/target/jbpm-human-task-core.jar" 
+  	          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/jbpm-human-task-core-${jBPM.version}.jar" 
+  	          overwrite="true" />
+  	<copy file="${install.home}/target/drools-compiler.jar" 
+  	              tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/drools-compiler.jar" 
+  	              overwrite="true" />
+  	<!-- end of removing beans.xml -->
+  	
     <zip basedir="${install.home}/target/jbpm-human-task-war"
          destfile="${install.home}/target/jbpm-${jBPM.version}-human-task-war.war" />
     <copy file="${install.home}/target/jbpm-${jBPM.version}-human-task-war.war" 
@@ -755,6 +765,7 @@
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
+      <arg value="-Djboss.server.config.dir=${jboss.server.conf.dir}" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/run.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
@@ -762,6 +773,7 @@
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
+      <arg value="-Djboss.server.config.dir=${jboss.server.conf.dir}" />
     </exec>
     <waitfor maxwait="10" maxwaitunit="minute" checkevery="30"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
@@ -776,12 +788,12 @@
     <antcall target="stop.jboss7" />
   </target>
   <target name="stop.jboss7" depends="check.jboss.version" if="jboss.version.is.7">
-    <exec executable="${jboss.home}/bin/jboss-admin.bat"
+    <exec executable="${jboss.home}/bin/jboss-cli.bat"
           osfamily="windows">
       <arg value="--connect" />
       <arg value="command=:shutdown" />
     </exec>
-    <exec executable="${jboss.home}/bin/jboss-admin.sh" osfamily="unix">
+    <exec executable="${jboss.home}/bin/jboss-cli.sh" osfamily="unix">
       <arg value="--connect" />
       <arg value="command=:shutdown" />
     </exec>
