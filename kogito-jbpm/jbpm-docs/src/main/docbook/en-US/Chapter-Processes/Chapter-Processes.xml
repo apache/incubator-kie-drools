@@ -864,7 +864,7 @@ ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
             also define in- and out-mappings for variables.  The variables
             given in the "in" mapping will be used as parameters (with the associated 
             parameter name) when starting the process. The variables of the child process
-            that are defined the "out" mappings will be copied to the variables of this
+            that are defined for the "out" mappings will be copied to the variables of this
             process when the child process has been completed.  Note that you can use
              "out" mappings only when "Wait for completion" is set to true.</para>
           </listitem>
