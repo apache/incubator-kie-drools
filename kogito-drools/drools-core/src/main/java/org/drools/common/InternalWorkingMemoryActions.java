@@ -22,9 +22,9 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 
 public interface InternalWorkingMemoryActions
-    extends
-    InternalWorkingMemory,
-    InternalWorkingMemoryEntryPoint {
+        extends
+        InternalWorkingMemory,
+        InternalWorkingMemoryEntryPoint {
     public void update(FactHandle handle,
                        Object object,
                        long mask,
@@ -37,12 +37,13 @@ public interface InternalWorkingMemoryActions
                         Activation activation) throws FactException;
 
     org.drools.FactHandle insert(Object object,
-                      boolean dynamic,
-                      boolean logical,
-                      Rule rule,
-                      Activation activation) throws FactException;
+                                 Object value,
+                                 boolean dynamic,
+                                 boolean logical,
+                                 Rule rule,
+                                 Activation activation) throws FactException;
 
     public org.drools.FactHandle insertLogical(Object object,
-                                    boolean dynamic) throws FactException;
+                                               boolean dynamic) throws FactException;
 
 }

@@ -125,6 +125,7 @@ public class NamedEntryPoint
      */
     public FactHandle insert(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
+                       null,
                        false,
                        false,
                        null,
@@ -134,6 +135,7 @@ public class NamedEntryPoint
     public FactHandle insert(final Object object,
                              final boolean dynamic) throws FactException {
         return insert( object,
+                       null,
                        dynamic,
                        false,
                        null,
@@ -141,6 +143,7 @@ public class NamedEntryPoint
     }
 
     protected FactHandle insert(final Object object,
+                                final Object tmsValue,
                                 final boolean dynamic,
                                 boolean logical,
                                 final Rule rule,
@@ -202,6 +205,7 @@ public class NamedEntryPoint
                         } else {
                             // this was object is already justified, so just add new logical dependency
                             tms.addLogicalDependency( handle,
+                                                      tmsValue,
                                                       activation,
                                                       activation.getPropagationContext(),
                                                       rule,
@@ -225,6 +229,7 @@ public class NamedEntryPoint
                         } else {
                             key.setStatus( EqualityKey.JUSTIFIED );
                             tms.addLogicalDependency( handle,
+                                                      tmsValue,
                                                       activation,
                                                       activation.getPropagationContext(),
                                                       rule,
@@ -276,6 +281,7 @@ public class NamedEntryPoint
                         if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                             // only add as logical dependency if this wasn't previously stated
                             tms.addLogicalDependency( key.getFactHandle(),
+                                                      tmsValue,
                                                       activation,
                                                       activation.getPropagationContext(),
                                                       rule,

@@ -5,6 +5,7 @@ import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
 import org.drools.core.util.LinkedList;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -67,5 +68,9 @@ public class SimpleBeliefSystem
         return new SimpleBeliefSet();
     }
 
-
+    public LogicalDependency newLogicalDependency(Activation activation,
+                                                  InternalFactHandle handle,
+                                                  Object value) {
+        return new SimpleLogicalDependency( activation, handle, value );
+    }
 }

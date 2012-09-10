@@ -1071,6 +1071,7 @@ public class InputMarshaller {
             ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint)handle.getEntryPoint()).getEntryPoint(),
                                                                                                          handle.getObject() );            
             tms.addLogicalDependency( handle,
+                                      null,
                                       activation,
                                       pc,
                                       rule,

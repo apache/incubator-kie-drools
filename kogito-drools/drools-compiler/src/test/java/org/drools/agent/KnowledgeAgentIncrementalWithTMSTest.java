@@ -8,6 +8,7 @@ import org.drools.builder.*;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.LogicalDependency;
+import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.core.util.*;
 import org.drools.definition.KnowledgePackage;

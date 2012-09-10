@@ -62,7 +62,7 @@ public class TruthMaintenanceSystem {
         this.assertMap = new ObjectHashMap();
         this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
         
-        beliefSystem = new SimpleBeliefSystem(wm, this);
+        beliefSystem = wm.getSessionConfiguration().getBeliefSystemType().createInstance( wm, this );
     }
 
     public ObjectHashMap getJustifiedMap() {
@@ -159,29 +159,31 @@ public class TruthMaintenanceSystem {
      * @throws FactException
      */
     public void readLogicalDependency(final InternalFactHandle handle,
+                                      final Object value,
                                       final Activation activation,
                                       final PropagationContext context,
                                       final Rule rule,
                                       final ObjectTypeConf typeConf) throws FactException {
-        addLogicalDependency(handle, activation, context, rule, typeConf, true);
+        addLogicalDependency(handle, value, activation, context, rule, typeConf, true);
     }
     
     public void addLogicalDependency(final InternalFactHandle handle,
+                                     final Object value,
                                       final Activation activation,
                                       final PropagationContext context,
                                       final Rule rule,
                                       final ObjectTypeConf typeConf) throws FactException {
-        addLogicalDependency(handle, activation, context, rule, typeConf, false);
+        addLogicalDependency(handle, value, activation, context, rule, typeConf, false);
     }
     
     public void addLogicalDependency(final InternalFactHandle handle,
+                                     final Object value,
                                      final Activation activation,
                                      final PropagationContext context,
                                      final Rule rule,
                                      final ObjectTypeConf typeConf,
                                      final boolean read) throws FactException {
-        final LogicalDependency node = new LogicalDependency( activation,
-                                                              handle );
+        final LogicalDependency node = beliefSystem.newLogicalDependency( activation, handle, value );
         activation.getRule().setHasLogicalDependency( true );
 
         activation.addLogicalDependency( node );

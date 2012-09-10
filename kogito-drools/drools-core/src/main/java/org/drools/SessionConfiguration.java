@@ -33,6 +33,7 @@ import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.conf.BeliefSystemTypeOption;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.conf.KeepReferenceOption;
 import org.drools.runtime.conf.KnowledgeSessionOption;
@@ -80,6 +81,8 @@ public class SessionConfiguration
     private boolean                        keepReference;
 
     private ClockType                      clockType;
+    
+    private BeliefSystemType               beliefSystemType;
 
     private QueryListenerOption            queryListener;
 
@@ -156,6 +159,9 @@ public class SessionConfiguration
 
         setKeepReference( Boolean.valueOf( this.chainedProperties.getProperty( KeepReferenceOption.PROPERTY_NAME,
                                                                                "true" ) ).booleanValue() );
+        
+        setBeliefSystemType( BeliefSystemType.resolveClockType( this.chainedProperties.getProperty( BeliefSystemTypeOption.PROPERTY_NAME,
+                                                                                                    BeliefSystemType.SIMPLE.getId() ) ) );
 
         setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( ClockTypeOption.PROPERTY_NAME,
                                                                                       ClockType.REALTIME_CLOCK.getId() ) ) );
@@ -249,6 +255,15 @@ public class SessionConfiguration
 
     public boolean isKeepReference() {
         return this.keepReference;
+    }
+    
+    public BeliefSystemType getBeliefSystemType() {
+        return this.beliefSystemType;
+    }
+    
+    public void setBeliefSystemType(BeliefSystemType beliefSystemType) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.beliefSystemType = beliefSystemType;
     }
 
     public ClockType getClockType() {

@@ -2,6 +2,7 @@ package org.drools.common;
 
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
 public interface BeliefSystem {
@@ -29,6 +30,10 @@ public interface BeliefSystem {
                        PropagationContext context);
     
     public BeliefSet newBeliefSet();
+    
+    public LogicalDependency newLogicalDependency(final Activation activation,
+                                                  final InternalFactHandle handle,
+                                                  final Object value);
 
     public void read(LogicalDependency node,
                      BeliefSet beliefSet,

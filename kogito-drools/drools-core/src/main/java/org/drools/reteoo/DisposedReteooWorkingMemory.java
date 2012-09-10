@@ -86,7 +86,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public FactHandle insert( Object object, boolean dynamic, boolean logical, Rule rule, Activation activation ) throws FactException {
+    public FactHandle insert( Object object, Object value, boolean dynamic, boolean logical, Rule rule, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 

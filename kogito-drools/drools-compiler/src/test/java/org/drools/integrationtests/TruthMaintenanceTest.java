@@ -3,6 +3,7 @@ package org.drools.integrationtests;
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,15 +32,19 @@ import org.drools.YoungestFather;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.BeliefSet;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.LogicalDependency;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.definition.KnowledgePackage;
 import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -1140,6 +1145,48 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         //System.err.println(reportWMObjects(kSession));
     }
+    
+    @Test
+    public void testTMSAdditionalValueArgument() {
+        String str =""+
+                "package org.drools.test;\n" +
+                "\n" +
+                "global String key \n" + 
+                "\n" +
+                "rule \"r1\" salience 10\n" +
+                "when\n" +
+                "then\n" +
+                "    insertLogical(key, \"value1\");\n" +
+                "end\n" +
+                "rule \"r2\"\n" +
+                "when\n" +
+                "then\n" +
+                "    insertLogical(key, \"value2\");\n" +
+                "end\n" +                
+                "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
+                ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
+        String key = "key";
+        kSession.setGlobal( "key", key );
+        
+        kSession.fireAllRules();
+        
+        TruthMaintenanceSystem tms = ((StatefulKnowledgeSessionImpl)kSession).session.getTruthMaintenanceSystem();
+        
+        InternalFactHandle fh = ( InternalFactHandle ) kSession.getFactHandle( key );
+        
+        BeliefSet bs =  ( BeliefSet ) tms.getJustifiedMap().get( fh.getId() );
+        assertEquals( "value1", ((LogicalDependency) ((LinkedListEntry)bs.getFirst()).getObject()).getValue() );
+        assertEquals( "value2", ((LogicalDependency) ((LinkedListEntry)bs.getFirst().getNext()).getObject()).getValue() );        
+    }    
     
     public class IntervalRequirement
     {
