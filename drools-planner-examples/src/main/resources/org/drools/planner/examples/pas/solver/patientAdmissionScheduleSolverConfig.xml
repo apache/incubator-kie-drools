@@ -23,17 +23,13 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <!--<moveListFactory>-->
-    <!--<cacheType>PHASE</cacheType>-->
-      <!--<moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveListFactoryClass>-->
-    <!--</moveListFactory>-->
-    <!--<moveListFactory>-->
-      <!--<cacheType>PHASE</cacheType>-->
-      <!--<moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwapMoveFactory</moveListFactoryClass>-->
-    <!--</moveListFactory>-->
-    <moveListFactory>
-      <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-    </moveListFactory>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <!--<moveListFactory>-->
+        <!--<moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>-->
+      <!--</moveListFactory>-->
+    </unionMoveSelector>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>
       <undoMoveTabuSize>3</undoMoveTabuSize>

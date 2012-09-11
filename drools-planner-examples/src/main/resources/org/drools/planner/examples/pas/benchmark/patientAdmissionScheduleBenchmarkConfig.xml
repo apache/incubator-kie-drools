@@ -10,16 +10,16 @@
       <inputSolutionFile>data/pas/unsolved/testdata01.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata02.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata03.xml</inputSolutionFile>
-      <!--<inputSolutionFile>data/pas/unsolved/testdata04.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata05.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata06.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata07.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata08.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata09.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata10.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata11.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata12.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/pas/unsolved/testdata13.xml</inputSolutionFile>-->
+      <inputSolutionFile>data/pas/unsolved/testdata04.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata05.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata06.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata07.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata08.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata09.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata10.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata11.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata12.xml</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata13.xml</inputSolutionFile>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
 
@@ -95,80 +95,19 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>entityTabuSize3-random</name>
+    <name>undoMoveTabuSize3-jit</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
-        <moveListFactory>
-          <selectionOrder>RANDOM</selectionOrder>
-          <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-        </moveListFactory>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>3</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>entityTabuSize3-shuffled</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <moveListFactory>
-          <cacheType>STEP</cacheType>
-          <selectionOrder>SHUFFLED</selectionOrder>
-          <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-        </moveListFactory>
-        <acceptor>
-          <planningEntityTabuSize>3</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>valueTabuSize3-random</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <moveListFactory>
-          <selectionOrder>RANDOM</selectionOrder>
-          <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-        </moveListFactory>
-        <acceptor>
-          <planningValueTabuSize>3</planningValueTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>valueTabuSize3-shuffled</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <moveListFactory>
-          <cacheType>STEP</cacheType>
-          <selectionOrder>SHUFFLED</selectionOrder>
-          <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-        </moveListFactory>
-        <acceptor>
-          <planningValueTabuSize>3</planningValueTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <undoMoveTabuSize>3</undoMoveTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
