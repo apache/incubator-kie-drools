@@ -30,6 +30,12 @@
 
       <para>Hill climbing can easily get stuck in a local optima, but improvements (such as tabu search and simulated
       annealing) address this problem.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/hillClimbingNQueens04.png"></imagedata>
+        </imageobject>
+      </mediaobject>
     </section>
   </section>
 
@@ -457,16 +463,16 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
     <title>Using a custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor</title>
 
     <para>You can plug in a custom <literal>Termination</literal>, <literal>MoveSelector</literal>,
-    <literal>EntitySelector</literal>, <literal>ValueSelector</literal> or <literal>Acceptor</literal>
-    by extending the abstract class and also the related <literal>*Config</literal> class.</para>
+    <literal>EntitySelector</literal>, <literal>ValueSelector</literal> or <literal>Acceptor</literal> by extending the
+    abstract class and also the related <literal>*Config</literal> class.</para>
 
     <para>For example, to use a custom <literal>MoveSelector</literal>, extend the
-    <literal>AbstractMoveSelector</literal> class, extend the <literal>MoveSelectorConfig</literal> class
-    and configure it in the solver configuration.</para>
+    <literal>AbstractMoveSelector</literal> class, extend the <literal>MoveSelectorConfig</literal> class and configure
+    it in the solver configuration.</para>
 
     <note>
-      <para>It's not possible to directly inject a <literal>Termination</literal>, ... instance,
-      instead of also extend a <literal>Config</literal> class because:</para>
+      <para>It's not possible to directly inject a <literal>Termination</literal>, ... instance, instead of also extend
+      a <literal>Config</literal> class because:</para>
 
       <itemizedlist>
         <listitem>

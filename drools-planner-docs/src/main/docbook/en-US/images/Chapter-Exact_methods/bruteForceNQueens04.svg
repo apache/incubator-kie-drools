@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -13778,7 +13778,8 @@
          x="-246.32422"
          y="261.43814"
          style="font-size:40px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-       id="flowPara5120">Brute force </flowPara></flowRoot>  <flowRoot
+       id="flowPara5120" /><flowPara
+       id="flowPara5123">Brute force </flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6718-7"
      style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -13786,12 +13787,11 @@
        id="flowRegion6720-2"><rect
          id="rect6722-2"
          width="730"
-         height="110.00002"
+         height="49.999973"
          x="-246.32422"
-         y="251.43816"
+         y="301.43814"
          style="font-size:22px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-       id="flowPara3455-6">N queens</flowPara><flowPara
-       id="flowPara15747">n = 4</flowPara></flowRoot>  <path
+       id="flowPara15747">N queens (n = 4)</flowPara></flowRoot>  <path
      style="fill:none;stroke:#ce5c00;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      d="m 960,430 c 0,10 40,10 60,10 10,0 10,10 10,10 0,0 0,-10 10,-10 20,0 60,0 60,-10"
      id="path15749"

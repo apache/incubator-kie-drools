@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -5442,12 +5442,11 @@
        id="flowRegion6720-2"><rect
          id="rect6722-2"
          width="720"
-         height="59.999969"
+         height="40.000008"
          x="-236.32422"
          y="301.43814"
          style="font-size:22px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-       id="flowPara3455-6">N queens</flowPara><flowPara
-       id="flowPara15747">n = 4</flowPara></flowRoot>  <path
+       id="flowPara15747">N queens (n = 4)</flowPara></flowRoot>  <path
      style="fill:none;stroke:#ce5c00;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      d="m 1100.0001,430 c 0,10 14.2857,10 21.4285,10 3.5715,0 3.5715,10 3.5715,10 0,0 0,-10 3.5714,-10 7.1428,0 21.4285,0 21.4285,-10"
      id="path15749"
