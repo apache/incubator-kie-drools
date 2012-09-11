@@ -23,6 +23,8 @@ import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.TransactionSynchronizationRegistryHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dedicated implementation of <code>TransactionManager</code> that should be used when:
@@ -44,6 +46,7 @@ import org.drools.persistence.jta.JtaTransactionManager;
  */
 public class ContainerManagedTransactionManager implements TransactionManager {
 
+    private static Logger logger = LoggerFactory.getLogger(ContainerManagedTransactionManager.class);
     protected TransactionSynchronizationRegistry txSyncRegistry;
     
     public ContainerManagedTransactionManager() {
@@ -87,7 +90,7 @@ public class ContainerManagedTransactionManager implements TransactionManager {
 
             return tsrObject;
         } catch (NamingException ex) {
-
+            logger.warn("Error when getting TransactionSynchronizationRegistry from JNDI ", ex);
         }
 
         return null;
