@@ -634,6 +634,51 @@ ut.commit();</programlisting>
              value="org.hibernate.transaction.JBossTransactionManagerLookup" /&gt;
     </programlisting>
 
+      <section>
+        <title>Container managed transaction</title>
+        
+        <para>Special consideration need to be taken when embedding jBPM inside an application that
+        exucutes in Container Managed Tansaction (CMT) mode, for instance EJB beans. This especially 
+        applies to application servers that does not allow accessing UserTransaction instance from
+        JNDI when being part of container managed transation, e.g. WebSphere Application Server.
+        Since default implementation of transaction manager in jBPM is based on UserTransaction 
+        to get transaction status which is used to decide if transaction should be started or not, 
+        in environments that prevent accessing UserTrancation it won't do its job. 
+        To secure proper execution in CMT environments a dedicated transaction manager implementation
+        is provided:</para>
+        <programlisting>org.jbpm.persistence.jta.ContainerManagedTransactionManager</programlisting>
+        
+        <para>This transaction manager expects that transaction is active and thus will always
+        return ACTIVE when invoking getStatus method. Operations like begin, commit, rollback
+        are no-op methods as transaction manager runs under managed transaction and can't affect it.
+        </para>
+        <note>
+            <para>To make sure that container is aware of any exceptions that happened during
+            process instance execution, user needs to ensure that exceptions thrown by the 
+            engine are propagated up to the container to properly rollback transaction.</para>
+        </note>
+        
+        <para>To configure this transaction manager following must be done:</para>
+        <itemizedlist>
+        <listitem>Insert transaction manager and peristence context manager into environment prior
+        to creating/loading session
+        <programlisting>
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        env.set(EnvironmentName.TRANSACTION_MANAGER, new ContainerManagedTransactionManager());
+        env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, new JpaProcessPersistenceContextManager(env));
+        </programlisting>
+        </listitem>
+        <listitem>configure JPA provider (example hibernate and WebSphere)
+        <programlisting>
+        &lt;property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/&gt;
+        &lt;property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/&gt;
+        </programlisting>
+        </listitem>
+        </itemizedlist>
+        
+        <para>With following configuration jBPM should run properly in CMT environment.</para>
+      </section>
     </section>
 
     <section>
