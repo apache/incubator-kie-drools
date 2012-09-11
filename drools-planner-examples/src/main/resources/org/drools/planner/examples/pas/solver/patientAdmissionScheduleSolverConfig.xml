@@ -23,13 +23,13 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <unionMoveSelector>
-      <changeMoveSelector/>
-      <swapMoveSelector/>
-      <!--<moveListFactory>-->
-        <!--<moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>-->
-      <!--</moveListFactory>-->
-    </unionMoveSelector>
+    <!--<unionMoveSelector>-->
+      <!--<changeMoveSelector/>-->
+      <!--<swapMoveSelector/>-->
+    <!--</unionMoveSelector>-->
+    <moveListFactory>
+      <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+    </moveListFactory>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>
       <undoMoveTabuSize>3</undoMoveTabuSize>

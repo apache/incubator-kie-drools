@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/pas</benchmarkDirectory>
-  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
@@ -84,27 +84,6 @@
           <selectionOrder>SHUFFLED</selectionOrder>
           <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
         </moveListFactory>
-        <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <undoMoveTabuSize>3</undoMoveTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>undoMoveTabuSize3-jit</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-        </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
           <undoMoveTabuSize>3</undoMoveTabuSize>
