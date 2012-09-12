@@ -157,6 +157,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     // Benchmark methods
     // ************************************************************************
 
+    public boolean hasMultipleParallelBenchmarks() {
+        return parallelBenchmarkCount > 1;
+    }
+
     public void benchmark() {
         benchmarkingStarted();
         warmUp();

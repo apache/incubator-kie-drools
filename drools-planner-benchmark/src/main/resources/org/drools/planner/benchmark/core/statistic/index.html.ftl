@@ -346,6 +346,9 @@
                             <p>${problemBenchmark.failureCount} benchmarks have failed!</p>
                         </div>
                     </#if>
+                    <#if problemBenchmark.averageUsedMemoryAfterInputSolution??>
+                        <p>Memory usage after loading the inputSolution (before creating the Solver): ${problemBenchmark.averageUsedMemoryAfterInputSolution?string.number} bytes on average.</p>
+                    </#if>
                     <#if problemBenchmark.hasAnySuccess() && problemBenchmark.hasAnyProblemStatistic()>
                         <div class="tabbable">
                             <ul class="nav nav-tabs">

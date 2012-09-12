@@ -45,7 +45,8 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     private Map<StatisticType, SingleStatistic> singleStatisticMap = new HashMap<StatisticType, SingleStatistic>();
 
-    private int planningEntityCount = -1;
+    private Integer planningEntityCount = null;
+    private Long usedMemoryAfterInputSolution = null;
     private Score score = null;
     // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
@@ -71,8 +72,15 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return problemBenchmark;
     }
 
-    public int getPlanningEntityCount() {
+    public Integer getPlanningEntityCount() {
         return planningEntityCount;
+    }
+
+    /**
+     * @return null if {@link DefaultPlannerBenchmark#hasMultipleParallelBenchmarks()} return true
+     */
+    public Long getUsedMemoryAfterInputSolution() {
+        return usedMemoryAfterInputSolution;
     }
 
     public Score getScore() {
@@ -140,6 +148,15 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     }
 
     public SingleBenchmark call() {
+        Runtime runtime = Runtime.getRuntime();
+        Solution inputSolution = problemBenchmark.readPlanningProblem();
+        if (!problemBenchmark.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
+            runtime.gc();
+            usedMemoryAfterInputSolution = runtime.totalMemory() - runtime.freeMemory();
+        }
+        logger.trace("Benchmark inputSolution has been read for singleBenchmark ({}_{}).",
+                problemBenchmark.getName(), solverBenchmark.getName() );
+
         // Intentionally create a fresh solver for every SingleBenchmark to reset Random, tabu lists, ...
         Solver solver = solverBenchmark.getSolverConfig().buildSolver();
         for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
@@ -148,7 +165,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
             singleStatisticMap.put(problemStatistic.getProblemStatisticType(), singleStatistic);
         }
 
-        solver.setPlanningProblem(problemBenchmark.readPlanningProblem());
+        solver.setPlanningProblem(inputSolution);
         solver.solve();
         Solution outputSolution = solver.getBestSolution();
 

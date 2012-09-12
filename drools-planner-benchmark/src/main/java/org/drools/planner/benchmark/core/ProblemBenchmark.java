@@ -53,6 +53,7 @@ public class ProblemBenchmark {
     private List<SingleBenchmark> singleBenchmarkList = null;
 
     private Long problemScale = null;
+    private Long averageUsedMemoryAfterInputSolution = null;
     private Integer failureCount = null;
     private SingleBenchmark winningSingleBenchmark = null;
     private SingleBenchmark worstSingleBenchmark = null;
@@ -121,6 +122,10 @@ public class ProblemBenchmark {
         return problemScale;
     }
 
+    public Long getAverageUsedMemoryAfterInputSolution() {
+        return averageUsedMemoryAfterInputSolution;
+    }
+
     public Integer getFailureCount() {
         return failureCount;
     }
@@ -179,21 +184,36 @@ public class ProblemBenchmark {
     }
 
     public void benchmarkingEnded() {
-        determineSingleBenchmarkRanking();
+        determineTotalsAndAveragesAndRanking();
         determineWinningScoreDifference();
     }
 
-    private void determineSingleBenchmarkRanking() {
+    private void determineTotalsAndAveragesAndRanking() {
         failureCount = 0;
-        List<SingleBenchmark> rankedSingleBenchmarkList = new ArrayList<SingleBenchmark>(singleBenchmarkList);
+        long totalUsedMemoryAfterInputSolution = 0L;
+        int usedMemoryAfterInputSolutionCount = 0;
+        List<SingleBenchmark> successSingleBenchmarkList = new ArrayList<SingleBenchmark>(singleBenchmarkList);
         // Do not rank a SingleBenchmark that has a failure
-        for (Iterator<SingleBenchmark> it = rankedSingleBenchmarkList.iterator(); it.hasNext(); ) {
+        for (Iterator<SingleBenchmark> it = successSingleBenchmarkList.iterator(); it.hasNext(); ) {
             SingleBenchmark singleBenchmark = it.next();
             if (singleBenchmark.isFailure()) {
                 failureCount++;
                 it.remove();
+            } else {
+                if (singleBenchmark.getUsedMemoryAfterInputSolution() != null) {
+                    totalUsedMemoryAfterInputSolution += singleBenchmark.getUsedMemoryAfterInputSolution();
+                    usedMemoryAfterInputSolutionCount++;
+                }
             }
         }
+        if (usedMemoryAfterInputSolutionCount > 0) {
+            averageUsedMemoryAfterInputSolution = totalUsedMemoryAfterInputSolution
+                    / (long) usedMemoryAfterInputSolutionCount;
+        }
+        determineRanking(successSingleBenchmarkList);
+    }
+
+    private void determineRanking(List<SingleBenchmark> rankedSingleBenchmarkList) {
         Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(new SingleBenchmarkRankingComparator()));
         int singleBenchmarkRanking = 0;
         for (SingleBenchmark singleBenchmark : rankedSingleBenchmarkList) {

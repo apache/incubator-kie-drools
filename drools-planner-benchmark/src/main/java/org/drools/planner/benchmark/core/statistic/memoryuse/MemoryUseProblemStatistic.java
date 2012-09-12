@@ -131,10 +131,10 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
     @Override
     protected void fillWarningList() {
-        int parallelBenchmarkCount = problemBenchmark.getPlannerBenchmark().getParallelBenchmarkCount();
-        if (parallelBenchmarkCount > 1) {
+        if (problemBenchmark.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
             warningList.add("This memory use statistic shows the sum of the memory of all benchmarks "
-                    + "that ran in parallel, due to the parallelBenchmarkCount (" + parallelBenchmarkCount + ").");
+                    + "that ran in parallel, due to the parallelBenchmarkCount ("
+                    + problemBenchmark.getPlannerBenchmark().getParallelBenchmarkCount() + ").");
         }
     }
 
