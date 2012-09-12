@@ -143,7 +143,8 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         // Intentionally create a fresh solver for every SingleBenchmark to reset Random, tabu lists, ...
         Solver solver = solverBenchmark.getSolverConfig().buildSolver();
         for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(solver);
+            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic();
+            singleStatistic.open(solver);
             singleStatisticMap.put(problemStatistic.getProblemStatisticType(), singleStatistic);
         }
 
@@ -160,7 +161,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         problemBenchmark.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
 
         for (SingleStatistic singleStatistic : singleStatisticMap.values()) {
-            singleStatistic.close();
+            singleStatistic.close(solver);
         }
         problemBenchmark.writeOutputSolution(this, outputSolution);
         return this;

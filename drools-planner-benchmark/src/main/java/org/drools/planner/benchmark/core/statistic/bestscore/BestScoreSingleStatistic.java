@@ -30,17 +30,20 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
 
     private List<BestScoreSingleStatisticPoint> pointList = new ArrayList<BestScoreSingleStatisticPoint>();
 
-    public BestScoreSingleStatistic(Solver solver) {
-        super(solver);
+    public List<BestScoreSingleStatisticPoint> getPointList() {
+        return pointList;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public void open(Solver solver) {
         solver.addEventListener(listener);
     }
 
-    public void close() {
+    public void close(Solver solver) {
         solver.removeEventListener(listener);
-    }
-
-    public List<BestScoreSingleStatisticPoint> getPointList() {
-        return pointList;
     }
 
     private class BestScoreSingleStatisticListener implements SolverEventListener {

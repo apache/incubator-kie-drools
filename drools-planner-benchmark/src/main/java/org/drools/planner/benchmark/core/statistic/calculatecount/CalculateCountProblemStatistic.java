@@ -47,8 +47,8 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         super(problemBenchmark, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
     }
 
-    public SingleStatistic createSingleStatistic(Solver solver) {
-        return new CalculateCountSingleStatistic(solver);
+    public SingleStatistic createSingleStatistic() {
+        return new CalculateCountSingleStatistic();
     }
 
     // ************************************************************************

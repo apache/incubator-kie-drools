@@ -38,27 +38,33 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 
     private List<CalculateCountSingleStatisticPoint> pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
 
-    public CalculateCountSingleStatistic(Solver solver) {
-        this(solver, 1000L);
+    public CalculateCountSingleStatistic() {
+        this(1000L);
     }
 
-    public CalculateCountSingleStatistic(Solver solver, long timeMillisThresholdInterval) {
-        super(solver);
+    public CalculateCountSingleStatistic(long timeMillisThresholdInterval) {
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
         nextTimeMillisThreshold = timeMillisThresholdInterval;
-        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
-    }
-
-    public void close() {
-        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
     public List<CalculateCountSingleStatisticPoint> getPointList() {
         return pointList;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public void open(Solver solver) {
+        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
+    }
+
+    public void close(Solver solver) {
+        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

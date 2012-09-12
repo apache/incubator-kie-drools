@@ -39,10 +39,9 @@ public interface ProblemStatistic {
 
     /**
      * This method is thread-safe.
-     * @param solver never null
      * @return never null
      */
-    SingleStatistic createSingleStatistic(Solver solver);
+    SingleStatistic createSingleStatistic();
 
     void writeStatistic();
 

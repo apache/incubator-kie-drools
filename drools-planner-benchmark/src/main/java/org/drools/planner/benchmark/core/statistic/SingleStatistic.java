@@ -27,6 +27,14 @@ import org.drools.planner.core.Solver;
  */
 public interface SingleStatistic {
 
-    void close();
+    /**
+     * @param solver never null
+     */
+    void open(Solver solver);
+
+    /**
+     * @param solver never null
+     */
+    void close(Solver solver);
 
 }

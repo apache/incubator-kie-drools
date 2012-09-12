@@ -47,8 +47,8 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         super(problemBenchmark, ProblemStatisticType.MEMORY_USE);
     }
 
-    public SingleStatistic createSingleStatistic(Solver solver) {
-        return new MemoryUseSingleStatistic(solver);
+    public SingleStatistic createSingleStatistic() {
+        return new MemoryUseSingleStatistic();
     }
 
     // ************************************************************************

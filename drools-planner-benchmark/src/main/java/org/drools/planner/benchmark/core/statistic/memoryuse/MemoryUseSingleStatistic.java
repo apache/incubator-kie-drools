@@ -34,27 +34,33 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
 
     private List<MemoryUseSingleStatisticPoint> pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
 
-    public MemoryUseSingleStatistic(Solver solver) {
-        this(solver, 1000L);
+    public MemoryUseSingleStatistic() {
+        this(1000L);
     }
 
-    public MemoryUseSingleStatistic(Solver solver, long timeMillisThresholdInterval) {
-        super(solver);
+    public MemoryUseSingleStatistic(long timeMillisThresholdInterval) {
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
         nextTimeMillisThreshold = timeMillisThresholdInterval;
-        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
-    }
-
-    public void close() {
-        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
     public List<MemoryUseSingleStatisticPoint> getPointList() {
         return pointList;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public void open(Solver solver) {
+        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
+    }
+
+    public void close(Solver solver) {
+        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
     
     private class MemoryUseSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

@@ -18,14 +18,9 @@ package org.drools.planner.benchmark.core.statistic;
 
 import java.io.File;
 
-import org.drools.planner.core.Solver;
-
 public abstract class AbstractSingleStatistic implements SingleStatistic {
 
-    protected final Solver solver;
-
-    protected AbstractSingleStatistic(Solver solver) {
-        this.solver = solver;
+    protected AbstractSingleStatistic() {
     }
 
 }

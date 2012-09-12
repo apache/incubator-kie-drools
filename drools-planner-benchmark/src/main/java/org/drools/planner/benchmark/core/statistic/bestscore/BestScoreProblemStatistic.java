@@ -52,8 +52,8 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         super(problemBenchmark, ProblemStatisticType.BEST_SOLUTION_CHANGED);
     }
 
-    public SingleStatistic createSingleStatistic(Solver solver) {
-        return new BestScoreSingleStatistic(solver);
+    public SingleStatistic createSingleStatistic() {
+        return new BestScoreSingleStatistic();
     }
 
     // ************************************************************************
