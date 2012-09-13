@@ -3,34 +3,46 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
 <hibernate-mapping package="org.jbpm.persistence.processinstance">
 
-    <!-- access="field" for fields that have no setter methods -->
-    <class name="ProcessInstanceInfo" table="ProcessInstanceInfo">
-    
-        <id name="processInstanceId" type="long" column="InstanceId">
-            <generator class="native" />
-        </id>
-        
-        <version name="version" type="integer" unsaved-value="null" access="field">
-          <column name="OPTLOCK" not-null="false" />
-        </version>
-        
-        <property name="processId" access="field" />
-        <property name="startDate" type="timestamp" access="field" />
-        <property name="lastReadDate" type="timestamp"  access="field" />
-        <property name="lastModificationDate" type="timestamp" access="field" />
-        <property name="state" type="integer" not-null="true" access="field" />
-        
+  <!-- access="field" for fields that have no setter methods -->
+  <class name="ProcessInstanceInfo" table="ProcessInstanceInfo">
+
+    <id name="processInstanceId" type="long" column="InstanceId">
+      <generator class="native" />
+    </id>
+
+    <version name="version" type="integer" unsaved-value="null" access="field">
+      <column name="OPTLOCK" not-null="false" />
+    </version>
+
+    <property name="processId" access="field" />
+    <property name="startDate" type="timestamp" access="field" />
+    <property name="lastReadDate" type="timestamp" access="field" />
+    <property name="lastModificationDate" type="timestamp" access="field" />
+    <property name="state" type="integer" not-null="true" access="field" />
+
         <property name="processInstanceByteArray" type="org.hibernate.type.PrimitiveByteArrayBlobType" 
             column="processInstanceByteArray" access="field" length="2147483647" />
 
-        <set name="eventTypes" table="EventTypes" access="field" >
-            <key column="InstanceId"/>
-            <element column="element" type="string"/>
-        </set>
-    
-        <!-- NOT mapping [processInstance] field because field is transient -->    
-        <!-- NOT mapping [env] field because field is transient -->    
-        
-    </class>
+    <set name="eventTypes" table="EventTypes" access="field">
+      <key column="InstanceId" />
+      <element column="element" type="string" />
+    </set>
+
+    <!-- NOT mapping [processInstance] field because field is transient -->
+    <!-- NOT mapping [env] field because field is transient -->
+
+  </class>
+
+  <database-object>
+    <create>CREATE INDEX IDX_EVENTTYPES ON EVENTTYPES (INSTANCEID);</create>
+    <drop />
+    <dialect-scope name="org.hibernate.dialect.DB2Dialect" />
+    <dialect-scope name="org.hibernate.dialect.MySQL5Dialect" />
+    <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+    <dialect-scope name="org.hibernate.dialect.Oracle9Dialect" />
+    <dialect-scope name="org.hibernate.dialect.OracleDialect" />
+    <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+    <dialect-scope name="org.hibernate.dialect.SQLServerDialect" />
+  </database-object>
 
 </hibernate-mapping>

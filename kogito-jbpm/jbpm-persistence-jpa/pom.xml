@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -28,8 +28,8 @@
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.hibernate</groupId>
-       <artifactId>hibernate-core</artifactId>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
@@ -52,19 +52,19 @@
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-    <!--  Test -->
+
+    <!-- Test -->
     <dependency>
-       <groupId>org.hibernate</groupId>
-       <artifactId>hibernate-entitymanager</artifactId>
-       <scope>test</scope>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -79,9 +79,9 @@
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
       <scope>test</scope>
-    </dependency> 
+    </dependency>
   </dependencies>
- 
+
   <build>
     <testResources>
       <testResource>
@@ -93,7 +93,7 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
-  
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -102,8 +102,8 @@
         <configuration>
           <components>
             <component>
-                <name>hbm2ddl</name>
-                <implementation>jpaconfiguration</implementation>
+              <name>hbm2ddl</name>
+              <implementation>jpaconfiguration</implementation>
             </component>
           </components>
           <componentProperties>
@@ -115,8 +115,8 @@
             <format>true</format>
           </componentProperties>
         </configuration>
-      </plugin>    
-      
+      </plugin>
+
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -164,7 +164,7 @@
         <artifactId>maven-clean-plugin</artifactId>
         <version>2.4.1</version>
         <configuration>
-         <filesets>
+          <filesets>
             <fileset>
               <directory>${basedir}</directory>
               <includes>
@@ -172,29 +172,10 @@
                 <include>JPADroolsFlow.*.db</include>
               </includes>
             </fileset>
-         </filesets>
+          </filesets>
         </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>hibernate-4</id>
-      <dependencies>
-        <!-- necessary for HibernateException in BlobUserType (introduced for hib 3 compatibility) -->
-        <dependency>
-          <groupId>org.hibernate</groupId>
-          <artifactId>hibernate-core</artifactId>
-          <scope>compile</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.hibernate</groupId>
-          <artifactId>hibernate-entitymanager</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 
 </project>
