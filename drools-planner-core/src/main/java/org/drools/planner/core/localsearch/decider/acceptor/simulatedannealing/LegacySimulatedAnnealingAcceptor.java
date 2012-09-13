@@ -65,12 +65,14 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
             return true;
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
-        // TODO don't abuse translateScoreToGraphValue
-        Double diff = localSearchSolverPhaseScope.getScoreDefinition().translateScoreToGraphValue(scoreDifference);
-        if (diff == null) {
-            // more hard constraints broken, ignore it for now
-            return false;
+        double[] scoreDifferenceLevels = scoreDifference.toDoubleLevels();
+        for (int i = 0; i < scoreDifferenceLevels.length - 1; i++) {
+            if (scoreDifferenceLevels[i] != 0) {
+                // more hard constraints broken, ignore it for now
+                return false;
+            }
         }
+        double diff = scoreDifferenceLevels[scoreDifferenceLevels.length - 1];
         double acceptChance = Math.exp(-diff / temperature);
         if (moveScope.getWorkingRandom().nextDouble() < acceptChance) {
             return true;
