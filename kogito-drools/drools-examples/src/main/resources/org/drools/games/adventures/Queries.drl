@@ -32,9 +32,8 @@ query exits(Character $char, List $exits)
                                       collectList( $exit ) )      
 end
 
-query look(Character $char, Room $room, List $things, List $exits) 
+query look(Character $char, List $things, List $exits)
    $char := Character()
-   Location( $char, $room; )
    things( $char, $things; )
    exits( $char, $exits; )
 end

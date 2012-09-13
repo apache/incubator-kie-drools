@@ -6,8 +6,9 @@ import org.drools.games.adventures.Thing;
 dialect "mvel"
 
 rule updateOnCharacterSelected salience 5  when
-    SessionCharacter( $char : character, $us : session )                          
-    ?look( $char, $room, $things, $exits; )                                                          
+    SessionCharacter( $char : character, $us : session )
+    Location( thing == $char, $room : target )
+    ?look( $char, $things, $exits; )
 then      
     str = "You are in the " + $room + "\n";
     str +="You can see " + $things + "\n";

@@ -21,13 +21,14 @@ dialect "mvel"
 
 rule lookCmd agenda-group "commands" lock-on-active auto-focus  when
     lc : LookCommand(  c : character )
-    ?look( c, r, things, exits; )
-then    
-    str = "You are in the " + r + "\n";
+    Location( thing == c, $room : target )
+    ?look( c, things, exits; )
+then
+    str = "You are in the " + $room + "\n";
     str +="You can see " + things + "\n";
     str +="Available exits are  " + exits + "\n";
     str +="\n";
-            
+
     res = new Response( str );
     res.localId = lc.requestId;
     insert( res );    
