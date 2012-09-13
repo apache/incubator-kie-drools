@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ abstract public class AbstractRuleBase
     // ------------------------------------------------------------
     private String                                        id;
 
-    private AtomicInteger                                 workingMemoryCounter         = new AtomicInteger( 0 );
+    private final AtomicInteger                           workingMemoryCounter         = new AtomicInteger( 0 );
 
     private RuleBaseConfiguration                         config;
 
@@ -173,7 +174,7 @@ abstract public class AbstractRuleBase
 
 
         this.pkgs = new HashMap<String, Package>();
-        this.processes = new HashMap();
+        this.processes = new HashMap<String, Process>();
         this.globals = new HashMap<String, Class<?>>();
         this.statefulSessions = new ObjectHashSet();
 
@@ -267,12 +268,11 @@ abstract public class AbstractRuleBase
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         DroolsObjectInput droolsStream;
         boolean isDrools = in instanceof DroolsObjectInputStream;
-        ByteArrayInputStream bytes = null;
 
         if (isDrools) {
             droolsStream = (DroolsObjectInput) in;
         } else {
-            bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
+            ByteArrayInputStream bytes = new ByteArrayInputStream((byte[]) in.readObject());
             droolsStream = new DroolsObjectInputStream( bytes );
         }
 
@@ -429,7 +429,7 @@ abstract public class AbstractRuleBase
     public Process[] getProcesses() {
         readLock();
         try {
-            return (Process[]) this.processes.values().toArray( new Process[this.processes.size()] );
+            return this.processes.values().toArray( new Process[this.processes.size()] );
         } finally {
             readUnlock();
         }
@@ -626,10 +626,8 @@ abstract public class AbstractRuleBase
                 }
 
                 // add the rules to the RuleBase
-                final Rule[] rules = newPkg.getRules();
-                for (int i = 0; i < rules.length; ++i) {
-                    addRule( newPkg,
-                             rules[i] );
+                for ( Rule rule : newPkg.getRules() ) {
+                    addRule( newPkg, rule );
                 }
 
                 // add the flows to the RuleBase
@@ -850,25 +848,19 @@ abstract public class AbstractRuleBase
 
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
-        final Rule[] newRules = newPkg.getRules();
-        for (int i = 0; i < newRules.length; i++) {
-            final Rule newRule = newRules[i];
-
+        for (final Rule newRule : newPkg.getRules()) {
             // remove the rule if it already exists
-            if (pkg.getRule( newRule.getName() ) != null) {
-                removeRule( pkg,
-                            pkg.getRule( newRule.getName() ) );
+            if (pkg.getRule(newRule.getName()) != null) {
+                removeRule( pkg, pkg.getRule(newRule.getName()) );
             }
 
-            pkg.addRule( newRule );
+            pkg.addRule(newRule);
         }
 
         //Merge The Rule Flows
         if (newPkg.getRuleFlows() != null) {
-            final Map flows = newPkg.getRuleFlows();
-            for (final Iterator iter = flows.values().iterator(); iter.hasNext();) {
-                final Process flow = (Process) iter.next();
-                pkg.addProcess( flow );
+            for (Process flow : newPkg.getRuleFlows().values()) {
+                pkg.addProcess(flow);
             }
         }
     }
@@ -902,7 +894,6 @@ abstract public class AbstractRuleBase
 
     private TypeDeclarationCandidate checkSuperClasses( Class<?> clazz ) {
 
-        TypeDeclarationCandidate candidate = null;
         TypeDeclaration typeDeclaration = null;
         Class<?> current = clazz.getSuperclass();
         int score = 0;
@@ -911,10 +902,8 @@ abstract public class AbstractRuleBase
             typeDeclaration = this.classTypeDeclaration.get( current.getName() );
             current = current.getSuperclass();
         }
-        if ( typeDeclaration == null ) {
-            // no type declaration found for superclasses
-            score = Integer.MAX_VALUE;
-        } else {
+        TypeDeclarationCandidate candidate = null;
+        if ( typeDeclaration != null ) {
             candidate = new TypeDeclarationCandidate();
             candidate.candidate = typeDeclaration;
             candidate.score = score;
@@ -926,9 +915,9 @@ abstract public class AbstractRuleBase
             TypeDeclarationCandidate baseline,
             int level ) {
         TypeDeclarationCandidate candidate = null;
-        TypeDeclaration typeDeclaration = null;
         if (baseline == null || level < baseline.score) {
             // search
+            TypeDeclaration typeDeclaration = null;
             for (Class<?> ifc : clazz.getInterfaces()) {
                 typeDeclaration = this.classTypeDeclaration.get( ifc.getName() );
                 if (typeDeclaration != null) {
@@ -1025,11 +1014,8 @@ abstract public class AbstractRuleBase
 
             this.eventSupport.fireBeforePackageRemoved( pkg );
 
-            final Rule[] rules = pkg.getRules();
-
-            for (int i = 0; i < rules.length; ++i) {
-                removeRule( pkg,
-                            rules[i] );
+            for (Rule rule : pkg.getRules()) {
+                removeRule( pkg, rule );
             }
 
             // getting the list of referenced globals
@@ -1046,9 +1032,8 @@ abstract public class AbstractRuleBase
                 }
             }
             //and now the rule flows
-            final Map flows = pkg.getRuleFlows();
-            for (final Iterator iter = flows.keySet().iterator(); iter.hasNext();) {
-                removeProcess( (String) iter.next() );
+            for ( String processName : new ArrayList<String>(pkg.getRuleFlows().keySet()) ) {
+                removeProcess( processName );
             }
             // removing the package itself from the list
             this.pkgs.remove( pkg.getName() );
@@ -1065,13 +1050,13 @@ abstract public class AbstractRuleBase
     }
 
     public void removeQuery( final String packageName,
-            final String ruleName ) {
+                             final String ruleName ) {
         removeRule( packageName,
                     ruleName );
     }
 
     public void removeRule( final String packageName,
-            final String ruleName ) {
+                            final String ruleName ) {
         lock();
         try {
             final Package pkg = this.pkgs.get( packageName );
@@ -1221,7 +1206,7 @@ abstract public class AbstractRuleBase
     public Process getProcess( final String id ) {
         readLock();
         try {
-            return (Process) this.processes.get( id );
+            return this.processes.get( id );
         } finally {
             readUnlock();
         }
