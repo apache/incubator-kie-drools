@@ -66,8 +66,8 @@ public class PlannerStatistic {
     protected final File htmlOverviewFile;
 
     protected List<File> bestScoreSummaryChartFileList = null;
-    protected File winningScoreDifferenceSummaryFile = null;
-    protected File worstScoreDifferencePercentageSummaryFile = null;
+    protected List<File> winningScoreDifferenceSummaryChartFileList = null;
+    protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     protected File timeSpendSummaryChartFile = null;
     protected File scalabilitySummaryChartFile = null;
     protected File averageCalculateCountSummaryChartFile = null;
@@ -86,12 +86,12 @@ public class PlannerStatistic {
         return bestScoreSummaryChartFileList;
     }
 
-    public File getWinningScoreDifferenceSummaryFile() {
-        return winningScoreDifferenceSummaryFile;
+    public List<File> getWinningScoreDifferenceSummaryChartFileList() {
+        return winningScoreDifferenceSummaryChartFileList;
     }
 
-    public File getWorstScoreDifferencePercentageSummaryFile() {
-        return worstScoreDifferencePercentageSummaryFile;
+    public List<File> getWorstScoreDifferencePercentageSummaryChartFileList() {
+        return worstScoreDifferencePercentageSummaryChartFileList;
     }
 
     public File getTimeSpendSummaryChartFile() {
@@ -139,14 +139,13 @@ public class PlannerStatistic {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
-                    Score score = singleBenchmark.getScore();
-                    double[] scoreLevels = score.toDoubleLevels();
-                    for (int i = 0; i < scoreLevels.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                    double[] levelValues = singleBenchmark.getScore().toDoubleLevels();
+                    for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new DefaultCategoryDataset());
                         }
                         String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
-                        datasetList.get(i).addValue(scoreLevels[i], solverLabel, planningProblemLabel);
+                        datasetList.get(i).addValue(levelValues[i], solverLabel, planningProblemLabel);
                     }
                 }
             }
@@ -154,86 +153,76 @@ public class PlannerStatistic {
         bestScoreSummaryChartFileList = new ArrayList<File>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
-            CategoryPlot plot = createBarChartPlot(dataset, "Score level " + scoreLevelIndex, NumberFormat.getInstance());
+            CategoryPlot plot = createBarChartPlot(dataset,
+                    "Score level " + scoreLevelIndex, NumberFormat.getInstance());
             JFreeChart chart = new JFreeChart("Best score level " + scoreLevelIndex + " summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-            BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-            File bestScoreSummaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
-                    "bestScoreSummaryLevel" + scoreLevelIndex + ".png");
-            OutputStream out = null;
-            try {
-                out = new FileOutputStream(bestScoreSummaryChartFile);
-                ImageIO.write(chartImage, "png", out);
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Problem writing bestScoreSummaryChartFile: " + bestScoreSummaryChartFile, e);
-            } finally {
-                IOUtils.closeQuietly(out);
-            }
-            bestScoreSummaryChartFileList.add(bestScoreSummaryChartFile);
+            bestScoreSummaryChartFileList.add(writeChartToImageFile(chart, "bestScoreSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
     }
 
     private void writeWinningScoreDifferenceSummaryChart() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        // Each scoreLevel has it's own dataset and chartFile
+        List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
-                    Score score = singleBenchmark.getWinningScoreDifference();
-                    double[] scoreLevels = score.toDoubleLevels();
-                    Double scoreGraphValue = scoreLevels[scoreLevels.length - 1]; // TODO FIXME
-                    String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
-                    dataset.addValue(scoreGraphValue, solverLabel, planningProblemLabel);
+                    double[] levelValues = singleBenchmark.getWinningScoreDifference().toDoubleLevels();
+                    for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= datasetList.size()) {
+                            datasetList.add(new DefaultCategoryDataset());
+                        }
+                        String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
+                        datasetList.get(i).addValue(levelValues[i], solverLabel, planningProblemLabel);
+                    }
                 }
             }
         }
-        CategoryPlot plot = createBarChartPlot(dataset, "Winning score difference", NumberFormat.getInstance());
-        JFreeChart chart = new JFreeChart("Winning score difference summary (higher is better)",
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        winningScoreDifferenceSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
-                "winningScoreDifferenceSummary.png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(winningScoreDifferenceSummaryFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing winningScoreDifferenceSummaryFile: "
-                    + winningScoreDifferenceSummaryFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
+        winningScoreDifferenceSummaryChartFileList = new ArrayList<File>(datasetList.size());
+        int scoreLevelIndex = 0;
+        for (DefaultCategoryDataset dataset : datasetList) {
+            CategoryPlot plot = createBarChartPlot(dataset,
+                    "Winning score difference level " + scoreLevelIndex, NumberFormat.getInstance());
+            JFreeChart chart = new JFreeChart("Winning score difference level " + scoreLevelIndex
+                    + " summary (higher is better)",
+                    JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            winningScoreDifferenceSummaryChartFileList.add(
+                    writeChartToImageFile(chart, "winningScoreDifferenceSummaryLevel" + scoreLevelIndex));
+            scoreLevelIndex++;
         }
     }
 
     private void writeWorstScoreDifferencePercentageSummaryChart() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        // Each scoreLevel has it's own dataset and chartFile
+        List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
-                    double graphValue = singleBenchmark.getWorstScoreDifferencePercentage().getLastPercentageLevel();
-                    String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
-                    dataset.addValue(graphValue, solverLabel, planningProblemLabel);
+                    double[] levelValues = singleBenchmark.getWorstScoreDifferencePercentage().getPercentageLevels();
+                    for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= datasetList.size()) {
+                            datasetList.add(new DefaultCategoryDataset());
+                        }
+                        String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
+                        datasetList.get(i).addValue(levelValues[i], solverLabel, planningProblemLabel);
+                    }
                 }
             }
         }
-        CategoryPlot plot = createBarChartPlot(dataset,
-                "Worst score difference percentage", new DecimalFormat("0.00%"));
-        JFreeChart chart = new JFreeChart("Worst score difference percentage summary (higher is better)",
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        worstScoreDifferencePercentageSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
-                "worstScoreDifferencePercentageSummary.png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(worstScoreDifferencePercentageSummaryFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing worstScoreDifferencePercentageSummaryFile: "
-                    + worstScoreDifferencePercentageSummaryFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
+        worstScoreDifferencePercentageSummaryChartFileList = new ArrayList<File>(datasetList.size());
+        int scoreLevelIndex = 0;
+        for (DefaultCategoryDataset dataset : datasetList) {
+            CategoryPlot plot = createBarChartPlot(dataset,
+                    "Worst score difference percentage level " + scoreLevelIndex, new DecimalFormat("0.00%"));
+            JFreeChart chart = new JFreeChart("Worst score difference percentage level " + scoreLevelIndex
+                    + " summary (higher is better)",
+                    JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            worstScoreDifferencePercentageSummaryChartFileList.add(
+                    writeChartToImageFile(chart, "worstScoreDifferencePercentageSummaryLevel" + scoreLevelIndex));
+            scoreLevelIndex++;
         }
     }
 
@@ -252,43 +241,7 @@ public class PlannerStatistic {
         CategoryPlot plot = createBarChartPlot(dataset, "Time spend", new MillisecondsSpendNumberFormat());
         JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        timeSpendSummaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "timeSpendSummary.png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(timeSpendSummaryChartFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing timeSpendSummaryChartFile: " + timeSpendSummaryChartFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
-    }
-
-    private CategoryPlot createBarChartPlot(DefaultCategoryDataset dataset,
-            String yAxisLabel, NumberFormat numberFormat) {
-        CategoryAxis xAxis = new CategoryAxis("Data");
-        xAxis.setCategoryMargin(0.40);
-        NumberAxis yAxis = new NumberAxis(yAxisLabel);
-        yAxis.setNumberFormatOverride(numberFormat);
-        BarRenderer renderer = createBarChartRenderer(numberFormat);
-        CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
-        plot.setOrientation(PlotOrientation.VERTICAL);
-        return plot;
-    }
-
-    private BarRenderer createBarChartRenderer(NumberFormat numberFormat) {
-        BarRenderer renderer = new BarRenderer();
-        ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
-                ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
-        renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
-        ItemLabelPosition negativeItemLabelPosition = new ItemLabelPosition(
-                ItemLabelAnchor.OUTSIDE6, TextAnchor.TOP_CENTER);
-        renderer.setBaseNegativeItemLabelPosition(negativeItemLabelPosition);
-        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator(
-                StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, numberFormat));
-        renderer.setBaseItemLabelsVisible(true);
-        return renderer;
+        timeSpendSummaryChartFile = writeChartToImageFile(chart, "timeSpendSummary");
     }
 
     private void writeScalabilitySummaryChart() {
@@ -321,17 +274,7 @@ public class PlannerStatistic {
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart("Scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        scalabilitySummaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "scalabilitySummary.png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(scalabilitySummaryChartFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing scalabilitySummaryChartFile: " + scalabilitySummaryChartFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
+        scalabilitySummaryChartFile = writeChartToImageFile(chart, "scalabilitySummary");
     }
 
     private void writeAverageCalculateCountPerSecondSummaryChart() {
@@ -363,19 +306,48 @@ public class PlannerStatistic {
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        averageCalculateCountSummaryChartFile = writeChartToImageFile(chart, "averageCalculateCountSummary");
+    }
+
+    private CategoryPlot createBarChartPlot(DefaultCategoryDataset dataset,
+            String yAxisLabel, NumberFormat numberFormat) {
+        CategoryAxis xAxis = new CategoryAxis("Data");
+        xAxis.setCategoryMargin(0.40);
+        NumberAxis yAxis = new NumberAxis(yAxisLabel);
+        yAxis.setNumberFormatOverride(numberFormat);
+        BarRenderer renderer = createBarChartRenderer(numberFormat);
+        CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        return plot;
+    }
+
+    private BarRenderer createBarChartRenderer(NumberFormat numberFormat) {
+        BarRenderer renderer = new BarRenderer();
+        ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
+        renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
+        ItemLabelPosition negativeItemLabelPosition = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE6, TextAnchor.TOP_CENTER);
+        renderer.setBaseNegativeItemLabelPosition(negativeItemLabelPosition);
+        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator(
+                StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, numberFormat));
+        renderer.setBaseItemLabelsVisible(true);
+        return renderer;
+    }
+
+    private File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        averageCalculateCountSummaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
-                "averageCalculateCountSummary.png");
+        File summaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), fileNameBase + ".png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(averageCalculateCountSummaryChartFile);
+            out = new FileOutputStream(summaryChartFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing averageCalculateCountSummaryChartFile: "
-                    + averageCalculateCountSummaryChartFile, e);
+            throw new IllegalArgumentException("Problem writing summaryChartFile: " + summaryChartFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
+        return summaryChartFile;
     }
 
     private void determineDefaultShownScoreLevelIndex() {

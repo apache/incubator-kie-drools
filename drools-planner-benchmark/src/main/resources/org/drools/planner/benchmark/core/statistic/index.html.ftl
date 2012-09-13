@@ -154,8 +154,27 @@
                             </div>
                             <div class="tab-pane" id="summary_winningScoreDifference">
                                 <h3>Winning score difference summary</h3>
-                                <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.winningScoreDifferenceSummaryFile.name}"/>
+                                <div class="tabbable tabs-right">
+                                    <ul class="nav nav-tabs">
+                                    <#assign scoreLevelIndex = 0>
+                                    <#list plannerStatistic.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
+                                        <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                            <a href="#summary_winningScoreDifference_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                        </li>
+                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                    </#list>
+                                    </ul>
+                                    <div class="tab-content">
+                                    <#assign scoreLevelIndex = 0>
+                                    <#list plannerStatistic.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
+                                        <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="summary_winningScoreDifference_chart_${scoreLevelIndex}">
+                                            <div class="benchmark-chart">
+                                                <img src="${winningScoreDifferenceSummaryChartFile.name}"/>
+                                            </div>
+                                        </div>
+                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                    </#list>
+                                    </div>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -187,8 +206,27 @@
                             </div>
                             <div class="tab-pane" id="summary_worstScoreDifferencePercentage">
                                 <h3>Worst score difference percentage summary</h3>
-                                <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.worstScoreDifferencePercentageSummaryFile.name}"/>
+                                <div class="tabbable tabs-right">
+                                    <ul class="nav nav-tabs">
+                                    <#assign scoreLevelIndex = 0>
+                                    <#list plannerStatistic.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
+                                        <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                            <a href="#summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                        </li>
+                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                    </#list>
+                                    </ul>
+                                    <div class="tab-content">
+                                    <#assign scoreLevelIndex = 0>
+                                    <#list plannerStatistic.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
+                                        <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}">
+                                            <div class="benchmark-chart">
+                                                <img src="${worstScoreDifferencePercentageSummaryChartFile.name}"/>
+                                            </div>
+                                        </div>
+                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                    </#list>
+                                    </div>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>

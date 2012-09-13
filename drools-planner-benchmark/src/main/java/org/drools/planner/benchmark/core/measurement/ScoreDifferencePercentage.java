@@ -58,19 +58,19 @@ public class ScoreDifferencePercentage implements Serializable {
         }
     }
 
-    private double[] percentageLevels;
+    private final double[] percentageLevels;
 
     public ScoreDifferencePercentage(double[] percentageLevels) {
         this.percentageLevels = percentageLevels;
     }
 
+    public double[] getPercentageLevels() {
+        return percentageLevels;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    public double getLastPercentageLevel() {
-        return percentageLevels[percentageLevels.length - 1];
-    }
 
     public ScoreDifferencePercentage add(ScoreDifferencePercentage augment) {
         double[] newPercentageLevels = new double[percentageLevels.length];
