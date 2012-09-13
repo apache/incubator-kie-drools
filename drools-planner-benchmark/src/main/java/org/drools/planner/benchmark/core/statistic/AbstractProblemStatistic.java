@@ -73,10 +73,6 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    public boolean hasWarning() {
-        return !warningList.isEmpty();
-    }
-
     public void writeStatistic() {
         writeCsvStatistic();
         writeGraphStatistic();

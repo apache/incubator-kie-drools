@@ -17,6 +17,7 @@
 package org.drools.planner.benchmark.core.statistic;
 
 import java.io.File;
+import java.util.List;
 
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
@@ -56,5 +57,10 @@ public interface ProblemStatistic {
      * (not {@link ProblemBenchmark#problemReportDirectory})
      */
     String getGraphFilePath();
+
+    /**
+     * @return never null
+     */
+    List<String> getWarningList();
 
 }
