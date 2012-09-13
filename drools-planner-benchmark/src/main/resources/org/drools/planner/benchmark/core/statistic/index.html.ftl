@@ -256,7 +256,7 @@
                             <div class="tab-pane" id="summary_timeSpend">
                                 <h3>Time spend summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.timeSpendSummaryFile.name}"/>
+                                    <img src="${plannerStatistic.timeSpendSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -293,13 +293,13 @@
                             <div class="tab-pane" id="summary_scalability">
                                 <h3>Scalability summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
+                                    <img src="${plannerStatistic.scalabilitySummaryChartFile.name}"/>
                                 </div>
                             </div>
                             <div class="tab-pane active" id="summary_averageCalculateCount">
                                 <h3>Average calculate count summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.averageCalculateCountSummaryFile.name}"/>
+                                    <img src="${plannerStatistic.averageCalculateCountSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>

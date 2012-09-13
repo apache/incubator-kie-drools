@@ -68,9 +68,9 @@ public class PlannerStatistic {
     protected List<File> bestScoreSummaryChartFileList = null;
     protected File winningScoreDifferenceSummaryFile = null;
     protected File worstScoreDifferencePercentageSummaryFile = null;
-    protected File timeSpendSummaryFile = null;
-    protected File scalabilitySummaryFile = null;
-    protected File averageCalculateCountSummaryFile = null;
+    protected File timeSpendSummaryChartFile = null;
+    protected File scalabilitySummaryChartFile = null;
+    protected File averageCalculateCountSummaryChartFile = null;
     private Integer defaultShownScoreLevelIndex = null;
 
     public PlannerStatistic(DefaultPlannerBenchmark plannerBenchmark) {
@@ -94,16 +94,16 @@ public class PlannerStatistic {
         return worstScoreDifferencePercentageSummaryFile;
     }
 
-    public File getTimeSpendSummaryFile() {
-        return timeSpendSummaryFile;
+    public File getTimeSpendSummaryChartFile() {
+        return timeSpendSummaryChartFile;
     }
 
-    public File getScalabilitySummaryFile() {
-        return scalabilitySummaryFile;
+    public File getScalabilitySummaryChartFile() {
+        return scalabilitySummaryChartFile;
     }
 
-    public File getAverageCalculateCountSummaryFile() {
-        return averageCalculateCountSummaryFile;
+    public File getAverageCalculateCountSummaryChartFile() {
+        return averageCalculateCountSummaryChartFile;
     }
 
     public Integer getDefaultShownScoreLevelIndex() {
@@ -253,13 +253,13 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        timeSpendSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "timeSpendSummary.png");
+        timeSpendSummaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "timeSpendSummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(timeSpendSummaryFile);
+            out = new FileOutputStream(timeSpendSummaryChartFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing timeSpendSummaryFile: " + timeSpendSummaryFile, e);
+            throw new IllegalArgumentException("Problem writing timeSpendSummaryChartFile: " + timeSpendSummaryChartFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
@@ -322,13 +322,13 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        scalabilitySummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "scalabilitySummary.png");
+        scalabilitySummaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "scalabilitySummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(scalabilitySummaryFile);
+            out = new FileOutputStream(scalabilitySummaryChartFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing scalabilitySummaryFile: " + scalabilitySummaryFile, e);
+            throw new IllegalArgumentException("Problem writing scalabilitySummaryChartFile: " + scalabilitySummaryChartFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
@@ -364,15 +364,15 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        averageCalculateCountSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
+        averageCalculateCountSummaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
                 "averageCalculateCountSummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(averageCalculateCountSummaryFile);
+            out = new FileOutputStream(averageCalculateCountSummaryChartFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing averageCalculateCountSummaryFile: "
-                    + averageCalculateCountSummaryFile, e);
+            throw new IllegalArgumentException("Problem writing averageCalculateCountSummaryChartFile: "
+                    + averageCalculateCountSummaryChartFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
