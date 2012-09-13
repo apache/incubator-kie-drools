@@ -250,6 +250,12 @@ public class KProjectTest {
         File fle1 = fld1.getFile( "KProjectTestClassImpl.java" );
         fle1.create( new ByteArrayInputStream( generateKProjectTestClassImpl( kproj ).getBytes() ) );
 
+        Folder fld2 = trgMfs.getFolder( "META-INF" );
+        fld2.create();
+        File fle2 = fld2.getFile( "beans.xml" );
+        fle2.create( new ByteArrayInputStream( generateBeansXML( kproj ).getBytes() ) );
+
+        
         List<String> inputClasses = new ArrayList<String>();
         inputClasses.add( "org/drools/cdi/test/KProjectTestClassImpl.java" );
 
@@ -445,6 +451,14 @@ public class KProjectTest {
         return s;
     }
 
+    public String generateBeansXML(KProject kproject) {
+        String s = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                   "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n" + 
+                   "</beans>";
+        
+        return s;
+    }
+        
     public static String filenameToClassname(String filename) {
         return filename.substring( 0, filename.lastIndexOf( ".java" ) ).replace( '/', '.' ).replace( '\\', '.' );
     }
