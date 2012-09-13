@@ -100,8 +100,27 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_bestScore">
                                 <h3>Best score summary</h3>
-                                <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.bestScoreSummaryFile.name}"/>
+                                <div class="tabbable tabs-right">
+                                    <ul class="nav nav-tabs">
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list plannerStatistic.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
+                                            <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                <a href="#summary_bestScore_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                            </li>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list plannerStatistic.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
+                                            <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScore_chart_${scoreLevelIndex}">
+                                                <div class="benchmark-chart">
+                                                    <img src="${bestScoreSummaryChartFile.name}"/>
+                                                </div>
+                                            </div>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
+                                    </div>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>

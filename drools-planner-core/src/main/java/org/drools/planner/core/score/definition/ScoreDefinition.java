@@ -66,12 +66,6 @@ public interface ScoreDefinition<S extends Score> {
     double calculateTimeGradient(S startScore, S endScore, S score);
 
     /**
-     * @param score never null
-     * @return null if should not be shown on the graph
-     */
-    Double translateScoreToGraphValue(S score);
-
-    /**
      * TODO JBRULES-2238 remove when the rule that sums the final score can be written as a single rule and {@link ScoreHolder} is dead
      * @return never null
      */

@@ -96,14 +96,19 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
         private Map<Long, ProblemStatisticCsvLine> timeToLineMap = new HashMap<Long, ProblemStatisticCsvLine>();
 
         public void addPoint(SingleBenchmark singleBenchmark, long timeMillisSpend, long value) {
-            addPoint(singleBenchmark, timeMillisSpend, Long.toString(value));
+            addRawPoint(singleBenchmark, timeMillisSpend, Long.toString(value));
         }
 
         public void addPoint(SingleBenchmark singleBenchmark, long timeMillisSpend, double value) {
-            addPoint(singleBenchmark, timeMillisSpend, Double.toString(value));
+            addRawPoint(singleBenchmark, timeMillisSpend, Double.toString(value));
         }
 
         public void addPoint(SingleBenchmark singleBenchmark, long timeMillisSpend, String value) {
+            // Surround with double quotes and apply Excel escaping
+            addRawPoint(singleBenchmark, timeMillisSpend, "\"" + value.replaceAll("\"", "\"\"") + "\"");
+        }
+
+        private void addRawPoint(SingleBenchmark singleBenchmark, long timeMillisSpend, String value) {
             ProblemStatisticCsvLine line = findOrCreateLine(timeMillisSpend);
             line.getValueMap().put(singleBenchmark, value);
         }

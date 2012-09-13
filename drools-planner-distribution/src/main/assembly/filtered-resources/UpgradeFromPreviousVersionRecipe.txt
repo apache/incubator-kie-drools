@@ -2270,3 +2270,10 @@ After in *Score.java:
     public double[] toDoubleLevels() {
         ...
     }
+
+[MINOR] If you have a custom ScoreDefinition implementation, the method translateScoreToGraphValue(Score) has been removed.
+The benchmarker report now shows a graph for each score level.
+Before in *ScoreDefinition.java:
+    public Double translateScoreToGraphValue(SimpleScore score) {
+        return Double.valueOf(score.getScore());
+    }

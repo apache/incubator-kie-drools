@@ -62,10 +62,6 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
         return ((double) scoreDelta) / ((double) scoreTotal);
     }
 
-    public Double translateScoreToGraphValue(SimpleScore score) {
-        return Double.valueOf(score.getScore());
-    }
-
     public ScoreHolder buildScoreHolder() {
         return new SimpleScoreHolder();
     }

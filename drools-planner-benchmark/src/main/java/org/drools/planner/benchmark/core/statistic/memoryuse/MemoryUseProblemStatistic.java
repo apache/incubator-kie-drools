@@ -64,9 +64,9 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
                 for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
-                    String value = "\"" + Long.toString(memoryUseMeasurement.getUsedMemory())
-                            + "/" + Long.toString(memoryUseMeasurement.getMaxMemory()) + "\"";
-                    csv.addPoint(singleBenchmark, timeMillisSpend, value);
+                    csv.addPoint(singleBenchmark, timeMillisSpend,
+                            Long.toString(memoryUseMeasurement.getUsedMemory())
+                            + "/" + Long.toString(memoryUseMeasurement.getMaxMemory()));
                 }
             } else {
                 csv.addPoint(singleBenchmark, 0L, "Failed");

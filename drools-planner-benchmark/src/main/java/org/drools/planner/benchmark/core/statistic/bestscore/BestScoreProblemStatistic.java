@@ -46,8 +46,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class BestScoreProblemStatistic extends AbstractProblemStatistic {
 
-    private ScoreDefinition scoreDefinition = null;
-
     public BestScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.BEST_SOLUTION_CHANGED);
     }
@@ -60,23 +58,6 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    @Override
-    public void writeStatistic() {
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            ScoreDefinition newScoreDefinition = singleBenchmark.getSolverBenchmark().getSolverConfig()
-                    .getScoreDirectorFactoryConfig().buildScoreDefinition();
-            if (scoreDefinition == null) {
-                scoreDefinition = newScoreDefinition;
-            } else {
-                if (!scoreDefinition.getClass().equals(newScoreDefinition.getClass())) {
-                    throw new IllegalStateException("The new scoreDefinition (" + newScoreDefinition
-                            + ") should be of the same class as the other scoreDefinition (" + scoreDefinition + ")");
-                }
-            }
-        }
-        super.writeStatistic();
-    }
-
     protected void writeCsvStatistic() {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
@@ -87,10 +68,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     Score score = point.getScore();
                     if (score != null) {
-                        Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
-                        if (scoreGraphValue != null) {
-                            csv.addPoint(singleBenchmark, timeMillisSpend, scoreGraphValue);
-                        }
+                        csv.addPoint(singleBenchmark, timeMillisSpend, score.toString());
                     }
                 }
             } else {
@@ -120,7 +98,8 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     Score score = point.getScore();
-                    Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
+                    double[] scoreLevels = score.toDoubleLevels();
+                    Double scoreGraphValue = scoreLevels[scoreLevels.length - 1]; // TODO FIXME
                     if (scoreGraphValue != null) {
                         series.add(timeMillisSpend, scoreGraphValue);
                     }
