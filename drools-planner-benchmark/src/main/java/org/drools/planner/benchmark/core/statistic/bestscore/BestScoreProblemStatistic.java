@@ -119,18 +119,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         }
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " best score statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        graphStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
-                problemBenchmark.getName() + "BestScoreStatistic.png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(graphStatisticFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + graphStatisticFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
+        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "BestScoreStatistic");
     }
 
 }

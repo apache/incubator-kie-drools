@@ -115,25 +115,14 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         }
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " memory use statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        graphStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
-                problemBenchmark.getName() + "MemoryUseStatistic.png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(graphStatisticFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + graphStatisticFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
+        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "MemoryUseStatistic");
     }
 
     @Override
     protected void fillWarningList() {
         if (problemBenchmark.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
             warningList.add("This memory use statistic shows the sum of the memory of all benchmarks "
-                    + "that ran in parallel, due to the parallelBenchmarkCount ("
+                    + "that ran in parallel, due to parallelBenchmarkCount ("
                     + problemBenchmark.getPlannerBenchmark().getParallelBenchmarkCount() + ").");
         }
     }

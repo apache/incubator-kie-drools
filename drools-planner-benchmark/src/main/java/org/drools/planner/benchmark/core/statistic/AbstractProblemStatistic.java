@@ -16,9 +16,11 @@
 
 package org.drools.planner.benchmark.core.statistic;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -27,9 +29,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
+import org.jfree.chart.JFreeChart;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
@@ -171,6 +176,21 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
             return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
         }
 
+    }
+
+    protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
+        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
+        File chartFile = new File(problemBenchmark.getProblemReportDirectory(), fileNameBase + ".png");
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(chartFile);
+            ImageIO.write(chartImage, "png", out);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing chartFile: " + chartFile, e);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+        return chartFile;
     }
 
 }
