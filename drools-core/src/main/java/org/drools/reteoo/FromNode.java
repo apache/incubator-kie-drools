@@ -459,6 +459,11 @@ public class FromNode extends LeftTupleSource
         FastIterator rightIter = LinkedList.fastIterator;
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+
+            this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
+                                                  workingMemory,
+                                                  leftTuple );
+
             Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
             for ( RightTuple rightTuples : matches.values() ) {
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuple ) ) {
@@ -489,6 +494,8 @@ public class FromNode extends LeftTupleSource
                     }                                      
                 }
             }
+
+            this.betaConstraints.resetTuple( memory.betaMemory.getContext() );
         }
     }
 
