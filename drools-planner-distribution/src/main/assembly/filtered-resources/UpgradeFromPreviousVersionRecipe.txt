@@ -2271,6 +2271,10 @@ After in *Score.java:
         ...
     }
 
+
+From 5.5.0.Beta1 to 5.5.0.Beta2
+-------------------------------
+
 [MINOR] If you have a custom ScoreDefinition implementation, the method translateScoreToGraphValue(Score) has been removed.
 The benchmarker report now shows a graph for each score level.
 Before in *ScoreDefinition.java:
