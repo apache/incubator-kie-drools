@@ -22,8 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.NoSuchElementException;
 
-import org.drools.reteoo.ObjectSinkNode;
-
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
@@ -42,13 +40,13 @@ import org.drools.reteoo.ObjectSinkNode;
  * }
  * </pre>
  */
-public class LinkedList
+public class LinkedList<T extends LinkedListNode<T>>
     implements
     Externalizable {
     private static final long  serialVersionUID = 510l;
 
-    private LinkedListNode     firstNode;
-    private LinkedListNode     lastNode;
+    private T                  firstNode;
+    private T                  lastNode;
 
     private int                size;
 
@@ -64,8 +62,8 @@ public class LinkedList
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        firstNode   = (LinkedListNode)in.readObject();
-        lastNode    = (LinkedListNode)in.readObject();
+        firstNode   = (T)in.readObject();
+        lastNode    = (T)in.readObject();
         size        = in.readInt();
         iterator    = (LinkedListIterator)in.readObject();
         
@@ -105,7 +103,7 @@ public class LinkedList
      * @param node
      *      The <code>LinkedListNode</code> to be added
      */
-    public void add(final LinkedListNode node) {
+    public void add(final T node) {
         if ( this.firstNode == null ) {
             this.firstNode = node;
             this.lastNode = node;
@@ -125,7 +123,7 @@ public class LinkedList
      * @param node
      *      The <code>LinkedListNode</code> to be removed.
      */
-    public void remove(final LinkedListNode node) {
+    public void remove(final T node) {
         if ( this.firstNode == node ) {
             removeFirst();
         } else if ( this.lastNode == node ) {
@@ -144,7 +142,7 @@ public class LinkedList
      * @return
      *      The first <code>LinkedListNode</code>.
      */
-    public final LinkedListNode getFirst() {
+    public final T getFirst() {
         return this.firstNode;
     }
 
@@ -153,7 +151,7 @@ public class LinkedList
      * @return
      *      The last <code>LinkedListNode</code>.
      */
-    public final LinkedListNode getLast() {
+    public final T getLast() {
         return this.lastNode;
     }
 
@@ -164,11 +162,11 @@ public class LinkedList
      * @return
      *      The first <code>LinkedListNode</code>.
      */
-    public LinkedListNode removeFirst() {
+    public T removeFirst() {
         if ( this.firstNode == null ) {
             return null;
         }
-        final LinkedListNode node = this.firstNode;
+        final T node = this.firstNode;
         this.firstNode = node.getNext();
         node.setNext( null );
         if ( this.firstNode != null ) {
@@ -180,8 +178,8 @@ public class LinkedList
         return node;
     }
 
-    public void insertAfter(final LinkedListNode existingNode,
-                            final LinkedListNode newNode) {
+    public void insertAfter(final T existingNode,
+                            final T newNode) {
         if ( newNode.getPrevious() != null || newNode.getNext() != null ) {
             //do nothing if this node is already inserted somewhere
             return;
@@ -223,7 +221,7 @@ public class LinkedList
             return null;
         }
         final LinkedListNode node = this.lastNode;
-        this.lastNode = node.getPrevious();
+        this.lastNode = (T) node.getPrevious();
         node.setPrevious( null );
         if ( this.lastNode != null ) {
             this.lastNode.setNext( null );
@@ -272,7 +270,7 @@ public class LinkedList
             return true;
         }
 
-        if ( object == null || !(object instanceof LinkedList) ) {
+        if ( !(object instanceof LinkedList) ) {
             return false;
         }
 
@@ -290,7 +288,7 @@ public class LinkedList
         return true;
     }
 
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         this.iterator.reset( this );
         return this.iterator;
     }
@@ -317,30 +315,30 @@ public class LinkedList
      * Returns a list iterator
      * @return
      */
-    public static class LinkedListIterator
+    public static class LinkedListIterator<T extends LinkedListNode<T>>
         implements
-        Iterator,
+        Iterator<T>,
         Externalizable {
-        private LinkedList     list;
-        private LinkedListNode current;
+        private LinkedList<T>     list;
+        private T current;
 
-        public void reset(final LinkedList list) {
+        public void reset(final LinkedList<T> list) {
             this.list = list;
             this.current = this.list.firstNode;
         }
 
-        public Object next() {
+        public T next() {
             if ( this.current == null ) {
                 return null;
             }
-            final LinkedListNode node = this.current;
+            final T node = this.current;
             this.current = this.current.getNext();
             return node;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             list    = (LinkedList)in.readObject();
-            current = (LinkedListNode)in.readObject();
+            current = (T)in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {

@@ -24,12 +24,12 @@ import org.drools.spi.Activation;
  * LogicalDependency is a special node for LinkedLists that maintains
  * references for the Activation justifier and the justified FactHandle.
  */
-public class SimpleLogicalDependency extends AbstractBaseLinkedListNode implements LogicalDependency {
-    private Activation justifier;
-    private Object justified;
+public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalDependency> implements LogicalDependency {
+    private final Activation justifier;
+    private final Object justified;
     private Object value;
     
-    private LinkedListEntry justifierEntry = new LinkedListEntry( this );
+    private final LinkedListEntry<LogicalDependency> justifierEntry = new LinkedListEntry<LogicalDependency>( this );
     
     
 
@@ -52,7 +52,7 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode implemen
     /* (non-Javadoc)
      * @see org.drools.common.LogicalDependency#getJustifierEntry()
      */
-    public LinkedListEntry getJustifierEntry() {
+    public LinkedListEntry<LogicalDependency> getJustifierEntry() {
         return this.justifierEntry;
     }
 
@@ -82,7 +82,7 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode implemen
             return true;
         }
 
-        if ( object == null || !(object instanceof SimpleLogicalDependency) ) {
+        if ( !(object instanceof SimpleLogicalDependency) ) {
             return false;
         }
 

@@ -18,6 +18,7 @@ package org.drools.spi;
 
 import java.util.Iterator;
 
+import org.drools.common.ActivationGroupNode;
 import org.drools.core.util.Entry;
 import org.drools.core.util.LinkedList;
 
@@ -30,7 +31,7 @@ public interface ActivationGroup
 
     public void removeActivation(Activation activation);
     
-    public LinkedList getList();
+    public LinkedList<ActivationGroupNode> getList();
 
     public Iterator iterator();
 

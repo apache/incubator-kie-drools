@@ -663,9 +663,9 @@ public class ProtobufOutputMarshaller {
             _activation.setHandleId( agendaItem.getFactHandle().getId() );
         }
 
-        org.drools.core.util.LinkedList list = agendaItem.getLogicalDependencies();
+        org.drools.core.util.LinkedList<LogicalDependency> list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
-            for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
+            for ( LogicalDependency node = list.getFirst(); node != null; node = node.getNext() ) {
                 _activation.addLogicalDependency( ((InternalFactHandle) node.getJustified()).getId() );
             }
         }

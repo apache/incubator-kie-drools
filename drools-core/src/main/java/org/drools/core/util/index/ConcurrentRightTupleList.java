@@ -16,8 +16,6 @@
 
 package org.drools.core.util.index;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.Entry;
@@ -25,9 +23,10 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ConcurrentRightTupleList
     implements
@@ -211,7 +210,7 @@ public class ConcurrentRightTupleList
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for ( RightTuple rightTuple = (RightTuple) this.first.get(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        for ( RightTuple rightTuple = this.first.get(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             builder.append( rightTuple );
         }
 

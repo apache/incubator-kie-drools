@@ -86,7 +86,7 @@ public class DefaultAgenda
     /** Working memory of this Agenda. */
     protected InternalWorkingMemory                             workingMemory;
 
-    private org.drools.core.util.LinkedList                     scheduledActivations;
+    private org.drools.core.util.LinkedList<ScheduledAgendaItem> scheduledActivations;
 
     /** Items time-delayed. */
 
@@ -160,7 +160,7 @@ public class DefaultAgenda
         this.activationGroups = new HashMap<String, ActivationGroup>();
         this.ruleFlowGroups = new HashMap<String, RuleFlowGroup>();
         this.focusStack = new LinkedList<AgendaGroup>();
-        this.scheduledActivations = new org.drools.core.util.LinkedList();
+        this.scheduledActivations = new org.drools.core.util.LinkedList<ScheduledAgendaItem>();
         this.agendaGroupFactory = rb.getConfiguration().getAgendaGroupFactory();
 
         if ( initMain ) {
@@ -397,12 +397,11 @@ public class DefaultAgenda
         if ( getStageActivationsGroup().isEmpty() ) {
             return;
         }        
-        org.drools.core.util.LinkedList list = getStageActivationsGroup().getList();
+        org.drools.core.util.LinkedList<ActivationGroupNode> list = getStageActivationsGroup().getList();
 
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        for ( Entry entry = list.removeFirst(); entry != null; entry = list.removeFirst() ) {
-            ActivationGroupNode node = (ActivationGroupNode) entry;
-            AgendaItem item = ( AgendaItem ) node.getActivation();  
+        for ( ActivationGroupNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
+            AgendaItem item = ( AgendaItem ) node.getActivation();
             // This must be set to false otherwise modify won't work properly
             item.setActivated( false );            
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
@@ -415,10 +414,9 @@ public class DefaultAgenda
         if ( !declarativeAgenda || getStageActivationsGroup().isEmpty() ) {
             return;
         }        
-        org.drools.core.util.LinkedList list = getStageActivationsGroup().getList();
+        org.drools.core.util.LinkedList<ActivationGroupNode> list = getStageActivationsGroup().getList();
 
-        for ( Entry entry = list.removeFirst(); entry != null; entry = list.removeFirst() ) {
-            ActivationGroupNode node = (ActivationGroupNode) entry;
+        for ( ActivationGroupNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
             AgendaItem item = ( AgendaItem ) node.getActivation();
             item.setActivationGroupNode( null );
 
@@ -954,8 +952,8 @@ public class DefaultAgenda
      */
     public Activation[] getActivations() {
         final List<Activation> list = new ArrayList<Activation>();
-        for ( final java.util.Iterator it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
-            final AgendaGroup group = (AgendaGroup) it.next();
+        for ( final java.util.Iterator<InternalAgendaGroup> it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
+            final AgendaGroup group = it.next();
             for ( org.drools.runtime.rule.Activation activation : group.getActivations() ) {
                 list.add((Activation) activation);
             }
@@ -971,13 +969,13 @@ public class DefaultAgenda
     public Activation[] getScheduledActivations() {
         Activation[] scheduledActivations = new Activation[this.scheduledActivations.size()];
         int i = 0;
-        for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
-            scheduledActivations[i++] = (Activation) node;
+        for ( ScheduledAgendaItem node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
+            scheduledActivations[i++] = node;
         }
         return scheduledActivations;
     }
 
-    public org.drools.core.util.LinkedList getScheduledActivationsLinkedList() {
+    public org.drools.core.util.LinkedList<ScheduledAgendaItem> getScheduledActivationsLinkedList() {
         return this.scheduledActivations;
     }
 
@@ -988,7 +986,7 @@ public class DefaultAgenda
 
         // reset scheduled activations
         if ( !this.scheduledActivations.isEmpty() ) {
-            for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+            for ( ScheduledAgendaItem item = this.scheduledActivations.removeFirst(); item != null; item = this.scheduledActivations.removeFirst() ) {
                 item.setEnqueued( false );
                 Scheduler.removeAgendaItem( item,
                                             this );
@@ -1026,7 +1024,7 @@ public class DefaultAgenda
 
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
         if ( !this.scheduledActivations.isEmpty() ) {
-            for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+            for ( ScheduledAgendaItem item = this.scheduledActivations.removeFirst(); item != null; item = this.scheduledActivations.removeFirst() ) {
                 item.setEnqueued( false );
                 Scheduler.removeAgendaItem( item,
                                             this );

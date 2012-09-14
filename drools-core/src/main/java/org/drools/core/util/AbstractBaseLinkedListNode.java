@@ -25,15 +25,15 @@ import java.io.ObjectOutput;
  *
  * @see LinkedList
  */
-public class AbstractBaseLinkedListNode
+public class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
     implements
-    LinkedListNode {
+    LinkedListNode<T> {
 
     private static final long serialVersionUID = 510l;
 
-    private LinkedListNode    previous;
+    private T    previous;
 
-    private LinkedListNode    next;
+    private T    next;
 
     /**
      * Empty Constructor
@@ -50,32 +50,32 @@ public class AbstractBaseLinkedListNode
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#getNext()
      */
-    public LinkedListNode getNext() {
+    public T getNext() {
         return this.next;
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#setNext(org.drools.reteoo.LinkedListNode)
      */
-    public void setNext(final LinkedListNode next) {
+    public void setNext(final T next) {
         this.next = next;
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#getPrevious()
      */
-    public LinkedListNode getPrevious() {
+    public T getPrevious() {
         return this.previous;
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#setPrevious(org.drools.reteoo.LinkedListNode)
      */
-    public void setPrevious(final LinkedListNode previous) {
+    public void setPrevious(final T previous) {
         this.previous = previous;
     }
 
     public void setNext(Entry next) {
-        this.next = ( LinkedListNode ) next;
+        this.next = ( T ) next;
     }
 }

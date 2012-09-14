@@ -16,33 +16,30 @@
 
 package org.drools.common;
 
+import org.drools.core.util.Entry;
+import org.drools.core.util.LinkedListNode;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
+import org.drools.time.JobHandle;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.util.Entry;
-import org.drools.core.util.LinkedListNode;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RuleTerminalNode;
-import org.drools.rule.GroupElement;
-import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
-import org.drools.time.JobHandle;
-
 public class ScheduledAgendaItem extends AgendaItem
     implements
     Activation,
     Externalizable,
-    LinkedListNode {
+    LinkedListNode<ScheduledAgendaItem> {
 
     private static final long        serialVersionUID = 510l;
 
-    private LinkedListNode           previous;
+    private ScheduledAgendaItem      previous;
 
-    private LinkedListNode           next;
+    private ScheduledAgendaItem      next;
 
 //
     private InternalAgenda           agenda;
@@ -72,23 +69,23 @@ public class ScheduledAgendaItem extends AgendaItem
         out.writeObject( agenda );
         out.writeBoolean( enqueued );
     }
-    public LinkedListNode getNext() {
+    public ScheduledAgendaItem getNext() {
         return this.next;
     }
 
-    public void setNext(final LinkedListNode next) {
+    public void setNext(final ScheduledAgendaItem next) {
         this.next = next;
     }    
 
     public void setNext(Entry next) {
-        this.next = (LinkedListNode) next;        
+        this.next = (ScheduledAgendaItem) next;
     }    
 
-    public LinkedListNode getPrevious() {
+    public ScheduledAgendaItem getPrevious() {
         return this.previous;
     }
 
-    public void setPrevious(final LinkedListNode previous) {
+    public void setPrevious(final ScheduledAgendaItem previous) {
         this.previous = previous;
     }
 
