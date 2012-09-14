@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
@@ -43,12 +44,22 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
 
+    protected File graphStatisticFile = null;
+
     public CalculateCountProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
     }
 
     public SingleStatistic createSingleStatistic() {
         return new CalculateCountSingleStatistic();
+    }
+
+    /**
+     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
+     * (not {@link ProblemBenchmark#problemReportDirectory})
+     */
+    public String getGraphFilePath() {
+        return toFilePath(graphStatisticFile);
     }
 
     // ************************************************************************

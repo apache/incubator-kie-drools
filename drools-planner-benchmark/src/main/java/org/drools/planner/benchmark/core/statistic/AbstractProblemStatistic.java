@@ -42,7 +42,6 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     protected final ProblemStatisticType problemStatisticType;
 
     protected File csvStatisticFile = null;
-    protected File graphStatisticFile = null;
     protected List<String> warningList = null;
 
     protected AbstractProblemStatistic(ProblemBenchmark problemBenchmark, ProblemStatisticType problemStatisticType) {
@@ -63,11 +62,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     }
 
     public String getCsvFilePath() {
-        return problemBenchmark.getProblemReportDirectory().getName() + "/" + csvStatisticFile.getName();
-    }
-
-    public String getGraphFilePath() {
-        return problemBenchmark.getProblemReportDirectory().getName() + "/" + graphStatisticFile.getName();
+        return toFilePath(csvStatisticFile);
     }
 
     public List<String> getWarningList() {
@@ -77,6 +72,10 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     // ************************************************************************
     // Write methods
     // ************************************************************************
+
+    protected String toFilePath(File file) {
+        return problemBenchmark.getProblemReportDirectory().getName() + "/" + file.getName();
+    }
 
     public void writeStatistic() {
         writeCsvStatistic();

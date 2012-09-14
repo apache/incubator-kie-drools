@@ -138,13 +138,13 @@ public class PlannerStatistic {
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 if (singleBenchmark.isSuccess()) {
                     double[] levelValues = singleBenchmark.getScore().toDoubleLevels();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new DefaultCategoryDataset());
                         }
-                        String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                         datasetList.get(i).addValue(levelValues[i], solverLabel, planningProblemLabel);
                     }
                 }
@@ -168,13 +168,13 @@ public class PlannerStatistic {
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 if (singleBenchmark.isSuccess()) {
                     double[] levelValues = singleBenchmark.getWinningScoreDifference().toDoubleLevels();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new DefaultCategoryDataset());
                         }
-                        String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                         datasetList.get(i).addValue(levelValues[i], solverLabel, planningProblemLabel);
                     }
                 }
@@ -200,13 +200,13 @@ public class PlannerStatistic {
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 if (singleBenchmark.isSuccess()) {
                     double[] levelValues = singleBenchmark.getWorstScoreDifferencePercentage().getPercentageLevels();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new DefaultCategoryDataset());
                         }
-                        String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                         datasetList.get(i).addValue(levelValues[i], solverLabel, planningProblemLabel);
                     }
                 }
@@ -231,9 +231,9 @@ public class PlannerStatistic {
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 if (singleBenchmark.isSuccess()) {
                     long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
-                    String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                     dataset.addValue(timeMillisSpend, solverLabel, planningProblemLabel);
                 }
             }

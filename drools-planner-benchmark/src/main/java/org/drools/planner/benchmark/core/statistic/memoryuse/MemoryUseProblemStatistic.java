@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
@@ -43,12 +44,22 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
+    protected File graphStatisticFile = null;
+
     public MemoryUseProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.MEMORY_USE);
     }
 
     public SingleStatistic createSingleStatistic() {
         return new MemoryUseSingleStatistic();
+    }
+
+    /**
+     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
+     * (not {@link ProblemBenchmark#problemReportDirectory})
+     */
+    public String getGraphFilePath() {
+        return toFilePath(graphStatisticFile);
     }
 
     // ************************************************************************

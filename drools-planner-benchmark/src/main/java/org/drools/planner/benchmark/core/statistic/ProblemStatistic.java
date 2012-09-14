@@ -53,12 +53,6 @@ public interface ProblemStatistic {
     String getCsvFilePath();
 
     /**
-     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
-     * (not {@link ProblemBenchmark#problemReportDirectory})
-     */
-    String getGraphFilePath();
-
-    /**
      * @return never null
      */
     List<String> getWarningList();

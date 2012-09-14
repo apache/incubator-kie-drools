@@ -427,9 +427,34 @@
                                                 <p>${warning}</p>
                                             </div>
                                         </#list>
-                                        <div class="benchmark-chart">
-                                            <img src="${problemStatistic.graphFilePath}"/>
-                                        </div>
+                                        <#if problemStatistic.problemStatisticType.name() == "BEST_SOLUTION_CHANGED">
+                                            <div class="tabbable tabs-right">
+                                                <ul class="nav nav-tabs">
+                                                    <#assign scoreLevelIndex = 0>
+                                                    <#list problemStatistic.graphFilePathList as graphFilePath>
+                                                        <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                                        </li>
+                                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                                    </#list>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <#assign scoreLevelIndex = 0>
+                                                    <#list problemStatistic.graphFilePathList as graphFilePath>
+                                                        <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}">
+                                                            <div class="benchmark-chart">
+                                                                <img src="${graphFilePath}"/>
+                                                            </div>
+                                                        </div>
+                                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                                    </#list>
+                                                </div>
+                                            </div>
+                                        <#else>
+                                            <div class="benchmark-chart">
+                                                <img src="${problemStatistic.graphFilePath}"/>
+                                            </div>
+                                        </#if>
                                         <div class="btn-group download-btn-group">
                                             <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CVS file</button>
                                         </div>
