@@ -134,7 +134,7 @@ public class BaseQueueable
         
     }
 
-    public void setLogicalDependencies(LinkedList justified) {
+    public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
         // TODO Auto-generated method stub
         
     }
@@ -188,7 +188,7 @@ public class BaseQueueable
         return null;
     }
 
-    public void setBlocked(LinkedList justified) {
+    public void setBlocked(LinkedList<LogicalDependency> justified) {
         // TODO Auto-generated method stub
         
     }

@@ -19,12 +19,12 @@ package org.drools.common;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.spi.Activation;
 
-public class ActivationNode extends AbstractBaseLinkedListNode {
+public class ActivationNode extends AbstractBaseLinkedListNode<ActivationNode> {
 
     private static final long     serialVersionUID = 510l;
 
-    private Activation            activation;
-    private Object parentContainer;
+    private final Activation activation;
+    private final Object parentContainer;
 
     public ActivationNode(final Activation activation,
                           final Object parentContainer) {

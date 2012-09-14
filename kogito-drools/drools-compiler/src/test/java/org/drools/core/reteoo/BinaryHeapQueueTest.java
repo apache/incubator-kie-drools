@@ -352,7 +352,7 @@ public class BinaryHeapQueueTest {
 
         }
 
-        public void setLogicalDependencies(LinkedList arg0) {
+        public void setLogicalDependencies(LinkedList<LogicalDependency> arg0) {
             // TODO Auto-generated method stub
 
         }
@@ -401,7 +401,7 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public void setBlocked(LinkedList justified) {
+        public void setBlocked(LinkedList<LogicalDependency> justified) {
             // TODO Auto-generated method stub
             
         }

@@ -16,17 +16,16 @@
 
 package org.drools.common;
 
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.PriorityQueue;
-
-import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.Queueable;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -45,7 +44,7 @@ public class ArrayAgendaGroup
     private String      name;
 
     /** Items in the agenda. */
-    private LinkedList[]      array;
+    private LinkedList[] array;
 
     private boolean           active;
 
@@ -139,21 +138,21 @@ public class ArrayAgendaGroup
             this.lastIndex = seq;
         }
 
-        LinkedList list = this.array[seq];
+        LinkedList<LinkedListEntry<Activation>> list = this.array[seq];
         if ( list == null ) {
-            list = new LinkedList();
+            list = new LinkedList<LinkedListEntry<Activation>>();
             this.array[item.getSequenence()] = list;
         }
 
-        list.add( new LinkedListEntry( activation ) );
+        list.add( new LinkedListEntry<Activation>( activation ) );
     }
 
     public Activation getNext() {
         Activation activation = null;
         while ( this.index <= lastIndex ) {
-            LinkedList list = this.array[this.index];
+            LinkedList<LinkedListEntry<Activation>> list = this.array[this.index];
             if ( list != null ) {
-                activation = (Activation) ((LinkedListEntry)list.removeFirst()).getObject();
+                activation = list.removeFirst().getObject();
                 if ( list.isEmpty()) {
                     this.array[this.index++] = null;
                 }
@@ -162,7 +161,7 @@ public class ArrayAgendaGroup
             }
             this.index++;
         }
-        return (Activation) activation;
+        return activation;
     }
 
     public boolean isActive() {
@@ -187,14 +186,13 @@ public class ArrayAgendaGroup
     public Activation[] getActivations() {
         Activation[] activations = new Activation[this.size];
         int j = 0;
-        for ( int i = 0; i < this.array.length; i++ ) {;
-            LinkedList list = this.array[i];
+        for ( LinkedList<LinkedListEntry<Activation>> list : array ) {
             if ( list != null ) {
-                Iterator it = list.iterator();
-                Activation activation = ( Activation ) ((LinkedListEntry)it.next()).getObject();
+                Iterator<LinkedListEntry<Activation>> it = list.iterator();
+                Activation activation = it.next().getObject();
                 while ( activation != null) {
                     activations[j++] = activation;
-                    activation = ( Activation ) it.next();
+                    activation = it.next().getObject();
                 }
             }
 
@@ -207,15 +205,11 @@ public class ArrayAgendaGroup
     }
 
     public boolean equals(final Object object) {
-        if ( (object == null) || !(object instanceof ArrayAgendaGroup) ) {
+        if ( !(object instanceof ArrayAgendaGroup) ) {
             return false;
         }
 
-        if ( ((ArrayAgendaGroup) object).name.equals( this.name ) ) {
-            return true;
-        }
-
-        return false;
+        return ((ArrayAgendaGroup) object).name.equals(this.name);
     }
 
     public int hashCode() {

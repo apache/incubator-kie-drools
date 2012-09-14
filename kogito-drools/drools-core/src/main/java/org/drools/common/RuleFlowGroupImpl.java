@@ -52,7 +52,7 @@ public class RuleFlowGroupImpl
     private String                      name;
     private boolean                     active           = false;
     private boolean                     autoDeactivate   = true;
-    private LinkedList                  list;
+    private LinkedList<ActivationNode>  list;
     private List<RuleFlowGroupListener> listeners;
     private Map<Long, String>           nodeInstances    = new HashMap<Long, String>();
 
@@ -136,8 +136,8 @@ public class RuleFlowGroupImpl
         } else {
             ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( this,
                                                                                                               this.workingMemory );
-            final Iterator it = this.list.iterator();
-            for ( ActivationNode node = (ActivationNode) it.next(); node != null; node = (ActivationNode) it.next() ) {
+            final Iterator<ActivationNode> it = this.list.iterator();
+            for ( ActivationNode node = it.next(); node != null; node = it.next() ) {
                 final Activation activation = node.getActivation();
                 activation.remove();
                 if ( activation.getActivationGroupNode() != null ) {
@@ -168,8 +168,8 @@ public class RuleFlowGroupImpl
 
     private void triggerActivations() {
         // iterate all activations adding them to their AgendaGroups
-        final Iterator it = this.list.iterator();
-        for ( ActivationNode node = (ActivationNode) it.next(); node != null; node = (ActivationNode) it.next() ) {
+        final Iterator<ActivationNode> it = this.list.iterator();
+        for ( ActivationNode node = it.next(); node != null; node = it.next() ) {
             final Activation activation = node.getActivation();
             ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
         }
@@ -243,9 +243,9 @@ public class RuleFlowGroupImpl
     
     public Activation[] getActivations() {
         Activation[] activations = new Activation[ list.size() ];
-        final Iterator it = this.list.iterator();
+        final Iterator<ActivationNode> it = this.list.iterator();
         int i = 0;
-        for ( ActivationNode node = (ActivationNode) it.next(); node != null; node = (ActivationNode) it.next() ) {
+        for ( ActivationNode node = it.next(); node != null; node = it.next() ) {
             activations[i++] =  node.getActivation();
         }        
         

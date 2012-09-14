@@ -23,7 +23,7 @@ import java.io.Externalizable;
  *
  * @see LinkedList
  */
-public interface LinkedListNode
+public interface LinkedListNode<T extends LinkedListNode<T>>
     extends Entry,
     Externalizable {
 
@@ -32,27 +32,27 @@ public interface LinkedListNode
      * @return
      *      The next LinkedListNode
      */
-    public LinkedListNode getNext();
+    public T getNext();
 
     /**
      * Sets the next node
      * @param next
      *      The next LinkedListNode
      */
-    public void setNext(LinkedListNode next);
+    public void setNext(T next);
 
     /**
      * Returns the previous node
      * @return
      *      The previous LinkedListNode
      */
-    public LinkedListNode getPrevious();
+    public T getPrevious();
 
     /**
      * Sets the previous node
      * @param previous
      *      The previous LinkedListNode
      */
-    public void setPrevious(LinkedListNode previous);
+    public void setPrevious(T previous);
 
 }

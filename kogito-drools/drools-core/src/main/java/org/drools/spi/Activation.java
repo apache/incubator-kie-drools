@@ -16,19 +16,18 @@
 
 package org.drools.spi;
 
-import java.io.Serializable;
-
 import org.drools.common.ActivationGroupNode;
+import org.drools.common.ActivationNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
-import org.drools.common.SimpleLogicalDependency;
-import org.drools.common.ActivationNode;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
+
+import java.io.Serializable;
 
 /**
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
@@ -88,19 +87,19 @@ public interface Activation
      */
     void remove();
     
-    public void addBlocked(final LinkedListNode node);
+    public void addBlocked(final LogicalDependency node);
     
-    public LinkedList getBlocked();
+    public LinkedList<LogicalDependency> getBlocked();
 
-    public void setBlocked(LinkedList justified);
+    public void setBlocked(LinkedList<LogicalDependency> justified);
     
-    public LinkedList getBlockers(); 
+    public LinkedList<LinkedListEntry<LogicalDependency>> getBlockers();
     
     public void addLogicalDependency(LogicalDependency node);
 
-    public LinkedList getLogicalDependencies();
+    public LinkedList<LogicalDependency> getLogicalDependencies();
     
-    public void setLogicalDependencies(LinkedList justified);
+    public void setLogicalDependencies(LinkedList<LogicalDependency> justified);
 
     public void setActivated(boolean activated);
     

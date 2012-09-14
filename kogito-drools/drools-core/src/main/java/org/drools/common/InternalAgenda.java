@@ -37,7 +37,7 @@ public interface InternalAgenda
 
     public void removeScheduleItem(final ScheduledAgendaItem item);
     
-    public org.drools.core.util.LinkedList getScheduledActivationsLinkedList();
+    public org.drools.core.util.LinkedList<ScheduledAgendaItem> getScheduledActivationsLinkedList();
 
     public boolean fireNextItem(AgendaFilter filter) throws ConsequenceException;
 

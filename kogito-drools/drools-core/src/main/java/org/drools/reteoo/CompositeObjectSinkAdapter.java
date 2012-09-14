@@ -55,7 +55,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     ObjectSinkNodeList        otherSinks;
     ObjectSinkNodeList        hashableSinks;
 
-    LinkedList                hashedFieldIndexes;
+    LinkedList<FieldIndex>    hashedFieldIndexes;
 
     ObjectHashMap             hashedSinkMap;
 
@@ -289,7 +289,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         // is linkedlist null, if so create and add
         if ( this.hashedFieldIndexes == null ) {
-            this.hashedFieldIndexes = new LinkedList();
+            this.hashedFieldIndexes = new LinkedList<FieldIndex>();
             fieldIndex = new FieldIndex( index,
                                          fieldExtractor );
             this.hashedFieldIndexes.add( fieldIndex );
@@ -330,7 +330,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     private FieldIndex findFieldIndex(final int index) {
-        for ( FieldIndex node = (FieldIndex) this.hashedFieldIndexes.getFirst(); node != null; node = (FieldIndex) node.getNext() ) {
+        for ( FieldIndex node = this.hashedFieldIndexes.getFirst(); node != null; node = node.getNext() ) {
             if ( node.getIndex() == index ) {
                 return node;
             }
@@ -349,7 +349,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         // value, one object may have multiple fields indexed.
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed
-            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+            for ( FieldIndex fieldIndex = this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext() ) {
                 if ( !fieldIndex.isHashed() ) {
                     continue;
                 }
@@ -398,7 +398,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         // value, one object may have multiple fields indexed.
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed
-            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+            for ( FieldIndex fieldIndex = this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext() ) {
                 if ( !fieldIndex.isHashed() ) {
                     continue;
                 }
@@ -447,7 +447,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         // We need to iterate in the same order as the assert
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed
-            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext() ) {
                 if ( !fieldIndex.isHashed() ) {
                     continue;
                 }
@@ -545,7 +545,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed
-            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+            for ( FieldIndex fieldIndex = this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext() ) {
                 if ( !fieldIndex.isHashed() ) {
                     continue;
                 }
@@ -862,7 +862,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     public static class FieldIndex
         implements
-        LinkedListNode {
+        LinkedListNode<FieldIndex> {
         private static final long    serialVersionUID = 510l;
         private int                  index;
         private InternalReadAccessor fieldExtactor;
@@ -871,8 +871,8 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         private boolean              hashed;
 
-        private LinkedListNode       previous;
-        private LinkedListNode       next;
+        private FieldIndex           previous;
+        private FieldIndex           next;
 
         public FieldIndex() {
         }
@@ -930,24 +930,24 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             this.count--;
         }
 
-        public LinkedListNode getNext() {
+        public FieldIndex getNext() {
             return this.next;
         }
 
-        public LinkedListNode getPrevious() {
+        public FieldIndex getPrevious() {
             return this.previous;
         }
 
-        public void setNext(final LinkedListNode next) {
+        public void setNext(final FieldIndex next) {
             this.next = next;
         }
 
-        public void setPrevious(final LinkedListNode previous) {
+        public void setPrevious(final FieldIndex previous) {
             this.previous = previous;
         }
 
         public void setNext(Entry next) {
-            this.next = ( LinkedListNode ) next;
+            this.next = ( FieldIndex ) next;
         }
     }
 }

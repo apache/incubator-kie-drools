@@ -16,20 +16,10 @@
 
 package org.drools.common;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.FactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.Queueable;
-import org.drools.event.rule.ActivationEvent;
 import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
@@ -40,6 +30,14 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Item entry in the <code>Agenda</code>.
@@ -75,11 +73,11 @@ public class AgendaItem
 
     private int                       index;
 
-    private LinkedList                justified;
+    private LinkedList<LogicalDependency>                   justified;
 
-    private LinkedList                blocked;
+    private LinkedList<LogicalDependency>                   blocked;
 
-    private LinkedList                blockers;
+    private LinkedList<LinkedListEntry<LogicalDependency>>  blockers;
 
     private boolean                   activated;
 
@@ -201,21 +199,20 @@ public class AgendaItem
         return this.activationNumber;
     }
     
-    public void addBlocked(final LinkedListNode node) {        
+    public void addBlocked(final LogicalDependency dep) {
         // Adds the blocked to the blockers list
         if ( this.blocked == null ) {
-            this.blocked = new LinkedList();
+            this.blocked = new LinkedList<LogicalDependency>();
         }
 
-        this.blocked.add( node );
-        LogicalDependency dep = ( LogicalDependency ) node;
-        
+        this.blocked.add( dep );
+
         // now ad the blocker to the blocked's list - we need to check that references are null first
         AgendaItem blocked = (AgendaItem)dep.getJustified();
         if ( blocked.blockers == null ) {
-            blocked.blockers = new LinkedList();
+            blocked.blockers = new LinkedList<LinkedListEntry<LogicalDependency>>();
             blocked.blockers.add( dep.getJustifierEntry() );
-        } else if ( dep.getJustifierEntry().getNext() == null && dep.getJustifierEntry().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getJustifierEntry() ) {            
+        } else if ( dep.getJustifierEntry().getNext() == null && dep.getJustifierEntry().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getJustifierEntry() ) {
             blocked.blockers.add( dep.getJustifierEntry() );
         }
     }
@@ -223,8 +220,8 @@ public class AgendaItem
     public void removeAllBlockersAndBlocked(DefaultAgenda agenda){
         if ( this.blockers != null ) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
-            for ( LinkedListEntry node = ( LinkedListEntry ) blockers.getFirst(); node != null; node = ( LinkedListEntry ) node.getNext() ) {
-                LogicalDependency dep = ( LogicalDependency ) node.getObject();
+            for ( LinkedListEntry<LogicalDependency> node = blockers.getFirst(); node != null; node = node.getNext() ) {
+                LogicalDependency dep = node.getObject();
                 dep.getJustifier().getBlocked().remove( dep );                
             }
         }  
@@ -232,8 +229,8 @@ public class AgendaItem
         
         if ( this.blocked != null ) {
             // Iterate and remove this node's logical dependency list from each of it's blocked
-            for ( LogicalDependency dep = ( LogicalDependency ) blocked.getFirst(); dep != null; ) {
-                LogicalDependency tmp = ( LogicalDependency ) dep.getNext();                
+            for ( LogicalDependency dep = blocked.getFirst(); dep != null; ) {
+                LogicalDependency tmp = dep.getNext();
                 removeBlocked( dep );
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
                 if (justified.getBlockers().isEmpty() ) {
@@ -246,39 +243,38 @@ public class AgendaItem
         this.blocked = null;
     }
     
-    public void removeBlocked(final LinkedListNode node) {
-        this.blocked.remove( node );
+    public void removeBlocked(final LogicalDependency dep) {
+        this.blocked.remove( dep );
         
-        LogicalDependency dep = ( LogicalDependency ) node;
-        AgendaItem blocked = (AgendaItem)dep.getJustified();        
+        AgendaItem blocked = (AgendaItem)dep.getJustified();
         blocked.blockers.remove( dep.getJustifierEntry() );
     }
     
-    public void setBlocked(LinkedList justified) {
+    public void setBlocked(LinkedList<LogicalDependency> justified) {
         this.blocked = justified;
     }        
     
-    public LinkedList getBlocked() {
+    public LinkedList<LogicalDependency> getBlocked() {
         return  this.blocked;
     } 
     
-    public LinkedList getBlockers() {
+    public LinkedList<LinkedListEntry<LogicalDependency>> getBlockers() {
         return  this.blockers;
     }    
 
     public void addLogicalDependency(final LogicalDependency node) {
         if ( this.justified == null ) {
-            this.justified = new LinkedList();
+            this.justified = new LinkedList<LogicalDependency>();
         }
 
         this.justified.add( node );
     }
 
-    public LinkedList getLogicalDependencies() {
+    public LinkedList<LogicalDependency> getLogicalDependencies() {
         return this.justified;
     }
 
-    public void setLogicalDependencies(LinkedList justified) {
+    public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
         this.justified = justified;
     }
 
@@ -304,7 +300,7 @@ public class AgendaItem
             return true;
         }
 
-        if ( object == null || !(object instanceof AgendaItem) ) {
+        if ( !(object instanceof AgendaItem) ) {
             return false;
         }
 

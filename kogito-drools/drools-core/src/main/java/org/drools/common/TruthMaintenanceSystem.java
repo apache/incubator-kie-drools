@@ -127,12 +127,12 @@ public class TruthMaintenanceSystem {
     public void removeLogicalDependencies(final Activation activation,
                                           final PropagationContext context,
                                           final Rule rule) throws FactException {
-        final LinkedList list = activation.getLogicalDependencies();
+        final LinkedList<LogicalDependency> list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;
         }
 
-        for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
+        for ( LogicalDependency node = list.getFirst(); node != null; node = node.getNext() ) {
             removeLogicalDependency( activation, node, context );
         }
     }

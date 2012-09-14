@@ -23,9 +23,9 @@ import org.drools.spi.ActivationGroup;
 public class ActivationGroupImpl
     implements
     ActivationGroup {
-    private String           name;
+    private final String                          name;
 
-    private final LinkedList list;
+    private final LinkedList<ActivationGroupNode> list;
 
     public ActivationGroupImpl(final String name) {
         this.name = name;
@@ -65,7 +65,7 @@ public class ActivationGroupImpl
         this.list.clear();
     }
 
-    public LinkedList getList() {
+    public LinkedList<ActivationGroupNode> getList() {
         return list;
     }
 

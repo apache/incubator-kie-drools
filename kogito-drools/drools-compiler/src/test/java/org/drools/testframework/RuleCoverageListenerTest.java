@@ -147,7 +147,7 @@ class MockActivation
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
     }
 
-    public void setLogicalDependencies(LinkedList justified) {
+    public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
     }
 
     public void setActivationNode(ActivationNode ruleFlowGroupNode) {
@@ -197,7 +197,7 @@ class MockActivation
         return null;
     }
 
-    public void setBlocked(LinkedList justified) {
+    public void setBlocked(LinkedList<LogicalDependency> justified) {
         // TODO Auto-generated method stub
         
     }

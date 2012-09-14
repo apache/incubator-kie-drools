@@ -979,9 +979,9 @@ public class OutputMarshaller {
             stream.writeBoolean( false );
         }
 
-        org.drools.core.util.LinkedList list = agendaItem.getLogicalDependencies();
+        org.drools.core.util.LinkedList<LogicalDependency> list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
-            for (LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
+            for (LogicalDependency node = list.getFirst(); node != null; node = node.getNext() ) {
                 stream.writeShort( PersisterEnums.LOGICAL_DEPENDENCY );
                 stream.writeInt( ((InternalFactHandle) node.getJustified()).getId() );
                 //context.out.println( "Logical Depenency : int " + ((InternalFactHandle) node.getFactHandle()).getId() );

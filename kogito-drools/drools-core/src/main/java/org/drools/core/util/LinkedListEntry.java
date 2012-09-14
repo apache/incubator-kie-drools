@@ -25,21 +25,21 @@ import java.io.ObjectOutput;
  * the same <code>LinkedListNode</code> to multiple <code>LinkedList</code>s
  * where the node can have different previous and next nodes in each list.
  */
-public class LinkedListEntry extends AbstractBaseLinkedListNode {
+public class LinkedListEntry<T> extends AbstractBaseLinkedListNode<LinkedListEntry<T>> {
 
     private static final long serialVersionUID = 510l;
-    private Object            object;
+    private T            object;
 
     public LinkedListEntry() {
     }
 
-    public LinkedListEntry(final Object object) {
+    public LinkedListEntry(final T object) {
         this.object = object;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        object  = in.readObject();
+        object = (T) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -47,7 +47,7 @@ public class LinkedListEntry extends AbstractBaseLinkedListNode {
         out.writeObject(object);
     }
     
-    public Object getObject() {
+    public T getObject() {
         return this.object;
     }
 

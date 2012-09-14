@@ -76,9 +76,9 @@ public class DefaultKnowledgeHelper
 
     private IdentityHashMap<Object, FactHandle> identityMap;
 
-    private LinkedList                          previousJustified;
+    private LinkedList<LogicalDependency>       previousJustified;
     
-    private LinkedList                          previousBlocked;
+    private LinkedList<LogicalDependency>       previousBlocked;
 
     public DefaultKnowledgeHelper() {
 
@@ -137,7 +137,7 @@ public class DefaultKnowledgeHelper
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
         if ( this.previousJustified != null ) {
-            for ( dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
+            for ( dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {
                 if ( targetMatch ==  dep.getJustified() ) {
                     this.previousJustified.remove( dep );
                     break;
@@ -229,7 +229,7 @@ public class DefaultKnowledgeHelper
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
         if ( this.previousJustified != null ) {
-            for ( dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
+            for ( dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {
                 if ( object.equals( ((InternalFactHandle) dep.getJustified()).getObject() ) ) {
                     this.previousJustified.remove( dep );
                     break;
@@ -264,8 +264,8 @@ public class DefaultKnowledgeHelper
         }
         
         if ( this.previousBlocked != null ) {
-            for ( LogicalDependency dep = (LogicalDependency) this.previousBlocked.getFirst(); dep != null; ) {
-                LogicalDependency tmp = ( LogicalDependency ) dep.getNext();
+            for ( LogicalDependency dep = this.previousBlocked.getFirst(); dep != null; ) {
+                LogicalDependency tmp = dep.getNext();
                 this.previousBlocked.remove( dep );
                 
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
