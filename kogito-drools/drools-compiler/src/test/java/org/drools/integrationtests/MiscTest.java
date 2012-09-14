@@ -151,6 +151,7 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ClassPathResource;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -11429,5 +11430,40 @@ public class MiscTest extends CommonTestMethodBase {
         sb.append("end");
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(sb.toString());
+    }
+
+    @Test
+    public void testAddRuleWithFrom() {
+        // JBRULES-3499
+        String str1 = "global java.util.List names;";
+
+        String str2 = "import org.drools.*;\n" +
+                "global java.util.List names;" +
+                "rule R1 when\n" +
+                "   $p : Person( )\n" +
+                "   String( this == $p.name ) from names\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str1.getBytes()), ResourceType.DRL);
+
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> names = new ArrayList<String>();
+        names.add("Mark");
+        ksession.setGlobal("names", names);
+
+        ksession.insert(new Person("Mark"));
+
+        ksession.fireAllRules();
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL);
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        ksession.fireAllRules();
     }
 }
