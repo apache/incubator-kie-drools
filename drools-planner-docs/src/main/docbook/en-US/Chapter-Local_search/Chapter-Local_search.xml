@@ -18,8 +18,8 @@
     <para>Local search acts a lot like a human planner: it uses a single search path and moves facts around to find a
     good feasible solution. Therefore it's pretty natural to implement.</para>
 
-    <para><emphasis role="bold">Local search needs to start from an initialized solution</emphasis>, therefore it's
-    recommended to configure a construction heuristic solver phase before it.</para>
+    <para><emphasis role="bold">Local search often needs to start from an initialized solution</emphasis>, therefore
+    it's recommended to configure a construction heuristic solver phase before it.</para>
   </section>
 
   <section>
@@ -28,14 +28,31 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>Hill climbing can easily get stuck in a local optima, but improvements (such as tabu search and simulated
-      annealing) address this problem.</para>
+      <para>Hill climbing tries all selected moves and then takes the best move, which is the move which leads to the
+      solution with the highest score. That best move is called the step move. From that new solution, it again tries
+      all selected moves and takes the best move and continues like that iteratively. If multiple selected moves tie for
+      the best move, one of them is randomly chosen as the best move.</para>
 
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Local_search/hillClimbingNQueens04.png"></imagedata>
         </imageobject>
       </mediaobject>
+
+      <para>Notice that one a queen has moved, it can be moved again later. This is a good thing, because in an
+      NP-complete problem it's impossible to predict what will be the optimal final value for a planning
+      variable.</para>
+
+      <para>Hill climbing can easily get stuck in a local optima:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/hillClimbingGetsStuckInLocalOptimaNQueens04.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Improvements upon hill climbing (such as tabu search and simulated annealing) address the problem of being
+      stuck in local optima.</para>
     </section>
   </section>
 
