@@ -1,6 +1,6 @@
 package org.drools.kproject;
 
-import java.util.Properties;
+import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
 import org.drools.KnowledgeBase;
@@ -12,27 +12,20 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.EventProcessingOption;
+import org.drools.core.util.StringUtils;
 import org.drools.io.ResourceFactory;
 
 
 public class KBaseBuilder {
-    private String kBaseQName;
-
     private EventProcessingOption eventProcessingMode;
 
     private AssertBehaviorOption equalsBehaviour;
-
     protected KBaseBuilder() {
 
     }
 
     public static KBaseBuilder fluent() {
         return new KBaseBuilder();
-    }
-
-    public KBaseBuilder setKBaseQName(String kBaseQName) {
-        this.kBaseQName = kBaseQName;
-        return this;
     }
 
     public  KBaseBuilder setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
@@ -45,8 +38,48 @@ public class KBaseBuilder {
         return this;
     }
 
+    public KnowledgeBase build(Class[] kBaseQualifiers) {
+        Map<Class, List<String>> map = new HashMap<Class, List<String>>();
 
-    public KnowledgeBase build(Class cls) {
+        if ( kBaseQualifiers != null && kBaseQualifiers.length > 0 ) {
+            for ( Class kBaseQualifier : kBaseQualifiers ) {
+                List<String> list = new ArrayList<String>();
+                buildResourcesList(kBaseQualifier, kBaseQualifier.getName(), list);
+                map.put(kBaseQualifier, list);
+            }
+        }
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+
+        for ( Map.Entry<Class, List<String>> entry : map.entrySet() ) {
+            Class cls = entry.getKey();
+            List<String> files = entry.getValue();
+            if ( !files.isEmpty() ) {
+                for ( String file : files ) {
+                    if ( file.endsWith(".drl" ) ) {
+                        ckbuilder.add( ResourceFactory.newUrlResource( cls.getResource("/" + file.trim()) ), ResourceType.DRL );
+                    }
+                }
+            }
+        }
+
+        ckbuilder.build();
+
+
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( "Unable to compile " + kBaseQualifiers[0].getName() + ":\n" + kbuilder.getErrors() );
+        }
+
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( eventProcessingMode);
+        kconf.setOption( equalsBehaviour );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
+    }
+
+    private void  buildResourcesList(Class cls, String kBaseQName, List<String> list) {
         String fileStr = null;
         InputStream is = null;
         try {
@@ -64,29 +97,13 @@ public class KBaseBuilder {
             }
         }
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-
-        String[] files = fileStr.split( "," );
-        if ( files.length > 0 ) {
-            for ( String file : files ) {
-                if ( file.endsWith(".drl" ) ) {
-                    ckbuilder.add( ResourceFactory.newUrlResource( cls.getResource( "/" + file.trim() ) ), ResourceType.DRL );
+        if (!StringUtils.isEmpty(fileStr))  {
+            for( String entry : fileStr.split( "," ) ) {
+                if (!StringUtils.isEmpty(entry))  {
+                    list.add( entry.trim() );
                 }
             }
         }
-        ckbuilder.build();
-
-
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( "Unable to compile " + kBaseQName + ":\n" + kbuilder.getErrors() );
-        }
-
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( eventProcessingMode);
-        kconf.setOption( equalsBehaviour );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
     }
+
 }

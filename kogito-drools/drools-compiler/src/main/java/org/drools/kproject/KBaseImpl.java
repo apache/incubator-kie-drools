@@ -21,7 +21,7 @@ public class KBaseImpl
 
     private String                           name;
     
-    private Set<KBase>                       includes;
+    private Set<String>                      includes;
 
     private List<String>                     files;
 
@@ -42,7 +42,7 @@ public class KBaseImpl
                      String name) {
         this.kProject = kProject;
         this.namespace = namespace;
-        this.includes = new HashSet<KBase>();
+        this.includes = new HashSet<String>();
         this.name = name;
         this.files = new ArrayList<String>();
         this.kSessions = Collections.emptyMap();
@@ -90,11 +90,12 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#removeKSession(org.drools.kproject.KSessionImpl)
      */
-    public void removeKSession(String qName) {
+    public KBase removeKSession(String qName) {
         Map<String, KSession> newMap = new HashMap<String, KSession>();
         newMap.putAll( this.kSessions );
         newMap.remove( qName );
         setKSessions( newMap );
+        return this;
     }
 
     public void moveKSession(String oldQName,
@@ -168,16 +169,18 @@ public class KBaseImpl
         return this.namespace + "." + this.name;
     }
         
-    public Set<KBase> getIncludes() {
+    public Set<String> getIncludes() {
         return Collections.unmodifiableSet( includes );
     }
 
-    public void addInclude(KBase kbase) {
-        this.includes.add( kbase );
+    public KBase addInclude(String kBaseQName) {
+        this.includes.add( kBaseQName );
+        return this;
     }
     
-    public void removeInclude(KBase kbase) {
-        this.includes.remove( kbase );
+    public KBase removeInclude(String kBaseQName) {
+        this.includes.remove( kBaseQName );
+        return this;
     }
 
     /* (non-Javadoc)
