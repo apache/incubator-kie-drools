@@ -319,38 +319,37 @@
   </sodipodi:namedview>
   <path
      sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 270.5,169.5 730,40"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 330.5,169.5 730,40"
      id="path7495"
      inkscape:connector-curvature="0" />
   <path
      sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;opacity:1"
-     d="m 270.5,169.5 0,39.99996"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 330.5,169.5 0,39.99996"
      id="path9655"
      inkscape:connector-curvature="0" />
   <path
      inkscape:connector-curvature="0"
      id="path6115"
-     d="m 270.5,169.5 300,40"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 330.5,169.5 300,40"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <path
      sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 270.5,169.5 170,40"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 330.5,169.5 170,40"
      id="path6113"
      inkscape:connector-curvature="0" />
   <path
      inkscape:connector-curvature="0"
      id="path9657"
-     d="m 270.5,159.5 0,10"
-     style="fill:none;stroke:#4e9a06;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;opacity:1"
+     d="m 330.5,159.5 0,10"
+     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <g
-     transform="translate(110,-792.3622)"
-     id="g9665"
-     style="opacity:1">
+     transform="translate(170,-792.3622)"
+     id="g9665">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect9667"
@@ -469,58 +468,58 @@
      d="m 301,100 29,0 0,29 -29,0 z"
      id="rect9681-8"
      inkscape:connector-curvature="0"
-     mask="url(#mask7340)" />
+     mask="url(#mask7340)"
+     transform="translate(60,0)" />
   <text
      transform="scale(1.0446886,0.95722305)"
      id="text2716"
      y="36.041874"
-     x="210.47714"
-     style="font-size:14.33035373999999962px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;opacity:1"
+     x="267.91052"
+     style="font-size:14.33035374px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
      xml:space="preserve"><tspan
        y="36.041874"
-       x="210.47714"
+       x="267.91052"
        id="tspan2718"
        sodipodi:role="line">A</tspan></text>
   <text
      transform="scale(1.1873587,0.84220548)"
      id="text2720"
      y="40.963909"
-     x="208.95288"
-     style="font-size:16.28741073999999855px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;opacity:1"
+     x="259.4852"
+     style="font-size:16.28741074px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
      xml:space="preserve"><tspan
        id="tspan2722"
        y="40.963909"
-       x="208.95288"
+       x="259.4852"
        sodipodi:role="line">B</tspan></text>
   <text
      transform="scale(1.1342596,0.88163239)"
      id="text2724"
      y="38.919628"
-     x="246.01517"
-     style="font-size:14.99653720999999962px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;opacity:1"
+     x="298.91312"
+     style="font-size:14.99653721px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
      xml:space="preserve"><tspan
        y="38.919628"
-       x="246.01517"
+       x="298.91312"
        id="tspan2726"
        sodipodi:role="line">C</tspan></text>
   <text
      transform="scale(1.0907069,0.9168366)"
      id="text2728"
      y="37.629398"
-     x="282.75092"
-     style="font-size:14.96160506999999917px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;opacity:1"
+     x="337.76111"
+     style="font-size:14.96160507px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
      xml:space="preserve"><tspan
        y="37.629398"
-       x="282.75092"
+       x="337.76111"
        id="tspan2730"
        sodipodi:role="line">D</tspan></text>
   <g
-     transform="translate(250.50001,-793.06014)"
-     id="g4074"
-     style="opacity:1">
+     transform="translate(310.50001,-793.06014)"
+     id="g4074">
     <text
        xml:space="preserve"
-       style="font-size:16.19810676999999899px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:16.19810677px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="67.903915"
        y="1044.647"
        id="text3352"
@@ -531,7 +530,7 @@
          y="1044.647">0</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:17.77658844000000116px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:17.77658844px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="63.251419"
        y="1144.1229"
        id="text3356"
@@ -542,7 +541,7 @@
          y="1144.1229">1</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:17.06092261999999948px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:17.06092262px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="65.482925"
        y="1155.9114"
        id="text3360"
@@ -553,7 +552,7 @@
          y="1155.9114">2</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:16.76036072000000132px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:16.76036072px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="66.700623"
        y="1172.045"
        id="text3364"
@@ -565,8 +564,7 @@
   </g>
   <g
      id="g8931"
-     transform="translate(110,-622.36219)"
-     style="opacity:1">
+     transform="translate(170,-622.36219)">
     <rect
        y="921.86218"
        x="100.5"
@@ -682,8 +680,7 @@
   </g>
   <g
      id="g8965"
-     transform="translate(50,-215.41364)"
-     style="opacity:1">
+     transform="translate(110,-215.41364)">
     <rect
        ry="5"
        rx="4.999999"
@@ -708,9 +705,8 @@
          id="flowPara8975"
          style="fill:#000000;fill-opacity:1">-3</flowPara></flowRoot>  </g>
   <g
-     transform="translate(50,-385.41364)"
-     id="g9699"
-     style="opacity:1">
+     transform="translate(110,-385.41364)"
+     id="g9699">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect9701"
@@ -734,7 +730,7 @@
            style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara9709">-2</flowPara></flowRoot>  </g>
   <g
-     transform="translate(410,-622.36219)"
+     transform="translate(470,-622.36219)"
      id="g12661">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -852,35 +848,35 @@
   <path
      inkscape:connector-curvature="0"
      id="path7847"
-     d="m 700.5,339.49999 -430,39.99996"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 760.5,339.49999 -430,39.99996"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <path
      sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 700.5,339.49999 -170,40"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 760.5,339.49999 -170,40"
      id="path7797"
      inkscape:connector-curvature="0" />
   <path
      inkscape:connector-curvature="0"
      id="path8264"
-     d="m 700.5,339.49999 -40,40"
+     d="m 760.5,339.49999 -40,40"
      style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <path
      inkscape:connector-curvature="0"
      id="path7799"
-     d="m 700.5,339.49999 -300,40"
-     style="fill:none;stroke:#4e9a06;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 760.5,339.49999 -300,40"
+     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <path
      inkscape:connector-curvature="0"
      id="path8568"
-     d="m 700.5,339.49999 260,40"
+     d="m 760.5,339.49999 260,40"
      style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <g
-     transform="translate(350,-215.41364)"
+     transform="translate(410,-215.41364)"
      id="g12695">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -904,7 +900,7 @@
            y="60" /></flowRegion><flowPara
          id="flowPara12705">-4</flowPara></flowRoot>  </g>
   <g
-     transform="translate(280,-622.36219)"
+     transform="translate(340,-622.36219)"
      id="g14395">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1020,7 +1016,7 @@
        y="831.86218" />
   </g>
   <g
-     transform="translate(220,-215.41363)"
+     transform="translate(280,-215.41363)"
      id="g14429">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1047,10 +1043,10 @@
      xml:space="preserve"
      id="flowRoot6718"
      style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(426.32422,-231.43815)"><flowRegion
+     transform="translate(486.32422,-231.43815)"><flowRegion
        id="flowRegion6720"><rect
          id="rect6722-7"
-         width="550"
+         width="490"
          height="110.00001"
          x="-66.324219"
          y="261.43814"
@@ -1060,10 +1056,10 @@
      xml:space="preserve"
      id="flowRoot6718-7"
      style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(426.32422,-171.43815)"><flowRegion
+     transform="translate(486.32422,-171.43815)"><flowRegion
        id="flowRegion6720-2"><rect
          id="rect6722-2"
-         width="550"
+         width="490"
          height="30.00001"
          x="-66.324219"
          y="301.43814"
@@ -1082,8 +1078,8 @@
        id="flowPara5152" /></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6087"
-     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:1"
-     transform="translate(151.3125,244.37918)"><flowRegion
+     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+     transform="translate(211.3125,244.37918)"><flowRegion
        id="flowRegion6089"><rect
          id="rect6091"
          width="60.000008"
@@ -1094,7 +1090,7 @@
        id="flowPara6093">1</flowPara></flowRoot>  <path
      inkscape:connector-curvature="0"
      id="path6177"
-     d="m 180.5,19.5 0,850"
+     d="m 240.5,19.5 0,850"
      style="fill:none;stroke:#000000;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <flowRoot
@@ -1133,7 +1129,7 @@
      y="30" />
   <g
      id="g6649"
-     transform="translate(190,-772.36218)">
+     transform="translate(250,-772.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -1233,7 +1229,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(220,-802.36218)"
+     transform="translate(280,-802.36218)"
      id="g6675">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1335,7 +1331,7 @@
   </g>
   <g
      id="g6701"
-     transform="translate(250,-742.36218)">
+     transform="translate(310,-742.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -1435,7 +1431,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(160,-832.36218)"
+     transform="translate(220,-832.36218)"
      id="g6727">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1536,7 +1532,7 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <g
-     transform="translate(190,-602.36218)"
+     transform="translate(250,-602.36218)"
      id="g6758">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1638,7 +1634,7 @@
   </g>
   <g
      id="g6785"
-     transform="translate(220,-632.36218)">
+     transform="translate(280,-632.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -1738,7 +1734,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(250,-572.36218)"
+     transform="translate(310,-572.36218)"
      id="g6823">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1840,7 +1836,7 @@
   </g>
   <g
      id="g6851"
-     transform="translate(160,-632.36218)">
+     transform="translate(220,-632.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -1942,12 +1938,12 @@
   <path
      sodipodi:nodetypes="cc"
      style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 270.5,169.5 430,40"
+     d="m 330.5,169.5 430,40"
      id="path7191"
      inkscape:connector-curvature="0" />
   <g
      id="g7193"
-     transform="translate(540,-622.36219)">
+     transform="translate(600,-622.36219)">
     <rect
        y="921.86218"
        x="100.5"
@@ -2063,7 +2059,7 @@
   </g>
   <g
      id="g7227"
-     transform="translate(480,-215.41364)">
+     transform="translate(540,-215.41364)">
     <rect
        ry="5"
        rx="4.999999"
@@ -2089,11 +2085,11 @@
   <path
      sodipodi:nodetypes="cc"
      style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 700.5,339.49999 130,40"
+     d="m 760.5,339.49999 130,40"
      id="path8416"
      inkscape:connector-curvature="0" />
   <g
-     transform="translate(610,-215.41364)"
+     transform="translate(670,-215.41364)"
      id="g7379">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2118,7 +2114,7 @@
            style="fill:#ce5c00" /></flowRegion><flowPara
          id="flowPara7389">-2</flowPara></flowRoot>  </g>
   <g
-     transform="translate(670,-622.36219)"
+     transform="translate(730,-622.36219)"
      id="g7345">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -2234,8 +2230,8 @@
        y="831.86218" />
   </g>
   <flowRoot
-     transform="translate(151.3125,74.37918)"
-     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;opacity:1"
+     transform="translate(211.3125,74.37918)"
+     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot6095"
      xml:space="preserve"><flowRegion
        id="flowRegion6097"><rect
@@ -2247,7 +2243,7 @@
          id="rect6099" /></flowRegion><flowPara
        id="flowPara6101">0</flowPara></flowRoot>  <g
      id="g7497"
-     transform="translate(840,-622.36219)">
+     transform="translate(900,-622.36219)">
     <rect
        y="921.86218"
        x="100.5"
@@ -2363,7 +2359,7 @@
   </g>
   <g
      id="g7531"
-     transform="translate(780,-215.41364)">
+     transform="translate(840,-215.41364)">
     <rect
        ry="5"
        rx="4.999999"
@@ -2389,27 +2385,27 @@
   <text
      xml:space="preserve"
      style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
-     x="905.94922"
+     x="965.94922"
      y="270.52051"
      id="text7659"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
        id="tspan7661"
-       x="905.94922"
+       x="965.94922"
        y="270.52051">...</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
-     x="345.94925"
+     x="405.94925"
      y="270.52051"
      id="text7745"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
        id="tspan7747"
-       x="345.94925"
+       x="405.94925"
        y="270.52051">...</tspan></text>
   <flowRoot
-     transform="translate(321.31205,244.37918)"
+     transform="translate(381.31205,244.37918)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot7749"
      xml:space="preserve"><flowRegion
@@ -2424,7 +2420,7 @@
      xml:space="preserve"
      id="flowRoot7757"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(451.31205,244.37918)"><flowRegion
+     transform="translate(511.31205,244.37918)"><flowRegion
        id="flowRegion7759"><rect
          id="rect7761"
          width="60.000008"
@@ -2433,7 +2429,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara7763">5</flowPara></flowRoot>  <flowRoot
-     transform="translate(581.31205,244.37918)"
+     transform="translate(641.31205,244.37918)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot7765"
      xml:space="preserve"><flowRegion
@@ -2448,7 +2444,7 @@
      xml:space="preserve"
      id="flowRoot7773"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(711.31205,244.37918)"><flowRegion
+     transform="translate(771.31205,244.37918)"><flowRegion
        id="flowRegion7775"><rect
          id="rect7777"
          width="60.000008"
@@ -2457,7 +2453,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara7779">7</flowPara></flowRoot>  <flowRoot
-     transform="translate(881.31205,244.37918)"
+     transform="translate(941.31205,244.37918)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot7781"
      xml:space="preserve"><flowRegion
@@ -2469,7 +2465,7 @@
          width="60.000008"
          id="rect7785" /></flowRegion><flowPara
        id="flowPara7787">11</flowPara></flowRoot>  <flowRoot
-     transform="translate(1406.3125,185.96414)"
+     transform="translate(1466.3125,185.96414)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot7789"
      xml:space="preserve"><flowRegion
@@ -2481,7 +2477,7 @@
          width="80"
          id="rect7793" /></flowRegion><flowPara
        id="flowPara7795">lost tie</flowPara></flowRoot>  <g
-     transform="translate(110,-452.3622)"
+     transform="translate(170,-452.3622)"
      id="g7801">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -2597,7 +2593,7 @@
        y="831.86218" />
   </g>
   <g
-     transform="translate(50,-45.413645)"
+     transform="translate(110,-45.413645)"
      id="g7835">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2625,12 +2621,12 @@
   <path
      sodipodi:nodetypes="cc"
      style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 700.5,329.49999 0,10"
+     d="m 760.5,329.49999 0,10"
      id="path7849"
      inkscape:connector-curvature="0" />
   <g
      id="g7851"
-     transform="translate(370,-452.3622)">
+     transform="translate(430,-452.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -2744,9 +2740,15 @@
        id="rect7883"
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
+  <path
+     sodipodi:nodetypes="cc"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 1020.5,509.49999 -260,40"
+     id="path4891"
+     inkscape:connector-curvature="0" />
   <g
      id="g7885"
-     transform="translate(310,-45.413645)">
+     transform="translate(370,-45.413645)">
     <rect
        ry="5"
        rx="4.999999"
@@ -2771,7 +2773,7 @@
          id="flowPara7895">-4</flowPara></flowRoot>  </g>
   <g
      id="g7897"
-     transform="translate(240,-452.3622)">
+     transform="translate(300,-452.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -2885,9 +2887,15 @@
        id="rect7929"
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
+  <path
+     inkscape:connector-curvature="0"
+     id="path4897"
+     d="m 1020.5,509.49999 -130,40"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     sodipodi:nodetypes="cc" />
   <g
      id="g7931"
-     transform="translate(180,-45.413635)">
+     transform="translate(240,-45.413635)">
     <rect
        ry="5"
        rx="4.999999"
@@ -2910,8 +2918,14 @@
            id="rect7939"
            style="fill:#ce5c00" /></flowRegion><flowPara
          id="flowPara7941">-2</flowPara></flowRoot>  </g>
+  <path
+     sodipodi:nodetypes="cc"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 1020.5,509.49999 -650,39.99996"
+     id="path4887"
+     inkscape:connector-curvature="0" />
   <flowRoot
-     transform="translate(151.3125,414.37917)"
+     transform="translate(211.3125,414.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot7943"
      xml:space="preserve"><flowRegion
@@ -2923,7 +2937,7 @@
          width="60.000008"
          id="rect7947" /></flowRegion><flowPara
        id="flowPara7949">12</flowPara></flowRoot>  <g
-     transform="translate(500,-452.3622)"
+     transform="translate(560,-452.3622)"
      id="g8266">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -3038,8 +3052,14 @@
        x="190.5"
        y="831.86218" />
   </g>
+  <path
+     inkscape:connector-curvature="0"
+     id="path4889"
+     d="m 1020.5,509.49999 -390,40"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     sodipodi:nodetypes="cc" />
   <g
-     transform="translate(440,-45.413645)"
+     transform="translate(500,-45.413645)"
      id="g8300">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -3063,9 +3083,15 @@
            x="240"
            y="60" /></flowRegion><flowPara
          id="flowPara8310">-3</flowPara></flowRoot>  </g>
+  <path
+     sodipodi:nodetypes="cc"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 1020.5,509.49999 -520,40"
+     id="path4893"
+     inkscape:connector-curvature="0" />
   <g
      id="g8418"
-     transform="translate(610,-45.413645)">
+     transform="translate(670,-45.413645)">
     <rect
        ry="5"
        rx="4.999999"
@@ -3090,7 +3116,7 @@
          id="flowPara8428">-2</flowPara></flowRoot>  </g>
   <g
      id="g8430"
-     transform="translate(670,-452.3622)">
+     transform="translate(730,-452.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -3207,11 +3233,11 @@
   <path
      inkscape:connector-curvature="0"
      id="path6428"
-     d="m 960.5,499.5 0,10"
+     d="m 1020.5,499.5 0,10"
      style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <g
-     transform="translate(800,-452.3622)"
+     transform="translate(860,-452.3622)"
      id="g8570">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -3326,38 +3352,8 @@
        x="190.5"
        y="831.86218" />
   </g>
-  <path
-     sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 960.5,509.49999 -260,40"
-     id="path4891"
-     inkscape:connector-curvature="0" />
-  <path
-     inkscape:connector-curvature="0"
-     id="path4897"
-     d="m 960.5,509.49999 -130,40"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     sodipodi:nodetypes="cc" />
-  <path
-     sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 960.5,509.49999 -650,39.99996"
-     id="path4887"
-     inkscape:connector-curvature="0" />
-  <path
-     inkscape:connector-curvature="0"
-     id="path4889"
-     d="m 960.5,509.49999 -390,40"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     sodipodi:nodetypes="cc" />
-  <path
-     sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 960.5,509.49999 -520,40"
-     id="path4893"
-     inkscape:connector-curvature="0" />
   <g
-     transform="translate(740,-45.413645)"
+     transform="translate(800,-45.413645)"
      id="g8604">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -3384,19 +3380,19 @@
   <text
      xml:space="preserve"
      style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
-     x="735.94922"
+     x="795.94922"
      y="440.52051"
      id="text8724"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
        id="tspan8726"
-       x="735.94922"
+       x="795.94922"
        y="440.52051">...</tspan></text>
   <flowRoot
      xml:space="preserve"
      id="flowRoot8732"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(281.31205,414.37917)"><flowRegion
+     transform="translate(341.31205,414.37917)"><flowRegion
        id="flowRegion8734"><rect
          id="rect8736"
          width="60.000008"
@@ -3405,7 +3401,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara8738">13</flowPara></flowRoot>  <flowRoot
-     transform="translate(411.31205,414.37917)"
+     transform="translate(471.31205,414.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot8740"
      xml:space="preserve"><flowRegion
@@ -3420,7 +3416,7 @@
      xml:space="preserve"
      id="flowRoot8748"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(541.31205,414.37917)"><flowRegion
+     transform="translate(601.31205,414.37917)"><flowRegion
        id="flowRegion8750"><rect
          id="rect8752"
          width="60.000008"
@@ -3429,7 +3425,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara8754">15</flowPara></flowRoot>  <flowRoot
-     transform="translate(711.31205,414.37917)"
+     transform="translate(771.31205,414.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot8756"
      xml:space="preserve"><flowRegion
@@ -3444,7 +3440,7 @@
      xml:space="preserve"
      id="flowRoot8764"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(841.31205,414.37917)"><flowRegion
+     transform="translate(901.31205,414.37917)"><flowRegion
        id="flowRegion8766"><rect
          id="rect8768"
          width="60.000008"
@@ -3456,7 +3452,7 @@
      xml:space="preserve"
      id="flowRoot8772"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(846.31299,355.96413)"><flowRegion
+     transform="translate(906.31299,355.96413)"><flowRegion
        id="flowRegion8774"><rect
          id="rect8776"
          width="80"
@@ -3470,10 +3466,10 @@
      id="path7388"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(0,170)" />
+     transform="translate(60,170)" />
   <g
      id="g4868"
-     transform="translate(750,-602.36218)">
+     transform="translate(810,-602.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -3573,7 +3569,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(780,-662.36218)"
+     transform="translate(840,-662.36218)"
      id="g4894">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -3675,7 +3671,7 @@
   </g>
   <g
      id="g4920"
-     transform="translate(810,-572.36218)">
+     transform="translate(870,-572.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -3775,7 +3771,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(720,-662.36218)"
+     transform="translate(780,-662.36218)"
      id="g4946">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -3876,14 +3872,14 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <path
-     transform="translate(560,170)"
+     transform="translate(620,170)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path4972"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
   <g
-     transform="translate(920,-602.36218)"
+     transform="translate(980,-602.36218)"
      id="g4974">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -3985,7 +3981,7 @@
   </g>
   <g
      id="g5000"
-     transform="translate(950,-632.36218)">
+     transform="translate(1010,-632.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -4085,7 +4081,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(980,-632.36218)"
+     transform="translate(1040,-632.36218)"
      id="g5026">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -4187,7 +4183,7 @@
   </g>
   <g
      id="g5052"
-     transform="translate(890,-662.36218)">
+     transform="translate(950,-662.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -4292,10 +4288,10 @@
      id="path5078"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(730,170)" />
+     transform="translate(790,170)" />
   <g
      id="g5080"
-     transform="translate(490,-632.36218)">
+     transform="translate(550,-632.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -4395,7 +4391,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(520,-632.36218)"
+     transform="translate(580,-632.36218)"
      id="g5106">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -4497,7 +4493,7 @@
   </g>
   <g
      id="g5132"
-     transform="translate(550,-572.36218)">
+     transform="translate(610,-572.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -4597,7 +4593,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(460,-662.36218)"
+     transform="translate(520,-662.36218)"
      id="g5158">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -4698,14 +4694,14 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <path
-     transform="translate(300,170)"
+     transform="translate(360,170)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5184"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
   <g
-     transform="translate(620,-572.36218)"
+     transform="translate(680,-572.36218)"
      id="g5186">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -4807,7 +4803,7 @@
   </g>
   <g
      id="g5212"
-     transform="translate(650,-632.36218)">
+     transform="translate(710,-632.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -4907,7 +4903,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(680,-572.36218)"
+     transform="translate(740,-572.36218)"
      id="g5238">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -5009,7 +5005,7 @@
   </g>
   <g
      id="g5264"
-     transform="translate(590,-662.36218)">
+     transform="translate(650,-662.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -5114,10 +5110,10 @@
      id="path5291"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(430,170)" />
+     transform="translate(490,170)" />
   <g
      id="g5293"
-     transform="translate(360,-662.36218)">
+     transform="translate(420,-662.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -5217,7 +5213,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(390,-632.36218)"
+     transform="translate(450,-632.36218)"
      id="g5319">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -5319,7 +5315,7 @@
   </g>
   <g
      id="g5345"
-     transform="translate(420,-572.36218)">
+     transform="translate(480,-572.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -5419,7 +5415,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(330,-662.36218)"
+     transform="translate(390,-662.36218)"
      id="g5371">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -5520,7 +5516,7 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <path
-     transform="translate(170,170)"
+     transform="translate(230,170)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5397"
@@ -5530,7 +5526,7 @@
      xml:space="preserve"
      id="flowRoot5399"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(1576.313,185.96414)"><flowRegion
+     transform="translate(1636.313,185.96414)"><flowRegion
        id="flowRegion5401"><rect
          id="rect5403"
          width="80"
@@ -5542,7 +5538,7 @@
      xml:space="preserve"
      id="flowRoot5407"
      style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(946.31299,-27.359319)"><flowRegion
+     transform="translate(1006.313,-27.359319)"><flowRegion
        id="flowRegion5409"><rect
          id="rect5411"
          width="120"
@@ -5553,7 +5549,7 @@
        id="flowPara5413"
        style="font-size:10px;fill:#2e3436">No queen on D2</flowPara></flowRoot>  <g
      id="g5415"
-     transform="translate(190,-402.36218)">
+     transform="translate(250,-402.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -5653,7 +5649,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(220,-462.36218)"
+     transform="translate(280,-462.36218)"
      id="g5441">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -5755,7 +5751,7 @@
   </g>
   <g
      id="g5467"
-     transform="translate(250,-402.36218)">
+     transform="translate(310,-402.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -5855,7 +5851,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(160,-462.36218)"
+     transform="translate(220,-462.36218)"
      id="g5493">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -5956,14 +5952,14 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <path
-     transform="translate(0,340)"
+     transform="translate(60,340)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5519"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
   <g
-     transform="translate(320,-402.36218)"
+     transform="translate(380,-402.36218)"
      id="g5521">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -6065,7 +6061,7 @@
   </g>
   <g
      id="g5547"
-     transform="translate(350,-462.36218)">
+     transform="translate(410,-462.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -6165,7 +6161,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(380,-402.36218)"
+     transform="translate(440,-402.36218)"
      id="g5573">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -6267,7 +6263,7 @@
   </g>
   <g
      id="g5599"
-     transform="translate(290,-432.36218)">
+     transform="translate(350,-432.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -6372,10 +6368,10 @@
      id="path5625"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(130,340)" />
+     transform="translate(190,340)" />
   <g
      id="g5627"
-     transform="translate(450,-402.36218)">
+     transform="translate(510,-402.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -6475,7 +6471,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(480,-462.36218)"
+     transform="translate(540,-462.36218)"
      id="g5653">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -6577,7 +6573,7 @@
   </g>
   <g
      id="g5679"
-     transform="translate(510,-402.36218)">
+     transform="translate(570,-402.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -6677,7 +6673,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(420,-402.36218)"
+     transform="translate(480,-402.36218)"
      id="g5705">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -6778,14 +6774,14 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <path
-     transform="translate(260,340)"
+     transform="translate(320,340)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5731"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
   <g
-     transform="translate(580,-402.36218)"
+     transform="translate(640,-402.36218)"
      id="g5733">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -6887,7 +6883,7 @@
   </g>
   <g
      id="g5759"
-     transform="translate(610,-492.36218)">
+     transform="translate(670,-492.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -6987,7 +6983,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(640,-402.36218)"
+     transform="translate(700,-402.36218)"
      id="g5785">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -7089,7 +7085,7 @@
   </g>
   <g
      id="g5811"
-     transform="translate(550,-492.36218)">
+     transform="translate(610,-492.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -7194,10 +7190,10 @@
      id="path5837"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(390,340)" />
+     transform="translate(450,340)" />
   <g
      id="g5839"
-     transform="translate(750,-402.36218)">
+     transform="translate(810,-402.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -7297,7 +7293,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(780,-462.36218)"
+     transform="translate(840,-462.36218)"
      id="g5865">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -7399,7 +7395,7 @@
   </g>
   <g
      id="g5891"
-     transform="translate(810,-492.36218)">
+     transform="translate(870,-492.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -7499,7 +7495,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(720,-492.36218)"
+     transform="translate(780,-492.36218)"
      id="g5917">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -7600,14 +7596,14 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <path
-     transform="translate(560,340)"
+     transform="translate(620,340)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5943"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
   <g
-     transform="translate(880,-402.36218)"
+     transform="translate(940,-402.36218)"
      id="g5945">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -7709,7 +7705,7 @@
   </g>
   <g
      id="g5971"
-     transform="translate(910,-462.36218)">
+     transform="translate(970,-462.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -7809,7 +7805,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(940,-462.36218)"
+     transform="translate(1000,-462.36218)"
      id="g5997">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -7911,7 +7907,7 @@
   </g>
   <g
      id="g6023"
-     transform="translate(850,-492.36218)">
+     transform="translate(910,-492.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -8016,7 +8012,7 @@
      id="path6049"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(690,340)" />
+     transform="translate(750,340)" />
   <flowRoot
      transform="translate(-88.6875,100.59793)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -8156,6 +8152,13 @@
        width="30"
        id="rect5104"
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect7617"
+       width="30"
+       height="30"
+       x="160.5"
+       y="831.86218" />
   </g>
   <g
      transform="translate(-70,-452.36218)"
@@ -9262,7 +9265,7 @@
      xml:space="preserve"
      id="flowRoot4341"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(1406.313,355.96437)"><flowRegion
+     transform="translate(1466.313,355.96437)"><flowRegion
        id="flowRegion4343"><rect
          id="rect4345"
          width="80"
@@ -10133,8 +10136,14 @@
      id="path4810"
      d="m 137.46434,646.25854 2.04849,10.01388 -10.17656,3.00858 3.09039,-5.0348 c -7.6347,-3.53832 -8.51509,-25.06478 0,-54.3759 l 2.06027,1.00696 c -7.62455,29.27442 -8.2727,47.11901 0,50.34806 l 2.97741,-4.96678 z"
      style="fill:#ef2929;fill-opacity:1;fill-rule:nonzero;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1" />
+  <path
+     sodipodi:nodetypes="cc"
+     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 1020.5,509.49999 0,40"
+     id="path4895"
+     inkscape:connector-curvature="0" />
   <flowRoot
-     transform="translate(976.31299,355.96437)"
+     transform="translate(1036.313,355.96437)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot4766"
      xml:space="preserve"><flowRegion
@@ -10532,7 +10541,7 @@
   </g>
   <g
      id="g4907"
-     transform="translate(150,-282.3622)">
+     transform="translate(210,-282.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -10649,12 +10658,12 @@
   <path
      inkscape:connector-curvature="0"
      id="path6430"
-     d="m 960.5,679.49999 0,40"
+     d="m 1020.5,679.49999 0,40"
      style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <g
      id="g4941"
-     transform="translate(90,124.58635)">
+     transform="translate(150,124.58635)">
     <rect
        ry="5"
        rx="4.999999"
@@ -10679,7 +10688,7 @@
          id="flowPara4951"
          style="fill:#000000;fill-opacity:1">-4</flowPara></flowRoot>  </g>
   <g
-     transform="translate(410,-282.3622)"
+     transform="translate(470,-282.3622)"
      id="g4953">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -10795,7 +10804,7 @@
        y="831.86218" />
   </g>
   <g
-     transform="translate(350,124.58635)"
+     transform="translate(410,124.58635)"
      id="g4987">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -10820,7 +10829,7 @@
            y="60" /></flowRegion><flowPara
          id="flowPara4997">-4</flowPara></flowRoot>  </g>
   <g
-     transform="translate(280,-282.3622)"
+     transform="translate(340,-282.3622)"
      id="g4999">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -10938,11 +10947,11 @@
   <path
      sodipodi:nodetypes="cc"
      style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 960.5,679.49999 -130,40"
+     d="m 1020.5,679.49999 -130,40"
      id="path6436"
      inkscape:connector-curvature="0" />
   <g
-     transform="translate(220,124.58636)"
+     transform="translate(280,124.58636)"
      id="g5033">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -10969,14 +10978,14 @@
   <path
      inkscape:connector-curvature="0"
      id="path6438"
-     d="m 960.5,679.49999 -650,39.99996"
+     d="m 1020.5,679.49999 -650,39.99996"
      style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <flowRoot
      xml:space="preserve"
      id="flowRoot5045"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(191.3125,584.37917)"><flowRegion
+     transform="translate(251.3125,584.37917)"><flowRegion
        id="flowRegion5047"><rect
          id="rect5049"
          width="60.000008"
@@ -10986,7 +10995,7 @@
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara5051">20</flowPara></flowRoot>  <g
      id="g5053"
-     transform="translate(540,-282.3622)">
+     transform="translate(600,-282.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -11103,12 +11112,12 @@
   <path
      sodipodi:nodetypes="cc"
      style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 960.5,679.49999 -390,40"
+     d="m 1020.5,679.49999 -390,40"
      id="path6440"
      inkscape:connector-curvature="0" />
   <g
      id="g5087"
-     transform="translate(480,124.58635)">
+     transform="translate(540,124.58635)">
     <rect
        ry="5"
        rx="4.999999"
@@ -11134,17 +11143,17 @@
   <path
      inkscape:connector-curvature="0"
      id="path6442"
-     d="m 960.5,679.49999 -520,40"
-     style="fill:none;stroke:#8f5902;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 1020.5,679.49999 -520,40"
+     style="fill:none;stroke:#8f5902;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <path
      inkscape:connector-curvature="0"
      id="path6434"
-     d="m 960.5,679.49999 -260,40"
-     style="fill:none;stroke:#4e9a06;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 1020.5,679.49999 -260,40"
+     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <g
-     transform="translate(610,124.58635)"
+     transform="translate(670,124.58635)"
      id="g5099">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -11169,7 +11178,7 @@
            style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara5109">-4</flowPara></flowRoot>  </g>
   <g
-     transform="translate(670,-282.3622)"
+     transform="translate(730,-282.3622)"
      id="g5111">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -11284,15 +11293,9 @@
        x="190.5"
        y="831.86218" />
   </g>
-  <path
-     sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#4e9a06;stroke-width:1.00000011999999994px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 960.5,509.49999 0,40"
-     id="path4895"
-     inkscape:connector-curvature="0" />
   <g
      id="g5145"
-     transform="translate(800,-282.3622)">
+     transform="translate(860,-282.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -11408,7 +11411,7 @@
   </g>
   <g
      id="g5179"
-     transform="translate(740,124.58635)">
+     transform="translate(800,124.58635)">
     <rect
        ry="5"
        rx="4.999999"
@@ -11432,7 +11435,7 @@
            id="rect5187" /></flowRegion><flowPara
          id="flowPara5189">-2</flowPara></flowRoot>  </g>
   <flowRoot
-     transform="translate(321.31205,584.37917)"
+     transform="translate(381.31205,584.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot5195"
      xml:space="preserve"><flowRegion
@@ -11444,7 +11447,7 @@
          width="60.000008"
          id="rect5199" /></flowRegion><flowPara
        id="flowPara5201">21</flowPara></flowRoot>  <g
-     transform="translate(150,-112.3622)"
+     transform="translate(210,-112.3622)"
      id="g6468">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -11563,7 +11566,7 @@
      xml:space="preserve"
      id="flowRoot5203"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(451.31205,584.37917)"><flowRegion
+     transform="translate(511.31205,584.37917)"><flowRegion
        id="flowRegion5205"><rect
          id="rect5207"
          width="60.000008"
@@ -11572,7 +11575,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara5209">22</flowPara></flowRoot>  <g
-     transform="translate(90,294.58635)"
+     transform="translate(150,294.58635)"
      id="g6502">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -11598,7 +11601,7 @@
          style="fill:#000000;fill-opacity:1"
          id="flowPara6512">-4</flowPara></flowRoot>  </g>
   <flowRoot
-     transform="translate(581.31205,584.37917)"
+     transform="translate(641.31205,584.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot5211"
      xml:space="preserve"><flowRegion
@@ -11611,7 +11614,7 @@
          id="rect5215" /></flowRegion><flowPara
        id="flowPara5217">23</flowPara></flowRoot>  <g
      id="g6514"
-     transform="translate(410,-112.3622)">
+     transform="translate(470,-112.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -11729,7 +11732,7 @@
      xml:space="preserve"
      id="flowRoot5219"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(711.31205,584.37917)"><flowRegion
+     transform="translate(771.31205,584.37917)"><flowRegion
        id="flowRegion5221"><rect
          id="rect5223"
          width="60.000008"
@@ -11739,7 +11742,7 @@
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara5225">24</flowPara></flowRoot>  <g
      id="g6548"
-     transform="translate(350,294.58635)">
+     transform="translate(410,294.58635)">
     <rect
        ry="5"
        rx="4.999999"
@@ -11763,7 +11766,7 @@
            style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara6558">-4</flowPara></flowRoot>  </g>
   <flowRoot
-     transform="translate(841.31205,584.37917)"
+     transform="translate(901.31205,584.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot5227"
      xml:space="preserve"><flowRegion
@@ -11780,9 +11783,9 @@
      id="path5360"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(40,510)" />
+     transform="translate(100,510)" />
   <path
-     transform="translate(170,510)"
+     transform="translate(230,510)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5466"
@@ -11794,9 +11797,9 @@
      id="path5572"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(300,510)" />
+     transform="translate(360,510)" />
   <path
-     transform="translate(430,510)"
+     transform="translate(490,510)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5678"
@@ -11808,10 +11811,10 @@
      id="path5784"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(560,510)" />
+     transform="translate(620,510)" />
   <g
      id="g5786"
-     transform="translate(880,-232.36218)">
+     transform="translate(940,-232.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -11910,8 +11913,14 @@
        style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.93419403;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        sodipodi:type="arc" />
   </g>
+  <path
+     sodipodi:nodetypes="cc"
+     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 1020.5,669.5 0,10"
+     id="path6432"
+     inkscape:connector-curvature="0" />
   <g
-     transform="translate(910,-232.36218)"
+     transform="translate(970,-232.36218)"
      id="g5812">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -12013,7 +12022,7 @@
   </g>
   <g
      id="g5838"
-     transform="translate(940,-292.36218)">
+     transform="translate(1000,-292.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -12113,7 +12122,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(850,-322.36218)"
+     transform="translate(910,-322.36218)"
      id="g5864">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -12214,14 +12223,14 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <path
-     transform="translate(690,510)"
+     transform="translate(750,510)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path5890"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
   <g
-     transform="translate(750,-232.36218)"
+     transform="translate(810,-232.36218)"
      id="g5908">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -12323,7 +12332,7 @@
   </g>
   <g
      id="g5934"
-     transform="translate(780,-262.36218)">
+     transform="translate(840,-262.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -12423,7 +12432,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(810,-292.36218)"
+     transform="translate(870,-292.36218)"
      id="g5960">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -12525,7 +12534,7 @@
   </g>
   <g
      id="g5986"
-     transform="translate(720,-322.36218)">
+     transform="translate(780,-322.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -12626,7 +12635,7 @@
   </g>
   <g
      id="g6012"
-     transform="translate(620,-232.36218)">
+     transform="translate(680,-232.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -12726,7 +12735,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(650,-322.36218)"
+     transform="translate(710,-322.36218)"
      id="g6038">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -12828,7 +12837,7 @@
   </g>
   <g
      id="g6064"
-     transform="translate(680,-292.36218)">
+     transform="translate(740,-292.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -12928,7 +12937,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(590,-322.36218)"
+     transform="translate(650,-322.36218)"
      id="g6090">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -13029,7 +13038,7 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <g
-     transform="translate(490,-232.36218)"
+     transform="translate(550,-232.36218)"
      id="g6116">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -13131,7 +13140,7 @@
   </g>
   <g
      id="g6142"
-     transform="translate(520,-292.36218)">
+     transform="translate(580,-292.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -13231,7 +13240,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(550,-292.36218)"
+     transform="translate(610,-292.36218)"
      id="g6168">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -13333,7 +13342,7 @@
   </g>
   <g
      id="g6194"
-     transform="translate(460,-232.36218)">
+     transform="translate(520,-232.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -13434,7 +13443,7 @@
   </g>
   <g
      id="g6220"
-     transform="translate(360,-232.36218)">
+     transform="translate(420,-232.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -13534,7 +13543,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(390,-292.36218)"
+     transform="translate(450,-292.36218)"
      id="g6246">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -13636,7 +13645,7 @@
   </g>
   <g
      id="g6272"
-     transform="translate(420,-292.36218)">
+     transform="translate(480,-292.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -13736,7 +13745,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(330,-262.36218)"
+     transform="translate(390,-262.36218)"
      id="g6298">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -13837,7 +13846,7 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <g
-     transform="translate(230,-232.36218)"
+     transform="translate(290,-232.36218)"
      id="g6324">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -13939,7 +13948,7 @@
   </g>
   <g
      id="g6350"
-     transform="translate(260,-292.36218)">
+     transform="translate(320,-292.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -14039,7 +14048,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(290,-292.36218)"
+     transform="translate(350,-292.36218)"
      id="g6376">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -14141,7 +14150,7 @@
   </g>
   <g
      id="g6402"
-     transform="translate(200,-292.36218)">
+     transform="translate(260,-292.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -14242,7 +14251,7 @@
   </g>
   <g
      id="g6560"
-     transform="translate(280,-112.3622)">
+     transform="translate(340,-112.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -14356,15 +14365,9 @@
        id="rect6592"
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
-  <path
-     sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 960.5,669.5 0,10"
-     id="path6432"
-     inkscape:connector-curvature="0" />
   <g
      id="g6594"
-     transform="translate(220,294.58636)">
+     transform="translate(280,294.58636)">
     <rect
        ry="5"
        rx="4.999999"
@@ -14388,7 +14391,7 @@
            style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara6604">-3</flowPara></flowRoot>  </g>
   <flowRoot
-     transform="translate(191.3125,754.37917)"
+     transform="translate(251.3125,754.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot6606"
      xml:space="preserve"><flowRegion
@@ -14400,7 +14403,7 @@
          width="60.000008"
          id="rect6610" /></flowRegion><flowPara
        id="flowPara6612">26</flowPara></flowRoot>  <g
-     transform="translate(540,-112.3622)"
+     transform="translate(600,-112.3622)"
      id="g6614">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -14516,7 +14519,7 @@
        y="831.86218" />
   </g>
   <g
-     transform="translate(480,294.58635)"
+     transform="translate(540,294.58635)"
      id="g6650">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -14542,7 +14545,7 @@
          id="flowPara6660">-1</flowPara></flowRoot>  </g>
   <g
      id="g6662"
-     transform="translate(610,294.58635)">
+     transform="translate(670,294.58635)">
     <rect
        ry="5"
        rx="4.999999"
@@ -14567,7 +14570,7 @@
          id="flowPara6672">-2</flowPara></flowRoot>  </g>
   <g
      id="g6674"
-     transform="translate(670,-112.3622)">
+     transform="translate(730,-112.3622)">
     <rect
        y="921.86218"
        x="100.5"
@@ -14682,7 +14685,7 @@
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
   <g
-     transform="translate(800,-112.3622)"
+     transform="translate(860,-112.3622)"
      id="g6710">
     <rect
        style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -14798,7 +14801,7 @@
        y="831.86218" />
   </g>
   <g
-     transform="translate(740,294.58635)"
+     transform="translate(800,294.58635)"
      id="g6745">
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -14826,7 +14829,7 @@
      xml:space="preserve"
      id="flowRoot6757"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(321.31205,754.37917)"><flowRegion
+     transform="translate(381.31205,754.37917)"><flowRegion
        id="flowRegion6759"><rect
          id="rect6761"
          width="60.000008"
@@ -14835,7 +14838,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara6763">27</flowPara></flowRoot>  <flowRoot
-     transform="translate(451.31205,754.37917)"
+     transform="translate(511.31205,754.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot6765"
      xml:space="preserve"><flowRegion
@@ -14850,7 +14853,7 @@
      xml:space="preserve"
      id="flowRoot6773"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(581.31205,754.37917)"><flowRegion
+     transform="translate(641.31205,754.37917)"><flowRegion
        id="flowRegion6775"><rect
          id="rect6777"
          width="60.000008"
@@ -14859,7 +14862,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara6779">29</flowPara></flowRoot>  <flowRoot
-     transform="translate(711.31205,754.37917)"
+     transform="translate(771.31205,754.37917)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot6781"
      xml:space="preserve"><flowRegion
@@ -14874,7 +14877,7 @@
      xml:space="preserve"
      id="flowRoot6789"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(841.31205,754.37917)"><flowRegion
+     transform="translate(901.31205,754.37917)"><flowRegion
        id="flowRegion6791"><rect
          id="rect6793"
          width="60.000008"
@@ -14883,7 +14886,7 @@
          y="85.620819"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
        id="flowPara6795">31</flowPara></flowRoot>  <path
-     transform="translate(40,680)"
+     transform="translate(100,680)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path6797"
@@ -14895,9 +14898,9 @@
      id="path6801"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(170,680)" />
+     transform="translate(230,680)" />
   <path
-     transform="translate(300,680)"
+     transform="translate(360,680)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path6803"
@@ -14909,16 +14912,16 @@
      id="path6807"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(430,680)" />
+     transform="translate(490,680)" />
   <path
-     transform="translate(560,680)"
+     transform="translate(620,680)"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
      d="m 301,100 29,0 0,29 -29,0 z"
      id="path6809"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
   <g
-     transform="translate(880,-92.362183)"
+     transform="translate(940,-92.362183)"
      id="g6811">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -15020,7 +15023,7 @@
   </g>
   <g
      id="g6838"
-     transform="translate(910,-62.362175)">
+     transform="translate(970,-62.362175)">
     <rect
        y="871.86218"
        x="50.5"
@@ -15120,7 +15123,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(940,-122.36218)"
+     transform="translate(1000,-122.36218)"
      id="g6864">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -15222,7 +15225,7 @@
   </g>
   <g
      id="g6890"
-     transform="translate(850,-152.36218)">
+     transform="translate(910,-152.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -15327,10 +15330,10 @@
      id="path6916"
      d="m 301,100 29,0 0,29 -29,0 z"
      style="fill:#2e3436;fill-opacity:1;fill-rule:nonzero"
-     transform="translate(690,680)" />
+     transform="translate(750,680)" />
   <g
      id="g6918"
-     transform="translate(750,-122.36218)">
+     transform="translate(810,-122.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -15431,7 +15434,7 @@
   </g>
   <g
      id="g6970"
-     transform="translate(810,-122.36218)">
+     transform="translate(870,-122.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -15531,7 +15534,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(720,-152.36218)"
+     transform="translate(780,-152.36218)"
      id="g6996">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -15632,7 +15635,7 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <g
-     transform="translate(620,-152.36218)"
+     transform="translate(680,-152.36218)"
      id="g7022">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -15733,7 +15736,7 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <g
-     transform="translate(680,-122.36218)"
+     transform="translate(740,-122.36218)"
      id="g7074">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -15835,7 +15838,7 @@
   </g>
   <g
      id="g7100"
-     transform="translate(590,-152.36218)">
+     transform="translate(650,-152.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -15936,7 +15939,7 @@
   </g>
   <g
      id="g7126"
-     transform="translate(490,-62.362183)">
+     transform="translate(550,-62.362183)">
     <rect
        y="871.86218"
        x="50.5"
@@ -16036,7 +16039,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(519.9,-62.362183)"
+     transform="translate(579.9,-62.362183)"
      id="g7152">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -16138,7 +16141,7 @@
   </g>
   <g
      id="g7178"
-     transform="translate(550,-122.36218)">
+     transform="translate(610,-122.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -16238,7 +16241,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(360,-62.362175)"
+     transform="translate(420,-62.362175)"
      id="g7230">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -16340,7 +16343,7 @@
   </g>
   <g
      id="g7256"
-     transform="translate(389.9,-62.362183)">
+     transform="translate(449.9,-62.362183)">
     <rect
        y="871.86218"
        x="50.5"
@@ -16440,7 +16443,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(420,-122.36218)"
+     transform="translate(480,-122.36218)"
      id="g7282">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -16542,7 +16545,7 @@
   </g>
   <g
      id="g7334"
-     transform="translate(230,-62.362175)">
+     transform="translate(290,-62.362175)">
     <rect
        y="871.86218"
        x="50.5"
@@ -16642,7 +16645,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(259.9,-62.362183)"
+     transform="translate(319.9,-62.362183)"
      id="g7361">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -16744,7 +16747,7 @@
   </g>
   <g
      id="g7389"
-     transform="translate(290,-122.36218)">
+     transform="translate(350,-122.36218)">
     <rect
        y="871.86218"
        x="50.5"
@@ -16844,7 +16847,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(460,-62.362183)"
+     transform="translate(520,-62.362183)"
      id="g7441">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -16946,7 +16949,7 @@
   </g>
   <g
      id="g7467"
-     transform="translate(330,-92.362183)">
+     transform="translate(390,-92.362183)">
     <rect
        y="871.86218"
        x="50.5"
@@ -17046,7 +17049,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(200,-122.36218)"
+     transform="translate(260,-122.36218)"
      id="g7493">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -17148,7 +17151,7 @@
   </g>
   <g
      id="g7519"
-     transform="translate(649.9,-62.362183)">
+     transform="translate(709.9,-62.362183)">
     <rect
        y="871.86218"
        x="50.5"
@@ -17248,7 +17251,7 @@
        sodipodi:type="arc" />
   </g>
   <g
-     transform="translate(779.9,-62.362183)"
+     transform="translate(839.9,-62.362183)"
      id="g7546">
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -17349,7 +17352,7 @@
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
   <flowRoot
-     transform="translate(1536.313,695.96437)"
+     transform="translate(1596.313,695.96437)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot7598"
      xml:space="preserve"><flowRegion
@@ -17360,4 +17363,229 @@
          height="20.000006"
          width="80"
          id="rect7602" /></flowRegion><flowPara
-       id="flowPara7604">lost tie</flowPara></flowRoot></svg>
+       id="flowPara7604">lost tie</flowPara></flowRoot>  <g
+     id="g7656">
+    <rect
+       y="209.5"
+       x="180.5"
+       height="30"
+       width="30"
+       id="rect7617-7"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect7654"
+       width="30"
+       height="30"
+       x="180.5"
+       y="239.5" />
+  </g>
+  <g
+     id="g7685"
+     transform="translate(0,170)">
+    <rect
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect7687"
+       width="30"
+       height="30"
+       x="180.5"
+       y="209.5" />
+    <rect
+       y="239.5"
+       x="180.5"
+       height="30"
+       width="30"
+       id="rect7689"
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-size:14.33035373999999962px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     x="187.1371"
+     y="417.35309"
+     id="text7691"
+     transform="scale(1.0446886,0.95722305)"><tspan
+       sodipodi:role="line"
+       id="tspan7693"
+       x="187.1371"
+       y="417.35309">B</tspan></text>
+  <g
+     transform="translate(0,340)"
+     id="g7699">
+    <rect
+       y="209.5"
+       x="180.5"
+       height="30"
+       width="30"
+       id="rect7701"
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect7703"
+       width="30"
+       height="30"
+       x="180.5"
+       y="239.5" />
+  </g>
+  <text
+     transform="scale(1.0446886,0.95722305)"
+     id="text7705"
+     y="594.95013"
+     x="187.1371"
+     style="font-size:14.33035373999999962px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     xml:space="preserve"><tspan
+       y="594.95013"
+       x="187.1371"
+       id="tspan7707"
+       sodipodi:role="line">D</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:14.33035373999999962px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     x="187.1371"
+     y="626.29083"
+     id="text7709"
+     transform="scale(1.0446886,0.95722305)"><tspan
+       sodipodi:role="line"
+       id="tspan7711"
+       x="187.1371"
+       y="626.29083">B</tspan></text>
+  <g
+     id="g7713"
+     transform="translate(0,510)">
+    <rect
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect7715"
+       width="30"
+       height="30"
+       x="180.5"
+       y="209.5" />
+    <rect
+       y="239.5"
+       x="180.5"
+       height="30"
+       width="30"
+       id="rect7717"
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-size:14.33035373999999962px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     x="187.1371"
+     y="772.54718"
+     id="text7719"
+     transform="scale(1.0446886,0.95722305)"><tspan
+       sodipodi:role="line"
+       id="tspan7721"
+       x="187.1371"
+       y="772.54718">C</tspan></text>
+  <text
+     transform="scale(1.0446886,0.95722305)"
+     id="text7723"
+     y="803.88788"
+     x="187.1371"
+     style="font-size:14.33035373999999962px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     xml:space="preserve"><tspan
+       y="803.88788"
+       x="187.1371"
+       id="tspan7725"
+       sodipodi:role="line">D</tspan></text>
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot7727"
+     style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+     transform="translate(116.31206,-156.39968)"><flowRegion
+       id="flowRegion7729"><rect
+         id="rect7731"
+         width="69.999924"
+         height="119.99996"
+         x="43.687939"
+         y="196.39967"
+         style="font-size:22px;text-align:center;text-anchor:middle;fill:#a40000" /></flowRegion><flowPara
+       id="flowPara7737"></flowPara><flowPara
+       id="flowPara7744"></flowPara><flowPara
+       id="flowPara7746">Tabu list</flowPara></flowRoot>  <g
+     id="g7754"
+     style="stroke:#5c3566"
+     transform="translate(-4.5,0)">
+    <path
+       sodipodi:nodetypes="ccc"
+       inkscape:connector-curvature="0"
+       id="path7750"
+       d="m 220,400 c 15.96707,0 15.96707,20 0,20 l 5,-5"
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7752"
+       d="m 220,420 5,4"
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+  </g>
+  <g
+     transform="translate(-4.5,170)"
+     style="stroke:#5c3566"
+     id="g7758">
+    <path
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 220,400 c 15.96707,0 15.96707,20 0,20 l 5,-5"
+       id="path7760"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 220,420 5,4"
+       id="path7762"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     id="g7764"
+     style="stroke:#5c3566"
+     transform="translate(-4.5,200)">
+    <path
+       sodipodi:nodetypes="ccc"
+       inkscape:connector-curvature="0"
+       id="path7766"
+       d="m 220,400 c 15.96707,0 15.96707,20 0,20 l 5,-5"
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7768"
+       d="m 220,420 5,4"
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+  </g>
+  <g
+     id="g7770"
+     style="stroke:#5c3566"
+     transform="translate(-4.5,340)">
+    <path
+       sodipodi:nodetypes="ccc"
+       inkscape:connector-curvature="0"
+       id="path7772"
+       d="m 220,400 c 15.96707,0 15.96707,20 0,20 l 5,-5"
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7774"
+       d="m 220,420 5,4"
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+  </g>
+  <g
+     transform="translate(-4.5,370)"
+     style="stroke:#5c3566"
+     id="g7776">
+    <path
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 220,400 c 15.96707,0 15.96707,20 0,20 l 5,-5"
+       id="path7778"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="color:#000000;fill:none;stroke:#5c3566;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 220,420 5,4"
+       id="path7780"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>
