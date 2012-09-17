@@ -309,10 +309,6 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitObjectBinary(SingleCondition singleCondition, Expression left, Expression right, Class<?> type) {
-            if (isFixed(left)) {
-                throw new RuntimeException("Unmanaged fixed left"); // TODO
-            }
-
             Class<?> leftType = isDeclarationExpression(left) ? convertFromPrimitiveType(left.getType()) : left.getType();
             Class<?> rightType = isDeclarationExpression(right) ? convertFromPrimitiveType(right.getType()) : right.getType();
 
