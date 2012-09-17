@@ -100,8 +100,9 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
         if (planningEntityClass != null) {
             entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
             if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this + ") has a planningEntityClass ("
-                        + planningEntityClass + ") that is not configured as a planningEntity.\n" +
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") has a planningEntityClass (" + planningEntityClass
+                        + ") that is not configured as a planningEntity.\n" +
                         "If that class (" + planningEntityClass.getSimpleName() + ") is not a " +
                         "planningEntityClass (" + solutionDescriptor.getPlanningEntityClassSet()
                         + "), check your Solution implementation's annotated methods.\n" +
@@ -111,9 +112,9 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
             Collection<PlanningEntityDescriptor> planningEntityDescriptors = solutionDescriptor
                     .getPlanningEntityDescriptors();
             if (planningEntityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") has no configured planningEntityClass ("
-                        + planningEntityClass + ") and because there are multiple in the planningEntityClassSet ("
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") has no configured planningEntityClass (" + planningEntityClass
+                        + ") and because there are multiple in the planningEntityClassSet ("
                         + solutionDescriptor.getPlanningEntityClassSet()
                         + "), it can not be deducted automatically.");
             }

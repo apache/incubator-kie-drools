@@ -140,7 +140,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         // TODO moveSorterClass
         if (moveProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
                         + ") with moveProbabilityWeightFactoryClass ("
                         + moveProbabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ") that is not " + SelectionOrder.RANDOM + ".");
@@ -153,7 +153,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         }
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
             if (resolvedCacheType.isNotCached()) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") has a resolvedCacheType (" + resolvedCacheType + ") that is not cached.");
             }

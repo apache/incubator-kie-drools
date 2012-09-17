@@ -112,7 +112,7 @@ public class ValueSelectorConfig extends SelectorConfig {
 
         if (valueProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                throw new IllegalArgumentException("The variableSelectorConfig (" + this
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with valueProbabilityWeightFactoryClass ("
                         + valueProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
@@ -140,7 +140,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (planningVariableName != null) {
             variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(planningVariableName);
             if (variableDescriptor == null) {
-                throw new IllegalArgumentException("The variableSelectorConfig (" + this
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") has a planningVariableName ("
                         + planningVariableName + ") for planningEntityClass ("
                         + entityDescriptor.getPlanningEntityClass()
@@ -151,7 +151,7 @@ public class ValueSelectorConfig extends SelectorConfig {
             Collection<PlanningVariableDescriptor> planningVariableDescriptors = entityDescriptor
                     .getPlanningVariableDescriptors();
             if (planningVariableDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The variableSelectorConfig (" + this
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") has no configured planningVariableName ("
                         + planningVariableName + ") for planningEntityClass ("
                         + entityDescriptor.getPlanningEntityClass()

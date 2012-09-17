@@ -73,7 +73,8 @@ public class PillarSelectorConfig extends SelectorConfig {
     public PillarSelector buildPillarSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-            throw new IllegalArgumentException("The subChainChangeMoveSelector's minimumCacheType (" + minimumCacheType
+            throw new IllegalArgumentException("The pillarSelectorConfig (" + this
+                    + ")'s minimumCacheType (" + minimumCacheType
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the pillars change every step.");
         }

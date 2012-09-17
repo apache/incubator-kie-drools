@@ -82,7 +82,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
             SolutionDescriptor solutionDescriptor, PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-            throw new IllegalArgumentException("The subChainChangeMoveSelector's minimumCacheType (" + minimumCacheType
+            throw new IllegalArgumentException("The subChainSelectorConfig (" + this
+                    + ")'s minimumCacheType (" + minimumCacheType
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the chains change every step.");
         }
