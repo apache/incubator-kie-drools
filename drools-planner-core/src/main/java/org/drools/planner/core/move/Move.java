@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.move.factory.MoveFactory;
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
@@ -50,8 +51,8 @@ public interface Move {
      * It is recommended to keep this method implementation simple: do not use it in an attempt to satisfy normal
      * hard and soft constraints.
      * <p/>
-     * Although you could also filter out non-doable moves in for example the {@link MoveFactory},
-     * this is not needed as the {@link Solver} will do it for you.
+     * Although you could also filter out non-doable moves in for example the {@link MoveSelector}
+     * or {@link MoveListFactory}, this is not needed as the {@link Solver} will do it for you.
      * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
      * @return true if the move achieves a change in the solution and the move is possible to do on the solution.
      */

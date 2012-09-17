@@ -22,7 +22,6 @@ import java.util.ListIterator;
 
 import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;

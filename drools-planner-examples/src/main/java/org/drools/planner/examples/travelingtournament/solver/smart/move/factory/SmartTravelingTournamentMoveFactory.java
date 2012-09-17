@@ -25,15 +25,12 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.factory.AbstractMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.solver.smart.move.MatchSwapMove;
 import org.drools.planner.examples.travelingtournament.solver.smart.move.MultipleMatchListRotateMove;
 
 // TODO rename to MatchRotationMoveFactory

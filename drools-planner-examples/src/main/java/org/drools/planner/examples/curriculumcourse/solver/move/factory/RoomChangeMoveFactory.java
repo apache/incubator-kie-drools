@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
