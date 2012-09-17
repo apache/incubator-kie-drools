@@ -62,8 +62,8 @@ public class CachingEntitySelector extends AbstractCachingEntitySelector {
         if (!randomSelection) {
             return cachedEntityList.listIterator();
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 
@@ -71,8 +71,8 @@ public class CachingEntitySelector extends AbstractCachingEntitySelector {
         if (!randomSelection) {
             return cachedEntityList.listIterator(index);
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 

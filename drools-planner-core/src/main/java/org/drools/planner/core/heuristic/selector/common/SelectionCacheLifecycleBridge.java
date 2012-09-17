@@ -32,6 +32,7 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
         this.selectionCacheLifecycleListener = selectionCacheLifecycleListener;
         if (cacheType == null) {
             throw new IllegalArgumentException("The cacheType (" + cacheType
+                    + ") for selectionCacheLifecycleListener (" + selectionCacheLifecycleListener
                     + ") should have already been resolved.");
         }
     }

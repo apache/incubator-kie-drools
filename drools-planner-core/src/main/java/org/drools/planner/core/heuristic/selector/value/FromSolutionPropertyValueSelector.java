@@ -45,8 +45,8 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
         this.cacheType = cacheType;
         this.randomSelection = randomSelection;
         if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") does not support the cacheType (" + cacheType + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }

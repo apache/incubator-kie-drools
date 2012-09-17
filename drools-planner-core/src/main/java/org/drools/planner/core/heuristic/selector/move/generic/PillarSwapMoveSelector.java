@@ -41,7 +41,7 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
         this.randomSelection = randomSelection;
         Class<?> leftEntityClass = leftPillarSelector.getEntityDescriptor().getPlanningEntityClass();
         if (!leftEntityClass.equals(rightPillarSelector.getEntityDescriptor().getPlanningEntityClass())) {
-            throw new IllegalStateException("The moveSelector (" + this.getClass()
+            throw new IllegalStateException("The selector (" + this
                     + ") has a leftPillarSelector's planningEntityClass (" + leftEntityClass
                     + ") which is not equal to the rightPillarSelector's planningEntityClass ("
                     + rightPillarSelector.getEntityDescriptor().getPlanningEntityClass() + ").");
@@ -49,14 +49,14 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!leftEntityClass.equals(
                     variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass())) {
-                throw new IllegalStateException("The moveSelector (" + this.getClass()
+                throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor + ") with a planningEntityClass ("
                         + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                         + ") which is not equal to the leftPillarSelector's planningEntityClass ("
                         + leftEntityClass + ").");
             }
             if (variableDescriptor.isChained()) {
-                throw new IllegalStateException("The moveSelector (" + this.getClass()
+                throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor
                         + ") which is chained (" + variableDescriptor.isChained() + ").");
             }

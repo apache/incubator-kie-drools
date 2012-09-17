@@ -55,28 +55,29 @@ public class SameValuePillarSelector extends AbstractSelector
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!entityClass.equals(
                     variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass())) {
-                throw new IllegalStateException("The moveSelector (" + this.getClass()
+                throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor + ") with a planningEntityClass ("
                         + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                         + ") which is not equal to the entitySelector's planningEntityClass ("
                         + entityClass + ").");
             }
             if (variableDescriptor.isChained()) {
-                throw new IllegalStateException("The pillarSelector (" + this.getClass()
+                throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor
                         + ") which is chained (" + variableDescriptor.isChained() + ").");
             }
         }
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (variableDescriptor.isChained()) {
-                throw new IllegalStateException("The pillarSelector (" + this.getClass()
+                throw new IllegalStateException("The selector (" + this
                         + ") cannot have a variableDescriptor (" + variableDescriptor
                         + ") which is chained (" + variableDescriptor.isChained() + ").");
             }
         }
         if (entitySelector.isNeverEnding()) {
-            throw new IllegalStateException("The entitySelector (" + entitySelector + ") has neverEnding ("
-                    + entitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has an entitySelector (" + entitySelector
+                    + ") with neverEnding (" + entitySelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(SelectionCacheType.STEP, this));
@@ -147,8 +148,8 @@ public class SameValuePillarSelector extends AbstractSelector
         if (!randomSelection) {
             return cachedPillarList.listIterator();
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 
@@ -156,8 +157,8 @@ public class SameValuePillarSelector extends AbstractSelector
         if (!randomSelection) {
             return cachedPillarList.listIterator(index);
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 

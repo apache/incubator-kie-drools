@@ -51,19 +51,21 @@ public class DefaultSubChainSelector extends AbstractSelector
         this.randomSelection = randomSelection;
         this.minimumSubChainSize = minimumSubChainSize;
         if (!valueSelector.getVariableDescriptor().isChained()) {
-            throw new IllegalArgumentException("The valueSelector (" + valueSelector
+            throw new IllegalArgumentException("The selector (" + this
+                    + ")'s valueSelector (" + valueSelector
                     + ") must have a chained variableDescriptor chained ("
-                    + valueSelector.getVariableDescriptor().isChained()
-                    + ") on the class (" + getClass().getName() + ").");
+                    + valueSelector.getVariableDescriptor().isChained() + ").");
         }
         if (valueSelector.isNeverEnding()) {
-            throw new IllegalStateException("The valueSelector (" + valueSelector + ") has neverEnding ("
-                    + valueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a valueSelector (" + valueSelector
+                    + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(valueSelector);
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(SelectionCacheType.STEP, this));
         if (minimumSubChainSize < 1) {
-            throw new IllegalStateException("The minimumSubChainSize (" + minimumSubChainSize
+            throw new IllegalStateException("The selector (" + this
+                    + ")'s minimumSubChainSize (" + minimumSubChainSize
                     + ") must be at least 1.");
         }
 //        if (minimumSubChainSize > maximumSubChainSize) {
@@ -87,8 +89,9 @@ public class DefaultSubChainSelector extends AbstractSelector
         long valueSize = valueSelector.getSize();
         // Fail-fast when anchorTrailingChainSize could ever be too big
         if (valueSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The subChainSelector (" + this + ") has a valueSelector ("
-                    + valueSelector + ") with valueSize (" + valueSize
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a valueSelector (" + valueSelector
+                    + ") with valueSize (" + valueSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         // Temporary LinkedList to avoid using a bad initialCapacity
@@ -155,8 +158,8 @@ public class DefaultSubChainSelector extends AbstractSelector
                     + "As a result you can only use SubChain based swap moves with randomSelection true. "
                     + " https://issues.jboss.org/browse/JBRULES-3586");
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 
@@ -169,8 +172,8 @@ public class DefaultSubChainSelector extends AbstractSelector
                     + "As a result you can only use SubChain based swap moves with randomSelection true. "
                     + " https://issues.jboss.org/browse/JBRULES-3586");
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 

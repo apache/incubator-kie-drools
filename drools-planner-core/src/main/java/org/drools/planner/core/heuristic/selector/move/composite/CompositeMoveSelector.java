@@ -42,10 +42,10 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
                 for (MoveSelector childMoveSelector
                         : childMoveSelectorList.subList(0, childMoveSelectorList.size() - 1)) {
                     if (childMoveSelector.isNeverEnding()) {
-                        throw new IllegalStateException("The non-last childMoveSelector (" + childMoveSelector
+                        throw new IllegalStateException("The selector (" + this
+                                + ")'s non-last childMoveSelector (" + childMoveSelector
                                 + ") has neverEnding (" + childMoveSelector.isNeverEnding()
-                                + ") on a class (" + getClass().getName()  + ") instance with randomSelection ("
-                                + randomSelection + ").");
+                                + ") with randomSelection (" + randomSelection + ").");
                     }
                 }
             }

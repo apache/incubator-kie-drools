@@ -23,13 +23,14 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
         this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
         if (childValueSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") has neverEnding ("
-                    + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a childValueSelector (" + childValueSelector
+                    + ") with neverEnding (" + childValueSelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(childValueSelector);
         if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") does not support the cacheType (" + cacheType + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
@@ -45,8 +46,9 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childValueSelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The valueSelector (" + this + ") has a childValueSelector ("
-                    + childValueSelector + ") with childSize (" + childSize
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a childValueSelector (" + childValueSelector
+                    + ") with childSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedValueList = new ArrayList<Object>((int) childSize);

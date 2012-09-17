@@ -23,13 +23,14 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
         this.childEntitySelector = childEntitySelector;
         this.cacheType = cacheType;
         if (childEntitySelector.isNeverEnding()) {
-            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
-                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a childEntitySelector (" + childEntitySelector
+                    + ") with neverEnding (" + childEntitySelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
         if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") does not support the cacheType (" + cacheType + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
@@ -45,7 +46,7 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childEntitySelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The entitySelector (" + this + ") has a childEntitySelector ("
+            throw new IllegalStateException("The selector (" + this + ") has a childEntitySelector ("
                     + childEntitySelector + ") with childSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }

@@ -49,13 +49,14 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         this.cacheType = cacheType;
         this.entityProbabilityWeightFactory = entityProbabilityWeightFactory;
         if (childEntitySelector.isNeverEnding()) {
-            throw new IllegalStateException("The childEntitySelector (" + childEntitySelector + ") has neverEnding ("
-                    + childEntitySelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a childEntitySelector (" + childEntitySelector
+                    + ") with neverEnding (" + childEntitySelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
         if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") does not support the cacheType (" + cacheType + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
@@ -117,11 +118,13 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
     }
 
     public ListIterator<Object> listIterator() {
-        throw new IllegalStateException("ListIterator is not supported with randomSelection.");
+        throw new IllegalStateException("The selector (" + this
+                + ") does not support a ListIterator with randomSelection (true).");
     }
 
     public ListIterator<Object> listIterator(int index) {
-        throw new IllegalStateException("ListIterator is not supported with randomSelection.");
+        throw new IllegalStateException("The selector (" + this
+                + ") does not support a ListIterator with randomSelection (true).");
     }
 
     @Override

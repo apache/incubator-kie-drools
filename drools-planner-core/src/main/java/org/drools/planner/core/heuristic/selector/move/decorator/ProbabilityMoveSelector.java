@@ -49,13 +49,14 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
         this.cacheType = cacheType;
         this.moveProbabilityWeightFactory = moveProbabilityWeightFactory;
         if (childMoveSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childMoveSelector (" + childMoveSelector + ") has neverEnding ("
-                    + childMoveSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a childMoveSelector (" + childMoveSelector
+                    + ") with neverEnding (" + childMoveSelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
         if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") does not support the cacheType (" + cacheType + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }

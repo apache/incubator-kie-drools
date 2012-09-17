@@ -48,13 +48,14 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
         this.cacheType = cacheType;
         this.valueProbabilityWeightFactory = valueProbabilityWeightFactory;
         if (childValueSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") has neverEnding ("
-                    + childValueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a childValueSelector (" + childValueSelector
+                    + ") with neverEnding (" + childValueSelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(childValueSelector);
         if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") does not support the cacheType (" + cacheType + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }

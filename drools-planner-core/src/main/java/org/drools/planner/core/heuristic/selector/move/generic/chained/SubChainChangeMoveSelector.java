@@ -40,18 +40,22 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         this.randomSelection = randomSelection;
         this.selectReversingMoveToo = selectReversingMoveToo;
         if (subChainSelector.getVariableDescriptor() != valueSelector.getVariableDescriptor()) {
-            throw new IllegalStateException("The subChainSelector (" + subChainSelector + ")'s variableDescriptor ("
-                    + subChainSelector.getVariableDescriptor() + ") is not the same as the valueSelector ("
-                    + valueSelector +")'s variableDescriptor(" + valueSelector.getVariableDescriptor() + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a subChainSelector (" + subChainSelector
+                    + ") with variableDescriptor (" + subChainSelector.getVariableDescriptor()
+                    + ") which is not the same as the valueSelector (" + valueSelector
+                    +")'s variableDescriptor(" + valueSelector.getVariableDescriptor() + ").");
         }
         if (!randomSelection) {
             if (subChainSelector.isNeverEnding()) {
-                throw new IllegalStateException("The subChainSelector (" + subChainSelector + ") has neverEnding ("
-                        + subChainSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+                throw new IllegalStateException("The selector (" + this
+                        + ") has a subChainSelector (" + subChainSelector
+                        + ") with neverEnding (" + subChainSelector.isNeverEnding() + ").");
             }
             if (valueSelector.isNeverEnding()) {
-                throw new IllegalStateException("The valueSelector (" + valueSelector + ") has neverEnding ("
-                        + valueSelector.isNeverEnding() + ") on a class (" + getClass().getName() + ") instance.");
+                throw new IllegalStateException("The selector (" + this
+                        + ") has a valueSelector (" + valueSelector
+                        + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
             }
         }
         solverPhaseLifecycleSupport.addEventListener(subChainSelector);

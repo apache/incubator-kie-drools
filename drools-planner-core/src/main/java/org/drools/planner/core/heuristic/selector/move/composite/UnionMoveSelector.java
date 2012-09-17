@@ -57,17 +57,17 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         this.selectorProbabilityWeightFactory = selectorProbabilityWeightFactory;
         if (!randomSelection) {
             if (selectorProbabilityWeightFactory != null) {
-                throw new IllegalArgumentException("The compositeMoveSelector (" + this
+                throw new IllegalArgumentException("The selector (" + this
                         + ") with randomSelection (" + randomSelection
                         + ") cannot have a selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
-                        + ")");
+                        + ").");
             }
         } else {
             if (selectorProbabilityWeightFactory == null) {
-                throw new IllegalArgumentException("The compositeMoveSelector (" + this
+                throw new IllegalArgumentException("The selector (" + this
                         + ") with randomSelection (" + randomSelection
                         + ") requires a selectorProbabilityWeightFactory ("  + selectorProbabilityWeightFactory
-                        + ")");
+                        + ").");
             }
         }
     }

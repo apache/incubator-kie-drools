@@ -44,8 +44,8 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         this.cacheType = cacheType;
         this.randomSelection = randomSelection;
         if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The cacheType (" + cacheType
-                    + ") is not supported on the class (" + getClass().getName() + ").");
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") does not support the cacheType (" + cacheType + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
@@ -95,8 +95,8 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         if (!randomSelection) {
             return cachedEntityList.listIterator();
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 
@@ -104,8 +104,8 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         if (!randomSelection) {
             return cachedEntityList.listIterator(index);
         } else {
-            throw new IllegalStateException("ListIterator is not supported with randomSelection ("
-                    + randomSelection + ").");
+            throw new IllegalStateException("The selector (" + this
+                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 

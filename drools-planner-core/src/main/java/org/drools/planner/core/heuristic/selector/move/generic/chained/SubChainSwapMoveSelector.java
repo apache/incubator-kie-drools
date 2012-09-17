@@ -44,7 +44,7 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
         this.selectReversingMoveToo = selectReversingMoveToo;
         variableDescriptor = leftSubChainSelector.getVariableDescriptor();
         if (leftSubChainSelector.getVariableDescriptor() != rightSubChainSelector.getVariableDescriptor()) {
-            throw new IllegalStateException("The moveSelector (" + this.getClass()
+            throw new IllegalStateException("The selector (" + this
                     + ") has a leftSubChainSelector's variableDescriptor ("
                     + leftSubChainSelector.getVariableDescriptor()
                     + ") which is not equal to the rightSubChainSelector's variableDescriptor ("
