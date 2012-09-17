@@ -50,168 +50,181 @@ public class KProjectTest {
     private static final ProtectionDomain PROTECTION_DOMAIN;
 
     static {
-        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged(new PrivilegedAction() {
 
             public Object run() {
                 return JavaDialectRuntimeData.class.getProtectionDomain();
             }
-        } );
+        });
     }
 
     @Test
     public void testAddModifyRemoveKBase() throws IOException,
-                                          ClassNotFoundException,
-                                          InterruptedException,
-                                          InstantiationException,
-                                          IllegalAccessException,
-                                          SecurityException,
-                                          NoSuchMethodException,
-                                          IllegalArgumentException,
-                                          InvocationTargetException {
+            ClassNotFoundException,
+            InterruptedException,
+            InstantiationException,
+            IllegalAccessException,
+            SecurityException,
+            NoSuchMethodException,
+            IllegalArgumentException,
+            InvocationTargetException {
         KProject kproj = new KProjectImpl();
 
         KProjectChangeLog klog = new KProjectChangeLog();
-        kproj.setListener( klog );
+        kproj.setListener(klog);
 
-        kproj.setKProjectPath( "src/main/resources/" );
-        kproj.setKBasesPath( "src/kbases" );
+        kproj.setKProjectPath("src/main/resources/");
+        kproj.setKBasesPath("src/kbases");
 
-        List<String> files = asList( new String[]{} );
+        List<String> files = asList(new String[]{});
 
         // Create and add the KBase
-        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" )
-                            .setFiles( files )
-                            .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
-                            .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
-                            .setEventProcessingMode( EventProcessingOption.STREAM );
+        KBase kBase1 = kproj.newKBase("org.test1", "KBase1")
+                            .setFiles(files)
+                            .setAnnotations(asList("@ApplicationScoped; @Inject"))
+                            .setEqualsBehavior(AssertBehaviorOption.EQUALITY)
+                            .setEventProcessingMode(EventProcessingOption.STREAM);
 
         MemoryFileSystem mfs = new MemoryFileSystem();
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+        KProjectChangeLogCommiter.commit(kproj, klog, mfs);
 
-        Folder fld = mfs.getFolder( "src/kbases/org.test1.KBase1" );
-        assertTrue( fld.exists() );
+        Folder fld = mfs.getFolder("src/kbases/org.test1.KBase1");
+        assertTrue(fld.exists());
 
         // Modify the KBase
-        MemoryFile mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java" );
-        String s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
-        assertTrue( s.contains( "EventProcessingOption.STREAM" ) );
+        MemoryFile mf = (MemoryFile) mfs.getFile("src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java");
+        String s = new String(mfs.getBytes(mf.getPath().toPortableString()));
+        assertTrue(s.contains("EventProcessingOption.STREAM"));
 
-        kBase1.setEventProcessingMode( EventProcessingOption.CLOUD );
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
-        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java" );
-        s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
-        assertTrue( s.contains( "EventProcessingOption.CLOUD" ) );
+        kBase1.setEventProcessingMode(EventProcessingOption.CLOUD);
+        KProjectChangeLogCommiter.commit(kproj, klog, mfs);
+        mf = (MemoryFile) mfs.getFile("src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java");
+        s = new String(mfs.getBytes(mf.getPath().toPortableString()));
+        assertTrue(s.contains("EventProcessingOption.CLOUD"));
 
         // Remove the KBase
-        kproj.removeKBase( kBase1.getQName() );
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+        kproj.removeKBase(kBase1.getQName());
+        KProjectChangeLogCommiter.commit(kproj, klog, mfs);
 
-        fld = mfs.getFolder( "src/kbases/org.test1.KBase1" );
-        assertFalse( fld.exists() );
-        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java" );
-        assertFalse( mf.exists() );
+        fld = mfs.getFolder("src/kbases/org.test1.KBase1");
+        assertFalse(fld.exists());
+        mf = (MemoryFile) mfs.getFile("src/kbases/org.test1.KBase1/org/test1/KBase1Producer.java");
+        assertFalse(mf.exists());
     }
 
     @Test
     public void testAddModifyRemoveKSession() throws IOException,
-                                             ClassNotFoundException,
-                                             InterruptedException,
-                                             InstantiationException,
-                                             IllegalAccessException,
-                                             SecurityException,
-                                             NoSuchMethodException,
-                                             IllegalArgumentException,
-                                             InvocationTargetException {
+            ClassNotFoundException,
+            InterruptedException,
+            InstantiationException,
+            IllegalAccessException,
+            SecurityException,
+            NoSuchMethodException,
+            IllegalArgumentException,
+            InvocationTargetException {
         KProject kproj = new KProjectImpl();
 
         KProjectChangeLog klog = new KProjectChangeLog();
-        kproj.setListener( klog );
+        kproj.setListener(klog);
 
-        kproj.setKProjectPath( "src/main/resources/" );
-        kproj.setKBasesPath( "src/kbases" );
+        kproj.setKProjectPath("src/main/resources/");
+        kproj.setKBasesPath("src/kbases");
 
-        List<String> files = asList( new String[]{} );
+        List<String> files = asList(new String[]{});
 
         // create and add the KBase
-        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" )
-                .setFiles( files )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
-                .setEventProcessingMode( EventProcessingOption.STREAM );
+        KBase kBase1 = kproj.newKBase("org.test1", "KBase1")
+                            .setFiles(files)
+                            .setAnnotations(asList("@ApplicationScoped; @Inject"))
+                            .setEqualsBehavior(AssertBehaviorOption.EQUALITY)
+                            .setEventProcessingMode(EventProcessingOption.STREAM);
 
         MemoryFileSystem mfs = new MemoryFileSystem();
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
-        Folder fld = mfs.getFolder( "src/kbases/org.test1.KBase1" );
-        assertTrue( fld.exists() );
+        KProjectChangeLogCommiter.commit(kproj, klog, mfs);
+        Folder fld = mfs.getFolder("src/kbases/org.test1.KBase1");
+        assertTrue(fld.exists());
 
         // Creat and add KSession
-        KSession kSession1 = kBase1.newKSession( "org.test1", "KSession1" )
-                                   .setType( "stateful" )
-                                   .setClockType( ClockTypeOption.get( "realtime" ) );
+        KSession kSession1 = kBase1.newKSession("org.test1", "KSession1")
+                                   .setType("stateful")
+                                   .setClockType(ClockTypeOption.get("realtime"));
 
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+        KProjectChangeLogCommiter.commit(kproj, klog, mfs);
 
-        MemoryFile mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KSession1Producer.java" );
-        String s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
-        assertTrue( s.contains( "newStatefulKnowledgeSession" ) );
-        assertTrue( s.contains( "realtime" ) );
+        MemoryFile mf = (MemoryFile) mfs.getFile("src/kbases/org.test1.KBase1/org/test1/KSession1Producer.java");
+        String s = new String(mfs.getBytes(mf.getPath().toPortableString()));
+        assertTrue(s.contains("newStatefulKnowledgeSession"));
+        assertTrue(s.contains("realtime"));
 
         // Modify KSession
-        kSession1.setType( "stateless" )
-                 .setClockType( ClockTypeOption.get( "pseudo" ) );
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+        kSession1.setType("stateless")
+                 .setClockType(ClockTypeOption.get("pseudo"));
+        KProjectChangeLogCommiter.commit(kproj, klog, mfs);
 
-        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KSession1Producer.java" );
-        s = new String( mfs.getBytes( mf.getPath().toPortableString() ) );
-        assertTrue( s.contains( "newStatelessKnowledgeSession" ) );
-        assertTrue( s.contains( "pseudo" ) );
+        mf = (MemoryFile) mfs.getFile("src/kbases/org.test1.KBase1/org/test1/KSession1Producer.java");
+        s = new String(mfs.getBytes(mf.getPath().toPortableString()));
+        assertTrue(s.contains("newStatelessKnowledgeSession"));
+        assertTrue(s.contains("pseudo"));
 
         // Remove KSession
-        kBase1.removeKSession( "org.test1.KSession1" );
-        KProjectChangeLogCommiter.commit( kproj, klog, mfs );
+        kBase1.removeKSession("org.test1.KSession1");
+        KProjectChangeLogCommiter.commit(kproj, klog, mfs);
 
-        mf = (MemoryFile) mfs.getFile( "src/kbases/org.test1.KBase1/org/test1/KSession1Producer.java" );
-        assertFalse( mf.exists() );
+        mf = (MemoryFile) mfs.getFile("src/kbases/org.test1.KBase1/org/test1/KSession1Producer.java");
+        assertFalse(mf.exists());
     }
 
     @Test
     public void testCompileAndCDI() throws IOException,
-                       ClassNotFoundException,
-                       InterruptedException {
+            ClassNotFoundException,
+            InterruptedException {
         KProject kproj = new KProjectImpl();
 
-        kproj.setKProjectPath( "src/main/resources/" );
-        kproj.setKBasesPath( "src/kbases" );
+        kproj.setKProjectPath("src/main/resources/");
+        kproj.setKBasesPath("src/kbases");
 
-        List<String> files = asList( new String[]{"org/test1/rule1.drl", "org/test1/rule2.drl"} );
+        List<String> files = asList(new String[]{"org/test1/rule1.drl", "org/test1/rule2.drl"});
 
-        KBase kBase1 = kproj.newKBase( "org.test1", "KBase1" )
-                            .setFiles( files )
-                            .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
-                            .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
-                            .setEventProcessingMode( EventProcessingOption.STREAM );
+        KBase kBase1 = kproj.newKBase("org.test1", "KBase1")
+                            .setFiles(files)
+                            .setAnnotations(asList("@ApplicationScoped; @Inject"))
+                            .setEqualsBehavior(AssertBehaviorOption.EQUALITY)
+                            .setEventProcessingMode(EventProcessingOption.STREAM);
 
-        KSession ksession1 = kBase1.newKSession( "org.test1", "KSession1" )
-                                    .setType( "stateless" )
-                                    .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
-                                    .setClockType( ClockTypeOption.get( "realtime" ) );
+        KSession ksession1 = kBase1.newKSession("org.test1", "KSession1")
+                                   .setType("stateless")
+                                   .setAnnotations(asList("@ApplicationScoped; @Inject"))
+                                   .setClockType(ClockTypeOption.get("realtime"));
 
-        KSession ksession2 = kBase1.newKSession( "org.test1", "KSession2" )
-                                   .setType( "stateful" )
-                                   .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
-                                   .setClockType( ClockTypeOption.get( "pseudo" ) );
+        KSession ksession2 = kBase1.newKSession("org.test1", "KSession2")
+                                   .setType("stateful")
+                                   .setAnnotations(asList("@ApplicationScoped; @Inject"))
+                                   .setClockType(ClockTypeOption.get("pseudo"));
 
-        files = asList( new String[]{"org/test2/rule1.drl", "org/test2/rule2.drl"} );
-        KBase kbase2 = kproj.newKBase( "org.test2", "KBase2" )
-                            .setFiles( files )
-                            .setAnnotations( asList( "@ApplicationScoped" ) )
-                            .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
-                            .setEventProcessingMode( EventProcessingOption.CLOUD );
+        files = asList(new String[]{"org/test2/rule1.drl", "org/test2/rule2.drl"});
+        KBase kBase2 = kproj.newKBase("org.test2", "KBase2")
+                            .setFiles(files)
+                            .setAnnotations(asList("@ApplicationScoped"))
+                            .setEqualsBehavior(AssertBehaviorOption.IDENTITY)
+                            .setEventProcessingMode(EventProcessingOption.CLOUD);
 
-        KSession ksession3 = kbase2.newKSession( "org.test2", "KSession3" )
-                                    .setType( "stateful" )
-                                    .setAnnotations( asList( "@ApplicationScoped" ) )
-                                    .setClockType( ClockTypeOption.get( "pseudo" ) );
+        KSession ksession3 = kBase2.newKSession("org.test2", "KSession3")
+                                   .setType("stateful")
+                                   .setAnnotations(asList("@ApplicationScoped"))
+                                   .setClockType(ClockTypeOption.get("pseudo"));
+
+        KBase kBase3 = kproj.newKBase("org.test3", "KBase3")
+                            .setFiles(asList(new String[]{}))
+                            .addInclude(kBase1.getQName())
+                            .addInclude(kBase2.getQName())
+                            .setAnnotations(asList("@ApplicationScoped"))
+                            .setEqualsBehavior(AssertBehaviorOption.IDENTITY)
+                            .setEventProcessingMode(EventProcessingOption.CLOUD);
+
+        KSession ksession4 = kBase3.newKSession("org.test3", "KSession4")
+                                   .setType("stateless")
+                                   .setAnnotations(asList("@ApplicationScoped"))
+                                   .setClockType(ClockTypeOption.get("pseudo"));
 
         //        
         //        XStream xstream = new XStream();
@@ -221,34 +234,34 @@ public class KProjectTest {
 
         //                
         MemoryFileSystem mfs = new MemoryFileSystem();
-        KProjectChangeLogCommiter.commit( kproj, mfs );
+        KProjectChangeLogCommiter.commit(kproj, mfs);
 
-        // printFs(  mfs, mfs.getProjectFolder() );
+        printFs(mfs, mfs.getProjectFolder());
 
-        String kBase1R1 = getRule( "org.test1", "rule1" );
-        String kBase1R2 = getRule( "org.test1", "rule2" );
+        String kBase1R1 = getRule("org.test1", "rule1");
+        String kBase1R2 = getRule("org.test1", "rule2");
 
-        String kbase2R1 = getRule( "org.test2", "rule1" );
-        String kbase2R2 = getRule( "org.test2", "rule2" );
+        String kbase2R1 = getRule("org.test2", "rule1");
+        String kbase2R2 = getRule("org.test2", "rule2");
 
-        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getQName() + "/" + kBase1.getNamespace().replace( '.', '/' );
-        String fldKB2 = kproj.getKBasesPath() + "/" + kbase2.getQName() + "/" + kbase2.getNamespace().replace( '.', '/' );
+        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getQName() + "/" + kBase1.getNamespace().replace('.', '/');
+        String fldKB2 = kproj.getKBasesPath() + "/" + kBase2.getQName() + "/" + kBase2.getNamespace().replace('.', '/');
 
-        mfs.getFolder( fldKB1 ).create();
-        mfs.getFolder( fldKB2 ).create();
+        mfs.getFolder(fldKB1).create();
+        mfs.getFolder(fldKB2).create();
 
-        mfs.getFile( fldKB1 + "/rule1.drl" ).create( new ByteArrayInputStream( kBase1R1.getBytes() ) );
-        mfs.getFile( fldKB1 + "/rule2.drl" ).create( new ByteArrayInputStream( kBase1R2.getBytes() ) );
-        mfs.getFile( fldKB2 + "/rule1.drl" ).create( new ByteArrayInputStream( kbase2R1.getBytes() ) );
-        mfs.getFile( fldKB2 + "/rule2.drl" ).create( new ByteArrayInputStream( kbase2R2.getBytes() ) );
+        mfs.getFile(fldKB1 + "/rule1.drl").create(new ByteArrayInputStream(kBase1R1.getBytes()));
+        mfs.getFile(fldKB1 + "/rule2.drl").create(new ByteArrayInputStream(kBase1R2.getBytes()));
+        mfs.getFile(fldKB2 + "/rule1.drl").create(new ByteArrayInputStream(kbase2R1.getBytes()));
+        mfs.getFile(fldKB2 + "/rule2.drl").create(new ByteArrayInputStream(kbase2R2.getBytes()));
 
         MemoryFileSystem trgMfs = new MemoryFileSystem();
         MemoryFileSystem srcMfs = mfs;
 
-        Folder fld1 = trgMfs.getFolder( "org/drools/cdi/test" );
+        Folder fld1 = trgMfs.getFolder("org/drools/cdi/test");
         fld1.create();
-        File fle1 = fld1.getFile( "KProjectTestClassImpl.java" );
-        fle1.create( new ByteArrayInputStream( generateKProjectTestClassImpl( kproj ).getBytes() ) );
+        File fle1 = fld1.getFile("KProjectTestClassImpl.java");
+        fle1.create(new ByteArrayInputStream(generateKProjectTestClassImpl(kproj).getBytes()));
 
         Folder fld2 = trgMfs.getFolder( "META-INF" );
         fld2.create();
@@ -257,58 +270,68 @@ public class KProjectTest {
 
         
         List<String> inputClasses = new ArrayList<String>();
-        inputClasses.add( "org/drools/cdi/test/KProjectTestClassImpl.java" );
+        inputClasses.add("org/drools/cdi/test/KProjectTestClassImpl.java");
 
-        final List<String> classes = compile( kproj, srcMfs, trgMfs, inputClasses );
+        final List<String> classes = compile(kproj, srcMfs, trgMfs, inputClasses);
 
-        MemoryFileSystemClassLoader classLoader = new MemoryFileSystemClassLoader( trgMfs );
+        MemoryFileSystemClassLoader classLoader = new MemoryFileSystemClassLoader(trgMfs);
 
         ClassLoader origCl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader( classLoader );
+            Thread.currentThread().setContextClassLoader(classLoader);
 
             Weld weldContainer = new Weld() {
                 @Override
                 protected Deployment createDeployment(ResourceLoader resourceLoader,
                                                       Bootstrap bootstrap) {
-                    return new TestWeldSEDeployment( resourceLoader, bootstrap, classes );
+                    return new TestWeldSEDeployment(resourceLoader, bootstrap, classes);
                 }
             };
             WeldContainer weld = weldContainer.initialize();
-            KProjectTestClass bean = weld.instance().select( KProjectTestClass.class ).get();
+            KProjectTestClass bean = weld.instance().select(KProjectTestClass.class).get();
 
-            assertNotNull( bean.getKBase1() );
-            assertNotNull( bean.getKBase2() );
+            assertNotNull(bean.getKBase1());
+            assertNotNull(bean.getKBase2());
 
             List<String> list = new ArrayList<String>();
 
-            StatelessKnowledgeSession stlsKsession = bean.getKBase1Ksession1();
-            stlsKsession.setGlobal( "list", list );
-            stlsKsession.execute( "dummy" );
-            assertEquals( 2, list.size() );
-            assertTrue( list.contains( "org.test1:rule1" ) );
-            assertTrue( list.contains( "org.test1:rule2" ) );
+            StatelessKnowledgeSession stlsKsession = bean.getKBase1KSession1();
+            stlsKsession.setGlobal("list", list);
+            stlsKsession.execute("dummy");
+            assertEquals(2, list.size());
+            assertTrue(list.contains("org.test1:rule1"));
+            assertTrue(list.contains("org.test1:rule2"));
 
             list.clear();
-            StatefulKnowledgeSession stflKsession = bean.getKBase1Ksession2();
-            stflKsession.setGlobal( "list", list );
+            StatefulKnowledgeSession stflKsession = bean.getKBase1KSession2();
+            stflKsession.setGlobal("list", list);
             stflKsession.fireAllRules();
-            assertEquals( 2, list.size() );
-            assertTrue( list.contains( "org.test1:rule1" ) );
-            assertTrue( list.contains( "org.test1:rule2" ) );
+            assertEquals(2, list.size());
+            assertTrue(list.contains("org.test1:rule1"));
+            assertTrue(list.contains("org.test1:rule2"));
 
             list.clear();
-            stflKsession = bean.getKBase2Ksession3();
-            stflKsession.setGlobal( "list", list );
+            stflKsession = bean.getKBase2KSession3();
+            stflKsession.setGlobal("list", list);
             stflKsession.fireAllRules();
-            assertEquals( 2, list.size() );
+            assertEquals(2, list.size());
 
-            assertTrue( list.contains( "org.test2:rule1" ) );
-            assertTrue( list.contains( "org.test2:rule2" ) );
+            assertTrue(list.contains("org.test2:rule1"));
+            assertTrue(list.contains("org.test2:rule2"));
+
+            list.clear();
+            stlsKsession = bean.getKBase3KSession4();
+            stlsKsession.setGlobal("list", list);
+            stlsKsession.execute("dummy");
+            assertEquals(4, list.size());
+            assertTrue(list.contains("org.test1:rule1"));
+            assertTrue(list.contains("org.test1:rule2"));
+            assertTrue(list.contains("org.test2:rule1"));
+            assertTrue(list.contains("org.test2:rule2"));
 
             weldContainer.shutdown();
         } finally {
-            Thread.currentThread().setContextClassLoader( origCl );
+            Thread.currentThread().setContextClassLoader(origCl);
         }
     }
 
@@ -317,45 +340,45 @@ public class KProjectTest {
                                 MemoryFileSystem srcMfs,
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
-        for ( KBase kbase : kproj.getKBases().values() ) {
-            Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getQName() );
+        for (KBase kbase : kproj.getKBases().values()) {
+            Folder srcFolder = srcMfs.getFolder(kproj.getKBasesPath() + "/" + kbase.getQName());
             Folder trgFolder = trgMfs.getProjectFolder();
 
-            copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
+            copyFolder(srcMfs, srcFolder, trgMfs, trgFolder, kproj);
         }
 
-        populateClasses( kproj, classes );
+        populateClasses(kproj, classes);
 
-        System.out.println( classes );
+        System.out.println(classes);
 
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
-        settings.setSourceVersion( "1.5" );
-        settings.setTargetVersion( "1.5" );
-        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings );
-        CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), trgMfs, trgMfs );
+        settings.setSourceVersion("1.5");
+        settings.setTargetVersion("1.5");
+        EclipseJavaCompiler compiler = new EclipseJavaCompiler(settings);
+        CompilationResult res = compiler.compile(classes.toArray(new String[classes.size()]), trgMfs, trgMfs);
 
-        if ( res.getErrors().length > 0 ) {
-            fail( res.getErrors()[0].getMessage() );
+        if (res.getErrors().length > 0) {
+            fail(res.getErrors()[0].getMessage());
             //fail(res.getErrors().toString());
         }
 
-        List<String> classes2 = new ArrayList<String>( classes.size() );
-        for ( String str : classes ) {
-            classes2.add( filenameToClassname( str ) );
+        List<String> classes2 = new ArrayList<String>(classes.size());
+        for (String str : classes) {
+            classes2.add(filenameToClassname(str));
         }
 
         return classes2;
-    }    
-    
+    }
+
     public String getRule(String packageName,
                           String ruleName) {
         String s = "package " + packageName + "\n" +
-                   "global java.util.List list;\n" +
-                   "rule " + ruleName + " when \n" +
-                   "then \n" +
-                   "  list.add(\"" + packageName + ":" + ruleName + "\"); " +
-                   "end \n" +
-                   "";
+                "global java.util.List list;\n" +
+                "rule " + ruleName + " when \n" +
+                "then \n" +
+                "  list.add(\"" + packageName + ":" + ruleName + "\"); " +
+                "end \n" +
+                "";
         return s;
     }
 
@@ -364,22 +387,22 @@ public class KProjectTest {
                            MemoryFileSystem trgMfs,
                            Folder trgFolder,
                            KProject kproj) {
-        if ( !trgFolder.exists() ) {
-            trgMfs.getFolder( trgFolder.getPath() ).create();
+        if (!trgFolder.exists()) {
+            trgMfs.getFolder(trgFolder.getPath()).create();
         }
 
         Collection<Resource> col = (Collection<Resource>) srcFolder.getMembers();
 
-        for ( Resource rs : srcFolder.getMembers() ) {
-            if ( rs instanceof Folder ) {
-                copyFolder( srcMfs, (Folder) rs, trgMfs, trgFolder.getFolder( ((Folder) rs).getName() ), kproj );
+        for (Resource rs : srcFolder.getMembers()) {
+            if (rs instanceof Folder) {
+                copyFolder(srcMfs, (Folder) rs, trgMfs, trgFolder.getFolder(((Folder) rs).getName()), kproj);
             } else {
-                MemoryFile trgFile = (MemoryFile) trgFolder.getFile( ((File) rs).getName() );
+                MemoryFile trgFile = (MemoryFile) trgFolder.getFile(((File) rs).getName());
 
                 try {
-                    trgMfs.setFileContents( trgFile, srcMfs.getFileContents( (MemoryFile) rs ) );
-                } catch ( IOException e ) {
-                    throw new RuntimeException( e );
+                    trgMfs.setFileContents(trgFile, srcMfs.getFileContents((MemoryFile) rs));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -387,66 +410,76 @@ public class KProjectTest {
 
     public void populateClasses(KProject kproject,
                                 List<String> classes) {
-        for ( KBase kBase : kproject.getKBases().values() ) {
-            classes.add( kBase.getNamespace().replace( '.', '/' ) + "/" + kBase.getName() + "Producer.java" );
-            classes.add( kBase.getNamespace().replace( '.', '/' ) + "/" + kBase.getName() + ".java" );
-            for ( KSession kSession : kBase.getKSessions().values() ) {
-                classes.add( kSession.getNamespace().replace( '.', '/' ) + "/" + kSession.getName() + "Producer.java" );
-                classes.add( kSession.getNamespace().replace( '.', '/' ) + "/" + kSession.getName() + ".java" );
+        for (KBase kBase : kproject.getKBases().values()) {
+            classes.add(kBase.getNamespace().replace('.', '/') + "/" + kBase.getName() + "Producer.java");
+            classes.add(kBase.getNamespace().replace('.', '/') + "/" + kBase.getName() + ".java");
+            for (KSession kSession : kBase.getKSessions().values()) {
+                classes.add(kSession.getNamespace().replace('.', '/') + "/" + kSession.getName() + "Producer.java");
+                classes.add(kSession.getNamespace().replace('.', '/') + "/" + kSession.getName() + ".java");
             }
         }
     }
 
     public void printFs(MemoryFileSystem mfs,
                         Folder f) {
-        for ( Resource rs : f.getMembers() ) {
-            System.out.println( rs );
-            if ( rs instanceof Folder ) {
-                printFs( mfs, (Folder) rs );
+        for (Resource rs : f.getMembers()) {
+            System.out.println(rs);
+            if (rs instanceof Folder) {
+                printFs(mfs, (Folder) rs);
             } else {
-                System.out.println( new String( mfs.getFileContents( (MemoryFile) rs ) ) );
+                System.out.println(new String(mfs.getFileContents((MemoryFile) rs)));
             }
         }
     }
 
     public String generateKProjectTestClassImpl(KProject kproject) {
         String s = "package org.drools.cdi.test;\n" +
-                   "import javax.inject.Named;\n" +
-                   "import javax.inject.Inject;\n" +
-                   "import javax.inject.Inject;\n" +
-                   "import javax.enterprise.event.Observes;\n" +
-                   "import org.jboss.weld.environment.se.events.ContainerInitialized;\n" +
-                   "import " + KnowledgeBase.class.getName() + ";\n" +
-                   "import " + StatefulKnowledgeSession.class.getName() + ";\n" +
-                   "import " + StatelessKnowledgeSession.class.getName() + ";\n" +
-                   "import org.test1.KBase1;\n" +
-                   "import org.test1.KSession1;\n" +
-                   "import org.test1.KSession2;\n" +
-                   "import org.test2.KSession3;\n" +
-                   "import org.test2.KBase2;\n" +
+                "import javax.inject.Named;\n" +
+                "import javax.inject.Inject;\n" +
+                "import javax.inject.Inject;\n" +
+                "import javax.enterprise.event.Observes;\n" +
+                "import org.jboss.weld.environment.se.events.ContainerInitialized;\n" +
+                "import " + KnowledgeBase.class.getName() + ";\n" +
+                "import " + StatefulKnowledgeSession.class.getName() + ";\n" +
+                "import " + StatelessKnowledgeSession.class.getName() + ";\n" +
+                "import org.test1.KBase1;\n" +
+                "import org.test2.KBase2;\n" +
+                "import org.test3.KBase3;\n" +
+                "import org.test1.KSession1;\n" +
+                "import org.test1.KSession2;\n" +
+                "import org.test2.KSession3;\n" +
+                "import org.test3.KSession4;\n" +
 
-                   "public class KProjectTestClassImpl implements org.drools.kproject.KProjectTestClass {\n" +
-                   "    private @Inject @KBase1 KnowledgeBase kBase1; \n" +
-                   "    public KnowledgeBase getKBase1() {\n" +
-                   "        return kBase1;\n" +
-                   "    }\n" +
-                   "    private @Inject @KBase2 KnowledgeBase kBase2; \n" +
-                   "    public KnowledgeBase getKBase2() {\n" +
-                   "        return kBase2;\n" +
-                   "    }\n" +
-                   "    private @Inject @KSession1 StatelessKnowledgeSession kBase1kSession1; \n" +
-                   "    public StatelessKnowledgeSession getKBase1Ksession1() {\n" +
-                   "        return kBase1kSession1;\n" +
-                   "    }\n" +
-                   "    private @Inject @KSession2 StatefulKnowledgeSession kBase1kSession2; \n" +
-                   "    public StatefulKnowledgeSession getKBase1Ksession2() {\n" +
-                   "        return kBase1kSession2;\n" +
-                   "    }\n" +
-                   "    private @Inject @KSession3 StatefulKnowledgeSession kBase2kSession3; \n" +
-                   "    public StatefulKnowledgeSession getKBase2Ksession3() {\n" +
-                   "        return kBase2kSession3;\n" +
-                   "    }\n" +
-                   "}\n";
+                "public class KProjectTestClassImpl implements org.drools.kproject.KProjectTestClass {\n" +
+                "    private @Inject @KBase1 KnowledgeBase kBase1; \n" +
+                "    public KnowledgeBase getKBase1() {\n" +
+                "        return kBase1;\n" +
+                "    }\n" +
+                "    private @Inject @KBase2 KnowledgeBase kBase2; \n" +
+                "    public KnowledgeBase getKBase2() {\n" +
+                "        return kBase2;\n" +
+                "    }\n" +
+                "    private @Inject @KBase3 KnowledgeBase kBase3; \n" +
+                "    public KnowledgeBase getKBase3() {\n" +
+                "        return kBase3;\n" +
+                "    }\n" +
+                "    private @Inject @KSession1 StatelessKnowledgeSession kBase1kSession1; \n" +
+                "    public StatelessKnowledgeSession getKBase1KSession1() {\n" +
+                "        return kBase1kSession1;\n" +
+                "    }\n" +
+                "    private @Inject @KSession2 StatefulKnowledgeSession kBase1kSession2; \n" +
+                "    public StatefulKnowledgeSession getKBase1KSession2() {\n" +
+                "        return kBase1kSession2;\n" +
+                "    }\n" +
+                "    private @Inject @KSession3 StatefulKnowledgeSession kBase2kSession3; \n" +
+                "    public StatefulKnowledgeSession getKBase2KSession3() {\n" +
+                "        return kBase2kSession3;\n" +
+                "    }\n" +
+                "    private @Inject @KSession4 StatelessKnowledgeSession kBase3kSession4; \n" +
+                "    public StatelessKnowledgeSession getKBase3KSession4() {\n" +
+                "        return kBase3kSession4;\n" +
+                "    }\n" +
+                "}\n";
 
         return s;
     }
@@ -460,7 +493,7 @@ public class KProjectTest {
     }
         
     public static String filenameToClassname(String filename) {
-        return filename.substring( 0, filename.lastIndexOf( ".java" ) ).replace( '/', '.' ).replace( '\\', '.' );
+        return filename.substring(0, filename.lastIndexOf(".java")).replace('/', '.').replace('\\', '.');
     }
 
     /**
@@ -471,53 +504,53 @@ public class KProjectTest {
         MemoryFileSystem mfs;
 
         public MemoryFileSystemClassLoader(MemoryFileSystem mfs) {
-            super( MemoryFileSystemClassLoader.class.getClassLoader() );
+            super(MemoryFileSystemClassLoader.class.getClassLoader());
             this.mfs = mfs;
         }
 
-        public Class< ? > loadClass(final String name,
-                                    final boolean resolve) throws ClassNotFoundException {
-            Class< ? > cls = fastFindClass( name );
+        public Class<?> loadClass(final String name,
+                                  final boolean resolve) throws ClassNotFoundException {
+            Class<?> cls = fastFindClass(name);
 
-            if ( cls == null ) {
-                cls = getParent().loadClass( name );
+            if (cls == null) {
+                cls = getParent().loadClass(name);
             }
 
-            if ( cls == null ) {
-                throw new ClassNotFoundException( "Unable to load class: " + name );
+            if (cls == null) {
+                throw new ClassNotFoundException("Unable to load class: " + name);
             }
 
             return cls;
         }
 
-        public Class< ? > fastFindClass(final String name) {
-            Class< ? > cls = findLoadedClass( name );
+        public Class<?> fastFindClass(final String name) {
+            Class<?> cls = findLoadedClass(name);
 
-            if ( cls == null ) {
-                final byte[] clazzBytes = this.mfs.read( convertClassToResourcePath( name ) );
-                if ( clazzBytes != null ) {
-                    String pkgName = name.substring( 0,
-                                                     name.lastIndexOf( '.' ) );
-                    if ( getPackage( pkgName ) == null ) {
-                        definePackage( pkgName,
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       null );
+            if (cls == null) {
+                final byte[] clazzBytes = this.mfs.read(convertClassToResourcePath(name));
+                if (clazzBytes != null) {
+                    String pkgName = name.substring(0,
+                                                    name.lastIndexOf('.'));
+                    if (getPackage(pkgName) == null) {
+                        definePackage(pkgName,
+                                      "",
+                                      "",
+                                      "",
+                                      "",
+                                      "",
+                                      "",
+                                      null);
                     }
 
-                    cls = defineClass( name,
-                                       clazzBytes,
-                                       0,
-                                       clazzBytes.length,
-                                       PROTECTION_DOMAIN );
+                    cls = defineClass(name,
+                                      clazzBytes,
+                                      0,
+                                      clazzBytes.length,
+                                      PROTECTION_DOMAIN);
                 }
 
-                if ( cls != null ) {
-                    resolveClass( cls );
+                if (cls != null) {
+                    resolveClass(cls);
                 }
             }
 
@@ -525,33 +558,33 @@ public class KProjectTest {
         }
 
         public InputStream getResourceAsStream(final String name) {
-            final byte[] clsBytes = this.mfs.read( name );
-            if ( clsBytes != null ) {
-                return new ByteArrayInputStream( clsBytes );
+            final byte[] clsBytes = this.mfs.read(name);
+            if (clsBytes != null) {
+                return new ByteArrayInputStream(clsBytes);
             }
 
-            return getParent().getResourceAsStream( name );
+            return getParent().getResourceAsStream(name);
         }
 
         public URL getResource(String name) {
-            final byte[] clsBytes = this.mfs.read( name );
-            if ( clsBytes != null ) {
+            final byte[] clsBytes = this.mfs.read(name);
+            if (clsBytes != null) {
                 try {
-                    return new URL( null, "memory://" + name, new MemorytURLStreamHandler( clsBytes ) );
-                } catch ( MalformedURLException e ) {
-                    throw new RuntimeException( "Unable to create URL for: " + name );
+                    return new URL(null, "memory://" + name, new MemorytURLStreamHandler(clsBytes));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Unable to create URL for: " + name);
                 }
             }
-            return getParent().getResource( name );
+            return getParent().getResource(name);
         }
 
         public Enumeration<URL> getResources(String name) throws IOException {
-            return getParent().getResources( name );
+            return getParent().getResources(name);
         }
 
         public static String convertClassToResourcePath(final String pName) {
-            return pName.replace( '.',
-                                  '/' ) + ".class";
+            return pName.replace('.',
+                                 '/') + ".class";
         }
 
     }
@@ -562,16 +595,16 @@ public class KProjectTest {
         public TestWeldSEDeployment(ResourceLoader resourceLoader,
                                     Bootstrap bootstrap,
                                     List<String> classes) {
-            super( bootstrap );
-            beanDeploymentArchive = new ImmutableBeanDeploymentArchive( "classpath", classes, null );
+            super(bootstrap);
+            beanDeploymentArchive = new ImmutableBeanDeploymentArchive("classpath", classes, null);
 
         }
 
         public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-            return Collections.singletonList( beanDeploymentArchive );
+            return Collections.singletonList(beanDeploymentArchive);
         }
 
-        public BeanDeploymentArchive loadBeanDeploymentArchive(Class< ? > beanClass) {
+        public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
             return beanDeploymentArchive;
         }
 

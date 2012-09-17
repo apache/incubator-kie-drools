@@ -12,6 +12,11 @@ import java.util.Map.Entry;
 import org.drools.core.util.StringUtils;
 
 public class KProjectImpl implements KProject {
+    
+    private String                           namespace;
+
+    private String                           name;
+    
     // qualifier to path
     private String              kProjectPath;
     private String              kBasesPath;
@@ -26,6 +31,22 @@ public class KProjectImpl implements KProject {
         kBases = Collections.emptyMap();
     }    
     
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /* (non-Javadoc)
      * @see org.drools.kproject.KProject#getListener()
      */

@@ -4,6 +4,10 @@ import java.beans.PropertyChangeListener;
 import java.util.Map;
 
 public interface KProject {
+    
+    public String getNamespace();
+    
+    public String getName();
 
     public  PropertyChangeListener getListener();
 

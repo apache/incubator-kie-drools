@@ -10,45 +10,45 @@ import org.drools.conf.EventProcessingOption;
 
 public interface KBase {
 
-    public  KSession newKSession(String namespace, String name);
+    public KSession newKSession(String namespace, String name);
 
-    public  void removeKSession(String qName);
-    
-    public  Map<String, KSession> getKSessions();
-    
-    public Set<KBase> getIncludes();
+    public KBase removeKSession(String qName);
 
-    public void addInclude(KBase kbase);
-    
-    public void removeInclude(KBase kbase);
+    public Map<String, KSession> getKSessions();
 
-    public  PropertyChangeListener getListener();
+    public Set<String> getIncludes();
 
-    public  KBase setListener(PropertyChangeListener listener);
+    public KBase addInclude(String kBaseQName);
 
-    public  String getNamespace();
+    public KBase removeInclude(String kBaseQName);
 
-    public  KBase setNamespace(String namespace);
+    public PropertyChangeListener getListener();
 
-    public  String getName();
+    public KBase setListener(PropertyChangeListener listener);
 
-    public  KBase setName(String name);
+    public String getNamespace();
 
-    public  String getQName();
+    public KBase setNamespace(String namespace);
 
-    public  List<String> getFiles();
+    public String getName();
 
-    public  KBase setFiles(List<String> files);
+    public KBase setName(String name);
 
-    public  AssertBehaviorOption getEqualsBehavior();
+    public String getQName();
 
-    public  KBase setEqualsBehavior(AssertBehaviorOption equalsBehaviour);
+    public List<String> getFiles();
 
-    public  EventProcessingOption getEventProcessingMode();
+    public KBase setFiles(List<String> files);
 
-    public  KBase setEventProcessingMode(EventProcessingOption eventProcessingMode);
+    public AssertBehaviorOption getEqualsBehavior();
 
-    public  List<String> getAnnotations();
+    public KBase setEqualsBehavior(AssertBehaviorOption equalsBehaviour);
 
-    public  KBase setAnnotations(List<String> annotations);
+    public EventProcessingOption getEventProcessingMode();
+
+    public KBase setEventProcessingMode(EventProcessingOption eventProcessingMode);
+
+    public List<String> getAnnotations();
+
+    public KBase setAnnotations(List<String> annotations);
 }
