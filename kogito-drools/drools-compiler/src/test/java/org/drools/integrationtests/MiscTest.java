@@ -11465,5 +11465,44 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         ksession.fireAllRules();
+        ksession.dispose();
+    }
+
+    @Test
+    public void testConstantLeft() {
+        // JBRULES-3627
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   $p : Person( \"Mark\" == name )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Person(null));
+        ksession.insert(new Person("Mark"));
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test @Ignore // TODO: remove @Ignore when mvel 2.1.2.Final will be available
+    public void testNullConstantLeft() {
+        // JBRULES-3627
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   $p : Person( null == name )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Person(null));
+        ksession.insert(new Person("Mark"));
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
     }
 }
