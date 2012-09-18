@@ -16,9 +16,22 @@
 
 package org.jbpm.task.service;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -26,12 +39,17 @@ import org.drools.SystemEventListener;
 import org.jbpm.eventmessaging.EventKeys;
 import org.jbpm.task.*;
 import org.jbpm.task.admin.TasksAdmin;
-import org.jbpm.task.event.*;
+import org.jbpm.task.event.MessagingTaskEventListener;
+import org.jbpm.task.event.TaskEventListener;
+import org.jbpm.task.event.TaskEventSupport;
+import org.jbpm.task.event.TaskEventsAdmin;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.persistence.TaskSessionFactory;
 import org.jbpm.task.service.persistence.TaskSessionFactoryImpl;
-import org.mvel2.*;
+import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,9 +125,24 @@ public class TaskService {
         session.scheduleUnescalatedDeadlines();
         session.dispose();
 
-        operations = TaskServiceOperationsHolder.operations;
-        if( operations == null ) { 
-            throw new IllegalStateException("Unable to load operations information from MVEL DSL file. See log for more details.");
+        Map<String, Object> vars = new HashMap<String, Object>();
+
+        // Search operations-dsl.mvel, if necessary using superclass if TaskService is subclassed
+        InputStream is = null;
+        for (Class<?> c = getClass(); c != null; c = c.getSuperclass()) {
+            is = c.getResourceAsStream("operations-dsl.mvel");
+            if (is != null) {
+                break;
+            }
+        }
+        if (is == null) {
+        	throw new RuntimeException("Unable To initialise TaskService, could not find Operations DSL");
+        }
+        Reader reader = new InputStreamReader(is);
+        try {
+            operations = (Map<Operation, List<OperationCommand>>) eval(toString(reader),  vars);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable To initialise TaskService, could not load Operations DSL");
         }
     }
     
