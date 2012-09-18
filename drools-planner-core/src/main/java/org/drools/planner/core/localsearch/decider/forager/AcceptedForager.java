@@ -85,6 +85,11 @@ public class AcceptedForager extends AbstractForager {
         earlyPickedMoveScope = null;
     }
 
+    public boolean supportsNeverEndingMoveSelector() {
+        // TODO FIXME magical value Integer.MAX_VALUE coming from ForagerConfig
+        return minimalAcceptedSelection < Integer.MAX_VALUE;
+    }
+
     public void addMove(MoveScope moveScope) {
         selectedMoveCount++;
         if (moveScope.getAccepted()) {
@@ -179,6 +184,11 @@ public class AcceptedForager extends AbstractForager {
     @Override
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         deciderScoreComparatorFactory.phaseEnded(localSearchSolverPhaseScope);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + pickEarlyType + ", " + minimalAcceptedSelection + ")";
     }
 
 }

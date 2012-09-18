@@ -29,6 +29,8 @@ import org.drools.planner.core.move.Move;
  */
 public interface Forager extends LocalSearchSolverPhaseLifecycleListener {
 
+    boolean supportsNeverEndingMoveSelector();
+
     void addMove(MoveScope moveScope);
 
     boolean isQuitEarly();

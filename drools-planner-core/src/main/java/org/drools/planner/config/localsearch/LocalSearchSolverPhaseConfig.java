@@ -39,6 +39,7 @@ import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.DefaultDecider;
+import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 
@@ -99,6 +100,29 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     private Decider buildDecider(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             ScoreDefinition scoreDefinition, Termination termination) {
         DefaultDecider decider = new DefaultDecider();
+        decider.setTermination(termination);
+        MoveSelector moveSelector = buildMoveSelector(environmentMode, solutionDescriptor);
+        decider.setMoveSelector(moveSelector);
+        decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
+        Forager forager = foragerConfig.buildForager(scoreDefinition);
+        decider.setForager(forager);
+        if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
+            throw new IllegalStateException("The moveSelector (" + moveSelector
+                    + ") has neverEnding (" + moveSelector.isNeverEnding()
+                    + "), but the forager (" + forager
+                    + ") does not support it."
+                    + " Configure the <forager> with <minimalAcceptedSelection>.");
+        }
+        if (environmentMode == EnvironmentMode.TRACE) {
+            decider.setAssertMoveScoreIsUncorrupted(true);
+        }
+        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+            decider.setAssertUndoMoveIsUncorrupted(true);
+        }
+        return decider;
+    }
+
+    private MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor) {
         MoveSelector moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
@@ -119,17 +143,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
                     // TODO + " or " + CartesianProductMoveSelectorConfig.class
                     + " element to nest multiple MoveSelectors.");
         }
-        decider.setTermination(termination);
-        decider.setMoveSelector(moveSelector);
-        decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
-        decider.setForager(foragerConfig.buildForager(scoreDefinition));
-        if (environmentMode == EnvironmentMode.TRACE) {
-            decider.setAssertMoveScoreIsUncorrupted(true);
-        }
-        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
-            decider.setAssertUndoMoveIsUncorrupted(true);
-        }
-        return decider;
+        return moveSelector;
     }
 
     public void inherit(LocalSearchSolverPhaseConfig inheritedConfig) {
