@@ -22,7 +22,7 @@
 
       <programlisting>Person( name==  "mark", address.( city == "london", country ==  "uk") )</programlisting>
 
-      <para>Note the '.' prefix, this is necessary to differentiate the nested object constrtaints from a method
+      <para>Note the '.' prefix, this is necessary to differentiate the nested object constraints from a method
       call.</para>
     </section>
 
