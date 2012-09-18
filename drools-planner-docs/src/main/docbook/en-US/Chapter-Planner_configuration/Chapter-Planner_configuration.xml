@@ -324,8 +324,8 @@ public class Lecture {
 
         <para>Some optimization algorithms work more efficiently if they have an estimation of which planning entities
         are more difficult to plan. For example: in bin packing bigger items are harder to fit, in course scheduling
-        lectures with more students are more difficult to schedule and in n queens the middle queens are more
-        difficult to fit on the board.</para>
+        lectures with more students are more difficult to schedule and in n queens the middle queens are more difficult
+        to fit on the board.</para>
 
         <para>Therefore, you can set a <literal>difficultyComparatorClass</literal> to the
         <literal>@PlanningEntity</literal> annotation:</para>
@@ -1155,8 +1155,9 @@ public class Visit ... implements Appearance {
 
       <para>The <literal>solve()</literal> method can take a long time (depending on the problem size and the solver
       configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it encounters
-      during its solving. Depending on a number factors (including problem size, how much time the <literal>Solver</literal>
-      has, the solver configuration, ...), that best solution will be a feasible or even an optimal solution.</para>
+      during its solving. Depending on a number factors (including problem size, how much time the
+      <literal>Solver</literal> has, the solver configuration, ...), that best solution will be a feasible or even an
+      optimal solution.</para>
 
       <note>
         <para>The <literal>Solution</literal> instance given to the method <literal>setPlanningProblem()</literal> will
@@ -1254,11 +1255,17 @@ public class Visit ... implements Appearance {
 
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">ERROR</emphasis>: When something is wrong, Planner fails fast: it throws a
-          subclass of <literal>RuntimeException</literal> with a detailed message to the calling code, but does not log
-          an error message to avoid duplicate log messages. If the calling code doesn't catch and eat that
-          <literal>RuntimeException</literal>, a <literal>Thread</literal>'s default <literal>ExceptionHandler</literal>
-          will log it as an error anyway.</para>
+          <para><emphasis role="bold">ERROR</emphasis>: Log errors, except those that are thrown to the calling code as
+          a <literal>RuntimeException</literal>.</para>
+
+          <note>
+            <para><emphasis role="bold">If an error happens, Planner normally fails fast</emphasis>: it throws a
+            subclass of <literal>RuntimeException</literal> with a detailed message to the calling code. It does not log
+            it as an error itself to avoid duplicate log messages. Unless the calling code explicitly catches and eats
+            that <literal>RuntimeException</literal>, a <literal>Thread</literal>'s default
+            <literal>ExceptionHandler</literal> will log it as an error anyway. Meanwhile, the code is disrupted from
+            doing further harm or obfuscating the error.</para>
+          </note>
         </listitem>
 
         <listitem>
@@ -1275,6 +1282,11 @@ public class Visit ... implements Appearance {
 
         <listitem>
           <para><emphasis role="bold">TRACE</emphasis>: Log every move of every step of every phase.</para>
+
+          <note>
+            <para>Turning on <literal>TRACE</literal> logging, will slow down performance considerably: it's often 4
+            times slower. However, it's invaluable during development to discover a bottleneck.</para>
+          </note>
         </listitem>
       </itemizedlist>
 
