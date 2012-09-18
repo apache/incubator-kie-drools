@@ -74,6 +74,15 @@ public class TaskService {
     private SystemEventListener systemEventListener;
 
     private Map<Operation, List<OperationCommand>> operations;
+
+    private static Map<String, Class<?>> inputs = new HashMap<String, Class<?>>();
+
+    private static final Map<Class<?>, Map<Operation, List<OperationCommand>>> operationsByClass
+                                                        = new ConcurrentHashMap<Class<?>, Map<Operation, List<OperationCommand>>>();
+
+    static {
+        loadOptions(TaskService.class);
+    }
     
     private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> scheduledTaskDeadlines 
                                                         = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
@@ -125,27 +134,48 @@ public class TaskService {
         session.scheduleUnescalatedDeadlines();
         session.dispose();
 
-        Map<String, Object> vars = new HashMap<String, Object>();
+        operations = loadOptions(getClass());
+    }
 
+    private static Map<Operation, List<OperationCommand>> loadOptions(Class<?> taskServiceClass) {
         // Search operations-dsl.mvel, if necessary using superclass if TaskService is subclassed
         InputStream is = null;
-        for (Class<?> c = getClass(); c != null; c = c.getSuperclass()) {
-            is = c.getResourceAsStream("operations-dsl.mvel");
+        Map<Operation, List<OperationCommand>> operationsForClass = null;
+        try {
+            while (taskServiceClass != null) {
+                operationsForClass = operationsByClass.get(taskServiceClass);
+                if (operationsForClass != null) {
+                    return operationsForClass;
+                }
+                is = taskServiceClass.getResourceAsStream("operations-dsl.mvel");
+                if (is != null) {
+                    break;
+                }
+                taskServiceClass = taskServiceClass.getSuperclass();
+            }
+            if (is == null) {
+                throw new RuntimeException("Unable To initialise TaskService, could not find Operations DSL");
+            }
+
+            Reader reader = new InputStreamReader(is);
+            try {
+                operationsForClass = (Map<Operation, List<OperationCommand>>) eval(toString(reader), new HashMap<String, Object>());
+                operationsByClass.put(taskServiceClass, operationsForClass);
+                return operationsForClass;
+            } catch (IOException e) {
+                throw new RuntimeException("Unable To initialise TaskService, could not load Operations DSL");
+            }
+        } finally {
             if (is != null) {
-                break;
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-        if (is == null) {
-        	throw new RuntimeException("Unable To initialise TaskService, could not find Operations DSL");
-        }
-        Reader reader = new InputStreamReader(is);
-        try {
-            operations = (Map<Operation, List<OperationCommand>>) eval(toString(reader),  vars);
-        } catch (IOException e) {
-            throw new RuntimeException("Unable To initialise TaskService, could not load Operations DSL");
-        }
     }
-    
+
     /**
      * Default constructor needed for Spring
      */
@@ -282,8 +312,6 @@ public class TaskService {
         }
         return sb.toString();
     }
-
-    private static Map<String, Class<?>> inputs = new HashMap<String, Class<?>>();
 
     public static Map<String, Class<?>> getInputs() {
         synchronized (inputs) {
