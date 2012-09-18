@@ -169,6 +169,10 @@ public class Person
         this.age = age;
     }
 
+    public Integer getAgeAsInteger() {
+        return this.age;
+    }
+
     /* (non-Javadoc)
      * @see org.drools.PersonInterface#isAlive()
      */
