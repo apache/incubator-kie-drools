@@ -127,16 +127,18 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         super.stepEnded(localSearchStepScope);
         decider.stepEnded(localSearchStepScope);
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = localSearchStepScope.getLocalSearchSolverPhaseScope();
-        logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({})," +
-                " accepted/selected move count ({}/{}) for picked step ({}).",
-                new Object[]{localSearchStepScope.getStepIndex(),
-                        localSearchSolverPhaseScope.calculateSolverTimeMillisSpend(),
-                        localSearchStepScope.getScore(),
-                        (localSearchStepScope.getBestScoreImproved() ? "new" : "   "),
-                        localSearchSolverPhaseScope.getBestScore(),
-                        localSearchStepScope.getAcceptedMoveCount(),
-                        localSearchStepScope.getSelectedMoveCount(),
-                        localSearchStepScope.getStepString()});
+        if (logger.isDebugEnabled()) {
+            long timeMillisSpend = localSearchSolverPhaseScope.calculateSolverTimeMillisSpend();
+            logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({})," +
+                    " accepted/selected move count ({}/{}) for picked step ({}).",
+                    new Object[]{localSearchStepScope.getStepIndex(), timeMillisSpend,
+                            localSearchStepScope.getScore(),
+                            (localSearchStepScope.getBestScoreImproved() ? "new" : "   "),
+                            localSearchSolverPhaseScope.getBestScore(),
+                            localSearchStepScope.getAcceptedMoveCount(),
+                            localSearchStepScope.getSelectedMoveCount(),
+                            localSearchStepScope.getStepString()});
+        }
     }
 
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {

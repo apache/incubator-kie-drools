@@ -82,11 +82,13 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         bruteForceEntityWalker.stepEnded(bruteForceStepScope);
         BruteForceSolverPhaseScope bruteForceSolverPhaseScope = bruteForceStepScope.getBruteForceSolverPhaseScope();
         // TODO The steps are too fine, so debug log is too much. Yet we still want some debug indication
-        logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
-                new Object[]{bruteForceStepScope.getStepIndex(),
-                        bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend(),
-                        bruteForceStepScope.getScore(), (bruteForceStepScope.getBestScoreImproved() ? "new" : "   "),
-                        bruteForceSolverPhaseScope.getBestScore()});
+        if (logger.isDebugEnabled()) {
+            long timeMillisSpend = bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend();
+            logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
+                    new Object[]{bruteForceStepScope.getStepIndex(), timeMillisSpend,
+                            bruteForceStepScope.getScore(), (bruteForceStepScope.getBestScoreImproved() ? "new" : "   "),
+                            bruteForceSolverPhaseScope.getBestScore()});
+        }
     }
 
     public void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {

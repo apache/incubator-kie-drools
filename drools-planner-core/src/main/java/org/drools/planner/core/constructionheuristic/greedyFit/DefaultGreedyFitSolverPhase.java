@@ -120,11 +120,12 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         super.stepEnded(greedyFitStepScope);
         greedyPlanningEntitySelector.stepEnded(greedyFitStepScope);
         greedyDecider.stepEnded(greedyFitStepScope);
-        logger.debug("    Step index ({}), time spend ({}), score ({}), initialized planning entity ({}).",
-                new Object[]{greedyFitStepScope.getStepIndex(),
-                        greedyFitStepScope.getGreedyFitSolverPhaseScope().calculateSolverTimeMillisSpend(),
-                        greedyFitStepScope.getScore(),
-                        greedyFitStepScope.getPlanningEntity()});
+        if (logger.isDebugEnabled()) {
+            long timeMillisSpend = greedyFitStepScope.getGreedyFitSolverPhaseScope().calculateSolverTimeMillisSpend();
+            logger.debug("    Step index ({}), time spend ({}), score ({}), initialized planning entity ({}).",
+                    new Object[]{greedyFitStepScope.getStepIndex(), timeMillisSpend,
+                            greedyFitStepScope.getScore(), greedyFitStepScope.getPlanningEntity()});
+        }
     }
 
     public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
