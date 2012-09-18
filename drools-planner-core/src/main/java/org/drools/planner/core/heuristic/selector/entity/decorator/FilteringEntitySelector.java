@@ -26,6 +26,7 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilt
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 
@@ -35,8 +36,8 @@ import org.drools.planner.core.score.director.ScoreDirector;
 public class FilteringEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
-
     protected final List<SelectionFilter> entityFilterList;
+    protected final boolean bailOutEnabled;
 
     protected ScoreDirector scoreDirector = null;
 
@@ -44,6 +45,7 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
             List<SelectionFilter> entityFilterList) {
         this.childEntitySelector = childEntitySelector;
         this.entityFilterList = entityFilterList;
+        bailOutEnabled = childEntitySelector.isNeverEnding();
         solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
     }
 
@@ -95,16 +97,31 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         @Override
         protected void createUpcomingSelection() {
             Object next;
+            long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
             do {
                 if (!childEntityIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
+                    next = null;
+                    break;
+                }
+                if (bailOutEnabled) {
+                    // if childEntityIterator is neverEnding and nothing is accepted, bail out of the infinite loop
+                    if (attemptsBeforeBailOut <= 0L) {
+                        logger.warn("Bailing out of neverEnding selector ({}) to avoid infinite loop.",
+                                FilteringEntitySelector.this);
+                        next = null;
+                        break;
+                    }
+                    attemptsBeforeBailOut--;
                 }
                 next = childEntityIterator.next();
             } while (!accept(scoreDirector, next));
             upcomingSelection = next;
         }
 
+    }
+
+    protected long determineBailOutSize() {
+        return childEntitySelector.getSize() * 10L;
     }
 
     public ListIterator<Object> listIterator() {

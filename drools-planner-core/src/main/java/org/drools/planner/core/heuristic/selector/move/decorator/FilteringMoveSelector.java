@@ -31,14 +31,15 @@ import org.drools.planner.core.score.director.ScoreDirector;
 public class FilteringMoveSelector extends AbstractMoveSelector {
 
     protected final MoveSelector childMoveSelector;
-
     protected final List<SelectionFilter> moveFilterList;
+    protected final boolean bailOutEnabled;
 
     protected ScoreDirector scoreDirector = null;
 
     public FilteringMoveSelector(MoveSelector childMoveSelector, List<SelectionFilter> moveFilterList) {
         this.childMoveSelector = childMoveSelector;
         this.moveFilterList = moveFilterList;
+        bailOutEnabled = childMoveSelector.isNeverEnding();
         solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
     }
 
@@ -86,16 +87,31 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         @Override
         protected void createUpcomingSelection() {
             Move next;
+            long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
             do {
                 if (!childMoveIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
+                    next = null;
+                    break;
+                }
+                if (bailOutEnabled) {
+                    // if childMoveIterator is neverEnding and nothing is accepted, bail out of the infinite loop
+                    if (attemptsBeforeBailOut <= 0L) {
+                        logger.warn("Bailing out of neverEnding selector ({}) to avoid infinite loop.",
+                                FilteringMoveSelector.this);
+                        next = null;
+                        break;
+                    }
+                    attemptsBeforeBailOut--;
                 }
                 next = childMoveIterator.next();
             } while (!accept(scoreDirector, next));
             upcomingSelection = next;
         }
 
+    }
+
+    protected long determineBailOutSize() {
+        return childMoveSelector.getSize() * 10L;
     }
 
     private boolean accept(ScoreDirector scoreDirector, Move move) {
