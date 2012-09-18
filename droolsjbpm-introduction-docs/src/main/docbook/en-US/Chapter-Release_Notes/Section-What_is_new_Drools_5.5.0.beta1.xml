@@ -435,24 +435,28 @@ end</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>Worst score difference percentage graph/table</para>
+          <para>New chart and table: Worst score difference percentage</para>
         </listitem>
 
         <listitem>
-          <para>Each graph now has a table with the data too. This is especially useful for matrix benchmarks and the
-          graphs become cluttered.</para>
+          <para>Every chart that shows a score, now exists for every score level, so there is now a hard score chart too.</para>
         </listitem>
 
         <listitem>
-          <para>Solver configuration is shown in the report</para>
+          <para>Each chart now has a table with the data too. This is especially useful for matrix benchmarks when the
+          graphs become cluttered due to too much data.</para>
         </listitem>
 
         <listitem>
-          <para>General benchmark information (such as warm up time) is now also recorded</para>
+          <para>Each solver configuration is now shown in the report.</para>
         </listitem>
 
         <listitem>
-          <para>The favorite solver configuration is clearly marked</para>
+          <para>General benchmark information (such as warm up time) is now also recorded.</para>
+        </listitem>
+
+        <listitem>
+          <para>The favorite solver configuration is clearly marked in charts.</para>
         </listitem>
       </itemizedlist>
     </section>
