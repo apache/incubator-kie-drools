@@ -12,7 +12,7 @@
 
   <property name="eclipse.workspace.dir" value="${install.home}/workspace"/>
 
-  <property name="h2.download.url" value="http://repo1.maven.org/maven2/com/h2database/h2/${H2.version}/h2-${H2.version}.jar"/>
+  <property name="h2.download.url" value="http://repo1.maven.org/maven2/com/h2database/h2/1.3.161/h2-1.3.161.jar"/>
   <property name="mysql.download.url" value="https://repository.jboss.org/nexus/service/local/repositories/central/content/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar" />
   <property name="postgresql.download.url" value="https://repository.jboss.org/nexus/service/local/repositories/deprecated/content/postgresql/postgresql/8.4-701.jdbc3/postgresql-8.4-701.jdbc3.jar" />
   <property name="slf4j.download.url" value="http://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.11/slf4j-jdk14-1.5.11.jar"/>
