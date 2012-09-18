@@ -128,8 +128,8 @@ public class DefaultGreedyDecider implements GreedyDecider {
                                 + ") is not the undoScore (" + undoScore + ").");
             }
         }
-        logger.trace("        Move score ({}) for move ({}).",
-                new Object[]{moveScope.getScore(), moveScope.getMove()});
+        logger.trace("        Move index ({}), score ({}) for move ({}).",
+                new Object[]{moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove()});
     }
 
     private void processMove(GreedyMoveScope moveScope) {

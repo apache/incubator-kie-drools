@@ -160,8 +160,9 @@ public class DefaultDecider implements Decider {
                                 + ") is not the undoScore (" + undoScore + ").");
             }
         }
-        logger.trace("        Move score ({}), accepted ({}) for move ({}).",
-                new Object[]{moveScope.getScore(), moveScope.getAccepted(), moveScope.getMove()});
+        logger.trace("        Move index ({}), score ({}), accepted ({}) for move ({}).",
+                new Object[]{moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getAccepted(),
+                        moveScope.getMove()});
     }
 
     private void processMove(MoveScope moveScope) {

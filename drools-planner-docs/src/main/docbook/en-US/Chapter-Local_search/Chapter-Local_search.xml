@@ -260,15 +260,15 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
 
     <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
 TRACE         Ignoring not doable move (col0@row0 =&gt; row0).
-TRACE         Move score (-4), accepted (true) for move (col0@row0 =&gt; row1).
-TRACE         Move score (-4), accepted (true) for move (col0@row0 =&gt; row2).
-TRACE         Move score (-4), accepted (true) for move (col0@row0 =&gt; row3).
+TRACE         Move index (1), score (-4), accepted (true) for move (col0@row0 =&gt; row1).
+TRACE         Move index (2), score (-4), accepted (true) for move (col0@row0 =&gt; row2).
+TRACE         Move index (3), score (-4), accepted (true) for move (col0@row0 =&gt; row3).
 ...
-TRACE         Move score (-3), accepted (true) for move (col1@row0 =&gt; row3).
+TRACE         Move index (6), score (-3), accepted (true) for move (col1@row0 =&gt; row3).
 ...
-TRACE         Move score (-3), accepted (true) for move (col2@row0 =&gt; row3).
+TRACE         Move index (9), score (-3), accepted (true) for move (col2@row0 =&gt; row3).
 ...
-TRACE         Move score (-4), accepted (true) for move (col3@row0 =&gt; row3).
+TRACE         Move index (12), score (-4), accepted (true) for move (col3@row0 =&gt; row3).
 DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
 ...</programlisting>
 
