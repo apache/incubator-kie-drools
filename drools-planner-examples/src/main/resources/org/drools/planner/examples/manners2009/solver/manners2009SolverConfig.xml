@@ -27,7 +27,7 @@
       <planningEntityTabuSize>7</planningEntityTabuSize>
     </acceptor>
     <forager>
-      <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+      <minimalAcceptedSelection>1000</minimalAcceptedSelection>
     </forager>
   </localSearch>
 </solver>
