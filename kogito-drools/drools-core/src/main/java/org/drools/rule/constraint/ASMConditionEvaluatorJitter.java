@@ -742,9 +742,12 @@ public class ASMConditionEvaluatorJitter {
 
             mv.visitTypeInsn(NEW, internalName(clazz));
             mv.visitInsn(DUP);
+
+            int argumentCounter = 0;
             for (Expression argument : invocation.getArguments()) {
-                jitExpression(argument);
+                cast(jitExpression(argument), constructor.getParameterTypes()[argumentCounter++]);
             }
+
             invokeSpecial(clazz, "<init>", null, constructor.getParameterTypes());
         }
 

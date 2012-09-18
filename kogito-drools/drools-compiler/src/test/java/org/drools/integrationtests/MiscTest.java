@@ -11505,4 +11505,22 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testJitConstraintInvokingConstructor() {
+        // JBRULES-3628
+        String str = "import org.drools.Person;\n" +
+                "rule R1 when\n" +
+                "   Person( new Integer( ageAsInteger ) < 40 ) \n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Person("Mario", 38));
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
 }
