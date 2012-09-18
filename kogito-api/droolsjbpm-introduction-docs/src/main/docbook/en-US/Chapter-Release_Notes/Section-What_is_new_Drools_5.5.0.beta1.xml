@@ -321,10 +321,12 @@ end</programlisting>
       </figure>
     </section>
 
+    <!-- Simulation testing is disabled for now -->
+    <!--
     <section>
       <title>Simulation Testing (unfinished prototype)</title>
 
-      <para>Simulation testing allows you to test a sequence of events in Guvnor. This is very usefull for testing CEP
+      <para>Simulation testing allows you to test a sequence of events in Guvnor. This is very useful for testing CEP
       use cases.</para>
 
       <para>The example below shows a testcase that calls <literal>fireAllRules</literal> twice: once after a little
@@ -353,6 +355,7 @@ end</programlisting>
       video</link>. A simulation test asset stored in 5.5.0.Beta1 will not be readable in 5.5.0.Beta2. Feedback is
       welcome.</para>
     </section>
+    -->
   </section>
 
   <section xml:id="releaseNotes_5.5.0.beta1_Planner">
