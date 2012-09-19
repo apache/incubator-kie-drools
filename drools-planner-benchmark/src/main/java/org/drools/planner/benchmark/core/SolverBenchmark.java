@@ -50,7 +50,7 @@ public class SolverBenchmark {
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
     // The average of the average is not just the overall average if the SingleBenchmark's timeMillisSpend differ
-    private long averageAverageCalculateCountPerSecond = -1L;
+    private Long averageAverageCalculateCountPerSecond = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -107,7 +107,7 @@ public class SolverBenchmark {
         return averageWorstScoreDifferencePercentage;
     }
 
-    public long getAverageAverageCalculateCountPerSecond() {
+    public Long getAverageAverageCalculateCountPerSecond() {
         return averageAverageCalculateCountPerSecond;
     }
 
