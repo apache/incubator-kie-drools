@@ -16,7 +16,8 @@
 package org.jbpm.task.api;
 
 /**
- *
+ * The Task Deadlines Service is intended to handle
+ *  all the Deadlines associated with a Task
  */
 public interface TaskDeadlinesService {
 

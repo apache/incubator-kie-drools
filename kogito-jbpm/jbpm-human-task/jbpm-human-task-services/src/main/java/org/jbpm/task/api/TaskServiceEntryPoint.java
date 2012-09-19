@@ -23,7 +23,9 @@ import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.query.TaskSummary;
 
 /**
- *
+ * The Task Service Entry Point serves as 
+ *  facade of all the other services, providing a single entry point
+ *  to access to all the services
  */
 public interface TaskServiceEntryPoint {
 

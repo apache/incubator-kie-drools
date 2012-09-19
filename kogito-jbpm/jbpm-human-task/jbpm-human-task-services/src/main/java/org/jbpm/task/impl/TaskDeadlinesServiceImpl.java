@@ -43,7 +43,6 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.api.TaskDeadlinesService;
 import org.jbpm.task.events.NotificationEvent;
-import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.query.DeadlineSummary;
 
 /**
@@ -56,7 +55,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
     private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> scheduledTaskDeadlines = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
     protected List<Status> validStatuses = new ArrayList<Status>();
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
     @Inject
     private Event<NotificationEvent> notificationEvents;

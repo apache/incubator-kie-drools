@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.api.TaskEventsService;
-import org.jbpm.task.annotations.TaskPersistence;
 
 /**
  *
@@ -19,7 +18,6 @@ import org.jbpm.task.annotations.TaskPersistence;
 public class TaskEventsServiceImpl implements TaskEventsService {
 
     @Inject
-    @TaskPersistence
     private EntityManager em;
 
     public List<TaskEvent> getTaskEventsById(long taskId) {

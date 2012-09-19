@@ -22,14 +22,13 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskCommentService;
-import org.jbpm.task.annotations.TaskPersistence;
 
 /**
  *
  */
 @Transactional
 public class TaskCommentServiceImpl implements TaskCommentService{
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
     
     public long addComment(long taskId, Comment comment) {

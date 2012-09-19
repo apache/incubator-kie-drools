@@ -11,7 +11,9 @@ import org.jbpm.task.TaskEvent;
 
 
 /**
- *
+ * The Task Events Service is intended to 
+ *  provide all the functionality required to handle
+ *  the events that are being emitted by the module
  */
 public interface TaskEventsService {
     

@@ -22,7 +22,6 @@ import org.drools.command.Context;
 import org.drools.command.World;
 import org.jbpm.task.Task;
 import org.jbpm.task.annotations.Internal;
-import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
@@ -33,7 +32,7 @@ import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
  *
  */
 public class TaskContext implements Context{
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
     @Inject
     private TaskDefService taskDefService;

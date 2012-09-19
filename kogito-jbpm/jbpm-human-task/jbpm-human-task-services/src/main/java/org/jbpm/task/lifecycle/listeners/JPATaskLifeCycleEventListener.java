@@ -13,7 +13,6 @@ import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskEvent;
-import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
 import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.events.AfterTaskClaimedEvent;
@@ -30,7 +29,7 @@ import org.jbpm.task.events.AfterTaskStoppedEvent;
 @Alternative @Singleton
 public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener{
 
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
     
     public JPATaskLifeCycleEventListener() {

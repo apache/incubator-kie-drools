@@ -8,7 +8,7 @@
         <version>5.4.0-SNAPSHOT</version>
     </parent>
  
-    <artifactId>jbpm-human-task-work-items</artifactId>
+    <artifactId>jbpm-human-task-workitems</artifactId>
  
     <name>jBPM :: Human Tasks WorkItems</name>
      

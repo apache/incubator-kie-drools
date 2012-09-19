@@ -10,7 +10,10 @@ import org.jbpm.task.query.TaskSummary;
 
 
 /**
- *
+ * The Task Admintration Service is intended to provide
+ *  administrative functions such as:
+ *    - Remove and Archive Tasks
+
  */
 public interface TaskAdminService {
 

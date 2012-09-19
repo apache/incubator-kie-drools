@@ -13,7 +13,6 @@ import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskAdminService;
-import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.query.TaskSummary;
 
 /**
@@ -22,7 +21,7 @@ import org.jbpm.task.query.TaskSummary;
 @Transactional
 public class TaskAdminServiceImpl implements TaskAdminService {
 
-    @Inject @TaskPersistence
+    @Inject
     private EntityManager em;
 
     public TaskAdminServiceImpl() {

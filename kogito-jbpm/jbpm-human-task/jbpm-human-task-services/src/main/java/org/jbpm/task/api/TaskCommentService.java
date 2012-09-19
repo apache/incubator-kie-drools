@@ -8,7 +8,9 @@ import java.util.List;
 import org.jbpm.task.Comment;
 
 /**
- *
+ * The Task Comment Service will handle all the 
+ *  operations related with the Comments associated with 
+ *  a Task
  */
 public interface TaskCommentService {
 

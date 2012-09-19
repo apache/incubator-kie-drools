@@ -12,7 +12,11 @@ import org.jbpm.task.query.TaskSummary;
 
 
 /**
- *
+ * The Task Query Service will contain all the methods 
+ *  to get information about the current Task Instances. 
+ *  Most of the times these methods will be used to build
+ *  User Interfaces, and we should not include any method 
+ *  related with Task Statistics here. 
  */
 public interface TaskQueryService {
 

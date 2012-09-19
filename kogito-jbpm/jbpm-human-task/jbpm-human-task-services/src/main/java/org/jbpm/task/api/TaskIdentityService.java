@@ -10,7 +10,12 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.User;
 
 /**
- *
+ * The Task Identity Service provides all the 
+ *  functionality related with the Organizational Entities
+ *  that will be handled internally by jBPM. This methods
+ *  will allow us to create the Mappings against external 
+ *  identity directories to the internal inforamtion required
+ *  by jBPM.
  */
 public interface TaskIdentityService {
 

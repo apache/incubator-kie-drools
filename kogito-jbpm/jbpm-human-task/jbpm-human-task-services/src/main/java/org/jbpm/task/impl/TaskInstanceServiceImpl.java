@@ -42,7 +42,6 @@ import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.exception.CannotAddTaskException;
 import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.impl.factories.TaskFactory;
-import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.utils.ContentMarshallerHelper;
@@ -60,7 +59,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     @Inject
     @Mvel
     private LifeCycleManager lifeCycleManager;
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
     
     @Inject

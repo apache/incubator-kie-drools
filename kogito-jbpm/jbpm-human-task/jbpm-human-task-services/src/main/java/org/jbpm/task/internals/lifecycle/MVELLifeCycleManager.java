@@ -33,7 +33,6 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.annotations.Internal;
-import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
@@ -79,7 +78,7 @@ import org.mvel2.ParserContext;
 @Transactional
 public class MVELLifeCycleManager implements LifeCycleManager {
     
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
     @Inject
     private TaskDefService taskDefService;

@@ -23,7 +23,6 @@ import org.jbpm.task.Attachment;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskAttachmentService;
-import org.jbpm.task.annotations.TaskPersistence;
 
 /**
  *
@@ -31,7 +30,7 @@ import org.jbpm.task.annotations.TaskPersistence;
 @Transactional
 public class TaskAttachmentServiceImpl implements TaskAttachmentService {
 
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
 
     public long addAttachment(long taskId, Attachment attachment, Content content) {

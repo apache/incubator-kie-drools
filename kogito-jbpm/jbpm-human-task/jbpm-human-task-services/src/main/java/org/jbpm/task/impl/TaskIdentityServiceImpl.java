@@ -12,7 +12,6 @@ import org.jbpm.task.Group;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.User;
 import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.annotations.TaskPersistence;
 
 /**
  *
@@ -21,7 +20,7 @@ import org.jbpm.task.annotations.TaskPersistence;
 @Transactional
 public class TaskIdentityServiceImpl implements TaskIdentityService {
 
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
 
     public TaskIdentityServiceImpl() {

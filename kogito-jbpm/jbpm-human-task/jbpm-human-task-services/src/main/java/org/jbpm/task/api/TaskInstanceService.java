@@ -16,7 +16,10 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
 
 /**
- *
+ * The Task Instance Service is in charge of
+ *  handling all the actions required to interact with a 
+ *  Task Instance. All the operations described in the WS-HT specification
+ *  related with the Task Lifecycle are implemented here.
  */
 public interface TaskInstanceService {
 

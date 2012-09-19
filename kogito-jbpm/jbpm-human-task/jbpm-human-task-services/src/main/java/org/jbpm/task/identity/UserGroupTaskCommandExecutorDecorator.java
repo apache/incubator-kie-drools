@@ -37,7 +37,6 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.annotations.CommandBased;
-import org.jbpm.task.annotations.TaskPersistence;
 import org.jbpm.task.api.TaskCommandExecutor;
 import org.jbpm.task.commands.AddTaskCommand;
 import org.jbpm.task.commands.NominateTaskCommand;
@@ -54,7 +53,7 @@ public class UserGroupTaskCommandExecutorDecorator implements TaskCommandExecuto
     @Delegate
     @CommandBased
     private TaskCommandExecutor executor;
-    @Inject @TaskPersistence
+    @Inject 
     private EntityManager em;
     @Inject
     private UserGroupCallback userGroupCallback;
