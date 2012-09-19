@@ -31,7 +31,7 @@
   <properties>
     <jbpm.version>5.4.0-SNAPSHOT</jbpm.version>
     <jbpm.osgi.version>5.4.0.SNAPSHOT</jbpm.osgi.version>
-    <console.version>2.3.7.Final</console.version>
+    <console.version>2.3.8-SNAPSHOT</console.version>
     
     <!--
      These are properties used in the database profiles. Some of them must be initialized
