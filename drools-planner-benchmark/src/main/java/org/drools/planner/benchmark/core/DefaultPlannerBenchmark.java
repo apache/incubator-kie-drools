@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.core.statistic.PlannerStatistic;
+import org.drools.planner.benchmark.core.statistic.BenchmarkReport;
 import org.drools.planner.config.SolverFactory;
 import org.drools.planner.core.Solver;
 import org.slf4j.Logger;
@@ -59,6 +59,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private List<SolverBenchmark> solverBenchmarkList = null;
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
+    private final BenchmarkReport benchmarkReport = new BenchmarkReport(this);
 
     private long startingSystemTimeMillis;
     private Date startingTimestamp;
@@ -70,7 +71,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private Long averageProblemScale = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
-    private PlannerStatistic plannerStatistic = null;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -155,8 +155,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return benchmarkTimeMillisSpend;
     }
 
-    public PlannerStatistic getPlannerStatistic() {
-        return plannerStatistic;
+    public BenchmarkReport getBenchmarkReport() {
+        return benchmarkReport;
     }
 
     // ************************************************************************
@@ -292,16 +292,15 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         determineTotalsAndAverages();
         determineSolverBenchmarkRanking();
         benchmarkTimeMillisSpend = calculateTimeMillisSpend();
-        plannerStatistic = new PlannerStatistic(this);
-        plannerStatistic.writeStatistics();
+        benchmarkReport.writeReport();
         if (failureCount == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
                     new Object[] {benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),
-                            plannerStatistic.getHtmlOverviewFile().getAbsolutePath()});
+                            benchmarkReport.getHtmlOverviewFile().getAbsolutePath()});
         } else {
             logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",
                     new Object[] {benchmarkTimeMillisSpend, failureCount,
-                            plannerStatistic.getHtmlOverviewFile().getAbsolutePath()});
+                            benchmarkReport.getHtmlOverviewFile().getAbsolutePath()});
             throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
                     " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
                     + ") is chained.",

@@ -1,10 +1,10 @@
-<#-- @ftlvariable name="plannerStatistic" type="org.drools.planner.benchmark.core.statistic.PlannerStatistic" -->
+<#-- @ftlvariable name="benchmarkReport" type="org.drools.planner.benchmark.core.statistic.BenchmarkReport" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Planner benchmark report ${plannerStatistic.plannerBenchmark.startingTimestamp?datetime}</title>
+    <title>Planner benchmark report ${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</title>
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
     <link href="twitterbootstrap/css/prettify.css" rel="stylesheet"/>
@@ -51,7 +51,7 @@
                     <li><a href="#problemBenchmark">Problem benchmarks</a></li>
                     <li>
                         <ul class="nav nav-list">
-                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                             <li><a href="#problemBenchmark_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
                         </#list>
                         </ul>
@@ -60,7 +60,7 @@
                     <li><a href="#solverBenchmark">Solver benchmarks</a></li>
                     <li>
                         <ul class="nav nav-list">
-                        <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                        <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                             <li><a href="#solverBenchmark_${solverBenchmark.name}">${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></a></li>
                         </#list>
                         </ul>
@@ -78,9 +78,9 @@
                 <div class="page-header">
                     <h1>Summary</h1>
                 </div>
-            <#if plannerStatistic.plannerBenchmark.hasAnyFailure()>
+            <#if benchmarkReport.plannerBenchmark.hasAnyFailure()>
                 <div class="alert alert-error">
-                    <p>${plannerStatistic.plannerBenchmark.failureCount} benchmarks have failed!</p>
+                    <p>${benchmarkReport.plannerBenchmark.failureCount} benchmarks have failed!</p>
                 </div>
             </#if>
 
@@ -104,8 +104,8 @@
                                 <div class="tabbable tabs-right">
                                     <ul class="nav nav-tabs">
                                         <#assign scoreLevelIndex = 0>
-                                        <#list plannerStatistic.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
-                                            <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                        <#list benchmarkReport.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
+                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
                                                 <a href="#summary_bestScore_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
                                             </li>
                                             <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -113,8 +113,8 @@
                                     </ul>
                                     <div class="tab-content">
                                         <#assign scoreLevelIndex = 0>
-                                        <#list plannerStatistic.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
-                                            <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScore_chart_${scoreLevelIndex}">
+                                        <#list benchmarkReport.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
+                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScore_chart_${scoreLevelIndex}">
                                                 <div class="benchmark-chart">
                                                     <img src="${bestScoreSummaryChartFile.name}"/>
                                                 </div>
@@ -126,16 +126,16 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                         <th>Ranking</th>
                                     </tr>
-                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -158,8 +158,8 @@
                                 <div class="tabbable tabs-right">
                                     <ul class="nav nav-tabs">
                                     <#assign scoreLevelIndex = 0>
-                                    <#list plannerStatistic.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
-                                        <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                    <#list benchmarkReport.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
+                                        <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
                                             <a href="#summary_winningScoreDifference_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
                                         </li>
                                         <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -167,8 +167,8 @@
                                     </ul>
                                     <div class="tab-content">
                                     <#assign scoreLevelIndex = 0>
-                                    <#list plannerStatistic.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
-                                        <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="summary_winningScoreDifference_chart_${scoreLevelIndex}">
+                                    <#list benchmarkReport.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
+                                        <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_winningScoreDifference_chart_${scoreLevelIndex}">
                                             <div class="benchmark-chart">
                                                 <img src="${winningScoreDifferenceSummaryChartFile.name}"/>
                                             </div>
@@ -180,15 +180,15 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                     </tr>
-                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -210,8 +210,8 @@
                                 <div class="tabbable tabs-right">
                                     <ul class="nav nav-tabs">
                                     <#assign scoreLevelIndex = 0>
-                                    <#list plannerStatistic.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
-                                        <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                    <#list benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
+                                        <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
                                             <a href="#summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
                                         </li>
                                         <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -219,8 +219,8 @@
                                     </ul>
                                     <div class="tab-content">
                                     <#assign scoreLevelIndex = 0>
-                                    <#list plannerStatistic.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
-                                        <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}">
+                                    <#list benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
+                                        <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}">
                                             <div class="benchmark-chart">
                                                 <img src="${worstScoreDifferencePercentageSummaryChartFile.name}"/>
                                             </div>
@@ -232,15 +232,15 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                     </tr>
-                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -295,25 +295,25 @@
                             <div class="tab-pane" id="summary_timeSpend">
                                 <h3>Time spend summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.timeSpendSummaryChartFile.name}"/>
+                                    <img src="${benchmarkReport.timeSpendSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                     </tr>
                                     <tr>
                                         <th class="problemScale">Problem scale</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <td class="problemScale">${problemBenchmark.problemScale}</td>
                                     </#list>
                                     </tr>
-                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -332,33 +332,33 @@
                             <div class="tab-pane" id="summary_scalability">
                                 <h3>Scalability summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.scalabilitySummaryChartFile.name}"/>
+                                    <img src="${benchmarkReport.scalabilitySummaryChartFile.name}"/>
                                 </div>
                             </div>
                             <div class="tab-pane active" id="summary_averageCalculateCount">
                                 <h3>Average calculate count summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${plannerStatistic.averageCalculateCountSummaryChartFile.name}"/>
+                                    <img src="${benchmarkReport.averageCalculateCountSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                     </tr>
                                     <tr>
                                         <th class="problemScale">Problem scale</th>
-                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <td class="problemScale">${problemBenchmark.problemScale}</td>
                                     </#list>
-                                        <td class="problemScale">${plannerStatistic.plannerBenchmark.averageProblemScale}</td>
+                                        <td class="problemScale">${benchmarkReport.plannerBenchmark.averageProblemScale}</td>
                                     </tr>
-                                <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -396,7 +396,7 @@
                 <div class="page-header">
                     <h1>Problem benchmarks</h1>
                 </div>
-            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+            <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                 <section id="problemBenchmark_${problemBenchmark.name}">
                     <h2>${problemBenchmark.name}</h2>
                     <#if problemBenchmark.hasAnyFailure()>
@@ -432,7 +432,7 @@
                                                 <ul class="nav nav-tabs">
                                                     <#assign scoreLevelIndex = 0>
                                                     <#list problemStatistic.graphFilePathList as graphFilePath>
-                                                        <li<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                        <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
                                                             <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
                                                         </li>
                                                         <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -441,7 +441,7 @@
                                                 <div class="tab-content">
                                                     <#assign scoreLevelIndex = 0>
                                                     <#list problemStatistic.graphFilePathList as graphFilePath>
-                                                        <div class="tab-pane<#if scoreLevelIndex == plannerStatistic.defaultShownScoreLevelIndex> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}">
+                                                        <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}">
                                                             <div class="benchmark-chart">
                                                                 <img src="${graphFilePath}"/>
                                                             </div>
@@ -472,7 +472,7 @@
                 <div class="page-header">
                     <h1>Solver benchmarks</h1>
                 </div>
-            <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+            <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                 <section id="solverBenchmark_${solverBenchmark.name}">
                     <h2>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></h2>
                     <#if solverBenchmark.hasAnyFailure()>
@@ -497,31 +497,31 @@
                 <table class="benchmark-table table table-striped">
                     <tr>
                         <th>startingTimestamp</th>
-                        <td>${plannerStatistic.plannerBenchmark.startingTimestamp?datetime}</td>
+                        <td>${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</td>
                     </tr>
                     <tr>
                         <th>parallelBenchmarkCount</th>
-                        <td>${plannerStatistic.plannerBenchmark.parallelBenchmarkCount}</td>
+                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount}</td>
                     </tr>
                     <tr>
                         <th>warmUpTimeMillisSpend</th>
-                        <td>${plannerStatistic.plannerBenchmark.warmUpTimeMillisSpend} ms</td>
+                        <td>${benchmarkReport.plannerBenchmark.warmUpTimeMillisSpend} ms</td>
                     </tr>
                     <tr>
                         <th>benchmarkTimeMillisSpend</th>
-                        <td>${plannerStatistic.plannerBenchmark.benchmarkTimeMillisSpend} ms</td>
+                        <td>${benchmarkReport.plannerBenchmark.benchmarkTimeMillisSpend} ms</td>
                     </tr>
                     <tr>
                         <th>failureCount</th>
-                        <td>${plannerStatistic.plannerBenchmark.failureCount}</td>
+                        <td>${benchmarkReport.plannerBenchmark.failureCount}</td>
                     </tr>
                     <tr>
                         <th>plannerVersion</th>
-                        <td>${plannerStatistic.plannerBenchmark.plannerVersion!"Unjarred development snapshot"}</td>
+                        <td>${benchmarkReport.plannerBenchmark.plannerVersion!"Unjarred development snapshot"}</td>
                     </tr>
                     <tr>
                         <th>locale</th>
-                        <td>${plannerStatistic.locale!"Unknown"}</td>
+                        <td>${benchmarkReport.locale!"Unknown"}</td>
                     </tr>
                 </table>
             </section>

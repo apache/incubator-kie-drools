@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +40,6 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.core.score.Score;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -59,15 +57,14 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
 
-public class PlannerStatistic {
+public class BenchmarkReport {
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 5;
 
     protected final DefaultPlannerBenchmark plannerBenchmark;
-    protected final File htmlOverviewFile;
+    protected Locale locale;
 
-    protected Locale locale = Locale.getDefault();
-
+    protected File htmlOverviewFile = null;
     protected List<File> bestScoreSummaryChartFileList = null;
     protected List<File> winningScoreDifferenceSummaryChartFileList = null;
     protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
@@ -76,17 +73,24 @@ public class PlannerStatistic {
     protected File averageCalculateCountSummaryChartFile = null;
     protected Integer defaultShownScoreLevelIndex = null;
 
-    public PlannerStatistic(DefaultPlannerBenchmark plannerBenchmark) {
+    public BenchmarkReport(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
-        htmlOverviewFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "index.html");
     }
 
     public DefaultPlannerBenchmark getPlannerBenchmark() {
         return plannerBenchmark;
     }
 
+    public File getHtmlOverviewFile() {
+        return htmlOverviewFile;
+    }
+
     public Locale getLocale() {
         return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 
     public List<File> getBestScoreSummaryChartFileList() {
@@ -121,7 +125,7 @@ public class PlannerStatistic {
     // Write methods
     // ************************************************************************
 
-    public void writeStatistics() {
+    public void writeReport() {
         writeBestScoreSummaryCharts();
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
@@ -136,7 +140,7 @@ public class PlannerStatistic {
             }
         }
         determineDefaultShownScoreLevelIndex();
-        writeStatisticsWebsite();
+        writeHtmlOverviewFile();
     }
 
     private void writeBestScoreSummaryCharts() {
@@ -394,17 +398,18 @@ public class PlannerStatistic {
         }
     }
 
-    private void writeStatisticsWebsite() {
+    private void writeHtmlOverviewFile() {
         WebsiteResourceUtils.copyResourcesTo(plannerBenchmark.getBenchmarkReportDirectory());
 
+        htmlOverviewFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "index.html");
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");
         freemarkerCfg.setLocale(locale);
-        freemarkerCfg.setClassForTemplateLoading(PlannerStatistic.class, "");
+        freemarkerCfg.setClassForTemplateLoading(BenchmarkReport.class, "");
 
         String templateFilename = "index.html.ftl";
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("plannerStatistic", this);
+        model.put("benchmarkReport", this);
 
         Writer writer = null;
         try {
@@ -420,10 +425,6 @@ public class PlannerStatistic {
         } finally {
             IOUtils.closeQuietly(writer);
         }
-    }
-
-    public File getHtmlOverviewFile() {
-        return htmlOverviewFile;
     }
 
 }

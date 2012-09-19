@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.script.ScriptEngine;
@@ -57,15 +58,16 @@ public class PlannerBenchmarkConfig {
 
     private File benchmarkDirectory = null;
 
-    private SolverBenchmarkRankingType solverBenchmarkRankingType = null;
-    private Class<Comparator<SolverBenchmark>> solverBenchmarkRankingComparatorClass = null;
-    private Class<SolverBenchmarkRankingWeightFactory> solverBenchmarkRankingWeightFactoryClass = null;
-
     private String parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpend = null;
     private Long warmUpSecondsSpend = null;
     private Long warmUpMinutesSpend = null;
     private Long warmUpHoursSpend = null;
+
+    private Locale benchmarkReportLocale = null;
+    private SolverBenchmarkRankingType solverBenchmarkRankingType = null;
+    private Class<Comparator<SolverBenchmark>> solverBenchmarkRankingComparatorClass = null;
+    private Class<SolverBenchmarkRankingWeightFactory> solverBenchmarkRankingWeightFactoryClass = null;
 
     @XStreamAlias("inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
@@ -79,30 +81,6 @@ public class PlannerBenchmarkConfig {
 
     public void setBenchmarkDirectory(File benchmarkDirectory) {
         this.benchmarkDirectory = benchmarkDirectory;
-    }
-
-    public SolverBenchmarkRankingType getSolverBenchmarkRankingType() {
-        return solverBenchmarkRankingType;
-    }
-
-    public void setSolverBenchmarkRankingType(SolverBenchmarkRankingType solverBenchmarkRankingType) {
-        this.solverBenchmarkRankingType = solverBenchmarkRankingType;
-    }
-
-    public Class<Comparator<SolverBenchmark>> getSolverBenchmarkRankingComparatorClass() {
-        return solverBenchmarkRankingComparatorClass;
-    }
-
-    public void setSolverBenchmarkRankingComparatorClass(Class<Comparator<SolverBenchmark>> solverBenchmarkRankingComparatorClass) {
-        this.solverBenchmarkRankingComparatorClass = solverBenchmarkRankingComparatorClass;
-    }
-
-    public Class<SolverBenchmarkRankingWeightFactory> getSolverBenchmarkRankingWeightFactoryClass() {
-        return solverBenchmarkRankingWeightFactoryClass;
-    }
-
-    public void setSolverBenchmarkRankingWeightFactoryClass(Class<SolverBenchmarkRankingWeightFactory> solverBenchmarkRankingWeightFactoryClass) {
-        this.solverBenchmarkRankingWeightFactoryClass = solverBenchmarkRankingWeightFactoryClass;
     }
 
     /**
@@ -152,6 +130,38 @@ public class PlannerBenchmarkConfig {
         this.warmUpHoursSpend = warmUpHoursSpend;
     }
 
+    public Locale getBenchmarkReportLocale() {
+        return benchmarkReportLocale;
+    }
+
+    public void setBenchmarkReportLocale(Locale benchmarkReportLocale) {
+        this.benchmarkReportLocale = benchmarkReportLocale;
+    }
+
+    public SolverBenchmarkRankingType getSolverBenchmarkRankingType() {
+        return solverBenchmarkRankingType;
+    }
+
+    public void setSolverBenchmarkRankingType(SolverBenchmarkRankingType solverBenchmarkRankingType) {
+        this.solverBenchmarkRankingType = solverBenchmarkRankingType;
+    }
+
+    public Class<Comparator<SolverBenchmark>> getSolverBenchmarkRankingComparatorClass() {
+        return solverBenchmarkRankingComparatorClass;
+    }
+
+    public void setSolverBenchmarkRankingComparatorClass(Class<Comparator<SolverBenchmark>> solverBenchmarkRankingComparatorClass) {
+        this.solverBenchmarkRankingComparatorClass = solverBenchmarkRankingComparatorClass;
+    }
+
+    public Class<SolverBenchmarkRankingWeightFactory> getSolverBenchmarkRankingWeightFactoryClass() {
+        return solverBenchmarkRankingWeightFactoryClass;
+    }
+
+    public void setSolverBenchmarkRankingWeightFactoryClass(Class<SolverBenchmarkRankingWeightFactory> solverBenchmarkRankingWeightFactoryClass) {
+        this.solverBenchmarkRankingWeightFactoryClass = solverBenchmarkRankingWeightFactoryClass;
+    }
+
     public SolverBenchmarkConfig getInheritedSolverBenchmarkConfig() {
         return inheritedSolverBenchmarkConfig;
     }
@@ -179,9 +189,11 @@ public class PlannerBenchmarkConfig {
 
         DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
-        supplySolverBenchmarkRanking(plannerBenchmark);
         plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
+        plannerBenchmark.getBenchmarkReport().setLocale(
+                benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
+        supplySolverBenchmarkRanking(plannerBenchmark);
 
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
         List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();

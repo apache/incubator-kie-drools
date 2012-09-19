@@ -17,29 +17,21 @@
 package org.drools.planner.benchmark.core.statistic.bestscore;
 
 import java.awt.BasicStroke;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import javax.imageio.ImageIO;
 
-import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
-import org.drools.planner.benchmark.core.statistic.PlannerStatistic;
+import org.drools.planner.benchmark.core.statistic.BenchmarkReport;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.SingleStatistic;
-import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -47,7 +39,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -102,10 +93,10 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     }
 
     protected void writeGraphStatistic() {
-        List<XYPlot> plotList = new ArrayList<XYPlot>(PlannerStatistic.CHARTED_SCORE_LEVEL_SIZE);
+        List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            List<XYSeries> seriesList = new ArrayList<XYSeries>(PlannerStatistic.CHARTED_SCORE_LEVEL_SIZE);
+            List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {
@@ -114,7 +105,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     double[] levelValues = point.getScore().toDoubleLevels();
-                    for (int i = 0; i < levelValues.length && i < PlannerStatistic.CHARTED_SCORE_LEVEL_SIZE; i++) {
+                    for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
                                     singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
@@ -125,7 +116,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
                 long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                 double[] bestScoreLevels = singleBenchmark.getScore().toDoubleLevels();
-                for (int i = 0; i < bestScoreLevels.length && i < PlannerStatistic.CHARTED_SCORE_LEVEL_SIZE; i++) {
+                for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     seriesList.get(i).add(timeMillisSpend, bestScoreLevels[i]);
                 }
                 if (singleStatistic.getPointList().size() <= 1) {
@@ -157,7 +148,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     }
 
     private XYPlot createPlot(int scoreLevelIndex) {
-        Locale locale = problemBenchmark.getPlannerBenchmark().getPlannerStatistic().getLocale();
+        Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Score level " + scoreLevelIndex);

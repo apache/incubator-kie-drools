@@ -274,6 +274,15 @@
           <para>Benchmark information</para>
         </listitem>
       </itemizedlist>
+
+      <para>The HTML report will use your default locale to format numbers. If you need to share the benchmark report
+      with people from another country, you might want to overwrite the <literal>benchmarkReportLocale</literal>:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;benchmarkReportLocale&gt;en_US&lt;/benchmarkReportLocale&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
     </section>
 
     <section>

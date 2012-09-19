@@ -17,16 +17,10 @@
 package org.drools.planner.benchmark.core.statistic.calculatecount;
 
 import java.awt.BasicStroke;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.util.Locale;
-import javax.imageio.ImageIO;
 
-import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
@@ -34,7 +28,6 @@ import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.SingleStatistic;
-import org.drools.planner.core.Solver;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -88,7 +81,7 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
     }
 
     protected void writeGraphStatistic() {
-        Locale locale = problemBenchmark.getPlannerBenchmark().getPlannerStatistic().getLocale();
+        Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Calculate count per second");
