@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.NumberFormat;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
@@ -86,9 +88,11 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
     }
 
     protected void writeGraphStatistic() {
+        Locale locale = problemBenchmark.getPlannerBenchmark().getPlannerStatistic().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
-        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
+        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Calculate count per second");
+        yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);

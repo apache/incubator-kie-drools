@@ -19,6 +19,7 @@ package org.drools.planner.benchmark.core.statistic;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Locale;
 
 public class MillisecondsSpendNumberFormat extends NumberFormat {
 
@@ -26,6 +27,12 @@ public class MillisecondsSpendNumberFormat extends NumberFormat {
     private final static long HOUR_MILLIS = 3600000L;
     private final static long MINUTE_MILLIS = 60000L;
     private final static long SECOND_MILLIS = 1000L;
+
+    private final Locale locale;
+
+    public MillisecondsSpendNumberFormat(Locale locale) {
+        this.locale = locale;
+    }
 
     public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
         return format((long) number, toAppendTo, pos);

@@ -504,12 +504,12 @@
                         <td>${plannerStatistic.plannerBenchmark.parallelBenchmarkCount}</td>
                     </tr>
                     <tr>
-                        <th>benchmarkTimeMillisSpend</th>
-                        <td>${plannerStatistic.plannerBenchmark.benchmarkTimeMillisSpend} ms</td>
-                    </tr>
-                    <tr>
                         <th>warmUpTimeMillisSpend</th>
                         <td>${plannerStatistic.plannerBenchmark.warmUpTimeMillisSpend} ms</td>
+                    </tr>
+                    <tr>
+                        <th>benchmarkTimeMillisSpend</th>
+                        <td>${plannerStatistic.plannerBenchmark.benchmarkTimeMillisSpend} ms</td>
                     </tr>
                     <tr>
                         <th>failureCount</th>
@@ -518,6 +518,10 @@
                     <tr>
                         <th>plannerVersion</th>
                         <td>${plannerStatistic.plannerBenchmark.plannerVersion!"Unjarred development snapshot"}</td>
+                    </tr>
+                    <tr>
+                        <th>locale</th>
+                        <td>${plannerStatistic.locale!"Unknown"}</td>
                     </tr>
                 </table>
             </section>

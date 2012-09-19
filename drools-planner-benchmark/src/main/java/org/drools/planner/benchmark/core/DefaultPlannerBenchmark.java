@@ -66,9 +66,11 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private ExecutorService executorService;
     private Integer failureCount;
     private SingleBenchmark firstFailureSingleBenchmark;
+
     private Long averageProblemScale = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
+    private PlannerStatistic plannerStatistic = null;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -151,6 +153,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     public long getBenchmarkTimeMillisSpend() {
         return benchmarkTimeMillisSpend;
+    }
+
+    public PlannerStatistic getPlannerStatistic() {
+        return plannerStatistic;
     }
 
     // ************************************************************************
@@ -286,7 +292,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         determineTotalsAndAverages();
         determineSolverBenchmarkRanking();
         benchmarkTimeMillisSpend = calculateTimeMillisSpend();
-        PlannerStatistic plannerStatistic = new PlannerStatistic(this);
+        plannerStatistic = new PlannerStatistic(this);
         plannerStatistic.writeStatistics();
         if (failureCount == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",

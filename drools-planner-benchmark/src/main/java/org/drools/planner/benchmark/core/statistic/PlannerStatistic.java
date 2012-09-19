@@ -29,6 +29,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
@@ -65,13 +66,15 @@ public class PlannerStatistic {
     protected final DefaultPlannerBenchmark plannerBenchmark;
     protected final File htmlOverviewFile;
 
+    protected Locale locale = Locale.getDefault();
+
     protected List<File> bestScoreSummaryChartFileList = null;
     protected List<File> winningScoreDifferenceSummaryChartFileList = null;
     protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     protected File timeSpendSummaryChartFile = null;
     protected File scalabilitySummaryChartFile = null;
     protected File averageCalculateCountSummaryChartFile = null;
-    private Integer defaultShownScoreLevelIndex = null;
+    protected Integer defaultShownScoreLevelIndex = null;
 
     public PlannerStatistic(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
@@ -80,6 +83,10 @@ public class PlannerStatistic {
 
     public DefaultPlannerBenchmark getPlannerBenchmark() {
         return plannerBenchmark;
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 
     public List<File> getBestScoreSummaryChartFileList() {
@@ -154,7 +161,7 @@ public class PlannerStatistic {
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
             CategoryPlot plot = createBarChartPlot(dataset,
-                    "Score level " + scoreLevelIndex, NumberFormat.getInstance());
+                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart("Best score level " + scoreLevelIndex + " summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScoreSummaryChartFileList.add(writeChartToImageFile(chart, "bestScoreSummaryLevel" + scoreLevelIndex));
@@ -184,7 +191,7 @@ public class PlannerStatistic {
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
             CategoryPlot plot = createBarChartPlot(dataset,
-                    "Winning score difference level " + scoreLevelIndex, NumberFormat.getInstance());
+                    "Winning score difference level " + scoreLevelIndex, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart("Winning score difference level " + scoreLevelIndex
                     + " summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
@@ -216,7 +223,8 @@ public class PlannerStatistic {
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
             CategoryPlot plot = createBarChartPlot(dataset,
-                    "Worst score difference percentage level " + scoreLevelIndex, new DecimalFormat("0.00%"));
+                    "Worst score difference percentage level " + scoreLevelIndex,
+                    NumberFormat.getPercentInstance(locale));
             JFreeChart chart = new JFreeChart("Worst score difference percentage level " + scoreLevelIndex
                     + " summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
@@ -238,7 +246,7 @@ public class PlannerStatistic {
                 }
             }
         }
-        CategoryPlot plot = createBarChartPlot(dataset, "Time spend", new MillisecondsSpendNumberFormat());
+        CategoryPlot plot = createBarChartPlot(dataset, "Time spend", new MillisecondsSpendNumberFormat(locale));
         JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         timeSpendSummaryChartFile = writeChartToImageFile(chart, "timeSpendSummary");
@@ -246,8 +254,9 @@ public class PlannerStatistic {
 
     private void writeScalabilitySummaryChart() {
         NumberAxis xAxis = new NumberAxis("Problem scale");
+        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         NumberAxis yAxis = new NumberAxis("Time spend");
-        yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
+        yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
@@ -279,7 +288,9 @@ public class PlannerStatistic {
 
     private void writeAverageCalculateCountPerSecondSummaryChart() {
         NumberAxis xAxis = new NumberAxis("Problem scale");
+        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         NumberAxis yAxis = new NumberAxis("Average calculate count per second");
+        yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
@@ -388,8 +399,7 @@ public class PlannerStatistic {
 
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");
-        // TODO Benchmark reports should be interchangeable? If yes, also fix the locale for the charts
-        // freemarkerCfg.setLocale(Locale.US);
+        freemarkerCfg.setLocale(locale);
         freemarkerCfg.setClassForTemplateLoading(PlannerStatistic.class, "");
 
         String templateFilename = "index.html.ftl";
