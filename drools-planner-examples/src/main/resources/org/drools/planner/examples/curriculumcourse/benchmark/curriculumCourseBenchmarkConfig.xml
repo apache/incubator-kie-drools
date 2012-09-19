@@ -9,18 +9,18 @@
       <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp01.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp02.xml</inputSolutionFile>
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp03.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp04.xml</inputSolutionFile>-->
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp03.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp04.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp05.xml</inputSolutionFile>
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp06.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp09.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp10.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp11.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp12.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp13.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp14.xml</inputSolutionFile>-->
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp06.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp09.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp10.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp11.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp12.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp13.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp14.xml</inputSolutionFile>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
 
@@ -45,33 +45,6 @@
     </solver>
   </inheritedSolverBenchmark>
 
-  <solverBenchmark>
-    <name>entityTabu10-custom-phase-random</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-        </unionMoveSelector>
-        <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
   <solverBenchmark>
     <name>entityTabu10-custom-phase-shuffled</name>
     <solver>
@@ -103,7 +76,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>entityTabu10-generic_jit</name>
+    <name>jit</name>
     <solver>
       <localSearch>
         <unionMoveSelector>
@@ -118,6 +91,37 @@
             </valueSelector>
           </changeMoveSelector>
           <swapMoveSelector>
+            <moveFilterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</moveFilterClass>
+          </swapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>phase_cached</name>
+    <solver>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+            <valueSelector>
+              <planningVariableName>period</planningVariableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+            <valueSelector>
+              <planningVariableName>room</planningVariableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <cacheType>PHASE</cacheType>
             <moveFilterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</moveFilterClass>
           </swapMoveSelector>
         </unionMoveSelector>
