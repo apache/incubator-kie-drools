@@ -27,12 +27,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.drools.RuleIntegrationException;
@@ -42,7 +40,6 @@ import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
@@ -153,43 +150,39 @@ public class ReteooBuilder
             // we should only do this on first call, its expected the RuleBase should not change afterwards.
             return;
         }
-        Map map = new HashMap();
+        Map<String, List<RuleTerminalNode>> map = new HashMap<String, List<RuleTerminalNode>>();
 
-        for ( Iterator it = this.rules.values().iterator(); it.hasNext(); ) {
-            BaseNode[] nodes = (BaseNode[]) it.next();
-            for ( int i = 0; i < nodes.length; i++ ) {
-                if ( nodes[i] instanceof RuleTerminalNode ) {
-                    RuleTerminalNode node = (RuleTerminalNode) nodes[i];
-                    String agendaGroup = node.getRule().getAgendaGroup();
-                    if ( agendaGroup == null || agendaGroup.equals( "" ) ) {
+        for ( BaseNode[] nodes : this.rules.values() ) {
+            for ( BaseNode node : nodes ) {
+                if ( node instanceof RuleTerminalNode ) {
+                    RuleTerminalNode terminalNode = (RuleTerminalNode) node;
+                    String agendaGroup = terminalNode.getRule().getAgendaGroup();
+                    if ( "".equals(agendaGroup) ) {
                         agendaGroup = "MAIN";
                     }
-                    List rules = (List) map.get( agendaGroup );
+                    List<RuleTerminalNode> rules = map.get( agendaGroup );
                     if ( rules == null ) {
-                        rules = new ArrayList();
+                        rules = new ArrayList<RuleTerminalNode>();
                         map.put( agendaGroup,
                                  rules );
                     }
-                    rules.add( node );
+                    rules.add( terminalNode );
                 }
             }
         }
 
-        for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
-            String agendaGroup = (String) entry.getKey();
-            List rules = (List) entry.getValue();
+        for ( Map.Entry<String, List<RuleTerminalNode>> entry : map.entrySet()) {
+            String agendaGroup = entry.getKey();
+            List<RuleTerminalNode> rules = entry.getValue();
             Collections.sort( rules,
                               RuleSequenceComparator.INSTANCE );
 
             int i = 0;
-            for ( Iterator listIter = rules.iterator(); listIter.hasNext(); ) {
-                RuleTerminalNode node = (RuleTerminalNode) listIter.next();
+            for ( RuleTerminalNode node : rules ) {
                 node.setSequence( i++ );
             }
 
-            ruleBase.getAgendaGroupRuleTotals().put( agendaGroup,
-                    i );
+            ruleBase.getAgendaGroupRuleTotals().put( agendaGroup, i );
         }
         ordered = true;
     }
@@ -256,8 +249,7 @@ public class ReteooBuilder
 
         final BaseNode[] nodes = (BaseNode[]) object;
         final RuleRemovalContext context = new RuleRemovalContext( rule );
-        for ( int i = 0, length = nodes.length; i < length; i++ ) {
-            final BaseNode node = nodes[i];
+        for (final BaseNode node : nodes) {
             node.remove( context,
                          this,
                          null,
@@ -327,9 +319,9 @@ public class ReteooBuilder
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }
             }
-        } else if ( baseNode instanceof LeftTupleSink ) {
+        } else if ( baseNode instanceof BetaNode ) {
             if ( ((BaseNode)baseNode).isInUse() ) {
-                leafSet.add( (BaseNode) baseNode );
+                leafSet.add( baseNode );
             }
         }
     }
@@ -365,7 +357,7 @@ public class ReteooBuilder
 
         public synchronized int getNextId() {
             Integer id = this.recycledIds.poll();
-            return ( id == null ) ? this.nextId++ : id.intValue();
+            return ( id == null ) ? this.nextId++ : id;
         }
 
         public synchronized void releaseId(int id) {

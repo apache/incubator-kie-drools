@@ -54,15 +54,15 @@ public interface InternalRuleBase
     
     FactHandleFactory newFactHandleFactory(int id, long counter) throws IOException ;
 
-    Map getGlobals();
+    Map<String, Class<?>> getGlobals();
     
-    Map getAgendaGroupRuleTotals();
+    Map<String, Integer> getAgendaGroupRuleTotals();
     
     RuleBaseConfiguration getConfiguration();
     
     Package getPackage(String name);
     
-    Map getPackagesMap();
+    Map<String, Package> getPackagesMap();
 
     void disposeStatefulSession(StatefulSession statefulSession);
     
