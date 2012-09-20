@@ -16,28 +16,17 @@
 
 package org.drools.planner.core.testdata.util;
 
+import java.util.Iterator;
+
+import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.move.Move;
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
 
+import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
+import static org.junit.Assert.assertEquals;
+
 public class PlannerAssert extends Assert {
-
-    public static void assertCode(String expectedCode, Object o) {
-        assertTrue(o instanceof CodeAssertable);
-        assertCode(expectedCode, (CodeAssertable) o);
-    }
-
-    public static void assertCode(String message, String expectedCode, Object o) {
-        assertTrue(o instanceof CodeAssertable);
-        assertCode(message, expectedCode, (CodeAssertable) o);
-    }
-
-    public static void assertCode(String expectedCode, CodeAssertable codeAssertable) {
-        assertEquals(expectedCode, codeAssertable.getCode());
-    }
-
-    public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
-        assertEquals(message, expectedCode, codeAssertable.getCode());
-    }
 
     public static void assertInstanceOf(Class expectedClass, Object actualInstance) {
         assertInstanceOf(null, expectedClass, actualInstance);
@@ -61,6 +50,62 @@ public class PlannerAssert extends Assert {
             throw new ComparisonFailure(cleanMessage, "not " + expectedClass.getName(),
                     actualInstance == null ? "null" : actualInstance.getClass().getName());
         }
+    }
+
+    // ************************************************************************
+    // CodeAssertable methods
+    // ************************************************************************
+
+    public static void assertCode(String expectedCode, Object o) {
+        assertTrue(o instanceof CodeAssertable);
+        assertCode(expectedCode, (CodeAssertable) o);
+    }
+
+    public static void assertCode(String message, String expectedCode, Object o) {
+        assertTrue(o instanceof CodeAssertable);
+        assertCode(message, expectedCode, (CodeAssertable) o);
+    }
+
+    public static void assertCode(String expectedCode, CodeAssertable codeAssertable) {
+        assertEquals(expectedCode, codeAssertable.getCode());
+    }
+
+    public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
+        assertEquals(message, expectedCode, codeAssertable.getCode());
+    }
+
+    public static <O> void assertCodesOfIterator(Iterator<O> iterator, String... codes) {
+        assertNotNull(iterator);
+        for (String code : codes) {
+            assertTrue(iterator.hasNext());
+            assertCode(code, iterator.next());
+        }
+    }
+
+    public static void assertAllCodesOfEndingMoveSelector(MoveSelector moveSelector, String... codes) {
+        assertAllCodesOfEndingMoveSelector(moveSelector, (long) codes.length, codes);
+    }
+
+    public static void assertAllCodesOfEndingMoveSelector(MoveSelector moveSelector, long size, String... codes) {
+        Iterator<Move> iterator = moveSelector.iterator();
+        assertCodesOfIterator(iterator, codes);
+        assertFalse(iterator.hasNext());
+        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(false, moveSelector.isNeverEnding());
+        assertEquals(size, moveSelector.getSize());
+    }
+
+    public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, String... codes) {
+        assertCodesOfNeverEndingMoveSelector(moveSelector, (long) codes.length, codes);
+    }
+
+    public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, long size, String... codes) {
+        Iterator<Move> iterator = moveSelector.iterator();
+        assertCodesOfIterator(iterator, codes);
+        assertTrue(iterator.hasNext());
+        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(true, moveSelector.isNeverEnding());
+        assertEquals(size, moveSelector.getSize());
     }
 
     private PlannerAssert() {

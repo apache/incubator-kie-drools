@@ -74,7 +74,7 @@ public class ShufflingMoveSelectorTest {
         when(workingRandom.nextInt(3)).thenReturn(2);
         when(workingRandom.nextInt(2)).thenReturn(0);
         moveSelector.stepStarted(stepScopeA1);
-        runAsserts(moveSelector, "a2", "a1", "a3");
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
@@ -85,10 +85,10 @@ public class ShufflingMoveSelectorTest {
         moveSelector.stepStarted(stepScopeA2);
         if (cacheType.compareTo(SelectionCacheType.STEP) > 0) {
             // From a1, a2, a3
-            runAsserts(moveSelector, "a3", "a1", "a2");
+            assertAllCodesOfEndingMoveSelector(moveSelector, "a3", "a1", "a2");
         } else {
             // Reset from a1, a2, a3
-            runAsserts(moveSelector, "a3", "a2", "a1");
+            assertAllCodesOfEndingMoveSelector(moveSelector, "a3", "a2", "a1");
         }
         moveSelector.stepEnded(stepScopeA2);
 
@@ -107,10 +107,10 @@ public class ShufflingMoveSelectorTest {
         moveSelector.stepStarted(stepScopeB1);
         if (cacheType.compareTo(SelectionCacheType.PHASE) > 0) {
             // From a3, a1, a2
-            runAsserts(moveSelector, "a2", "a3", "a1");
+            assertAllCodesOfEndingMoveSelector(moveSelector, "a2", "a3", "a1");
         } else {
             // Reset from a1, a2, a3
-            runAsserts(moveSelector, "a3", "a1", "a2");
+            assertAllCodesOfEndingMoveSelector(moveSelector, "a3", "a1", "a2");
         }
         moveSelector.stepEnded(stepScopeB1);
 
@@ -126,19 +126,6 @@ public class ShufflingMoveSelectorTest {
         verify(childMoveSelector, times(1)).solvingEnded(solverScope);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(MoveSelector moveSelector, String... codes) {
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertNotNull(iterator);
-        for (String code : codes) {
-            assertTrue(iterator.hasNext());
-            assertCode(code, iterator.next());
-        }
-        assertFalse(iterator.hasNext());
-        assertEquals(false, moveSelector.isContinuous());
-        assertEquals(false, moveSelector.isNeverEnding());
-        assertEquals(3L, moveSelector.getSize());
     }
 
 }

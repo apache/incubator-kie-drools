@@ -78,21 +78,7 @@ public class ProbabilityMoveSelectorTest {
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertEquals(false, moveSelector.isContinuous());
-        assertEquals(true, moveSelector.isNeverEnding());
-        assertEquals(4L, moveSelector.getSize());
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertTrue(iterator.hasNext());
-        assertCode("e3", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e4", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e2", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertCodesOfNeverEndingMoveSelector(moveSelector, 4L, "e3", "e1", "e1", "e4", "e2");
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);

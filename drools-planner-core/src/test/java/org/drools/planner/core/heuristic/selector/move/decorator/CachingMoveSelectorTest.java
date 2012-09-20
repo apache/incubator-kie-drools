@@ -67,13 +67,13 @@ public class CachingMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        runAsserts(moveSelector, "a1", "a2", "a3");
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        runAsserts(moveSelector, "a1", "a2", "a3");
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -85,19 +85,19 @@ public class CachingMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        runAsserts(moveSelector, "a1", "a2", "a3");
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        runAsserts(moveSelector, "a1", "a2", "a3");
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        runAsserts(moveSelector, "a1", "a2", "a3");
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -152,7 +152,7 @@ public class CachingMoveSelectorTest {
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA1);
         when(workingRandom.nextInt(3)).thenReturn(1, 0, 2);
-        runAsserts(moveSelector, true, "a2", "a1", "a3");
+        assertCodesOfNeverEndingMoveSelector(moveSelector, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
@@ -160,7 +160,7 @@ public class CachingMoveSelectorTest {
         when(stepScopeA2.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA2);
         when(workingRandom.nextInt(3)).thenReturn(2, 0, 1);
-        runAsserts(moveSelector, true, "a3", "a1", "a2");
+        assertCodesOfNeverEndingMoveSelector(moveSelector, "a3", "a1", "a2");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -175,7 +175,7 @@ public class CachingMoveSelectorTest {
         when(stepScopeB1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeB1);
         when(workingRandom.nextInt(3)).thenReturn(1, 2, 0);
-        runAsserts(moveSelector, true, "a2", "a3", "a1");
+        assertCodesOfNeverEndingMoveSelector(moveSelector, "a2", "a3", "a1");
         moveSelector.stepEnded(stepScopeB1);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -190,23 +190,6 @@ public class CachingMoveSelectorTest {
         verify(childMoveSelector, times(1)).solvingEnded(solverScope);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(MoveSelector moveSelector, String... codes) {
-        runAsserts(moveSelector, false, codes);
-    }
-
-    private void runAsserts(MoveSelector moveSelector, boolean neverEnding, String... codes) {
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertNotNull(iterator);
-        for (String code : codes) {
-            assertTrue(iterator.hasNext());
-            assertCode(code, iterator.next());
-        }
-        assertEquals(neverEnding, iterator.hasNext());
-        assertEquals(false, moveSelector.isContinuous());
-        assertEquals(neverEnding, moveSelector.isNeverEnding());
-        assertEquals(3L, moveSelector.getSize());
     }
 
 }

@@ -19,7 +19,6 @@ package org.drools.planner.core.heuristic.selector.move.composite;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -57,21 +56,7 @@ public class UnionMoveSelectorTest {
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertEquals(false, moveSelector.isContinuous());
-        assertEquals(false, moveSelector.isNeverEnding());
-        assertEquals(5L, moveSelector.getSize());
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertTrue(iterator.hasNext());
-        assertCode("a1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("a2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("a3", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("b1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("b2", iterator.next());
-        assertFalse(iterator.hasNext());
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3", "b1", "b2");
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
@@ -108,21 +93,8 @@ public class UnionMoveSelectorTest {
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertEquals(false, moveSelector.isContinuous());
-        assertEquals(false, moveSelector.isNeverEnding()); // A union of ending MoveSelectors does end
-        assertEquals(5L, moveSelector.getSize());
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertTrue(iterator.hasNext());
-        assertCode("a1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("b1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("b2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("a2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("a3", iterator.next());
-        assertFalse(iterator.hasNext());
+        // A union of ending MoveSelectors does end, even with randomSelection
+        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "b1", "b2", "a2", "a3");
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);

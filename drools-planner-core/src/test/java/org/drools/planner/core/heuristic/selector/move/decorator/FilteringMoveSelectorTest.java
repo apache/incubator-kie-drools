@@ -87,13 +87,13 @@ public class FilteringMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -105,19 +105,19 @@ public class FilteringMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -132,21 +132,6 @@ public class FilteringMoveSelectorTest {
         verify(childMoveSelector, times(1)).solvingEnded(solverScope);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(MoveSelector moveSelector, SelectionCacheType cacheType) {
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertNotNull(iterator);
-        assertTrue(iterator.hasNext());
-        assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e4", iterator.next());
-        assertFalse(iterator.hasNext());
-        assertEquals(false, moveSelector.isContinuous());
-        assertEquals(false, moveSelector.isNeverEnding());
-        assertEquals((cacheType.isNotCached() ? 4L : 3L), moveSelector.getSize());
     }
 
 }
