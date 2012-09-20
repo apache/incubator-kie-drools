@@ -90,7 +90,7 @@ abstract public class AbstractRuleBase
 
     private Map<String, Process>                          processes;
 
-    private Map                                           agendaGroupRuleTotals;
+    private Map<String, Integer>                          agendaGroupRuleTotals;
 
     private transient CompositeClassLoader                rootClassLoader;
 
@@ -158,7 +158,7 @@ abstract public class AbstractRuleBase
         this.factHandleFactory = factHandleFactory;
 
         if (this.config.isSequential()) {
-            this.agendaGroupRuleTotals = new HashMap();
+            this.agendaGroupRuleTotals = new HashMap<String, Integer>();
         }
 
         this.rootClassLoader = this.config.getClassLoader();
@@ -280,8 +280,8 @@ abstract public class AbstractRuleBase
                                                                getClass(),
                                                                classLoaderCacheEnabled );
 
-        droolsStream.setClassLoader( this.rootClassLoader );
-        droolsStream.setRuleBase( this );
+        droolsStream.setClassLoader(this.rootClassLoader);
+        droolsStream.setRuleBase(this);
 
         JavaDialectRuntimeData typeStore = (JavaDialectRuntimeData) droolsStream.readObject();
         this.declarationClassLoader = new JavaDialectRuntimeData.TypeDeclarationClassLoader(
@@ -445,11 +445,11 @@ abstract public class AbstractRuleBase
         return this.pkgs;
     }
 
-    public Map getGlobals() {
+    public Map<String, Class<?>> getGlobals() {
         return this.globals;
     }
 
-    public Map getAgendaGroupRuleTotals() {
+    public Map<String, Integer> getAgendaGroupRuleTotals() {
         return this.agendaGroupRuleTotals;
     }
 
@@ -918,9 +918,9 @@ abstract public class AbstractRuleBase
             TypeDeclarationCandidate baseline,
             int level ) {
         TypeDeclarationCandidate candidate = null;
-        TypeDeclaration typeDeclaration = null;
         if (baseline == null || level < baseline.score) {
             // search
+            TypeDeclaration typeDeclaration;
             for (Class<?> ifc : clazz.getInterfaces()) {
                 typeDeclaration = this.classTypeDeclaration.get( ifc.getName() );
                 if (typeDeclaration != null) {
