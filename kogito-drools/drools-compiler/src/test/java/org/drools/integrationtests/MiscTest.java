@@ -11523,4 +11523,31 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testRemoveRuleWithFromNode() throws Exception {
+        // JBRULES-3631
+        String str =
+                "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   not( Person( name == \"Mark\" ));\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   $p: Person( name == \"Mark\" );\n" +
+                "   not( Address() from $p.getAddresses() );\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    }
 }
