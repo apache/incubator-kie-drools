@@ -23,7 +23,7 @@ import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
-import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
+import org.drools.planner.examples.examination.domain.InstitutionParametrization;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.PeriodPenalty;
 import org.drools.planner.examples.examination.domain.PeriodPenaltyType;
@@ -146,7 +146,7 @@ end
 // Two exams in a row which share students
 rule "twoExamsInARow"
     when
-        $institutionalWeighting : InstitutionalWeighting(twoInARowPenalty != 0)
+        $institutionParametrization : InstitutionParametrization(twoInARowPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
@@ -154,7 +154,7 @@ rule "twoExamsInARow"
         eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) == 1)
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInARow", ConstraintType.NEGATIVE_SOFT,
-                $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInARowPenalty(),
+                $topicConflict.getStudentSize() * $institutionParametrization.getTwoInARowPenalty(),
                 $leftExam, $rightExam));
 end
 
@@ -162,7 +162,7 @@ end
 // Two exams in a day which share students
 rule "twoExamsInADay"
     when
-        $institutionalWeighting : InstitutionalWeighting(twoInADayPenalty != 0)
+        $institutionParametrization : InstitutionParametrization(twoInADayPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
@@ -170,29 +170,29 @@ rule "twoExamsInADay"
         eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) > 1)
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInADay", ConstraintType.NEGATIVE_SOFT,
-                $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInADayPenalty(),
+                $topicConflict.getStudentSize() * $institutionParametrization.getTwoInADayPenalty(),
                 $leftExam, $rightExam));
 end
 
 // Exams which share students have to few periods between them
 rule "periodSpread"
     when
-        $institutionalWeighting : InstitutionalWeighting(periodSpreadPenalty != 0)
+        $institutionParametrization : InstitutionParametrization(periodSpreadPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
         eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex())
-            < ($institutionalWeighting.getPeriodSpreadLength() + 1))
+            < ($institutionParametrization.getPeriodSpreadLength() + 1))
     then
         insertLogical(new IntConstraintOccurrence("periodSpread", ConstraintType.NEGATIVE_SOFT,
-                $topicConflict.getStudentSize() * $institutionalWeighting.getPeriodSpreadPenalty(),
+                $topicConflict.getStudentSize() * $institutionParametrization.getPeriodSpreadPenalty(),
                 $leftExam, $rightExam));
 end
 
 // Several exams in the same room and period have different durations
 rule "mixedDurations"
     when
-        $institutionalWeighting : InstitutionalWeighting(mixedDurationPenalty != 0)
+        $institutionParametrization : InstitutionParametrization(mixedDurationPenalty != 0)
         $leftExam : Exam($leftId : id, $period : period, room != null, $room : room, $leftTopic : topic)
         // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
         // leftExam has lowest id of the period+room combo
@@ -208,20 +208,20 @@ rule "mixedDurations"
         )
     then
         insertLogical(new IntConstraintOccurrence("mixedDurations", ConstraintType.NEGATIVE_SOFT,
-                $institutionalWeighting.getMixedDurationPenalty(),
+                $institutionParametrization.getMixedDurationPenalty(),
                 $leftExam, $rightExam));
 end
 
 // Larger Exams towards the beginning of the examination session
 rule "frontLoad"
     when
-        $institutionalWeighting : InstitutionalWeighting(frontLoadPenalty != 0)
+        $institutionParametrization : InstitutionParametrization(frontLoadPenalty != 0)
         $topic : Topic(frontLoadLarge == true)
         $period : Period(frontLoadLast == true)
         $exam : Exam(topic == $topic, period == $period)
     then
         insertLogical(new IntConstraintOccurrence("frontLoad", ConstraintType.NEGATIVE_SOFT,
-                $institutionalWeighting.getFrontLoadPenalty(),
+                $institutionParametrization.getFrontLoadPenalty(),
                 $exam));
 end
 

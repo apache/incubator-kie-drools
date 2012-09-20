@@ -32,7 +32,7 @@ import org.drools.planner.examples.examination.domain.solver.TopicConflict;
 @XStreamAlias("Examination")
 public class Examination extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
-    private InstitutionalWeighting institutionalWeighting;
+    private InstitutionParametrization institutionParametrization;
 
     private List<Student> studentList;
     private List<Topic> topicList;
@@ -46,12 +46,12 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
 
     private HardAndSoftScore score;
 
-    public InstitutionalWeighting getInstitutionalWeighting() {
-        return institutionalWeighting;
+    public InstitutionParametrization getInstitutionParametrization() {
+        return institutionParametrization;
     }
 
-    public void setInstitutionalWeighting(InstitutionalWeighting institutionalWeighting) {
-        this.institutionalWeighting = institutionalWeighting;
+    public void setInstitutionParametrization(InstitutionParametrization institutionParametrization) {
+        this.institutionParametrization = institutionParametrization;
     }
 
     public List<Student> getStudentList() {
@@ -125,7 +125,7 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
-        facts.add(institutionalWeighting);
+        facts.add(institutionParametrization);
         // Student isn't used in the DRL at the moment
         // Notice that asserting them is not a noticable performance cost, only a memory cost.
         // facts.addAll(studentList);
@@ -167,7 +167,7 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
     public Examination cloneSolution() {
         Examination clone = new Examination();
         clone.id = id;
-        clone.institutionalWeighting = institutionalWeighting;
+        clone.institutionParametrization = institutionParametrization;
         clone.studentList = studentList;
         clone.topicList = topicList;
         clone.periodList = periodList;

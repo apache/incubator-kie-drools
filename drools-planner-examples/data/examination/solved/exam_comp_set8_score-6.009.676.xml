@@ -1,5 +1,5 @@
 <Examination id="1">
-  <institutionalWeighting id="2">
+  <institutionParametrization id="2">
     <id>0</id>
     <twoInARowPenalty>150</twoInARowPenalty>
     <twoInADayPenalty>0</twoInADayPenalty>
@@ -9,7 +9,7 @@
     <frontLoadLargeTopicSize>250</frontLoadLargeTopicSize>
     <frontLoadLastPeriodSize>30</frontLoadLastPeriodSize>
     <frontLoadPenalty>5</frontLoadPenalty>
-  </institutionalWeighting>
+  </institutionParametrization>
   <studentList id="3">
     <Student id="4">
       <id>0</id>

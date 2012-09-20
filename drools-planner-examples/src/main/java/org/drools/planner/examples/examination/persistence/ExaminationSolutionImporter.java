@@ -37,7 +37,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
-import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
+import org.drools.planner.examples.examination.domain.InstitutionParametrization;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.PeriodPenalty;
 import org.drools.planner.examples.examination.domain.PeriodPenaltyType;
@@ -279,23 +279,23 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
         }
 
         private void readInstitutionalWeighting(Examination examination) throws IOException {
-            InstitutionalWeighting institutionalWeighting = new InstitutionalWeighting();
-            institutionalWeighting.setId(0L);
+            InstitutionParametrization institutionParametrization = new InstitutionParametrization();
+            institutionParametrization.setId(0L);
             String[] lineTokens;
             lineTokens = readInstitutionalWeightingProperty("TWOINAROW", 2);
-            institutionalWeighting.setTwoInARowPenalty(Integer.parseInt(lineTokens[1]));
+            institutionParametrization.setTwoInARowPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("TWOINADAY", 2);
-            institutionalWeighting.setTwoInADayPenalty(Integer.parseInt(lineTokens[1]));
+            institutionParametrization.setTwoInADayPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("PERIODSPREAD", 2);
-            institutionalWeighting.setPeriodSpreadLength(Integer.parseInt(lineTokens[1]));
-            institutionalWeighting.setPeriodSpreadPenalty(1); // constant
+            institutionParametrization.setPeriodSpreadLength(Integer.parseInt(lineTokens[1]));
+            institutionParametrization.setPeriodSpreadPenalty(1); // constant
             lineTokens = readInstitutionalWeightingProperty("NONMIXEDDURATIONS", 2);
-            institutionalWeighting.setMixedDurationPenalty(Integer.parseInt(lineTokens[1]));
+            institutionParametrization.setMixedDurationPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("FRONTLOAD", 4);
-            institutionalWeighting.setFrontLoadLargeTopicSize(Integer.parseInt(lineTokens[1]));
-            institutionalWeighting.setFrontLoadLastPeriodSize(Integer.parseInt(lineTokens[2]));
-            institutionalWeighting.setFrontLoadPenalty(Integer.parseInt(lineTokens[3]));
-            examination.setInstitutionalWeighting(institutionalWeighting);
+            institutionParametrization.setFrontLoadLargeTopicSize(Integer.parseInt(lineTokens[1]));
+            institutionParametrization.setFrontLoadLastPeriodSize(Integer.parseInt(lineTokens[2]));
+            institutionParametrization.setFrontLoadPenalty(Integer.parseInt(lineTokens[3]));
+            examination.setInstitutionParametrization(institutionParametrization);
         }
 
         private String[] readInstitutionalWeightingProperty(String property,
@@ -319,7 +319,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
                             .toComparison();
                 }
             });
-            int frontLoadLargeTopicSize = examination.getInstitutionalWeighting().getFrontLoadLargeTopicSize();
+            int frontLoadLargeTopicSize = examination.getInstitutionParametrization().getFrontLoadLargeTopicSize();
             if (frontLoadLargeTopicSize == 0) {
                 return;
             }
@@ -336,7 +336,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
 
         private void tagFrontLoadLastPeriods(Examination examination) {
             List<Period> periodList = examination.getPeriodList();
-            int frontLoadLastPeriodSize = examination.getInstitutionalWeighting().getFrontLoadLastPeriodSize();
+            int frontLoadLastPeriodSize = examination.getInstitutionParametrization().getFrontLoadLastPeriodSize();
             if (frontLoadLastPeriodSize == 0) {
                 return;
             }

@@ -20,8 +20,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("InstitutionalWeighting")
-public class InstitutionalWeighting extends AbstractPersistable {
+/**
+ * Institutional weightings
+ */
+@XStreamAlias("InstitutionParametrization")
+public class InstitutionParametrization extends AbstractPersistable {
 
     private int twoInARowPenalty;
     private int twoInADayPenalty;
