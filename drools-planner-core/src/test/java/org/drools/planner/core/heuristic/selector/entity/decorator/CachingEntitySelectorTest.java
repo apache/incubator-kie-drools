@@ -106,12 +106,7 @@ public class CachingEntitySelectorTest {
 
         entitySelector.solvingEnded(solverScope);
 
-        verify(childEntitySelector, times(1)).solvingStarted(solverScope);
-        verify(childEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(childEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(childEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childEntitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(childEntitySelector, 1, 2, 5);
         verify(childEntitySelector, times(timesCalled)).iterator();
         verify(childEntitySelector, times(timesCalled)).getSize();
     }

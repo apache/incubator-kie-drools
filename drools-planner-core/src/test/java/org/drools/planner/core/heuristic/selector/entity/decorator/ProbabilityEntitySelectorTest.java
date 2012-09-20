@@ -100,12 +100,7 @@ public class ProbabilityEntitySelectorTest {
         entitySelector.phaseEnded(phaseScopeA);
         entitySelector.solvingEnded(solverScope);
 
-        verify(childEntitySelector, times(1)).solvingStarted(solverScope);
-        verify(childEntitySelector, times(1)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childEntitySelector, times(1)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(childEntitySelector, times(1)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(childEntitySelector, times(1)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childEntitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(childEntitySelector, 1, 1, 1);
         verify(childEntitySelector, times(1)).iterator();
     }
 

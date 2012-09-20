@@ -102,12 +102,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verify(valueSelector, times(1)).solvingStarted(solverScope);
-        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(3)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(3)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(valueSelector, 1, 2, 3);
     }
 
     private void runAssertsOriginal1(DefaultSubChainSelector subChainSelector) {
@@ -207,12 +202,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verify(valueSelector, times(1)).solvingStarted(solverScope);
-        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(3)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(3)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(valueSelector, 1, 2, 3);
     }
 
     private void runAssertsEmptyOriginal(DefaultSubChainSelector subChainSelector) {

@@ -109,12 +109,7 @@ public class SameValuePillarSelectorTest {
 
         pillarSelector.solvingEnded(solverScope);
 
-        verify(entitySelector, times(1)).solvingStarted(solverScope);
-        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(3)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(3)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
     private void runAssertsOriginal1(SameValuePillarSelector pillarSelector) {
@@ -190,12 +185,7 @@ public class SameValuePillarSelectorTest {
 
         pillarSelector.solvingEnded(solverScope);
 
-        verify(entitySelector, times(1)).solvingStarted(solverScope);
-        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(3)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(3)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
     private void runAssertsEmptyOriginal(SameValuePillarSelector pillarSelector) {

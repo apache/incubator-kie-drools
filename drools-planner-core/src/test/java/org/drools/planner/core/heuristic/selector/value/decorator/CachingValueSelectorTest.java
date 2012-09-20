@@ -107,12 +107,7 @@ public class CachingValueSelectorTest {
 
         valueSelector.solvingEnded(solverScope);
 
-        verify(childValueSelector, times(1)).solvingStarted(solverScope);
-        verify(childValueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childValueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(childValueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(childValueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childValueSelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 5);
         verify(childValueSelector, times(timesCalled)).iterator();
         verify(childValueSelector, times(timesCalled)).getSize();
     }
