@@ -26,14 +26,6 @@ import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
-import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
-import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
-import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
-import org.drools.planner.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
-import org.drools.planner.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
-import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
-import org.drools.planner.config.phase.custom.CustomSolverPhaseConfig;
 import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.Solver;
 

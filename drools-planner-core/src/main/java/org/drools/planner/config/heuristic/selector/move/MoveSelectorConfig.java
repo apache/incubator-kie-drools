@@ -25,6 +25,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
+import org.drools.planner.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
 import org.drools.planner.config.heuristic.selector.move.factory.MoveListFactoryConfig;
@@ -48,7 +49,7 @@ import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSe
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
  */
 @XStreamInclude({
-        UnionMoveSelectorConfig.class,
+        UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
         SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
         MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class
