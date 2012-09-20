@@ -19,6 +19,7 @@ package org.drools.planner.core.testdata.util;
 import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
+import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
@@ -76,14 +77,33 @@ public class PlannerAssert extends Assert {
     // CodeAssertable methods
     // ************************************************************************
 
+    private static CodeAssertable convertToCodeAssertable(Object o) {
+        if (o instanceof CodeAssertable) {
+            return (CodeAssertable) o;
+        } else if (o instanceof CompositeMove) {
+            CompositeMove compositeMove = (CompositeMove) o;
+            StringBuilder codeBuilder = new StringBuilder(compositeMove.getMoveList().size() * 80);
+            for (Move move : compositeMove.getMoveList()) {
+                codeBuilder.append("+").append(convertToCodeAssertable(move).getCode());
+            }
+            final String code = codeBuilder.substring(1);
+            return new CodeAssertable() {
+                public String getCode() {
+                    return code;
+                }
+            };
+        }
+        throw new AssertionError(("o's class (" + o.getClass() + ") cannot be converted to CodeAssertable."));
+    }
+
     public static void assertCode(String expectedCode, Object o) {
-        assertTrue(o instanceof CodeAssertable);
-        assertCode(expectedCode, (CodeAssertable) o);
+        CodeAssertable codeAssertable = convertToCodeAssertable(o);
+        assertCode(expectedCode, codeAssertable);
     }
 
     public static void assertCode(String message, String expectedCode, Object o) {
-        assertTrue(o instanceof CodeAssertable);
-        assertCode(message, expectedCode, (CodeAssertable) o);
+        CodeAssertable codeAssertable = convertToCodeAssertable(o);
+        assertCode(message, expectedCode, codeAssertable);
     }
 
     public static void assertCode(String expectedCode, CodeAssertable codeAssertable) {

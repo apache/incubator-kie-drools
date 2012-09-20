@@ -43,6 +43,10 @@ public class CompositeMove implements Move {
         this.moveList = moveList;
     }
 
+    public List<Move> getMoveList() {
+        return moveList;
+    }
+
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (Move move : moveList) {
             if (!move.isMoveDoable(scoreDirector)) {
