@@ -43,14 +43,6 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public Iterator<Move> iterator() {
-        if (!randomSelection) {
-            throw new UnsupportedOperationException("Not yet implemented"); // TODO
-        } else {
-            return new RandomCartesianProductMoveIterator();
-        }
-    }
-
     public boolean isNeverEnding() {
         if (randomSelection) {
             return true;
@@ -67,6 +59,14 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
             size *= moveSelector.getSize();
         }
         return size;
+    }
+
+    public Iterator<Move> iterator() {
+        if (!randomSelection) {
+            throw new UnsupportedOperationException("Not yet implemented"); // TODO
+        } else {
+            return new RandomCartesianProductMoveIterator();
+        }
     }
 
     public class RandomCartesianProductMoveIterator implements Iterator<Move> {

@@ -88,18 +88,6 @@ public class UnionMoveSelector extends CompositeMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public Iterator<Move> iterator() {
-        if (!randomSelection) {
-            List<Iterator<Move>> iteratorList = new ArrayList<Iterator<Move>>(childMoveSelectorList.size());
-            for (MoveSelector moveSelector : childMoveSelectorList) {
-                iteratorList.add(moveSelector.iterator());
-            }
-            return new IteratorChain(iteratorList);
-        } else {
-            return new RandomUnionMoveIterator();
-        }
-    }
-
     public boolean isNeverEnding() {
         if (randomSelection) {
             for (MoveSelector moveSelector : childMoveSelectorList) {
@@ -125,6 +113,18 @@ public class UnionMoveSelector extends CompositeMoveSelector {
             size += moveSelector.getSize();
         }
         return size;
+    }
+
+    public Iterator<Move> iterator() {
+        if (!randomSelection) {
+            List<Iterator<Move>> iteratorList = new ArrayList<Iterator<Move>>(childMoveSelectorList.size());
+            for (MoveSelector moveSelector : childMoveSelectorList) {
+                iteratorList.add(moveSelector.iterator());
+            }
+            return new IteratorChain(iteratorList);
+        } else {
+            return new RandomUnionMoveIterator();
+        }
     }
 
     public class RandomUnionMoveIterator implements Iterator<Move> {
