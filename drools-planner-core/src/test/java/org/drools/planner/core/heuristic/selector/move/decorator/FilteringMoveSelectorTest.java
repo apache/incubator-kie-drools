@@ -124,12 +124,7 @@ public class FilteringMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(childMoveSelector, times(1)).solvingStarted(solverScope);
-        verify(childMoveSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childMoveSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(childMoveSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(childMoveSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childMoveSelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(childMoveSelector, 1, 2, 5);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
     }

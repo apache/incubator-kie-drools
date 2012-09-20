@@ -17,17 +17,15 @@
 package org.drools.planner.core.heuristic.selector.move.composite;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.move.DummyMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -41,10 +39,10 @@ public class UnionMoveSelectorTest {
     @Test
     public void originSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
-        childMoveSelectorList.add(new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"))));
-        childMoveSelectorList.add(new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("b1"), new DummyMove("b2"))));
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(
+                DummyMove.class, new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(
+                DummyMove.class,new DummyMove("b1"), new DummyMove("b2")));
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -61,20 +59,21 @@ public class UnionMoveSelectorTest {
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
     }
 
     @Test
     public void randomSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
         Map<Selector, Double> fixedProbabilityWeightMap = new HashMap<Selector, Double>();
-        DummyMoveSelector moveSelector1 = new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
-        childMoveSelectorList.add(moveSelector1);
-        fixedProbabilityWeightMap.put(moveSelector1, 1000.0);
-        DummyMoveSelector moveSelector2 = new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("b1"), new DummyMove("b2")));
-        childMoveSelectorList.add(moveSelector2);
-        fixedProbabilityWeightMap.put(moveSelector2, 20.0);
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
+                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
+        fixedProbabilityWeightMap.put(childMoveSelectorList.get(0), 1000.0);
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
+                new DummyMove("b1"), new DummyMove("b2")));
+        fixedProbabilityWeightMap.put(childMoveSelectorList.get(1), 20.0);
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
                 new FixedSelectorProbabilityWeightFactory(fixedProbabilityWeightMap));
 
@@ -99,6 +98,9 @@ public class UnionMoveSelectorTest {
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
     }
 
 }

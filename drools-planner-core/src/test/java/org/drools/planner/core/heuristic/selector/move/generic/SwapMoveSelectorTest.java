@@ -89,12 +89,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(entitySelector, times(1)).solvingStarted(solverScope);
-        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 5);
     }
 
     private void runAssertsOriginalLeftEqualsRight(SwapMoveSelector moveSelector) {
@@ -166,12 +161,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(entitySelector, times(1)).solvingStarted(solverScope);
-        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 5);
     }
 
     private void runAssertsEmptyOriginalLeftEqualsRight(SwapMoveSelector moveSelector) {
@@ -244,18 +234,8 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(leftEntitySelector, times(1)).solvingStarted(solverScope);
-        verify(leftEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(leftEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(leftEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(leftEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(leftEntitySelector, times(1)).solvingEnded(solverScope);
-        verify(rightEntitySelector, times(1)).solvingStarted(solverScope);
-        verify(rightEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(rightEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(rightEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(rightEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(rightEntitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(leftEntitySelector, 1, 2, 5);
+        verifySolverPhaseLifecycle(rightEntitySelector, 1, 2, 5);
     }
 
     private void runAssertsOriginalLeftUnequalsRight(SwapMoveSelector moveSelector) {
@@ -339,18 +319,8 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(leftEntitySelector, times(1)).solvingStarted(solverScope);
-        verify(leftEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(leftEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(leftEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(leftEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(leftEntitySelector, times(1)).solvingEnded(solverScope);
-        verify(rightEntitySelector, times(1)).solvingStarted(solverScope);
-        verify(rightEntitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(rightEntitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(rightEntitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(rightEntitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(rightEntitySelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(leftEntitySelector, 1, 2, 5);
+        verifySolverPhaseLifecycle(rightEntitySelector, 1, 2, 5);
     }
 
     private void runAssertsEmptyRightOriginalLeftUnequalsRight(SwapMoveSelector moveSelector) {

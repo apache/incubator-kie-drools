@@ -91,18 +91,8 @@ public class ChangeMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(entitySelector, times(1)).solvingStarted(solverScope);
-        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(1)).solvingEnded(solverScope);
-        verify(valueSelector, times(1)).solvingStarted(solverScope);
-        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 5);
+        verifySolverPhaseLifecycle(valueSelector, 1, 2, 5);
     }
 
     private void runAssertsOriginal(ChangeMoveSelector moveSelector) {
@@ -181,18 +171,8 @@ public class ChangeMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(entitySelector, times(1)).solvingStarted(solverScope);
-        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(1)).solvingEnded(solverScope);
-        verify(valueSelector, times(1)).solvingStarted(solverScope);
-        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 5);
+        verifySolverPhaseLifecycle(valueSelector, 1, 2, 5);
     }
 
     @Test
@@ -250,18 +230,8 @@ public class ChangeMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verify(entitySelector, times(1)).solvingStarted(solverScope);
-        verify(entitySelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(entitySelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(entitySelector, times(1)).solvingEnded(solverScope);
-        verify(valueSelector, times(1)).solvingStarted(solverScope);
-        verify(valueSelector, times(2)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(5)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(5)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(valueSelector, times(2)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(valueSelector, times(1)).solvingEnded(solverScope);
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 5);
+        verifySolverPhaseLifecycle(valueSelector, 1, 2, 5);
     }
 
     private void runAssertsEmptyOriginal(ChangeMoveSelector moveSelector) {

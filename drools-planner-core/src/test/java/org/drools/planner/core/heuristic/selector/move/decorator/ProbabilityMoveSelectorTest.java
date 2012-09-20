@@ -84,13 +84,7 @@ public class ProbabilityMoveSelectorTest {
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
 
-        verify(childMoveSelector, times(1)).solvingStarted(solverScope);
-        verify(childMoveSelector, times(1)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childMoveSelector, times(1)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(childMoveSelector, times(1)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(childMoveSelector, times(1)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(childMoveSelector, times(1)).solvingEnded(solverScope);
-        verify(childMoveSelector, times(1)).iterator();
+        verifySolverPhaseLifecycle(childMoveSelector, 1, 1, 1);
     }
 
 }

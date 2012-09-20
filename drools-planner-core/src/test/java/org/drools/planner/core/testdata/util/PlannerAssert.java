@@ -20,11 +20,17 @@ import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
+import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
+import org.mockito.Matchers;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class PlannerAssert extends Assert {
 
@@ -50,6 +56,20 @@ public class PlannerAssert extends Assert {
             throw new ComparisonFailure(cleanMessage, "not " + expectedClass.getName(),
                     actualInstance == null ? "null" : actualInstance.getClass().getName());
         }
+    }
+
+    // ************************************************************************
+    // SolverPhaseLifecycleListener methods
+    // ************************************************************************
+
+    public static void verifySolverPhaseLifecycle(SolverPhaseLifecycleListener lifecycleListener,
+            int solvingCount, int phaseCount, int stepCount) {
+        verify(lifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
+        verify(lifecycleListener, times(phaseCount)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
+        verify(lifecycleListener, times(stepCount)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(lifecycleListener, times(stepCount)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(lifecycleListener, times(phaseCount)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
+        verify(lifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
     }
 
     // ************************************************************************
