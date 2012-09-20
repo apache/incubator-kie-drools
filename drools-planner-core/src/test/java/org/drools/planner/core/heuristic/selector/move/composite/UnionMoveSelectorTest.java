@@ -45,7 +45,7 @@ public class UnionMoveSelectorTest {
         childMoveSelectorList.add(new DummyMoveSelector(
                 Arrays.<Move>asList(new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"))));
         childMoveSelectorList.add(new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5"))));
+                Arrays.<Move>asList(new DummyMove("b1"), new DummyMove("b2"))));
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -68,9 +68,9 @@ public class UnionMoveSelectorTest {
         assertTrue(iterator.hasNext());
         assertCode("a3", iterator.next());
         assertTrue(iterator.hasNext());
-        assertCode("a4", iterator.next());
+        assertCode("b1", iterator.next());
         assertTrue(iterator.hasNext());
-        assertCode("a5", iterator.next());
+        assertCode("b2", iterator.next());
         assertFalse(iterator.hasNext());
 
         moveSelector.stepEnded(stepScopeA1);
@@ -87,7 +87,7 @@ public class UnionMoveSelectorTest {
         childMoveSelectorList.add(moveSelector1);
         fixedProbabilityWeightMap.put(moveSelector1, 1000.0);
         DummyMoveSelector moveSelector2 = new DummyMoveSelector(
-                Arrays.<Move>asList(new DummyMove("a4"), new DummyMove("a5")));
+                Arrays.<Move>asList(new DummyMove("b1"), new DummyMove("b2")));
         childMoveSelectorList.add(moveSelector2);
         fixedProbabilityWeightMap.put(moveSelector2, 20.0);
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
@@ -115,9 +115,9 @@ public class UnionMoveSelectorTest {
         assertTrue(iterator.hasNext());
         assertCode("a1", iterator.next());
         assertTrue(iterator.hasNext());
-        assertCode("a4", iterator.next());
+        assertCode("b1", iterator.next());
         assertTrue(iterator.hasNext());
-        assertCode("a5", iterator.next());
+        assertCode("b2", iterator.next());
         assertTrue(iterator.hasNext());
         assertCode("a2", iterator.next());
         assertTrue(iterator.hasNext());
