@@ -78,6 +78,7 @@ public class PlannerAssert extends Assert {
     // ************************************************************************
 
     private static CodeAssertable convertToCodeAssertable(Object o) {
+        assertNotNull(o);
         if (o instanceof CodeAssertable) {
             return (CodeAssertable) o;
         } else if (o instanceof CompositeMove) {
