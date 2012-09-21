@@ -23,6 +23,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.drools.FactException;
@@ -79,10 +81,10 @@ public class ClassObjectTypeConf
         ObjectType objectType = ((AbstractRuleBase) ruleBase).getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz,
                                                                                                                                     isEvent ) );
 
-        this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+        this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
             BuildContext context = new BuildContext( ruleBase,
-                                                     ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
+                                                     ruleBase.getRete().getRuleBase().getReteooBuilder().getIdGenerator() );
             context.setCurrentEntryPoint( entryPoint );
             if ( DroolsQuery.class == clazz ) {
                 context.setTupleMemoryEnabled( false );
@@ -201,7 +203,15 @@ public class ClassObjectTypeConf
             }
         }
 
-        return (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
+        Collections.sort(cache, OBJECT_TYPE_NODE_COMPARATOR);
+        return cache.toArray( new ObjectTypeNode[cache.size()] );
+    }
+
+    private static final ObjectTypeNodeComparator OBJECT_TYPE_NODE_COMPARATOR = new ObjectTypeNodeComparator();
+    private static final class ObjectTypeNodeComparator implements Comparator<ObjectTypeNode> {
+        public int compare(ObjectTypeNode o1, ObjectTypeNode o2) {
+            return o1.getId() - o2.getId();
+        }
     }
 
     public boolean isActive() {
@@ -217,7 +227,7 @@ public class ClassObjectTypeConf
     }
     
     public boolean isDynamic() {
-        return (typeDecl != null) ? typeDecl.isDynamic() : false;
+        return typeDecl != null && typeDecl.isDynamic();
     }
 
     public boolean isTMSEnabled() {
