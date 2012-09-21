@@ -584,9 +584,9 @@
         &lt;maximumUnimprovedStepCount&gt;100&lt;/maximumUnimprovedStepCount&gt;
     &lt;/termination&gt;</programlisting>
 
-      <para>If the score hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort
-      to continue. We have observed that once a new best solution is found (even after a long time of no improvement on
-      the best solution), the next few steps tend to improve the best solution too.</para>
+      <para>If the score hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the
+      effort to continue. We have observed that once a new best solution is found (even after a long time of no
+      improvement on the best solution), the next few steps tend to improve the best solution too.</para>
 
       <para>This <literal>Termination</literal> can only be used for a <literal>SolverPhase</literal>, not for the
       <literal>Solver</literal> itself.</para>
@@ -726,16 +726,22 @@
     <para>It's possible to configure multiple <literal>customSolverPhaseCommandClass</literal> instances, which will be
     run in sequence.</para>
 
-    <note>
+    <important>
       <para>If the changes of a <literal>CustomSolverPhaseCommand</literal> don't result in a better score, the best
       solution won't be changed (so effectively nothing will have changed for the next <literal>SolverPhase</literal> or
-      <literal>CustomSolverPhaseCommand</literal>). TODO: we might want to change this behaviour?</para>
-    </note>
+      <literal>CustomSolverPhaseCommand</literal>). To force such changes anyway, use
+      <literal>forceUpdateBestSolution</literal>:</para>
+
+      <programlisting language="xml">  &lt;customSolverPhase&gt;
+    &lt;customSolverPhaseCommandClass&gt;...MyUnitializer&lt;/customSolverPhaseCommandClass&gt;
+    &lt;forceUpdateBestSolution&gt;true&lt;/forceUpdateBestSolution&gt;
+  &lt;/customSolverPhase&gt;</programlisting>
+    </important>
 
     <note>
       <para>If the <literal>Solver</literal> or <literal>SolverPhase</literal> wants to terminate while a
       <literal>CustomSolverPhaseCommand</literal> is still running, it will wait to terminate until the
-      <literal>CustomSolverPhaseCommand</literal> is done.</para>
+      <literal>CustomSolverPhaseCommand</literal> is done, however long that takes.</para>
     </note>
   </section>
 </chapter>

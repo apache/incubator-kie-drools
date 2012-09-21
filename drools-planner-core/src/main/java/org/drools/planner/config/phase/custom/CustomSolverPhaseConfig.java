@@ -41,12 +41,22 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
     @XStreamImplicit(itemFieldName = "customSolverPhaseCommandClass")
     protected List<Class<CustomSolverPhaseCommand>> customSolverPhaseCommandClassList = null;
 
+    protected Boolean forceUpdateBestSolution = null;
+
     public List<Class<CustomSolverPhaseCommand>> getCustomSolverPhaseCommandClassList() {
         return customSolverPhaseCommandClassList;
     }
 
     public void setCustomSolverPhaseCommandClassList(List<Class<CustomSolverPhaseCommand>> customSolverPhaseCommandClassList) {
         this.customSolverPhaseCommandClassList = customSolverPhaseCommandClassList;
+    }
+
+    public Boolean getForceUpdateBestSolution() {
+        return forceUpdateBestSolution;
+    }
+
+    public void setForceUpdateBestSolution(Boolean forceUpdateBestSolution) {
+        this.forceUpdateBestSolution = forceUpdateBestSolution;
     }
 
     // ************************************************************************
@@ -69,6 +79,7 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
             customSolverPhaseCommandList.add(customSolverPhaseCommand);
         }
         customSolverPhase.setCustomSolverPhaseCommandList(customSolverPhaseCommandList);
+        customSolverPhase.setForceUpdateBestSolution(forceUpdateBestSolution == null ? false : forceUpdateBestSolution);
         return customSolverPhase;
     }
 
@@ -76,6 +87,8 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
         super.inherit(inheritedConfig);
         customSolverPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(
                 customSolverPhaseCommandClassList, inheritedConfig.getCustomSolverPhaseCommandClassList());
+        forceUpdateBestSolution = ConfigUtils.inheritOverwritableProperty(forceUpdateBestSolution,
+                inheritedConfig.getForceUpdateBestSolution());
     }
 
 }
