@@ -151,7 +151,6 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ClassPathResource;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -175,13 +174,11 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
-import org.drools.time.SessionPseudoClock;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11487,7 +11484,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test @Ignore // TODO: remove @Ignore when mvel 2.1.2.Final will be available
+    @Test
     public void testNullConstantLeft() {
         // JBRULES-3627
         String str = "import org.drools.*;\n" +
@@ -11549,5 +11546,66 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    }
+
+    @Test
+    public void testDeterministicOTNOrdering() throws Exception {
+        // JBRULES-3632
+        String str =
+                "package indexingproblem.remove.me.anditworks;\n" +
+                "declare Criteria\n" +
+                "   processed : boolean\n" +
+                "end\n" +
+                "\n" +
+                "declare CheeseCriteria extends Criteria end\n" +
+                "\n" +
+                "rule setUp salience 10000 when\n" +
+                "then\n" +
+                "   insert(new CheeseCriteria());\n" +
+                "end\n" +
+                "\n" +
+                "rule aaa when\n" +
+                "   CheeseCriteria( )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule bbb when\n" +
+                "   CheeseCriteria( )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule ccc when\n" +
+                "   CheeseCriteria( )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule eeeFalse when\n" +
+                "   Criteria( processed == false )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "declare Filter end\n" +
+                "\n" +
+                "rule fffTrue when\n" +
+                "   Criteria( processed == true )\n" +
+                "   Filter( )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule ruleThatFails when\n" +
+                "   $criteria : Criteria( processed == false )\n" +
+                "then\n" +
+                "   modify($criteria) { setProcessed(true) }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        kbase = SerializationHelper.serializeObject( kbase );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+
+        // check that OTNs ordering is not breaking serialization
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
+        ksession.fireAllRules();
     }
 }
