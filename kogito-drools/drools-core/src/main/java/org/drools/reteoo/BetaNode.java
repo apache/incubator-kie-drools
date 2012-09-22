@@ -490,14 +490,14 @@ public abstract class BetaNode extends LeftTupleSource
             }
             context.setCleanupAdapter( null );
         }
-        this.rightInput.remove( context,
-                                builder,
-                                this,
-                                workingMemories );
         this.leftInput.remove( context,
                                builder,
                                this,
                                workingMemories );
+        this.rightInput.remove( context,
+                                builder,
+                                this,
+                                workingMemories );
     }
 
     public void modifyObject(InternalFactHandle factHandle,

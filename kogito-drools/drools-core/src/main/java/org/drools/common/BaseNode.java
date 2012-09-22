@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.drools.definition.rule.Rule;
 import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
 import org.drools.reteoo.builder.BuildContext;
@@ -104,7 +105,11 @@ public abstract class BaseNode
                        ReteooBuilder builder,
                        BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
-        context.getRemovedNodes().add(  this  );       
+
+        if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource)) {
+            return;
+        }
+
         this.removeAssociation( context.getRule() );
         doRemove( context,
                   builder,
