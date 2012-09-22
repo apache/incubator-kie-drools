@@ -32,21 +32,26 @@ import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
-
+import org.jbpm.task.service.*;
 
 public abstract class TaskServiceEscalationBaseSyncTest extends BaseTest {
 
     protected TaskServer server;
     protected TaskService client;
 
-    public void testDummy() {
-        assertTrue(true);
+
+    protected void tearDown() throws Exception {
+        if( client != null ) { 
+            client.disconnect();
+        }
+        if( server != null ) { 
+            server.stop();
+        }
+        super.tearDown();
     }
 
     public void testUnescalatedDeadlines() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
+        Map<String, Object> vars = fillVariables(users, groups);
 
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
         taskService.setEscalatedDeadlineHandler(handler);

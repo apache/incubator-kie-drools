@@ -56,11 +56,4 @@ public class TaskServiceDeadlinesMinaUserGroupCallbackAsyncTest extends TaskServ
         getWiser().start();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-        getWiser().stop();
-    }
-
 }

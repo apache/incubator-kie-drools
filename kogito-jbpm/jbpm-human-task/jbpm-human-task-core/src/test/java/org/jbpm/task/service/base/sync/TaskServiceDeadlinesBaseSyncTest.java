@@ -18,31 +18,16 @@ package org.jbpm.task.service.base.sync;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.*;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.runtime.process.WorkItemManager;
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.Content;
-import org.jbpm.task.MockUserInfo;
-import org.jbpm.task.MvelFilePath;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
+import org.jbpm.task.*;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.User;
-import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.service.*;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
@@ -53,6 +38,19 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
     protected TaskService client;
     private Properties conf;
     private Wiser wiser;
+
+    protected void tearDown() throws Exception {
+        if( client != null ) { 
+            client.disconnect();
+        }
+        if( server != null ) { 
+            server.stop();
+        }
+        if( wiser != null ) { 
+            wiser.stop();
+        }
+        super.tearDown();
+    }
 
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
         Map<String, Object> vars = fillVariables();

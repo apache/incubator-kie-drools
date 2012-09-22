@@ -49,11 +49,5 @@ public class TaskServiceDeadlinesAsyncTest extends TaskServiceDeadlinesBaseAsync
 		getWiser().start();
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		client.disconnect();
-		server.stop();
-		getWiser().stop();
-	}
 
 }

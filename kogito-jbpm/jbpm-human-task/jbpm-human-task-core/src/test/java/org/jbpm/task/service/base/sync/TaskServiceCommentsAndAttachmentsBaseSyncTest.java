@@ -17,28 +17,10 @@ package org.jbpm.task.service.base.sync;
 
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskService;
+import org.jbpm.task.*;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.responsehandlers.BlockingAddAttachmentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingAddCommentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingDeleteAttachmentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingDeleteCommentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.utils.CollectionUtils;
 
 public abstract class TaskServiceCommentsAndAttachmentsBaseSyncTest extends BaseTest {
@@ -46,21 +28,14 @@ public abstract class TaskServiceCommentsAndAttachmentsBaseSyncTest extends Base
     protected TaskServer server;
     protected TaskService client;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
     protected void tearDown() throws Exception {
-        super.tearDown();
         client.disconnect();
+        server.stop();
+        super.tearDown();
     }
 
     public void testAddRemoveComment() {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map vars = fillVariables(users, groups);
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
         str += "deadlines = new Deadlines(),";

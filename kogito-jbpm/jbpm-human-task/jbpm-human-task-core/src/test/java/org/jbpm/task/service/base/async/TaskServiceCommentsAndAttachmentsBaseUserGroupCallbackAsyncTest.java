@@ -44,8 +44,9 @@ public abstract class TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackAsyn
     }
 
     protected void tearDown() throws Exception {
-        super.tearDown();
         client.disconnect();
+        server.stop();
+        super.tearDown();
     }
 
     public void testAddRemoveComment() {

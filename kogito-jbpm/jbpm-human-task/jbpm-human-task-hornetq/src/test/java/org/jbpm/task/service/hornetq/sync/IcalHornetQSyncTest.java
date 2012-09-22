@@ -28,7 +28,6 @@ import org.subethamail.wiser.Wiser;
 
 public class IcalHornetQSyncTest extends IcalBaseSyncTest {
 
-    @Override @BeforeClass
     protected void setUp() throws Exception {
         super.setUp();
         
@@ -54,12 +53,9 @@ public class IcalHornetQSyncTest extends IcalBaseSyncTest {
         getWiser().start();
     }
 
-    @AfterClass
     protected void tearDown() throws Exception {
-        super.tearDown();
         client.disconnect();
         server.stop();
-        getWiser().stop();
+        super.tearDown();
     }
-
 }

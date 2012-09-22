@@ -72,9 +72,4 @@ public class TaskServiceEscalationJMSSyncTest extends TaskServiceEscalationBaseS
         client.connect();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
 }

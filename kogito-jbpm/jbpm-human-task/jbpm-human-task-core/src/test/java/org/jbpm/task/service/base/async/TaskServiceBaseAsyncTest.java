@@ -39,6 +39,13 @@ public abstract class TaskServiceBaseAsyncTest extends BaseTest {
     protected TaskServer server;
     protected AsyncTaskService client;
 
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
+    }
+    
+    @SuppressWarnings("unchecked")
     public void testTasksOwnedQueryWithI18N() throws Exception {
         runTestTasksOwnedQueryWithI18N(client, users, groups);
     }
@@ -137,8 +144,7 @@ public abstract class TaskServiceBaseAsyncTest extends BaseTest {
     
         //Reader reader;
         Reader reader = new InputStreamReader(TaskServiceBaseAsyncTest.class.getResourceAsStream(MvelFilePath.TasksPotentialOwner));
-        List<Task> tasks = (List<Task>) eval(reader,
-                vars);
+        List<Task> tasks = (List<Task>) eval(reader, vars);
         for (Task task : tasks) {
             BlockingAddTaskResponseHandler responseHandler = new BlockingAddTaskResponseHandler();
             client.addTask(task, null, responseHandler);
@@ -146,12 +152,9 @@ public abstract class TaskServiceBaseAsyncTest extends BaseTest {
 
         // Test UK I18N  
         BlockingAllOpenTasksForUseResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
-        client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(),
-                "en-UK",
-                responseHandler);
+        client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", responseHandler);
         List<TaskSummary> actual = responseHandler.getResults();
-        assertEquals(2,
-                actual.size());
+        assertEquals(2, actual.size());
     }
     public void testPeopleAssignmentQueries() {
         runTestPeopleAssignmentQueries(client, taskSession, users, groups);

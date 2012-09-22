@@ -16,13 +16,9 @@
 
 package org.jbpm.task.service.mina.async;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.MockUserInfo;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.TaskServiceEventMessagingBaseAsyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
 public class TaskServiceEventMessagingMinaAsyncTest extends TaskServiceEventMessagingBaseAsyncTest {
@@ -50,11 +46,4 @@ public class TaskServiceEventMessagingMinaAsyncTest extends TaskServiceEventMess
         userInfo.getLanguages().put(users.get("steve"), "en-UK");
         taskService.setUserinfo(userInfo);
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }    
-    
 }

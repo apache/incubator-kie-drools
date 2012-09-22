@@ -44,10 +44,4 @@ public class TaskServiceDeadlinesLocalSyncTest extends TaskServiceDeadlinesBaseS
 		client = new LocalTaskService( taskService);
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		
-		getWiser().stop();
-	}
-
 }

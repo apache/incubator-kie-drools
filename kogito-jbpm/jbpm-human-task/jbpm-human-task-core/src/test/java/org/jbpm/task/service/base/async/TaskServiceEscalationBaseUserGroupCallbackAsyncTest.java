@@ -37,6 +37,14 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackAsyncTest extend
     protected TaskServer server;
     protected AsyncTaskService client;
 
+
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
+    }
+
+    
     public void testUnescalatedDeadlines() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put( "users", users );

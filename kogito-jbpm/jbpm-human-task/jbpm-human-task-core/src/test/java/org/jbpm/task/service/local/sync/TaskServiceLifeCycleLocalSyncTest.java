@@ -27,9 +27,4 @@ public class TaskServiceLifeCycleLocalSyncTest extends TaskServiceLifeCycleBaseS
         client = new LocalTaskService(taskService);
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        
-    }
-    
 }

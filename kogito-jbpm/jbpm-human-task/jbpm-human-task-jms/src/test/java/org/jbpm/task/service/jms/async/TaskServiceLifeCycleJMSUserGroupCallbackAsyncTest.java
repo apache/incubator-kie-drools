@@ -72,10 +72,4 @@ public class TaskServiceLifeCycleJMSUserGroupCallbackAsyncTest extends TaskServi
         client.connect();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
-
 }

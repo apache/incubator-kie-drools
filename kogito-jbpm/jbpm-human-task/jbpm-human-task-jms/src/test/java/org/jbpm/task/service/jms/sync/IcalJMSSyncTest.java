@@ -41,7 +41,6 @@ public class IcalJMSSyncTest extends IcalBaseSyncTest {
 	private BrokerService broker;
 	private Context context;
 	
-	@Override @BeforeClass
 	protected void setUp() throws Exception {
 		super.setUp();
 		
@@ -92,12 +91,10 @@ public class IcalJMSSyncTest extends IcalBaseSyncTest {
 	
 	}
 
-	@AfterClass
 	protected void tearDown() throws Exception {
-		super.tearDown();
-		client.disconnect();
-		server.stop();
+	    client.disconnect();
+	    server.stop();
 		broker.stop();
-		getWiser().stop();
+		super.tearDown();
 	}
 }

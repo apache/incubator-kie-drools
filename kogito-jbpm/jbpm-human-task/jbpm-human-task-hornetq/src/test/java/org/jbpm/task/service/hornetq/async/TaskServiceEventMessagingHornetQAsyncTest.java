@@ -47,10 +47,4 @@ public class TaskServiceEventMessagingHornetQAsyncTest extends TaskServiceEventM
         taskService.setUserinfo(userInfo);
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }    
-    
 }

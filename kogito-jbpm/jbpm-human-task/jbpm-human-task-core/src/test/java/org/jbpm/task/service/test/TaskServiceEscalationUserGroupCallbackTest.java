@@ -34,10 +34,4 @@ public class TaskServiceEscalationUserGroupCallbackTest extends TaskServiceEscal
         client.connect();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
-
 }

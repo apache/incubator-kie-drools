@@ -15,13 +15,9 @@
  */
 package org.jbpm.task.service.mina.sync;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.TaskLifeCycleBaseSyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
 public class TaskLifeCycleMinaSyncTest extends TaskLifeCycleBaseSyncTest {
@@ -41,9 +37,4 @@ public class TaskLifeCycleMinaSyncTest extends TaskLifeCycleBaseSyncTest {
         client.connect("127.0.0.1", 9123);
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
 }

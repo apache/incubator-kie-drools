@@ -40,7 +40,6 @@ public class IcalJMSAsyncTest extends IcalBaseAsyncTest {
 	private BrokerService broker;
 	private Context context;
 	
-	@Override @BeforeClass
 	protected void setUp() throws Exception {
 		super.setUp();
 		
@@ -91,12 +90,11 @@ public class IcalJMSAsyncTest extends IcalBaseAsyncTest {
 	
 	}
 
-	@AfterClass
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		client.disconnect();
 		server.stop();
 		broker.stop();
 		getWiser().stop();
+		super.tearDown();
 	}
 }

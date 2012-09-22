@@ -46,6 +46,18 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
     protected TaskServer server;
     protected TaskService client;
 
+
+    protected void tearDown() throws Exception {
+        if( client != null ) { 
+            client.disconnect();
+        }
+        if( server != null ) { 
+            server.stop();
+        }
+        super.tearDown();
+    }
+
+    
     public void testNewTaskWithNoPotentialOwners() {
         Map <String, Object> vars = fillVariables();
         

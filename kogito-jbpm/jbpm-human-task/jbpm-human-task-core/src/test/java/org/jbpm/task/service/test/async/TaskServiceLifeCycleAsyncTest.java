@@ -34,10 +34,5 @@ public class TaskServiceLifeCycleAsyncTest extends TaskServiceLifeCycleBaseAsync
         client.connect();
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		client.disconnect();
-		server.stop();
-	}
 
 }

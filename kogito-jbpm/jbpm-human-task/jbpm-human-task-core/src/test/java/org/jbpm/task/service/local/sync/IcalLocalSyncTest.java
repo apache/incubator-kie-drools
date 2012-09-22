@@ -40,9 +40,8 @@ public class IcalLocalSyncTest extends IcalBaseSyncTest {
 		getWiser().start();
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		getWiser().stop();
-	}
-
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        super.tearDown();
+    }
 }

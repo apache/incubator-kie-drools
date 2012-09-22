@@ -35,11 +35,15 @@ public abstract class TaskServiceBaseSyncTest extends BaseTest {
     protected TaskServer server;
     protected TaskService client;
 
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
+    }
+    
     @SuppressWarnings("unchecked")
     public void testTasksOwnedQueryWithI18N() throws Exception {
-        Map<String, Object> vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
+        Map<String, Object> vars = fillVariables(users, groups);
 
         //Reader reader;
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.TasksOwned));

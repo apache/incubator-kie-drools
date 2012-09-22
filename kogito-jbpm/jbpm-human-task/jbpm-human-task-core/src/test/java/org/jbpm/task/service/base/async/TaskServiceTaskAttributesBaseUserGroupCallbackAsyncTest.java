@@ -30,9 +30,16 @@ import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandl
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class TaskServiceTaskAttributesBaseUserGroupCallbackAsyncTest extends BaseTestNoUserGroupSetup {
+
     protected TaskServer server;
     protected AsyncTaskService client;
 
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
+    }
+    
 	public void testAddRemoveOutput() {
         Map<String, Object> vars = fillVariables();        
         

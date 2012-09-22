@@ -17,36 +17,31 @@
 package org.jbpm.task.service.base.async;
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.BaseTestNoUserGroupSetup;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
+import org.jbpm.task.*;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.entity.TaskClaimedEvent;
 import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.Operation;
-
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
+import org.jbpm.task.service.responsehandlers.*;
 
 public abstract class TaskServiceEventMessagingBaseUserGroupCallbackAsyncTest extends BaseTestNoUserGroupSetup {
 
     protected TaskServer server;
     protected AsyncTaskService client;
 
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
+    }    
+    
     public void testClaimEvent() throws Exception {      
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
+        Map<String, Object> vars = fillVariables(users, groups);
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";

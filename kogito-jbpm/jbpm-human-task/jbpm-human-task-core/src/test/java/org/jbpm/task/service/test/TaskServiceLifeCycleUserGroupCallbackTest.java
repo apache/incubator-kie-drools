@@ -31,10 +31,4 @@ public class TaskServiceLifeCycleUserGroupCallbackTest extends TaskServiceLifeCy
         client = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
         client.connect();
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
 }

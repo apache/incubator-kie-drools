@@ -25,12 +25,7 @@ public class TaskServiceEscalationLocalSyncTest extends TaskServiceEscalationBas
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-        client = new LocalTaskService(taskService);
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		
+		client = new LocalTaskService(taskService);
 	}
 
 }

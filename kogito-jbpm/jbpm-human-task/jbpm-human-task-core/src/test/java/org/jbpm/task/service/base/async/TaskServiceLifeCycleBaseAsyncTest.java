@@ -17,35 +17,14 @@
 package org.jbpm.task.service.base.async;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.Content;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
+import org.jbpm.task.*;
 import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.FaultData;
-import org.jbpm.task.service.PermissionDeniedException;
-import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.service.*;
+import org.jbpm.task.service.responsehandlers.*;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class TaskServiceLifeCycleBaseAsyncTest extends BaseTest {
@@ -57,6 +36,12 @@ public abstract class TaskServiceLifeCycleBaseAsyncTest extends BaseTest {
 
     public void testNewTaskWithNoPotentialOwners() {
         runTestNewTaskWithNoPotentialOwners(client, users, groups);
+    }
+    
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
     }
     
     public static void runTestNewTaskWithNoPotentialOwners(AsyncTaskService client, Map<String, User> users, Map<String, Group> groups) { 

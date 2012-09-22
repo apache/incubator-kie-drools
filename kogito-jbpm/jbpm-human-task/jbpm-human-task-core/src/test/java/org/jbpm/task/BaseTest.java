@@ -16,16 +16,8 @@
 
 package org.jbpm.task;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -33,12 +25,10 @@ import javax.persistence.Persistence;
 import junit.framework.TestCase;
 
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.service.MockEscalatedDeadlineHandler;
-import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
-import org.jbpm.task.service.SendIcal;
-import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.identity.UserGroupCallbackManager;
+import org.jbpm.task.service.*;
+import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
+import org.jbpm.task.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,37 +63,14 @@ public abstract class BaseTest extends TestCase {
         conf.setProperty("defaultLanguage", "en-UK");
         SendIcal.initInstance(conf);
 
-        Properties dsProps = loadDataSourceProperties();
-        String txType = dsProps.getProperty("txType", "RESOURCE_LOCAL");
-        if( "RESOURCE_LOCAL".equals(txType) ) { 
-            useJTA = false;
-        } else if( "JTA".equals(txType) ) { 
-            useJTA = true;
-        }
-        
-        if( useJTA ) { 
-            pds = new PoolingDataSource();
-            pds.setUniqueName( "jdbc/taskDS" );
-            pds.setClassName(dsProps.getProperty("className"));
-            pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
-            pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps.getProperty("allowLocalTransactions")));
-            for (String propertyName : new String[] { "user", "password" }) {
-                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
-            }
-            
-            setDatabaseSpecificDataSourceProperties(pds, dsProps);
-            
-            pds.init();
-        }
-        
         // Use persistence.xml configuration
         emf = createEntityManagerFactory();
 
         taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
         MockUserInfo userInfo = new MockUserInfo();
         taskService.setUserinfo(userInfo);
-        users = fillUsersOrGroups("LoadUsers.mvel");
-        groups = fillUsersOrGroups("LoadGroups.mvel");
+        users = fillUsersOrGroups(MvelFilePath.LoadUsers);
+        groups = fillUsersOrGroups(MvelFilePath.LoadGroups);
         taskService.addUsersAndGroups(users, groups);
         disableUserGroupCallback();
         

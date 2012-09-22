@@ -24,26 +24,10 @@ import java.util.Map;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.Group;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskService;
-import org.jbpm.task.User;
+import org.jbpm.task.*;
 import org.jbpm.task.event.TaskEventKey;
-import org.jbpm.task.event.entity.TaskClaimedEvent;
-import org.jbpm.task.event.entity.TaskCompletedEvent;
-import org.jbpm.task.event.entity.TaskCreatedEvent;
-import org.jbpm.task.event.entity.TaskEventType;
-import org.jbpm.task.event.entity.TaskForwardedEvent;
-import org.jbpm.task.event.entity.TaskReleasedEvent;
-import org.jbpm.task.event.entity.TaskStartedEvent;
-import org.jbpm.task.event.entity.TaskStoppedEvent;
-import org.jbpm.task.event.entity.TaskUserEvent;
+import org.jbpm.task.event.entity.*;
 import org.jbpm.task.service.Operation;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceSession;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
 
 public abstract class TaskServiceEventMessagingBaseSyncTest extends BaseTest {

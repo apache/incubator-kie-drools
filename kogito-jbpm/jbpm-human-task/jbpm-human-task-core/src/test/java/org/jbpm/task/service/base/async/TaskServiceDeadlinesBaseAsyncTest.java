@@ -62,6 +62,14 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
     private static String emailAddressTony = "tony@domain.com"; 
     private static String emailAddressDarth = "darth@domain.com"; 
     
+
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        getWiser().stop();
+        super.tearDown();
+    }
+
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
         Map<String, Object> vars = fillVariables();
 
@@ -164,10 +172,10 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
 
         taskService.setEscalatedDeadlineHandler(notificationHandler);
 
-        Reader reader =  new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.DeadlineWithReassignment ) );
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithReassignment));
+        Task task = ( Task )  eval( reader, vars );               
 
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( reader, vars );               
         client.addTask( task, null, addTaskResponseHandler );
         long taskId = addTaskResponseHandler.getTaskId();
 

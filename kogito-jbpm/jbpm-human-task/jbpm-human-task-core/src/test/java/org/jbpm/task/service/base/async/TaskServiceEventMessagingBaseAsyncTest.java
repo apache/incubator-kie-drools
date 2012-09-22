@@ -48,6 +48,12 @@ public abstract class TaskServiceEventMessagingBaseAsyncTest extends BaseTest {
     protected TaskServer server;
     protected AsyncTaskService client;
 
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
+    }    
+    
     // One potential owner, should go straight to state Reserved
     private static final String taskExpression =  "(with (new Task()) { " +
         "priority = 55, " +

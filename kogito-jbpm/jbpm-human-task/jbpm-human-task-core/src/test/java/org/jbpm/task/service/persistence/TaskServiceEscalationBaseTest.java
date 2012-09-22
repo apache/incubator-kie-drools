@@ -41,10 +41,12 @@ public abstract class TaskServiceEscalationBaseTest extends BaseTest {
 	protected TaskServer server;
 	protected AsyncTaskService client;
 
-    public void testSetup() {
-        assertTrue( true );
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
     }
-    
+
     public void testUnescalatedDeadlines() throws Exception {
         Map vars = new HashMap();
         vars.put( "users", users );

@@ -36,6 +36,13 @@ public abstract class TaskServiceBaseUserGroupCallbackAsyncTest extends BaseTest
     protected TaskServer server;
     protected AsyncTaskService client;
 
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
+    }
+
+    
     public void testTasksOwnedQueryWithI18N() throws Exception {
         runTestTasksOwnedQueryWithI18N(client, users, groups);
     }

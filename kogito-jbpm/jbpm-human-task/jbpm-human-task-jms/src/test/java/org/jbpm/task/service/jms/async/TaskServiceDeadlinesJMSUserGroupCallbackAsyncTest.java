@@ -85,11 +85,4 @@ public class TaskServiceDeadlinesJMSUserGroupCallbackAsyncTest extends TaskServi
         getWiser().start();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-        getWiser().stop();
-    }
-
 }

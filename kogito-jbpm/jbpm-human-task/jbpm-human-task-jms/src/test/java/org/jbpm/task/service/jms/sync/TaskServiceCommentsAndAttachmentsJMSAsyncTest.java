@@ -71,10 +71,4 @@ public class TaskServiceCommentsAndAttachmentsJMSAsyncTest extends TaskServiceCo
                 clientProperties, context)));
         client.connect();
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
 }

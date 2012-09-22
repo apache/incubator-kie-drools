@@ -34,10 +34,4 @@ public class TaskServiceEscalationSyncTest extends TaskServiceEscalationBaseSync
         client = new SyncTaskServiceWrapper(taskClient);
         client.connect();
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
 }

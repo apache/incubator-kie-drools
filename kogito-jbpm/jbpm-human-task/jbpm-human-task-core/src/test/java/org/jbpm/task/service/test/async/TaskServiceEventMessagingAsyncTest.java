@@ -43,10 +43,4 @@ public class TaskServiceEventMessagingAsyncTest extends TaskServiceEventMessagin
         taskService.setUserinfo(userInfo);
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }    
-    
 }

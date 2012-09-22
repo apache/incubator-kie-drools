@@ -33,11 +33,4 @@ public class TaskServiceCommentsAndAttachmentsUserGroupCallbackTest extends Task
         client = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
         client.connect();
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-        server.stop();
-    }
-
 }

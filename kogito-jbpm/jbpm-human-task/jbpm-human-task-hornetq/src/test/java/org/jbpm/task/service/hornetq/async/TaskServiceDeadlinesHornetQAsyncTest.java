@@ -54,11 +54,4 @@ public class TaskServiceDeadlinesHornetQAsyncTest extends TaskServiceDeadlinesBa
 		getWiser().start();
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		client.disconnect();
-		server.stop();
-		getWiser().stop();
-	}
-
 }

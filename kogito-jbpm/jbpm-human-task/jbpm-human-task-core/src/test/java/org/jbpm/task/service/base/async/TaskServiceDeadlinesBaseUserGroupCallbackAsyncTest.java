@@ -54,6 +54,15 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest extends
 
     private String emailAddressTony = "tony@domain.com"; 
     private String emailAddressDarth = "darth@domain.com"; 
+    
+
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        getWiser().stop();
+        super.tearDown();
+    }
+    
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
         Map  vars = new HashMap();     
         vars.put( "users", users );

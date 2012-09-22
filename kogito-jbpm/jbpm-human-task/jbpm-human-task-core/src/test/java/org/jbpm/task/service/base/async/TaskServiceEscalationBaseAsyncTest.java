@@ -18,22 +18,14 @@ package org.jbpm.task.service.base.async;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.Task;
-import org.jbpm.task.service.MockEscalatedDeadlineHandler;
-import org.jbpm.task.MvelFilePath;
-import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.*;
+import org.jbpm.task.service.*;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 
 public abstract class TaskServiceEscalationBaseAsyncTest extends BaseTest {
@@ -43,6 +35,12 @@ public abstract class TaskServiceEscalationBaseAsyncTest extends BaseTest {
 
     public void testDummy() {
         assertTrue( true );
+    }
+
+    protected void tearDown() throws Exception {
+        client.disconnect();
+        server.stop();
+        super.tearDown();
     }
     
     public void testUnescalatedDeadlines() throws Exception {
