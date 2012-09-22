@@ -160,6 +160,7 @@ import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.ReteDumper;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
@@ -11607,5 +11608,101 @@ public class MiscTest extends CommonTestMethodBase {
         // check that OTNs ordering is not breaking serialization
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testRemoveBigRule() throws Exception {
+        // JBRULES-3496
+        String str =
+                "package org.test\n" +
+                "\n" +
+                "declare SimpleFact\n" +
+                "   patientSpaceId : String\n" +
+                "   block : int\n" +
+                "end\n" +
+                "\n" +
+                "declare SimpleMembership\n" +
+                "   patientSpaceId : String\n" +
+                "   listId : String\n" +
+                "end\n" +
+                "\n" +
+                "declare SimplePatient\n" +
+                "   spaceId : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"RTR - 47146 retract\"\n" +
+                "agenda-group \"list membership\"\n" +
+                "when\n" +
+                "   $listMembership0 : SimpleMembership( $listMembershipPatientSpaceIdRoot : patientSpaceId, ( listId != null && listId == \"47146\" ) )\n" +
+                "   not ( $patient0 : SimplePatient( $patientSpaceIdRoot : spaceId, spaceId != null && spaceId == $listMembershipPatientSpaceIdRoot ) \n" +
+                "       and ( ( " +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 1 )\n" +
+                "         ) or ( " +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 2 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 3 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 4 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 5 )\n" +
+                "       ) ) and ( ( " +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 6 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 7 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 8 )\n" +
+                "       ) ) and ( ( " +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 9 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 10 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 11 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 12 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 13 )\n" +
+                "         ) or ( (" +
+                "            SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 14 )\n" +
+                "           ) and (" +
+                "              SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 15 )\n" +
+                "         ) ) or ( ( " +
+                "            SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 16 )\n" +
+                "           ) and ( " +
+                "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 17 )\n" +
+                "         ) ) or ( ( " +
+                "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 18 )\n" +
+                "           ) and (" +
+                "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 19 )\n" +
+                "         ) ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 20 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 21 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 22 )\n" +
+                "         ) or ( ( " +
+                "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 23 )\n" +
+                "         ) and (" +
+                "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 24 )\n" +
+                "     ) ) ) and ( ( " +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 25 )\n" +
+                "         ) or (" +
+                "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 26 )\n" +
+                "     ) ) )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Assert.assertEquals(1, pkgs.size());
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(pkgs);
+
+        kbase.removeKnowledgePackage(pkgs.iterator().next().getName());
     }
 }

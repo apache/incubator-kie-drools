@@ -268,7 +268,7 @@ public class ReteooBuilder
      */
     public void resetMasks(RuleRemovalContext context) {
         List<BaseNode> nodes = context.getRemovedNodes();
-        Set<BaseNode> leafSet = new HashSet<BaseNode>();
+        NodeSet leafSet = new NodeSet();
         
         for ( BaseNode node : nodes ) {
             if ( node.isInUse() ) {
@@ -297,7 +297,7 @@ public class ReteooBuilder
         }
     }
     
-    private void updateLeafSet(BaseNode baseNode, Set<BaseNode> leafSet) {
+    private void updateLeafSet(BaseNode baseNode, NodeSet leafSet) {
         if ( baseNode instanceof AlphaNode ) {
             ((AlphaNode) baseNode).resetInferredMask();
             for ( ObjectSink sink : ((AlphaNode) baseNode).getSinkPropagator().getSinks() ) {

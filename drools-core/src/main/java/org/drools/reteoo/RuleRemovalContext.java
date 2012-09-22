@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
@@ -40,7 +42,7 @@ public class RuleRemovalContext
     
     private CleanupAdapter cleanupAdapter;
     
-    private List<BaseNode> removedNodes;
+    private NodeSet removedNodes = new NodeSet();
 
     public RuleRemovalContext( final Rule rule ) {
         this.rule = rule;
@@ -76,10 +78,10 @@ public class RuleRemovalContext
     }
     
     public List<BaseNode> getRemovedNodes() {
-        if ( removedNodes == null ) {
-            removedNodes = new ArrayList<BaseNode>();
-        }
-        
-        return removedNodes;
+        return removedNodes.getNodes();
+    }
+
+    public boolean addRemovedNode(BaseNode node) {
+        return removedNodes.add(node);
     }
 }
