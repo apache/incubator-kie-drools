@@ -1,0 +1,4 @@
+rule "Test"
+    dialect "java"
+
+end
