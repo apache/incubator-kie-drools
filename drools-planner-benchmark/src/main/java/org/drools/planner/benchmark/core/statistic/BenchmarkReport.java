@@ -40,6 +40,7 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.config.SolverFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -124,6 +125,27 @@ public class BenchmarkReport {
     // ************************************************************************
     // Write methods
     // ************************************************************************
+
+    public String getJavaVersion() {
+        return "Java " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")";
+    }
+
+    public String getJavaVM() {
+        return "Java " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.version")
+                + " (" + System.getProperty("java.vm.vendor") + ")";
+    }
+
+    public String getOperatingSystem() {
+        return System.getProperty("os.name") + " " + System.getProperty("os.arch")
+                + " " + System.getProperty("os.version");
+    }
+
+    /**
+     * @return sometimes null (only during development)
+     */
+    public String getPlannerVersion() {
+        return SolverFactory.class.getPackage().getImplementationVersion();
+    }
 
     public void writeReport() {
         writeBestScoreSummaryCharts();

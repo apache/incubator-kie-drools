@@ -516,11 +516,23 @@
                         <td>${benchmarkReport.plannerBenchmark.failureCount}</td>
                     </tr>
                     <tr>
-                        <th>plannerVersion</th>
-                        <td>${benchmarkReport.plannerBenchmark.plannerVersion!"Unjarred development snapshot"}</td>
+                        <th>Operating system</th>
+                        <td>${benchmarkReport.operatingSystem}</td>
                     </tr>
                     <tr>
-                        <th>locale</th>
+                        <th>Java version</th>
+                        <td>${benchmarkReport.javaVersion}</td>
+                    </tr>
+                    <tr>
+                        <th>Java VM</th>
+                        <td>${benchmarkReport.javaVM}</td>
+                    </tr>
+                    <tr>
+                        <th>Planner version</th>
+                        <td>${benchmarkReport.plannerVersion!"Unjarred development snapshot"}</td>
+                    </tr>
+                    <tr>
+                        <th>Report locale</th>
                         <td>${benchmarkReport.locale!"Unknown"}</td>
                     </tr>
                 </table>

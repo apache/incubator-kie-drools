@@ -63,7 +63,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private long startingSystemTimeMillis;
     private Date startingTimestamp;
-    private String plannerVersion;
     private ExecutorService executorService;
     private Integer failureCount;
     private SingleBenchmark firstFailureSingleBenchmark;
@@ -136,13 +135,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return startingTimestamp;
     }
 
-    /**
-     * @return sometimes null (only during development)
-     */
-    public String getPlannerVersion() {
-        return plannerVersion;
-    }
-
     public Integer getFailureCount() {
         return failureCount;
     }
@@ -181,7 +173,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             throw new IllegalArgumentException(
                     "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
         }
-        plannerVersion = SolverFactory.class.getPackage().getImplementationVersion();
         initBenchmarkDirectoryAndSubdirs();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingStarted();
