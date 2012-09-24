@@ -505,12 +505,12 @@
                         <td>${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</td>
                     </tr>
                     <tr>
-                        <th>parallelBenchmarkCount / availableProcessors</th>
-                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount} / ${benchmarkReport.availableProcessors}</td>
-                    </tr>
-                    <tr>
                         <th>warmUpTimeMillisSpend</th>
                         <td>${benchmarkReport.plannerBenchmark.warmUpTimeMillisSpend} ms</td>
+                    </tr>
+                    <tr>
+                        <th>parallelBenchmarkCount / availableProcessors</th>
+                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount} / ${benchmarkReport.availableProcessors}</td>
                     </tr>
                     <tr>
                         <th>benchmarkTimeMillisSpend</th>
@@ -519,6 +519,10 @@
                     <tr>
                         <th>failureCount</th>
                         <td>${benchmarkReport.plannerBenchmark.failureCount}</td>
+                    </tr>
+                    <tr>
+                        <th>VM max memory (as in -Xmx but lower)</th>
+                        <td>${benchmarkReport.maxMemory?string.number} bytes</td>
                     </tr>
                     <tr>
                         <th>Operating system</th>

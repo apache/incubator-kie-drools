@@ -137,6 +137,10 @@ public class BenchmarkReport {
         return Runtime.getRuntime().availableProcessors();
     }
 
+    public long getMaxMemory() {
+        return Runtime.getRuntime().maxMemory();
+    }
+
     public String getJavaVersion() {
         return "Java " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")";
     }
