@@ -94,16 +94,20 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
     }
 
     private void ensureCompleteEvaluation(ASTNode node, Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
-        node = unwrapNegation(node);
-        if (node == null) {
-            return;
-        }
-        node = unwrapSubstatement(node);
-        if (!(node instanceof And || node instanceof Or)) {
+        node = unwrap(node);
+        if (node == null || !(node instanceof And || node instanceof Or)) {
             return;
         }
         ensureBranchEvaluation(object, workingMemory, leftTuple, ((BooleanNode)node).getLeft());
         ensureBranchEvaluation(object, workingMemory, leftTuple, ((BooleanNode)node).getRight());
+    }
+
+    private ASTNode unwrap(ASTNode node) {
+        while (node instanceof Negation || node instanceof LineLabel || node instanceof Substatement) {
+            node = unwrapNegation(node);
+            node = unwrapSubstatement(node);
+        }
+        return node;
     }
 
     private void ensureBranchEvaluation(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple, ASTNode node) {
