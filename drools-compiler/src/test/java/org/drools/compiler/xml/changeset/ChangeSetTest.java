@@ -2,8 +2,11 @@ package org.drools.compiler.xml.changeset;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +18,11 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.UrlResource;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -125,5 +130,20 @@ public class ChangeSetTest extends CommonTestMethodBase {
         assertEquals( ResourceType.PKG,
                       resource.getResourceType() );
     }
-    
+
+    @Test
+    public void testCustomClassLoader() throws Exception {
+        // JBRULES-3630
+        String absolutePath = new File("file").getAbsolutePath();
+        String jarPath = absolutePath.contains("drools-compiler") ?
+                "src/test/resources/org/drools/compiler/xml/changeset/changeset.jar" :
+                "drools-compiler/src/test/resources/org/drools/compiler/xml/changeset/changeset.jar";
+        File jar = new File(jarPath);
+        assertTrue(jar.exists());
+        ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{jar.toURI().toURL()}, getClass().getClassLoader());
+        Resource changeSet = ResourceFactory.newClassPathResource("changeset1.xml", classLoader);
+        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+        builder.add(changeSet, ResourceType.CHANGE_SET);
+    }
 }
