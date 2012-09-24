@@ -52,6 +52,10 @@ public class CloudBalancingPanel extends SolutionPanel {
     private Map<CloudComputer, CloudComputerPanel> computerToPanelMap;
     private Map<CloudProcess, CloudComputerPanel> processToPanelMap;
 
+    private int maximumComputerCpuPower;
+    private int maximumComputerMemory;
+    private int maximumComputerNetworkBandwidth;
+
     public CloudBalancingPanel() {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -64,6 +68,18 @@ public class CloudBalancingPanel extends SolutionPanel {
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(computersPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE));
+    }
+
+    public int getMaximumComputerCpuPower() {
+        return maximumComputerCpuPower;
+    }
+
+    public int getMaximumComputerMemory() {
+        return maximumComputerMemory;
+    }
+
+    public int getMaximumComputerNetworkBandwidth() {
+        return maximumComputerNetworkBandwidth;
     }
 
     private JPanel createHeaderPanel() {
@@ -83,10 +99,7 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     private JPanel createComputersPanel() {
         computersPanel = new JPanel(new GridLayout(0, 1));
-        unassignedPanel = new CloudComputerPanel(this, null);
-        computersPanel.add(unassignedPanel);
         computerToPanelMap = new LinkedHashMap<CloudComputer, CloudComputerPanel>();
-        computerToPanelMap.put(null, unassignedPanel);
         processToPanelMap = new LinkedHashMap<CloudProcess, CloudComputerPanel>();
         return computersPanel;
     }
@@ -101,15 +114,32 @@ public class CloudBalancingPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
+        CloudBalance cloudBalance = (CloudBalance) solution;
+        maximumComputerCpuPower = 0;
+        maximumComputerMemory = 0;
+        maximumComputerNetworkBandwidth = 0;
+        for (CloudComputer computer : cloudBalance.getComputerList()) {
+            if (computer.getCpuPower() > maximumComputerCpuPower) {
+                maximumComputerCpuPower = computer.getCpuPower();
+            }
+            if (computer.getMemory() > maximumComputerMemory) {
+                maximumComputerMemory = computer.getMemory();
+            }
+            if (computer.getNetworkBandwidth() > maximumComputerNetworkBandwidth) {
+                maximumComputerNetworkBandwidth = computer.getNetworkBandwidth();
+            }
+        }
         for (CloudComputerPanel computerPanel : computerToPanelMap.values()) {
             if (computerPanel.getComputer() != null) {
                 computersPanel.remove(computerPanel);
             }
         }
         computerToPanelMap.clear();
+        computersPanel.removeAll();
+        unassignedPanel = new CloudComputerPanel(this, null);
+        computersPanel.add(unassignedPanel);
         computerToPanelMap.put(null, unassignedPanel);
         processToPanelMap.clear();
-        unassignedPanel.clearProcess();
         updatePanel(solution);
     }
 
