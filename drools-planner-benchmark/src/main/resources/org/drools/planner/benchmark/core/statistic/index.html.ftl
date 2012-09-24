@@ -83,6 +83,11 @@
                     <p>${benchmarkReport.plannerBenchmark.failureCount} benchmarks have failed!</p>
                 </div>
             </#if>
+            <#list benchmarkReport.warningList as warning>
+                <div class="alert alert-error">
+                    <p>${warning}</p>
+                </div>
+            </#list>
 
                 <section id="summary_result">
                     <h2>Result summary</h2>

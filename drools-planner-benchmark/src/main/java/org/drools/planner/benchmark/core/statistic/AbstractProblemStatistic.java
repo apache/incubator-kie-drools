@@ -78,10 +78,10 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     }
 
     public void writeStatistic() {
-        writeCsvStatistic();
-        writeGraphStatistic();
         warningList = new ArrayList<String>();
         fillWarningList();
+        writeCsvStatistic();
+        writeGraphStatistic();
     }
 
     protected void fillWarningList() {

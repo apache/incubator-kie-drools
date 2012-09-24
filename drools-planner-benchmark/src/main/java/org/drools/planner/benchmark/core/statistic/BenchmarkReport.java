@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
+import com.sun.security.ntlm.Client;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -73,6 +74,8 @@ public class BenchmarkReport {
     protected File scalabilitySummaryChartFile = null;
     protected File averageCalculateCountSummaryChartFile = null;
     protected Integer defaultShownScoreLevelIndex = null;
+
+    protected List<String> warningList = null;
 
     public BenchmarkReport(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
@@ -122,6 +125,10 @@ public class BenchmarkReport {
         return defaultShownScoreLevelIndex;
     }
 
+    public List<String> getWarningList() {
+        return warningList;
+    }
+
     // ************************************************************************
     // Write methods
     // ************************************************************************
@@ -148,6 +155,8 @@ public class BenchmarkReport {
     }
 
     public void writeReport() {
+        warningList = new ArrayList<String>();
+        fillWarningList();
         writeBestScoreSummaryCharts();
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
@@ -163,6 +172,14 @@ public class BenchmarkReport {
         }
         determineDefaultShownScoreLevelIndex();
         writeHtmlOverviewFile();
+    }
+
+    protected void fillWarningList() {
+        String javaVmName = System.getProperty("java.vm.name");
+        if (javaVmName != null && javaVmName.contains("Client VM")) {
+            warningList.add("The Java VM (" + javaVmName + ") is the Client VM."
+                    + " Consider starting the java process with the argument \"-server\" to get better results.");
+        }
     }
 
     private void writeBestScoreSummaryCharts() {
