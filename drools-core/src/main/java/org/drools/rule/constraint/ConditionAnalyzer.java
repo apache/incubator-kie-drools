@@ -87,13 +87,13 @@ public class ConditionAnalyzer {
             return new FixedValueCondition(isNegated ? !literalValue : literalValue);
         }
 
-        if (node instanceof And || node instanceof Or) {
-            return analyzeCombinedCondition((BooleanNode)node, isNegated);
-        }
         if (node instanceof Negation) {
             isNegated = !isNegated;
             node = ((ExecutableAccessor)((Negation)node).getStatement()).getNode();
             node = analyzeSubstatement(node);
+        }
+        if (node instanceof And || node instanceof Or) {
+            return analyzeCombinedCondition((BooleanNode)node, isNegated);
         }
 
         return analyzeSingleCondition(node, isNegated);
