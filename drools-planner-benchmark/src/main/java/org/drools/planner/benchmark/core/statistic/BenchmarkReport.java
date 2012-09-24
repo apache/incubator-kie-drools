@@ -133,6 +133,10 @@ public class BenchmarkReport {
     // Write methods
     // ************************************************************************
 
+    public int getAvailableProcessors() {
+        return Runtime.getRuntime().availableProcessors();
+    }
+
     public String getJavaVersion() {
         return "Java " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")";
     }
@@ -179,6 +183,11 @@ public class BenchmarkReport {
         if (javaVmName != null && javaVmName.contains("Client VM")) {
             warningList.add("The Java VM (" + javaVmName + ") is the Client VM."
                     + " Consider starting the java process with the argument \"-server\" to get better results.");
+        }
+        int availableProcessors = getAvailableProcessors();
+        if (plannerBenchmark.getParallelBenchmarkCount() > availableProcessors) {
+            warningList.add("The parallelBenchmarkCount (" + plannerBenchmark.getParallelBenchmarkCount()
+                    + ") is higher than the number of availableProcessors (" + availableProcessors + ").");
         }
     }
 

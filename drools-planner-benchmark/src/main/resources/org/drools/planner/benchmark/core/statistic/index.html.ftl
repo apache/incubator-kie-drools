@@ -505,8 +505,8 @@
                         <td>${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</td>
                     </tr>
                     <tr>
-                        <th>parallelBenchmarkCount</th>
-                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount}</td>
+                        <th>parallelBenchmarkCount / availableProcessors</th>
+                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount} / ${benchmarkReport.availableProcessors}</td>
                     </tr>
                     <tr>
                         <th>warmUpTimeMillisSpend</th>
