@@ -163,7 +163,7 @@ public class TaskService {
                 operationsByClass.put(taskServiceClass, operationsForClass);
                 return operationsForClass;
             } catch (IOException e) {
-                throw new RuntimeException("Unable To initialise TaskService, could not load Operations DSL");
+                throw new RuntimeException("Unable To initialise TaskService, could not load Operations DSL", e);
             }
         } finally {
             if (is != null) {
