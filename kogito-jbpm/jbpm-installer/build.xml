@@ -509,7 +509,6 @@
 	
   <!-- Install jbpm human task war -->
   <target name="install.jBPM-ht.into.jboss" depends="download.h2,download.jBPM-ht.war">
-    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-human-task-war.zip" dest="${install.home}/lib" />
     <antcall target="install.ht.war.into.jboss5" />
     <antcall target="install.ht.war.into.jboss7" />
   </target>	
@@ -517,8 +516,9 @@
   <!-- Install jbpm human task war -->
   <target name="install.ht.war.into.jboss7" depends="download.jBPM-ht.war" if="jboss.version.is.7">
     <mkdir dir="${install.home}/target"/>
+  	<unzip src="${install.home}/lib/jbpm-${jBPM.version}-human-task-war.zip" dest="${install.home}/target" />
     <mkdir dir="${install.home}/target/jbpm-human-task-war"/>
-    <unzip src="${install.home}/lib/jbpm-human-task-war-${jBPM.version}-EE6.war" dest="${install.home}/target/jbpm-human-task-war" />
+    <unzip src="${install.home}/target/jbpm-human-task-war-${jBPM.version}-EE6.war" dest="${install.home}/target/jbpm-human-task-war" />
   	<copy file="${install.home}/task-service/resources/war/web.xml" 
   	          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/web.xml" 
   	          overwrite="true" />
@@ -534,7 +534,8 @@
   <target name="install.ht.war.into.jboss5" depends="download.jBPM-ht.war" unless="jboss.version.is.7">
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/jbpm-human-task-war"/>
-    <unzip src="${install.home}/lib/jbpm-human-task-war-${jBPM.version}.war" dest="${install.home}/target/jbpm-human-task-war" />
+  	<unzip src="${install.home}/lib/jbpm-${jBPM.version}-human-task-war.zip" dest="${install.home}/target" />
+    <unzip src="${install.home}/target/jbpm-human-task-war-${jBPM.version}.war" dest="${install.home}/target/jbpm-human-task-war" />
   	<delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/xml-apis-1.3.04.jar"/>
     <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-annotations-3.4.0.GA.jar"/>
     <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-commons-annotations-3.1.0.GA.jar"/>
