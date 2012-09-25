@@ -15,9 +15,10 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.h2.tools.Server;
-import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.MinaHTWorkItemHandler;
 import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
 import bitronix.tm.TransactionManagerServices;
@@ -91,12 +92,17 @@ public final class JBPMHelper {
 		map.put("hibernate.dialect", dialect);
         EntityManagerFactory emf =
         	Persistence.createEntityManagerFactory(properties.getProperty("taskservice.datasource.name", "org.jbpm.task"), map);
-		System.setProperty("jbpm.usergroup.callback",
-			properties.getProperty("taskservice.usergroupcallback", "org.jbpm.task.service.DefaultUserGroupCallbackImpl"));
+        System.setProperty("jbpm.user.group.mapping",properties.getProperty("taskservice.usergroupmapping", "classpath:/usergroups.properties"));
+        System.setProperty("jbpm.usergroup.callback",
+			properties.getProperty("taskservice.usergroupcallback", "org.jbpm.task.identity.DefaultUserGroupCallbackImpl"));
         TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
         String transport = properties.getProperty("taskservice.transport", "mina");
         if ("mina".equals(transport)) {
     		MinaTaskServer taskServer = new MinaTaskServer(taskService);
+            Thread thread = new Thread(taskServer);
+            thread.start();
+        } else if ("hornetq".equals(transport)) {
+            HornetQTaskServer taskServer = new HornetQTaskServer(taskService, Integer.parseInt(properties.getProperty("taskservice.port", "5445")));
             Thread thread = new Thread(taskServer);
             thread.start();
         } else {
@@ -107,10 +113,13 @@ public final class JBPMHelper {
 	
 	public static void registerTaskService(StatefulKnowledgeSession ksession) {
 		Properties properties = getProperties();
-		String transport = properties.getProperty("taskservice.transport", "mina");
+		String transport = properties.getProperty("taskservice.transport", "hornetq");
         if ("mina".equals(transport)) {
         	ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-    			new CommandBasedWSHumanTaskHandler(ksession));
+    			new MinaHTWorkItemHandler(ksession));
+        } else if ("hornetq".equals(transport)) {
+            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new HornetQHTWorkItemHandler(ksession));
         } else {
         	throw new RuntimeException("Unknown task service transport " + transport);
         }	
@@ -153,11 +162,14 @@ public final class JBPMHelper {
 	        }
 			String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");
 			if ("true".equals(humanTaskEnabled)) {
-				String transport = properties.getProperty("taskservice.transport", "mina");
+				String transport = properties.getProperty("taskservice.transport", "hornetq");
 		        if ("mina".equals(transport)) {
 					ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-						new CommandBasedWSHumanTaskHandler(ksession));
-		        } else {
+						new MinaHTWorkItemHandler(ksession));
+		        }  else if ("hornetq".equals(transport)) {
+		            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+	                    new HornetQHTWorkItemHandler(ksession));
+	            } else {
 		        	throw new RuntimeException("Unknown task service transport " + transport);
 		        }
 			}
@@ -165,11 +177,14 @@ public final class JBPMHelper {
 			ksession = kbase.newStatefulKnowledgeSession();
 			String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");
 			if ("true".equals(humanTaskEnabled)) {
-				String transport = properties.getProperty("taskservice.transport", "mina");
+				String transport = properties.getProperty("taskservice.transport", "hornetq");
 		        if ("mina".equals(transport)) {
 					ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-						new WSHumanTaskHandler(ksession));
-		        } else {
+						new MinaHTWorkItemHandler(ksession));
+		        } else if ("hornetq".equals(transport)) {
+		            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+	                    new HornetQHTWorkItemHandler(ksession));
+	            } else {
 		        	throw new RuntimeException("Unknown task service transport " + transport);
 		        }	
 			}

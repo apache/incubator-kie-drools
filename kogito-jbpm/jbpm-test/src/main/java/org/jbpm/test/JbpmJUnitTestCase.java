@@ -1,12 +1,10 @@
 package org.jbpm.test;
 
-import static org.jbpm.test.JBPMHelper.*;
+import static org.jbpm.test.JBPMHelper.createEnvironment;
+import static org.jbpm.test.JBPMHelper.txStateName;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,11 +49,10 @@ import org.h2.tools.Server;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
-import org.jbpm.task.Group;
+import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.User;
-import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
@@ -104,7 +101,8 @@ public abstract class JbpmJUnitTestCase extends Assert {
 	}
 	
 	public JbpmJUnitTestCase(boolean setupDataSource) {
-		System.setProperty("jbpm.usergroup.callback", "org.jbpm.task.service.DefaultUserGroupCallbackImpl");
+	    System.setProperty("jbpm.user.group.mapping", "classpath:/usergroups.properties");
+		System.setProperty("jbpm.usergroup.callback", "org.jbpm.task.identity.DefaultUserGroupCallbackImpl");
 		this.setupDataSource = setupDataSource;
 	}
 	
@@ -554,19 +552,11 @@ public abstract class JbpmJUnitTestCase extends Assert {
     		taskService = new org.jbpm.task.service.TaskService(
 				emf, SystemEventListenerFactory.getSystemEventListener());
     		
-    		Map vars = new HashMap();
-            Reader reader = new InputStreamReader(this.getClass().getResourceAsStream("/LoadUsers.mvel"));     
-            Map<String, User> users = ( Map<String, User> ) org.jbpm.task.service.TaskService.eval( reader, vars );
-            
-            reader = new InputStreamReader(this.getClass().getResourceAsStream("/LoadGroups.mvel"));
-            Map<String, Group> groups = ( Map<String, Group> ) org.jbpm.task.service.TaskService.eval( reader, vars ); 
-    		
-            taskService.addUsersAndGroups(users, groups);
+    		UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl("classpath:/usergroups.properties"));
     	}
     	LocalTaskService localTaskService = new LocalTaskService(taskService);
-		SyncWSHumanTaskHandler humanTaskHandler = new SyncWSHumanTaskHandler(
+		LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler(
 			localTaskService, ksession);
-		humanTaskHandler.setLocal(true);
 		humanTaskHandler.connect();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
 		return localTaskService;

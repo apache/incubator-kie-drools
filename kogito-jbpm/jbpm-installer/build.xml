@@ -215,7 +215,7 @@
   <target name="download.eclipse.gef" depends="download.eclipse.gef.check" if="eclipse.gef.not.available">
     <echo message="Getting Eclipse GEF ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.6.2/R201102251600/GEF-SDK-3.6.2.zip"
+    <get src="http://archive.eclipse.org/tools/gef/downloads/drops/3.6.2/R201102251600/GEF-SDK-3.6.2.zip"
          dest="${install.home}/lib/GEF-SDK-3.6.2.zip"  />
   </target>
 
