@@ -32,7 +32,6 @@ import java.util.Locale;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
-import com.sun.security.ntlm.Client;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
