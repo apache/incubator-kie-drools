@@ -1,6 +1,5 @@
 package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
-
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class PlanningValueTabuAcceptorTest {
 
     @Test
-    public void tabuSize(){
+    public void tabuSize() {
         PlanningValueTabuAcceptor acceptor = new PlanningValueTabuAcceptor();
         acceptor.setTabuSize(2);
         acceptor.setAspirationEnabled(true);
@@ -51,7 +50,6 @@ public class PlanningValueTabuAcceptorTest {
         //We accept first move, v1 should be added to tabuList
         stepScope0.setStep(moveScope1.getMove());
         acceptor.stepEnded(stepScope0);
-
 
         //SECOND STEP: v1 in tabuList, acceptor should accept every move
         //except a move containing v1
@@ -278,7 +276,7 @@ public class PlanningValueTabuAcceptorTest {
 
         acceptor.phaseEnded(solverPhaseScope);
     }
-    
+
     private MoveScope buildMoveScope(LocalSearchStepScope stepScope, TestdataValue... values) {
         return buildMoveScope(stepScope, 0, values);
     }
