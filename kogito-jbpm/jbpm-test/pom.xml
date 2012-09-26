@@ -84,6 +84,10 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-hornetq</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

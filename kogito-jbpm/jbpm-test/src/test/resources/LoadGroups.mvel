@@ -1,8 +1,0 @@
-groups = [ 'GroupA' : new Group( "GroupA" ),
-           'GroupB' : new Group( "GroupB" ),
-           'HR' : new Group( "HR" ),
-           'PM' : new Group( "PM" )
-         ];
-
-return groups;
-        

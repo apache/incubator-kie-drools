@@ -86,26 +86,6 @@ public class LocalTasksServiceTest {
 
 
         emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
-        Reader reader = null;
-        Map vars = new HashMap();
-        try {
-            reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("LoadUsers.mvel"));
-            users = (Map<String, User>) eval(reader, vars);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            reader = null;
-        }
-
-        try {
-            reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("LoadGroups.mvel"));
-            groups = (Map<String, Group>) eval(reader, vars);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
 
         userInfo = new MockUserInfo();
 
@@ -114,17 +94,9 @@ public class LocalTasksServiceTest {
 
         taskService.setUserinfo(userInfo);
 
-        for (User user : users.values()) {
-            taskSession.addUser(user);
-        }
-
-        for (Group group : groups.values()) {
-            taskSession.addGroup(group);
-        }
-        UserGroupCallbackManager.getInstance().setCallback(null);
         localTaskService = new LocalTaskService(taskService);
 
-
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl("classpath:/usergroups.properties"));
     }
 
     @After

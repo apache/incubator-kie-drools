@@ -8,7 +8,6 @@ import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
@@ -37,7 +36,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.persistence.objects.MedicalRecord;
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Group;
@@ -45,6 +44,8 @@ import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
 import org.jbpm.task.admin.TaskCleanUpProcessEventListener;
 import org.jbpm.task.admin.TasksAdmin;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.DefaultUserInfo;
@@ -96,26 +97,8 @@ public class AdminAPIsWithListenerTest {
         emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
         
         admin = new TaskService(emfTasks, SystemEventListenerFactory.getSystemEventListener()).createTaskAdmin();
-        Reader reader = null;
-        Map vars = new HashMap();
-        try {
-            reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("LoadUsers.mvel"));
-            users = (Map<String, User>) eval(reader, vars);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            reader = null;
-        }
 
-        try {
-            reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("LoadGroups.mvel"));
-            groups = (Map<String, Group>) eval(reader, vars);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl("classpath:/usergroups.properties"));
 
         userInfo = new DefaultUserInfo(null);
 
@@ -123,14 +106,6 @@ public class AdminAPIsWithListenerTest {
         taskSession = taskService.createSession();
 
         taskService.setUserinfo(userInfo);
-
-        for (User user : users.values()) {
-            taskSession.addUser(user);
-        }
-
-        for (Group group : groups.values()) {
-            taskSession.addGroup(group);
-        }
 
         localTaskService = new LocalTaskService(taskService);
 
@@ -165,8 +140,7 @@ public class AdminAPIsWithListenerTest {
         KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
         StatefulKnowledgeSession ksession = createSession(kbase, env);
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
-        SyncWSHumanTaskHandler htHandler = new SyncWSHumanTaskHandler(localTaskService, ksession);
-        htHandler.setLocal(true);
+        LocalHTWorkItemHandler htHandler = new LocalHTWorkItemHandler(localTaskService, ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
         ksession.addEventListener(new TaskCleanUpProcessEventListener(admin));
         

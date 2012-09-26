@@ -47,8 +47,11 @@ import org.jbpm.persistence.objects.MedicalRecord;
 import org.jbpm.persistence.objects.MockUserInfo;
 import org.jbpm.persistence.objects.Patient;
 import org.jbpm.persistence.objects.RecordRow;
+import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.*;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.SendIcal;
@@ -87,7 +90,7 @@ public class PatientVariablePersistenceStrategyTest {
     protected Properties conf;
     
     protected StatefulKnowledgeSession ksession;
-    protected SyncWSHumanTaskHandler htHandler;
+    protected LocalHTWorkItemHandler htHandler;
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource("org.jbpm.runtime", false);
@@ -105,26 +108,7 @@ public class PatientVariablePersistenceStrategyTest {
         // Use persistence.xml configuration
         emfDomain = Persistence.createEntityManagerFactory("org.jbpm.persistence.patient.example");
         emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
-        Reader reader = null;
-        Map vars = new HashMap();
-        try {
-            reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("LoadUsers.mvel"));
-            users = (Map<String, User>) eval(reader, vars);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            reader = null;
-        }
-
-        try {
-            reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("LoadGroups.mvel"));
-            groups = (Map<String, Group>) eval(reader, vars);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
+        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl("classpath:/usergroups.properties"));
 
         userInfo = new MockUserInfo();
 
@@ -132,14 +116,6 @@ public class PatientVariablePersistenceStrategyTest {
         taskSession = taskService.createSession();
 
         taskService.setUserinfo(userInfo);
-
-        for (User user : users.values()) {
-            taskSession.addUser(user);
-        }
-
-        for (Group group : groups.values()) {
-            taskSession.addGroup(group);
-        }
 
         localTaskService = new LocalTaskService(taskService);
 
@@ -178,7 +154,7 @@ public class PatientVariablePersistenceStrategyTest {
         Environment env = createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
         ksession = createSession(kbase, env);
-        htHandler = new SyncWSHumanTaskHandler(localTaskService, ksession);
+        htHandler = new LocalHTWorkItemHandler(localTaskService, ksession);
         htHandler.setLocal(true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
         logger.info("### Starting process ###");

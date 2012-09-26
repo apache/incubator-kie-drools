@@ -10,6 +10,7 @@ public class WorkDefinitionImpl extends org.drools.process.core.impl.WorkDefinit
 	private String path;
 	private String file;
 	private String documentation;
+	private String iconEncoded;
 	
 	public String getDocumentation() {
 		return documentation;
@@ -58,4 +59,13 @@ public class WorkDefinitionImpl extends org.drools.process.core.impl.WorkDefinit
 	public void setDefaultHandler(String defaultHandler) {
 		this.defaultHandler = defaultHandler;
 	}
+
+	public String getIconEncoded() {
+		return iconEncoded;
+	}
+
+	public void setIconEncoded(String iconEncoded) {
+		this.iconEncoded = iconEncoded;
+	}
+	
 }

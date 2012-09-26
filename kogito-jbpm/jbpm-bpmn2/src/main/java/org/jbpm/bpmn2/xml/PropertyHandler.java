@@ -25,6 +25,7 @@ import org.drools.process.core.datatype.impl.type.BooleanDataType;
 import org.drools.process.core.datatype.impl.type.FloatDataType;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -108,7 +109,11 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
 	        	    } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
 	        	        dataType = new FloatDataType();
                         
-                    } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
+                    } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
+                        dataType = new StringDataType();
+
+                    }
+                    else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
                         dataType = new ObjectDataType(structureRef);
                         
                     } else {
