@@ -75,6 +75,7 @@ public class ExcelParser
     public void parseFile(InputStream inStream) {
         try {
             WorkbookSettings ws = new WorkbookSettings();
+            ws.setEncoding("ISO-8859-1"); // Workaround for bug in JXL regarding compressed Unicode format
             Workbook workbook = Workbook.getWorkbook( inStream, ws);
 
             if ( _useFirstSheet ) {
