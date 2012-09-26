@@ -83,6 +83,11 @@
                     <p>${benchmarkReport.plannerBenchmark.failureCount} benchmarks have failed!</p>
                 </div>
             </#if>
+            <#list benchmarkReport.warningList as warning>
+                <div class="alert alert-error">
+                    <p>${warning}</p>
+                </div>
+            </#list>
 
                 <section id="summary_result">
                     <h2>Result summary</h2>
@@ -500,12 +505,12 @@
                         <td>${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</td>
                     </tr>
                     <tr>
-                        <th>parallelBenchmarkCount</th>
-                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount}</td>
-                    </tr>
-                    <tr>
                         <th>warmUpTimeMillisSpend</th>
                         <td>${benchmarkReport.plannerBenchmark.warmUpTimeMillisSpend} ms</td>
+                    </tr>
+                    <tr>
+                        <th>parallelBenchmarkCount / availableProcessors</th>
+                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount} / ${benchmarkReport.availableProcessors}</td>
                     </tr>
                     <tr>
                         <th>benchmarkTimeMillisSpend</th>
@@ -516,11 +521,27 @@
                         <td>${benchmarkReport.plannerBenchmark.failureCount}</td>
                     </tr>
                     <tr>
-                        <th>plannerVersion</th>
-                        <td>${benchmarkReport.plannerBenchmark.plannerVersion!"Unjarred development snapshot"}</td>
+                        <th>VM max memory (as in -Xmx but lower)</th>
+                        <td>${benchmarkReport.maxMemory?string.number} bytes</td>
                     </tr>
                     <tr>
-                        <th>locale</th>
+                        <th>Operating system</th>
+                        <td>${benchmarkReport.operatingSystem}</td>
+                    </tr>
+                    <tr>
+                        <th>Java version</th>
+                        <td>${benchmarkReport.javaVersion}</td>
+                    </tr>
+                    <tr>
+                        <th>Java VM</th>
+                        <td>${benchmarkReport.javaVM}</td>
+                    </tr>
+                    <tr>
+                        <th>Planner version</th>
+                        <td>${benchmarkReport.plannerVersion!"Unjarred development snapshot"}</td>
+                    </tr>
+                    <tr>
+                        <th>Report locale</th>
                         <td>${benchmarkReport.locale!"Unknown"}</td>
                     </tr>
                 </table>

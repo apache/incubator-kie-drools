@@ -40,6 +40,7 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.config.SolverFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -72,6 +73,8 @@ public class BenchmarkReport {
     protected File scalabilitySummaryChartFile = null;
     protected File averageCalculateCountSummaryChartFile = null;
     protected Integer defaultShownScoreLevelIndex = null;
+
+    protected List<String> warningList = null;
 
     public BenchmarkReport(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
@@ -121,11 +124,46 @@ public class BenchmarkReport {
         return defaultShownScoreLevelIndex;
     }
 
+    public List<String> getWarningList() {
+        return warningList;
+    }
+
     // ************************************************************************
     // Write methods
     // ************************************************************************
 
+    public int getAvailableProcessors() {
+        return Runtime.getRuntime().availableProcessors();
+    }
+
+    public long getMaxMemory() {
+        return Runtime.getRuntime().maxMemory();
+    }
+
+    public String getJavaVersion() {
+        return "Java " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")";
+    }
+
+    public String getJavaVM() {
+        return "Java " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.version")
+                + " (" + System.getProperty("java.vm.vendor") + ")";
+    }
+
+    public String getOperatingSystem() {
+        return System.getProperty("os.name") + " " + System.getProperty("os.arch")
+                + " " + System.getProperty("os.version");
+    }
+
+    /**
+     * @return sometimes null (only during development)
+     */
+    public String getPlannerVersion() {
+        return SolverFactory.class.getPackage().getImplementationVersion();
+    }
+
     public void writeReport() {
+        warningList = new ArrayList<String>();
+        fillWarningList();
         writeBestScoreSummaryCharts();
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
@@ -141,6 +179,19 @@ public class BenchmarkReport {
         }
         determineDefaultShownScoreLevelIndex();
         writeHtmlOverviewFile();
+    }
+
+    protected void fillWarningList() {
+        String javaVmName = System.getProperty("java.vm.name");
+        if (javaVmName != null && javaVmName.contains("Client VM")) {
+            warningList.add("The Java VM (" + javaVmName + ") is the Client VM."
+                    + " Consider starting the java process with the argument \"-server\" to get better results.");
+        }
+        int availableProcessors = getAvailableProcessors();
+        if (plannerBenchmark.getParallelBenchmarkCount() > availableProcessors) {
+            warningList.add("The parallelBenchmarkCount (" + plannerBenchmark.getParallelBenchmarkCount()
+                    + ") is higher than the number of availableProcessors (" + availableProcessors + ").");
+        }
     }
 
     private void writeBestScoreSummaryCharts() {

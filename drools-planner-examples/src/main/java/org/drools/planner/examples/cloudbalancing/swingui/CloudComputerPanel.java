@@ -130,13 +130,13 @@ public class CloudComputerPanel extends JPanel {
         numberOfProcessesLabel = new JLabel("    0 processes");
         numberOfProcessesLabel.setEnabled(false);
         add(numberOfProcessesLabel);
-        cpuPowerBar = new CloudBar(getComputerCpuPower());
+        cpuPowerBar = new CloudBar(getComputerCpuPower(), cloudBalancingPanel.getMaximumComputerCpuPower());
         cpuPowerBar.setEnabled(false);
         add(cpuPowerBar);
-        memoryBar = new CloudBar(getComputerMemory());
+        memoryBar = new CloudBar(getComputerMemory(), cloudBalancingPanel.getMaximumComputerMemory());
         memoryBar.setEnabled(false);
         add(memoryBar);
-        networkBandwidthBar = new CloudBar(getComputerNetworkBandwidth());
+        networkBandwidthBar = new CloudBar(getComputerNetworkBandwidth(), cloudBalancingPanel.getMaximumComputerNetworkBandwidth());
         networkBandwidthBar.setEnabled(false);
         add(networkBandwidthBar);
         detailsButton = new JButton(new AbstractAction("Details") {
@@ -215,9 +215,11 @@ public class CloudComputerPanel extends JPanel {
 
         private List<Integer> processValues = new ArrayList<Integer>();
         private int computerValue;
+        private int maximumComputerValue;
 
-        public CloudBar(int computerValue) {
+        public CloudBar(int computerValue, int maximumComputerValue) {
             this.computerValue = computerValue;
+            this.maximumComputerValue = maximumComputerValue;
         }
 
         public void clearProcessValues() {
@@ -231,36 +233,35 @@ public class CloudComputerPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             Dimension size = getSize();
-            int rectHeight = size.height;
             g.setColor(getBackground());
-            g.fillRect(0, 0, size.width, rectHeight);
-            int computerWidth = size.width * 4 / 5;
-            computerWidth = Math.max(computerWidth, 1);
+            g.fillRect(0, 0, size.width, size.height);
+
+            int maximumComputerWidth = size.width - 10;
+            if (maximumComputerWidth <= 10) {
+                g.setColor(TangoColors.ALUMINIUM_6);
+                g.drawString("?", 2, 2);
+                return;
+            }
+            double pixelsPerValue = (double) maximumComputerWidth / (double) maximumComputerValue;
+            int computerWidth = (int) (pixelsPerValue * (double) computerValue);
             if (this.computerValue > 0) {
                 g.setColor(isEnabled() ? Color.WHITE : getBackground());
-                g.fillRect(0, 0, computerWidth, rectHeight);
+                g.fillRect(0, 0, computerWidth, size.height);
             }
-
-            int offset = 0;
+            int offsetValue = 0;
             int colorIndex = 0;
-            int safeComputerValue = this.computerValue;
-            if (safeComputerValue <= 0) {
-                safeComputerValue = 0;
-                for (int processValue : processValues) {
-                    safeComputerValue +=  processValue;
-                }
-            }
             for (int processValue : processValues) {
-                int processWidth = processValue * computerWidth / safeComputerValue;
+                int offset = (int) ((double) offsetValue * pixelsPerValue);
+                int processWidth = (int) ((double) processValue * pixelsPerValue) + 1;
                 processWidth = Math.max(processWidth, 1);
                 g.setColor(TangoColors.SEQUENCE_1[colorIndex]);
-                g.fillRect(offset, 0, processWidth, rectHeight);
-                offset += processWidth;
+                g.fillRect(offset, 0, processWidth, size.height);
+                offsetValue += processValue;
                 colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_1.length;
             }
             if (this.computerValue > 0) {
                 g.setColor(isEnabled() ? Color.BLACK : TangoColors.ALUMINIUM_5);
-                g.drawRect(0, 0, computerWidth, rectHeight - 1);
+                g.drawRect(0, 0, computerWidth, size.height - 1);
             }
         }
 
