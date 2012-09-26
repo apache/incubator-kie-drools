@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <process id="ParentProcess" tns:packageName="defaultPackage" name="parentProcess" isExecutable="true" processType="Private">
+    <endEvent id="_17" name="EndParent">
+      <incoming>_19-_17</incoming>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+    <userTask id="_69" name="HT1">
+      <incoming>_59-_69</incoming>
+      <outgoing>_69-_19</outgoing>
+      <ioSpecification id="InputOutputSpecification_1">
+        <dataInput id="_69_CommentInput" name="Comment"/>
+        <dataInput id="_69_TaskNameInput" name="TaskName"/>
+        <inputSet id="InputSet_1">
+          <dataInputRefs>_69_CommentInput</dataInputRefs>
+          <dataInputRefs>_69_TaskNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet id="OutputSet_1"/>
+      </ioSpecification>
+      <dataInputAssociation id="DataInputAssociation_1">
+        <targetRef>_69_CommentInput</targetRef>
+        <assignment id="Assignment_1">
+          <to xsi:type="tFormalExpression" id="FormalExpression_2">_69_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation id="DataInputAssociation_2">
+        <targetRef>_69_TaskNameInput</targetRef>
+        <assignment id="Assignment_2">
+          <to xsi:type="tFormalExpression" id="FormalExpression_4">_69_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner id="PotentialOwner_1">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_5">xxx</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <callActivity id="_19" tns:independent="false" name="SubProc" calledElement="subproc">
+      <incoming>_69-_19</incoming>
+      <outgoing>_19-_17</outgoing>
+      <ioSpecification id="InputOutputSpecification_2">
+        <inputSet id="InputSet_2"/>
+        <outputSet id="OutputSet_2"/>
+      </ioSpecification>
+    </callActivity>
+    <startEvent id="_59" name="Start Parent">
+      <outgoing>_59-_69</outgoing>
+    </startEvent>
+    <sequenceFlow id="_19-_17" sourceRef="_19" targetRef="_17"/>
+    <sequenceFlow id="_59-_69" sourceRef="_59" targetRef="_69"/>
+    <sequenceFlow id="_69-_19" sourceRef="_69" targetRef="_19"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_BaseElement_1" bpmnElement="p1">
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_17">
+        <dc:Bounds height="36.0" width="36.0" x="420.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_69">
+        <dc:Bounds height="50.0" width="110.0" x="87.0" y="8.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_CallActivity_1" bpmnElement="_19" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="254.0" y="8.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_59">
+        <dc:Bounds height="36.0" width="36.0" x="15.0" y="15.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_19-_17" sourceElement="BPMNShape_CallActivity_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="364.0" y="33.0"/>
+        <di:waypoint xsi:type="dc:Point" x="420.0" y="34.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_59-_69" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_UserTask_1">
+        <di:waypoint xsi:type="dc:Point" x="51.0" y="33.0"/>
+        <di:waypoint xsi:type="dc:Point" x="87.0" y="33.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_69-_19" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_CallActivity_1">
+        <di:waypoint xsi:type="dc:Point" x="197.0" y="33.0"/>
+        <di:waypoint xsi:type="dc:Point" x="254.0" y="33.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

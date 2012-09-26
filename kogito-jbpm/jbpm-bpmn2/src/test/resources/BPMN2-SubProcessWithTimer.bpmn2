@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <itemDefinition id="_sleepItem" structureRef="String"/>
+  <itemDefinition id="_8-sleepItem" structureRef="String"/>
+  <process id="subproc" tns:packageName="defaultPackage" name="SubProc" isExecutable="true" processType="Private">
+    <property id="sleep" itemSubjectRef="_sleepItem"/>
+    <startEvent id="_1" name="start subprocess">
+      <outgoing>_1-_8</outgoing>
+    </startEvent>
+    <endEvent id="_3" name="end subprocess">
+      <incoming>_14-_3</incoming>
+    </endEvent>
+    <userTask id="_8" name="SubProcess HT">
+      <incoming>_1-_8</incoming>
+      <outgoing>_8-_13</outgoing>
+      <ioSpecification id="InputOutputSpecification_1">
+        <dataInput id="_8_CommentInput" name="Comment"/>
+        <dataInput id="_8_TaskNameInput" name="TaskName"/>
+        <dataOutput id="_8_sleepOutput" name="sleep"/>
+        <inputSet id="InputSet_1">
+          <dataInputRefs>_8_CommentInput</dataInputRefs>
+          <dataInputRefs>_8_TaskNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet id="OutputSet_1">
+          <dataOutputRefs>_8_sleepOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation id="DataInputAssociation_1">
+        <targetRef>_8_CommentInput</targetRef>
+        <assignment id="Assignment_1">
+          <to xsi:type="tFormalExpression" id="FormalExpression_2">_8_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation id="DataInputAssociation_2">
+        <targetRef>_8_TaskNameInput</targetRef>
+        <assignment id="Assignment_2">
+          <from xsi:type="tFormalExpression" id="FormalExpression_3">SubProc</from>
+          <to xsi:type="tFormalExpression" id="FormalExpression_4">_8_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation id="DataOutputAssociation_1">
+        <sourceRef>_8_sleepOutput</sourceRef>
+        <targetRef>sleep</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner id="PotentialOwner_1">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_5">ccc</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <intermediateCatchEvent id="_13" name="Timer">
+      <incoming>_8-_13</incoming>
+      <outgoing>_13-_14</outgoing>
+      <timerEventDefinition id="TimerEventDefinition_1">
+        <timeDuration xsi:type="tFormalExpression" id="_FormalExpression_6">5s</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <scriptTask id="_14" name="Script" scriptFormat="http://www.java.com/java">
+      <incoming>_13-_14</incoming>
+      <outgoing>_14-_3</outgoing>
+      <script>System.out.println(&quot;enter&quot;);</script>
+    </scriptTask>
+    <sequenceFlow id="_14-_3" sourceRef="_14" targetRef="_3"/>
+    <sequenceFlow id="_1-_8" sourceRef="_1" targetRef="_8"/>
+    <sequenceFlow id="_8-_13" sourceRef="_8" targetRef="_13"/>
+    <sequenceFlow id="_13-_14" sourceRef="_13" targetRef="_14"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="subproc">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="36.0" width="36.0" x="60.0" y="14.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3">
+        <dc:Bounds height="36.0" width="36.0" x="590.0" y="15.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_8">
+        <dc:Bounds height="50.0" width="110.0" x="190.0" y="7.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="_13">
+        <dc:Bounds height="36.0" width="36.0" x="353.0" y="15.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_14">
+        <dc:Bounds height="50.0" width="110.0" x="440.0" y="9.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_14-_3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="550.0" y="34.0"/>
+        <di:waypoint xsi:type="dc:Point" x="590.0" y="33.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_1-_8" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_UserTask_1">
+        <di:waypoint xsi:type="dc:Point" x="96.0" y="32.0"/>
+        <di:waypoint xsi:type="dc:Point" x="190.0" y="32.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_8-_13" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="300.0" y="32.0"/>
+        <di:waypoint xsi:type="dc:Point" x="353.0" y="33.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_13-_14" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="389.0" y="33.0"/>
+        <di:waypoint xsi:type="dc:Point" x="440.0" y="34.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

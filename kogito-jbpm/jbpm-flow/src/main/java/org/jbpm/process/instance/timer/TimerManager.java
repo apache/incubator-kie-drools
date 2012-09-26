@@ -76,31 +76,39 @@ public class TimerManager {
 
     public void registerTimer(final TimerInstance timer,
                               ProcessInstance processInstance) {
-        timer.setId( ++timerId );
-        timer.setProcessInstanceId( processInstance.getId() );
-        timer.setActivated( new Date() );
-        
-        Trigger trigger = new IntervalTrigger( timerService.getCurrentTime(),
-                                               null,
-                                               null,
-                                               -1,
-                                               timer.getDelay(),
-                                               timer.getPeriod(),
-                                               null,
-                                               null );
-
-        ProcessJobContext ctx = new ProcessJobContext( timer,
-                                                       trigger,
-                                                       processInstance.getId(),
-                                                       this.kruntime );
-
-        JobHandle jobHandle = this.timerService.scheduleJob( processJob,
-                                                             ctx,
-                                                             trigger );
-        
-        timer.setJobHandle( jobHandle );
-        timers.put( timer.getId(),
+        try {
+            kruntime.startOperation();
+            if ( !kruntime.getActionQueue().isEmpty() ) {
+                kruntime.executeQueuedActions();
+            }
+            timer.setId( ++timerId );
+            timer.setProcessInstanceId( processInstance.getId() );
+            timer.setActivated( new Date() );
+            
+            Trigger trigger = new IntervalTrigger( timerService.getCurrentTime(),
+                                                   null,
+                                                   null,
+                                                   -1,
+                                                   timer.getDelay(),
+                                                   timer.getPeriod(),
+                                                   null,
+                                                   null );
+    
+            ProcessJobContext ctx = new ProcessJobContext( timer,
+                                                           trigger,
+                                                           processInstance.getId(),
+                                                           this.kruntime );
+    
+            JobHandle jobHandle = this.timerService.scheduleJob( processJob,
+                                                                 ctx,
+                                                                 trigger );
+            
+            timer.setJobHandle( jobHandle );
+            timers.put( timer.getId(),
                     timer );
+        } finally {
+            kruntime.endOperation();
+        }
     }
 
     public void internalAddTimer(final TimerInstance timer) {

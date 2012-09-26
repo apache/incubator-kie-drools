@@ -4,11 +4,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.event.process.DefaultProcessEventListener;
+import org.drools.event.process.ProcessNodeLeftEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.io.ResourceFactory;
+import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
@@ -108,5 +123,85 @@ public class SimplePersistedBPMNProcessTest extends JbpmBpmn2TestCase {
         assertEquals(new Integer(2), xValue);
         ksession.abortProcessInstance(processInstance.getId());
         assertProcessInstanceAborted(processInstance.getId(), ksession);
+    }
+    
+    public void testCallActivityWithTimer() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+                .newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory
+                .newClassPathResource("BPMN2-ParentProcess.bpmn2"), ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory
+                .newClassPathResource("BPMN2-SubProcessWithTimer.bpmn2"),  ResourceType.BPMN2);
+   
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        Environment env = EnvironmentFactory.newEnvironment();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance processInstance = ksession.startProcess(
+                "ParentProcess", params);
+        
+        ksession.getWorkItemManager().completeWorkItem(
+                workItemHandler.getWorkItem().getId(), null);
+        
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("sleep", "2s");
+        ksession.getWorkItemManager().completeWorkItem(
+                workItemHandler.getWorkItem().getId(), res);
+        
+        int sessionId = ksession.getId();
+        
+        System.out.println("dispose");
+        ksession.dispose();
+        Thread.sleep(3000);
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
+        Thread.sleep(3000);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+
+    }
+    
+    public void testProcesWithHumanTaskWithTimer() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+                .newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory
+                .newClassPathResource("BPMN2-SubProcessWithTimer.bpmn2"),  ResourceType.BPMN2);
+   
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        Environment env = EnvironmentFactory.newEnvironment();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance processInstance = ksession.startProcess(
+                "subproc", params);
+        
+        ksession.getWorkItemManager().completeWorkItem(
+                workItemHandler.getWorkItem().getId(), null);
+        
+        int sessionId = ksession.getId();
+
+        ksession.dispose();        
+        Thread.sleep(3000);
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
+        Thread.sleep(3000);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+
     }
 }
