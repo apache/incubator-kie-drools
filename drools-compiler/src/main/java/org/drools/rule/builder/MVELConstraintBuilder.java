@@ -104,7 +104,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
         }
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator());
-        MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression);
+        MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression, null);
         return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
     }
 
@@ -137,7 +137,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator);
-        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr);
+        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, null);
         return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, constraintType, field, extractor);
     }
 
@@ -247,12 +247,12 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return new EvaluatorWrapper( evaluator, left, right );
     }
 
-    public MVELCompilationUnit buildCompilationUnit(RuleBuildContext context, Pattern pattern, String expression) {
+    public MVELCompilationUnit buildCompilationUnit(RuleBuildContext context, Pattern pattern, String expression, Map<String, OperatorDescr> aliases) {
         Dialect dialect = context.getDialect();
         context.setDialect( context.getDialect( "mvel" ) );
 
         PredicateDescr predicateDescr = new PredicateDescr( context.getRuleDescr().getResource(), expression );
-        AnalysisResult analysis = buildAnalysis(context, pattern, predicateDescr, null );
+        AnalysisResult analysis = buildAnalysis(context, pattern, predicateDescr, aliases);
         if ( analysis == null ) {
             // something bad happened
             return null;

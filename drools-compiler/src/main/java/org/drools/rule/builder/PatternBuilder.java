@@ -486,10 +486,10 @@ public class PatternBuilder
             }
         }
 
-        combineConstraints(context, pattern);
+        combineConstraints(context, pattern, mvelCtx);
     }
 
-    private void combineConstraints(RuleBuildContext context, Pattern pattern) {
+    private void combineConstraints(RuleBuildContext context, Pattern pattern, MVELDumper.MVELDumperContext mvelCtx) {
         List<MvelConstraint> combinableConstraints = pattern.getCombinableConstraints();
 
         if (combinableConstraints == null || combinableConstraints.size() < 2) {
@@ -527,7 +527,7 @@ public class PatternBuilder
         }
 
         String expression = expressionBuilder.toString();
-        MVELCompilationUnit compilationUnit = getConstraintBuilder( context ).buildCompilationUnit(context, pattern, expression);
+        MVELCompilationUnit compilationUnit = getConstraintBuilder( context ).buildCompilationUnit(context, pattern, expression, mvelCtx.getAliases());
 
         Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint( packageName,
                                                                                              expression,
