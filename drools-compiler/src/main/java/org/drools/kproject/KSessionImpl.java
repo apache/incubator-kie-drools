@@ -19,7 +19,7 @@ public class KSessionImpl
 
     private List<String>                     annotations;
 
-    private KBaseImpl                            kBase;
+    private KBaseImpl                        kBase;
     
     private transient PropertyChangeListener listener;
 
@@ -34,6 +34,10 @@ public class KSessionImpl
     
     public KBaseImpl getKBase() {
         return kBase;
+    }
+    
+    public void setKBase(KBase kBase) {
+        this.kBase = ( KBaseImpl ) kBase;
     }
 
     /* (non-Javadoc)
