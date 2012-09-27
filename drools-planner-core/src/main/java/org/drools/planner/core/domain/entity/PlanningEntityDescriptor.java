@@ -46,8 +46,8 @@ public class PlanningEntityDescriptor {
 
     private final Class<?> planningEntityClass;
     private final BeanInfo planningEntityBeanInfo;
-    private PlanningEntitySorter planningEntitySorter;
     private SelectionFilter movableEntitySelectionFilter;
+    private PlanningEntitySorter planningEntitySorter;
 
     private Map<String, PlanningVariableDescriptor> planningVariableDescriptorMap;
     private Map<String, DependentPlanningVariableDescriptor> dependentPlanningVariableDescriptorMap;
@@ -75,9 +75,20 @@ public class PlanningEntityDescriptor {
                     + ") has been specified as a planning entity in the configuration," +
                     " but does not have a PlanningEntity annotation.");
         }
+        processMovable(planningEntityAnnotation);
         planningEntitySorter = new PlanningEntitySorter();
         processDifficulty(planningEntityAnnotation);
-        processMovable(planningEntityAnnotation);
+    }
+
+    private void processMovable(PlanningEntity planningEntityAnnotation) {
+        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = planningEntityAnnotation.movableEntitySelectionFilter();
+        if (movableEntitySelectionFilterClass == PlanningEntity.NullMovableEntitySelectionFilter.class) {
+            movableEntitySelectionFilterClass = null;
+        }
+        if (movableEntitySelectionFilterClass != null) {
+            movableEntitySelectionFilter = ConfigUtils.newInstance(this,
+                    "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
+        }
     }
 
     private void processDifficulty(PlanningEntity planningEntityAnnotation) {
@@ -105,17 +116,6 @@ public class PlanningEntityDescriptor {
             PlanningEntityDifficultyWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
             planningEntitySorter.setDifficultyWeightFactory(difficultyWeightFactory);
-        }
-    }
-
-    private void processMovable(PlanningEntity planningEntityAnnotation) {
-        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = planningEntityAnnotation.movableEntitySelectionFilter();
-        if (movableEntitySelectionFilterClass == PlanningEntity.NullMovableEntitySelectionFilter.class) {
-            movableEntitySelectionFilterClass = null;
-        }
-        if (movableEntitySelectionFilterClass != null) {
-            movableEntitySelectionFilter = ConfigUtils.newInstance(this,
-                    "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
         }
     }
 

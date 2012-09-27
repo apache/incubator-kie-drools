@@ -2277,3 +2277,10 @@ Before in *ScoreDefinition.java:
     public Double translateScoreToGraphValue(SimpleScore score) {
         return Double.valueOf(score.getScore());
     }
+
+
+From 5.5.0.Beta1 to 5.5.0.Beta2
+-------------------------------
+
+[MINOR] Planning variables can now have a null value.
+If you have any custom hacks for that, take a look at the reference manual how to replace them with a nullable variable.

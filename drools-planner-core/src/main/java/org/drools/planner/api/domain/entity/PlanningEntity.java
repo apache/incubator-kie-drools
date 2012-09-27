@@ -38,6 +38,22 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface PlanningEntity {
 
     /**
+     * An immovable planning entity is never changed during planning,
+     * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
+     * <p/>
+     * This applies to all the planning variables of this planning entity.
+     * To make individual variables immovable, see https://issues.jboss.org/browse/JBRULES-3601
+     * <p/>
+     * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
+     * if the selection entity is immovable and it returns true if the selection entity is movable
+     * @return {@link NullMovableEntitySelectionFilter} when it is null (workaround for annotation limitation)
+     */
+    Class<? extends SelectionFilter> movableEntitySelectionFilter()
+            default NullMovableEntitySelectionFilter.class;
+
+    interface NullMovableEntitySelectionFilter extends SelectionFilter {}
+
+    /**
      * Allows a collection of planning entities to be sorted by difficulty.
      * <p/>
      * Do not use together with {@link #difficultyWeightFactoryClass()}.
@@ -56,21 +72,5 @@ public @interface PlanningEntity {
     public Class<? extends PlanningEntityDifficultyWeightFactory> difficultyWeightFactoryClass()
             default NullDifficultyWeightFactory.class;
     interface NullDifficultyWeightFactory extends PlanningEntityDifficultyWeightFactory {}
-
-    /**
-     * An immovable planning entity is never changed during planning,
-     * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
-     * <p/>
-     * This applies to all the planning variables of this planning entity.
-     * To make individual variables immovable, see https://issues.jboss.org/browse/JBRULES-3601
-     * <p/>
-     * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
-     * if the selection entity is immovable and it returns true if the selection entity is movable
-     * @return {@link NullMovableEntitySelectionFilter} when it is null (workaround for annotation limitation)
-     */
-    Class<? extends SelectionFilter> movableEntitySelectionFilter()
-            default NullMovableEntitySelectionFilter.class;
-
-    interface NullMovableEntitySelectionFilter extends SelectionFilter {}
 
 }

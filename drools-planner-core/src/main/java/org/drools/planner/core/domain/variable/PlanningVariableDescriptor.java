@@ -33,6 +33,7 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueUninitializedEntityFilter;
 import org.drools.planner.core.solution.Solution;
 
 public class PlanningVariableDescriptor {
@@ -43,6 +44,8 @@ public class PlanningVariableDescriptor {
     private boolean chained;
 
     private PlanningValueRangeDescriptor valueRangeDescriptor;
+    private boolean nullable;
+    private SelectionFilter uninitializedEntityFilter;
     private PlanningValueSorter valueSorter;
     private Map<String, DependentPlanningVariableDescriptor> dependentPlanningVariableDescriptorMap;
 
@@ -61,9 +64,32 @@ public class PlanningVariableDescriptor {
         PlanningVariable planningVariableAnnotation = variablePropertyDescriptor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
         valueSorter = new PlanningValueSorter();
+        processNullable(planningVariableAnnotation);
         processStrength(planningVariableAnnotation);
         processChained(planningVariableAnnotation);
         processValueRangeAnnotation();
+    }
+
+    private void processNullable(PlanningVariable planningVariableAnnotation) {
+        nullable = planningVariableAnnotation.nullable();
+        if (nullable && variablePropertyDescriptor.getPropertyType().isPrimitive()) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + planningEntityDescriptor.getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                    + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
+                    + variablePropertyDescriptor.getPropertyType() + ").");
+        }
+        Class<? extends SelectionFilter> uninitializedEntityFilterClass
+                = planningVariableAnnotation.uninitializedEntityFilter();
+        if (uninitializedEntityFilterClass == PlanningVariable.NullUninitializedEntityFilter.class) {
+            uninitializedEntityFilterClass = null;
+        }
+        if (uninitializedEntityFilterClass != null) {
+            uninitializedEntityFilter = ConfigUtils.newInstance(this,
+                    "uninitializedEntityFilterClass", uninitializedEntityFilterClass);
+        } else {
+            uninitializedEntityFilter = new NullValueUninitializedEntityFilter(this);
+        }
     }
 
     private void processStrength(PlanningVariable planningVariableAnnotation) {
@@ -103,9 +129,15 @@ public class PlanningVariableDescriptor {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
-                    + ") with chained and propertyType (" + variablePropertyDescriptor.getPropertyType()
+                    + ") with chained (" + chained + ") and propertyType (" + variablePropertyDescriptor.getPropertyType()
                     + ") which is not a superclass/interface of or the same as the planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass() + ").");
+        }
+        if (chained && nullable) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + planningEntityDescriptor.getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                    + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
     }
 

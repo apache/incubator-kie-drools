@@ -27,7 +27,7 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
 
     protected PlanningVariableDescriptor variableDescriptor;
-    protected boolean excludeUninitializedPlanningEntity;
+    protected boolean excludeUninitializedPlanningEntity; // TODO make this compatible with PlanningVariable.uninitializedEntityFilter and use a SelectionFilter
 
     public AbstractPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor) {
         this.variableDescriptor = variableDescriptor;

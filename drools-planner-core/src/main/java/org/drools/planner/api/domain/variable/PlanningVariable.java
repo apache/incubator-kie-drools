@@ -21,8 +21,10 @@ import java.lang.annotation.Target;
 import java.util.Comparator;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.api.domain.variable.event.PlanningVariableListener;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueUninitializedEntityFilter;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -36,9 +38,36 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Retention(RUNTIME)
 public @interface PlanningVariable {
 
-    // TODO Add nullable
-    // TODO nullable=true is NOT compatible with chained=true
-    // boolean nullable() default false;
+    /**
+     * A nullable planning variable will automatically add the planning value null to the {@link ValueRange}.
+     * <p/>
+     * In repeated planning use cases, it's recommended to specify a {@link #uninitializedEntityFilter()}
+     * for every nullable planning variable too.
+     * <p/>
+     * {@link #nullable()} true is not compatible with {#link #chained} true.
+     * {@link #nullable()} true is not compatible with a primitive property type.
+     * @return true if null is a valid value for this planning variable
+     */
+    boolean nullable() default false;
+
+    /**
+     * Construction heuristics only change (effectively reset) uninitialized planning variables.
+     * An initialized planning variable is ignored by construction heuristics.
+     * This is especially useful in repeated planning use cases,
+     * in which starting from scratch would waste previous results and time.
+     * <p/>
+     * If no {@link #uninitializedEntityFilter} is specified,
+     * the default considers an entity uninitialized for a variable if its value is null.
+     * <p/>
+     * The method {@link SelectionFilter#accept(ScoreDirector, Object)}
+     * returns false if the selection entity is initialized for this variable
+     * and it returns true if the selection entity is uninitialized for this variable
+     * @return {@link NullUninitializedEntityFilter} when it is null (workaround for annotation limitation)
+     */
+    Class<? extends SelectionFilter> uninitializedEntityFilter()
+            default NullUninitializedEntityFilter.class;
+
+    interface NullUninitializedEntityFilter extends SelectionFilter {}
 
     /**
      * Allows a collection of planning values for this variable to be sorted by strength.
@@ -80,6 +109,8 @@ public @interface PlanningVariable {
      * then Y is also changed to point to B
      * and C is also changed to point to A,
      * giving the result A <- C <- D <- X <- B <- Y.
+     * <p/>
+     * {@link #nullable()} true is not compatible with {#link #chained} true.
      * @return true if changes to this variable need to trigger chain correction
      */
     boolean chained() default false;
