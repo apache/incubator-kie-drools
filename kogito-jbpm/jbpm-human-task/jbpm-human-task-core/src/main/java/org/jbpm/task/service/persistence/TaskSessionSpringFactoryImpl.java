@@ -77,35 +77,28 @@ public class TaskSessionSpringFactoryImpl implements TaskSessionFactory {
     }
 
     public TaskServiceSession createTaskServiceSession() {
-        TaskPersistenceManager tpm;
-     
-        TaskSpringTransactionManager ttxm = new TaskSpringTransactionManager(springTransactionManager, useJTA);
-        if (useEMF) {
-            tpm = new TaskPersistenceManager(emf.createEntityManager(), ttxm);
-        } else {
-            tpm = new TaskPersistenceManager(springEM, ttxm);
-            tpm.setUseSharedEntityManager(true);
-            //Must comment out this line setUseJTA(true) does not work with this line
-            //ttxm.begin(null);
-        }
-        return new TaskServiceSession(taskService, tpm);
+        return new TaskServiceSession(taskService, createTaskPersistenceManager());
     }
 
     public TasksAdmin createTaskAdmin() {
-        TaskPersistenceManager tpm;
-        TaskSpringTransactionManager ttxm = new TaskSpringTransactionManager(springTransactionManager, useJTA);
-        if (useEMF) {
-            tpm = new TaskPersistenceManager(emf.createEntityManager(), ttxm);
-        } else {
-            tpm = new TaskPersistenceManager(springEM, ttxm);
-            tpm.setUseSharedEntityManager(true);
-        }
-        return new TasksAdminImpl(tpm);
+        return new TasksAdminImpl(createTaskPersistenceManager());
     }
 
     public void initialize() { 
         this.taskService.setTaskSessionFactory(this);
         this.taskService.initialize();
+    }
+    
+    private TaskPersistenceManager createTaskPersistenceManager() { 
+        TaskPersistenceManager tpm;
+        TaskSpringTransactionManager ttxm = new TaskSpringTransactionManager(springTransactionManager, useJTA);
+        if (useEMF) {
+            tpm = new TaskPersistenceManager(emf.createEntityManager(), ttxm);
+        } else {
+            tpm = new TaskPersistenceManager(springEM, ttxm);
+            tpm.setUseSharedEntityManager(true);
+        }
+        return tpm;
     }
 
     public TaskEventsAdmin createTaskEventsAdmin() {

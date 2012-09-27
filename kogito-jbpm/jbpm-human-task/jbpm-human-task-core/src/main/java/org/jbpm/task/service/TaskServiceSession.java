@@ -1064,8 +1064,15 @@ public class TaskServiceSession {
      * @throws EntityNotFoundException if entity not found
      */
     private <T> T getEntity(final Class<T> entityClass, final Object primaryKey) {
-        final T entity = (T) tpm.findEntity(entityClass, primaryKey);
-
+        
+        final Object [] result = new Object[1];
+        doOperationInTransaction(new TransactedOperation() {
+            public void doOperation() {
+                result[0] = tpm.findEntity(entityClass, primaryKey);
+            }
+        });
+        
+        final T entity = (T) result[0];
         if (entity == null) {
             throw new EntityNotFoundException("No " + entityClass.getSimpleName() + " with ID " + primaryKey + " was found!");
         }
@@ -1096,7 +1103,7 @@ public class TaskServiceSession {
      * 
      * @param operation operation to execute
      */
-    private void doOperationInTransaction(final TransactedOperation operation) {
+    public void doOperationInTransaction(final TransactedOperation operation) {
 
         boolean txOwner = false;
         boolean operationSuccessful = false;

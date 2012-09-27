@@ -16,12 +16,8 @@
 
 package org.jbpm.task.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 import org.drools.SystemEventListener;
 import org.jbpm.eventmessaging.EventKey;
@@ -32,6 +28,7 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskServiceSession.TransactedOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,10 +54,11 @@ public class TaskServerHandler {
         systemEventListener.exception("Uncaught exception on Server", cause);
     }
 
-    public void messageReceived(SessionWriter session, Object message) throws Exception {
-        Command cmd = (Command) message;
-        TaskServiceSession taskSession = service.createSession();
+    public void messageReceived(final SessionWriter session, Object message) throws Exception {
+        final Command cmd = (Command) message;
+        final TaskServiceSession taskSession = service.createSession();
         CommandName response = null;
+        
         try {
             systemEventListener.debug("Message receieved on server : " + cmd.getName());
             systemEventListener.debug("Arguments : " + Arrays.toString(cmd.getArguments().toArray()));
@@ -123,15 +121,24 @@ public class TaskServerHandler {
                 }    
                 case GetTaskRequest: {
                     response = CommandName.GetTaskResponse;
-                    long taskId = (Long) cmd.getArguments().get(0);
+                    final long taskId = (Long) cmd.getArguments().get(0);
 
-                    // execute
-                    Task task = taskSession.getTask(taskId);
+                    taskSession.doOperationInTransaction(new TransactedOperation() {
+                        public void doOperation() {
+                            // execute
+                            Task task = taskSession.getTask(taskId);
 
-                    // return
-                    List args = Arrays.asList((new Task[] {task}));
-                    Command resultsCmnd = new Command(cmd.getId(), CommandName.GetTaskResponse, args);
-                    session.write(resultsCmnd);
+                            // return
+                            List args = Arrays.asList((new Task[] {task}));
+                            Command resultsCmnd = new Command(cmd.getId(), CommandName.GetTaskResponse, args);
+                            try {
+                                session.write(resultsCmnd);
+                            } catch(IOException ioe) { 
+                                throw new IllegalTaskStateException("Could not serialize Task instance.", ioe); 
+                            }
+                        }
+                    });
+
                     break;
                 }
                 case AddTaskRequest: {
@@ -238,31 +245,44 @@ public class TaskServerHandler {
                 case GetContentRequest: {
                     // prepare
                     response = CommandName.GetContentResponse;
-                    long contentId = (Long) cmd.getArguments().get(0);
+                    final long contentId = (Long) cmd.getArguments().get(0);
                     
+                    taskSession.doOperationInTransaction(new TransactedOperation() {
+                        public void doOperation() throws Exception {
                     // execute
                     Content content = taskSession.getContent(contentId);
 
                     // return
                     List args = Arrays.asList((new Content[] {content}));
-                    Command resultsCmnd = new Command(cmd.getId(),
-                            CommandName.GetContentResponse,
-                            args);
+                            Command resultsCmnd = new Command(cmd.getId(), CommandName.GetContentResponse, args);
                     session.write(resultsCmnd);
+                        }
+                    });
+                    
                     break;
                 }
                 case QueryTaskByWorkItemId: {
                     // prepare
                     response = CommandName.QueryTaskByWorkItemIdResponse;
-                    // execute
-                    Task result = taskSession.getTaskByWorkItemId((Long) cmd.getArguments().get(0));
+                    
+                    final long taskId = (Long) cmd.getArguments().get(0);
 
-                    // return
-                    List args = Arrays.asList((new Task[] {result}));
-                    Command resultsCmnd = new Command(cmd.getId(),
-                            CommandName.QueryTaskByWorkItemIdResponse,
-                            args);
-                    session.write(resultsCmnd);
+                    taskSession.doOperationInTransaction(new TransactedOperation() {
+                        public void doOperation() {
+                            // execute
+                            Task result = taskSession.getTaskByWorkItemId((Long) cmd.getArguments().get(0));
+
+                            // return
+                            List args = Arrays.asList((new Task[] {result}));
+                            Command resultsCmnd = new Command(cmd.getId(), CommandName.QueryTaskByWorkItemIdResponse, args);
+                            try {
+                                session.write(resultsCmnd);
+                            } catch(IOException ioe) { 
+                                throw new IllegalTaskStateException("Could not serialize Task instance.", ioe); 
+                            }
+                        }
+                    });
+
                     break;
                 }
                 case QueryTasksOwned: {

@@ -11,4 +11,8 @@ public class IllegalTaskStateException extends TaskException {
         super(message);
     }
 
+    public IllegalTaskStateException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
