@@ -218,10 +218,15 @@ public class PlanningVariableDescriptor {
         return chained;
     }
 
+    public boolean isNullable() {
+        return nullable;
+    }
+
     public Collection<DependentPlanningVariableDescriptor> getDependentPlanningVariableDescriptors() {
         return dependentPlanningVariableDescriptorMap.values();
     }
 
+    @Deprecated
     public boolean isInitialized(Object planningEntity) {
         // TODO extract to VariableInitialized interface
         Object variable = DescriptorUtils.executeGetter(variablePropertyDescriptor, planningEntity);
@@ -242,17 +247,21 @@ public class PlanningVariableDescriptor {
     }
 
     public Collection<?> extractAllPlanningValues(Solution solution) {
+        // TODO this does not include null if nullable, currently FromSolutionPropertyValueSelector does that
         return valueRangeDescriptor.extractAllValues(solution);
     }
 
     public Collection<?> extractPlanningValues(Solution solution, Object planningEntity) {
+        // TODO this does not include null if nullable, currently FromSolutionPropertyValueSelector does that
         return valueRangeDescriptor.extractValues(solution, planningEntity);
     }
 
+    @Deprecated
     public boolean isPlanningValuesCacheable() {
         return valueRangeDescriptor.isValuesCacheable();
     }
 
+    @Deprecated
     public PlanningValueSorter getValueSorter() {
         return valueSorter;
     }

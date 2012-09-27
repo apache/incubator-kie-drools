@@ -60,6 +60,7 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         if (!excludeUninitializedPlanningEntity) {
             return values;
         }
+        // TODO HACK remove me and replace by SelectionFilter
         Collection<Object> filteredValues = new ArrayList<Object>(values.size());
         for (Object value : values) {
             if (value.getClass().isAnnotationPresent(PlanningEntity.class)) {

@@ -17,6 +17,7 @@
 package org.drools.planner.core.heuristic.selector.value;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -60,8 +61,12 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
     // ************************************************************************
 
     public void constructCache(DefaultSolverScope solverScope) {
-        cachedValueList = new ArrayList<Object>(
-                variableDescriptor.extractAllPlanningValues(solverScope.getWorkingSolution()));
+        Collection<?> planningValues = variableDescriptor.extractAllPlanningValues(solverScope.getWorkingSolution());
+        cachedValueList = new ArrayList<Object>(planningValues.size() + 1);
+        cachedValueList.addAll(planningValues);
+        if (variableDescriptor.isNullable()) {
+            cachedValueList.add(null);
+        }
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {
