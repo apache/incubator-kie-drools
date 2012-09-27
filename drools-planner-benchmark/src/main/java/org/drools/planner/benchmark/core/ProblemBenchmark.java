@@ -17,10 +17,7 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.drools.planner.benchmark.core.ranking.SingleBenchmarkRankingComparator;
@@ -214,14 +211,17 @@ public class ProblemBenchmark {
     }
 
     private void determineRanking(List<SingleBenchmark> rankedSingleBenchmarkList) {
-        Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(new SingleBenchmarkRankingComparator()));
-        int singleBenchmarkRanking = 0;
+        Comparator singleBenchmarkRankingComparator = new SingleBenchmarkRankingComparator();
+        Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(singleBenchmarkRankingComparator));
+        int singleBenchmarkRanking = 0, sameRankCount = 0;
         SingleBenchmark previousSingleBenchmark = null;
-        SingleBenchmarkRankingComparator singleBenchmarkRankingComparator = new SingleBenchmarkRankingComparator();
-        for(SingleBenchmark singleBenchmark : rankedSingleBenchmarkList) {
-            if(previousSingleBenchmark!=null
-                    && singleBenchmarkRankingComparator.compare(previousSingleBenchmark, singleBenchmark)!=0) {
-                singleBenchmarkRanking++;
+        for (SingleBenchmark singleBenchmark : rankedSingleBenchmarkList) {
+            if (previousSingleBenchmark != null
+                    && singleBenchmarkRankingComparator.compare(previousSingleBenchmark, singleBenchmark) != 0) {
+                singleBenchmarkRanking += sameRankCount;
+                sameRankCount = 1;
+            } else {
+                sameRankCount++;
             }
             singleBenchmark.setRanking(singleBenchmarkRanking);
             previousSingleBenchmark = singleBenchmark;
@@ -276,6 +276,7 @@ public class ProblemBenchmark {
     /**
      * HACK to avoid loading the planningProblem just to extract it's problemScale.
      * Called multiple times, for every {@link SingleBenchmark} of this {@link ProblemBenchmark}.
+     *
      * @param registeringProblemScale >= 0
      */
     public void registerProblemScale(long registeringProblemScale) {
@@ -283,7 +284,7 @@ public class ProblemBenchmark {
             problemScale = registeringProblemScale;
         } else if (problemScale.longValue() != registeringProblemScale) {
             logger.warn("The problemBenchmark ({}) has different problemScale values ([{},{}]).",
-                    new Object[] {getName(), problemScale, registeringProblemScale});
+                    new Object[]{getName(), problemScale, registeringProblemScale});
             // The problemScale is not unknown (null), but known to be ambiguous
             problemScale = -1L;
         }
