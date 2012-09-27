@@ -482,6 +482,43 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		assertEquals("Darth Vader", results.get("ActorId"));
 		assertEquals("This is the result", results.get("Result"));
 	}
+        
+    public void testTaskWithCustomLocale() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Locale", "de-DE");
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+
+        Thread.sleep(500);
+
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner("Darth Vader", "de-DE", responseHandler);
+        List<TaskSummary> tasks = responseHandler.getResults();
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals(10, task.getProcessInstanceId());
+
+        BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.start(task.getId(), "Darth Vader", operationResponseHandler);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+
+        operationResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.complete(task.getId(), "Darth Vader", null, operationResponseHandler);
+        operationResponseHandler.waitTillDone(15000);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }    
 
 	public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {
 

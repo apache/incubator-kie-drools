@@ -45,7 +45,7 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 public class TaskManagement extends SessionInitializer implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
 	private static int clientCounter = 0;
-    
+    private String locale;
 	private TaskService service;
 	
 	public TaskManagement () {
@@ -56,7 +56,8 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 
 	    if (service == null) {
 	        
-    	    Properties jbpmConsoleProperties = PropertyLoader.getJbpmConsoleProperties();   
+    	    Properties jbpmConsoleProperties = PropertyLoader.getJbpmConsoleProperties();
+    	    locale = jbpmConsoleProperties.getProperty("jbpm.console.task.service.locale", "en-UK");
             service = TaskClientFactory.newInstance(jbpmConsoleProperties, "org.jbpm.integration.console.TaskManagement"+clientCounter);
             clientCounter++;
        
@@ -124,7 +125,7 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
         List<TaskRef> result = new ArrayList<TaskRef>();
 		try {
 		    List<Status> onlyReserved = Collections.singletonList(Status.Reserved);
-			List<TaskSummary> tasks = service.getTasksOwned(idRef, onlyReserved, "en-UK");
+			List<TaskSummary> tasks = service.getTasksOwned(idRef, onlyReserved, locale);
 			
 	        for (TaskSummary task: tasks) {
 	        	result.add(Transform.task(task));
@@ -144,7 +145,7 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 			List<TaskSummary> tasks = null;
 			List<Status> onlyReady = Collections.singletonList(Status.Ready);
 
-			tasks = service.getTasksAssignedAsPotentialOwnerByStatus(idRef, onlyReady, "en-UK");
+			tasks = service.getTasksAssignedAsPotentialOwnerByStatus(idRef, onlyReady, locale);
 						
 	        for (TaskSummary task: tasks) {
 	        	result.add(Transform.task(task));

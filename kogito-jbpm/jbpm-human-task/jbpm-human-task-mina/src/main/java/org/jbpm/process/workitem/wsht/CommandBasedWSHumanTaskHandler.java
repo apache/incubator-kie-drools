@@ -130,10 +130,14 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         connect();
         Task task = new Task();
+        String locale = (String) workItem.getParameter("Locale");
+        if (locale == null) {
+            locale = "en-UK";
+        }
         String taskName = (String) workItem.getParameter("TaskName");
         if (taskName != null) {
             List<I18NText> names = new ArrayList<I18NText>();
-            names.add(new I18NText("en-UK", taskName));
+            names.add(new I18NText(locale, taskName));
             task.setNames(names);
         }
         String comment = (String) workItem.getParameter("Comment");
@@ -141,10 +145,10 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
             comment = "";
         }
         List<I18NText> descriptions = new ArrayList<I18NText>();
-        descriptions.add(new I18NText("en-UK", comment));
+        descriptions.add(new I18NText(locale, comment));
         task.setDescriptions(descriptions);
         List<I18NText> subjects = new ArrayList<I18NText>();
-        subjects.add(new I18NText("en-UK", comment));
+        subjects.add(new I18NText(locale, comment));
         task.setSubjects(subjects);
 
         String priorityString = (String) workItem.getParameter("Priority");

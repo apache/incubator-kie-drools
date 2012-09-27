@@ -513,6 +513,36 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         }
     }
 
+    public void testTaskWithCustomLocale() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Locale", "de-DE");
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+
+        
+        List<TaskSummary> tasks = client.getTasksAssignedAsPotentialOwner("Darth Vader", "de-DE");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals(10, task.getProcessInstanceId());
+
+        client.start(task.getId(), "Darth Vader");
+        client.complete(task.getId(), "Darth Vader", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }
+    
     public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {
 
         TestWorkItemManager manager = new TestWorkItemManager();
