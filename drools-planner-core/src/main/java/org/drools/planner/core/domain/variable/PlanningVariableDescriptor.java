@@ -229,6 +229,9 @@ public class PlanningVariableDescriptor {
     @Deprecated
     public boolean isInitialized(Object planningEntity) {
         // TODO extract to VariableInitialized interface
+        if (nullable) {
+            return true;
+        }
         Object variable = DescriptorUtils.executeGetter(variablePropertyDescriptor, planningEntity);
         return variable != null;
     }
