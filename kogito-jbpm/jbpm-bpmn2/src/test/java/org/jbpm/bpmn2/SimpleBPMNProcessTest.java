@@ -317,6 +317,30 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
 
+	public void testRuleTaskAcrossSessions() throws Exception {
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		kbuilder.add(
+			ResourceFactory.newClassPathResource("BPMN2-RuleTask.bpmn2"), 
+			ResourceType.BPMN2);
+		kbuilder.add(
+			ResourceFactory.newClassPathResource("BPMN2-RuleTask.drl"),
+			ResourceType.DRL);
+		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+		StatefulKnowledgeSession ksession1 = createKnowledgeSession(kbase);
+		StatefulKnowledgeSession ksession2 = createKnowledgeSession(kbase);
+		List<String> list1 = new ArrayList<String>();
+		ksession1.setGlobal("list", list1);
+		List<String> list2 = new ArrayList<String>();
+		ksession2.setGlobal("list", list2);
+		ProcessInstance processInstance1 = ksession1.startProcess("RuleTask");
+		ProcessInstance processInstance2 = ksession2.startProcess("RuleTask");
+		ksession1.fireAllRules();
+		assertProcessInstanceCompleted(processInstance1.getId(), ksession1);
+		assertProcessInstanceActive(processInstance2.getId(), ksession2);
+		ksession2.fireAllRules();
+		assertProcessInstanceCompleted(processInstance2.getId(), ksession2);
+	}
+	
 	public void testDataObject() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataObject.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

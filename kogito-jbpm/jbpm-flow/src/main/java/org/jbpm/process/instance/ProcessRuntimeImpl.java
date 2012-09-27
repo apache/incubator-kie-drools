@@ -23,6 +23,7 @@ import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.Rule;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
@@ -351,8 +352,13 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
         kruntime.addEventListener(new DefaultAgendaEventListener() {
             public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event) {
-                signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
-                        null );
+            	if (kruntime instanceof StatefulKnowledgeSession) {
+                    signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName() + "_" + ((StatefulKnowledgeSession) kruntime).getId(),
+                            null );
+            	} else {
+                    signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
+                            null );
+            	}
             }
         } );
     }

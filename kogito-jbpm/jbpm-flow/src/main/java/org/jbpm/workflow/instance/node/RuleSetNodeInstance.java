@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
@@ -50,7 +52,12 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     }
     
     private String getRuleSetEventType() {
-    	return "RuleFlowGroup_" + getRuleSetNode().getRuleFlowGroup();
+    	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+    	if (kruntime instanceof StatefulKnowledgeSession) {
+    		return "RuleFlowGroup_" + getRuleSetNode().getRuleFlowGroup() + "_" + ((StatefulKnowledgeSession) kruntime).getId();
+    	} else {
+    		return "RuleFlowGroup_" + getRuleSetNode().getRuleFlowGroup();
+    	}
     }
     
     private void addRuleSetListener() {
