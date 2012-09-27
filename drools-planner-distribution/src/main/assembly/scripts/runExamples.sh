@@ -20,9 +20,9 @@ echo "Starting examples app..."
 
 # You can use -Xmx128m or less too, but it might be slower
 if [ -f $JAVA_HOME/bin/java ]; then
-    $JAVA_HOME/bin/java -Xms256m -Xmx512m -server -cp ${mainClasspath} ${mainClass} $*
+    $JAVA_HOME/bin/java -Xms256m -Xmx1024m -server -cp ${mainClasspath} ${mainClass} $*
 else
-    java -Xms256m -Xmx512m -cp ${mainClasspath} ${mainClass} $*
+    java -Xms256m -Xmx1024m -cp ${mainClasspath} ${mainClass} $*
 fi
 
 if [ $? != 0 ] ; then
