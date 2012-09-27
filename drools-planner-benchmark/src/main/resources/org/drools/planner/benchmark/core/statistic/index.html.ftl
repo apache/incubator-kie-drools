@@ -312,7 +312,7 @@
                                     <tr>
                                         <th class="problemScale">Problem scale</th>
                                     <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                        <td class="problemScale">${problemBenchmark.problemScale}</td>
+                                        <td class="problemScale">${problemBenchmark.problemScale!""}</td>
                                     </#list>
                                     </tr>
                                 <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
@@ -356,9 +356,9 @@
                                     <tr>
                                         <th class="problemScale">Problem scale</th>
                                     <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                        <td class="problemScale">${problemBenchmark.problemScale}</td>
+                                        <td class="problemScale">${problemBenchmark.problemScale!""}</td>
                                     </#list>
-                                        <td class="problemScale">${benchmarkReport.plannerBenchmark.averageProblemScale}</td>
+                                        <td class="problemScale">${benchmarkReport.plannerBenchmark.averageProblemScale!""}</td>
                                     </tr>
                                 <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
