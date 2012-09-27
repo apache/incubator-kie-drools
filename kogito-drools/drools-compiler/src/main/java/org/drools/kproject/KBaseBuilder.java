@@ -79,7 +79,7 @@ public class KBaseBuilder {
         return kbase;
     }
 
-    private void  buildResourcesList(Class cls, String kBaseQName, List<String> list) {
+    public static void  buildResourcesList(Class cls, String kBaseQName, List<String> list) {
         String fileStr = null;
         InputStream is = null;
         try {

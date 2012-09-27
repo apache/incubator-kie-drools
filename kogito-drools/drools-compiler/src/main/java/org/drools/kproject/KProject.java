@@ -3,11 +3,12 @@ package org.drools.kproject;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
 
+
 public interface KProject {
     
-    public String getNamespace();
+    public GroupArtifactVersion getGroupArtifactVersion();
     
-    public String getName();
+    public void setGroupArtifactVersion(GroupArtifactVersion gav);
 
     public  PropertyChangeListener getListener();
 

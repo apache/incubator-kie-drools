@@ -16,13 +16,20 @@
 
 package org.drools.core.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.UUID;
 
@@ -169,6 +176,93 @@ public class FileManager {
         }
     }
 
+    public static void write(File f,
+                      byte[] data) throws IOException {
+        if ( f.exists() ) {
+            // we want to make sure there is a time difference for lastModified and lastRead checks as Linux and http often round to seconds
+            // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+            try {
+                Thread.sleep( 1000 );
+            } catch ( Exception e ) {
+                throw new RuntimeException( "Unable to sleep" );
+            }
+        }
+        
+        // Attempt to write the file      
+        writeBytes(f, data );
+        
+        // Now check the file was written and re-attempt if it was not        
+        // Need to do this for testing, to ensure the texts are read the same way, otherwise sometimes you get tail \n sometimes you don't
+        int count = 0;
+        while ( !areByteArraysEqual(data, readBytes( f ) ) && count < 5 ) {
+            // The file failed to write, try 5 times, calling GC and sleep between each iteration
+            // Sometimes windows takes a while to release a lock on a file            
+            System.gc();
+            try {
+                Thread.sleep( 250 );
+            } catch ( InterruptedException e ) {
+                throw new RuntimeException( "This should never happen" );
+            }
+            writeBytes(f, data );  
+            count++;
+        }
+        
+        //areByteArraysEqual
+
+        if ( count == 5 ) {
+            throw new IOException( "Unable to write to file:" + f.getCanonicalPath() );
+        }
+    }    
+    
+    private static byte[] readBytes(File f) throws IOException {
+        byte[] buf = new byte[1024];
+            
+        BufferedInputStream bais = null;
+        ByteArrayOutputStream baos = null;
+        try {
+            bais = new BufferedInputStream( new FileInputStream( f ) );
+            baos = new ByteArrayOutputStream();
+            int len;
+            while ( (len = bais.read( buf )) > 0 ) {
+                baos.write( buf, 0, len );
+            } 
+        } finally {
+            if (  baos != null ) {
+                baos.close();
+            }
+            if ( bais != null ) {
+                bais.close();
+            }
+        }
+        
+        return baos.toByteArray();
+    }
+    
+    private static void writeBytes(File f, byte[] data) throws IOException {
+        byte[] buf = new byte[1024];
+        
+        BufferedOutputStream bos = null;
+        ByteArrayInputStream bais = null; 
+                
+        try {
+            bos = new BufferedOutputStream( new FileOutputStream(f) );        
+            bais = new ByteArrayInputStream( data );        
+            int len;
+            while ( (len = bais.read( buf )) > 0 ) {
+                bos.write( buf, 0, len );
+            } 
+        } finally {
+            if (  bos != null ) {
+                bos.close();
+            }
+            if ( bais != null ) {
+                bais.close();
+            }            
+        }
+        bos.close();
+        bais.close();             
+    }  
+    
     public File write(String fileName,
                       String text) throws IOException {
         File f = newFile( fileName );
@@ -206,4 +300,21 @@ public class FileManager {
         return fileData.toString();
     }
 
+    public static boolean areByteArraysEqual(byte[] b1,
+                                             byte[] b2) {
+        
+        if ( b1.length != b2.length ) {
+            System.out.println( "Different length: b1=" + b1.length + " b2=" + b2.length );
+            return false;
+        }
+        
+        for ( int i = 0, length = b1.length; i < length; i++ ) {
+            if ( b1[i] != b2[i] ) {
+                System.out.println( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

@@ -23,8 +23,8 @@ public class KProjectChangeLogCommiter {
         committer.commitRemovedKBases();
         committer.commitAddedKBases();
         
-        committer.commitRemovedKSessions();
-        committer.commitAddedKSessions();        
+//        committer.commitRemovedKSessions();
+//        committer.commitAddedKSessions();        
 
         changeLog.reset();
     }
@@ -40,10 +40,10 @@ public class KProjectChangeLogCommiter {
         KProjectChangeLogCommiter committer = new KProjectChangeLogCommiter( kProject, null, fs );
         for ( KBase kBase : kProject.getKBases().values() ) {
             committer.commitAddedKBase( kBase);
-            for ( KSession kSession : kBase.getKSessions().values() ) {
-                Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kBase.getQName() );
-                committer.commitAddedKSession( rootFld, kBase, kSession );
-            }
+//            for ( KSession kSession : kBase.getKSessions().values() ) {
+//                Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kBase.getQName() );
+//                committer.commitAddedKSession( rootFld, kBase, kSession );
+//            }
         }
     }   
     
@@ -67,11 +67,11 @@ public class KProjectChangeLogCommiter {
         Folder rootFld = fs.getFolder( kProject.getKBasesPath() + "/" + kbase.getQName() );
         rootFld.create();
 
-        // create new KBase folder for CDI Qualifier and Producer
-        Folder namespaceFld = fs.getFolder( rootFld.getPath().toPortableString() + "/" + kbase.getNamespace().replace( '.', '/' ) );
-        namespaceFld.create();
-
-        // generate KBase root properties file
+//        // create new KBase folder for CDI Qualifier and Producer
+//        Folder namespaceFld = fs.getFolder( rootFld.getPath().toPortableString() + "/" + kbase.getNamespace().replace( '.', '/' ) );
+//        namespaceFld.create();
+//
+//        // generate KBase root properties file
         String filesStr = GenerateKBaseProjectFiles.generateKBaseFiles( kProject, kbase, fs );
         File rootFile = rootFld.getFile( kbase.getQName() + ".files.dat" );
         try {
@@ -84,36 +84,36 @@ public class KProjectChangeLogCommiter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        // generate Qualifiers
-        String qualifierStr = GenerateKBaseProjectFiles.generateQualifier( kbase );
-        File qualifieFile = namespaceFld.getFile( kbase.getName() + ".java" );
-        try {
-            if ( !qualifieFile.exists() ) {
-                qualifieFile.create( new ByteArrayInputStream( qualifierStr.getBytes() ) );
-            } else {
-                qualifieFile.setContents( new ByteArrayInputStream( qualifierStr.getBytes() ) );
-            }
-        } catch ( IOException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        // generate Producers    
-        String producerStr = GenerateKBaseProjectFiles.generateProducer( kbase );
-        File producerFile = namespaceFld.getFile( kbase.getName() + "Producer.java" );
-        try {
-            if ( !producerFile.exists() ) {
-                producerFile.create( new ByteArrayInputStream( producerStr.getBytes() ) );
-            } else {
-                producerFile.setContents( new ByteArrayInputStream( producerStr.getBytes() ) );
-            }
-        } catch ( IOException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        //commitAddedKsessions( rootFld, kbase );
+//
+//        // generate Qualifiers
+//        String qualifierStr = GenerateKBaseProjectFiles.generateQualifier( kbase );
+//        File qualifieFile = namespaceFld.getFile( kbase.getName() + ".java" );
+//        try {
+//            if ( !qualifieFile.exists() ) {
+//                qualifieFile.create( new ByteArrayInputStream( qualifierStr.getBytes() ) );
+//            } else {
+//                qualifieFile.setContents( new ByteArrayInputStream( qualifierStr.getBytes() ) );
+//            }
+//        } catch ( IOException e ) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//        // generate Producers    
+//        String producerStr = GenerateKBaseProjectFiles.generateProducer( kbase );
+//        File producerFile = namespaceFld.getFile( kbase.getName() + "Producer.java" );
+//        try {
+//            if ( !producerFile.exists() ) {
+//                producerFile.create( new ByteArrayInputStream( producerStr.getBytes() ) );
+//            } else {
+//                producerFile.setContents( new ByteArrayInputStream( producerStr.getBytes() ) );
+//            }
+//        } catch ( IOException e ) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//        //commitAddedKsessions( rootFld, kbase );
     }
     
     public void commitRemovedKBases() {

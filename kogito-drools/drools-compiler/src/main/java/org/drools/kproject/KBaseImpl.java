@@ -51,6 +51,10 @@ public class KBaseImpl
     public KProjectImpl getKProject() {
         return kProject;
     }
+    
+    public void setKProject(KProject kProject) {
+        this.kProject = (KProjectImpl) kProject;
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.kproject.KBase#getKSessions()
