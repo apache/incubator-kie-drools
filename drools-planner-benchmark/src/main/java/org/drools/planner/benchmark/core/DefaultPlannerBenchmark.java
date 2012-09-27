@@ -286,11 +286,11 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         benchmarkReport.writeReport();
         if (failureCount == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
-                    new Object[] {benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),
+                    new Object[]{benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),
                             benchmarkReport.getHtmlOverviewFile().getAbsolutePath()});
         } else {
             logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",
-                    new Object[] {benchmarkTimeMillisSpend, failureCount,
+                    new Object[]{benchmarkTimeMillisSpend, failureCount,
                             benchmarkReport.getHtmlOverviewFile().getAbsolutePath()});
             throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
                     " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
@@ -342,11 +342,35 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     " because solverBenchmarkRankingComparator and solverBenchmarkRankingWeightFactory are null.");
         }
         int ranking = 0;
+        SolverBenchmark previousSolverBenchmark = null;
         for (SolverBenchmark solverBenchmark : rankedSolverBenchmarkList) {
+            if (previousSolverBenchmark != null &&
+                    !equalSolverRanking(rankedSolverBenchmarkList, solverBenchmark, previousSolverBenchmark)) {
+                ranking++;
+            }
             solverBenchmark.setRanking(ranking);
-            ranking++;
+            previousSolverBenchmark = solverBenchmark;
         }
         favoriteSolverBenchmark = rankedSolverBenchmarkList.isEmpty() ? null : rankedSolverBenchmarkList.get(0);
+    }
+
+    public boolean equalSolverRanking(List<SolverBenchmark> rankedSolverBenchmarkList,
+                                      SolverBenchmark leftSolverBenchmark, SolverBenchmark rightSolverBenchmark) {
+        boolean equalSolverRanking = false;
+        if (solverBenchmarkRankingComparator != null) {
+            if (solverBenchmarkRankingComparator.compare(leftSolverBenchmark, rightSolverBenchmark) == 0) {
+                equalSolverRanking = true;
+            }
+        } else if (solverBenchmarkRankingWeightFactory != null) {
+            Comparable leftRankingWeight = solverBenchmarkRankingWeightFactory.createRankingWeight(
+                    rankedSolverBenchmarkList, leftSolverBenchmark);
+            Comparable rightRankingWeight = solverBenchmarkRankingWeightFactory.createRankingWeight(
+                    rankedSolverBenchmarkList, leftSolverBenchmark);
+            if (new ReverseComparator().compare(leftSolverBenchmark, rightSolverBenchmark) == 0) {
+                equalSolverRanking = true;
+            }
+        }
+        return equalSolverRanking;
     }
 
     public boolean hasAnyFailure() {
