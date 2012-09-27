@@ -73,7 +73,8 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <scope>test</scope>
+      <!-- mdp temporary change, for kproject.xml, undo once new format is chosen
+          scope>test</scope-->
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -136,9 +137,9 @@
     
     <dependency>
         <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se</artifactId>
-      <scope>test</scope>        
-    </dependency>     
+        <artifactId>weld-se-core</artifactId>
+        <version>1.1.8.Final</version>
+    </dependency>        
   </dependencies>
   
   <profiles>
