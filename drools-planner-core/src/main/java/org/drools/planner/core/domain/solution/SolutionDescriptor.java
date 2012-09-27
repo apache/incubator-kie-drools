@@ -278,12 +278,11 @@ public class SolutionDescriptor {
     public boolean isInitialized(Solution solution) {
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
-            if (entity == null) {
-                return false;
-            }
-            PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
-            if (!planningEntityDescriptor.isInitialized(entity)) {
-                return false;
+            if (entity != null) {
+                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
+                if (!planningEntityDescriptor.isInitialized(entity)) {
+                    return false;
+                }
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
