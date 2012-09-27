@@ -24,3 +24,10 @@ if [ -d $JAVA_HOME/bin ]; then
 else
     java -Xms256m -Xmx512m -cp ${mainClasspath} ${mainClass} $*
 fi
+
+if [ $? != 0 ] ; then
+    echo
+    echo "Error occurred. Check if \$JAVA_HOME ($JAVA_HOME) is correct."
+    # Prevent the terminal window to disappear before the user has seen the error message
+    sleep 20
+fi
