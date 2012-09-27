@@ -21,3 +21,10 @@ if exist %JAVA_HOME%\bin\java.exe (
 ) else (
     java -Xms256m -Xmx512m -cp %mainClasspath% %mainClass%
 )
+
+if %ERRORLEVEL% neq 0 (
+    echo
+    echo "Error occurred. Check if JAVA_HOME (%JAVA_HOME%) is correct."
+    rem Prevent the terminal window to disappear before the user has seen the error message
+    sleep 20
+)
