@@ -20,6 +20,7 @@ import java.util.EventListener;
 
 import org.drools.planner.core.score.director.ScoreDirector;
 
+@Deprecated
 public interface PlanningVariableListener extends EventListener {
 
     /**
