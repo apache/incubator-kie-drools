@@ -217,19 +217,18 @@ public class ProblemBenchmark {
     private void determineRanking(List<SingleBenchmark> rankedSingleBenchmarkList) {
         Comparator singleBenchmarkRankingComparator = new SingleBenchmarkRankingComparator();
         Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(singleBenchmarkRankingComparator));
-        int singleBenchmarkRanking = 0;
-        int sameRankCount = 0;
+        int ranking = 0;
         SingleBenchmark previousSingleBenchmark = null;
+        int previousSameRankingCount = 0;
         for (SingleBenchmark singleBenchmark : rankedSingleBenchmarkList) {
             if (previousSingleBenchmark != null
                     && singleBenchmarkRankingComparator.compare(previousSingleBenchmark, singleBenchmark) != 0) {
-                singleBenchmarkRanking += sameRankCount;
-                sameRankCount = 1;
-            } else {
-                sameRankCount++;
+                ranking += previousSameRankingCount;
+                previousSameRankingCount = 0;
             }
-            singleBenchmark.setRanking(singleBenchmarkRanking);
+            singleBenchmark.setRanking(ranking);
             previousSingleBenchmark = singleBenchmark;
+            previousSameRankingCount++;
         }
         winningSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null : rankedSingleBenchmarkList.get(0);
         worstSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null

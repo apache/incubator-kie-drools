@@ -312,77 +312,65 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     private void determineSolverBenchmarkRanking() {
-        List<SolverBenchmark> rankedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
-        List<Comparable> rankedSolverBenchmarkComparableList = new ArrayList<Comparable>();
-        Comparator reverseComparator = new ReverseComparator();
+        List<SolverBenchmark> rankableSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
         // Do not rank a SolverBenchmark that has a failure
-        for (Iterator<SolverBenchmark> it = rankedSolverBenchmarkList.iterator(); it.hasNext(); ) {
+        for (Iterator<SolverBenchmark> it = rankableSolverBenchmarkList.iterator(); it.hasNext(); ) {
             SolverBenchmark solverBenchmark = it.next();
             if (solverBenchmark.hasAnyFailure()) {
                 it.remove();
             }
         }
-        if (solverBenchmarkRankingComparator != null) {
-            Collections.sort(rankedSolverBenchmarkList, Collections.reverseOrder(solverBenchmarkRankingComparator));
-        } else if (solverBenchmarkRankingWeightFactory != null) {
-            SortedMap<Comparable, List<SolverBenchmark>> rankedSolverBenchmarkMap = new TreeMap<Comparable, List<SolverBenchmark>>(
-                    reverseComparator);
-            for (SolverBenchmark solverBenchmark : rankedSolverBenchmarkList) {
-                Comparable rankingWeight = solverBenchmarkRankingWeightFactory.createRankingWeight(
-                        rankedSolverBenchmarkList, solverBenchmark);
-                List<SolverBenchmark> rankedSolverList = rankedSolverBenchmarkMap.get(rankingWeight);
-                if (rankedSolverList == null) {
-                    rankedSolverList = new ArrayList<SolverBenchmark>();
-                    rankedSolverBenchmarkMap.put(rankingWeight, rankedSolverList);
-                }
-                rankedSolverList.add(solverBenchmark);
+        List<List<SolverBenchmark>> sameRankingListList = createSameRankingListList(rankableSolverBenchmarkList);
+        int ranking = 0;
+        for (List<SolverBenchmark> sameRankingList : sameRankingListList) {
+            for (SolverBenchmark solverBenchmark : sameRankingList) {
+                solverBenchmark.setRanking(ranking);
             }
-            rankedSolverBenchmarkList.clear();
-            for (Map.Entry<Comparable, List<SolverBenchmark>> entry : rankedSolverBenchmarkMap.entrySet()) {
-                rankedSolverBenchmarkList.addAll(entry.getValue());
-                for (int i = 0; i < entry.getValue().size(); i++) {
-                    rankedSolverBenchmarkComparableList.add(entry.getKey());
+            ranking += sameRankingList.size();
+        }
+        favoriteSolverBenchmark = sameRankingListList.isEmpty() ? null
+                : sameRankingListList.get(0).get(0);
+    }
+
+    private List<List<SolverBenchmark>> createSameRankingListList(List<SolverBenchmark> rankableSolverBenchmarkList) {
+        List<List<SolverBenchmark>> sameRankingListList = new ArrayList<List<SolverBenchmark>>(
+                rankableSolverBenchmarkList.size());
+        if (solverBenchmarkRankingComparator != null) {
+            Comparator<SolverBenchmark> comparator = Collections.reverseOrder(solverBenchmarkRankingComparator);
+            Collections.sort(rankableSolverBenchmarkList, comparator);
+            List<SolverBenchmark> sameRankingList = null;
+            SolverBenchmark previousSolverBenchmark = null;
+            for (SolverBenchmark solverBenchmark : rankableSolverBenchmarkList) {
+                if (previousSolverBenchmark == null
+                        || comparator.compare(previousSolverBenchmark, solverBenchmark) != 0) {
+                    // New rank
+                    sameRankingList = new ArrayList<SolverBenchmark>();
+                    sameRankingListList.add(sameRankingList);
                 }
+                sameRankingList.add(solverBenchmark);
+                previousSolverBenchmark = solverBenchmark;
+            }
+        } else if (solverBenchmarkRankingWeightFactory != null) {
+            SortedMap<Comparable, List<SolverBenchmark>> rankedMap
+                    = new TreeMap<Comparable, List<SolverBenchmark>>(new ReverseComparator());
+            for (SolverBenchmark solverBenchmark : rankableSolverBenchmarkList) {
+                Comparable rankingWeight = solverBenchmarkRankingWeightFactory.createRankingWeight(
+                        rankableSolverBenchmarkList, solverBenchmark);
+                List<SolverBenchmark> sameRankingList = rankedMap.get(rankingWeight);
+                if (sameRankingList == null) {
+                    sameRankingList = new ArrayList<SolverBenchmark>();
+                    rankedMap.put(rankingWeight, sameRankingList);
+                }
+                sameRankingList.add(solverBenchmark);
+            }
+            for (Map.Entry<Comparable, List<SolverBenchmark>> entry : rankedMap.entrySet()) {
+                sameRankingListList.add(entry.getValue());
             }
         } else {
             throw new IllegalStateException("Ranking is impossible" +
                     " because solverBenchmarkRankingComparator and solverBenchmarkRankingWeightFactory are null.");
         }
-        int ranking = 0;
-        int sameRankCount = 0;
-        int benchmarkNumber = 0;
-        SolverBenchmark previousSolverBenchmark = null;
-        for (SolverBenchmark solverBenchmark : rankedSolverBenchmarkList) {
-            if (previousSolverBenchmark != null &&
-                    !equalSolverRanking(solverBenchmark, previousSolverBenchmark,
-                            rankedSolverBenchmarkComparableList, benchmarkNumber, reverseComparator)) {
-                ranking += sameRankCount;
-                sameRankCount = 1;
-            } else {
-                sameRankCount++;
-            }
-            solverBenchmark.setRanking(ranking);
-            previousSolverBenchmark = solverBenchmark;
-            benchmarkNumber++;
-        }
-        favoriteSolverBenchmark = rankedSolverBenchmarkList.isEmpty() ? null : rankedSolverBenchmarkList.get(0);
-    }
-
-    public boolean equalSolverRanking(SolverBenchmark leftSolverBenchmark, SolverBenchmark rightSolverBenchmark,
-                                      List<Comparable> rankedSolverBenchmarkComparableList, int benchmarkNumber,
-                                      Comparator comparator) {
-        boolean equalSolverRanking = false;
-        if (solverBenchmarkRankingComparator != null) {
-            if (solverBenchmarkRankingComparator.compare(leftSolverBenchmark, rightSolverBenchmark) == 0) {
-                equalSolverRanking = true;
-            }
-        } else if (solverBenchmarkRankingWeightFactory != null) {
-            if (comparator.compare(rankedSolverBenchmarkComparableList.get(benchmarkNumber),
-                    rankedSolverBenchmarkComparableList.get(benchmarkNumber - 1)) == 0) {
-                equalSolverRanking = true;
-            }
-        }
-        return equalSolverRanking;
+        return sameRankingListList;
     }
 
     public boolean hasAnyFailure() {
