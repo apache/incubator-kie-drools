@@ -76,7 +76,7 @@ public class KProjectTest {
 
     @After
     public void tearDown() throws Exception {
-        fileManager.tearDown();
+        this.fileManager.tearDown();
     }
 
     public static class KPTestLiteral extends AnnotationLiteral<KPTest>
@@ -152,7 +152,6 @@ public class KProjectTest {
             KProjectTestClass o4 = (KProjectTestClass) bean.create( weld.getBeanManager().createCreationalContext( null ) );
             assertNotNull( o4 );            
             testEntry(o4, "fol4");
-
             
             weldContainer.shutdown();
         } finally {
@@ -294,6 +293,7 @@ public class KProjectTest {
         List<String> inputClasses = new ArrayList<String>();
         inputClasses.add( "org/drools/cdi/test/KProjectTestClass" + namespace + ".java" );
 
+        //writeFs(namespace + "mod", srcMfs );
         final List<String> classes = compile( kproj, srcMfs, trgMfs, inputClasses );
 
         if ( createJar ) {
