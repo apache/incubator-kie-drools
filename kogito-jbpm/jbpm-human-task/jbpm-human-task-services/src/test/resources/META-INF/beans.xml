@@ -42,9 +42,6 @@
 
     <t:EntityTransaction>
         <s:modifies />
-        <!--t:entityManager>
-            <task:TaskPersistence/>
-        </t:entityManager-->
     </t:EntityTransaction>
     
     

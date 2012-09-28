@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 
 /**
@@ -52,9 +53,15 @@ public class DeadlinesLocalTest extends DeadlinesBaseTest {
                 .addPackage("org.jbpm.task.deadlines") // deadlines
                 .addPackage("org.jbpm.task.deadlines.notifications.impl")
                 .addPackage("org.jbpm.task.subtask")
-                .addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"))
+                .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("beans-deadlines.xml", ArchivePaths.create("beans.xml"));
 
+    }
+    
+    @Override
+    @Before
+    public void setUp(){
+        super.setUp();
     }
 }

@@ -27,7 +27,7 @@ public class TaskServiceModule {
         return instance;
     }
 
-    public TaskServiceModule() {
+    private TaskServiceModule() {
         weld = new Weld();
         this.container = weld.initialize();
         

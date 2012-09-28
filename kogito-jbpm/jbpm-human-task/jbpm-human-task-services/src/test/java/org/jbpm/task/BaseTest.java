@@ -40,7 +40,7 @@ public abstract class BaseTest {
     protected TaskServiceEntryPoint taskService;
 
     @Before
-    public void loadUsersAndGroups() {
+    protected void setUp() {
         
         if (!usersLoaded) {
 

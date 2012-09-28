@@ -28,7 +28,7 @@ public class HTWorkItemHandlerNOCDITest extends HTWorkItemHandlerBaseTest {
     
     @Before
     public void setUp() throws Exception {
-        taskService = new TaskServiceModule().getTaskService();
+        taskService = TaskServiceModule.getInstance().getTaskService();
         htWorkItemHandler = new GenericHTWorkItemHandler(taskService, ksession);
         htWorkItemHandler.init();
         setHandler(htWorkItemHandler);
