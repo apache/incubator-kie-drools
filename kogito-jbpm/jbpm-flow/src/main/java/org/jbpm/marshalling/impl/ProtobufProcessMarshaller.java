@@ -216,56 +216,46 @@ public class ProtobufProcessMarshaller
     public static Variable marshallVariable(MarshallerWriteContext context,
                                             String name,
                                             Object value) throws IOException {
-        ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( value );
-
-        Integer index = context.getStrategyIndex( strategy );
-        return JBPMMessages.Variable.newBuilder()
-                .setName( name )
-                .setStrategyIndex( index )
-                .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
-                                                                  context,
-                                                                  value ) ) )
-                .build();
+        JBPMMessages.Variable.Builder builder = JBPMMessages.Variable.newBuilder().setName( name );
+        if(value != null){
+            ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( value );
+            Integer index = context.getStrategyIndex( strategy );
+            builder.setStrategyIndex( index )
+                   .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
+                                                                     context,
+                                                                     value ) ) );
+        }
+        return builder.build();
     }
     
     public static Variable marshallVariablesMap(MarshallerWriteContext context, Map<String, Object> variables) throws IOException{
         Map<String, Variable> marshalledVariables = new HashMap<String, Variable>();
         for(String key : variables.keySet()){
-            ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( variables.get(key) );
-            Integer index = context.getStrategyIndex( strategy );
-            Variable variable = JBPMMessages.Variable.newBuilder()
-                                 .setName( key )
-                                 .setStrategyIndex( index )
-                                 .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
-                                                                                   context,
-                                                                                   variables.get(key) ) ) )
-                                 .build();
-            marshalledVariables.put(key, variable);
+            JBPMMessages.Variable.Builder builder = JBPMMessages.Variable.newBuilder().setName( key );
+            if(variables.get(key) != null){
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( variables.get(key) );
+                Integer index = context.getStrategyIndex( strategy );
+                builder.setStrategyIndex( index )
+                   .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
+                                                                     context,
+                                                                     variables.get(key) ) ) );
+                
+            } 
+                                     
+           
             
+            marshalledVariables.put(key, builder.build());
         }
         
         return marshallVariable(context, "variablesMap" ,marshalledVariables);
     }
 
-    public static Variable marshallVariableSerializableStrategy(MarshallerWriteContext context,
-                                                                String name,
-                                                                Object value) throws IOException {
-        String sn = SerializablePlaceholderResolverStrategy.class.getName();
-        ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( sn );
-
-        Integer index = context.getStrategyIndex( strategy );
-        return JBPMMessages.Variable.newBuilder()
-                .setName( name )
-                .setStrategyIndex( index )
-                .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
-                                                                  context,
-                                                                  value ) ) )
-                .build();
-    }
-
     public static Object unmarshallVariableValue(MarshallerReaderContext context,
                                                   JBPMMessages.Variable _variable) throws IOException,
                                                                                   ClassNotFoundException {
+        if(_variable.getValue() == null || _variable.getValue().isEmpty()){
+            return null;
+        }
         ObjectMarshallingStrategy strategy = context.usedStrategies.get( _variable.getStrategyIndex() );
         Object value = strategy.unmarshal( context.strategyContexts.get( strategy ),
                                            context,

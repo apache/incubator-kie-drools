@@ -108,6 +108,48 @@ public abstract class LifeCycleBaseTest extends BaseTest {
         assertEquals("content", unmarshalledObject.toString());
     }
 
+    public void testNewTaskWithMapContent() {
+        
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        Map<String, Object> variablesMap = new HashMap<String, Object>();
+        variablesMap.put("key1", "value1");
+        variablesMap.put("key2", null);
+        variablesMap.put("key3", "value3");
+        ContentData data = ContentMarshallerHelper.marshal(variablesMap, null);
+        
+        Task task = ( Task )  TaskFactory.evalTask( new StringReader( str ));
+        taskService.addTask( task, data );
+        
+        long taskId = task.getId();
+        
+        // Task should be assigned to the single potential owner and state set to Reserved
+        
+        
+        Task task1 = taskService.getTaskById( taskId );
+        assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
+        assertEquals( "java.util.HashMap", task1.getTaskData().getDocumentType() );
+        long contentId = task1.getTaskData().getDocumentContentId();
+        assertTrue( contentId != -1 ); 
+
+        
+        
+        Content content = taskService.getContentById(contentId);
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        if(!(unmarshalledObject instanceof Map)){
+            fail("The variables should be a Map");
+        
+        }
+        Map<String, Object> unmarshalledvars = (Map<String, Object>)unmarshalledObject;
+        
+        assertEquals("value1",unmarshalledvars.get("key1") );
+        assertNull(unmarshalledvars.get("key2") );
+        assertEquals("value3",unmarshalledvars.get("key3") );
+    }
+    
     @Test
     public void testNewTaskWithLargeContent() {
         
