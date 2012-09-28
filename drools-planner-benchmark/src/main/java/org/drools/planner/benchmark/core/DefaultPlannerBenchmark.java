@@ -37,8 +37,6 @@ import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.statistic.BenchmarkReport;
-import org.drools.planner.benchmark.core.ranking.TotalRankSolverBenchmarkRankingWeightFactory;
-import org.drools.planner.config.SolverFactory;
 import org.drools.planner.core.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -350,7 +348,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             throw new IllegalStateException("Ranking is impossible" +
                     " because solverBenchmarkRankingComparator and solverBenchmarkRankingWeightFactory are null.");
         }
-        int ranking = 0, sameRankCount = 0, benchmarkNumber = 0;
+        int ranking = 0;
+        int sameRankCount = 0;
+        int benchmarkNumber = 0;
         SolverBenchmark previousSolverBenchmark = null;
         for (SolverBenchmark solverBenchmark : rankedSolverBenchmarkList) {
             if (previousSolverBenchmark != null &&
