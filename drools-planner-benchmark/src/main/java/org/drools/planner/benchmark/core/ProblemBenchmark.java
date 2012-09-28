@@ -16,21 +16,22 @@
 
 package org.drools.planner.benchmark.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.drools.planner.benchmark.core.ranking.SingleBenchmarkRankingComparator;
-import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
@@ -214,11 +215,21 @@ public class ProblemBenchmark {
     }
 
     private void determineRanking(List<SingleBenchmark> rankedSingleBenchmarkList) {
-        Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(new SingleBenchmarkRankingComparator()));
+        Comparator singleBenchmarkRankingComparator = new SingleBenchmarkRankingComparator();
+        Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(singleBenchmarkRankingComparator));
         int singleBenchmarkRanking = 0;
+        int sameRankCount = 0;
+        SingleBenchmark previousSingleBenchmark = null;
         for (SingleBenchmark singleBenchmark : rankedSingleBenchmarkList) {
+            if (previousSingleBenchmark != null
+                    && singleBenchmarkRankingComparator.compare(previousSingleBenchmark, singleBenchmark) != 0) {
+                singleBenchmarkRanking += sameRankCount;
+                sameRankCount = 1;
+            } else {
+                sameRankCount++;
+            }
             singleBenchmark.setRanking(singleBenchmarkRanking);
-            singleBenchmarkRanking++;
+            previousSingleBenchmark = singleBenchmark;
         }
         winningSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null : rankedSingleBenchmarkList.get(0);
         worstSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null
@@ -270,6 +281,7 @@ public class ProblemBenchmark {
     /**
      * HACK to avoid loading the planningProblem just to extract it's problemScale.
      * Called multiple times, for every {@link SingleBenchmark} of this {@link ProblemBenchmark}.
+     *
      * @param registeringProblemScale >= 0
      */
     public void registerProblemScale(long registeringProblemScale) {
@@ -277,7 +289,7 @@ public class ProblemBenchmark {
             problemScale = registeringProblemScale;
         } else if (problemScale.longValue() != registeringProblemScale) {
             logger.warn("The problemBenchmark ({}) has different problemScale values ([{},{}]).",
-                    new Object[] {getName(), problemScale, registeringProblemScale});
+                    new Object[]{getName(), problemScale, registeringProblemScale});
             // The problemScale is not unknown (null), but known to be ambiguous
             problemScale = -1L;
         }
