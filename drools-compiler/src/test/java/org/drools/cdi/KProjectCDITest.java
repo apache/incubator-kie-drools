@@ -13,11 +13,12 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class KProjectCDITest {
     
-    @Test
+    @Test @Ignore
     public void test1() {
         final List<String> classes = new ArrayList<String>();
         classes.add( TestClass.class.getName() );

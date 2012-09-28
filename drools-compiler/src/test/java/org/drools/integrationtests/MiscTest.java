@@ -11705,4 +11705,28 @@ public class MiscTest extends CommonTestMethodBase {
 
         kbase.removeKnowledgePackage(pkgs.iterator().next().getName());
     }
+
+    @Test
+    public void testCompilationFailureOnTernaryComparison() {
+        // JBRULES-3642
+        String str =
+                "declare Cont\n" +
+                "  val:Integer\n" +
+                "end\n" +
+                "rule makeFacts\n" +
+                "salience 10\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Cont(2) );\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $c: Cont( 3 < val < 10 )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        assertTrue( kbuilder.hasErrors() );
+    }
 }

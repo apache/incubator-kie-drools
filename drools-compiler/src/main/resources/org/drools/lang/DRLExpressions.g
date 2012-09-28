@@ -365,6 +365,7 @@ scope { BaseDescr lsd; }
   ( ( operator | LEFT_PAREN )=> right=orRestriction
          { if( buildDescr  ) {
                $result = $right.result;
+               $relationalExpression::lsd = $result;
            }
          }
   )*
