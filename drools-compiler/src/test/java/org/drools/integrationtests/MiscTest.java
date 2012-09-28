@@ -11348,6 +11348,35 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testMvelFunctionWithDeclaredTypeArgForGuvnor() throws Exception {
+        // JBRULES-3562
+        String function = "function String getFieldValue(Bean bean) {" +
+                " return bean.getField();" +
+                "}\n";
+        String declaredFactType = "declare Bean \n" +
+                " field : String \n" +
+                "end \n";
+        String rule = "rule R2 \n" +
+                "dialect 'mvel'\n" +
+                "when \n" +
+                " $bean : Bean( ) \n" +
+                "then \n" +
+                " System.out.println( getFieldValue($bean) ); \n" +
+                "end\n";
+
+        PackageBuilder packageBuilder = new PackageBuilder();
+        packageBuilder.addPackageFromDrl(new StringReader(declaredFactType));
+        packageBuilder.addPackageFromDrl(new StringReader(function));
+        packageBuilder.addPackageFromDrl(new StringReader(rule));
+
+        for (KnowledgeBuilderError error : packageBuilder.getErrors()) {
+            System.out.println("ERROR:");
+            System.out.println(error.getMessage());
+        }
+        assertFalse(packageBuilder.hasErrors());
+    }
+
     public void testGenericsList() throws Exception {
         String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
