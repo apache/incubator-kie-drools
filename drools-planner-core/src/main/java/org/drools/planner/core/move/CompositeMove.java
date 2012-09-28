@@ -29,7 +29,7 @@ import org.drools.planner.core.score.director.ScoreDirector;
  * A CompositeMove is composed out of multiple other moves.
  * <p/>
  * Warning: one of the moveList moves should not rely on the effect on of a previous moveList move
- * to create an uncorrupted undoMove. In other words,
+ * to create an uncorrupted undoMove.
  * @see Move
  */
 public class CompositeMove implements Move {
