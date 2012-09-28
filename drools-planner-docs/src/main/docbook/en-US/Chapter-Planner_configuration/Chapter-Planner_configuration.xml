@@ -409,11 +409,11 @@ public class Queen {
       <section>
         <title>Planning variable</title>
 
-        <para>A planning variable is a property (including getter and setter) on a planning entity. It changes during
-        planning. For example, a <literal>Queen</literal>'s <literal>row</literal> property is a planning variable. Note
-        that even though a <literal>Queen</literal>'s <literal>row</literal> property changes to another
-        <literal>Row</literal> during planning, no <literal>Row</literal> instance itself is changed. A planning
-        variable points to a planning value.</para>
+        <para>A planning variable is a property (including getter and setter) on a planning entity. It points to a
+        planning value, which changes during planning. For example, a <literal>Queen</literal>'s <literal>row</literal>
+        property is a planning variable. Note that even though a <literal>Queen</literal>'s <literal>row</literal>
+        property changes to another <literal>Row</literal> during planning, no <literal>Row</literal> instance itself is
+        changed.</para>
 
         <para>A planning variable getter needs to be annotated with the <literal>@PlanningVariable</literal> annotation.
         Furthermore, it needs a <literal>@ValueRange</literal> annotation too.</para>
@@ -438,13 +438,49 @@ public class Queen {
 }</programlisting>
       </section>
 
+      <section xml:id="nullablePlanningVariable">
+        <title>Nullable planning variable</title>
+
+        <para>By default, an initialized planning variable cannot be <literal>null</literal>, so an initialized solution
+        will never use <literal>null</literal> for any of its planning variables. In over-constrained use case, this can
+        be contra productive. For example: in task assignment with too many tasks for the workforce, we would rather
+        leave low priority tasks unassigned instead of assigning them to an overloaded worker.</para>
+
+        <para>To allow an initialized planning variable to be <literal>null</literal>, set <literal>nullable</literal>
+        to <literal>true</literal>:</para>
+
+        <programlisting language="java">    @PlanningVariable(nullable = true)
+    @ValueRange(...)
+    public Worker getWorker() {
+        return worker;
+    }</programlisting>
+
+        <important>
+          <para>Planner will automatically add the value <literal>null</literal> to the value range. There is no need to
+          add <literal>null</literal> in a collection used by a <literal>ValueRange</literal>.</para>
+        </important>
+
+        <para><link linkend="repeatedPlanning">Repeated planning</link> (especially <link
+        linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable: every
+        time the Solver starts or a problem fact change is made, the construction heuristics will try to initialize all
+        the null variables again, which can be a huge waste of time. One way to deal with this, is to change when a
+        planning entity is initialized.</para>
+      </section>
+
       <section>
         <title>When is a planning entity initialized?</title>
 
         <para>A planning entity is considered initialized if all of its planning variables are initialized.</para>
 
-        <para>By default, a planning variable is considered initialized if its value is not
-        <literal>null</literal>.</para>
+        <para>By default, a planning variable is considered initialized if its value is not <literal>null</literal>, but
+        for nullable planning variables you can overwrite this with an
+        <literal>uninitializedEntityFilter</literal>:</para>
+
+        <programlisting language="java">    @PlanningVariable(nullable = true, uninitializedEntityFilter = UninitializedTaskFilter.class)
+    @ValueRange(...)
+    public Worker getWorker() {
+        return worker;
+    }</programlisting>
       </section>
     </section>
 
@@ -461,12 +497,11 @@ public class Queen {
         <para>A planning value range is the set of possible planning values for a planning variable. This set can be a
         discrete (for example row <literal>1</literal>, <literal>2</literal>, <literal>3</literal> or
         <literal>4</literal>) or continuous (for example any <literal>double</literal> between <literal>0.0</literal>
-        and <literal>1.0</literal>). There are several ways to define the value range of a planning variable with the
-        <literal>@ValueRange</literal> annotation.</para>
+        and <literal>1.0</literal>). Continuous planning variables are currently undersupported and require the use of
+        custom moves.</para>
 
-        <para>If <literal>null</literal> is a valid planning value, it should be included in the value range and the
-        default way to detect uninitialized planning variables must be changed (TODO for now, a <link
-        xlink:href="https://issues.jboss.org/browse/JBRULES-3317">workaround</link> is needed).</para>
+        <para>There are several ways to define the value range of a planning variable with the
+        <literal>@ValueRange</literal> annotation. </para>
       </section>
 
       <section>
@@ -497,6 +532,9 @@ public class Queen {
     }
 
 }</programlisting>
+
+          <para>That <literal>Collection</literal> must not contain the value <literal>null</literal>, even for a <link
+          linkend="nullablePlanningVariable">nullable planning variable</link>.</para>
         </section>
 
         <section xml:id="valueRangeFromPlanningEntity">
@@ -576,87 +614,87 @@ public class Queen {
           xlink:href="https://issues.jboss.org/browse/JBRULES-3408">jira</link>), as it should support specific planning
           variable initialization too.</para>
         </section>
+      </section>
 
-        <section>
-          <title>Chained</title>
+      <section xml:id="chainedPlanningVariable">
+        <title>Chained planning variable</title>
 
-          <para>Some use cases, such as TSP and Vehicle Routing, require <emphasis>chaining</emphasis>. This means the
-          planning entities point to each other and form a chain.</para>
+        <para>Some use cases, such as TSP and Vehicle Routing, require <emphasis>chaining</emphasis>. This means the
+        planning entities point to each other and form a chain.</para>
 
-          <para>A planning variable that is chained either:</para>
+        <para>A planning variable that is chained either:</para>
 
-          <itemizedlist>
-            <listitem>
-              <para>Directly points to a planning fact, which is called an <emphasis>anchor</emphasis>.</para>
-            </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>Directly points to a planning fact, which is called an <emphasis>anchor</emphasis>.</para>
+          </listitem>
 
-            <listitem>
-              <para>Points to another planning entity with the same planning variable, which recursively points to an
-              anchor.</para>
-            </listitem>
-          </itemizedlist>
+          <listitem>
+            <para>Points to another planning entity with the same planning variable, which recursively points to an
+            anchor.</para>
+          </listitem>
+        </itemizedlist>
 
-          <para>Here are some example of valid and invalid chains:</para>
+        <para>Here are some example of valid and invalid chains:</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Planner_configuration/chainPrinciples.png"></imagedata>
-            </imageobject>
-          </mediaobject>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/chainPrinciples.png"/>
+          </imageobject>
+        </mediaobject>
 
-          <para><emphasis role="bold">Every initialized planning entity is part of an open-ended chain that begins from
-          an anchor.</emphasis> A valid model means that:</para>
+        <para><emphasis role="bold">Every initialized planning entity is part of an open-ended chain that begins from an
+        anchor.</emphasis> A valid model means that:</para>
 
-          <itemizedlist>
-            <listitem>
-              <para>A chain is never a loop. The tail is always open.</para>
-            </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>A chain is never a loop. The tail is always open.</para>
+          </listitem>
 
-            <listitem>
-              <para>Every chain always has exactly 1 anchor. The anchor is a problem fact, never a planning
-              entity.</para>
-            </listitem>
+          <listitem>
+            <para>Every chain always has exactly 1 anchor. The anchor is a problem fact, never a planning entity.</para>
+          </listitem>
 
-            <listitem>
-              <para>A chain is never a tree, it is always a line. Every anchor or planning entity has at most 1 trailing
-              planning entity.</para>
-            </listitem>
+          <listitem>
+            <para>A chain is never a tree, it is always a line. Every anchor or planning entity has at most 1 trailing
+            planning entity.</para>
+          </listitem>
 
-            <listitem>
-              <para>Every initialized planning entity is part of a chain.</para>
-            </listitem>
+          <listitem>
+            <para>Every initialized planning entity is part of a chain.</para>
+          </listitem>
 
-            <listitem>
-              <para>An anchor with no planning entities pointing to it, is also considered a chain.</para>
-            </listitem>
-          </itemizedlist>
+          <listitem>
+            <para>An anchor with no planning entities pointing to it, is also considered a chain.</para>
+          </listitem>
+        </itemizedlist>
 
-          <warning>
-            <para>A planning problem instance given to the <literal>Solver</literal> must be valid.</para>
-          </warning>
+        <warning>
+          <para>A planning problem instance given to the <literal>Solver</literal> must be valid.</para>
+        </warning>
 
-          <note>
-            <para>If your constraints dictate a closed chain, model it as an open-ended chain (which is easier to
-            persist in a database) and implement a score constraint for the last entity back to the anchor.</para>
-          </note>
+        <note>
+          <para>If your constraints dictate a closed chain, model it as an open-ended chain (which is easier to persist
+          in a database) and implement a score constraint for the last entity back to the anchor.</para>
+        </note>
 
-          <para>The optimization algorithms and build-in <literal>MoveFactory</literal>'s do chain correction to
-          guarantee that the model stays valid:</para>
+        <para>The optimization algorithms and build-in <literal>MoveFactory</literal>'s do chain correction to guarantee
+        that the model stays valid:</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Planner_configuration/chainCorrection.png"></imagedata>
-            </imageobject>
-          </mediaobject>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/chainCorrection.png"/>
+          </imageobject>
+        </mediaobject>
 
-          <warning>
-            <para>A custom <literal>Move</literal> implementation must leave the model in a valid state.</para>
-          </warning>
+        <warning>
+          <para>A custom <literal>Move</literal> implementation must leave the model in a valid state.</para>
+        </warning>
 
-          <para>For example, in TSP the anchor is a <literal>Domicile</literal> (in vehicle routing it is the
-          vehicle):</para>
+        <para>For example, in TSP the anchor is a <literal>Domicile</literal> (in vehicle routing it is the
+        vehicle):</para>
 
-          <programlisting language="java">public class Domicile ... implements Appearance {
+        <programlisting language="java">public class Domicile ... implements Appearance {
 
     ...
 
@@ -664,19 +702,19 @@ public class Queen {
 
 }</programlisting>
 
-          <para>The anchor (which is a problem fact) and the planning entity implement a common interface, for example
-          TSP's <literal>Appearance</literal>:</para>
+        <para>The anchor (which is a problem fact) and the planning entity implement a common interface, for example
+        TSP's <literal>Appearance</literal>:</para>
 
-          <programlisting language="java">public interface Appearance {
+        <programlisting language="java">public interface Appearance {
 
     City getCity();
 
 }</programlisting>
 
-          <para>That interface is the return type of the planning variable. Furthermore, the planning variable is
-          chained. For example TSP's <literal>Visit</literal> (in vehicle routing it is the customer):</para>
+        <para>That interface is the return type of the planning variable. Furthermore, the planning variable is chained.
+        For example TSP's <literal>Visit</literal> (in vehicle routing it is the customer):</para>
 
-          <programlisting language="java">@PlanningEntity
+        <programlisting language="java">@PlanningEntity
 public class Visit ... implements Appearance {
 
     ...
@@ -698,21 +736,20 @@ public class Visit ... implements Appearance {
 
 }</programlisting>
 
-          <para>Notice how 2 value ranges need to be combined:</para>
+        <para>Notice how 2 value ranges need to be combined:</para>
 
-          <itemizedlist>
-            <listitem>
-              <para>The value range which holds the anchors, for example <literal>domicileList</literal>.</para>
-            </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>The value range which holds the anchors, for example <literal>domicileList</literal>.</para>
+          </listitem>
 
-            <listitem>
-              <para>The value range which holds the initialized planning entities, for example
-              <literal>visitList</literal>. This always requires an enabled
-              <literal>excludeUninitializedPlanningEntity</literal>, because an initialized entity should never point to
-              an uninitialized entity: that would break the principle that every chain must have an anchor.</para>
-            </listitem>
-          </itemizedlist>
-        </section>
+          <listitem>
+            <para>The value range which holds the initialized planning entities, for example
+            <literal>visitList</literal>. This always requires an enabled
+            <literal>excludeUninitializedPlanningEntity</literal>, because an initialized entity should never point to
+            an uninitialized entity: that would break the principle that every chain must have an anchor.</para>
+          </listitem>
+        </itemizedlist>
       </section>
 
       <section xml:id="planningValueStrength">
@@ -801,7 +838,7 @@ public class Visit ... implements Appearance {
 }</programlisting>
 
         <para><emphasis>None of the current planning variable state in any of the planning entities may be used to
-        compare planning values.</emphasis> They are likely to be <literal>null</literal> anyway. For example, None of
+        compare planning values.</emphasis> They are likely to be <literal>null</literal> anyway. For example, none of
         the <literal>row</literal> variables of any <literal>Queen</literal> may be used to determine the strength of a
         <literal>Row</literal>.</para>
       </section>
@@ -1066,7 +1103,7 @@ public class Visit ... implements Appearance {
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Planner_configuration/uninitializedNQueens04.png" format="PNG"></imagedata>
+              <imagedata fileref="images/Chapter-Planner_configuration/uninitializedNQueens04.png" format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -1148,7 +1185,7 @@ public class Visit ... implements Appearance {
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Planner_configuration/solvedNQueens04.png" format="PNG"></imagedata>
+            <imagedata fileref="images/Chapter-Planner_configuration/solvedNQueens04.png" format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
