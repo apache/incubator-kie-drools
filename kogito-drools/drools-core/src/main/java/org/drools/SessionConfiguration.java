@@ -288,13 +288,22 @@ public class SessionConfiguration
 
     public Map<String, WorkItemHandler> getWorkItemHandlers() {
         if ( this.workItemHandlers == null ) {
-            initWorkItemHandlers();
+            initWorkItemHandlers(new HashMap<String, Object>());
         }
         return this.workItemHandlers;
 
     }
+    
+    public Map<String, WorkItemHandler> getWorkItemHandlers(Map<String, Object> params) {
+        if ( this.workItemHandlers == null ) {
+            initWorkItemHandlers(params);
+        }
+        return this.workItemHandlers;
 
-    private void initWorkItemHandlers() {
+    }
+    
+
+    private void initWorkItemHandlers(Map<String, Object> params) {
         this.workItemHandlers = new HashMap<String, WorkItemHandler>();
 
         // split on each space
@@ -313,18 +322,18 @@ public class SessionConfiguration
                                                              factoryLocation.length() - 1 );
             }
             if ( !factoryLocation.equals( "" ) ) {
-                loadWorkItemHandlers( factoryLocation );
+                loadWorkItemHandlers( factoryLocation, params );
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void loadWorkItemHandlers(String location) {
+    private void loadWorkItemHandlers(String location, Map<String, Object> params) {
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
         Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content,
-                                                                                                  new HashMap() );
+                                                                                                  params );
         this.workItemHandlers.putAll( workItemHandlers );
     }
 

@@ -1119,7 +1119,9 @@ public abstract class AbstractWorkingMemory
     public WorkItemManager getWorkItemManager() {
         if ( workItemManager == null ) {
             workItemManager = config.getWorkItemManagerFactory().createWorkItemManager( this.getKnowledgeRuntime() );
-            Map<String, WorkItemHandler> workItemHandlers = config.getWorkItemHandlers();
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("ksession", this.getKnowledgeRuntime());
+            Map<String, WorkItemHandler> workItemHandlers = config.getWorkItemHandlers(params);
             if ( workItemHandlers != null ) {
                 for ( Map.Entry<String, WorkItemHandler> entry : workItemHandlers.entrySet() ) {
                     workItemManager.registerWorkItemHandler( entry.getKey(),
