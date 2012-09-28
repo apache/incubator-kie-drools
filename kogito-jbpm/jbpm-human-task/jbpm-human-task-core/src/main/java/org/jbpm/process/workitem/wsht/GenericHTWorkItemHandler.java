@@ -22,6 +22,7 @@ import java.util.Map;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.service.ContentData;
@@ -33,7 +34,6 @@ import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
-import org.jbpm.task.event.*;
 import org.jbpm.task.event.entity.TaskCompletedEvent;
 import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.event.entity.TaskFailedEvent;
@@ -51,6 +51,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private boolean local = false;
     private boolean connected = false;
     private ClassLoader classLoader;
+    private boolean owningSessionOnly = false;
     
     public GenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
@@ -71,8 +72,18 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         super(session);
         this.client = client;
     }
+    
+    public GenericHTWorkItemHandler(TaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session);
+        this.client = client;
+        this.owningSessionOnly = owningSessionOnly;
+    }
      
     public GenericHTWorkItemHandler(KnowledgeRuntime session) {
+        super(session);
+    }
+    
+    public GenericHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
         super(session);
     }
 
@@ -199,11 +210,26 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         }
     }
 
+    public boolean isOwningSessionOnly() {
+        return owningSessionOnly;
+    }
+
+    public void setOwningSessionOnly(boolean owningSessionOnly) {
+        this.owningSessionOnly = owningSessionOnly;
+    }
+
     private class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
 
         public void execute(Payload payload) {
             TaskEvent event = (TaskEvent) payload.get();
             final long taskId = event.getTaskId();
+            
+            if (owningSessionOnly && (session instanceof StatefulKnowledgeSession)) {
+                if (((StatefulKnowledgeSession) session).getId() != event.getSessionId()) {
+                    return;
+                }
+            }
+            
             if (local) {
                 handleCompletedTask(taskId);
             } else {

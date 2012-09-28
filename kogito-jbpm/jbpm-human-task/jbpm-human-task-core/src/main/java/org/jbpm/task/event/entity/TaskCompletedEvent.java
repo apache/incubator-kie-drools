@@ -29,8 +29,8 @@ public class TaskCompletedEvent extends TaskUserEvent {
      */
     public TaskCompletedEvent() { }
     
-    TaskCompletedEvent(long taskId, String userId) {
-        super( taskId, userId );
+    public TaskCompletedEvent(long taskId, String userId, int sessionId) {
+        super( taskId, userId, sessionId );
     }
     
 }

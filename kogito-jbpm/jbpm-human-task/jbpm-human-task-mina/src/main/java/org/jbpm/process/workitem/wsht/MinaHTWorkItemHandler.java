@@ -30,9 +30,24 @@ public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
         super(session);
         init();
     }
+    
+    public MinaHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session, owningSessionOnly);
+        init();
+    }
 
     public MinaHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
+        init();
+    }
+    
+    public MinaHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
+        super(client, session);
+        init();
+    }
+    
+    public MinaHTWorkItemHandler(TaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(client, session, owningSessionOnly);
         init();
     }
     

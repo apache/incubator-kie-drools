@@ -30,6 +30,17 @@ public class AsyncHornetQHTWorkItemHandler extends AsyncGenericHTWorkItemHandler
         super(session);
         init();
     }
+    
+    public AsyncHornetQHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session, owningSessionOnly);
+        init();
+    }
+    
+    public AsyncHornetQHTWorkItemHandler(AsyncTaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session, owningSessionOnly);
+        setClient(client);
+        init();
+    }
 
     public AsyncHornetQHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);

@@ -28,8 +28,8 @@ public class TaskUserEvent extends TaskEvent implements Externalizable {
         super();
     }
     
-    TaskUserEvent(long taskId, String userId) {
-        super( taskId );
+    TaskUserEvent(long taskId, String userId, int sessionId) {
+        super( taskId, sessionId );
         this.userId = userId;
     }
     

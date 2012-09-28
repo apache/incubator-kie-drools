@@ -28,6 +28,16 @@ public class LocalHTWorkItemHandler extends GenericHTWorkItemHandler{
         this.setLocal(true);
     }
     
+    public LocalHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session, owningSessionOnly);
+        this.setLocal(true);
+    }
+    
+    public LocalHTWorkItemHandler(TaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(client, session, owningSessionOnly);
+        this.setLocal(true);
+    }
+    
     public LocalHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
         super(client, session, null);
         this.setLocal(true);

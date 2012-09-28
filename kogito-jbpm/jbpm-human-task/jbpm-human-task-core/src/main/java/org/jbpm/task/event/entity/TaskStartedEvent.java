@@ -28,8 +28,8 @@ public class TaskStartedEvent extends TaskUserEvent {
      */
     public TaskStartedEvent() { } 
     
-    TaskStartedEvent(long taskId, String userId) {
-        super( taskId, userId );
+    TaskStartedEvent(long taskId, String userId, int sessionId) {
+        super( taskId, userId, sessionId );
     }
     
 }

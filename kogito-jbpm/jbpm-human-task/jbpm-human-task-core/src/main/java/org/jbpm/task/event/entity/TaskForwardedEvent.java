@@ -28,8 +28,8 @@ public class TaskForwardedEvent extends TaskUserEvent {
      */
     public TaskForwardedEvent() { }
     
-    TaskForwardedEvent(long taskId, String userId) {
-        super( taskId, userId );
+    TaskForwardedEvent(long taskId, String userId, int sessionId) {
+        super( taskId, userId, sessionId );
     }
     
 }

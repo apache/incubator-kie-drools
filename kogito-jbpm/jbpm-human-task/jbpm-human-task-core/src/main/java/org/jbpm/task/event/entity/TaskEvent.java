@@ -56,17 +56,22 @@ public abstract class TaskEvent implements Externalizable {
     @Column(nullable=true)
     protected String userId;
     
+    @Column(nullable=true)
+    protected int sessionId;
+    
     public TaskEvent() { 
         // Default constructor
     }
     
-    public TaskEvent(long taskId) {
+    public TaskEvent(long taskId, int sessionId) {
         this.taskId = taskId;
+        this.sessionId = sessionId;
     }
     
-    public TaskEvent(long taskId, String userId) {
+    public TaskEvent(long taskId, String userId, int sessionId) {
         this.taskId = taskId;
         this.userId = userId;
+        this.sessionId = sessionId;
     }
     
     public final void writeExternal(ObjectOutput out) throws IOException {
@@ -81,6 +86,7 @@ public abstract class TaskEvent implements Externalizable {
         out.writeShort(version);
         
         // where future fields should be written
+        out.writeInt(sessionId);
     }  
     
     public final void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -96,6 +102,7 @@ public abstract class TaskEvent implements Externalizable {
         short version = in.readShort();
         
         // where future fields should be read, depending on version num
+        this.sessionId = in.readInt();
     }
     
     public long getTaskId() {
@@ -118,6 +125,14 @@ public abstract class TaskEvent implements Externalizable {
     
     public TaskEventType getTaskEventType() { 
         return TaskEventType.getTypeFromValue(type);
+    }
+
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
     }
 
 }

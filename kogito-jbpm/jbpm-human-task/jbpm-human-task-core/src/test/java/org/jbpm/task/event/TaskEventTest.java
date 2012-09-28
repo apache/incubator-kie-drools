@@ -22,7 +22,7 @@ public class TaskEventTest {
     public void testReadWriteExternal() throws Exception { 
         long taskId = 23;
         String userId = "illuminatus";
-        TaskEvent event = TaskEventFactory.createClaimedEvent(taskId, userId);
+        TaskEvent event = TaskEventFactory.createClaimedEvent(taskId, userId, -1);
         
         // Serialise the object
         ByteArrayOutputStream baos = new ByteArrayOutputStream(100);

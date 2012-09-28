@@ -28,8 +28,8 @@ public class TaskSkippedEvent extends TaskUserEvent {
      */
     public TaskSkippedEvent() { } 
     
-    TaskSkippedEvent(long taskId, String userId) {
-        super( taskId, userId );
+    public TaskSkippedEvent(long taskId, String userId, int sessionId) {
+        super( taskId, userId, sessionId );
     }
 
 }

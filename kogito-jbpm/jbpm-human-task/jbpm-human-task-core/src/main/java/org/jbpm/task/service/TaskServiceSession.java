@@ -209,7 +209,7 @@ public class TaskServiceSession {
             if(task.getTaskData().getActualOwner() != null){
                 actualOwner = task.getTaskData().getActualOwner().getId();
             }
-            service.getEventSupport().fireTaskCreated(task.getId(), actualOwner);
+            service.getEventSupport().fireTaskCreated(task.getId(), actualOwner, task.getTaskData().getProcessSessionId());
         }
         
         if (currentStatus == Status.Reserved) {
@@ -217,7 +217,7 @@ public class TaskServiceSession {
             SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
 
             // trigger event support
-            service.getEventSupport().fireTaskClaimed(task.getId(), task.getTaskData().getActualOwner().getId());
+            service.getEventSupport().fireTaskClaimed(task.getId(), task.getTaskData().getActualOwner().getId(), task.getTaskData().getProcessSessionId());
         }
     }
 
@@ -396,7 +396,7 @@ public class TaskServiceSession {
 
                     // trigger event support
                     service.getEventSupport().fireTaskClaimed(task.getId(),
-                            task.getTaskData().getActualOwner().getId());
+                            task.getTaskData().getActualOwner().getId(), task.getTaskData().getProcessSessionId());
                     break;
                 }
             }
@@ -518,12 +518,14 @@ public class TaskServiceSession {
     
     private void postTaskClaimOperation(final Task task) {
         // trigger event support
-        service.getEventSupport().fireTaskClaimed(task.getId(), task.getTaskData().getActualOwner().getId());
+        service.getEventSupport().fireTaskClaimed(task.getId(), task.getTaskData().getActualOwner().getId(),
+                task.getTaskData().getProcessSessionId());
     }
     
     private void postTaskStartOperation(final Task task) {
         // trigger event support
-        service.getEventSupport().fireTaskStarted(task.getId(), task.getTaskData().getActualOwner().getId());
+        service.getEventSupport().fireTaskStarted(task.getId(), task.getTaskData().getActualOwner().getId(),
+                task.getTaskData().getProcessSessionId());
     }
     
     private void postTaskForwardOperation(final Task task) {
@@ -532,7 +534,8 @@ public class TaskServiceSession {
         if(task.getTaskData().getActualOwner() != null){
             actualOwner = task.getTaskData().getActualOwner().getId();
         }
-        service.getEventSupport().fireTaskForwarded(task.getId(), actualOwner);
+        service.getEventSupport().fireTaskForwarded(task.getId(), actualOwner,
+                task.getTaskData().getProcessSessionId());
     }
     
     private void postTaskReleaseOperation(final Task task) {
@@ -541,12 +544,14 @@ public class TaskServiceSession {
         if(task.getTaskData().getActualOwner() != null){
             actualOwner = task.getTaskData().getActualOwner().getId();
         }
-        service.getEventSupport().fireTaskReleased(task.getId(), actualOwner);
+        service.getEventSupport().fireTaskReleased(task.getId(), actualOwner,
+                task.getTaskData().getProcessSessionId());
     }
     
     private void postTaskStopOperation(final Task task) {
         // trigger event support
-        service.getEventSupport().fireTaskStopped(task.getId(), task.getTaskData().getActualOwner().getId());
+        service.getEventSupport().fireTaskStopped(task.getId(), task.getTaskData().getActualOwner().getId(),
+                task.getTaskData().getProcessSessionId());
     }
 
     private void taskCompleteOperation(final Task task, final ContentData data) {
@@ -560,7 +565,8 @@ public class TaskServiceSession {
         service.unschedule(task.getId());
         clearDeadlines(task);
         // trigger event support
-        service.getEventSupport().fireTaskCompleted(task.getId(), task.getTaskData().getActualOwner().getId());
+        service.getEventSupport().fireTaskCompleted(task.getId(), task.getTaskData().getActualOwner().getId(),
+                task.getTaskData().getProcessSessionId());
     }
 
     private void taskFailOperation(final Task task, final ContentData data) {
@@ -574,7 +580,8 @@ public class TaskServiceSession {
         service.unschedule(task.getId());
         clearDeadlines(task);
     	// trigger event support
-        service.getEventSupport().fireTaskFailed(task.getId(), task.getTaskData().getActualOwner().getId());
+        service.getEventSupport().fireTaskFailed(task.getId(), task.getTaskData().getActualOwner().getId(),
+                task.getTaskData().getProcessSessionId());
     }
 
     private void taskSkipOperation(final Task task, final String userId) {
@@ -585,7 +592,7 @@ public class TaskServiceSession {
         service.unschedule(task.getId());
         clearDeadlines(task);
         // trigger event support
-        service.getEventSupport().fireTaskSkipped(task.getId(), userId);
+        service.getEventSupport().fireTaskSkipped(task.getId(), userId, task.getTaskData().getProcessSessionId());
     }
     
     private void postTaskExitOperation(final Task task, final String userId) {

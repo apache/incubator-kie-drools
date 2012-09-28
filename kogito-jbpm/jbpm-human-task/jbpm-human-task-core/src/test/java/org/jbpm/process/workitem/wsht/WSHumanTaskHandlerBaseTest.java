@@ -397,7 +397,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		getClient().getTask(taskSummary.getId(), getTaskResponseHandler);
 		Task task = getTaskResponseHandler.getTask();
 		assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
-		assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+		assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.DEFAULT_SESSION_ID);
 		long contentId = task.getTaskData().getDocumentContentId();
 		assertTrue(contentId != -1);
 		BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();

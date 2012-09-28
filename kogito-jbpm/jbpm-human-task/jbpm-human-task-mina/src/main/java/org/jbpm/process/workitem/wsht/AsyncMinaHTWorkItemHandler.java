@@ -32,6 +32,17 @@ public class AsyncMinaHTWorkItemHandler extends AsyncGenericHTWorkItemHandler{
         super(session);
         init();
     }
+    
+    public AsyncMinaHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session, owningSessionOnly);
+        init();
+    }
+    
+    public AsyncMinaHTWorkItemHandler(AsyncTaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session, owningSessionOnly);
+        setClient(client);
+        init();
+    }
 
     public AsyncMinaHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);

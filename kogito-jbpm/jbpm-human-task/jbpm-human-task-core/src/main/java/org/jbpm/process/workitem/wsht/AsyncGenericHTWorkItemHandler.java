@@ -18,31 +18,31 @@ package org.jbpm.process.workitem.wsht;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.drools.runtime.Environment;
 
-import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.task.Task;
-import org.jbpm.task.event.TaskEventKey;
-import org.jbpm.task.service.ContentData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.*;
-import org.jbpm.task.event.*;
+import org.jbpm.task.AsyncTaskService;
+import org.jbpm.task.Content;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
+import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.entity.TaskCompletedEvent;
 import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.event.entity.TaskFailedEvent;
 import org.jbpm.task.event.entity.TaskSkippedEvent;
+import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClientHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.jbpm.task.utils.OnErrorAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
@@ -53,6 +53,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private boolean local = false;
     private boolean connected = false;
     private ClassLoader classLoader;
+    private boolean owningSessionOnly = false;
 
     public AsyncGenericHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
         super(session, action);
@@ -65,6 +66,11 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     public AsyncGenericHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
+    }
+    
+    public AsyncGenericHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session);
+        this.owningSessionOnly = owningSessionOnly;
     }
 
     public AsyncTaskService getClient() {
@@ -168,6 +174,14 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         GetTaskResponseHandler abortTaskResponseHandler = new AbortTaskResponseHandler(client);
         client.getTaskByWorkItemId(workItem.getId(), abortTaskResponseHandler);
     }
+    
+    public boolean isOwningSessionOnly() {
+        return owningSessionOnly;
+    }
+
+    public void setOwningSessionOnly(boolean owningSessionOnly) {
+        this.owningSessionOnly = owningSessionOnly;
+    }
 
     private class TaskAddedHandler extends AbstractBaseResponseHandler implements TaskClientHandler.AddTaskResponseHandler {
 
@@ -213,6 +227,13 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
         public void execute(Payload payload) {
             TaskEvent event = (TaskEvent) payload.get();
+            
+            if (owningSessionOnly && (session instanceof StatefulKnowledgeSession)) {
+                if (((StatefulKnowledgeSession) session).getId() != event.getSessionId()) {
+                    return;
+                }
+            }
+            
             long taskId = event.getTaskId();
             TaskClientHandler.GetTaskResponseHandler getTaskResponseHandler =
                     new GetCompletedTaskResponseHandler(client, classLoader);

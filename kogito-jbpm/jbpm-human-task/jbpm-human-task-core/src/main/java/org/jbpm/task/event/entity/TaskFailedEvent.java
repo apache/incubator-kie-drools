@@ -28,8 +28,8 @@ public class TaskFailedEvent extends TaskUserEvent {
      */
     public TaskFailedEvent() { }
     
-    TaskFailedEvent(long taskId, String userId) {
-        super( taskId, userId );
+    public TaskFailedEvent(long taskId, String userId, int sessionId) {
+        super( taskId, userId, sessionId );
     }
 
 }

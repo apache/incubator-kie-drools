@@ -28,8 +28,8 @@ public class TaskStoppedEvent extends TaskUserEvent {
      */
     public TaskStoppedEvent() { } 
     
-    TaskStoppedEvent(long taskId, String userId) {
-        super( taskId, userId );
+    TaskStoppedEvent(long taskId, String userId, int sessionId) {
+        super( taskId, userId, sessionId );
     }
     
 }

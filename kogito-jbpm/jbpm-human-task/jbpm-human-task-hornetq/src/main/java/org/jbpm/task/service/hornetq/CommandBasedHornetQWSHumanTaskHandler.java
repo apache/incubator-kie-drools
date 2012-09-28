@@ -68,9 +68,16 @@ public class CommandBasedHornetQWSHumanTaskHandler implements WorkItemHandler {
 	private TaskClient client;
 	private KnowledgeRuntime session;
 	
+	private boolean ownerSessionOnly = false;
+	
 	public CommandBasedHornetQWSHumanTaskHandler(KnowledgeRuntime session) {
 		this.session = session;
 	}
+	
+	public CommandBasedHornetQWSHumanTaskHandler(KnowledgeRuntime session, boolean ownerSessionOnly) {
+        this.session = session;
+        this.ownerSessionOnly = ownerSessionOnly;
+    }
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
@@ -213,6 +220,12 @@ public class CommandBasedHornetQWSHumanTaskHandler implements WorkItemHandler {
         
         public void execute(Payload payload) {
             TaskEvent event = ( TaskEvent ) payload.get();
+            
+            if (ownerSessionOnly) {
+                if (event.getSessionId() != ((StatefulKnowledgeSession) session).getId()) {
+                    return;
+                }
+            }
         	long taskId = event.getTaskId();
         	GetTaskResponseHandler getTaskResponseHandler =
         		new GetCompletedTaskResponseHandler();

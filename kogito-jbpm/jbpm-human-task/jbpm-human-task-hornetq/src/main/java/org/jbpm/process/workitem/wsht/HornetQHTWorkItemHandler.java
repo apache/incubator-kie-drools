@@ -32,6 +32,11 @@ public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
         init();
     }
     
+    public HornetQHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(session, owningSessionOnly);
+        init();
+    }
+    
     public HornetQHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
         init();
@@ -39,6 +44,11 @@ public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
     
     public HornetQHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
         super(client, session);
+        init();
+    }
+    
+    public HornetQHTWorkItemHandler(TaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(client, session, owningSessionOnly);
         init();
     }
     

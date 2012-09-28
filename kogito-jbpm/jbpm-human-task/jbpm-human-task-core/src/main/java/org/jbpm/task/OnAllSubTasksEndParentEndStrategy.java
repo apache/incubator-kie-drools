@@ -47,7 +47,8 @@ public class OnAllSubTasksEndParentEndStrategy  extends SubTasksStrategy {
                 service.addEventListener(new InternalTaskEventListener(taskServiceSession));
 
                 service.getEventSupport().fireTaskCompleted( parentTask.getId(),
-                                                                parentTask.getTaskData().getActualOwner().getId() );
+                                                                parentTask.getTaskData().getActualOwner().getId(),
+                                                                parentTask.getTaskData().getProcessSessionId());
             }
     }
 }

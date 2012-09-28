@@ -28,8 +28,17 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
 
 public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
-	public static int testSessionId = 5;
+	public static final int DEFAULT_SESSION_ID = 5;
+    private int testSessionId;
 	private Environment env;
+	
+	public TestStatefulKnowledgeSession() {
+	    testSessionId = DEFAULT_SESSION_ID;
+	}
+	
+	public TestStatefulKnowledgeSession(int id) {
+        this.testSessionId = id;
+    }
 	public Calendars getCalendars() {
 		return null;
 	}
