@@ -56,6 +56,8 @@ public class MVELDialectRuntimeData
     private HashSet<String>                  packageImports;
     private ParserConfiguration              parserConfiguration;
 
+    private boolean                          dirty;
+
     public MVELDialectRuntimeData() {
         this.functionFactory = new MapFunctionResolverFactory();
         this.invokerLookups = new IdentityHashMap<Wireable, MVELCompileable>();
@@ -182,6 +184,34 @@ public class MVELDialectRuntimeData
         for ( MVELCompileable compileable : mvelReaders ) {
             compileable.compile( this );
         }
+
+        if (dirty) {
+            rewireImportedMethods();
+            dirty = false;
+        }
+    }
+
+    private void rewireImportedMethods() {
+        if (imports != null) {
+            Map<String, Object> rewiredMethod = new HashMap<String, Object>();
+            for (Object imp : imports.values()) {
+                if (imp instanceof Method) {
+                    Method method = (Method)imp;
+                    try {
+                        Class<?> c = Class.forName(method.getDeclaringClass().getName(), false, rootClassLoader);
+                        for (Method m : c.getDeclaredMethods()) {
+                            if (method.getName().equals(m.getName()) && method.getParameterTypes().length == m.getParameterTypes().length) {
+                                rewiredMethod.put(m.getName(), m);
+                                break;
+                            }
+                        }
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            imports.putAll(rewiredMethod);
+        }
     }
 
     public MapFunctionResolverFactory getFunctionFactory() {
@@ -204,10 +234,11 @@ public class MVELDialectRuntimeData
     }
 
     public boolean isDirty() {
-        return false;
+        return this.dirty;
     }
 
-    public void setDirty(boolean dirty) {
+    public void setDirty( boolean dirty ) {
+        this.dirty = dirty;
     }
 
     public void reload() {

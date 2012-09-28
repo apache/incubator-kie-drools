@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -134,14 +133,18 @@ public class DialectRuntimeRegistry
     public void onBeforeExecute() {
         // Java dialect MUST be the first to be processed.
         DialectRuntimeData data = this.dialects.get( "java" );
+        boolean isJavaDirty = false;
         if( data != null ) {
+            isJavaDirty = data.isDirty();
             data.onBeforeExecute();
         }
 
         // then, all others
         for ( Map.Entry<String, DialectRuntimeData> entry : this.dialects.entrySet() ) {
             if( ! "java".equals( entry.getKey() ) ) {
-                entry.getValue().onBeforeExecute();
+                data = entry.getValue();
+                data.setDirty(isJavaDirty);
+                data.onBeforeExecute();
             }
         }
     }
