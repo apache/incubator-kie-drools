@@ -1285,38 +1285,38 @@ public class MiscTest extends CommonTestMethodBase {
     public void testTypeDeclarationOnSeparateResource() throws Exception {
         System.setProperty( "drools.dump.dir", "target" );
         String file1 = "package a.b.c\n" +
-        		"declare SomePerson\n" + 
-        		"    weight : double\n" + 
-        		"    height : double\n" + 
+        		"declare SomePerson\n" +
+        		"    weight : double\n" +
+        		"    height : double\n" +
         		"end\n";
-        String file2 = "package a.b.c\n" + 
+        String file2 = "package a.b.c\n" +
                 "import org.drools.*\n" +
-        		"declare Holder\n" + 
-        		"    person : Person\n" + 
-        		"end\n" + 
-        		"rule \"create holder\"\n" + 
-        		"    when\n" + 
-        		"        person : Person( )\n" + 
-        		"        not (\n" + 
-        		"            Holder( person; )\n" + 
-        		"        )\n" + 
-        		"    then\n" + 
-        		"        insert(new Holder(person));\n" + 
+        		"declare Holder\n" +
+        		"    person : Person\n" +
+        		"end\n" +
+        		"rule \"create holder\"\n" +
+        		"    when\n" +
+        		"        person : Person( )\n" +
+        		"        not (\n" +
+        		"            Holder( person; )\n" +
+        		"        )\n" +
+        		"    then\n" +
+        		"        insert(new Holder(person));\n" +
         		"end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( file1 , file2 );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertEquals( 0, 
+        assertEquals( 0,
                       ksession.fireAllRules() );
         ksession.insert( new org.drools.Person("Bob") );
-        assertEquals( 1, 
+        assertEquals( 1,
                       ksession.fireAllRules() );
-        assertEquals( 0, 
+        assertEquals( 0,
                       ksession.fireAllRules() );
 
     }
-    
+
     @Test
     public void testUppercaseField() throws Exception {
         String rule = "package org.drools;\n";
@@ -1945,11 +1945,11 @@ public class MiscTest extends CommonTestMethodBase {
         ksesion.fireAllRules();
         assertEquals( 3,
                       ((List) session.getGlobal( "list" )).size() );
-        
+
         session.dispose();
-        
+
         // checks that the session removed itself from the bean listeners list
-        assertEquals( 0, 
+        assertEquals( 0,
                       state.getPropertyChangeListeners().length );
 
     }
@@ -1995,7 +1995,7 @@ public class MiscTest extends CommonTestMethodBase {
         session.dispose();
 
         // checks that the session removed itself from the bean listeners list
-        assertEquals( 0, 
+        assertEquals( 0,
                       state.getPropertyChangeListeners().length );
     }
 
@@ -2322,7 +2322,7 @@ public class MiscTest extends CommonTestMethodBase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         ksession.insert( stilton );
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
         ksession.fireAllRules();
 
@@ -2349,7 +2349,7 @@ public class MiscTest extends CommonTestMethodBase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         ksession.insert( stilton );
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
         ksession.fireAllRules();
 
@@ -2416,7 +2416,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testPredicate() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "predicate_rule_test.drl" );
-        
+
         kbase = SerializationHelper.serializeObject( kbase );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
@@ -2436,7 +2436,7 @@ public class MiscTest extends CommonTestMethodBase {
                                                  10 );
         ksession.insert( jane );
 
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
         ksession.fireAllRules();
 
@@ -5080,20 +5080,20 @@ public class MiscTest extends CommonTestMethodBase {
     // Drools does not support variables inside bindings yet... but we should...
     @Test
     public void testMapAccessWithVariable2() {
-        String str = "package org.drools;\n" + 
-        		"import java.util.Map;\n" + 
-        		"rule \"map access with variable\"\n" + 
-        		"    when\n" + 
-        		"        $key : String( )\n" + 
-                "        $p1 : Person( name == 'Bob', namedAddresses[$key] != null, $na : namedAddresses[$key] )\n" + 
-                "        $p2 : Person( name == 'Mark', namedAddresses[$key] == $na )\n" + 
-        		"    then\n" + 
+        String str = "package org.drools;\n" +
+        		"import java.util.Map;\n" +
+        		"rule \"map access with variable\"\n" +
+        		"    when\n" +
+        		"        $key : String( )\n" +
+                "        $p1 : Person( name == 'Bob', namedAddresses[$key] != null, $na : namedAddresses[$key] )\n" +
+                "        $p2 : Person( name == 'Mark', namedAddresses[$key] == $na )\n" +
+        		"    then\n" +
         		"end\n";
-        
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
-        
+
         Assert.assertTrue( kbuilder.hasErrors() );
     }
 
@@ -9469,7 +9469,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertFalse( builder.hasErrors() );
 
     }
-    
+
     @Test
     public void testJBRULES3323() throws Exception {
 
@@ -9526,7 +9526,7 @@ public class MiscTest extends CommonTestMethodBase {
 		ksession.dispose();
     }
 
-    @Test 
+    @Test
     public void testDispose() throws Exception {
         StringBuilder rule = new StringBuilder();
         rule.append("package org.drools\n");
@@ -9543,9 +9543,9 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert(new Message("test"));
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
-        
+
         ksession.dispose();
-        
+
         try {
             // the following should raise an IllegalStateException as the session was already disposed
             ksession.fireAllRules();
@@ -10041,7 +10041,7 @@ public class MiscTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		
+
 		FactType typeA = kbase.getFactType( "org.drools.test", "A" );
         Object a = typeA.newInstance();
         typeA.set( a, "field", "12" );
@@ -10283,6 +10283,53 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testGenericsOption() throws Exception {
+        // JBRULES-3579
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                " $c : Cheese( $type: type )\n" +
+                " $p : Person( $name : name, addressOption.get.street == $type )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("x");
+        p.setAddress(new Address("x", "x", "x"));
+        ksession.insert(p);
+
+        ksession.insert(new Cheese("x"));
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void getPackageFromFS() throws Exception {
+          String str = "package org.drools;\n"
+                +  "global java.util.List list;\n"
+                + " rule 'Start Timer'\n"
+                + "   timer (int:2000 2000) \n"
+                + "     when\n"
+                + "     then	\n"
+                + "         list.add('Rule Executed');\n"
+                + "end";
+        // load up the knowledge base
+        KnowledgeBase kbase = loadKnowledgeBaseFromStringFromFS(str);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        Thread.sleep(5000);
+
+        assertEquals(2, list.size());
+    }
+
+    @Test
     public void testRuleFlowGroupWithLockOnActivate() {
         // JBRULES-3590
         String str = "import org.drools.Person;\n" +
@@ -10308,10 +10355,33 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert( new Person() );
-        ksession.insert( new Cheese("gorgonzola") );
-        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup( "group1" );
+        ksession.insert(new Person());
+        ksession.insert(new Cheese("gorgonzola"));
+        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("group1");
         assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testFromNodeWithMultipleBetas() throws Exception {
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   $p : Person( $name : name, $addresses : addresses )\n" +
+                "   $c : Cheese( $type: type == $name )\n" +
+                "   $a : Address( street == $type, suburb == $name ) from $addresses\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("x");
+        p.addAddress(new Address("x", "x", "x"));
+        p.addAddress(new Address("y", "y", "y"));
+        ksession.insert(p);
+
+        ksession.insert(new Cheese("x"));
+        ksession.fireAllRules();
         ksession.dispose();
     }
 
@@ -10353,11 +10423,39 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testMvelFunctionWithDeclaredTypeArgForGuvnor() throws Exception {
+        // JBRULES-3562
+        String function = "function String getFieldValue(Bean bean) {" +
+                " return bean.getField();" +
+                "}\n";
+        String declaredFactType = "declare Bean \n" +
+                " field : String \n" +
+                "end \n";
+        String rule = "rule R2 \n" +
+                "dialect 'mvel'\n" +
+                "when \n" +
+                " $bean : Bean( ) \n" +
+                "then \n" +
+                " System.out.println( getFieldValue($bean) ); \n" +
+                "end\n";
+
+        PackageBuilder packageBuilder = new PackageBuilder();
+        packageBuilder.addPackageFromDrl(new StringReader(declaredFactType));
+        packageBuilder.addPackageFromDrl(new StringReader(function));
+        packageBuilder.addPackageFromDrl(new StringReader(rule));
+
+        for (KnowledgeBuilderError error : packageBuilder.getErrors()) {
+            System.out.println("ERROR:");
+            System.out.println(error.getMessage());
+        }
+        assertFalse(packageBuilder.hasErrors());
+    }
+
     public void testGenericsList() throws Exception {
         String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
-                " $c : Cheese( $type: type )\n" +
-                " $p : Person( $name : name, addresses.get(0).street == $type )\n" +
+                "   $c : Cheese( $type: type )\n" +
+                "   $p : Person( $name : name, addresses.get(0).street == $type )\n" +
                 "then\n" +
                 "end\n";
 
@@ -10371,55 +10469,6 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.insert(new Cheese("x"));
         assertEquals(1, ksession.fireAllRules());
-        ksession.dispose();
-    }
-
-    @Test
-    public void testGenericsOption() throws Exception {
-        // JBRULES-3579
-        String str = "import org.drools.*;\n" +
-                "rule R1 when\n" +
-                " $c : Cheese( $type: type )\n" +
-                " $p : Person( $name : name, addressOption.get.street == $type )\n" +
-                "then\n" +
-                "end\n";
-
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        Person p = new Person("x");
-        p.setAddress(new Address("x", "x", "x"));
-        ksession.insert(p);
-
-        ksession.insert(new Cheese("x"));
-        assertEquals(1, ksession.fireAllRules());
-        ksession.dispose();
-    }
-    
-    @Test
-    public void getPackageFromFS() throws Exception {
-          String str = "package org.drools;\n"
-                +  "global java.util.List list;\n"
-                + " rule 'Start Timer'\n"
-                + "   timer (int:2000 2000) \n"
-                + "     when\n"
-                + "     then	\n"
-                + "         list.add('Rule Executed');\n"
-                + "end";
-        // load up the knowledge base
-        KnowledgeBase kbase = loadKnowledgeBaseFromStringFromFS(str);
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        final List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-       
-        ksession.fireAllRules();
-
-        Thread.sleep(5000);
-
-        assertEquals(2, list.size());
-        
         ksession.dispose();
     }
 
@@ -10441,20 +10490,20 @@ public class MiscTest extends CommonTestMethodBase {
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-       
+
         ksession.fireAllRules();
 
         Thread.sleep(5000);
 
         assertEquals(2, list.size());
-        
+
         ksession.dispose();
     }
-     
+
     private KnowledgeBase loadKnowledgeBaseFromStringFromFS(String str) throws IOException{
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
-        
+
+
         kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
          if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -10472,8 +10521,8 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder.add(ResourceFactory.newFileResource(packageFile), ResourceType.PKG);
 
         return kbuilder.newKnowledgeBase();
-    } 
-    
+    }
+
     private void writePackage(KnowledgePackage kpackage, File p1file)
             throws IOException, FileNotFoundException {
         FileOutputStream out = new FileOutputStream(p1file);
@@ -10483,5 +10532,5 @@ public class MiscTest extends CommonTestMethodBase {
             out.close();
         }
     }
-     
+
 }

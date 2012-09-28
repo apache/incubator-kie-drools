@@ -128,14 +128,18 @@ public class DialectRuntimeRegistry
     public void onBeforeExecute() {
         // Java dialect MUST be the first to be processed.
         DialectRuntimeData data = this.dialects.get( "java" );
+        boolean isJavaDirty = false;
         if( data != null ) {
+            isJavaDirty = data.isDirty();
             data.onBeforeExecute();
         }
         
         // then, all others
         for ( Map.Entry<String, DialectRuntimeData> entry : this.dialects.entrySet() ) {
             if( ! "java".equals( entry.getKey() ) ) {
-                entry.getValue().onBeforeExecute();
+                data = entry.getValue();
+                data.setDirty(isJavaDirty);
+                data.onBeforeExecute();
             }
         }
     }
