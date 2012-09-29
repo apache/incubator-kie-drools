@@ -1,0 +1,7 @@
+package fol4.test1
+global java.util.List list;
+
+rule rule1 when 
+then 
+  list.add("fol4.test1:rule1"); 
+end 
