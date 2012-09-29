@@ -501,7 +501,7 @@ public class Queen {
         custom moves.</para>
 
         <para>There are several ways to define the value range of a planning variable with the
-        <literal>@ValueRange</literal> annotation. </para>
+        <literal>@ValueRange</literal> annotation.</para>
       </section>
 
       <section>
@@ -1344,9 +1344,11 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
       <para>All time spends are in milliseconds.</para>
 
       <para>Everything is logged to <link xlink:href="http://www.slf4j.org/">SLF4J</link>, which is a simple logging
-      facade that can delegate any log to Logback, Apache Commons Logging, Log4j or java.util.logging. Add a dependency
-      to the logging adaptor for your logging framework of choice. If you're not using any logging framework yet, you
-      can use Logback by adding this Maven dependency:</para>
+      facade which delegates every log message to Logback, Apache Commons Logging, Log4j or java.util.logging. Add a
+      dependency to the logging adaptor for your logging framework of choice.</para>
+
+      <para>If you're not using any logging framework yet, use Logback by adding this Maven dependency (there is no need
+      to add an extra bridge dependency):</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
       &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
@@ -1354,9 +1356,8 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
       &lt;version&gt;1.x&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
-      <para>Configure the logging level on the package <literal>org.drools.planner</literal>. For example:</para>
-
-      <para>In Logback, configure it in your <filename>logback.xml</filename> file:</para>
+      <para>Configure the logging level on the package <literal>org.drools.planner</literal> in your
+      <filename>logback.xml</filename> file:</para>
 
       <programlisting language="xml">&lt;configuration&gt;
 
@@ -1366,7 +1367,17 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
 
 &lt;configuration&gt;</programlisting>
 
-      <para>In Log4J, configure it in your <filename>log4j.xml</filename> file:</para>
+      <para>If instead, you're still using Log4J (and you don't want to switch to its faster spiritual successor,
+      Logback), add the bridge dependency:</para>
+
+      <programlisting language="xml">    &lt;dependency&gt;
+      &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+      &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
+      &lt;version&gt;1.x&lt;/version&gt;
+    &lt;/dependency&gt;</programlisting>
+
+      <para>And configure the logging level on the package <literal>org.drools.planner</literal> in your
+      <filename>log4j.xml</filename> file:</para>
 
       <programlisting language="xml">&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
 
