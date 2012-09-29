@@ -37,7 +37,7 @@ public class AppTest {
     }
     
     @Test
-    public void test1() {
+    public void testWiringAndExecution() {
         List<String> list = new ArrayList<String>();
 
         kBase1kSession1.setGlobal( "list", list );
@@ -60,5 +60,15 @@ public class AppTest {
 
         assertTrue( list.contains( "fol4.test2:rule1" ) );
         assertTrue( list.contains( "fol4.test2:rule2" ) );
+        
+        // This tests kbase includes
+        list.clear();
+        kBase3kSession4.setGlobal( "list", list );
+        kBase3kSession4.execute( "dummy" );
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( "fol4.test1:rule1" ) );
+        assertTrue( list.contains( "fol4.test1:rule2" ) );
+        assertTrue( list.contains( "fol4.test2:rule1" ) );
+        assertTrue( list.contains( "fol4.test2:rule2" ) );        
     }
 }

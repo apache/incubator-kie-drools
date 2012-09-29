@@ -114,7 +114,8 @@ public class KProjectExtension
             if ( kBaseQNames != null ) {
                 for ( String kBaseQName : kBaseQNames ) {
                     KBaseBean bean = new KBaseBean( kBases.get( kBaseQName ),
-                                                    kBaseURLs.get( kBaseQName ) );
+                                                    kBaseURLs.get( kBaseQName ),
+                                                    kBaseBeans );
                     kBaseBeans.put( kBaseQName, bean );
                     abd.addBean( bean );
                 }
@@ -152,11 +153,15 @@ public class KProjectExtension
         private org.drools.kproject.KBase kBaseModel;
 
         private KnowledgeBase             kBase;
+        
+        private Map<String, KBaseBean>    kBaseBeans;
 
         public KBaseBean(final org.drools.kproject.KBase kBaseModel,
-                         String urlPath) {
+                         String urlPath, 
+                         Map<String, KBaseBean> kBaseBeans) {
             this.kBaseModel = kBaseModel;            
             this.urlPath = urlPath;
+            this.kBaseBeans = kBaseBeans;
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
                                                                                                    new AnnotationLiteral<Any>() {},
                                                                                                    new KBase() {
@@ -171,33 +176,48 @@ public class KProjectExtension
                     ) ) );
         }
 
-        public KnowledgeBase create(CreationalContext ctx) {
-            List<String> files = kBaseModel.getFiles();
-
-            String rootPath = urlPath;
-            if ( rootPath.lastIndexOf( ':' ) > 0 ) {
-                rootPath = urlPath.substring( rootPath.lastIndexOf( ':' ) + 1 );
-            }
-
-
-
-
+        public KnowledgeBase create(CreationalContext ctx) {            
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
             
-            if ( urlPath.endsWith( ".jar" ) ) {  
+            Set<String> includes = kBaseModel.getIncludes();
+            if ( includes != null && !includes.isEmpty() ) {
+                for ( String include : includes ) {
+                    KBaseBean includeBean = kBaseBeans.get( include );
+                    addFiles(ckbuilder, includeBean.getkBaseModel(), includeBean.getUrlPath() );
+                }
+            }
+            addFiles(ckbuilder, kBaseModel, urlPath);
+
+            ckbuilder.build();
+
+            this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
+            this.kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+            return this.kBase;
+        }
+
+        private void addFiles(CompositeKnowledgeBuilder ckbuilder, org.drools.kproject.KBase modelToAdd, String urlPathToAdd) {
+            List<String> files = modelToAdd.getFiles();
+
+            String rootPath = urlPathToAdd;
+            if ( rootPath.lastIndexOf( ':' ) > 0 ) {
+                rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
+            }
+
+            if ( urlPathToAdd.endsWith( ".jar" ) ) {  
                 File actualZipFile = new File( rootPath );
                 if ( !actualZipFile.exists() ) {
-                    log.error( "Unable to build KBase:" + kBaseModel.getName() + " as jarPath cannot be found\n" + rootPath );
-                    return KnowledgeBaseFactory.newKnowledgeBase();
+                    log.error( "Unable to build KBase:" + modelToAdd.getName() + " as jarPath cannot be found\n" + rootPath );
+                   // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
                 
                 ZipFile zipFile = null;
                 try {
                     zipFile = new ZipFile( actualZipFile );
                 } catch ( Exception e ) {
-                    log.error( "Unable to build KBase:" + kBaseModel.getName() + " as jar cannot be opened\n" + e.getMessage() );
-                    return KnowledgeBaseFactory.newKnowledgeBase();
+                    log.error( "Unable to build KBase:" + modelToAdd.getName() + " as jar cannot be opened\n" + e.getMessage() );
+                    // return KnowledgeBaseFactory.newKnowledgeBase();
                 }  
        
                 try {
@@ -211,8 +231,8 @@ public class KProjectExtension
                     } catch ( IOException e1 ) {
     
                     }
-                    log.error( "Unable to build KBase:" + kBaseModel.getName() + " as jar cannot be read\n" + e.getMessage() );
-                    return KnowledgeBaseFactory.newKnowledgeBase();
+                    log.error( "Unable to build KBase:" + modelToAdd.getName() + " as jar cannot be read\n" + e.getMessage() );
+                    // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
             } else {
                 try {
@@ -220,15 +240,17 @@ public class KProjectExtension
                         ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
                     }
                 } catch ( Exception e) {
-                    log.error( "Unable to build KBase:" + kBaseModel.getName() + "\n" + e.getMessage() );
+                    log.error( "Unable to build KBase:" + modelToAdd.getName() + "\n" + e.getMessage() );
                 }
             }
-            ckbuilder.build();
+        }
 
-            this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
-            this.kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        public org.drools.kproject.KBase getkBaseModel() {
+            return kBaseModel;
+        }
 
-            return this.kBase;
+        public String getUrlPath() {
+            return urlPath;
         }
 
         public KnowledgeBase getKnowledgeBase() {
