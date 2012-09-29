@@ -186,16 +186,15 @@ public class KProjectTest {
         assertTrue( list.contains( jarName + ".test2:rule1" ) );
         assertTrue( list.contains( jarName + ".test2:rule2" ) );
 
-//        list.clear();
-//        stlsKsession = testClass.getKBase3KSession4();
-//        stlsKsession.setGlobal( "list", list );
-//        stlsKsession.execute( "dummy" );
-//        assertEquals( 4, list.size() );
-//        assertTrue( list.contains( jarName + ".test1:rule1" ) );
-//        assertTrue( list.contains( jarName + ".test1:rule2" ) );
-//        assertTrue( list.contains( jarName + ".test2:rule1" ) );
-//        assertTrue( list.contains( jarName + ".test2:rule2" ) );
-
+        list.clear();
+        stlsKsession = testClass.getKBase3KSession4();
+        stlsKsession.setGlobal( "list", list );
+        stlsKsession.execute( "dummy" );
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+        assertTrue( list.contains( jarName + ".test2:rule1" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2" ) );
     }
 
     public void createKProjectJar(String namespace, 
