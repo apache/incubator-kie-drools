@@ -1310,15 +1310,18 @@ public class Visit ... implements Appearance {
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">INFO</emphasis>: Log every phase and the solver itself.</para>
+          <para><emphasis role="bold">INFO</emphasis>: Log every phase and the solver itself. See <link
+          linkend="scopeOverview">scope overview</link>.</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">DEBUG</emphasis>: Log every step of every phase.</para>
+          <para><emphasis role="bold">DEBUG</emphasis>: Log every step of every phase. See <link
+          linkend="scopeOverview">scope overview</link>.</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">TRACE</emphasis>: Log every move of every step of every phase.</para>
+          <para><emphasis role="bold">TRACE</emphasis>: Log every move of every step of every phase. See <link
+          linkend="scopeOverview">scope overview</link>.</para>
 
           <note>
             <para>Turning on <literal>TRACE</literal> logging, will slow down performance considerably: it's often 4

@@ -79,7 +79,7 @@
       <title>Optimization algorithms overview</title>
 
       <tgroup cols="6">
-        <colspec align="center" />
+        <colspec align="center"/>
 
         <thead>
           <row>
@@ -101,15 +101,15 @@
           <row>
             <entry align="left"><emphasis role="bold">Exact algorithms</emphasis></entry>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
           </row>
 
           <row>
@@ -143,15 +143,15 @@
           <row>
             <entry align="left"><emphasis role="bold">Construction heuristics</emphasis></entry>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
           </row>
 
           <row>
@@ -227,29 +227,29 @@
           <row>
             <entry align="left"><emphasis role="bold">Metaheuristics</emphasis></entry>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
           </row>
 
           <row>
             <entry align="left">  Local search</entry>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
           </row>
 
           <row>
@@ -311,15 +311,15 @@
           <row>
             <entry align="left">  Evolutionary algorithms</entry>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
 
-            <entry></entry>
+            <entry/>
           </row>
 
           <row>
@@ -480,6 +480,21 @@
 
     <para>If the <literal>Solver</literal> terminates (before the last phase terminates itself), the current phase is
     terminated and all subsequent phases won't run.</para>
+  </section>
+
+  <section xml:id="scopeOverview">
+    <title>Scope overview</title>
+
+    <para>A solver wll iteratively run phases. Each phase will usually iteratively run steps. Each step, in turn,
+    usually iteratively runs moves. These form 4 nested scopes: solver, phase, step and move.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Optimization_algorithms/scopeOverview.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>Configure <link linkend="logging">logging</link> to display the log messages of each scope.</para>
   </section>
 
   <section>
