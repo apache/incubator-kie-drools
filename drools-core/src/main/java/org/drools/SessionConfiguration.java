@@ -27,9 +27,6 @@ import java.util.Properties;
 import org.drools.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -86,7 +83,6 @@ public class SessionConfiguration
 
     private QueryListenerOption            queryListener;
 
-    private Map<String, WorkItemHandler>   workItemHandlers;
     private WorkItemManagerFactory         workItemManagerFactory;
     private CommandService                 commandService;
 
@@ -287,24 +283,19 @@ public class SessionConfiguration
     }
 
     public Map<String, WorkItemHandler> getWorkItemHandlers() {
-        if ( this.workItemHandlers == null ) {
-            initWorkItemHandlers(new HashMap<String, Object>());
-        }
-        return this.workItemHandlers;
+
+        return initWorkItemHandlers(new HashMap<String, Object>());
 
     }
     
     public Map<String, WorkItemHandler> getWorkItemHandlers(Map<String, Object> params) {
-        if ( this.workItemHandlers == null ) {
-            initWorkItemHandlers(params);
-        }
-        return this.workItemHandlers;
-
+        
+        return initWorkItemHandlers(params);
     }
     
 
-    private void initWorkItemHandlers(Map<String, Object> params) {
-        this.workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private HashMap<String, WorkItemHandler> initWorkItemHandlers(Map<String, Object> params) {
+        HashMap<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
 
         // split on each space
         String locations[] = this.chainedProperties.getProperty( "drools.workItemHandlers",
@@ -322,19 +313,21 @@ public class SessionConfiguration
                                                              factoryLocation.length() - 1 );
             }
             if ( !factoryLocation.equals( "" ) ) {
-                loadWorkItemHandlers( factoryLocation, params );
+                workItemHandlers.putAll(loadWorkItemHandlers( factoryLocation, params ));
             }
         }
+        
+        return workItemHandlers;
     }
 
     @SuppressWarnings("unchecked")
-    private void loadWorkItemHandlers(String location, Map<String, Object> params) {
+    private Map<String, WorkItemHandler> loadWorkItemHandlers(String location, Map<String, Object> params) {
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
         Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content,
                                                                                                   params );
-        this.workItemHandlers.putAll( workItemHandlers );
+        return workItemHandlers;
     }
 
     public WorkItemManagerFactory getWorkItemManagerFactory() {
