@@ -35,22 +35,27 @@ section, .view head > title {
 }
 
 h1, h2 {
-    margin-top: 200px;
+    margin: 100px 0 100px 0;
     text-align: center;
-    font-size: 80px;
+    font-size: 50px;
 }
 
 h3 {
-    margin: 100px 0 50px 100px;
+    text-align: center;
+    margin: 50px 0 50px 0;
 }
 
 ul {
-    margin: 50px 200px;
+    margin: 0px 0 0px 0;
+}
+
+li {
+    margin: 0px 50px 0px 50px;
 }
 
 p {
-    margin: 75px;
-    font-size: 50px;
+    margin: 50px;
+    font-size: 36px;
 }
 
 blockquote {
