@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+
+.immediate {
+    -moz-transition: left 0ms linear 0s;
+    -webkit-transition: left 0ms linear 0s;
+    -ms-transition: left 0ms linear 0s;
+    transition: left 0ms linear 0s;
+}
+
+.smaller-p-text {
+    font-size: 36px;
+}

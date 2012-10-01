@@ -1,0 +1,111 @@
+@charset "UTF-8";
+
+/* Copied from template.html everything between the second <style> */
+
+* {
+    margin: 0;
+    padding: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+[role="note"] {
+    display: none;
+}
+
+body {
+    width: 800px;
+    height: 600px;
+    margin-left: -400px;
+    margin-top: -300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    display: none;
+}
+
+.view body {
+    position: static;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    overflow: visible;
+    overflow-x: hidden;
+    /* undo Dz.onresize */
+    transform: none !important;
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
+    -o-transform: none !important;
+    -ms-transform: none !important;
+}
+
+.view head, .view head > title {
+    display: block
+}
+
+section {
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+}
+
+.view section {
+    pointer-events: auto;
+    position: static;
+    width: 800px;
+    height: 600px;
+    margin: -150px -200px;
+    float: left;
+
+    transform: scale(.4);
+    -moz-transform: scale(.4);
+    -webkit-transform: scale(.4);
+    -o-transform: scale(.4);
+    -ms-transform: scale(.4);
+}
+
+.view section > * {
+    pointer-events: none;
+}
+
+section[aria-selected] {
+    pointer-events: auto;
+}
+
+html {
+    overflow: hidden;
+}
+
+html.view {
+    overflow: visible;
+}
+
+body.loaded {
+    display: block;
+}
+
+.incremental {
+    visibility: hidden;
+}
+
+.incremental[active] {
+    visibility: visible;
+}
+
+#progress-bar {
+    bottom: 0;
+    position: absolute;
+    -moz-transition: width 400ms linear 0s;
+    -webkit-transition: width 400ms linear 0s;
+    -ms-transition: width 400ms linear 0s;
+    transition: width 400ms linear 0s;
+}
+
+.view #progress-bar {
+    display: none;
+}
