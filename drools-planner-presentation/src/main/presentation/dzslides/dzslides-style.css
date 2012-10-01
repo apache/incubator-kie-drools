@@ -3,7 +3,7 @@
 /* Copied from template.html everything between the first <style> */
 
 html, .view body {
-    background-color: black;
+    background-color: white;
     counter-reset: slideidx;
 }
 
@@ -55,7 +55,7 @@ p {
 
 blockquote {
     height: 100%;
-    background-color: black;
+    background-color: white;
     color: white;
     font-size: 60px;
     padding: 50px;
@@ -72,7 +72,7 @@ blockquote:after {
 /* Figures are displayed full-page, with the caption
 on top of the image/video */
 figure {
-    background-color: black;
+    background-color: white;
     width: 100%;
     height: 100%;
 }
@@ -97,8 +97,8 @@ footer {
     width: 100%;
     padding: 40px;
     text-align: right;
-    background-color: #F3F4F8;
-    border-top: 1px solid #CCC;
+    background-color: #D3D7CF;
+    border: 1px solid #555753;
 }
 
 /* Transition effect */
