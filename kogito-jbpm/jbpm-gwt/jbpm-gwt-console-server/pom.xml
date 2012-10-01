@@ -20,8 +20,6 @@
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-jbpm</artifactId>
       <type>war</type>
-      <!-- overwrite parent pom version -->
-      <version>${console.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.bpm</groupId>

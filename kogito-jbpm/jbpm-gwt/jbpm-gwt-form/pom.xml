@@ -19,13 +19,10 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-integration</artifactId>
-      <!-- overwrite parent pom version -->
-      <version>${console.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>activity-monitor-model</artifactId>
-      <version>1.0.0-Beta2</version>
     </dependency>
     <dependency>
       <groupId>org.freemarker</groupId>
