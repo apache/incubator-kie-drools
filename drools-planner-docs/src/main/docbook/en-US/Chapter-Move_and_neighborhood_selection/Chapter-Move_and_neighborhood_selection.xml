@@ -19,7 +19,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/singleMoveNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/singleMoveNQueens04.png"/>
         </imageobject>
       </mediaobject>
 
@@ -30,7 +30,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/possibleMovesNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/possibleMovesNQueens04.png"/>
         </imageobject>
       </mediaobject>
 
@@ -44,7 +44,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/sequentialMovesNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/sequentialMovesNQueens04.png"/>
         </imageobject>
       </mediaobject>
 
@@ -111,7 +111,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/selectorTree.png"></imagedata>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/selectorTree.png"/>
         </imageobject>
       </mediaobject>
 
@@ -270,7 +270,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/jitRandomSelection.png"></imagedata>
+            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/jitRandomSelection.png"/>
           </imageobject>
         </mediaobject>
 
@@ -299,7 +299,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png"></imagedata>
+            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png"/>
           </imageobject>
         </mediaobject>
 
@@ -326,8 +326,9 @@
       <section>
         <title>Cached random selection</title>
 
-        <para>This combination is often a worthy competitor for medium and even big use cases (if you have a lot of
-        memory at your disposal). It scales up well in performance, but badly in memory.</para>
+        <para>This combination is often a worthy competitor for medium use cases, especially with fast stepping
+        optimization algorithms (such as simulated annealing). Unlike cached shuffled selection, it doesn't waste time
+        shuffling the move list at the beginning of every step.</para>
 
         <programlisting language="xml">    &lt;unionMoveSelector&gt;
       &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
@@ -354,7 +355,7 @@
         <listitem>
           <para>Doing the move would break <link linkend="buildInHardConstraint">a build-in hard constraint</link>, so
           the solution would be infeasible but the score function doesn't check build-in hard constraints (for
-          performance gain). For example, don't change a gym lecture to a room which is not a gym room. </para>
+          performance gain). For example, don't change a gym lecture to a room which is not a gym room.</para>
 
           <itemizedlist>
             <listitem>
@@ -371,7 +372,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/filteredSelection.png"></imagedata>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/filteredSelection.png"/>
         </imageobject>
       </mediaobject>
 
