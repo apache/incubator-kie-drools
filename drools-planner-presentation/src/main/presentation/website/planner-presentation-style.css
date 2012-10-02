@@ -11,3 +11,27 @@
 .smaller-p-text {
     font-size: 36px;
 }
+
+figure {
+    margin: 10px 0;
+}
+
+figure > img {
+    display: block;
+    margin: 0 auto;
+}
+
+figure > p {
+    margin: 5px 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+.leftColumn {
+    float: left;
+    width: 50%;
+}
+.rightColumn {
+    float: right;
+    width: 50%;
+}
