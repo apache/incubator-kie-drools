@@ -21,7 +21,7 @@ import java.util.Collections;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.localsearch.decider.LocalSolverMoveScope;
 
 public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
 
@@ -35,7 +35,7 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
     // ************************************************************************
 
     @Override
-    protected Collection<? extends Object> findTabu(MoveScope moveScope) {
+    protected Collection<? extends Object> findTabu(LocalSolverMoveScope moveScope) {
         return Collections.singletonList(moveScope.getWorkingSolution());
     }
 

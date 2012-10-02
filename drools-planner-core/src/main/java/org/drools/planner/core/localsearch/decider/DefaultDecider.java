@@ -105,7 +105,7 @@ public class DefaultDecider implements Decider {
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
         int moveIndex = 0;
         for (Move move : moveSelector) {
-            MoveScope moveScope = new MoveScope(stepScope);
+            LocalSolverMoveScope moveScope = new LocalSolverMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
             moveScope.setMove(move);
             // TODO use Selector filtering to filter out not doable moves
@@ -122,7 +122,7 @@ public class DefaultDecider implements Decider {
                 break;
             }
         }
-        MoveScope pickedMoveScope = forager.pickMove(stepScope);
+        LocalSolverMoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
             Move step = pickedMoveScope.getMove();
             stepScope.setStep(step);
@@ -134,7 +134,7 @@ public class DefaultDecider implements Decider {
         }
     }
 
-    private void doMove(MoveScope moveScope) {
+    private void doMove(LocalSolverMoveScope moveScope) {
         ScoreDirector scoreDirector = moveScope.getScoreDirector();
         Move move = moveScope.getMove();
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -152,7 +152,7 @@ public class DefaultDecider implements Decider {
                         moveScope.getMove()});
     }
 
-    private void processMove(MoveScope moveScope) {
+    private void processMove(LocalSolverMoveScope moveScope) {
         Score score = moveScope.getLocalSearchStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
             moveScope.getLocalSearchStepScope().getPhaseScope().assertWorkingScore(score);

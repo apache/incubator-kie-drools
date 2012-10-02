@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.localsearch.decider.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
@@ -57,7 +57,7 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
         temperature = startingTemperature;
     }
 
-    public boolean isAccepted(MoveScope moveScope) {
+    public boolean isAccepted(LocalSolverMoveScope moveScope) {
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope().getPhaseScope();
         Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();

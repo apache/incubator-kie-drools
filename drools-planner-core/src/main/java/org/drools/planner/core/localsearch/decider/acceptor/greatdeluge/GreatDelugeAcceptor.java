@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.localsearch.decider.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
@@ -29,7 +29,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     protected final double waterLevelUpperBoundRate;
     protected final double waterRisingRate;
-    // TODO lowerboundRate when waterLevel rises on every MoveScope (not just every step) to reset waterlevel to upperbound
+    // TODO lowerboundRate when waterLevel rises on every move (not just every step) to reset waterlevel to upperbound
 //    protected final double waterLevelLowerBoundRate;
 
     protected Score waterLevelScore = null;
@@ -61,7 +61,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
         }
     }
 
-    public boolean isAccepted(MoveScope moveScope) {
+    public boolean isAccepted(LocalSolverMoveScope moveScope) {
         if (moveScope.getScore().compareTo(waterLevelScore) >= 0) {
             return true;
         } else {

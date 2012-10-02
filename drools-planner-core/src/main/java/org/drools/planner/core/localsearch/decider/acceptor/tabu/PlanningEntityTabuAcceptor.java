@@ -19,7 +19,7 @@ package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 import java.util.Collection;
 
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.localsearch.decider.LocalSolverMoveScope;
 
 public class PlanningEntityTabuAcceptor extends AbstractTabuAcceptor {
 
@@ -28,7 +28,7 @@ public class PlanningEntityTabuAcceptor extends AbstractTabuAcceptor {
     // ************************************************************************
 
     @Override
-    protected Collection<? extends Object> findTabu(MoveScope moveScope) {
+    protected Collection<? extends Object> findTabu(LocalSolverMoveScope moveScope) {
         return moveScope.getMove().getPlanningEntities();
     }
 
