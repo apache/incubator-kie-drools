@@ -58,7 +58,7 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
             completedBruteForceStepScope.setScore(bruteForceSolverPhaseScope.getStartingScore());
             completedBruteForceStepScope.setStepIndex(-1);
         }
-        bruteForceSolverPhaseScope.setLastCompletedBruteForceStepScope(completedBruteForceStepScope);
+        bruteForceSolverPhaseScope.setLastCompletedStepScope(completedBruteForceStepScope);
         BruteForceStepScope bruteForceStepScope = new BruteForceStepScope(bruteForceSolverPhaseScope);
         bruteForceStepScope.setStepIndex(completedBruteForceStepScope.getStepIndex() + 1);
         bruteForceStepScope.setSolutionInitialized(true);

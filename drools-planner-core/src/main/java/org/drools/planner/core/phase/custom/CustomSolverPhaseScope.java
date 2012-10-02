@@ -17,27 +17,22 @@
 package org.drools.planner.core.phase.custom;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class CustomSolverPhaseScope extends AbstractSolverPhaseScope {
 
-    private CustomStepScope lastCompletedCustomStepScope;
+    private CustomStepScope lastCompletedStepScope;
 
     public CustomSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
     }
 
-    public AbstractStepScope getLastCompletedStepScope() {
-        return lastCompletedCustomStepScope;
+    public CustomStepScope getLastCompletedStepScope() {
+        return lastCompletedStepScope;
     }
 
-    public CustomStepScope getLastCompletedCustomStepScope() {
-        return lastCompletedCustomStepScope;
-    }
-
-    public void setLastCompletedCustomStepScope(CustomStepScope lastCompletedCustomStepScope) {
-        this.lastCompletedCustomStepScope = lastCompletedCustomStepScope;
+    public void setLastCompletedStepScope(CustomStepScope lastCompletedStepScope) {
+        this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
     // ************************************************************************

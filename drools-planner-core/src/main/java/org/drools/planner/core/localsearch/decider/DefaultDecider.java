@@ -143,22 +143,9 @@ public class DefaultDecider implements Decider {
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertUndoMoveIsUncorrupted) {
-            LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope()
+            LocalSearchSolverPhaseScope phaseScope = moveScope.getLocalSearchStepScope()
                     .getLocalSearchSolverPhaseScope();
-            Score undoScore = localSearchSolverPhaseScope.calculateScore();
-            Score lastCompletedStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
-            if (!undoScore.equals(lastCompletedStepScore)) {
-                // First assert that are probably no corrupted score rules.
-                scoreDirector.assertWorkingScore(undoScore);
-                throw new IllegalStateException(
-                        "The moveClass (" + move.getClass() + ")'s move (" + move
-                                + ") probably has a corrupted undoMove (" + undoMove + ")." +
-                                " Or maybe there are corrupted score rules.\n"
-                                + "Check the Move.createUndoMove(...) method of that Move class" +
-                                " and enable EnvironmentMode TRACE to fail-faster on corrupted score rules.\n"
-                                + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
-                                + ") is not the undoScore (" + undoScore + ").");
-            }
+            phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}), accepted ({}) for move ({}).",
                 new Object[]{moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getAccepted(),

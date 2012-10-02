@@ -96,7 +96,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             completedLocalSearchStepScope.setStepIndex(-1);
             completedLocalSearchStepScope.setTimeGradient(0.0);
         }
-        localSearchSolverPhaseScope.setLastCompletedLocalSearchStepScope(completedLocalSearchStepScope);
+        localSearchSolverPhaseScope.setLastCompletedStepScope(completedLocalSearchStepScope);
         LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         localSearchStepScope.setStepIndex(completedLocalSearchStepScope.getStepIndex() + 1);
         localSearchStepScope.setSolutionInitialized(true);

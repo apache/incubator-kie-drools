@@ -84,7 +84,7 @@ public class GreatDelugeAcceptorTest {
         solverScope.setBestScore(DefaultSimpleScore.valueOf(-1000));
         LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(phaseScope);
         lastLocalSearchStepScope.setScore(DefaultSimpleScore.valueOf(-1000));
-        phaseScope.setLastCompletedLocalSearchStepScope(lastLocalSearchStepScope);
+        phaseScope.setLastCompletedStepScope(lastLocalSearchStepScope);
         return phaseScope;
     }
 

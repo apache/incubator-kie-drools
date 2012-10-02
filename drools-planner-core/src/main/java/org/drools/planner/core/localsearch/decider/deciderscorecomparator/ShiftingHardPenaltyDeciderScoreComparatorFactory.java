@@ -85,7 +85,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
             shiftingPenaltyActive = false;
         } else {
             HardAndSoftScore lastStepScore = (HardAndSoftScore) localSearchStepScope.getLocalSearchSolverPhaseScope()
-                    .getLastCompletedLocalSearchStepScope().getScore();
+                    .getLastCompletedStepScope().getScore();
             HardAndSoftScore stepScore = (HardAndSoftScore) localSearchStepScope.getScore();
             if (stepScore.getHardScore() >= hardScoreActivationThreshold
                     && lastStepScore.getHardScore() == stepScore.getHardScore()) {

@@ -89,7 +89,7 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
             completedGreedyFitStepScope.setScore(greedyFitSolverPhaseScope.getStartingScore());
             completedGreedyFitStepScope.setStepIndex(-1);
         }
-        greedyFitSolverPhaseScope.setLastCompletedGreedyFitStepScope(completedGreedyFitStepScope);
+        greedyFitSolverPhaseScope.setLastCompletedStepScope(completedGreedyFitStepScope);
         GreedyFitStepScope greedyFitStepScope = new GreedyFitStepScope(greedyFitSolverPhaseScope);
         greedyFitStepScope.setStepIndex(completedGreedyFitStepScope.getStepIndex() + 1);
         greedyFitStepScope.setSolutionInitialized(false);

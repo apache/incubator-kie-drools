@@ -41,7 +41,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
 
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
         deciderScoreComparatorFactory.phaseStarted(localSearchSolverPhaseScope);
-        LocalSearchStepScope localSearchStepScope = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope();
+        LocalSearchStepScope localSearchStepScope = localSearchSolverPhaseScope.getLastCompletedStepScope();
         // Under hardScoreActivationThreshold 1
         localSearchStepScope = nextStepScope(localSearchStepScope);
         deciderScoreComparatorFactory.stepStarted(localSearchStepScope);
@@ -99,7 +99,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
 
     private LocalSearchStepScope nextStepScope(LocalSearchStepScope lastLocalSearchStepScope) {
         LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(lastLocalSearchStepScope.getLocalSearchSolverPhaseScope());
-        lastLocalSearchStepScope.getLocalSearchSolverPhaseScope().setLastCompletedLocalSearchStepScope(lastLocalSearchStepScope);
+        lastLocalSearchStepScope.getLocalSearchSolverPhaseScope().setLastCompletedStepScope(lastLocalSearchStepScope);
         localSearchStepScope.setStepIndex(lastLocalSearchStepScope.getStepIndex() + 1);
         return localSearchStepScope;
     }
@@ -112,7 +112,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
         LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         lastLocalSearchStepScope.setStepIndex(1000);
         lastLocalSearchStepScope.setScore(DefaultHardAndSoftScore.valueOf(-11, -200));
-        localSearchSolverPhaseScope.setLastCompletedLocalSearchStepScope(lastLocalSearchStepScope);
+        localSearchSolverPhaseScope.setLastCompletedStepScope(lastLocalSearchStepScope);
         return localSearchSolverPhaseScope;
     }
 

@@ -17,27 +17,22 @@
 package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class LocalSearchSolverPhaseScope extends AbstractSolverPhaseScope {
 
-    private LocalSearchStepScope lastCompletedLocalSearchStepScope;
+    private LocalSearchStepScope lastCompletedStepScope;
 
     public LocalSearchSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
     }
 
-    public AbstractStepScope getLastCompletedStepScope() {
-        return lastCompletedLocalSearchStepScope;
+    public LocalSearchStepScope getLastCompletedStepScope() {
+        return lastCompletedStepScope;
     }
 
-    public LocalSearchStepScope getLastCompletedLocalSearchStepScope() {
-        return lastCompletedLocalSearchStepScope;
-    }
-
-    public void setLastCompletedLocalSearchStepScope(LocalSearchStepScope lastCompletedLocalSearchStepScope) {
-        this.lastCompletedLocalSearchStepScope = lastCompletedLocalSearchStepScope;
+    public void setLastCompletedStepScope(LocalSearchStepScope lastCompletedStepScope) {
+        this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
     // ************************************************************************

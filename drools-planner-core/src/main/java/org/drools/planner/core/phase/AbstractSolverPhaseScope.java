@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -129,6 +131,23 @@ public abstract class AbstractSolverPhaseScope {
 
     public Score getBestScore() {
         return solverScope.getBestScore();
+    }
+
+    public void assertUndoMoveIsUncorrupted(Move move, Move undoMove) {
+        Score undoScore = calculateScore();
+        Score lastCompletedStepScore = getLastCompletedStepScope().getScore();
+        if (!undoScore.equals(lastCompletedStepScore)) {
+            // First assert that are probably no corrupted score rules.
+            getScoreDirector().assertWorkingScore(undoScore);
+            throw new IllegalStateException(
+                    "The moveClass (" + move.getClass() + ")'s move (" + move
+                            + ") probably has a corrupted undoMove (" + undoMove + ")." +
+                            " Or maybe there are corrupted score rules.\n"
+                            + "Check the Move.createUndoMove(...) method of that Move class" +
+                            " and enable EnvironmentMode TRACE to fail-faster on corrupted score rules.\n"
+                            + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
+                            + ") is not the undoScore (" + undoScore + ").");
+        }
     }
 
     @Override

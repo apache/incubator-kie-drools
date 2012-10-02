@@ -17,27 +17,22 @@
 package org.drools.planner.core.bruteforce;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class BruteForceSolverPhaseScope extends AbstractSolverPhaseScope {
 
-    private BruteForceStepScope lastCompletedBruteForceStepScope;
+    private BruteForceStepScope lastCompletedStepScope;
 
     public BruteForceSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
     }
 
-    public AbstractStepScope getLastCompletedStepScope() {
-        return lastCompletedBruteForceStepScope;
+    public BruteForceStepScope getLastCompletedStepScope() {
+        return lastCompletedStepScope;
     }
 
-    public BruteForceStepScope getLastCompletedBruteForceStepScope() {
-        return lastCompletedBruteForceStepScope;
-    }
-
-    public void setLastCompletedBruteForceStepScope(BruteForceStepScope lastCompletedBruteForceStepScope) {
-        this.lastCompletedBruteForceStepScope = lastCompletedBruteForceStepScope;
+    public void setLastCompletedStepScope(BruteForceStepScope lastCompletedStepScope) {
+        this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
     // ************************************************************************

@@ -67,7 +67,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
             completedCustomStepScope.setScore(customSolverPhaseScope.getStartingScore());
             completedCustomStepScope.setStepIndex(-1);
         }
-        customSolverPhaseScope.setLastCompletedCustomStepScope(completedCustomStepScope);
+        customSolverPhaseScope.setLastCompletedStepScope(completedCustomStepScope);
         CustomStepScope customStepScope = new CustomStepScope(customSolverPhaseScope);
         customStepScope.setStepIndex(completedCustomStepScope.getStepIndex() + 1);
         customStepScope.setSolutionInitialized(true);

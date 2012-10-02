@@ -17,27 +17,22 @@
 package org.drools.planner.core.constructionheuristic.greedyFit;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class GreedyFitSolverPhaseScope extends AbstractSolverPhaseScope {
 
-    private GreedyFitStepScope lastCompletedGreedyFitStepScope;
+    private GreedyFitStepScope lastCompletedStepScope;
 
     public GreedyFitSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
     }
 
-    public AbstractStepScope getLastCompletedStepScope() {
-        return lastCompletedGreedyFitStepScope;
+    public GreedyFitStepScope getLastCompletedStepScope() {
+        return lastCompletedStepScope;
     }
 
-    public GreedyFitStepScope getLastCompletedGreedyFitStepScope() {
-        return lastCompletedGreedyFitStepScope;
-    }
-
-    public void setLastCompletedGreedyFitStepScope(GreedyFitStepScope lastCompletedGreedyFitStepScope) {
-        this.lastCompletedGreedyFitStepScope = lastCompletedGreedyFitStepScope;
+    public void setLastCompletedStepScope(GreedyFitStepScope lastCompletedStepScope) {
+        this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
     // ************************************************************************
