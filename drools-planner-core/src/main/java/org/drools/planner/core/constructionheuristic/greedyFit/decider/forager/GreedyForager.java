@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyMoveScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;

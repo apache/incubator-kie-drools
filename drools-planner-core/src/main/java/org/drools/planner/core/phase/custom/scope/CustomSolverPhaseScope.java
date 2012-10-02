@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.phase.custom;
+package org.drools.planner.core.phase.custom.scope;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public class CustomSolverPhaseScope extends AbstractSolverPhaseScope {
 

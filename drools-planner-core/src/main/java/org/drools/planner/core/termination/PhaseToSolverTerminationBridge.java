@@ -18,7 +18,7 @@ package org.drools.planner.core.termination;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public class PhaseToSolverTerminationBridge extends AbstractTermination {
 

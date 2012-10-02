@@ -29,7 +29,7 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

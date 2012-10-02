@@ -19,7 +19,7 @@ package org.drools.planner.core.score.definition;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 
 /**

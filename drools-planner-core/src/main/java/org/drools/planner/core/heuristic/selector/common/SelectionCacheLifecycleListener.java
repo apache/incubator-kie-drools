@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.heuristic.selector.common;
 
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public interface SelectionCacheLifecycleListener {
 

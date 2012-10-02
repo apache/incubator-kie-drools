@@ -16,10 +16,8 @@
 
 package org.drools.planner.core.localsearch.event;
 
-import java.util.EventListener;
-
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.solver.event.SolverLifecycleListener;
 
 public interface LocalSearchSolverPhaseLifecycleListener extends SolverLifecycleListener {

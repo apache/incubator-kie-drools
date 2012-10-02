@@ -16,12 +16,12 @@
 
 package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.comparator.FlatteningHardAndSoftScoreComparator;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

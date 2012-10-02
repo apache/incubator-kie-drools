@@ -24,7 +24,7 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
 import org.mockito.Matchers;

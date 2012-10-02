@@ -19,10 +19,12 @@ package org.drools.planner.core.constructionheuristic.greedyFit;
 import java.util.Iterator;
 
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * Default implementation of {@link GreedyFitSolverPhase}.

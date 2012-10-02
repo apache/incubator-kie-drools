@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedyFit;
+package org.drools.planner.core.constructionheuristic.greedyFit.scope;
 
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;

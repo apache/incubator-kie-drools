@@ -26,7 +26,7 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
 

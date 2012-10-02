@@ -25,7 +25,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * This is the common {@link EntitySelector} implementation.

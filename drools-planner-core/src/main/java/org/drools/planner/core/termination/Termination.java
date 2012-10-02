@@ -21,9 +21,7 @@ import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.S
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
-import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
-import org.drools.planner.core.solver.event.SolverLifecycleListener;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * A Termination determines when a {@link Solver} or a {@link SolverPhase} should stop.

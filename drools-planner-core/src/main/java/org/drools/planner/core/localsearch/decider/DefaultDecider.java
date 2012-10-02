@@ -18,14 +18,15 @@ package org.drools.planner.core.localsearch.decider;
 
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
+import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

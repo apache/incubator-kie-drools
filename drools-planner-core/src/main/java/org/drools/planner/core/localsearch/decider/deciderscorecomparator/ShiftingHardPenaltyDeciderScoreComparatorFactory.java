@@ -18,8 +18,8 @@ package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
 import java.util.Comparator;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.FlatteningHardAndSoftScoreComparator;

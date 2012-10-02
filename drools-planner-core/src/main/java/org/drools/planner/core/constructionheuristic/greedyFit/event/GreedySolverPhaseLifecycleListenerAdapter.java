@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.constructionheuristic.greedyFit.event;
 
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 
 public abstract class GreedySolverPhaseLifecycleListenerAdapter implements GreedySolverPhaseLifecycleListener {
 

@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.phase.custom;
+package org.drools.planner.core.bruteforce.scope;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
-public class CustomStepScope extends AbstractStepScope {
+public class BruteForceSolverPhaseScope extends AbstractSolverPhaseScope {
 
-    private final CustomSolverPhaseScope phaseScope;
+    private BruteForceStepScope lastCompletedStepScope;
 
-    public CustomStepScope(CustomSolverPhaseScope phaseScope) {
-        this.phaseScope = phaseScope;
+    public BruteForceSolverPhaseScope(DefaultSolverScope solverScope) {
+        super(solverScope);
     }
 
-    @Override
-    public CustomSolverPhaseScope getPhaseScope() {
-        return phaseScope;
+    public BruteForceStepScope getLastCompletedStepScope() {
+        return lastCompletedStepScope;
+    }
+
+    public void setLastCompletedStepScope(BruteForceStepScope lastCompletedStepScope) {
+        this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
     // ************************************************************************

@@ -20,8 +20,8 @@ import java.util.Iterator;
 
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;

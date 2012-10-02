@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.termination.AbstractTermination;
 
 public class BasicPlumbingTermination extends AbstractTermination {

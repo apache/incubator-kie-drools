@@ -30,7 +30,7 @@ import org.drools.planner.core.heuristic.selector.value.iterator.EntityIgnoringV
 import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
 public class ProbabilityValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {

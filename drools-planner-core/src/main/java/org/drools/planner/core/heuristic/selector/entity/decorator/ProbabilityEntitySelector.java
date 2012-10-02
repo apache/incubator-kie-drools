@@ -30,8 +30,7 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProb
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
 public class ProbabilityEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {

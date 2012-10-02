@@ -26,7 +26,7 @@ import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRand
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * Bridges a {@link MoveListFactory} to a {@link MoveSelector}.

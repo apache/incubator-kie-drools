@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.bruteforce;
+package org.drools.planner.core.bruteforce.scope;
 
 import org.drools.planner.core.phase.step.AbstractStepScope;
 

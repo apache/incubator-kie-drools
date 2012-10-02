@@ -23,9 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.LocalSolverMoveScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 

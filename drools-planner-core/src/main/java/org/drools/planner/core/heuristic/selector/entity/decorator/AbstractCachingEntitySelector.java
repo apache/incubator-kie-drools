@@ -10,7 +10,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public abstract class AbstractCachingEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
 

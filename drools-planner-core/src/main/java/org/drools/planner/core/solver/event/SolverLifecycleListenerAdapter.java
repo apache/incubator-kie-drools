@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.solver.event;
 
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public abstract class SolverLifecycleListenerAdapter implements SolverLifecycleListener {
 

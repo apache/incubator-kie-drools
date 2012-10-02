@@ -18,9 +18,11 @@ package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
+import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * Default implementation of {@link LocalSearchSolverPhase}.

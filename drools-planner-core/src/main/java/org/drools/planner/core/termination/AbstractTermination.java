@@ -16,10 +16,7 @@
 
 package org.drools.planner.core.termination;
 
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,9 +17,11 @@
 package org.drools.planner.core.bruteforce;
 
 import org.drools.planner.core.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
+import org.drools.planner.core.bruteforce.scope.BruteForceSolverPhaseScope;
+import org.drools.planner.core.bruteforce.scope.BruteForceStepScope;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * Default implementation of {@link BruteForceSolverPhase}.

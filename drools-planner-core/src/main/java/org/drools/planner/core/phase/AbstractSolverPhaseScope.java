@@ -20,14 +20,13 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListener;
 
 public interface GreedyDecider extends GreedySolverPhaseLifecycleListener {

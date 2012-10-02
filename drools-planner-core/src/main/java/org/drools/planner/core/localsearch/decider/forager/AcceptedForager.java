@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.LocalSolverMoveScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.score.Score;

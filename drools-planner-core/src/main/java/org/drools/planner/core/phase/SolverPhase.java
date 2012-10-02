@@ -17,7 +17,7 @@
 package org.drools.planner.core.phase;
 
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * A SolverPhase

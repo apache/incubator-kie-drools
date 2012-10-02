@@ -19,7 +19,7 @@ package org.drools.planner.core.heuristic.selector.common;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListener {
 

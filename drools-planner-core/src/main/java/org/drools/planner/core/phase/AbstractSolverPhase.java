@@ -21,7 +21,7 @@ import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.planner.core.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
+import org.drools.planner.core.bruteforce.scope.BruteForceSolverPhaseScope;
+import org.drools.planner.core.bruteforce.scope.BruteForceStepScope;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;

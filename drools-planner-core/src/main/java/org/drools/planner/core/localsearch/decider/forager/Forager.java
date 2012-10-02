@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.localsearch.decider.forager;
 
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.LocalSolverMoveScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
 /**

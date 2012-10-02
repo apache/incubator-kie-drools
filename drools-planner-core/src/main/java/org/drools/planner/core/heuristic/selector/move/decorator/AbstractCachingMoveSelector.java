@@ -10,7 +10,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {
 

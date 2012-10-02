@@ -16,21 +16,14 @@
 
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
-import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * A {@link MoveSelector} that caches the result of its child {@link MoveSelector}.

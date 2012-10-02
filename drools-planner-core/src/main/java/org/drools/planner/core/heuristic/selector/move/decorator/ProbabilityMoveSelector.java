@@ -17,12 +17,10 @@
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -31,7 +29,7 @@ import org.drools.planner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
 public class ProbabilityMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {

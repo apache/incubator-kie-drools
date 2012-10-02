@@ -24,7 +24,7 @@ import org.drools.planner.core.Solver;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 

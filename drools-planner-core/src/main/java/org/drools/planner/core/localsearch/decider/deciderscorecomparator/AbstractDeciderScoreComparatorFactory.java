@@ -16,8 +16,6 @@
 
 package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

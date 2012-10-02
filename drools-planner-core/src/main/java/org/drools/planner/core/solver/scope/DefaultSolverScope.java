@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver;
+package org.drools.planner.core.solver.scope;
 
 import java.util.Collection;
 import java.util.List;

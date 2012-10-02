@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * Abstract superclass for CompositeTermination classes that combine multiple Terminations.

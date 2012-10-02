@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch.decider;
+package org.drools.planner.core.localsearch.scope;
 
 import java.util.Random;
 
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;

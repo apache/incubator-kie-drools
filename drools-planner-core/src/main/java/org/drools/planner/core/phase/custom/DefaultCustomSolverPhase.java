@@ -20,8 +20,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.phase.custom.scope.CustomSolverPhaseScope;
+import org.drools.planner.core.phase.custom.scope.CustomStepScope;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * Default implementation of {@link CustomSolverPhase}.

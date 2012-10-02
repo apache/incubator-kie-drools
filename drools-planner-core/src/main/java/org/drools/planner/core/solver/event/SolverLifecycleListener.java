@@ -18,7 +18,7 @@ package org.drools.planner.core.solver.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public interface SolverLifecycleListener extends EventListener {
 

@@ -27,7 +27,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.value.iterator.EntityIgnoringValueIterator;
 import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
 import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * This is the common {@link ValueSelector} implementation.

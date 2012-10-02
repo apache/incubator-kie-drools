@@ -18,8 +18,8 @@ package org.drools.planner.core.bruteforce.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.bruteforce.BruteForceSolverPhaseScope;
-import org.drools.planner.core.bruteforce.BruteForceStepScope;
+import org.drools.planner.core.bruteforce.scope.BruteForceSolverPhaseScope;
+import org.drools.planner.core.bruteforce.scope.BruteForceStepScope;
 
 public interface BruteForceSolverPhaseLifecycleListener extends EventListener {
 
