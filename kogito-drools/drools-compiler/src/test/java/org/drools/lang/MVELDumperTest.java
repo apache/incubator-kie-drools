@@ -292,7 +292,7 @@ public class MVELDumperTest {
         String expectedInstanceof = "field1 instanceof Class && ";
         String expectedcasted = "((Class)field1).field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
-        String[] instanceofAndCastedExpr = dumper.processInlineCast( expr, atomicExpr, null );
+        String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, null);
         assertEquals(expectedInstanceof, instanceofAndCastedExpr[0]);
         assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
         assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
@@ -301,10 +301,61 @@ public class MVELDumperTest {
         expectedInstanceof = "field1 instanceof Class1 && ((Class1)field1).field2 instanceof Class2 && ";
         expectedcasted = "((Class2)((Class1)field1).field2).field3";
         atomicExpr = new AtomicExprDescr(expr);
-        instanceofAndCastedExpr = dumper.processInlineCast( expr, atomicExpr, null );
+        instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, null);
         assertEquals(expectedInstanceof, instanceofAndCastedExpr[0]);
         assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
         assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
+    }
+
+    @Test
+    public void testProcessNullSafeDereferencing() throws Exception {
+        String expr = "field1!.field2";
+        String expectedNullCheck = "field1 != null && ";
+        String expectedExpr = "field1.field2";
+        AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
+        String[] nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
+        assertEquals(expectedNullCheck, nullCheckAndExpr[0]);
+        assertEquals(expectedExpr, nullCheckAndExpr[1]);
+        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+
+        expr = "field1!.field2!.field3";
+        expectedNullCheck = "field1 != null && field1.field2 != null && ";
+        expectedExpr = "field1.field2.field3";
+        atomicExpr = new AtomicExprDescr(expr);
+        nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
+        assertEquals(expectedNullCheck, nullCheckAndExpr[0]);
+        assertEquals(expectedExpr, nullCheckAndExpr[1]);
+        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+    }
+
+    @Test
+    public void testProcessImplicitConstraints() throws Exception {
+        String expr = "field1#Class!.field2";
+        String expectedConstraints = "field1 instanceof Class && ";
+        String expectedExpr = "((Class)field1).field2";
+        AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
+        String[] constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
+        assertEquals(expectedConstraints, constraintsAndExpr[0]);
+        assertEquals(expectedExpr, constraintsAndExpr[1]);
+        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+
+        expr = "field1!.field2#Class.field3";
+        expectedConstraints = "field1 != null && field1.field2 instanceof Class && ";
+        expectedExpr = "((Class)field1.field2).field3";
+        atomicExpr = new AtomicExprDescr(expr);
+        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
+        assertEquals(expectedConstraints, constraintsAndExpr[0]);
+        assertEquals(expectedExpr, constraintsAndExpr[1]);
+        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+
+        expr = "field1#Class.field2!.field3";
+        expectedConstraints = "field1 instanceof Class && ((Class)field1).field2 != null && ";
+        expectedExpr = "((Class)field1).field2.field3";
+        atomicExpr = new AtomicExprDescr(expr);
+        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
+        assertEquals(expectedConstraints, constraintsAndExpr[0]);
+        assertEquals(expectedExpr, constraintsAndExpr[1]);
+        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {

@@ -185,7 +185,7 @@ public class PatternBuilder
 
             if ( rce == null ) {
                 Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );
-                if ( rule != null && rule instanceof Query ) {
+                if ( rule instanceof Query ) {
                     // it's a query so delegate to the QueryElementBuilder
                     QueryElementBuilder qeBuilder = new QueryElementBuilder();
                     rce = qeBuilder.build( context,
@@ -204,7 +204,7 @@ public class PatternBuilder
                         PackageRegistry pkgReg = context.getPackageBuilder().getPackageRegistry( pkgName );
                         if ( pkgReg != null ) {
                             rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
-                            if ( rule != null && rule instanceof Query ) {
+                            if ( rule instanceof Query ) {
                                 // it's a query so delegate to the QueryElementBuilder
                                 QueryElementBuilder qeBuilder = new QueryElementBuilder();
                                 rce = qeBuilder.build( context,
@@ -465,17 +465,13 @@ public class PatternBuilder
                 return;
             }
 
-            if ( result.getDescrs().size() == 1 && result.getDescrs().get( 0 ) instanceof BindingDescr ) {
-                // it is just a bind, so build it
-                buildRuleBindings( context,
-                                   patternDescr,
-                                   pattern,
-                                   (BindingDescr) result.getDescrs().get( 0 ) );
-            } else if ( isPositional ) {
-                processPositional( context,
-                                   patternDescr,
-                                   pattern,
-                                   (ExprConstraintDescr) b );
+            isPositional &= !( result.getDescrs().size() == 1 && result.getDescrs().get( 0 ) instanceof BindingDescr );
+
+            if ( isPositional ) {
+                processPositional(context,
+                        patternDescr,
+                        pattern,
+                        (ExprConstraintDescr) b);
             } else {
                 // need to build the actual constraint
                 build( context,
@@ -641,11 +637,6 @@ public class PatternBuilder
                                  MVELDumper.MVELDumperContext mvelCtx) {
         d.copyLocation( patternDescr );
 
-        if ( d instanceof BindingDescr ) {
-            buildRuleBindings( context, patternDescr, pattern, (BindingDescr) d );
-            return;
-        }
-
         mvelCtx.clear();
         String expr = context.getCompilerFactory().getExpressionProcessor().dump( d, mvelCtx );
         Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
@@ -657,7 +648,7 @@ public class PatternBuilder
         }
 
         // check if it is an atomic expression
-        if ( processAtomicExpression( context, pattern, d, expr, aliases ) ) {
+        if ( expr.length() == 0 || processAtomicExpression( context, pattern, d, expr, aliases ) ) {
             // it is an atomic expression
             return;
         }
@@ -742,10 +733,7 @@ public class PatternBuilder
                                             boolean isConstant) {
 
         final InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), value1, null, false );
-        if ( extractor == null ) {
-            return false; // impossible to create extractor
-        }
-        return addConstraintToPattern( context, pattern, relDescr, expr, value1, value2, isConstant, extractor );
+        return extractor != null && addConstraintToPattern(context, pattern, relDescr, expr, value1, value2, isConstant, extractor);
     }
 
 
@@ -784,9 +772,7 @@ public class PatternBuilder
             }
         }
 
-        Declaration[] declarations = null;
         Declaration declr = null;
-
         if ( value2.indexOf( '(' ) < 0 && value2.indexOf( '.' ) < 0 && value2.indexOf( '[' ) < 0 ) {
             declr = context.getDeclarationResolver().getDeclaration( context.getRule(), value2 );
 
@@ -797,6 +783,7 @@ public class PatternBuilder
             }
         }
 
+        Declaration[] declarations = null;
         if ( declr == null ) {
             String[] parts = value2.split( "\\." );
             if ( parts.length == 2 ) {
@@ -826,7 +813,7 @@ public class PatternBuilder
             if (declr != null) {
                 declarations = new Declaration[] { declr };
             } else {
-                declarations = getDeclarationsForReturnValue(context, relDescr, operator, value2, extractor);
+                declarations = getDeclarationsForReturnValue(context, relDescr, operator, value2);
                 if (declarations == null) {
                     return false;
                 }
@@ -837,8 +824,7 @@ public class PatternBuilder
         return true;
     }
 
-    private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2, InternalReadAccessor extractor) {
-        Dialect dialect = context.getDialect();
+    private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2) {
         if ( !value2.startsWith( "(" ) ) {
             // it's not a traditional return value, so override the dialect
             MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );

@@ -262,6 +262,9 @@ COMMA	:	','
 DOT	:	'.'
     ;
 
+NULL_SAFE_DOT :	'!.'
+              ;
+
 DOUBLE_AMPER
     :	'&&'
     ;

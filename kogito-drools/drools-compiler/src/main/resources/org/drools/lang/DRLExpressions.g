@@ -532,6 +532,8 @@ primary returns [BaseDescr result]
             ( (DOT ID)=>DOT i2=ID { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
             ( (SHARP ID)=>SHARP i2=ID { helper.emit($SHARP, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            |
+            ( (NULL_SAFE_DOT ID)=>NULL_SAFE_DOT i2=ID { helper.emit($NULL_SAFE_DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
         )* ((identifierSuffix)=>identifierSuffix)?
     ;
 

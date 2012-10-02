@@ -776,7 +776,7 @@ public class StringUtils {
         try {
             StringBuilder fileData = new StringBuilder( 1000 );
             char[] buf = new char[1024];
-            int numRead = 0;
+            int numRead;
             while ( (numRead = reader.read( buf )) != -1 ) {
                 String readData = String.valueOf( buf,
                                                   0,
@@ -1083,15 +1083,12 @@ public class StringUtils {
     }
     
     public static URI toURI(String location) throws URISyntaxException {
-        return new URI( StringUtils.replace( location,
-                                             " ",
-                                             "%20" ) );
+        return new URI( replace(location, " ", "%20") );
     }
     
     public static String escapeXmlString(String string) {
         StringBuilder sb = new StringBuilder(string.length());
         // true if last char was blank
-        boolean lastWasBlankChar = false;
         int len = string.length();
 
         for (int i = 0; i < len; i++) {
@@ -1099,8 +1096,6 @@ public class StringUtils {
             if (c == ' ') {
                 sb.append(' ');
             } else {
-                lastWasBlankChar = false;
-                //
                 // HTML Special Chars
                 if (c == '"')
                     sb.append("&quot;");
@@ -1174,7 +1169,7 @@ public class StringUtils {
         }
         else {
             int pos = 0;
-            int delPos = 0;
+            int delPos;
             while ((delPos = str.indexOf(delimiter, pos)) != -1) {
                 result.add(deleteAny(str.substring(pos, delPos), charsToDelete));
                 pos = delPos + delimiter.length();
@@ -1343,5 +1338,33 @@ public class StringUtils {
             args.add(lastArg);
         }
         return args;
+    }
+
+    public static int indexOfOutOfQuotes(String str, String searched) {
+        for ( int i = str.indexOf(searched); i >= 0; i = str.indexOf(searched, i+1) ) {
+            if ( countCharOccurrences(str, '"', 0, i) % 2 == 0 ) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int indexOfOutOfQuotes(String str, char searched) {
+        for ( int i = str.indexOf(searched); i >= 0; i = str.indexOf(searched, i+1) ) {
+            if ( countCharOccurrences(str, '"', 0, i) % 2 == 0 ) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static int countCharOccurrences(String s, char c, int start, int end) {
+        int count = 0;
+        for (int i = start; i < end; i++) {
+            if (s.charAt(i) == c) {
+                count++;
+            }
+        }
+        return count;
     }
 }
