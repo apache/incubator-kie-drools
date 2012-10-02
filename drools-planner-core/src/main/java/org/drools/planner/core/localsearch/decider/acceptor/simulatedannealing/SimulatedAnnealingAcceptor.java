@@ -16,9 +16,9 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
@@ -66,7 +66,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         levelsLength = -1;
     }
 
-    public boolean isAccepted(LocalSolverMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope moveScope) {
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope().getPhaseScope();
         Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();

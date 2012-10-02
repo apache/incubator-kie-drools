@@ -17,7 +17,7 @@
 package org.drools.planner.core.localsearch.decider.acceptor;
 
 import org.drools.planner.core.localsearch.decider.Decider;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
@@ -32,6 +32,6 @@ public interface Acceptor extends LocalSearchSolverPhaseLifecycleListener {
      * @param moveScope not null
      * @return true if accepted
      */
-    boolean isAccepted(LocalSolverMoveScope moveScope);
+    boolean isAccepted(LocalSearchMoveScope moveScope);
 
 }

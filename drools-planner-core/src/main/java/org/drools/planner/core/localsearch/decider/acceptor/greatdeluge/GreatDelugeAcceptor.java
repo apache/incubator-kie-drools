@@ -16,9 +16,9 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
@@ -61,7 +61,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
         }
     }
 
-    public boolean isAccepted(LocalSolverMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope moveScope) {
         if (moveScope.getScore().compareTo(waterLevelScore) >= 0) {
             return true;
         } else {

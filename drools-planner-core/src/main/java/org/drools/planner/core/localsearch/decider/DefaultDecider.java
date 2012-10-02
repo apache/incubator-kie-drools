@@ -18,11 +18,11 @@ package org.drools.planner.core.localsearch.decider;
 
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
@@ -106,7 +106,7 @@ public class DefaultDecider implements Decider {
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
         int moveIndex = 0;
         for (Move move : moveSelector) {
-            LocalSolverMoveScope moveScope = new LocalSolverMoveScope(stepScope);
+            LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
             moveScope.setMove(move);
             // TODO use Selector filtering to filter out not doable moves
@@ -123,7 +123,7 @@ public class DefaultDecider implements Decider {
                 break;
             }
         }
-        LocalSolverMoveScope pickedMoveScope = forager.pickMove(stepScope);
+        LocalSearchMoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
             Move step = pickedMoveScope.getMove();
             stepScope.setStep(step);
@@ -135,7 +135,7 @@ public class DefaultDecider implements Decider {
         }
     }
 
-    private void doMove(LocalSolverMoveScope moveScope) {
+    private void doMove(LocalSearchMoveScope moveScope) {
         ScoreDirector scoreDirector = moveScope.getScoreDirector();
         Move move = moveScope.getMove();
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -153,7 +153,7 @@ public class DefaultDecider implements Decider {
                         moveScope.getMove()});
     }
 
-    private void processMove(LocalSolverMoveScope moveScope) {
+    private void processMove(LocalSearchMoveScope moveScope) {
         Score score = moveScope.getLocalSearchStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
             moveScope.getLocalSearchStepScope().getPhaseScope().assertWorkingScore(score);

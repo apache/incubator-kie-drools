@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.localsearch.decider.forager;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
 /**
@@ -28,10 +28,10 @@ public interface Forager extends LocalSearchSolverPhaseLifecycleListener {
 
     boolean supportsNeverEndingMoveSelector();
 
-    void addMove(LocalSolverMoveScope moveScope);
+    void addMove(LocalSearchMoveScope moveScope);
 
     boolean isQuitEarly();
 
-    LocalSolverMoveScope pickMove(LocalSearchStepScope localSearchStepScope);
+    LocalSearchMoveScope pickMove(LocalSearchStepScope localSearchStepScope);
 
 }

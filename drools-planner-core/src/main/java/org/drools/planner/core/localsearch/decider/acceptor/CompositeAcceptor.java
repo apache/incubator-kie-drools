@@ -18,9 +18,9 @@ package org.drools.planner.core.localsearch.decider.acceptor;
 
 import java.util.List;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
@@ -61,7 +61,7 @@ public class CompositeAcceptor extends AbstractAcceptor {
         }
     }
 
-    public boolean isAccepted(LocalSolverMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope moveScope) {
         for (Acceptor acceptor : acceptorList) {
             boolean accepted = acceptor.isAccepted(moveScope);
             if (!accepted) {

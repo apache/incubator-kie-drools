@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.score.Score;
@@ -43,12 +43,12 @@ public class AcceptedForager extends AbstractForager {
 
     protected long selectedMoveCount;
     protected long acceptedMoveCount;
-    protected List<LocalSolverMoveScope> maxScoreAcceptedList;
+    protected List<LocalSearchMoveScope> maxScoreAcceptedList;
     protected Score maxAcceptedScore;
-    protected List<LocalSolverMoveScope> maxScoreUnacceptedList;
+    protected List<LocalSearchMoveScope> maxScoreUnacceptedList;
     protected Score maxUnacceptedScore;
 
-    protected LocalSolverMoveScope earlyPickedMoveScope;
+    protected LocalSearchMoveScope earlyPickedMoveScope;
 
     public AcceptedForager(PickEarlyType pickEarlyType, int minimalAcceptedSelection) {
         this.pickEarlyType = pickEarlyType;
@@ -78,9 +78,9 @@ public class AcceptedForager extends AbstractForager {
         scoreComparator = deciderScoreComparatorFactory.createDeciderScoreComparator();
         selectedMoveCount = 0L;
         acceptedMoveCount = 0L;
-        maxScoreAcceptedList = new ArrayList<LocalSolverMoveScope>(1024);
+        maxScoreAcceptedList = new ArrayList<LocalSearchMoveScope>(1024);
         maxAcceptedScore = localSearchStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
-        maxScoreUnacceptedList = new ArrayList<LocalSolverMoveScope>(1024);
+        maxScoreUnacceptedList = new ArrayList<LocalSearchMoveScope>(1024);
         maxUnacceptedScore = localSearchStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         earlyPickedMoveScope = null;
     }
@@ -90,7 +90,7 @@ public class AcceptedForager extends AbstractForager {
         return minimalAcceptedSelection < Integer.MAX_VALUE;
     }
 
-    public void addMove(LocalSolverMoveScope moveScope) {
+    public void addMove(LocalSearchMoveScope moveScope) {
         selectedMoveCount++;
         if (moveScope.getAccepted()) {
             acceptedMoveCount++;
@@ -102,7 +102,7 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
-    protected void checkPickEarly(LocalSolverMoveScope moveScope) {
+    protected void checkPickEarly(LocalSearchMoveScope moveScope) {
         switch (pickEarlyType) {
             case NEVER:
                 break;
@@ -124,7 +124,7 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
-    protected void addToMaxScoreAcceptedList(LocalSolverMoveScope moveScope) {
+    protected void addToMaxScoreAcceptedList(LocalSearchMoveScope moveScope) {
         if (scoreComparator.compare(moveScope.getScore(), maxAcceptedScore) > 0) {
             maxAcceptedScore = moveScope.getScore();
             maxScoreAcceptedList.clear();
@@ -134,7 +134,7 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
-    protected void addToMaxScoreUnacceptedList(LocalSolverMoveScope moveScope) {
+    protected void addToMaxScoreUnacceptedList(LocalSearchMoveScope moveScope) {
         if (scoreComparator.compare(moveScope.getScore(), maxUnacceptedScore) > 0) {
             maxUnacceptedScore = moveScope.getScore();
             maxScoreUnacceptedList.clear();
@@ -148,7 +148,7 @@ public class AcceptedForager extends AbstractForager {
         return earlyPickedMoveScope != null || acceptedMoveCount >= minimalAcceptedSelection;
     }
 
-    public LocalSolverMoveScope pickMove(LocalSearchStepScope localSearchStepScope) {
+    public LocalSearchMoveScope pickMove(LocalSearchStepScope localSearchStepScope) {
         localSearchStepScope.setSelectedMoveCount(selectedMoveCount);
         localSearchStepScope.setAcceptedMoveCount(acceptedMoveCount);
         if (earlyPickedMoveScope != null) {
@@ -158,8 +158,8 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
-    protected LocalSolverMoveScope pickMaxScoreMoveScope(LocalSearchStepScope localSearchStepScope) {
-        List<LocalSolverMoveScope> maxScoreList;
+    protected LocalSearchMoveScope pickMaxScoreMoveScope(LocalSearchStepScope localSearchStepScope) {
+        List<LocalSearchMoveScope> maxScoreList;
         if (maxScoreAcceptedList.isEmpty()) {
             if (maxScoreUnacceptedList.isEmpty()) {
                 return null;

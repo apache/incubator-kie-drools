@@ -24,7 +24,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
-public class LocalSolverMoveScope {
+public class LocalSearchMoveScope {
 
     private final LocalSearchStepScope localSearchStepScope;
     private int moveIndex;
@@ -33,7 +33,7 @@ public class LocalSolverMoveScope {
     private Score score = null;
     private Boolean accepted = null;
 
-    public LocalSolverMoveScope(LocalSearchStepScope localSearchStepScope) {
+    public LocalSearchMoveScope(LocalSearchStepScope localSearchStepScope) {
         this.localSearchStepScope = localSearchStepScope;
     }
 

@@ -1,8 +1,8 @@
 package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
@@ -36,7 +36,7 @@ public class PlanningEntityTabuAcceptorTest {
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
         stepScope0.setStepIndex(0);
-        LocalSolverMoveScope moveScope1 = buildMoveScope(stepScope0, e1);
+        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope0, e1);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
         assertEquals(true, acceptor.isAccepted(moveScope1));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2)));
@@ -48,7 +48,7 @@ public class PlanningEntityTabuAcceptorTest {
         
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
         stepScope1.setStepIndex(1);
-        LocalSolverMoveScope moveScope2 = buildMoveScope(stepScope1, e2);
+        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope1, e2);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
         assertEquals(true, acceptor.isAccepted(moveScope2));
@@ -60,7 +60,7 @@ public class PlanningEntityTabuAcceptorTest {
 
         LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
         stepScope2.setStepIndex(2);
-        LocalSolverMoveScope moveScope4 = buildMoveScope(stepScope2, e4);
+        LocalSearchMoveScope moveScope4 = buildMoveScope(stepScope2, e4);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2)));
@@ -72,7 +72,7 @@ public class PlanningEntityTabuAcceptorTest {
 
         LocalSearchStepScope stepScope3 = new LocalSearchStepScope(phaseScope);
         stepScope3.setStepIndex(3);
-        LocalSolverMoveScope moveScope3 = buildMoveScope(stepScope3, e3);
+        LocalSearchMoveScope moveScope3 = buildMoveScope(stepScope3, e3);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2)));
@@ -84,7 +84,7 @@ public class PlanningEntityTabuAcceptorTest {
 
         LocalSearchStepScope stepScope4 = new LocalSearchStepScope(phaseScope);
         stepScope4.setStepIndex(4);
-        LocalSolverMoveScope moveScope1Again = buildMoveScope(stepScope4, e1);
+        LocalSearchMoveScope moveScope1Again = buildMoveScope(stepScope4, e1);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e0)));
         assertEquals(true, acceptor.isAccepted(moveScope1Again));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e2)));
@@ -230,12 +230,12 @@ public class PlanningEntityTabuAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
-    private LocalSolverMoveScope buildMoveScope(LocalSearchStepScope stepScope, TestdataEntity... entities) {
+    private LocalSearchMoveScope buildMoveScope(LocalSearchStepScope stepScope, TestdataEntity... entities) {
         return buildMoveScope(stepScope, 0, entities);
     }
 
-    private LocalSolverMoveScope buildMoveScope(LocalSearchStepScope stepScope, int score, TestdataEntity... entities) {
-        LocalSolverMoveScope moveScope = new LocalSolverMoveScope(stepScope);
+    private LocalSearchMoveScope buildMoveScope(LocalSearchStepScope stepScope, int score, TestdataEntity... entities) {
+        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
         Move move = mock(Move.class);
         when(move.getPlanningEntities()).thenReturn((Collection) Arrays.asList(entities));
         moveScope.setMove(move);

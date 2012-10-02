@@ -18,9 +18,9 @@ package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
 import java.util.Random;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.move.DummyMove;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
@@ -45,13 +45,13 @@ public class GreatDelugeAcceptorTest {
         localSearchStepScope.setStepIndex(0);
         acceptor.stepStarted(localSearchStepScope);
         // Pre conditions
-        LocalSolverMoveScope a1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2000));
-        LocalSolverMoveScope a2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1300));
-        LocalSolverMoveScope a3 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1200));
-        LocalSolverMoveScope b1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1200));
-        LocalSolverMoveScope b2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-100));
-        LocalSolverMoveScope c1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1100));
-        LocalSolverMoveScope c2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-120));
+        LocalSearchMoveScope a1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2000));
+        LocalSearchMoveScope a2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1300));
+        LocalSearchMoveScope a3 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1200));
+        LocalSearchMoveScope b1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1200));
+        LocalSearchMoveScope b2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-100));
+        LocalSearchMoveScope c1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1100));
+        LocalSearchMoveScope c2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-120));
         // Do stuff
         assertEquals(false, acceptor.isAccepted(a1));
         assertEquals(false, acceptor.isAccepted(a2));
@@ -88,8 +88,8 @@ public class GreatDelugeAcceptorTest {
         return phaseScope;
     }
 
-    public LocalSolverMoveScope createMoveScope(LocalSearchStepScope localSearchStepScope, Score score) {
-        LocalSolverMoveScope moveScope = new LocalSolverMoveScope(localSearchStepScope);
+    public LocalSearchMoveScope createMoveScope(LocalSearchStepScope localSearchStepScope, Score score) {
+        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(localSearchStepScope);
         moveScope.setMove(new DummyMove());
         moveScope.setScore(score);
         return moveScope;

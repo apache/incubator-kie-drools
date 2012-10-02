@@ -23,9 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 
@@ -93,7 +93,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         tabuSequenceList = null;
     }
 
-    public boolean isAccepted(LocalSolverMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope moveScope) {
         Collection<? extends Object> checkingTabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
         for (Object checkingTabu : checkingTabus) {
@@ -188,7 +188,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         }
     }
 
-    protected abstract Collection<? extends Object> findTabu(LocalSolverMoveScope moveScope);
+    protected abstract Collection<? extends Object> findTabu(LocalSearchMoveScope moveScope);
 
     protected abstract Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope);
 

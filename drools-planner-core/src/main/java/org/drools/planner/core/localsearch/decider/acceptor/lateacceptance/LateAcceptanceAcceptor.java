@@ -16,9 +16,9 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.lateacceptance;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
@@ -63,7 +63,7 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
         lateScoreIndex = -1;
     }
 
-    public boolean isAccepted(LocalSolverMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope moveScope) {
         moveScope.getLocalSearchStepScope().getStepIndex();
         Score score = moveScope.getScore();
         Score lateScore = previousScores[lateScoreIndex];

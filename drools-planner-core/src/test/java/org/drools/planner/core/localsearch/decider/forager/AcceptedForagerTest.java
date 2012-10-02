@@ -18,9 +18,9 @@ package org.drools.planner.core.localsearch.decider.forager;
 
 import java.util.Random;
 
+import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.scope.LocalSolverMoveScope;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
 import org.drools.planner.core.move.DummyMove;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
@@ -46,11 +46,11 @@ public class AcceptedForagerTest {
         LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.stepStarted(localSearchStepScope);
         // Pre conditions
-        LocalSolverMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
-        LocalSolverMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
-        LocalSolverMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
-        LocalSolverMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), true);
-        LocalSolverMoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
+        LocalSearchMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
+        LocalSearchMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
+        LocalSearchMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
+        LocalSearchMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), true);
+        LocalSearchMoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -62,7 +62,7 @@ public class AcceptedForagerTest {
         assertFalse(forager.isQuitEarly());
         forager.addMove(e);
         assertFalse(forager.isQuitEarly());
-        LocalSolverMoveScope pickedScope = forager.pickMove(localSearchStepScope);
+        LocalSearchMoveScope pickedScope = forager.pickMove(localSearchStepScope);
         // Post conditions
         assertSame(d, pickedScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
@@ -78,11 +78,11 @@ public class AcceptedForagerTest {
         LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.stepStarted(localSearchStepScope);
         // Pre conditions
-        LocalSolverMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
-        LocalSolverMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
-        LocalSolverMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
-        LocalSolverMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), false);
-        LocalSolverMoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), false);
+        LocalSearchMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
+        LocalSearchMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
+        LocalSearchMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
+        LocalSearchMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), false);
+        LocalSearchMoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), false);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -94,7 +94,7 @@ public class AcceptedForagerTest {
         assertFalse(forager.isQuitEarly());
         forager.addMove(e);
         assertFalse(forager.isQuitEarly());
-        LocalSolverMoveScope pickedScope = forager.pickMove(localSearchStepScope);
+        LocalSearchMoveScope pickedScope = forager.pickMove(localSearchStepScope);
         // Post conditions
         assertSame(b, pickedScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
@@ -110,10 +110,10 @@ public class AcceptedForagerTest {
         LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.stepStarted(localSearchStepScope);
         // Pre conditions
-        LocalSolverMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
-        LocalSolverMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
-        LocalSolverMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
-        LocalSolverMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
+        LocalSearchMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
+        LocalSearchMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
+        LocalSearchMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
+        LocalSearchMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -124,7 +124,7 @@ public class AcceptedForagerTest {
         forager.addMove(d);
         assertTrue(forager.isQuitEarly());
         // Post conditions
-        LocalSolverMoveScope pickedScope = forager.pickMove(localSearchStepScope);
+        LocalSearchMoveScope pickedScope = forager.pickMove(localSearchStepScope);
         assertSame(d, pickedScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
@@ -139,10 +139,10 @@ public class AcceptedForagerTest {
         LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.stepStarted(localSearchStepScope);
         // Pre conditions
-        LocalSolverMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
-        LocalSolverMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
-        LocalSolverMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-4000), true);
-        LocalSolverMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
+        LocalSearchMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), false);
+        LocalSearchMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
+        LocalSearchMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-4000), true);
+        LocalSearchMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -153,7 +153,7 @@ public class AcceptedForagerTest {
         forager.addMove(d);
         assertTrue(forager.isQuitEarly());
         // Post conditions
-        LocalSolverMoveScope pickedScope = forager.pickMove(localSearchStepScope);
+        LocalSearchMoveScope pickedScope = forager.pickMove(localSearchStepScope);
         assertSame(d, pickedScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
@@ -168,10 +168,10 @@ public class AcceptedForagerTest {
         LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.stepStarted(localSearchStepScope);
         // Pre conditions
-        LocalSolverMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
-        LocalSolverMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
-        LocalSolverMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
-        LocalSolverMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
+        LocalSearchMoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
+        LocalSearchMoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
+        LocalSearchMoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
+        LocalSearchMoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), true);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -182,7 +182,7 @@ public class AcceptedForagerTest {
         forager.addMove(d);
         assertTrue(forager.isQuitEarly());
         // Post conditions
-        LocalSolverMoveScope pickedScope = forager.pickMove(localSearchStepScope);
+        LocalSearchMoveScope pickedScope = forager.pickMove(localSearchStepScope);
         assertSame(b, pickedScope);
         forager.phaseEnded(localSearchSolverPhaseScope);
     }
@@ -209,8 +209,8 @@ public class AcceptedForagerTest {
         return localSearchStepScope;
     }
 
-    public LocalSolverMoveScope createMoveScope(LocalSearchStepScope localSearchStepScope, Score score, boolean accepted) {
-        LocalSolverMoveScope moveScope = new LocalSolverMoveScope(localSearchStepScope);
+    public LocalSearchMoveScope createMoveScope(LocalSearchStepScope localSearchStepScope, Score score, boolean accepted) {
+        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(localSearchStepScope);
         moveScope.setMove(new DummyMove());
         moveScope.setScore(score);
         moveScope.setAccepted(accepted);
