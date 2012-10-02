@@ -49,12 +49,12 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     }
 
     /**
-     * @param solverPhaseScope never null
+     * @param phaseScope never null
      * @return true if all the Terminations are terminated.
      */
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
         for (Termination termination : terminationList) {
-            if (!termination.isPhaseTerminated(solverPhaseScope)) {
+            if (!termination.isPhaseTerminated(phaseScope)) {
                 return false;
             }
         }
@@ -81,13 +81,13 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
-     * @param solverPhaseScope never null
+     * @param phaseScope never null
      * @return the minimum timeGradient of the Terminations.
      */
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
         double timeGradient = 1.0;
         for (Termination termination : terminationList) {
-            double nextTimeGradient = termination.calculatePhaseTimeGradient(solverPhaseScope);
+            double nextTimeGradient = termination.calculatePhaseTimeGradient(phaseScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.min(timeGradient, nextTimeGradient);
             }

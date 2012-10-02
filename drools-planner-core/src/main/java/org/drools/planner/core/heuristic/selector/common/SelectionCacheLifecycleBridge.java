@@ -43,9 +43,9 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
         }
     }
 
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
-            selectionCacheLifecycleListener.constructCache(solverPhaseScope.getSolverScope());
+            selectionCacheLifecycleListener.constructCache(phaseScope.getSolverScope());
         }
     }
 
@@ -61,9 +61,9 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
         }
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
-            selectionCacheLifecycleListener.disposeCache(solverPhaseScope.getSolverScope());
+            selectionCacheLifecycleListener.disposeCache(phaseScope.getSolverScope());
         }
     }
 

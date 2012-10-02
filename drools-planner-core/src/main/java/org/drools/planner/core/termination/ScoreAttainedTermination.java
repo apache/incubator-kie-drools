@@ -37,8 +37,8 @@ public class ScoreAttainedTermination extends AbstractTermination {
         return isTerminated(bestScore);
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
-        Score bestScore = solverPhaseScope.getBestScore();
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+        Score bestScore = phaseScope.getBestScore();
         return isTerminated(bestScore);
     }
 
@@ -53,10 +53,10 @@ public class ScoreAttainedTermination extends AbstractTermination {
                 startingInitializedScore, scoreAttained, bestScore);
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
-        Score startingInitializedScore = solverPhaseScope.getStartingScore();
-        Score bestScore = solverPhaseScope.getBestScore();
-        return solverPhaseScope.getScoreDefinition().calculateTimeGradient(startingInitializedScore, scoreAttained, bestScore);
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+        Score startingInitializedScore = phaseScope.getStartingScore();
+        Score bestScore = phaseScope.getBestScore();
+        return phaseScope.getScoreDefinition().calculateTimeGradient(startingInitializedScore, scoreAttained, bestScore);
     }
 
 }

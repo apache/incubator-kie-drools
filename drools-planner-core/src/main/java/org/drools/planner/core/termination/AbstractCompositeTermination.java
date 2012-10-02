@@ -53,9 +53,9 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         for (Termination termination : terminationList) {
-            termination.phaseStarted(solverPhaseScope);
+            termination.phaseStarted(phaseScope);
         }
     }
 
@@ -74,9 +74,9 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         for (Termination termination : terminationList) {
-            termination.phaseEnded(solverPhaseScope);
+            termination.phaseEnded(phaseScope);
         }
     }
 

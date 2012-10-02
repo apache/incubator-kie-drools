@@ -23,7 +23,7 @@ import org.drools.planner.core.solver.event.SolverLifecycleListenerAdapter;
 public abstract class SolverPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
         implements SolverPhaseLifecycleListener {
 
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         // Hook method
     }
 
@@ -35,7 +35,7 @@ public abstract class SolverPhaseLifecycleListenerAdapter extends SolverLifecycl
         // Hook method
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         // Hook method
     }
 

@@ -40,8 +40,8 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(solverPhaseScope);
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+        int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         return unimprovedStepCount >= maximumUnimprovedStepCount;
     }
 
@@ -49,15 +49,15 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(solverPhaseScope);
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+        int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) maximumUnimprovedStepCount);
         return Math.min(timeGradient, 1.0);
     }
 
-    private int calculateUnimprovedStepCount(AbstractSolverPhaseScope solverPhaseScope) {
-        int bestStepIndex = solverPhaseScope.getBestSolutionStepIndex();
-        int lastStepIndex = solverPhaseScope.getLastCompletedStepScope().getStepIndex();
+    private int calculateUnimprovedStepCount(AbstractSolverPhaseScope phaseScope) {
+        int bestStepIndex = phaseScope.getBestSolutionStepIndex();
+        int lastStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex();
         return lastStepIndex - bestStepIndex;
     }
 

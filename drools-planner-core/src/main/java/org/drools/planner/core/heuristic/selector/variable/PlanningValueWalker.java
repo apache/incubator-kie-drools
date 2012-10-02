@@ -60,9 +60,9 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         planningValueSelector.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        planningValueSelector.phaseStarted(solverPhaseScope);
-        scoreDirector = solverPhaseScope.getScoreDirector();
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        planningValueSelector.phaseStarted(phaseScope);
+        scoreDirector = phaseScope.getScoreDirector();
     }
 
     public void stepStarted(AbstractStepScope stepScope) {
@@ -73,8 +73,8 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         planningValueSelector.stepEnded(stepScope);
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        planningValueSelector.phaseEnded(solverPhaseScope);
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        planningValueSelector.phaseEnded(phaseScope);
         scoreDirector = null;
         planningEntity = null;
         isFirstValue = false;

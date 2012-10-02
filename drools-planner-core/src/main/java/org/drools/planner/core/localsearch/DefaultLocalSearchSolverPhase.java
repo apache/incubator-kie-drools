@@ -50,17 +50,17 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        phaseStarted(solverPhaseScope);
+        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        phaseStarted(phaseScope);
 
-        LocalSearchStepScope stepScope = createNextStepScope(solverPhaseScope, null);
-        while (!termination.isPhaseTerminated(solverPhaseScope)) {
-            stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(solverPhaseScope));
+        LocalSearchStepScope stepScope = createNextStepScope(phaseScope, null);
+        while (!termination.isPhaseTerminated(phaseScope)) {
+            stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(phaseScope));
             stepStarted(stepScope);
             decider.decideNextStep(stepScope);
             Move nextStep = stepScope.getStep();
             if (nextStep == null) {
-                if (termination.isPhaseTerminated(solverPhaseScope)) {
+                if (termination.isPhaseTerminated(phaseScope)) {
                     logger.trace("    Step index ({}), time spend ({}) terminated without picking a nextStep.",
                             stepScope.getStepIndex(),
                             stepScope.getPhaseScope().calculateSolverTimeMillisSpend());
@@ -79,14 +79,14 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             }
             nextStep.doMove(stepScope.getScoreDirector());
             // there is no need to recalculate the score, but we still need to set it
-            solverPhaseScope.getWorkingSolution().setScore(stepScope.getScore());
+            phaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
-                solverPhaseScope.assertWorkingScore(stepScope.getScore());
+                phaseScope.assertWorkingScore(stepScope.getScore());
             }
             stepEnded(stepScope);
-            stepScope = createNextStepScope(solverPhaseScope, stepScope);
+            stepScope = createNextStepScope(phaseScope, stepScope);
         }
-        phaseEnded(solverPhaseScope);
+        phaseEnded(phaseScope);
     }
 
     private LocalSearchStepScope createNextStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope, LocalSearchStepScope completedLocalSearchStepScope) {

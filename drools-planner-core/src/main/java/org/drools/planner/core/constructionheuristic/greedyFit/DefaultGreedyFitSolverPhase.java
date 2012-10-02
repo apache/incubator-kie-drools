@@ -51,12 +51,12 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        GreedyFitSolverPhaseScope solverPhaseScope = new GreedyFitSolverPhaseScope(solverScope);
-        phaseStarted(solverPhaseScope);
+        GreedyFitSolverPhaseScope phaseScope = new GreedyFitSolverPhaseScope(solverScope);
+        phaseStarted(phaseScope);
 
-        GreedyFitStepScope stepScope = createNextStepScope(solverPhaseScope, null);
+        GreedyFitStepScope stepScope = createNextStepScope(phaseScope, null);
         Iterator it = greedyPlanningEntitySelector.iterator();
-        while (!termination.isPhaseTerminated(solverPhaseScope) && it.hasNext()) {
+        while (!termination.isPhaseTerminated(phaseScope) && it.hasNext()) {
             Object planningEntity = it.next();
             stepScope.setPlanningEntity(planningEntity);
             stepStarted(stepScope);
@@ -65,22 +65,22 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
             if (nextStep == null) {
                 logger.warn("    Cancelled step index ({}), time spend ({}): there is no doable move. Terminating phase early.",
                         stepScope.getStepIndex(),
-                        solverPhaseScope.calculateSolverTimeMillisSpend());
+                        phaseScope.calculateSolverTimeMillisSpend());
                 break;
             }
             nextStep.doMove(stepScope.getScoreDirector());
             // there is no need to recalculate the score, but we still need to set it
-            solverPhaseScope.getWorkingSolution().setScore(stepScope.getScore());
+            phaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
-                solverPhaseScope.assertWorkingScore(stepScope.getScore());
+                phaseScope.assertWorkingScore(stepScope.getScore());
             }
             if (!it.hasNext()) {
                 stepScope.setSolutionInitialized(true);
             }
             stepEnded(stepScope);
-            stepScope = createNextStepScope(solverPhaseScope, stepScope);
+            stepScope = createNextStepScope(phaseScope, stepScope);
         }
-        phaseEnded(solverPhaseScope);
+        phaseEnded(phaseScope);
     }
 
     private GreedyFitStepScope createNextStepScope(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope, GreedyFitStepScope completedGreedyFitStepScope) {

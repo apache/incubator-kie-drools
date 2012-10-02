@@ -71,8 +71,8 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         if (!stepScope.isSolutionInitialized()) {
             return;
         }
-        AbstractSolverPhaseScope solverPhaseScope = stepScope.getPhaseScope();
-        DefaultSolverScope solverScope = solverPhaseScope.getSolverScope();
+        AbstractSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        DefaultSolverScope solverScope = phaseScope.getSolverScope();
         Score newScore = stepScope.getScore();
         Score bestScore = solverScope.getBestScore();
         boolean bestScoreImproved;
@@ -84,7 +84,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         }
         stepScope.setBestScoreImproved(bestScoreImproved);
         if (bestScoreImproved) {
-            solverPhaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
+            phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution newBestSolution = stepScope.createOrGetClonedSolution();
             updateBestSolution(solverScope, newBestSolution);
         } else if (assertBestScoreIsUnmodified) {

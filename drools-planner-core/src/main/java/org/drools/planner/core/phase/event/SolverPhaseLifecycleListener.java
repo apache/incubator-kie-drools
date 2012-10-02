@@ -24,12 +24,12 @@ import org.drools.planner.core.solver.event.SolverLifecycleListener;
 
 public interface SolverPhaseLifecycleListener extends SolverLifecycleListener {
 
-    void phaseStarted(AbstractSolverPhaseScope solverPhaseScope);
+    void phaseStarted(AbstractSolverPhaseScope phaseScope);
 
     void stepStarted(AbstractStepScope stepScope);
 
     void stepEnded(AbstractStepScope stepScope);
 
-    void phaseEnded(AbstractSolverPhaseScope solverPhaseScope);
+    void phaseEnded(AbstractSolverPhaseScope phaseScope);
 
 }

@@ -41,11 +41,11 @@ public class LateAcceptanceAcceptorTest {
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(new DefaultSimpleScore(-1000));
-        LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        acceptor.phaseStarted(solverPhaseScope);
+        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        acceptor.phaseStarted(phaseScope);
 
         // lateScore = -1000
-        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(solverPhaseScope);
+        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
         stepScope0.setStepIndex(0);
         MoveScope moveScope1 = buildMoveScope(stepScope0, -500);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900)));
@@ -60,7 +60,7 @@ public class LateAcceptanceAcceptorTest {
         acceptor.stepEnded(stepScope0);
 
         // lateScore = -1000
-        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(solverPhaseScope);
+        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
         stepScope1.setStepIndex(1);
         MoveScope moveScope2 = buildMoveScope(stepScope1, -700);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -900)));
@@ -75,7 +75,7 @@ public class LateAcceptanceAcceptorTest {
         acceptor.stepEnded(stepScope1);
 
         // lateScore = -1000
-        LocalSearchStepScope stepScope2 = new LocalSearchStepScope(solverPhaseScope);
+        LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
         stepScope2.setStepIndex(2);
         MoveScope moveScope4 = buildMoveScope(stepScope1, -400);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -900)));
@@ -90,7 +90,7 @@ public class LateAcceptanceAcceptorTest {
         acceptor.stepEnded(stepScope2);
 
         // lateScore = -500
-        LocalSearchStepScope stepScope3 = new LocalSearchStepScope(solverPhaseScope);
+        LocalSearchStepScope stepScope3 = new LocalSearchStepScope(phaseScope);
         stepScope3.setStepIndex(3);
         MoveScope moveScope3 = buildMoveScope(stepScope1, -200);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, -900)));
@@ -105,7 +105,7 @@ public class LateAcceptanceAcceptorTest {
         acceptor.stepEnded(stepScope3);
 
         // lateScore = -700 (not the best score of -500!)
-        LocalSearchStepScope stepScope4 = new LocalSearchStepScope(solverPhaseScope);
+        LocalSearchStepScope stepScope4 = new LocalSearchStepScope(phaseScope);
         stepScope4.setStepIndex(4);
         MoveScope moveScope1Again = buildMoveScope(stepScope1, -300);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, -700)));
@@ -120,7 +120,7 @@ public class LateAcceptanceAcceptorTest {
         acceptor.stepEnded(stepScope4);
 
         // lateScore = -400
-        LocalSearchStepScope stepScope5 = new LocalSearchStepScope(solverPhaseScope);
+        LocalSearchStepScope stepScope5 = new LocalSearchStepScope(phaseScope);
         stepScope5.setStepIndex(5);
         MoveScope moveScope2Again = buildMoveScope(stepScope1, -300);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope5, -401)));
@@ -134,7 +134,7 @@ public class LateAcceptanceAcceptorTest {
         // bestScore unchanged
         acceptor.stepEnded(stepScope5);
         
-        acceptor.phaseEnded(solverPhaseScope);
+        acceptor.phaseEnded(phaseScope);
     }
 
     private MoveScope buildMoveScope(LocalSearchStepScope stepScope, int score) {

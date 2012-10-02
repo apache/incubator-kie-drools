@@ -64,7 +64,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return terminatedEarly.get() || !problemFactChangeQueue.isEmpty();
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
         throw new UnsupportedOperationException("BasicPlumbingTermination can only be used for solver termination.");
     }
 
@@ -72,7 +72,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return -1.0; // Not supported
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
         throw new UnsupportedOperationException("BasicPlumbingTermination can only be used for solver termination.");
     }
 

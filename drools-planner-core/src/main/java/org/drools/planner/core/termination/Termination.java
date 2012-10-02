@@ -39,10 +39,10 @@ public interface Termination extends SolverPhaseLifecycleListener {
 
     /**
      * Called by the {@link SolverPhase} after every step and every move to determine if the search should stop.
-     * @param solverPhaseScope never null
+     * @param phaseScope never null
      * @return true if the search should terminate.
      */
-    boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope);
+    boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope);
 
     /**
      * A timeGradient is a relative estimate of how long the search will continue.
@@ -63,10 +63,10 @@ public interface Termination extends SolverPhaseLifecycleListener {
 
     /**
      * See {@link #calculateSolverTimeGradient(DefaultSolverScope)}.
-     * @param solverPhaseScope never null
+     * @param phaseScope never null
      * @return timeGradient t for which 0.0 &lt;= t &lt;= 1.0 or -1.0 when it is not supported.
      *         At the start of a phase t is 0.0 and at the end t would be 1.0.
      */
-    double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope);
+    double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope);
 
 }

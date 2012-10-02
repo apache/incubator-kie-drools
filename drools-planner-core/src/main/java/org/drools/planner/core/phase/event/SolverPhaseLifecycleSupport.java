@@ -35,10 +35,10 @@ public class SolverPhaseLifecycleSupport extends AbstractEventSupport<SolverPhas
         }
     }
 
-    public void firePhaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+    public void firePhaseStarted(AbstractSolverPhaseScope phaseScope) {
         final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
         while (iter.hasNext()) {
-            iter.next().phaseStarted(solverPhaseScope);
+            iter.next().phaseStarted(phaseScope);
         }
     }
 
@@ -56,10 +56,10 @@ public class SolverPhaseLifecycleSupport extends AbstractEventSupport<SolverPhas
         }
     }
 
-    public void firePhaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+    public void firePhaseEnded(AbstractSolverPhaseScope phaseScope) {
         final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
         while (iter.hasNext()) {
-            iter.next().phaseEnded(solverPhaseScope);
+            iter.next().phaseEnded(phaseScope);
         }
     }
 

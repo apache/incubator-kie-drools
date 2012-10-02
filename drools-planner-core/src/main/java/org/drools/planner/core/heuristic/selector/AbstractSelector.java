@@ -42,8 +42,8 @@ public abstract class AbstractSelector implements Selector {
         solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        solverPhaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
     public void stepStarted(AbstractStepScope stepScope) {
@@ -54,8 +54,8 @@ public abstract class AbstractSelector implements Selector {
         solverPhaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        solverPhaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {

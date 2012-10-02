@@ -67,11 +67,11 @@ public abstract class AbstractSolverPhase implements SolverPhase {
         solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        solverPhaseScope.reset();
-        bestSolutionRecaller.phaseStarted(solverPhaseScope);
-        termination.phaseStarted(solverPhaseScope);
-        solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        phaseScope.reset();
+        bestSolutionRecaller.phaseStarted(phaseScope);
+        termination.phaseStarted(phaseScope);
+        solverPhaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
     public void stepStarted(AbstractStepScope stepScope) {
@@ -86,10 +86,10 @@ public abstract class AbstractSolverPhase implements SolverPhase {
         solverPhaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        bestSolutionRecaller.phaseEnded(solverPhaseScope);
-        termination.phaseEnded(solverPhaseScope);
-        solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        bestSolutionRecaller.phaseEnded(phaseScope);
+        termination.phaseEnded(phaseScope);
+        solverPhaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
     public void addSolverPhaseLifecycleListener(SolverPhaseLifecycleListener lifecycleListener) {

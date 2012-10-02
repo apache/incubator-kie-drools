@@ -49,14 +49,14 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        scoreDirector = solverPhaseScope.getScoreDirector();
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         scoreDirector = null;
     }
 

@@ -66,11 +66,11 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         validate();
-        scoreDirector = solverPhaseScope.getScoreDirector();
-        workingRandom = solverPhaseScope.getWorkingRandom();
-        initSelectedPlanningValueList(solverPhaseScope);
+        scoreDirector = phaseScope.getScoreDirector();
+        workingRandom = phaseScope.getWorkingRandom();
+        initSelectedPlanningValueList(phaseScope);
     }
 
     private void validate() {
@@ -86,10 +86,10 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
         }
     }
 
-    private void initSelectedPlanningValueList(AbstractSolverPhaseScope solverPhaseScope) {
+    private void initSelectedPlanningValueList(AbstractSolverPhaseScope phaseScope) {
         if (planningVariableDescriptor.isPlanningValuesCacheable()) {
             Collection<?> planningValues = planningVariableDescriptor.extractPlanningValues(
-                    solverPhaseScope.getWorkingSolution(), null);
+                    phaseScope.getWorkingSolution(), null);
             cachedPlanningValues = applySelectionOrder(planningValues);
         } else {
             cachedPlanningValues = null;
@@ -97,7 +97,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         cachedPlanningValues = null;
     }
 

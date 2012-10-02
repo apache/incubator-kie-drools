@@ -38,7 +38,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     }
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
     }
 
@@ -53,7 +53,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
     }
 
@@ -67,8 +67,8 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
                 "PhaseToSolverTerminationBridge can only be used for phase termination.");
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
-        return solverTermination.isSolverTerminated(solverPhaseScope.getSolverScope());
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+        return solverTermination.isSolverTerminated(phaseScope.getSolverScope());
     }
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
@@ -76,8 +76,8 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
                 "PhaseToSolverTerminationBridge can only be used for phase termination.");
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
-        return solverTermination.calculateSolverTimeGradient(solverPhaseScope.getSolverScope());
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+        return solverTermination.calculateSolverTimeGradient(phaseScope.getSolverScope());
     }
 
 }

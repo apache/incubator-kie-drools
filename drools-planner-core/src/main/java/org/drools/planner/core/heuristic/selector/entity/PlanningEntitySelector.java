@@ -41,9 +41,9 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         validate();
-        initSelectedPlanningEntityList(solverPhaseScope);
+        initSelectedPlanningEntityList(phaseScope);
     }
 
     private void validate() {
@@ -58,15 +58,15 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
         }
     }
 
-    private void initSelectedPlanningEntityList(AbstractSolverPhaseScope solverPhaseScope) {
-        List<Object> workingPlanningEntityList = solverPhaseScope.getWorkingPlanningEntityList();
+    private void initSelectedPlanningEntityList(AbstractSolverPhaseScope phaseScope) {
+        List<Object> workingPlanningEntityList = phaseScope.getWorkingPlanningEntityList();
         for (Iterator<Object> it = workingPlanningEntityList.iterator(); it.hasNext(); ) {
             Object planningEntity = it.next();
             if (!planningEntityDescriptor.getPlanningEntityClass().isInstance(planningEntity)) {
                 it.remove();
             } else if (planningEntityDescriptor.isInitialized(planningEntity)) {
                 if (resetInitializedPlanningEntities) { // TODO this should be extracted to a custom solver phase before this phase
-                    ScoreDirector scoreDirector = solverPhaseScope.getScoreDirector();
+                    ScoreDirector scoreDirector = phaseScope.getScoreDirector();
                     scoreDirector.beforeEntityRemoved(planningEntity);
                     planningEntityDescriptor.uninitialize(planningEntity);
                     scoreDirector.afterEntityRemoved(planningEntity);
@@ -80,12 +80,12 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
             case ORIGINAL:
                 break;
             case RANDOM:
-                Collections.shuffle(workingPlanningEntityList, solverPhaseScope.getWorkingRandom());
+                Collections.shuffle(workingPlanningEntityList, phaseScope.getWorkingRandom());
                 break;
             case DECREASING_DIFFICULTY:
                 PlanningEntitySorter planningEntitySorter = planningEntityDescriptor.getPlanningEntitySorter();
                 planningEntitySorter.sortDifficultyDescending(
-                        solverPhaseScope.getWorkingSolution(), workingPlanningEntityList);
+                        phaseScope.getWorkingSolution(), workingPlanningEntityList);
                 break;
             default:
                 throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented");
@@ -94,7 +94,7 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         selectedPlanningEntityList = null;
     }
 

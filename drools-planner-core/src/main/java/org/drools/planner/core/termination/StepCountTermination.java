@@ -40,8 +40,8 @@ public class StepCountTermination extends AbstractTermination {
         throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
-        int nextStepIndex = solverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1;
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+        int nextStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex() + 1;
         return nextStepIndex >= maximumStepCount;
     }
 
@@ -49,8 +49,8 @@ public class StepCountTermination extends AbstractTermination {
         throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
-        int nextStepIndex = solverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1;
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+        int nextStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex() + 1;
         double timeGradient = ((double) nextStepIndex) / ((double) maximumStepCount);
         return Math.min(timeGradient, 1.0);
     }

@@ -41,8 +41,8 @@ public class TimeMillisSpendTermination extends AbstractTermination {
         return isTerminated(solverTimeMillisSpend);
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
-        long phaseTimeMillisSpend = solverPhaseScope.calculatePhaseTimeMillisSpend();
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+        long phaseTimeMillisSpend = phaseScope.calculatePhaseTimeMillisSpend();
         return isTerminated(phaseTimeMillisSpend);
     }
 
@@ -55,8 +55,8 @@ public class TimeMillisSpendTermination extends AbstractTermination {
         return calculateTimeGradient(solverTimeMillisSpend);
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
-        long phaseTimeMillisSpend = solverPhaseScope.calculatePhaseTimeMillisSpend();
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+        long phaseTimeMillisSpend = phaseScope.calculatePhaseTimeMillisSpend();
         return calculateTimeGradient(phaseTimeMillisSpend);
     }
 
