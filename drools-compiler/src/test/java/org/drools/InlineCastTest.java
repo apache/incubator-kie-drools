@@ -32,6 +32,58 @@ public class InlineCastTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testInlineCastWithBinding() throws Exception {
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   Person( name == \"mark\", $country : address#LongAddress.country == \"uk\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person mark1 = new Person("mark");
+        mark1.setAddress(new LongAddress("uk"));
+        ksession.insert(mark1);
+
+        Person mark2 = new Person("mark");
+        ksession.insert(mark2);
+
+        Person mark3 = new Person("mark");
+        mark3.setAddress(new Address());
+        ksession.insert(mark3);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testInlineCastOnlyBinding() throws Exception {
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   Person( name == \"mark\", $country : address#LongAddress.country )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person mark1 = new Person("mark");
+        mark1.setAddress(new LongAddress("uk"));
+        ksession.insert(mark1);
+
+        Person mark2 = new Person("mark");
+        ksession.insert(mark2);
+
+        Person mark3 = new Person("mark");
+        mark3.setAddress(new Address());
+        ksession.insert(mark3);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
     public void testInlineCastWithFQN() throws Exception {
         String str = "import org.drools.Person;\n" +
                 "rule R1 when\n" +
