@@ -144,7 +144,7 @@ public class DefaultDecider implements Decider {
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertUndoMoveIsUncorrupted) {
-            LocalSearchSolverPhaseScope phaseScope = moveScope.getLocalSearchStepScope()
+            LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope()
                     .getPhaseScope();
             phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
         }
@@ -154,9 +154,9 @@ public class DefaultDecider implements Decider {
     }
 
     private void processMove(LocalSearchMoveScope moveScope) {
-        Score score = moveScope.getLocalSearchStepScope().getPhaseScope().calculateScore();
+        Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getLocalSearchStepScope().getPhaseScope().assertWorkingScore(score);
+            moveScope.getStepScope().getPhaseScope().assertWorkingScore(score);
         }
         moveScope.setScore(score);
         boolean accepted = acceptor.isAccepted(moveScope);

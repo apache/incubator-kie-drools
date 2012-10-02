@@ -64,7 +64,7 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     }
 
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
-        moveScope.getLocalSearchStepScope().getStepIndex();
+        moveScope.getStepScope().getStepIndex();
         Score score = moveScope.getScore();
         Score lateScore = previousScores[lateScoreIndex];
         return score.compareTo(lateScore) >= 0;

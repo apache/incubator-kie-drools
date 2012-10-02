@@ -123,13 +123,13 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         if (aspirationEnabled) {
             // Doesn't use the deciderScoreComparator because shifting penalties don't apply
             if (moveScope.getScore().compareTo(
-                    moveScope.getLocalSearchStepScope().getPhaseScope().getBestScore()) > 0) {
+                    moveScope.getStepScope().getPhaseScope().getBestScore()) > 0) {
                 logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
                         moveScope.getMove());
                 return true;
             }
         }
-        int tabuStepCount = moveScope.getLocalSearchStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
+        int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
         if (tabuStepCount <= tabuSize) {
             logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
             return false;

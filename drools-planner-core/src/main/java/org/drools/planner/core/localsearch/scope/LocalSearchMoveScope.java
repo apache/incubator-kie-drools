@@ -18,7 +18,6 @@ package org.drools.planner.core.localsearch.scope;
 
 import java.util.Random;
 
-import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
@@ -26,19 +25,20 @@ import org.drools.planner.core.solution.Solution;
 
 public class LocalSearchMoveScope {
 
-    private final LocalSearchStepScope localSearchStepScope;
+    private final LocalSearchStepScope stepScope;
+
     private int moveIndex;
     private Move move = null;
     private Move undoMove = null;
     private Score score = null;
     private Boolean accepted = null;
 
-    public LocalSearchMoveScope(LocalSearchStepScope localSearchStepScope) {
-        this.localSearchStepScope = localSearchStepScope;
+    public LocalSearchMoveScope(LocalSearchStepScope stepScope) {
+        this.stepScope = stepScope;
     }
 
-    public LocalSearchStepScope getLocalSearchStepScope() {
-        return localSearchStepScope;
+    public LocalSearchStepScope getStepScope() {
+        return stepScope;
     }
 
     public int getMoveIndex() {
@@ -86,15 +86,15 @@ public class LocalSearchMoveScope {
     // ************************************************************************
 
     public ScoreDirector getScoreDirector() {
-        return localSearchStepScope.getScoreDirector();
+        return stepScope.getScoreDirector();
     }
 
     public Solution getWorkingSolution() {
-        return localSearchStepScope.getWorkingSolution();
+        return stepScope.getWorkingSolution();
     }
 
     public Random getWorkingRandom() {
-        return localSearchStepScope.getWorkingRandom();
+        return stepScope.getWorkingRandom();
     }
 
     @Override
