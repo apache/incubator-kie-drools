@@ -2287,4 +2287,5 @@ If you have any custom hacks for that, take a look at the reference manual how t
 
 [MINOR] There are several changes to the scopes. None of these should impact your code.
 - MoveScope has been renamed to LocalSearchMoveScope
-- all scopes have been moved into a subpackage scope
+- All *Scope classes have been moved into a subpackage scope
+- The methods get(LocalSearch|GreedyFit|BruteForce|Custom)*Scope() have been renamed to get*Scope()
