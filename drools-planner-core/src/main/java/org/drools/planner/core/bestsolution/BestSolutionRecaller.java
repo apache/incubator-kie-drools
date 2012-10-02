@@ -71,7 +71,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         if (!stepScope.isSolutionInitialized()) {
             return;
         }
-        AbstractSolverPhaseScope solverPhaseScope = stepScope.getSolverPhaseScope();
+        AbstractSolverPhaseScope solverPhaseScope = stepScope.getPhaseScope();
         DefaultSolverScope solverScope = solverPhaseScope.getSolverScope();
         Score newScore = stepScope.getScore();
         Score bestScore = solverScope.getBestScore();

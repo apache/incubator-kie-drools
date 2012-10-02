@@ -30,7 +30,6 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
@@ -71,7 +70,7 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
         runAssertsOriginal1(subChainSelector);
         subChainSelector.stepEnded(stepScopeA1);
@@ -81,7 +80,7 @@ public class DefaultSubChainSelectorTest {
         b2.setChainedObject(a3);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA2);
         runAssertsOriginal2(subChainSelector);
         subChainSelector.stepEnded(stepScopeA2);
@@ -93,7 +92,7 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB1);
         runAssertsOriginal2(subChainSelector);
         subChainSelector.stepEnded(stepScopeB1);
@@ -175,13 +174,13 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
         runAssertsEmptyOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA2);
         runAssertsEmptyOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeA2);
@@ -193,7 +192,7 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB1);
         runAssertsEmptyOriginal(subChainSelector);
         subChainSelector.stepEnded(stepScopeB1);

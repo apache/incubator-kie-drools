@@ -16,22 +16,18 @@
 
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
-import java.util.Iterator;
 import java.util.Random;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.ProbabilityMoveSelector;
 import org.drools.planner.core.move.DummyMove;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
@@ -74,7 +70,7 @@ public class ProbabilityMoveSelectorTest {
         when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.phaseStarted(phaseScopeA);
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA1);
 

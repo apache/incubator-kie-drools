@@ -63,12 +63,12 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
                 if (termination.isPhaseTerminated(solverPhaseScope)) {
                     logger.trace("    Step index ({}), time spend ({}) terminated without picking a nextStep.",
                             stepScope.getStepIndex(),
-                            stepScope.getLocalSearchSolverPhaseScope().calculateSolverTimeMillisSpend());
+                            stepScope.getPhaseScope().calculateSolverTimeMillisSpend());
                 } else if (stepScope.getSelectedMoveCount() == 0L) {
                     logger.warn("    No doable selected move at step index ({}), time spend ({})."
                             + " Terminating phase early.",
                             stepScope.getStepIndex(),
-                            stepScope.getLocalSearchSolverPhaseScope().calculateSolverTimeMillisSpend());
+                            stepScope.getPhaseScope().calculateSolverTimeMillisSpend());
                 } else {
                     throw new IllegalStateException("The step index (" + stepScope.getStepIndex()
                             + ") has accepted/selected move count (" + stepScope.getAcceptedMoveCount() + "/"
@@ -127,7 +127,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     public void stepEnded(LocalSearchStepScope localSearchStepScope) {
         super.stepEnded(localSearchStepScope);
         decider.stepEnded(localSearchStepScope);
-        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = localSearchStepScope.getLocalSearchSolverPhaseScope();
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = localSearchStepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = localSearchSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({})," +

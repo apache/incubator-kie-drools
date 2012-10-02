@@ -67,7 +67,7 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
-            long timeMillisSpend = stepScope.getSolverPhaseScope().calculateSolverTimeMillisSpend();
+            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             if (timeMillisSpend >= nextTimeMillisThreshold) {
                 pointList.add(new MemoryUseSingleStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
 

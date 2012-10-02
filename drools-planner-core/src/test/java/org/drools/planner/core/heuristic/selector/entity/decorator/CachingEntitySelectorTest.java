@@ -26,7 +26,6 @@ import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
@@ -67,13 +66,13 @@ public class CachingEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
         runAsserts(entitySelector);
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
         runAsserts(entitySelector);
         entitySelector.stepEnded(stepScopeA2);
@@ -85,19 +84,19 @@ public class CachingEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
         runAsserts(entitySelector);
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
         runAsserts(entitySelector);
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
         runAsserts(entitySelector);
         entitySelector.stepEnded(stepScopeB3);

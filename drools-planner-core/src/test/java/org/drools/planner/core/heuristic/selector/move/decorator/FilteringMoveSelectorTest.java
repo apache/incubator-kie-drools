@@ -17,7 +17,6 @@
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
@@ -25,13 +24,11 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
@@ -85,13 +82,13 @@ public class FilteringMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
         assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeA2);
@@ -103,19 +100,19 @@ public class FilteringMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
         assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
         assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
         assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB3);

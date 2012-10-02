@@ -80,7 +80,7 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
     public void stepEnded(BruteForceStepScope bruteForceStepScope) {
         super.stepEnded(bruteForceStepScope);
         bruteForceEntityWalker.stepEnded(bruteForceStepScope);
-        BruteForceSolverPhaseScope bruteForceSolverPhaseScope = bruteForceStepScope.getBruteForceSolverPhaseScope();
+        BruteForceSolverPhaseScope bruteForceSolverPhaseScope = bruteForceStepScope.getPhaseScope();
         // TODO The steps are too fine, so debug log is too much. Yet we still want some debug indication
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend();

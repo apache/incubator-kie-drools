@@ -33,7 +33,7 @@ public abstract class AbstractStepScope {
     // Stays null if there is no need to clone it
     protected Solution clonedSolution = null;
 
-    public abstract AbstractSolverPhaseScope getSolverPhaseScope();
+    public abstract AbstractSolverPhaseScope getPhaseScope();
 
     public int getStepIndex() {
         return stepIndex;
@@ -80,15 +80,15 @@ public abstract class AbstractStepScope {
     // ************************************************************************
 
     public ScoreDirector getScoreDirector() {
-        return getSolverPhaseScope().getScoreDirector();
+        return getPhaseScope().getScoreDirector();
     }
 
     public Solution getWorkingSolution() {
-        return getSolverPhaseScope().getWorkingSolution();
+        return getPhaseScope().getWorkingSolution();
     }
 
     public Random getWorkingRandom() {
-        return getSolverPhaseScope().getWorkingRandom();
+        return getPhaseScope().getWorkingRandom();
     }
 
     public Solution createOrGetClonedSolution() {

@@ -16,16 +16,12 @@
 
 package org.drools.planner.core.constructionheuristic.greedyFit;
 
-import java.util.Map;
-
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class GreedyFitStepScope extends AbstractStepScope {
 
-    private final GreedyFitSolverPhaseScope greedyFitSolverPhaseScope;
+    private final GreedyFitSolverPhaseScope phaseScope;
 
     private Object planningEntity;
 
@@ -33,17 +29,13 @@ public class GreedyFitStepScope extends AbstractStepScope {
     private String stepString = null;
     private Move undoStep = null;
 
-    public GreedyFitStepScope(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        this.greedyFitSolverPhaseScope = greedyFitSolverPhaseScope;
-    }
-
-    public GreedyFitSolverPhaseScope getGreedyFitSolverPhaseScope() {
-        return greedyFitSolverPhaseScope;
+    public GreedyFitStepScope(GreedyFitSolverPhaseScope phaseScope) {
+        this.phaseScope = phaseScope;
     }
 
     @Override
-    public AbstractSolverPhaseScope getSolverPhaseScope() {
-        return greedyFitSolverPhaseScope;
+    public GreedyFitSolverPhaseScope getPhaseScope() {
+        return phaseScope;
     }
 
     public Object getPlanningEntity() {

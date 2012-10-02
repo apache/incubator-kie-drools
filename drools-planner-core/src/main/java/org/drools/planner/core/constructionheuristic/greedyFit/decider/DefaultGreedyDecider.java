@@ -111,7 +111,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
         undoMove.doMove(scoreDirector);
         if (assertUndoMoveIsUncorrupted) {
             GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = moveScope.getGreedyFitStepScope()
-                    .getGreedyFitSolverPhaseScope();
+                    .getPhaseScope();
             Score undoScore = greedyFitSolverPhaseScope.calculateScore();
             Score lastCompletedStepScore = greedyFitSolverPhaseScope.getLastCompletedStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
@@ -133,9 +133,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
     }
 
     private void processMove(GreedyMoveScope moveScope) {
-        Score score = moveScope.getGreedyFitStepScope().getGreedyFitSolverPhaseScope().calculateScore();
+        Score score = moveScope.getGreedyFitStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getGreedyFitStepScope().getGreedyFitSolverPhaseScope().assertWorkingScore(score);
+            moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScore(score);
         }
         moveScope.setScore(score);
         forager.addMove(moveScope);

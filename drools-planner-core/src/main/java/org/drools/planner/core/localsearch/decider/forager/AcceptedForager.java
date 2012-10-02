@@ -79,9 +79,9 @@ public class AcceptedForager extends AbstractForager {
         selectedMoveCount = 0L;
         acceptedMoveCount = 0L;
         maxScoreAcceptedList = new ArrayList<MoveScope>(1024);
-        maxAcceptedScore = localSearchStepScope.getSolverPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxAcceptedScore = localSearchStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         maxScoreUnacceptedList = new ArrayList<MoveScope>(1024);
-        maxUnacceptedScore = localSearchStepScope.getSolverPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxUnacceptedScore = localSearchStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         earlyPickedMoveScope = null;
     }
 
@@ -107,13 +107,13 @@ public class AcceptedForager extends AbstractForager {
             case NEVER:
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
-                Score bestScore = moveScope.getLocalSearchStepScope().getSolverPhaseScope().getBestScore();
+                Score bestScore = moveScope.getLocalSearchStepScope().getPhaseScope().getBestScore();
                 if (scoreComparator.compare(moveScope.getScore(), bestScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
-                Score lastStepScore = moveScope.getLocalSearchStepScope().getSolverPhaseScope()
+                Score lastStepScore = moveScope.getLocalSearchStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
                 if (scoreComparator.compare(moveScope.getScore(), lastStepScore) > 0) {
                     earlyPickedMoveScope = moveScope;

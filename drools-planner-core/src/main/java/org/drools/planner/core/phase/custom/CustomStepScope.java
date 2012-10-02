@@ -21,19 +21,15 @@ import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class CustomStepScope extends AbstractStepScope {
 
-    private final CustomSolverPhaseScope customSolverPhaseScope;
+    private final CustomSolverPhaseScope phaseScope;
 
-    public CustomStepScope(CustomSolverPhaseScope customSolverPhaseScope) {
-        this.customSolverPhaseScope = customSolverPhaseScope;
-    }
-
-    public CustomSolverPhaseScope getCustomSolverPhaseScope() {
-        return customSolverPhaseScope;
+    public CustomStepScope(CustomSolverPhaseScope phaseScope) {
+        this.phaseScope = phaseScope;
     }
 
     @Override
-    public AbstractSolverPhaseScope getSolverPhaseScope() {
-        return customSolverPhaseScope;
+    public CustomSolverPhaseScope getPhaseScope() {
+        return phaseScope;
     }
 
     // ************************************************************************

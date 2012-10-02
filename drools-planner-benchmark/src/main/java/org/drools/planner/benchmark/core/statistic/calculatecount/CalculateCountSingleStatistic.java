@@ -71,9 +71,9 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
-            long timeMillisSpend = stepScope.getSolverPhaseScope().calculateSolverTimeMillisSpend();
+            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             if (timeMillisSpend >= nextTimeMillisThreshold) {
-                DefaultSolverScope solverScope = stepScope.getSolverPhaseScope().getSolverScope();
+                DefaultSolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
                 long calculateCount = solverScope.getCalculateCount();
                 long calculateCountInterval = calculateCount - lastCalculateCount;
                 long timeMillisSpendInterval = timeMillisSpend - lastTimeMillisSpend;

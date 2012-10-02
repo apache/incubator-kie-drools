@@ -118,7 +118,7 @@ public class DefaultDecider implements Decider {
                 }
             }
             moveIndex++;
-            if (termination.isPhaseTerminated(stepScope.getLocalSearchSolverPhaseScope())) {
+            if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }
         }
@@ -144,7 +144,7 @@ public class DefaultDecider implements Decider {
         undoMove.doMove(scoreDirector);
         if (assertUndoMoveIsUncorrupted) {
             LocalSearchSolverPhaseScope phaseScope = moveScope.getLocalSearchStepScope()
-                    .getLocalSearchSolverPhaseScope();
+                    .getPhaseScope();
             phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}), accepted ({}) for move ({}).",
@@ -153,9 +153,9 @@ public class DefaultDecider implements Decider {
     }
 
     private void processMove(MoveScope moveScope) {
-        Score score = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().calculateScore();
+        Score score = moveScope.getLocalSearchStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().assertWorkingScore(score);
+            moveScope.getLocalSearchStepScope().getPhaseScope().assertWorkingScore(score);
         }
         moveScope.setScore(score);
         boolean accepted = acceptor.isAccepted(moveScope);

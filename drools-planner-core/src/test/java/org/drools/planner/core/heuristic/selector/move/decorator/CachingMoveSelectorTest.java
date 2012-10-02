@@ -16,19 +16,16 @@
 
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
-import java.util.Iterator;
 import java.util.Random;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
@@ -65,13 +62,13 @@ public class CachingMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
         assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeA2);
@@ -83,19 +80,19 @@ public class CachingMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
         assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
         assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
         assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3");
         moveSelector.stepEnded(stepScopeB3);
@@ -143,7 +140,7 @@ public class CachingMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA1);
         when(workingRandom.nextInt(3)).thenReturn(1, 0, 2);
@@ -151,7 +148,7 @@ public class CachingMoveSelectorTest {
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         when(stepScopeA2.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA2);
         when(workingRandom.nextInt(3)).thenReturn(2, 0, 1);
@@ -166,7 +163,7 @@ public class CachingMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         when(stepScopeB1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeB1);
         when(workingRandom.nextInt(3)).thenReturn(1, 2, 0);

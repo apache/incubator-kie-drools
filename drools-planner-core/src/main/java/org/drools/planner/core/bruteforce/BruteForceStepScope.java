@@ -16,24 +16,19 @@
 
 package org.drools.planner.core.bruteforce;
 
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class BruteForceStepScope extends AbstractStepScope {
 
-    private final BruteForceSolverPhaseScope bruteForceSolverPhaseScope;
+    private final BruteForceSolverPhaseScope phaseScope;
 
-    public BruteForceStepScope(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
-        this.bruteForceSolverPhaseScope = bruteForceSolverPhaseScope;
-    }
-
-    public BruteForceSolverPhaseScope getBruteForceSolverPhaseScope() {
-        return bruteForceSolverPhaseScope;
+    public BruteForceStepScope(BruteForceSolverPhaseScope phaseScope) {
+        this.phaseScope = phaseScope;
     }
 
     @Override
-    public AbstractSolverPhaseScope getSolverPhaseScope() {
-        return bruteForceSolverPhaseScope;
+    public BruteForceSolverPhaseScope getPhaseScope() {
+        return phaseScope;
     }
 
     // ************************************************************************

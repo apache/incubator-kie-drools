@@ -98,8 +98,8 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
     }
 
     private LocalSearchStepScope nextStepScope(LocalSearchStepScope lastLocalSearchStepScope) {
-        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(lastLocalSearchStepScope.getLocalSearchSolverPhaseScope());
-        lastLocalSearchStepScope.getLocalSearchSolverPhaseScope().setLastCompletedStepScope(lastLocalSearchStepScope);
+        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(lastLocalSearchStepScope.getPhaseScope());
+        lastLocalSearchStepScope.getPhaseScope().setLastCompletedStepScope(lastLocalSearchStepScope);
         localSearchStepScope.setStepIndex(lastLocalSearchStepScope.getStepIndex() + 1);
         return localSearchStepScope;
     }

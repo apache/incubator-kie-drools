@@ -16,19 +16,16 @@
 
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
-import java.util.Iterator;
 import java.util.Random;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.DummyMove;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
@@ -69,7 +66,7 @@ public class ShufflingMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         when(workingRandom.nextInt(3)).thenReturn(2);
         when(workingRandom.nextInt(2)).thenReturn(0);
@@ -78,7 +75,7 @@ public class ShufflingMoveSelectorTest {
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         when(stepScopeA2.getWorkingRandom()).thenReturn(workingRandom);
         when(workingRandom.nextInt(3)).thenReturn(0);
         when(workingRandom.nextInt(2)).thenReturn(1);
@@ -100,7 +97,7 @@ public class ShufflingMoveSelectorTest {
         moveSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         when(stepScopeB1.getWorkingRandom()).thenReturn(workingRandom);
         when(workingRandom.nextInt(3)).thenReturn(1);
         when(workingRandom.nextInt(2)).thenReturn(0);

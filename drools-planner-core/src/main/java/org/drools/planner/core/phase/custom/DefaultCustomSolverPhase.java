@@ -82,10 +82,10 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         super.stepEnded(customStepScope);
         boolean bestScoreImproved = customStepScope.getBestScoreImproved();
         if (forceUpdateBestSolution && !bestScoreImproved) {
-            bestSolutionRecaller.updateBestSolution(customStepScope.getSolverPhaseScope().getSolverScope(),
+            bestSolutionRecaller.updateBestSolution(customStepScope.getPhaseScope().getSolverScope(),
                     customStepScope.createOrGetClonedSolution());
         }
-        CustomSolverPhaseScope customSolverPhaseScope = customStepScope.getCustomSolverPhaseScope();
+        CustomSolverPhaseScope customSolverPhaseScope = customStepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = customSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",

@@ -17,17 +17,13 @@
 package org.drools.planner.core.constructionheuristic.greedyFit.decider.forager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyMoveScope;
-import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListener;
 import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
-import org.drools.planner.core.localsearch.decider.MoveScope;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.slf4j.Logger;
@@ -63,7 +59,7 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
     public void stepStarted(GreedyFitStepScope greedyStepScope) {
         selectedCount = 0;
         maxScoreAcceptedList = new ArrayList<GreedyMoveScope>(1024); // TODO use size of moveList in decider
-        maxScore = greedyStepScope.getSolverPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxScore = greedyStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         earlyPickedMoveScope = null;
     }
 
@@ -78,7 +74,7 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
             case NEVER:
                 break;
             case FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING:
-                Score lastStepScore = moveScope.getGreedyFitStepScope().getSolverPhaseScope()
+                Score lastStepScore = moveScope.getGreedyFitStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
                 if (lastStepScore != null && moveScope.getScore().compareTo(lastStepScore) >= 0) {
                     earlyPickedMoveScope = moveScope;

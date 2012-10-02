@@ -17,12 +17,11 @@
 package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class LocalSearchStepScope extends AbstractStepScope {
 
-    private final LocalSearchSolverPhaseScope localSearchSolverPhaseScope;
+    private final LocalSearchSolverPhaseScope phaseScope;
 
     private double timeGradient = Double.NaN;
     private Move step = null;
@@ -31,17 +30,13 @@ public class LocalSearchStepScope extends AbstractStepScope {
     private Long selectedMoveCount = null;
     private Long acceptedMoveCount = null;
 
-    public LocalSearchStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        this.localSearchSolverPhaseScope = localSearchSolverPhaseScope;
-    }
-
-    public LocalSearchSolverPhaseScope getLocalSearchSolverPhaseScope() {
-        return localSearchSolverPhaseScope;
+    public LocalSearchStepScope(LocalSearchSolverPhaseScope phaseScope) {
+        this.phaseScope = phaseScope;
     }
 
     @Override
-    public AbstractSolverPhaseScope getSolverPhaseScope() {
-        return localSearchSolverPhaseScope;
+    public LocalSearchSolverPhaseScope getPhaseScope() {
+        return phaseScope;
     }
 
     public double getTimeGradient() {

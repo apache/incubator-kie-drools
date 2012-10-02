@@ -71,13 +71,13 @@ public class FromSolutionEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
         runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
         runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA2);
@@ -89,19 +89,19 @@ public class FromSolutionEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
         runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
         runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
         runOriginalAsserts(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB3);
@@ -162,13 +162,13 @@ public class FromSolutionEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
         runRandomAsserts(entitySelector, "e2", "e1", "e1", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
         runRandomAsserts(entitySelector, "e2", "e3");
         entitySelector.stepEnded(stepScopeA2);
@@ -180,19 +180,19 @@ public class FromSolutionEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
         runRandomAsserts(entitySelector, "e3");
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
         runRandomAsserts(entitySelector, "e2");
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
         runRandomAsserts(entitySelector, "e1");
         entitySelector.stepEnded(stepScopeB3);

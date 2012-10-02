@@ -51,13 +51,13 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
 
     public void stepStarted(AbstractStepScope stepScope) {
         if (cacheType == SelectionCacheType.STEP) {
-            selectionCacheLifecycleListener.constructCache(stepScope.getSolverPhaseScope().getSolverScope());
+            selectionCacheLifecycleListener.constructCache(stepScope.getPhaseScope().getSolverScope());
         }
     }
 
     public void stepEnded(AbstractStepScope stepScope) {
         if (cacheType == SelectionCacheType.STEP) {
-            selectionCacheLifecycleListener.disposeCache(stepScope.getSolverPhaseScope().getSolverScope());
+            selectionCacheLifecycleListener.disposeCache(stepScope.getPhaseScope().getSolverScope());
         }
     }
 

@@ -23,17 +23,12 @@ import java.util.List;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
-import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
-import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.drools.planner.core.testdata.domain.TestdataValue;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -79,7 +74,7 @@ public class SameValuePillarSelectorTest {
         pillarSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
         runAssertsOriginal1(pillarSelector);
         pillarSelector.stepEnded(stepScopeA1);
@@ -88,7 +83,7 @@ public class SameValuePillarSelectorTest {
         f.setValue(val4);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA2);
         runAssertsOriginal2(pillarSelector);
         pillarSelector.stepEnded(stepScopeA2);
@@ -100,7 +95,7 @@ public class SameValuePillarSelectorTest {
         pillarSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         pillarSelector.stepStarted(stepScopeB1);
         runAssertsOriginal2(pillarSelector);
         pillarSelector.stepEnded(stepScopeB1);
@@ -158,13 +153,13 @@ public class SameValuePillarSelectorTest {
         pillarSelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
         runAssertsEmptyOriginal(pillarSelector);
         pillarSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getSolverPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA2);
         runAssertsEmptyOriginal(pillarSelector);
         pillarSelector.stepEnded(stepScopeA2);
@@ -176,7 +171,7 @@ public class SameValuePillarSelectorTest {
         pillarSelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getSolverPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         pillarSelector.stepStarted(stepScopeB1);
         runAssertsEmptyOriginal(pillarSelector);
         pillarSelector.stepEnded(stepScopeB1);
