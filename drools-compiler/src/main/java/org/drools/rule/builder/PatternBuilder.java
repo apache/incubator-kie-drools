@@ -825,12 +825,6 @@ public class PatternBuilder
     }
 
     private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2) {
-        if ( !value2.startsWith( "(" ) ) {
-            // it's not a traditional return value, so override the dialect
-            MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
-            context.setDialect( mvelDialect );
-        }
-
         Pattern pattern = (Pattern) context.getBuildStack().peek();
         ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr( operator,
                                                                                                    relDescr.isNegated(),
