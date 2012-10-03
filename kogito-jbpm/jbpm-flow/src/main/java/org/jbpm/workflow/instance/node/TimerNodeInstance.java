@@ -28,6 +28,7 @@ import org.drools.runtime.process.NodeInstance;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
+import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
@@ -89,25 +90,10 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                 timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(period));
             }
     	} else {
-    	    timerInstance.setDelay(resolveValue(timer.getDelay()));
-            if (timer.getPeriod() == null) {
-                timerInstance.setPeriod(0);
-            } else {
-                timerInstance.setPeriod(resolveValue(timer.getPeriod()));
-            }
+    	    configureTimerInstance(timer, timerInstance);
     	}
     	timerInstance.setTimerId(timer.getId());
     	return timerInstance;
-    }
-    
-    private long resolveValue(String s) {
-    	try {
-    		return TimeUtils.parseTimeString(s);
-    	} catch (RuntimeDroolsException e) {
-    		// cannot parse delay, trying to interpret it
-    		s = resolveVariable(s);
-            return TimeUtils.parseTimeString(s);
-    	}
     }
 
     private String resolveVariable(String s) {

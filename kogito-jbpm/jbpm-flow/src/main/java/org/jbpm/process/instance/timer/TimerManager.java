@@ -88,7 +88,7 @@ public class TimerManager {
             Trigger trigger = new IntervalTrigger( timerService.getCurrentTime(),
                                                    null,
                                                    null,
-                                                   -1,
+                                                   timer.getRepeatLimit(),
                                                    timer.getDelay(),
                                                    timer.getPeriod(),
                                                    null,

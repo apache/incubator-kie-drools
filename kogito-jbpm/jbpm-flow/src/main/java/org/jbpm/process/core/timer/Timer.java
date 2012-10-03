@@ -24,9 +24,15 @@ import java.io.Serializable;
  */
 public class Timer implements Serializable {
 
+    public static final int TIME_DURATION = 1;
+    public static final int TIME_CYCLE = 2;
+    public static final int TIME_DATE = 3;
+    
     private long id;
     private String delay;
     private String period;
+    private String date;
+    private int timeType;
     
     public long getId() {
         return id;
@@ -52,6 +58,14 @@ public class Timer implements Serializable {
         this.period = period;
     }
     
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+    
     public String toString() {
     	String result =  "Timer";
     	if (delay != null || period != null) {
@@ -65,9 +79,31 @@ public class Timer implements Serializable {
     		if (period != null) {
     			result += "period=" + period;
     		}
+    		if (date != null) {
+                result += "date=" + date;
+            }
     		result += "]";
     	}
     	return result;
+    }
+
+    public int getTimeType() {
+        if (timeType == 0) {
+            // calculate type based on given data
+            if (date != null && date.trim().length() > 0) {
+                timeType = TIME_DATE;
+            } else if (delay != null && delay.trim().length() > 0
+                    && period != null && period.trim().length() > 0) {
+                timeType = TIME_CYCLE;
+            } else {
+                timeType = TIME_DURATION;
+            }
+        }
+        return timeType;
+    }
+
+    public void setTimeType(int timeType) {
+        this.timeType = timeType;
     }
 
 }

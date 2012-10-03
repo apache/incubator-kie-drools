@@ -76,6 +76,7 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
+import org.joda.time.DateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1150,6 +1151,36 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession = restoreSession(ksession, true);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
+	
+   public void testTimerBoundaryEventDurationISO() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDurationISO.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("TimerBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1500);
+        ksession = restoreSession(ksession, true);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+   
+   public void testTimerBoundaryEventDateISO() throws Exception {
+       KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDateISO.bpmn2");
+       StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+       ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+               new DoNothingWorkItemHandler());
+       HashMap<String, Object> params = new HashMap<String, Object>();
+       DateTime now = new DateTime(System.currentTimeMillis());
+       now.plus(2000);
+       params.put("date", now.toString());
+       ProcessInstance processInstance = ksession
+               .startProcess("TimerBoundaryEvent", params);
+       assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+       Thread.sleep(2000);
+       ksession = restoreSession(ksession, true);
+       assertProcessInstanceCompleted(processInstance.getId(), ksession);
+   }
 
 	public void testTimerBoundaryEventCycle1() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycle1.bpmn2");
@@ -1179,6 +1210,22 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.abortProcessInstance(processInstance.getId());
 		Thread.sleep(1000);
 	}
+	
+   public void testTimerBoundaryEventCycleISO() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycleISO.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("TimerBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        ksession.abortProcessInstance(processInstance.getId());
+        Thread.sleep(1000);
+    }
 
 	public void testTimerBoundaryEventInterrupting() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
@@ -1646,6 +1693,41 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
+	
+   public void testIntermediateCatchEventTimerDateISO() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDateISO.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new DoNothingWorkItemHandler());
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        DateTime now = new DateTime(System.currentTimeMillis());
+        now.plus(2000);
+        params.put("date", now.toString());
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // now wait for 1 second for timer to trigger
+        Thread.sleep(2000);
+        ksession.fireAllRules();
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+	
+   public void testIntermediateCatchEventTimerDurationISO() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDurationISO.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // now wait for 1.5 second for timer to trigger
+        Thread.sleep(1500);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new DoNothingWorkItemHandler());
+        ksession.fireAllRules();
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 
 	public void testIntermediateCatchEventTimerCycle1() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycle1.bpmn2");
@@ -1663,6 +1745,34 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
+	
+   public void testIntermediateCatchEventTimerCycleISO() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleISO.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new DoNothingWorkItemHandler());
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("timer")) {
+                    list.add(event.getProcessInstance().getId());
+                }
+            }
+
+        });
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        Thread.sleep(500);
+        for (int i = 0; i < 5; i++) {
+            ksession.fireAllRules();
+            Thread.sleep(1000);
+        }
+        assertEquals(6, list.size());
+    }
 
 	public void testIntermediateCatchEventTimerCycle2() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycle2.bpmn2");
@@ -1806,6 +1916,64 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		}
 		assertEquals(5, list.size());
 	}
+	
+    public void testTimerStartCycleISO() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStartISO.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        Thread.sleep(250);
+        assertEquals(0, list.size());
+        for (int i = 0; i < 6; i++) {
+            ksession.fireAllRules();
+            Thread.sleep(1000);
+        }
+        assertEquals(6, list.size());
+    }	
+//Following test is commented out since it relies on fixed date 
+//and it cannot be given as variable as timer should start the process
+    
+//    public void testTimerStartDate() throws Exception {
+//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStartDate.bpmn2");
+//        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+//        final List<Long> list = new ArrayList<Long>();
+//        ksession.addEventListener(new DefaultProcessEventListener() {
+//            public void afterProcessStarted(ProcessStartedEvent event) {
+//                list.add(event.getProcessInstance().getId());
+//            }
+//        });
+//        Thread.sleep(250);
+//        assertEquals(0, list.size());
+//        assertEquals(0, list.size());
+//        ksession.fireAllRules();
+//
+//        Thread.sleep(40 * 1000);
+//        assertEquals(1, list.size());
+//    }
+	
+   public void testTimerStartDuration() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStartDuration.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        Thread.sleep(250);
+        assertEquals(0, list.size());
+        ksession.fireAllRules();
+
+        Thread.sleep(3000);
+
+        assertEquals(1, list.size());
+    }
+   
+
 
 	public void testTimerStartCron() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStartCron.bpmn2");
@@ -2747,6 +2915,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
 				logger.error(error.toString());
+				System.out.println(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");

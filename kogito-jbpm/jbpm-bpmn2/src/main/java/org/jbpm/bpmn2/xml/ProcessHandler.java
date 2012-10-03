@@ -433,9 +433,11 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         StateBasedNode compositeNode = (StateBasedNode) attachedNode;
                         String timeDuration = (String) node.getMetaData().get("TimeDuration");
                         String timeCycle = (String) node.getMetaData().get("TimeCycle");
+                        String timeDate = (String) node.getMetaData().get("TimeDate");
                         Timer timer = new Timer();
                         if (timeDuration != null) {
                         	timer.setDelay(timeDuration);
+                        	timer.setTimeType(Timer.TIME_DURATION);
                             compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
                                 (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
                                 "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeDuration + "\", null);"));
@@ -447,9 +449,16 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                 timer.setPeriod(period);
                         	}
                         	timer.setDelay(timeCycle);
+                        	timer.setTimeType(Timer.TIME_CYCLE);
                             compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
                                 (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
                                 "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "\", null);"));
+                        } else if (timeDate != null) {
+                            timer.setDate(timeDate);
+                            timer.setTimeType(Timer.TIME_DATE);
+                            compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
+                                (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
+                                "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeDate + "\", null);"));
                         }
                     } else if (type.startsWith("Compensate-")) {
                     	String activityRef = (String) node.getMetaData().get("ActivityRef");

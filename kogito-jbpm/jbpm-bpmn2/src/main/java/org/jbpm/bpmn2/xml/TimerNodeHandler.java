@@ -39,11 +39,19 @@ public class TimerNodeHandler extends AbstractNodeHandler {
 		xmlDump.append(">" + EOL);
 		xmlDump.append("      <timerEventDefinition>" + EOL);
 		Timer timer = timerNode.getTimer(); 
-		if (timer != null && timer.getDelay() != null) {
-			if (timer.getPeriod() == null) {
+		if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
+			if (timer.getTimeType() == Timer.TIME_DURATION) {
 			    xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
-			} else {
-				xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);			}
+			} else if (timer.getTimeType() == Timer.TIME_CYCLE) {
+				
+			    if (timer.getPeriod() != null) {
+			        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
+			    } else {
+			        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeCycle>" + EOL);
+			    }
+			} else if (timer.getTimeType() == Timer.TIME_DATE) {
+                xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDate>" + EOL);           
+            }
 		}
 		xmlDump.append("      </timerEventDefinition>" + EOL);
 		endNode("intermediateCatchEvent", xmlDump);

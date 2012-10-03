@@ -181,6 +181,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             if ("timerEventDefinition".equals(nodeName)) {
                 String timeDuration = null;
                 String timeCycle = null;
+                String timeDate = null;
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
                 while (subNode instanceof Element) {
                     String subNodeName = subNode.getNodeName();
@@ -189,6 +190,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                         break;
                     } else if ("timeCycle".equals(subNodeName)) {
                         timeCycle = subNode.getTextContent();
+                        break;
+                    } else if ("timeDate".equals(subNodeName)) {
+                        timeDate = subNode.getTextContent();
                         break;
                     }
                     subNode = subNode.getNextSibling();
@@ -207,6 +211,13 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeCycle", timeCycle);
+                } else if (timeDate != null && timeDate.trim().length() > 0) {
+                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    EventTypeFilter eventFilter = new EventTypeFilter();
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDate);
+                    eventFilters.add(eventFilter);
+                    eventNode.setEventFilters(eventFilters);
+                    eventNode.setMetaData("TimeDate", timeDate);
                 }
             }
             xmlNode = xmlNode.getNextSibling();

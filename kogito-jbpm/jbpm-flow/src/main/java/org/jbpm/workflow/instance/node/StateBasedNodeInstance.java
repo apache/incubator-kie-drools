@@ -37,6 +37,7 @@ import org.drools.spi.Activation;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
+import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
@@ -110,15 +111,75 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                 timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(period));
             }
     	} else {
-	    	timerInstance.setDelay(resolveValue(timer.getDelay()));
-	    	if (timer.getPeriod() == null) {
-	    		timerInstance.setPeriod(0);
-	    	} else {
-	    		timerInstance.setPeriod(resolveValue(timer.getPeriod()));
-	    	}
+    	    configureTimerInstance(timer, timerInstance);
     	}
     	timerInstance.setTimerId(timer.getId());
     	return timerInstance;
+    }
+    
+    protected void configureTimerInstance(Timer timer, TimerInstance timerInstance) {
+        String s = null;
+        long duration = -1;
+        switch (timer.getTimeType()) {
+        case Timer.TIME_CYCLE:
+            if (timer.getPeriod() != null) {
+                timerInstance.setDelay(resolveValue(timer.getDelay()));
+                if (timer.getPeriod() == null) {
+                    timerInstance.setPeriod(0);
+                } else {
+                    timerInstance.setPeriod(resolveValue(timer.getPeriod()));
+                }
+            } else {
+                // when using ISO date/time period is not set
+                long[] repeatValues = null;
+                try {
+                    repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                } catch (RuntimeDroolsException e) {
+                    // cannot parse delay, trying to interpret it
+                    s = resolveVariable(timer.getDelay());
+                    repeatValues = DateTimeUtils.parseRepeatableDateTime(s);
+                }
+                if (repeatValues.length == 3) {
+                    int parsedReapedCount = (int)repeatValues[0];
+                    if (parsedReapedCount > -1) {
+                        timerInstance.setRepeatLimit(parsedReapedCount+1);
+                    }
+                    timerInstance.setDelay(repeatValues[1]);
+                    timerInstance.setPeriod(repeatValues[2]);
+                } else {
+                    timerInstance.setDelay(repeatValues[0]);
+                    timerInstance.setPeriod(0);
+                }
+            }
+            break;
+        case Timer.TIME_DURATION:
+
+            try {
+                duration = DateTimeUtils.parseDuration(timer.getDelay());
+            } catch (RuntimeDroolsException e) {
+                // cannot parse delay, trying to interpret it
+                s = resolveVariable(timer.getDelay());
+                duration = DateTimeUtils.parseDuration(s);
+            }
+            timerInstance.setDelay(duration);
+            timerInstance.setPeriod(0);
+            break;
+        case Timer.TIME_DATE:
+            try {
+                duration = DateTimeUtils.parseDateAsDuration(timer.getDate());
+            } catch (RuntimeDroolsException e) {
+                // cannot parse delay, trying to interpret it
+                s = resolveVariable(timer.getDate());
+                duration = DateTimeUtils.parseDateAsDuration(s);
+            }
+            timerInstance.setDelay(duration);
+            timerInstance.setPeriod(0);
+            break;
+
+        default:
+            break;
+        }
+
     }
     
     private long resolveValue(String s) {

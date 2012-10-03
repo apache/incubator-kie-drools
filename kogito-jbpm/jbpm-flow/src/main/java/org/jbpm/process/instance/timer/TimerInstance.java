@@ -34,6 +34,7 @@ public class TimerInstance {
     private Date activated;
     private Date lastTriggered;
     private long processInstanceId;
+    private int repeatLimit = -1;
     
     public long getId() {
         return id;
@@ -103,6 +104,14 @@ public class TimerInstance {
     public String toString() {
         return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", jobHandle=" + jobHandle + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId=" + processInstanceId
                + "]";
+    }
+
+    public int getRepeatLimit() {
+        return repeatLimit;
+    }
+
+    public void setRepeatLimit(int stopAfter) {
+        this.repeatLimit = stopAfter;
     }
     
 }
