@@ -68,7 +68,7 @@ public class BedDesignation extends AbstractPersistable {
         return admissionPart.getPatient().getAge();
     }
 
-    public int getPatientPreferredMaximumRoomCapacity() {
+    public Integer getPatientPreferredMaximumRoomCapacity() {
         return admissionPart.getPatient().getPreferredMaximumRoomCapacity();
     }
 
