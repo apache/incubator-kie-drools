@@ -11758,4 +11758,20 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
     }
+
+    @Test
+    public void testCommentWithCommaInRHS() {
+        // JBRULES-3648
+        String str = "import org.drools.*;\n" +
+                "rule R1 when\n" +
+                "   $p : Person( age < name.length ) \n" +
+                "then\n" +
+                "   insertLogical(new Person(\"Mario\",\n" +
+                "       // this is the age,\n" +
+                "       38));" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    }
 }
