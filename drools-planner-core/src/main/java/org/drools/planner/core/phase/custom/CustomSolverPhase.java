@@ -20,7 +20,7 @@ import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 
 /**
- * A CustomSolverPhase is a {@link SolverPhase} which uses the brute force algorithm
+ * A {@link CustomSolverPhase} is a {@link SolverPhase} which uses the brute force algorithm
  * @see SolverPhase
  * @see AbstractSolverPhase
  * @see DefaultCustomSolverPhase

@@ -20,7 +20,7 @@ import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 
 /**
- * A LocalSearchSolverPhase is a {@link SolverPhase} which uses a local search algorithm,
+ * A {@link LocalSearchSolverPhase} is a {@link SolverPhase} which uses a local search algorithm,
  * such as tabu search, simulated annealing, ...
  * @see SolverPhase
  * @see AbstractSolverPhase
