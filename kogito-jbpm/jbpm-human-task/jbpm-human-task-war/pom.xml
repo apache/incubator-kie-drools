@@ -153,6 +153,18 @@
               </archive>
             </configuration>
           </execution>
+          <execution>
+            <id>as5</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/human-task-war-as5.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

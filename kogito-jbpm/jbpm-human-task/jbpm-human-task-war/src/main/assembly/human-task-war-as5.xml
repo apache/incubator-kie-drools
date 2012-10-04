@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly
+  xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <!-- Note: This works on jboss-as-5.1 -->
+  <id>AS5</id>
+  <formats>
+    <format>war</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/upacked-war</directory>
+      <outputDirectory>/</outputDirectory>
+      <excludes>
+        <exclude>WEB-INF/classes/META-INF/persistence.xml</exclude>
+        <exclude>WEB-INF/lib/netty-*.jar</exclude>
+        <exclude>WEB-INF/lib/hornetq-*.jar</exclude>
+
+        <!-- possible signature info -->
+        <exclude>META-INF/*.SF</exclude>
+        <exclude>META-INF/*.RSA</exclude>
+
+        <!-- hibernate 3 transitive deps -->
+        <exclude>WEB-INF/lib/hibernate*.jar</exclude>
+
+        <!-- other -->
+        <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
+        <exclude>WEB-INF/lib/ejb3-persistence-1.0.2.GA.jar</exclude>
+        <exclude>WEB-INF/lib/javassist-3.4.GA.jar</exclude>
+        <exclude>WEB-INF/lib/javassist-3.14.0-GA.jar</exclude>
+        
+      </excludes>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <source>src/main/assembly/resources/ht-persistence-JPA1.xml</source>
+      <destName>WEB-INF/classes/META-INF/persistence.xml</destName>
+    </file>
+  </files>
+
+</assembly>
