@@ -113,10 +113,15 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                         seriesList.get(i).add(timeMillisSpend, levelValues[i]);
                     }
                 }
+                // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
                 long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                 double[] bestScoreLevels = singleBenchmark.getScore().toDoubleLevels();
                 for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
+                    if (i >= seriesList.size()) {
+                        seriesList.add(new XYSeries(
+                                singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
+                    }
                     seriesList.get(i).add(timeMillisSpend, bestScoreLevels[i]);
                 }
                 if (singleStatistic.getPointList().size() <= 1) {
