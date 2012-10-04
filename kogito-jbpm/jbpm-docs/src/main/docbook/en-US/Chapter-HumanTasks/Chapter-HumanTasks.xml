@@ -523,28 +523,74 @@
       <para>Just like any other external service, the human task service can be integrated with 
       the jBPM engine by registering a work item handler that translates the abstract 
       work item (in this case a human task) to a specific invocation of a service (in this case, the jBPM
-      implementation of the human task service).  This work item handler has been implemented in the
-      org.jbpm.process.workitem.wsht.WSHumanTaskHandler class in the jbpm-human-task module,
-      so that you can register this work item handler like this:</para>
+      implementation of the human task service). There are several implementations of a work item handler available
+      that can be selected depending on following factors:
+      <itemizedlist>
+        <listitem>transport used (HornetQ, Mina, JMS)</listitem>
+        <listitem>local interaction - same transaction boundary as the engine</listitem>
+        <listitem>mode of interaction - synchronous or asynchronous</listitem>
+      </itemizedlist>
+      Here is a list of all available work item handlers for human tasks:
+      <table>
+      <title>Work item handlers for human task</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Class name</entry>
+          <entry>Module</entry>
+          <entry>Mode</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler</code></entry>
+          <entry>jbpm-human-task-core</entry>
+          <entry>Local</entry>
+        </row>
+        <row>
+          <entry><code>org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler</code></entry>
+          <entry>jbpm-human-task-hornetq</entry>
+          <entry>Async</entry>
+        </row>
+        <row>
+          <entry><code>org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler</code></entry>
+          <entry>jbpm-human-task-hornetq</entry>
+          <entry>Sync</entry>
+        </row>
+        <row>
+          <entry><code>org.jbpm.process.workitem.wsht.AsyncMinaHTWorkItemHandler</code></entry>
+          <entry>jbpm-human-task-mina</entry>
+          <entry>Async</entry>
+        </row>
+        <row>
+          <entry><code>org.jbpm.process.workitem.wsht.MinaHTWorkItemHandler</code></entry>
+          <entry>jbpm-human-task-mina</entry>
+          <entry>Sync</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+      Once you select the one that meets your needs you can register this work item handler like this:</para>
       <programlisting language="java">StatefulKnowledgeSession ksession = ...;
-ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());</programlisting>
-
-      <para>If you are using persistence, you should use the CommandBasedWSHumanTaskHandler
-      instead (see the org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler class in the 
-      jbpm-human-task module), like this:</para>
-      <programlisting language="java">StatefulKnowledgeSession ksession = ...;
-ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler());</programlisting>
+ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new AsyncHornetQHTWorkItemHandler(ksession));</programlisting>
 
       <para>By default, this handler will connect to the human task service on the local
-      machine on port 9123.  You can easily change the address and port of the human task
-      service that should be used by by invoking the setConnection(ipAddress, port)
-      method on the WSHumanTaskHandler.</para>
+      machine on port 5445 via hornetq.  You can easily change connection details of the human task
+      service by either building TaskClient yourself and pass it as handler constructor argument
+      or by setting ip address and port number after handler is created.</para>
+       
+     <note>
+       Important to note is that when there is requirement to use multiple knowledge sessions (meaning every
+       session will have a dedicated work item handler for human tasks) you must configure handler to react only
+       to tasks that were initiated by that session that is attached to the handler to avoid duplicated activations.
+       <programlisting language="java">new AsyncHornetQHTWorkItemHandler(ksession, true))</programlisting>
+     </note>
       
       <para>The communication between the human task service and the process engine, or any task client, 
       is message based. While the client/server transport mechanism is pluggable (allowing different 
-      implementations), the default is Mina (<ulink url="http://mina.apache.org/">http://mina.apache.org/</ulink>). 
-      An alternative implementation using HornetQ is also available.</para>
-
+      implementations), the default is HornetQ. 
+      An alternative implementation using Mina (<ulink url="http://mina.apache.org/">http://mina.apache.org/</ulink>)
+       is also available.</para>
     </section>
 
     <section>
