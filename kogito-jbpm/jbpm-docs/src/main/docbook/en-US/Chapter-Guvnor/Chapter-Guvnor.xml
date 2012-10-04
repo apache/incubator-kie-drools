@@ -59,5 +59,33 @@
   </itemizedlist>
 
   <para>If you follow these rules, your processes, forms and images should show up without any issues in the jBPM-console.</para>
+  
+  <section>
+    <title>Knowledge Agent</title>
+    
+    <para>When you use the jBPM console, it will be using a knowledge agent to automatically update
+    the knowledge base inside the console based on the resources available on the Guvnor repository.
+    But you could also create a knowledge base from packages built on Guvnor yourself:</para>
+    
+<programlisting language="java">ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+sconf.setProperty( "drools.resource.scanner.interval", "10" ); // every 10s
+ResourceFactory.getResourceChangeScannerService().configure( sconf );
+ResourceFactory.getResourceChangeScannerService().start();
+ResourceFactory.getResourceChangeNotifierService().start();
+KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+aconf.setProperty("drools.agent.newInstance", "false");
+KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor changeset", aconf);
+kagent.applyChangeSet(ResourceFactory.newClassPathResource("changesetGuvnor.xml"));
+KnowledgeBase kbase = kagent.getKnowledgeBase();
+</programlisting>
+
+<programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set' xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd'&gt;
+   &lt;add&gt;
+      &lt;resource source='http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST' type='PKG' basicAuthentication='enabled' username='admin' password='admin'/&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>    
+
+  </section>
 
 </chapter>

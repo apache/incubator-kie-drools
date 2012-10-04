@@ -81,14 +81,74 @@
     code snippet shows how to create a knowledge base consisting of only one process 
     definition (using in this case a resource from the classpath).</para>
 
-<programlisting language="java">
-KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+<programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add(ResourceFactory.newClassPathResource("MyProcess.bpmn"), ResourceType.BPMN2);
 KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 </programlisting>
 
     <para>The ResourceFactory has similar methods to load files from file system, from
     URL, InputStream, Reader, etc.</para>
+    
+    <para>If you don't want to list all resources in your Java code, you could use a
+    configuration file, called a changeset, to define these.  These are simple XML configuration
+    files that then list the resources.  For example:</para>
+    
+<programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set' xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd'&gt;
+   &lt;add&gt;
+      &lt;resource source='file:/path_to_process/MyProcess.bpmn' type='BPMN2'/&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+
+    <para>You can also use a change set to load all processes from one or multiple folder for
+    example:</para>
+
+<programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set' xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd'&gt;
+   &lt;add&gt;
+      &lt;resource source='file:/path_to_process/folder1/' type='BPMN2'/&gt;
+      &lt;resource source='file:/path_to_process/folder2/' type='BPMN2'/&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+
+    <para>You can create a process from a changeset file by using the ResourceType CHANGE_SET:</para>
+
+<programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add(ResourceFactory.newClassPathResource("changeset.xml"), ResourceType.CHANGE_SET);
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+</programlisting>
+
+    <para>You can also use a knowledge agent to create a knowledge base.  The main advantage
+    of a knowledge agent is that you can configure it to automatically update the knowledge
+    base if the resource(s) it is based on are updated.  When initializing the knowledge agent,
+    you need to use a changeset to define which resources it should monitor.  This could either
+    be files, or folders, in which case it will automatically update itself for all files added,
+    updated or removing in that folder.  For example, you could use the following
+    snippet to create a kbase from a folder on the file system, and it will check every ten
+    seconds (this is configurable of course) for updates, and will add, update or remove processes
+    based on updates.  </para>
+
+<programlisting language="java">ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+sconf.setProperty( "drools.resource.scanner.interval", "10" ); // every 10s
+ResourceFactory.getResourceChangeScannerService().configure( sconf );
+ResourceFactory.getResourceChangeScannerService().start();
+ResourceFactory.getResourceChangeNotifierService().start();
+KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+aconf.setProperty("drools.agent.newInstance", "false");
+KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Folder changeset", aconf);
+kagent.applyChangeSet(ResourceFactory.newClassPathResource("changesetFolder.xml"));
+KnowledgeBase kbase = kagent.getKnowledgeBase();
+</programlisting>
+
+<programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set' xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd'&gt;
+   &lt;add&gt;
+      &lt;resource source='file:/path_to_process/folder1/' type='BPMN2'/&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+
+    <para>A knowledge agent can also load a kbase from the Guvnor repository.  An example
+    is provided in the process repository chapter.</para>
 
   </section>
 
@@ -100,16 +160,14 @@ KnowledgeBase kbase = kbuilder.newKnowledgeBase();
     signal events, etc.  The following code snippet shows how easy it is to create
     a session based on the previously created knowledge base, and to start a process (by id).</para>
 
-<programlisting language="java">
-StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+<programlisting language="java">StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
 </programlisting>
 
     <para>The <code>ProcessRuntime</code> interface defines all the session methods
     for interacting with processes, as shown below.</para>
 
-<programlisting language="java">
-	/**
+<programlisting language="java">	/**
 	 * Start a new process instance.  The process (definition) that should
 	 * be used is referenced by the given process id.
 	 * 
@@ -216,8 +274,7 @@ ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
     and node instance linked to the event.  You can use this API to register your own
     event listeners.</para>
 
-<programlisting language="java">
-public interface ProcessEventListener {
+<programlisting language="java">public interface ProcessEventListener {
 
   void beforeProcessStarted( ProcessStartedEvent event );
   void afterProcessStarted( ProcessStartedEvent event );
@@ -285,8 +342,7 @@ public interface ProcessEventListener {
     logger requires the interval (in milliseconds) after which the events should be saved.
     You should always close the logger at the end of your application.</para>
 
-<programlisting language="java">
-KnowledgeRuntimeLogger logger =
+<programlisting language="java">KnowledgeRuntimeLogger logger =
     KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "test" );
 // add invocations to the process engine here,
 // e.g. ksession.startProcess(processId);
