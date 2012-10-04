@@ -126,7 +126,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 }
                 if (singleStatistic.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
-                    renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
+                    renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
                 }
             }
             if (singleBenchmark.getSolverBenchmark().isFavorite()) {
