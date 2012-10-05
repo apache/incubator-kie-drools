@@ -51,7 +51,6 @@ public class ValuePlacer extends AbstractPlacer {
         ConstructionHeuristicMoveScope maxMoveScope = null;
 
         Object entity = stepScope.getEntity();
-        int selectedCount = 0;
         int moveIndex = 0;
         for (Object value : valueSelector) {
             ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
@@ -68,7 +67,7 @@ public class ValuePlacer extends AbstractPlacer {
                     // TODO for non explicit Best Fit *, default to random picking from a maxMoveScopeList
                     maxMoveScope = moveScope;
                 }
-                if (selectedCount >= selectedCountLimit) {
+                if (moveIndex >= selectedCountLimit) {
                     break;
                 }
             }
