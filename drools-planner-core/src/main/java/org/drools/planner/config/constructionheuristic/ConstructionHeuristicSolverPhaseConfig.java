@@ -21,8 +21,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.config.constructionheuristic.placer.entity.EntityPlacerConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
+import org.drools.planner.core.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
@@ -30,6 +34,7 @@ import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGr
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
+import org.drools.planner.core.constructionheuristic.placer.entity.EntityPlacer;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -39,6 +44,8 @@ import org.drools.planner.core.heuristic.selector.variable.PlanningValueSelectio
 import org.drools.planner.core.heuristic.selector.variable.PlanningValueSelector;
 import org.drools.planner.core.heuristic.selector.variable.PlanningValueWalker;
 import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
+import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 
@@ -50,6 +57,9 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
     protected ConstructionHeuristicType constructionHeuristicType = null;
     protected ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = null;
+
+    @XStreamImplicit
+    protected List<EntityPlacerConfig> entityPlacerConfigList = null;
 
     public ConstructionHeuristicType getConstructionHeuristicType() {
         return constructionHeuristicType;
@@ -67,14 +77,24 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         this.constructionHeuristicPickEarlyType = constructionHeuristicPickEarlyType;
     }
 
+    public List<EntityPlacerConfig> getEntityPlacerConfigList() {
+        return entityPlacerConfigList;
+    }
+
+    public void setEntityPlacerConfigList(List<EntityPlacerConfig> entityPlacerConfigList) {
+        this.entityPlacerConfigList = entityPlacerConfigList;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
-    // TODO rename GreedyFitSolverPhase to ConstructionHeuristicSolverPhase
-    public GreedyFitSolverPhase buildSolverPhase(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+
+    // TODO downcast return type SolverPhase
+    public SolverPhase buildSolverPhase(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             ScoreDefinition scoreDefinition, Termination solverTermination) {
         if (constructionHeuristicType != null) {
+            // TODO delete GreedyFitSolverPhase
             DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
             configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition, solverTermination);
             greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
@@ -83,18 +103,34 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
             }
             return greedySolverPhase;
-        } else if (false) {
+        } else if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
             if (constructionHeuristicPickEarlyType != null) {
-                // TODO throw exception
+                // TODO throw decent exception
+                throw new UnsupportedOperationException();
             }
-            // TODO support detailed configuration
-            throw new UnsupportedOperationException("Detailed configuration is not yet implemented.");
+
+
+            DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
+            configureSolverPhase(phase, environmentMode, scoreDefinition, solverTermination);
+
+            List<EntityPlacer> entityPlacerList = new ArrayList<EntityPlacer>(entityPlacerConfigList.size());
+            for (EntityPlacerConfig entityPlacerConfig : entityPlacerConfigList) {
+                EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(
+                        environmentMode, solutionDescriptor, phase.getTermination());
+                entityPlacerList.add(entityPlacer);
+            }
+            phase.setEntityPlacerList(entityPlacerList);
+            if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+                phase.setAssertStepScoreIsUncorrupted(true);
+            }
+            return phase;
         } else {
             throw new IllegalArgumentException("A constructionHeuristic requires configuration, " +
                     "for example a constructionHeuristicType.");
         }
     }
 
+    @Deprecated
     private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector(SolutionDescriptor solutionDescriptor) {
         GreedyPlanningEntitySelector greedyPlanningEntitySelector = new GreedyPlanningEntitySelector();
 
@@ -115,6 +151,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         return greedyPlanningEntitySelector;
     }
 
+    @Deprecated
     private GreedyDecider buildGreedyDecider(SolutionDescriptor solutionDescriptor, EnvironmentMode environmentMode) {
         DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
 
@@ -149,6 +186,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         return greedyDecider;
     }
 
+    @Deprecated
     private GreedyForager buildGreedyForager() {
         GreedyForager forager = new GreedyForager();
         ConstructionHeuristicPickEarlyType pickEarlyType = (this.constructionHeuristicPickEarlyType == null)

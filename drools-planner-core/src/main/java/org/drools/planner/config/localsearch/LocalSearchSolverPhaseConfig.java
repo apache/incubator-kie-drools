@@ -98,9 +98,9 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     }
 
     private Decider buildDecider(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            ScoreDefinition scoreDefinition, Termination termination) {
+            ScoreDefinition scoreDefinition, Termination phaseTermination) {
         DefaultDecider decider = new DefaultDecider();
-        decider.setTermination(termination);
+        decider.setTermination(phaseTermination);
         MoveSelector moveSelector = buildMoveSelector(environmentMode, solutionDescriptor);
         decider.setMoveSelector(moveSelector);
         decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
