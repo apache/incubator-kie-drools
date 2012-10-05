@@ -45,8 +45,8 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseStarted(localSearchSolverPhaseScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
         for (double startingTemperatureLevel : startingTemperature.toDoubleLevels()) {
             if (startingTemperatureLevel < 0.0) {
                 throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
@@ -59,8 +59,8 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseEnded(localSearchSolverPhaseScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         startingTemperatureLevels = null;
         temperatureLevels = null;
         levelsLength = -1;
@@ -96,9 +96,9 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        super.stepEnded(localSearchStepScope);
-        double timeGradient = localSearchStepScope.getTimeGradient();
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        super.stepEnded(stepScope);
+        double timeGradient = stepScope.getTimeGradient();
         double reverseTimeGradient = 1.0 - timeGradient;
         temperatureLevels = new double[levelsLength];
         for (int i = 0; i < levelsLength; i++) {

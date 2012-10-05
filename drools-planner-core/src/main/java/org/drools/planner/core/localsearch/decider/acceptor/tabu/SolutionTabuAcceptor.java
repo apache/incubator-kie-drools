@@ -40,16 +40,16 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
     }
 
     @Override
-    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope) {
+    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
         // TODO this should be better done in stepEnded
-        return Collections.singletonList(localSearchStepScope.createOrGetClonedSolution());
+        return Collections.singletonList(stepScope.createOrGetClonedSolution());
     }
     
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseStarted(localSearchSolverPhaseScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
         // Add the starting solution to the tabu list
-        Object tabu = localSearchSolverPhaseScope.getWorkingSolution().cloneSolution();
+        Object tabu = phaseScope.getWorkingSolution().cloneSolution();
         tabuToStepIndexMap.put(tabu, 0); // TODO should -1 when AbstractTabuAcceptor can handle that
         tabuSequenceList.add(tabu);
     }

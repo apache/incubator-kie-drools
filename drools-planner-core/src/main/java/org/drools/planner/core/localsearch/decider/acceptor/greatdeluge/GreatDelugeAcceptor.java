@@ -44,7 +44,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         if (waterLevelUpperBoundRate < 1.0) {
             throw new IllegalArgumentException("The greatDelugeWaterLevelUpperBoundRate (" + waterLevelUpperBoundRate
                     + ") should be 1.0 or higher.");
@@ -53,8 +53,8 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
             throw new IllegalArgumentException("The greatDelugeWaterRisingRate (" + waterRisingRate
                     + ") should be between 0.0 and 1.0 (preferably very close to 0.0).");
         }
-        waterLevelScore = localSearchSolverPhaseScope.getBestScore().multiply(waterLevelUpperBoundRate);
-        Score perfectMaximumScore = localSearchSolverPhaseScope.getScoreDefinition().getPerfectMaximumScore();
+        waterLevelScore = phaseScope.getBestScore().multiply(waterLevelUpperBoundRate);
+        Score perfectMaximumScore = phaseScope.getScoreDefinition().getPerfectMaximumScore();
         if (waterLevelScore.compareTo(perfectMaximumScore) > 0) {
             throw new IllegalArgumentException("The waterLevelScore (" + waterLevelScore
                     + ") should not be higher than the perfectMaximumScore(" + perfectMaximumScore + ").");
@@ -70,12 +70,12 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        if (localSearchStepScope.getStepIndex() == localSearchStepScope.getPhaseScope().getBestSolutionStepIndex()) {
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        if (stepScope.getStepIndex() == stepScope.getPhaseScope().getBestSolutionStepIndex()) {
             // New best score
-            waterLevelScore = localSearchStepScope.getPhaseScope().getBestScore().multiply(waterLevelUpperBoundRate);
+            waterLevelScore = stepScope.getPhaseScope().getBestScore().multiply(waterLevelUpperBoundRate);
         } else {
-            Score perfectMaximumScore = localSearchStepScope.getPhaseScope().getScoreDefinition()
+            Score perfectMaximumScore = stepScope.getPhaseScope().getScoreDefinition()
                     .getPerfectMaximumScore();
             Score waterLevelAugend = perfectMaximumScore.subtract(waterLevelScore).multiply(waterRisingRate);
             waterLevelScore = waterLevelScore.add(waterLevelAugend);

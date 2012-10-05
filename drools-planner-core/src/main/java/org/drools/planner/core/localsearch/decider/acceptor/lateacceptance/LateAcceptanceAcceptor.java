@@ -38,11 +38,11 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseStarted(localSearchSolverPhaseScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
         validate();
         previousScores = new Score[lateAcceptanceSize];
-        Score initialScore = localSearchSolverPhaseScope.getBestScore();
+        Score initialScore = phaseScope.getBestScore();
         for (int i = 0; i < previousScores.length; i++) {
             previousScores[i] = initialScore;
         }
@@ -57,8 +57,8 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseEnded(localSearchSolverPhaseScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         previousScores = null;
         lateScoreIndex = -1;
     }
@@ -71,9 +71,9 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        super.stepEnded(localSearchStepScope);
-        previousScores[lateScoreIndex] = localSearchStepScope.getScore();
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        super.stepEnded(stepScope);
+        previousScores[lateScoreIndex] = stepScope.getScore();
         lateScoreIndex = (lateScoreIndex + 1) % lateAcceptanceSize;
     }
 

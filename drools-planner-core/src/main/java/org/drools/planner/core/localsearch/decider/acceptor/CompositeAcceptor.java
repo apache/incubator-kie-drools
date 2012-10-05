@@ -48,16 +48,16 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.phaseStarted(localSearchSolverPhaseScope);
+            acceptor.phaseStarted(phaseScope);
         }
     }
 
     @Override
-    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
+    public void stepStarted(LocalSearchStepScope stepScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.stepStarted(localSearchStepScope);
+            acceptor.stepStarted(stepScope);
         }
     }
 
@@ -72,16 +72,16 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope stepScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.stepEnded(localSearchStepScope);
+            acceptor.stepEnded(stepScope);
         }
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.phaseEnded(localSearchSolverPhaseScope);
+            acceptor.phaseEnded(phaseScope);
         }
     }
 

@@ -65,8 +65,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseStarted(localSearchSolverPhaseScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
         validate();
         tabuToStepIndexMap = new HashMap<Object, Integer>(tabuSize + fadingTabuSize);
         tabuSequenceList = new LinkedList<Object>();
@@ -87,8 +87,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseEnded(localSearchSolverPhaseScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         tabuToStepIndexMap = null;
         tabuSequenceList = null;
     }
@@ -157,9 +157,9 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope stepScope) {
         int maximumTabuListSize = tabuSize + fadingTabuSize; // is at least 1
-        int tabuStepIndex = localSearchStepScope.getStepIndex();
+        int tabuStepIndex = stepScope.getStepIndex();
         // Remove the oldest tabu(s)
         for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {
             Object oldTabu = it.next();
@@ -176,7 +176,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             tabuToStepIndexMap.remove(oldTabu);
         }
         // Add the new tabu(s)
-        Collection<? extends Object> tabus = findNewTabu(localSearchStepScope);
+        Collection<? extends Object> tabus = findNewTabu(stepScope);
         for (Object tabu : tabus) {
             // Push tabu to the end of the line
             if (tabuToStepIndexMap.containsKey(tabu)) {
@@ -190,6 +190,6 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     protected abstract Collection<? extends Object> findTabu(LocalSearchMoveScope moveScope);
 
-    protected abstract Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope);
+    protected abstract Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope);
 
 }

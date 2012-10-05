@@ -45,7 +45,7 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         if (startingTemperature <= 0.0) {
             throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
                     + ") cannot be negative or zero.");
@@ -82,8 +82,8 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        super.stepEnded(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        super.stepEnded(stepScope);
         temperature *= temperatureSurvival;
     }
 

@@ -41,12 +41,12 @@ public class MoveTabuAcceptor extends AbstractTabuAcceptor {
     }
 
     @Override
-    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope) {
+    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
         Move tabuMove;
         if (useUndoMoveAsTabuMove) {
-            tabuMove = localSearchStepScope.getUndoStep();
+            tabuMove = stepScope.getUndoStep();
         } else {
-            tabuMove = localSearchStepScope.getStep();
+            tabuMove = stepScope.getStep();
         }
         return Collections.singletonList(tabuMove);
     }
