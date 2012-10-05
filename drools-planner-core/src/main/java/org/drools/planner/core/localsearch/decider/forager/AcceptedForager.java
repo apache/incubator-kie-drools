@@ -68,20 +68,20 @@ public class AcceptedForager extends AbstractForager {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        deciderScoreComparatorFactory.phaseStarted(localSearchSolverPhaseScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        deciderScoreComparatorFactory.phaseStarted(phaseScope);
     }
 
     @Override
-    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.stepStarted(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope stepScope) {
+        deciderScoreComparatorFactory.stepStarted(stepScope);
         scoreComparator = deciderScoreComparatorFactory.createDeciderScoreComparator();
         selectedMoveCount = 0L;
         acceptedMoveCount = 0L;
         maxScoreAcceptedList = new ArrayList<LocalSearchMoveScope>(1024);
-        maxAcceptedScore = localSearchStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxAcceptedScore = stepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         maxScoreUnacceptedList = new ArrayList<LocalSearchMoveScope>(1024);
-        maxUnacceptedScore = localSearchStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxUnacceptedScore = stepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         earlyPickedMoveScope = null;
     }
 
@@ -148,17 +148,17 @@ public class AcceptedForager extends AbstractForager {
         return earlyPickedMoveScope != null || acceptedMoveCount >= minimalAcceptedSelection;
     }
 
-    public LocalSearchMoveScope pickMove(LocalSearchStepScope localSearchStepScope) {
-        localSearchStepScope.setSelectedMoveCount(selectedMoveCount);
-        localSearchStepScope.setAcceptedMoveCount(acceptedMoveCount);
+    public LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope) {
+        stepScope.setSelectedMoveCount(selectedMoveCount);
+        stepScope.setAcceptedMoveCount(acceptedMoveCount);
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;
         } else {
-            return pickMaxScoreMoveScope(localSearchStepScope);
+            return pickMaxScoreMoveScope(stepScope);
         }
     }
 
-    protected LocalSearchMoveScope pickMaxScoreMoveScope(LocalSearchStepScope localSearchStepScope) {
+    protected LocalSearchMoveScope pickMaxScoreMoveScope(LocalSearchStepScope stepScope) {
         List<LocalSearchMoveScope> maxScoreList;
         if (maxScoreAcceptedList.isEmpty()) {
             if (maxScoreUnacceptedList.isEmpty()) {
@@ -172,18 +172,18 @@ public class AcceptedForager extends AbstractForager {
         if (maxScoreList.size() == 1) {
             return maxScoreList.get(0);
         }
-        int randomIndex = localSearchStepScope.getWorkingRandom().nextInt(maxScoreList.size());
+        int randomIndex = stepScope.getWorkingRandom().nextInt(maxScoreList.size());
         return maxScoreList.get(randomIndex);
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.stepEnded(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        deciderScoreComparatorFactory.stepEnded(stepScope);
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        deciderScoreComparatorFactory.phaseEnded(localSearchSolverPhaseScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        deciderScoreComparatorFactory.phaseEnded(phaseScope);
     }
 
     @Override
