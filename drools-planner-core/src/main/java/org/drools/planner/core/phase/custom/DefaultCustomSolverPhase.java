@@ -50,60 +50,65 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         CustomSolverPhaseScope customSolverPhaseScope = new CustomSolverPhaseScope(solverScope);
         phaseStarted(customSolverPhaseScope);
 
-        CustomStepScope customStepScope = createNextStepScope(customSolverPhaseScope, null);
+        CustomStepScope stepScope = createNextStepScope(customSolverPhaseScope, null);
         Iterator<CustomSolverPhaseCommand> commandIterator = customSolverPhaseCommandList.iterator();
         while (!termination.isPhaseTerminated(customSolverPhaseScope) && commandIterator.hasNext()) {
             CustomSolverPhaseCommand customSolverPhaseCommand = commandIterator.next();
+            stepStarted(stepScope);
             customSolverPhaseCommand.changeWorkingSolution(solverScope.getScoreDirector());
             Score score = customSolverPhaseScope.calculateScore();
-            customStepScope.setScore(score);
-            stepEnded(customStepScope);
-            customStepScope = createNextStepScope(customSolverPhaseScope, customStepScope);
+            stepScope.setScore(score);
+            stepEnded(stepScope);
+            stepScope = createNextStepScope(customSolverPhaseScope, stepScope);
         }
         phaseEnded(customSolverPhaseScope);
     }
 
-    private CustomStepScope createNextStepScope(CustomSolverPhaseScope customSolverPhaseScope, CustomStepScope completedCustomStepScope) {
-        if (completedCustomStepScope == null) {
-            completedCustomStepScope = new CustomStepScope(customSolverPhaseScope);
-            completedCustomStepScope.setScore(customSolverPhaseScope.getStartingScore());
-            completedCustomStepScope.setStepIndex(-1);
+    private CustomStepScope createNextStepScope(CustomSolverPhaseScope phaseScope, CustomStepScope completedStepScope) {
+        if (completedStepScope == null) {
+            completedStepScope = new CustomStepScope(phaseScope);
+            completedStepScope.setScore(phaseScope.getStartingScore());
+            completedStepScope.setStepIndex(-1);
         }
-        customSolverPhaseScope.setLastCompletedStepScope(completedCustomStepScope);
-        CustomStepScope customStepScope = new CustomStepScope(customSolverPhaseScope);
-        customStepScope.setStepIndex(completedCustomStepScope.getStepIndex() + 1);
-        customStepScope.setSolutionInitialized(true);
-        return customStepScope;
+        phaseScope.setLastCompletedStepScope(completedStepScope);
+        CustomStepScope stepScope = new CustomStepScope(phaseScope);
+        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
+        stepScope.setSolutionInitialized(true);
+        return stepScope;
     }
 
-    public void phaseStarted(CustomSolverPhaseScope customSolverPhaseScope) {
-        super.phaseStarted(customSolverPhaseScope);
+    public void phaseStarted(CustomSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
     }
 
-    public void stepEnded(CustomStepScope customStepScope) {
-        super.stepEnded(customStepScope);
-        boolean bestScoreImproved = customStepScope.getBestScoreImproved();
+    public void stepStarted(CustomStepScope stepScope) {
+        super.stepStarted(stepScope);
+    }
+
+    public void stepEnded(CustomStepScope stepScope) {
+        super.stepEnded(stepScope);
+        boolean bestScoreImproved = stepScope.getBestScoreImproved();
         if (forceUpdateBestSolution && !bestScoreImproved) {
-            bestSolutionRecaller.updateBestSolution(customStepScope.getPhaseScope().getSolverScope(),
-                    customStepScope.createOrGetClonedSolution());
+            bestSolutionRecaller.updateBestSolution(stepScope.getPhaseScope().getSolverScope(),
+                    stepScope.createOrGetClonedSolution());
         }
-        CustomSolverPhaseScope customSolverPhaseScope = customStepScope.getPhaseScope();
+        CustomSolverPhaseScope customSolverPhaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = customSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
-                    new Object[]{customStepScope.getStepIndex(), timeMillisSpend,
-                            customStepScope.getScore(),
+                    new Object[]{stepScope.getStepIndex(), timeMillisSpend,
+                            stepScope.getScore(),
                             bestScoreImproved ? "new" : (forceUpdateBestSolution ? "forced" : "   "),
                             customSolverPhaseScope.getBestScore()});
         }
     }
 
-    public void phaseEnded(CustomSolverPhaseScope customSolverPhaseScope) {
-        super.phaseEnded(customSolverPhaseScope);
+    public void phaseEnded(CustomSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         logger.info("Phase custom ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{customSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                customSolverPhaseScope.calculateSolverTimeMillisSpend(),
-                customSolverPhaseScope.getBestScore()});
+                new Object[]{phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                        phaseScope.calculateSolverTimeMillisSpend(),
+                        phaseScope.getBestScore()});
     }
 
 }

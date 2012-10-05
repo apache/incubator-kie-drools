@@ -43,28 +43,30 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         BruteForceSolverPhaseScope bruteForceSolverPhaseScope = new BruteForceSolverPhaseScope(solverScope);
         phaseStarted(bruteForceSolverPhaseScope);
 
-        BruteForceStepScope bruteForceStepScope = createNextStepScope(bruteForceSolverPhaseScope, null);
+        BruteForceStepScope stepScope = createNextStepScope(bruteForceSolverPhaseScope, null);
         while (!termination.isPhaseTerminated(bruteForceSolverPhaseScope) && bruteForceEntityWalker.hasWalk()) {
+            stepStarted(stepScope);
             bruteForceEntityWalker.walk();
             Score score = bruteForceSolverPhaseScope.calculateScore();
-            bruteForceStepScope.setScore(score);
-            stepEnded(bruteForceStepScope);
-            bruteForceStepScope = createNextStepScope(bruteForceSolverPhaseScope, bruteForceStepScope);
+            stepScope.setScore(score);
+            stepEnded(stepScope);
+            stepScope = createNextStepScope(bruteForceSolverPhaseScope, stepScope);
         }
         phaseEnded(bruteForceSolverPhaseScope);
     }
 
-    private BruteForceStepScope createNextStepScope(BruteForceSolverPhaseScope bruteForceSolverPhaseScope, BruteForceStepScope completedBruteForceStepScope) {
-        if (completedBruteForceStepScope == null) {
-            completedBruteForceStepScope = new BruteForceStepScope(bruteForceSolverPhaseScope);
-            completedBruteForceStepScope.setScore(bruteForceSolverPhaseScope.getStartingScore());
-            completedBruteForceStepScope.setStepIndex(-1);
+    private BruteForceStepScope createNextStepScope(BruteForceSolverPhaseScope phaseScope,
+            BruteForceStepScope completedStepScope) {
+        if (completedStepScope == null) {
+            completedStepScope = new BruteForceStepScope(phaseScope);
+            completedStepScope.setScore(phaseScope.getStartingScore());
+            completedStepScope.setStepIndex(-1);
         }
-        bruteForceSolverPhaseScope.setLastCompletedStepScope(completedBruteForceStepScope);
-        BruteForceStepScope bruteForceStepScope = new BruteForceStepScope(bruteForceSolverPhaseScope);
-        bruteForceStepScope.setStepIndex(completedBruteForceStepScope.getStepIndex() + 1);
-        bruteForceStepScope.setSolutionInitialized(true);
-        return bruteForceStepScope;
+        phaseScope.setLastCompletedStepScope(completedStepScope);
+        BruteForceStepScope stepScope = new BruteForceStepScope(phaseScope);
+        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
+        stepScope.setSolutionInitialized(true);
+        return stepScope;
     }
 
     @Override
@@ -74,32 +76,36 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
 //        bruteForceEntityWalker.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
-        super.phaseStarted(bruteForceSolverPhaseScope);
-        bruteForceEntityWalker.phaseStarted(bruteForceSolverPhaseScope);
+    public void phaseStarted(BruteForceSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        bruteForceEntityWalker.phaseStarted(phaseScope);
     }
 
-    public void stepEnded(BruteForceStepScope bruteForceStepScope) {
-        super.stepEnded(bruteForceStepScope);
-        bruteForceEntityWalker.stepEnded(bruteForceStepScope);
-        BruteForceSolverPhaseScope bruteForceSolverPhaseScope = bruteForceStepScope.getPhaseScope();
+    public void stepStarted(BruteForceStepScope stepScope) {
+        super.stepStarted(stepScope);
+    }
+
+    public void stepEnded(BruteForceStepScope stepScope) {
+        super.stepEnded(stepScope);
+        bruteForceEntityWalker.stepEnded(stepScope);
+        BruteForceSolverPhaseScope bruteForceSolverPhaseScope = stepScope.getPhaseScope();
         // TODO The steps are too fine, so debug log is too much. Yet we still want some debug indication
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
-                    new Object[]{bruteForceStepScope.getStepIndex(), timeMillisSpend,
-                            bruteForceStepScope.getScore(), (bruteForceStepScope.getBestScoreImproved() ? "new" : "   "),
+                    new Object[]{stepScope.getStepIndex(), timeMillisSpend,
+                            stepScope.getScore(), (stepScope.getBestScoreImproved() ? "new" : "   "),
                             bruteForceSolverPhaseScope.getBestScore()});
         }
     }
 
-    public void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
-        super.phaseEnded(bruteForceSolverPhaseScope);
-        bruteForceEntityWalker.phaseEnded(bruteForceSolverPhaseScope);
+    public void phaseEnded(BruteForceSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
+        bruteForceEntityWalker.phaseEnded(phaseScope);
         logger.info("Phase bruteForce ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{bruteForceSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend(),
-                bruteForceSolverPhaseScope.getBestScore()});
+                new Object[]{phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                        phaseScope.calculateSolverTimeMillisSpend(),
+                        phaseScope.getBestScore()});
     }
 
     @Override

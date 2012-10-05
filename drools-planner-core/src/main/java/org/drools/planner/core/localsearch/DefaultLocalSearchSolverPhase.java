@@ -91,18 +91,19 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         phaseEnded(phaseScope);
     }
 
-    private LocalSearchStepScope createNextStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope, LocalSearchStepScope completedLocalSearchStepScope) {
-        if (completedLocalSearchStepScope == null) {
-            completedLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
-            completedLocalSearchStepScope.setScore(localSearchSolverPhaseScope.getStartingScore());
-            completedLocalSearchStepScope.setStepIndex(-1);
-            completedLocalSearchStepScope.setTimeGradient(0.0);
+    private LocalSearchStepScope createNextStepScope(LocalSearchSolverPhaseScope phaseScope,
+            LocalSearchStepScope completedStepScope) {
+        if (completedStepScope == null) {
+            completedStepScope = new LocalSearchStepScope(phaseScope);
+            completedStepScope.setScore(phaseScope.getStartingScore());
+            completedStepScope.setStepIndex(-1);
+            completedStepScope.setTimeGradient(0.0);
         }
-        localSearchSolverPhaseScope.setLastCompletedStepScope(completedLocalSearchStepScope);
-        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
-        localSearchStepScope.setStepIndex(completedLocalSearchStepScope.getStepIndex() + 1);
-        localSearchStepScope.setSolutionInitialized(true);
-        return localSearchStepScope;
+        phaseScope.setLastCompletedStepScope(completedStepScope);
+        LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
+        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
+        stepScope.setSolutionInitialized(true);
+        return stepScope;
     }
 
     @Override
@@ -111,46 +112,46 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         decider.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseStarted(localSearchSolverPhaseScope);
-        decider.phaseStarted(localSearchSolverPhaseScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        decider.phaseStarted(phaseScope);
         // TODO maybe this restriction should be lifted to allow LocalSearch to initialize a solution too?
-        if (!localSearchSolverPhaseScope.isWorkingSolutionInitialized()) {
+        if (!phaseScope.isWorkingSolutionInitialized()) {
             throw new IllegalStateException("Phase localSearch started with an uninitialized Solution." +
                     " First initialize the Solution. For example, run a phase constructionHeuristic first.");
         }
     }
 
-    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
-        super.stepStarted(localSearchStepScope);
-        decider.stepStarted(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope stepScope) {
+        super.stepStarted(stepScope);
+        decider.stepStarted(stepScope);
     }
 
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        super.stepEnded(localSearchStepScope);
-        decider.stepEnded(localSearchStepScope);
-        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = localSearchStepScope.getPhaseScope();
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        super.stepEnded(stepScope);
+        decider.stepEnded(stepScope);
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = localSearchSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({})," +
                     " accepted/selected move count ({}/{}) for picked step ({}).",
-                    new Object[]{localSearchStepScope.getStepIndex(), timeMillisSpend,
-                            localSearchStepScope.getScore(),
-                            (localSearchStepScope.getBestScoreImproved() ? "new" : "   "),
+                    new Object[]{stepScope.getStepIndex(), timeMillisSpend,
+                            stepScope.getScore(),
+                            (stepScope.getBestScoreImproved() ? "new" : "   "),
                             localSearchSolverPhaseScope.getBestScore(),
-                            localSearchStepScope.getAcceptedMoveCount(),
-                            localSearchStepScope.getSelectedMoveCount(),
-                            localSearchStepScope.getStepString()});
+                            stepScope.getAcceptedMoveCount(),
+                            stepScope.getSelectedMoveCount(),
+                            stepScope.getStepString()});
         }
     }
 
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseEnded(localSearchSolverPhaseScope);
-        decider.phaseEnded(localSearchSolverPhaseScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
+        decider.phaseEnded(phaseScope);
         logger.info("Phase localSearch ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{localSearchSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                localSearchSolverPhaseScope.calculateSolverTimeMillisSpend(),
-                localSearchSolverPhaseScope.getBestScore()});
+                new Object[]{phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                        phaseScope.calculateSolverTimeMillisSpend(),
+                        phaseScope.getBestScore()});
     }
 
     @Override
