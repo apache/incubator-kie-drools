@@ -100,7 +100,7 @@ public class ValuePlacer extends AbstractPlacer {
             ConstructionHeuristicSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
             phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
         }
-        logger.trace("        Move index ({}), score ({}), for move ({}).",
+        logger.trace("        Move index ({}), score ({}) for move ({}).",
                 new Object[]{moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove()});
     }
 
