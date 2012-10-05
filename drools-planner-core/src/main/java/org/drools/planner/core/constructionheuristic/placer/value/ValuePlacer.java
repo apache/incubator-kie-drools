@@ -29,6 +29,12 @@ public class ValuePlacer extends AbstractPlacer {
         variableDescriptor = valueSelector.getVariableDescriptor();
         this.selectedCountLimit = selectedCountLimit;
         solverPhaseLifecycleSupport.addEventListener(valueSelector);
+        // TODO don't use Integer.MAX_VALUE as a magical value
+        if (valueSelector.isNeverEnding() && selectedCountLimit == Integer.MAX_VALUE) {
+            throw new IllegalStateException("The placer (" + this
+                    + ") with selectedCountLimit (" + selectedCountLimit + ") has valueSelector (" + valueSelector
+                    + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
+        }
     }
 
     public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {

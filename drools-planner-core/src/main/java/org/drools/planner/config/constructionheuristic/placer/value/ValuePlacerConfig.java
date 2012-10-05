@@ -61,7 +61,8 @@ public class ValuePlacerConfig extends PlacerConfig {
             Termination phaseTermination, PlanningEntityDescriptor entityDescriptor) {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+                selectedCountLimit == null ? SelectionCacheType.STEP : SelectionCacheType.JUST_IN_TIME,
+                selectedCountLimit == null ? SelectionOrder.ORIGINAL : SelectionOrder.RANDOM);
         ValuePlacer valuePlacer = new ValuePlacer(phaseTermination, valueSelector,
                 selectedCountLimit == null ? Integer.MAX_VALUE : selectedCountLimit);
         if (environmentMode == EnvironmentMode.TRACE) {
