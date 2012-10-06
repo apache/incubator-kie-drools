@@ -21,6 +21,11 @@ figure > img {
     margin: 0 auto;
 }
 
+section > img {
+    width: 100%;
+    height: 100%;
+}
+
 figure > p {
     margin: 5px 0;
     text-align: center;
