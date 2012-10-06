@@ -29,7 +29,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Construction_heuristics/greedyFirstFitNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Construction_heuristics/firstFitNQueens04.png"></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -85,7 +85,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Construction_heuristics/greedyFirstFitDecreasingNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Construction_heuristics/firstFitDecreasingNQueens04.png"></imagedata>
         </imageobject>
       </mediaobject>
 
