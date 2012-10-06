@@ -61,8 +61,8 @@
      id="base"
      inkscape:zoom="0.87666667"
      inkscape:cx="600"
-     inkscape:cy="450"
-     inkscape:window-x="1680"
+     inkscape:cy="404.37262"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
@@ -889,7 +889,7 @@
          height="19.499971"
          width="120.5"
          id="rect6294" /></flowRegion><flowPara
-       id="flowPara6296">0</flowPara></flowRoot>  <flowRoot
+       id="flowPara6296">Step 0</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6436"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -901,7 +901,7 @@
          x="118.6875"
          y="89.402069"
          style="font-size:14px;text-align:center;text-anchor:middle;fill:#5c3566" /></flowRegion><flowPara
-       id="flowPara6442">1</flowPara></flowRoot>  <flowRoot
+       id="flowPara6442">Step 1</flowPara></flowRoot>  <flowRoot
      transform="translate(-88.6875,440.59793)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot6584"
@@ -913,7 +913,7 @@
          height="19.499971"
          width="120.5"
          id="rect6588" /></flowRegion><flowPara
-       id="flowPara6590">2</flowPara></flowRoot>  <flowRoot
+       id="flowPara6590">Step 2</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot15765-2"
      style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -11102,8 +11102,8 @@
          height="60.000034"
          width="590.00006"
          id="rect9758" /></flowRegion><flowPara
-       id="flowPara10350">Uses a search path, not a search tree.</flowPara><flowPara
-       id="flowPara4844">Better scalable than exact algorithms.</flowPara></flowRoot>  <g
+       id="flowPara10350">Uses a search path, not a search tree</flowPara><flowPara
+       id="flowPara4844">=&gt; highly scalable</flowPara></flowRoot>  <g
      id="g8089-6"
      transform="translate(-70,-622.36218)">
     <rect
@@ -12931,4 +12931,16 @@
      d="m 131.53063,572.74176 -2.04463,-10.01387 10.15742,-3.00859 -3.08458,5.0348 c 7.62035,3.53832 8.49908,25.06478 0,54.3759 l -2.05639,-1.00696 c 7.61021,-29.27442 8.25714,-47.11901 0,-50.34805 l -2.97182,4.96677 z"
      style="fill:#e9b96e;fill-opacity:1;fill-rule:nonzero;stroke:#8f5902;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
      inkscape:connector-curvature="0" />
+  <text
+     sodipodi:linespacing="125%"
+     id="text5531"
+     y="91.520508"
+     x="-714.55078"
+     style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
+     xml:space="preserve"
+     transform="matrix(0,-1,1,0,0,0)"><tspan
+       y="91.520508"
+       x="-714.55078"
+       id="tspan5533"
+       sodipodi:role="line">...</tspan></text>
 </svg>

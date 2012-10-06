@@ -294,9 +294,9 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:zoom="0.87666667"
-     inkscape:cx="600"
-     inkscape:cy="450"
-     inkscape:window-x="0"
+     inkscape:cx="598.54233"
+     inkscape:cy="449.99831"
+     inkscape:window-x="1680"
      inkscape:window-y="27"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
@@ -8027,7 +8027,7 @@
          height="19.499971"
          width="120.5"
          id="rect6294" /></flowRegion><flowPara
-       id="flowPara6296">0</flowPara></flowRoot>  <flowRoot
+       id="flowPara6296">Step 0</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6436"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -8039,7 +8039,7 @@
          x="118.6875"
          y="89.402069"
          style="font-size:14px;text-align:center;text-anchor:middle;fill:#5c3566" /></flowRegion><flowPara
-       id="flowPara6442">1</flowPara></flowRoot>  <g
+       id="flowPara6442">Step 1</flowPara></flowRoot>  <g
      id="g8089-6"
      transform="translate(-70,-622.36218)">
     <rect
@@ -9249,6 +9249,12 @@
      d="m 71.530639,232.74176 -2.044636,-10.01388 10.157426,-3.00858 -3.084582,5.0348 c 7.620346,3.53832 8.499082,25.06478 0,54.3759 l -2.056388,-1.00696 c 7.610208,-29.27442 8.257138,-47.11901 0,-50.34806 l -2.97182,4.96678 z"
      id="path7245"
      sodipodi:nodetypes="cccccccc" />
+  <path
+     sodipodi:nodetypes="cc"
+     inkscape:connector-curvature="0"
+     id="path4686"
+     d="m 770,640 c 0,50 -70,120 -140,120"
+     style="color:#000000;fill:none;stroke:#a40000;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
   <flowRoot
      xml:space="preserve"
      id="flowRoot7257"
@@ -9833,6 +9839,22 @@
      id="path4497"
      inkscape:connector-curvature="0"
      mask="url(#mask7340)" />
+  <g
+     id="g6308"
+     transform="translate(-190,0)">
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       d="m 760.5,839.5 0,10"
+       id="path5536-9"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path5538-2"
+       d="m 760.5,849.73966 0,29.52062"
+       style="fill:none;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.99999998, 1.99999998;stroke-dashoffset:0"
+       sodipodi:nodetypes="cc" />
+  </g>
   <g
      transform="translate(410,-112.3622)"
      id="g4499">
@@ -10453,7 +10475,7 @@
          x="118.6875"
          y="89.402069"
          style="font-size:14px;text-align:center;text-anchor:middle;fill:#5c3566" /></flowRegion><flowPara
-       id="flowPara5453">2</flowPara></flowRoot>  <flowRoot
+       id="flowPara5453">Step 2</flowPara></flowRoot>  <flowRoot
      transform="translate(-88.6875,610.59793)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot5455"
@@ -10465,7 +10487,7 @@
          height="19.499971"
          width="120.5"
          id="rect5459" /></flowRegion><flowPara
-       id="flowPara5461">3</flowPara></flowRoot>  <g
+       id="flowPara5461">Step 3</flowPara></flowRoot>  <g
      transform="translate(-70,-282.36218)"
      id="g5463">
     <rect
@@ -11687,4 +11709,16 @@
          x="-596.3125"
          y="150.18362"
          style="font-size:14px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
-       id="flowPara4688">lost tie</flowPara></flowRoot></svg>
+       id="flowPara4688">lost tie</flowPara></flowRoot>  <text
+     sodipodi:linespacing="125%"
+     id="text5531"
+     y="91.520508"
+     x="-884.55078"
+     style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
+     xml:space="preserve"
+     transform="matrix(0,-1,1,0,0,0)"><tspan
+       y="91.520508"
+       x="-884.55078"
+       id="tspan5533"
+       sodipodi:role="line">...</tspan></text>
+</svg>

@@ -8025,7 +8025,7 @@
          height="19.499971"
          width="120.5"
          id="rect6294" /></flowRegion><flowPara
-       id="flowPara6296">0</flowPara></flowRoot>  <flowRoot
+       id="flowPara6296">Step 0</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6436"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -8037,7 +8037,7 @@
          x="118.6875"
          y="89.402069"
          style="font-size:14px;text-align:center;text-anchor:middle;fill:#5c3566" /></flowRegion><flowPara
-       id="flowPara6442">1</flowPara></flowRoot>  <g
+       id="flowPara6442">Step 1</flowPara></flowRoot>  <g
      id="g8089-6"
      transform="translate(-70,-622.36218)">
     <rect
@@ -9285,7 +9285,7 @@
          height="19.499971"
          width="120.5"
          id="rect4394" /></flowRegion><flowPara
-       id="flowPara4396">2</flowPara></flowRoot>  <g
+       id="flowPara4396">Step 2</flowPara></flowRoot>  <g
      id="g4398"
      transform="translate(-70,-282.36218)">
     <rect
@@ -9665,7 +9665,7 @@
          x="118.6875"
          y="89.402069"
          style="font-size:14px;text-align:center;text-anchor:middle;fill:#5c3566" /></flowRegion><flowPara
-       id="flowPara4582">3</flowPara></flowRoot>  <g
+       id="flowPara4582">Step 3</flowPara></flowRoot>  <g
      transform="translate(-70,-112.36218)"
      id="g4584">
     <rect
@@ -14403,6 +14403,21 @@
          width="60.000008"
          id="rect6610" /></flowRegion><flowPara
        id="flowPara6612">26</flowPara></flowRoot>  <g
+     id="g6308">
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       d="m 760.5,839.5 0,10"
+       id="path5536"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path5538"
+       d="m 760.5,849.73966 0,29.52062"
+       style="fill:none;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.99999998, 1.99999998;stroke-dashoffset:0"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
      transform="translate(600,-112.3622)"
      id="g6614">
     <rect
@@ -17501,8 +17516,8 @@
          x="43.687939"
          y="196.39967"
          style="font-size:22px;text-align:center;text-anchor:middle;fill:#a40000" /></flowRegion><flowPara
-       id="flowPara7737"></flowPara><flowPara
-       id="flowPara7744"></flowPara><flowPara
+       id="flowPara7737" /><flowPara
+       id="flowPara7744" /><flowPara
        id="flowPara7746">Tabu list</flowPara></flowRoot>  <g
      id="g7754"
      style="stroke:#5c3566"
@@ -17588,4 +17603,16 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
   </g>
+  <text
+     sodipodi:linespacing="125%"
+     id="text5531"
+     y="91.520508"
+     x="-884.55078"
+     style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
+     xml:space="preserve"
+     transform="matrix(0,-1,1,0,0,0)"><tspan
+       y="91.520508"
+       x="-884.55078"
+       id="tspan5533"
+       sodipodi:role="line">...</tspan></text>
 </svg>
