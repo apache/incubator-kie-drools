@@ -16,8 +16,6 @@
 
 package org.drools.compiler;
 
-import static org.drools.core.util.BitMaskUtil.isSet;
-
 import java.beans.IntrospectionException;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -44,7 +42,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
-
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -65,7 +62,9 @@ import org.drools.builder.conf.PropertySpecificOption;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.ProcessBuilder;
 import org.drools.compiler.xml.XmlPackageReader;
+import static org.drools.core.util.BitMaskUtil.isSet;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.DeepCloneable;
 import org.drools.core.util.DroolsStreamUtils;
@@ -81,7 +80,6 @@ import org.drools.definition.type.PropertyReactive;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
-import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.EnumClassDefinition;
 import org.drools.factmodel.EnumLiteralDefinition;
@@ -96,7 +94,6 @@ import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.io.Resource;
-import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.DescrResource;
 import org.drools.io.impl.ReaderResource;
@@ -105,9 +102,9 @@ import org.drools.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.EnumLiteralDescr;
-import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -116,6 +113,7 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.QualifiedName;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
@@ -123,7 +121,6 @@ import org.drools.lang.descr.WindowDeclarationDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
-import org.drools.lang.descr.QualifiedName;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
@@ -519,11 +516,14 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
         xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
+        Reader reader = resource.getReader();
         try {
-            xmlReader.read( resource.getReader() );
+            xmlReader.read( reader );
         } catch (final SAXException e) {
             throw new DroolsParserException( e.toString(),
                     e.getCause() );
+        } finally {
+            reader.close();
         }
         return xmlReader.getPackageDescr();
     }
@@ -567,14 +567,20 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             if (expander == null) {
                 expander = new DefaultExpander();
             }
-            String str = expander.expand( resource.getReader() );
-            if (expander.hasErrors()) {
-                this.results.addAll( expander.getErrors() );
-            }
 
-            pkg = parser.parse( str );
-            this.results.addAll( parser.getErrors() );
-            hasErrors = parser.hasErrors();
+            Reader reader = resource.getReader();
+            try {
+                String str = expander.expand( reader );
+                if (expander.hasErrors()) {
+                    this.results.addAll( expander.getErrors() );
+                }
+
+                pkg = parser.parse( str );
+                this.results.addAll( parser.getErrors() );
+                hasErrors = parser.hasErrors();
+            } finally {
+                reader.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
@@ -620,8 +626,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         this.resource = resource;
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        if (!file.parseAndLoad( resource.getReader() )) {
-            this.results.addAll( file.getErrors() );
+        Reader reader = resource.getReader();
+        try {
+            if (!file.parseAndLoad( reader )) {
+                this.results.addAll( file.getErrors() );
+            }
+        } finally {
+            reader.close();
         }
         if (this.dslFiles == null) {
             this.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
@@ -764,27 +775,32 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             reader.setClassLoader( this.configuration.getClassLoader(),
                                    null );
         }
-        ChangeSet changeSet = reader.read( resource.getReader() );
-        if (changeSet == null) {
-            // @TODO should log an error
-        }
-        for (Resource nestedResource : changeSet.getResourcesAdded()) {
-            InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-            if (iNestedResourceResource.isDirectory()) {
-                for (Resource childResource : iNestedResourceResource.listResources()) {
-                    if (( (InternalResource) childResource ).isDirectory()) {
-                        continue; // ignore sub directories
+        Reader resourceReader = resource.getReader();
+        try {
+            ChangeSet changeSet = reader.read( resourceReader );
+            if (changeSet == null) {
+                // @TODO should log an error
+            }
+            for (Resource nestedResource : changeSet.getResourcesAdded()) {
+                InternalResource iNestedResourceResource = (InternalResource) nestedResource;
+                if (iNestedResourceResource.isDirectory()) {
+                    for (Resource childResource : iNestedResourceResource.listResources()) {
+                        if (( (InternalResource) childResource ).isDirectory()) {
+                            continue; // ignore sub directories
+                        }
+                        ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
+                        addKnowledgeResource( childResource,
+                                              iNestedResourceResource.getResourceType(),
+                                              iNestedResourceResource.getConfiguration() );
                     }
-                    ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
-                    addKnowledgeResource( childResource,
+                } else {
+                    addKnowledgeResource( iNestedResourceResource,
                                           iNestedResourceResource.getResourceType(),
                                           iNestedResourceResource.getConfiguration() );
                 }
-            } else {
-                addKnowledgeResource( iNestedResourceResource,
-                                      iNestedResourceResource.getResourceType(),
-                                      iNestedResourceResource.getConfiguration() );
             }
+        } finally {
+            resourceReader.close();
         }
     }
 
@@ -795,7 +811,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if( object instanceof Collection ) {
             // KnowledgeBuilder API
             @SuppressWarnings("unchecked")
-            Collection<KnowledgePackage> pkgs = (Collection<KnowledgePackage>) object;             
+            Collection<KnowledgePackage> pkgs = (Collection<KnowledgePackage>) object;
             for( KnowledgePackage kpkg : pkgs ) {
                 addPackage( ((KnowledgePackageImp)kpkg).pkg );
             }
@@ -805,11 +821,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             addPackage( kpkg.pkg );
         } else if( object instanceof Package ) {
             // Old Drools 4 API
-            Package pkg = (Package) object;             
+            Package pkg = (Package) object;
             addPackage( pkg );
         } else if( object instanceof Package[] )  {
             // Old Drools 4 API
-            Package[] pkgs = (Package[]) object;             
+            Package[] pkgs = (Package[]) object;
             for( Package pkg : pkgs ) {
                 addPackage( pkg );
             }
