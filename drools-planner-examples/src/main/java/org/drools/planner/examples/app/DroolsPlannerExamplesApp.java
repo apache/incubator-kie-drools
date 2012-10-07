@@ -172,7 +172,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
             }
         }));
         panel.add(createExampleButton("Vehicle routing",
-                "Official competition name: Capacitated vehicle routing problem (CRVP).\n" +
+                "Official competition name: Capacitated vehicle routing problem (CRVP)\n" +
                         "Pick up all items of all customers with a few vehicles in the shortest route possible.",
                 VehicleRoutingPanel.LOGO_PATH, new Runnable() {
             public void run() {
