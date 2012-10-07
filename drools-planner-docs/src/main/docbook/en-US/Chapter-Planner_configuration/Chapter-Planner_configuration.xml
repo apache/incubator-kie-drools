@@ -178,13 +178,27 @@
       </itemizedlist>
 
       <para>Ask yourself: <emphasis>What class changes during planning?</emphasis> <emphasis>Which class has variables
-      that I want the <literal>Solver</literal> to choose for me?</emphasis> That class is a planning entity. Most use
+      that I want the <literal>Solver</literal> to change for me?</emphasis> That class is a planning entity. Most use
       cases have only 1 planning entity class.</para>
 
       <note>
         <para>In <link linkend="realTimePlanning">real-time planning</link>, problem facts can change during planning,
         because the problem itself changes. However, that doesn't make them planning entities.</para>
       </note>
+
+      <para>A good model can greatly improve the success of your planning implementation. For inspiration, take a look
+      at how the examples modeled their domain:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Planner_configuration/entityVariableAndValueExamples.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>When in doubt, it's usually the many side of a many to one relationship that is the planning entity. For
+      example in employee rostering, the planning entity class is <literal>ShiftAssignment</literal>, not
+      <literal>Employee</literal>. Vehicle routing is special, because it uses a <link
+      linkend="chainedPlanningVariable">chained planning variable</link>.</para>
 
       <para><emphasis role="bold">In Drools Planner all problems facts and planning entities are plain old JavaBeans
       (POJO's).</emphasis> You can load them from a database (JDBC/JPA/JDO), an XML file, a data repository, a noSQL
