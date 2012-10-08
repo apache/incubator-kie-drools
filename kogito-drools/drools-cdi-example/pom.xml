@@ -1,26 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
-  
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-multiproject</artifactId>
     <version>5.5.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.droolsjbpm</groupId>
   <artifactId>drools-cdi-example</artifactId>
-  <version>5.5.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
 
-  <name>drools-cdi-example</name>
-  <url>http://maven.apache.org</url>
+  <name>Drools :: CDI example</name>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <dependencies>  
+  <dependencies>
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -31,51 +24,43 @@
       <artifactId>drools-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
-    </dependency>  
-    
-    <dependency>
-        <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se-core</artifactId>
     </dependency>
-    
+
     <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-    </dependency>    
-    
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-    </dependency>        
-  
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.2</version>
-      <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jboss.arquillian</groupId>
       <artifactId>arquillian-bom</artifactId>
       <version>1.0.2.Final</version>
       <scope>import</scope>
-      <type>pom</type>          
-    </dependency>  
-   
+      <type>pom</type>
+    </dependency>
+
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>      
-      <scope>test</scope>  
-    </dependency>       
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-  
-  
+
   <build>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-      </resource>    
+      </resource>
       <resource>
         <directory>src/kbases/fol4.test1.KBase1</directory>
       </resource>
@@ -84,15 +69,8 @@
       </resource>
       <resource>
         <directory>src/kbases/fol4.test3.KBase3</directory>
-      </resource>            
+      </resource>
     </resources>
-    
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-      </testResource>
-    </testResources>
   </build>
- 
-   
+
 </project>
