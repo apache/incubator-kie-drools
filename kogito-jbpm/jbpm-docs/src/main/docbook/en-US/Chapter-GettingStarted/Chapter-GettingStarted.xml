@@ -43,15 +43,14 @@
     <para>You can also start playing around with some examples that are offered in a separate download.
     Check out the examples chapter to see how to start playing with these.</para>
     
-    <para>After that, you should be ready to start creating your own processes and integrate the engine
-    with your application, for example by starting from the installer or another example, or by starting
-    from scratch.</para>
+    <para>After reading through these chapters, you should be ready to start creating your own processes and integrate the engine
+    with your application. These processes can be started from the installer or be started from scratch.</para>
   </section>
   
   <section>
     <title>Community</title>
     
-    <para>Here are a lot of useful links if we want to become part of the jBPM community:
+    <para>Here are a lot of useful links part of the jBPM community:
       <itemizedlist>
         <listitem>A feed of <ulink url="http://planet.jboss.org/view/feed.seam?name=jbossjbpm">
         blog entries</ulink> related to jBPM</listitem>
