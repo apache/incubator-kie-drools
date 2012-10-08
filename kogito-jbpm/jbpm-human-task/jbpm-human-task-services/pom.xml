@@ -35,10 +35,6 @@
 			<artifactId>weld-se-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-    <!--<dependency>-->
-      <!--<groupId>javax.jta</groupId>-->
-      <!--<artifactId>transaction-api</artifactId>-->
-    <!--</dependency>-->
 		<dependency>
 			<groupId>javax.enterprise</groupId>
 			<artifactId>cdi-api</artifactId>
