@@ -2,7 +2,6 @@ package org.drools.cdi;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -39,9 +37,7 @@ import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.core.util.StringUtils;
 import org.drools.io.ResourceFactory;
-import org.drools.kproject.KBaseBuilder;
 import org.drools.kproject.KBaseImpl;
 import org.drools.kproject.KProject;
 import org.drools.kproject.KSessionImpl;
