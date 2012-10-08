@@ -69,10 +69,5 @@
       <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
       <version>2.5.0.v20100521-1846</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>
