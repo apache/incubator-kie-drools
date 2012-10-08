@@ -31,12 +31,11 @@ public class TaskServiceMinaSyncTest extends TaskServiceBaseSyncTest {
     protected void setUp() throws Exception {
         super.setUp();
         server = new MinaTaskServer( taskService );
-        Thread thread = new Thread( server );
-        thread.start();
         System.out.println("Waiting for the MinaTask Server to come up");
-        while (!server.isRunning()) {
-        	System.out.print(".");
-        	Thread.sleep( 50 );
+        try {
+            startTaskServerThread(server, false);
+        } catch (Exception e) {
+            startTaskServerThread(server, true);
         }
         client = new SyncTaskServiceWrapper(new AsyncMinaTaskClient());
         client.connect("127.0.0.1", 9123);

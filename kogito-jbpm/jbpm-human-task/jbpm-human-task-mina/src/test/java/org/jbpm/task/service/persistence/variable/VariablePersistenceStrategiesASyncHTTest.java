@@ -90,16 +90,12 @@ public class VariablePersistenceStrategiesASyncHTTest extends BaseTest {
 
         
         server = new MinaTaskServer(taskService);
-        Thread thread = new Thread(server);
-        thread.start();
         System.out.println("Waiting for the MinaTask Server to come up");
-        while (!server.isRunning()) {
-        	System.out.print(".");
-        	Thread.sleep( 50 );
+        try {
+            startTaskServerThread(server, false);
+        } catch (Exception e) {
+            startTaskServerThread(server, true);
         }
-
-        
-        
         
         AsyncMinaHTWorkItemHandler asyncWSHumanTaskHandler = new AsyncMinaHTWorkItemHandler("my-mina-connector", client, ksession, null);
         setClient(asyncWSHumanTaskHandler.getClient());

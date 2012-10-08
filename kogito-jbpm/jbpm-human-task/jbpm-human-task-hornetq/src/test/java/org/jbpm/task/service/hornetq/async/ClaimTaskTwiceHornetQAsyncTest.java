@@ -38,12 +38,11 @@ public class ClaimTaskTwiceHornetQAsyncTest extends ClaimTaskTwiceTest {
         
         // HornetQ setup
         server = new HornetQTaskServer(taskService, 5445);
-        Thread thread = new Thread(server);
-        thread.start();
         System.out.println("Waiting for the HornetQTask Server to come up");
-        while (!server.isRunning()) {
-            System.out.print(".");
-            Thread.sleep(50);
+        try {
+            startTaskServerThread(server, false);
+        } catch (Exception e) {
+            startTaskServerThread(server, true);
         }
     }
 

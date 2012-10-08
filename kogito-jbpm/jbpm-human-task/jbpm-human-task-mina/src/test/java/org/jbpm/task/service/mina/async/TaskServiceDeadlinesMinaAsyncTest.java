@@ -28,8 +28,6 @@ import org.subethamail.wiser.Wiser;
 
 public class TaskServiceDeadlinesMinaAsyncTest extends TaskServiceDeadlinesBaseAsyncTest {
 
-    private MinaTaskServer server;
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -42,12 +40,11 @@ public class TaskServiceDeadlinesMinaAsyncTest extends TaskServiceDeadlinesBaseA
         getConf().setProperty("defaultLanguage", "en-UK");
 
         server = new MinaTaskServer(taskService);
-        Thread thread = new Thread(server);
-        thread.start();
         System.out.println("Waiting for the MinaTask Server to come up");
-        while (!server.isRunning()) {
-            System.out.print(".");
-            Thread.sleep(50);
+        try {
+            startTaskServerThread(server, false);
+        } catch (Exception e) {
+            startTaskServerThread(server, true);
         }
 
         client = new AsyncMinaTaskClient();

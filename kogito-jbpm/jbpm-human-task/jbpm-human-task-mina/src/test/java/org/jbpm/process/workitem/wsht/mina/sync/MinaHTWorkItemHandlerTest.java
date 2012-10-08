@@ -28,12 +28,11 @@ public class MinaHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseSyncTest {
     protected void setUp() throws Exception {
         super.setUp();
         server = new MinaTaskServer(taskService);
-        Thread thread = new Thread(server);
-        thread.start();
         System.out.println("Waiting for the Mina Server to come up");
-        while (!server.isRunning()) {
-            System.out.print(".");
-            Thread.sleep(50);
+        try {
+            startTaskServerThread(server, false);
+        } catch (Exception e) {
+            startTaskServerThread(server, true);
         }
         
         MinaHTWorkItemHandler minaHTWorkItemHandler = new MinaHTWorkItemHandler(ksession);

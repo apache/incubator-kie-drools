@@ -25,6 +25,7 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
+import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.jbpm.task.service.TaskServer;
 
@@ -80,6 +81,7 @@ public abstract class BaseMinaTaskServer extends TaskServer {
         acceptor.setHandler( handler );
         acceptor.getSessionConfig().setReadBufferSize( 2048 );
         acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
+        ((SocketSessionConfig) acceptor.getSessionConfig()).setSoLinger(0);
         acceptor.bind( new InetSocketAddress( localInterface, port ) );
         running = true;
     }
