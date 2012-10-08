@@ -98,13 +98,11 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
                 config = null;
             }
         }
-        UserGroupCallbackManager.getInstance().setProperty("disable.all.groups", "true");
         validate();
     }
     
     public LDAPUserGroupCallbackImpl(Properties config) {
         this.config = config;
-        UserGroupCallbackManager.getInstance().setProperty("disable.all.groups", "true");
         validate();
     }
 

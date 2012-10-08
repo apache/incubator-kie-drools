@@ -1188,12 +1188,7 @@ public class TaskServiceSession {
             doCallbackUserOperation(userId);
             doCallbackGroupsOperation(userId, groupIds);
             List<String> allGroupIds = null;
-            if (UserGroupCallbackManager.getInstance().getProperty("disable.all.groups") == null) {
-                // get all groups
-                // (The fact that this isn't done in a query will probably become a problem at some point.. )
-                Query query = tpm.createNewQuery("select g.id from Group g");
-    			allGroupIds = ((List<String>) query.getResultList());
-            }
+
             return UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds, allGroupIds);
         } else {
             logger.debug("UserGroupCallback has not been registered.");

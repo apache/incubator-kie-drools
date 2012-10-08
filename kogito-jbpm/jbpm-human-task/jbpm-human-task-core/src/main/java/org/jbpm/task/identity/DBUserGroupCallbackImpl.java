@@ -164,7 +164,6 @@ public class DBUserGroupCallbackImpl implements UserGroupCallback {
 			throw new IllegalArgumentException("All properties must be given ("+ DS_JNDI_NAME + ","
 					+ USER_ROLES_QUERY +"," + ROLES_QUERY +"," +USER_ROLES_QUERY +")");
 		}
-		UserGroupCallbackManager.getInstance().setProperty("disable.all.groups", "true");
 		String jndiName = this.config.getProperty(DS_JNDI_NAME, "java:/DefaultDS");
 		try {
 			InitialContext ctx = new InitialContext();

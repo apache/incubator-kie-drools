@@ -82,7 +82,6 @@ public class JAASUserGroupCallbackImpl implements UserGroupCallback {
 	
 	public JAASUserGroupCallbackImpl(String rolesPrincipleName) {
 		this.rolePrincipleName = rolesPrincipleName;
-		UserGroupCallbackManager.getInstance().setProperty("disable.all.groups", "true");
 	}
 	
 	public String getRolePrincipleName() {

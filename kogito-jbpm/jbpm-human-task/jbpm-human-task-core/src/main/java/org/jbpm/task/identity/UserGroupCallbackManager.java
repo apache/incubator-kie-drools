@@ -94,7 +94,7 @@ public class UserGroupCallbackManager {
     
     public String getProperty(String name) {
         if (this.callbackproperties != null) {
-            this.callbackproperties.getProperty(name);
+            return this.callbackproperties.getProperty(name);
         }
         
         return null;
