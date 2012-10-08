@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>jbpm-human-task-services</artifactId>
 	<name>jBPM :: Human Task Services</name>
-	<url>http://jbpm.org</url>
+
 	<properties>
 		<seam.version>3.1.0.Final</seam.version>
 		<weld.version>1.1.8.Final</weld.version>
