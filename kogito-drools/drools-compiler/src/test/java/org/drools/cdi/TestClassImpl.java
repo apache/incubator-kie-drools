@@ -1,6 +1,5 @@
 package org.drools.cdi;
 
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.drools.KnowledgeBase;
