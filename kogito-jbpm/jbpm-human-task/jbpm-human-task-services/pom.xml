@@ -25,15 +25,14 @@
 			<artifactId>seam-persistence</artifactId>
 			<version>${seam.version}</version>
 		</dependency>
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
 		<dependency>
 			<groupId>org.jboss.weld.se</groupId>
 			<artifactId>weld-se-core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se-core</artifactId>
-			<version>${weld.version}</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -42,6 +41,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+    <!--<dependency>-->
+      <!--<groupId>javax.jta</groupId>-->
+      <!--<artifactId>transaction-api</artifactId>-->
+    <!--</dependency>-->
 		<dependency>
 			<groupId>javax.enterprise</groupId>
 			<artifactId>cdi-api</artifactId>
