@@ -81,7 +81,6 @@ import org.drools.definition.type.PropertyReactive;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
-import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.EnumClassDefinition;
 import org.drools.factmodel.EnumLiteralDefinition;
@@ -96,7 +95,6 @@ import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.io.Resource;
-import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.DescrResource;
 import org.drools.io.impl.ReaderResource;
@@ -964,7 +962,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         //Copy package level attributes for inclusion on individual rules
-        if (packageDescr.getAttributes().size() > 0) {
+        if (!packageDescr.getAttributes().isEmpty()) {
             Map<String, AttributeDescr> pkgAttributes = packageAttributes.get( packageDescr.getNamespace() );
             if (pkgAttributes == null) {
                 pkgAttributes = new HashMap<String, AttributeDescr>();
@@ -1267,9 +1265,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 className = className.replaceAll( "<[^<>]+?>", "" );
             }
 
-            Class<?> clazz;
             try {
-                clazz = pkgRegistry.getTypeResolver().resolveType( className );
+                Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(className);
                 pkgRegistry.getPackage().addGlobal( identifier,
                                                     clazz );
                 this.globals.put( identifier,
@@ -1417,9 +1414,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         typeDeclaration.setTypeClass( cls );
 
         PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
-        boolean propertySpecific = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
+        boolean propertyReactive = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
                                                                          cls.isAnnotationPresent(ClassReactive.class));
-        typeDeclaration.setPropertyReactive(propertySpecific);
+
+        setPropertyReactive(null, typeDeclaration, propertyReactive);
 
         ClassDefinition clsDef = typeDeclaration.getTypeClassDef();
         if (clsDef == null) {
@@ -1507,9 +1505,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     public boolean buildTypeDeclarationInterfaces( Class cls,
             Set<TypeDeclaration> tdecls ) {
         PackageRegistry pkgReg;
-        TypeDeclaration tdecl;
 
-        tdecl = this.builtinTypes.get( ( cls.getName() ) );
+        TypeDeclaration tdecl = this.builtinTypes.get((cls.getName()));
         if (tdecl == null) {
             pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
             if (pkgReg != null) {
@@ -1579,7 +1576,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
         }
 
-        if ( (sup != null) && (!sup.contains( "." )) && (packageDescr.getNamespace() != null && packageDescr.getNamespace().length() > 0) ) {
+        if ( (sup != null) && (!sup.contains( "." )) && (packageDescr.getNamespace() != null && !packageDescr.getNamespace().isEmpty()) ) {
             for ( AbstractClassTypeDeclarationDescr td : packageDescr.getClassAndEnumDeclarationDescrs() ) {
                 if ( sup.equals( td.getTypeName() ) ) sup = packageDescr.getNamespace() + "." + sup;
             }
@@ -1704,9 +1701,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<String, TypeFieldDescr>();
 
-        boolean isSuperClassDeclared = true; //in the same package, or in a previous one
-        boolean isSuperClassTagged = false;
-
         PackageRegistry registry = this.pkgRegistryMap.get( superTypePackageName );
         Package pack;
         if (registry != null) {
@@ -1720,6 +1714,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         // if a class is declared in DRL, its package can't be null? The default package is replaced by "defaultpkg"
+        boolean isSuperClassTagged = false;
+        boolean isSuperClassDeclared = true; //in the same package, or in a previous one
+
         if (pack != null) {
 
             // look for the supertype declaration in available packages
@@ -1879,7 +1876,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                   "BUG: builder not found for descriptor class " + wd.getPattern().getClass() );
             }
 
-            if( context.getErrors().size() > 0 ) {
+            if(!context.getErrors().isEmpty()) {
                 for( DroolsError error : context.getErrors() ) {
                     this.results.add( error );
                 }
@@ -1961,8 +1958,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         java.lang.Package pkg = clz.getPackage();
                         if (pkg != null) {
                             typeDescr.setNamespace( pkg.getName() );
-                            int index = typeDescr.getNamespace() != null && typeDescr.getNamespace().length() > 0 ? typeDescr.getNamespace().length() + 1
-                                                                                                                 : 0;
+                            int index = typeDescr.getNamespace() != null && !typeDescr.getNamespace().isEmpty() ? typeDescr.getNamespace().length() + 1 : 0;
                             typeDescr.setTypeName( clz.getCanonicalName().substring( index ) );
                         }
                     } catch (Exception e) {
@@ -2049,7 +2045,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             type.setResource( typeDescr.getResource() );
 
             TypeDeclaration parent = null;
-            if ( typeDescr.getSuperTypes().size() > 0 ) {
+            if (!typeDescr.getSuperTypes().isEmpty()) {
                 // parent might have inheritable properties
                 PackageRegistry sup = pkgRegistryMap.get( typeDescr.getSuperTypeNamespace() );
                 if ( sup != null ) {
@@ -2102,7 +2098,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 className = type.getTypeName();
             }
 
-            Class clazz;
             try {
 
                 // the type declaration is generated in any case (to be used by subclasses, if any)
@@ -2112,9 +2107,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                       type,
                                       pkgRegistry );
 
-                clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
+                Class clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
                 type.setTypeClass( clazz );
-
 
             } catch (final ClassNotFoundException e) {
                 this.results.add( new TypeDeclarationError( typeDescr,
@@ -2194,9 +2188,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         type.setDynamic( dynamic );
 
         PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
-        boolean propertySpecific = propertySpecificOption.isPropSpecific(typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_PROP_SPECIFIC),
-                typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_NOT_PROP_SPECIFIC));
-        type.setPropertyReactive(propertySpecific);
+        boolean propertyReactive = propertySpecificOption.isPropSpecific( typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_PROP_SPECIFIC),
+                                                                          typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_NOT_PROP_SPECIFIC));
+
+        setPropertyReactive(typeDescr.getResource(), type, propertyReactive);
 
         if ( type.isValid() ) {
             // prefer definitions where possible
@@ -2207,6 +2202,15 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         return true;
+    }
+
+    private void setPropertyReactive(Resource resource, TypeDeclaration type, boolean propertyReactive) {
+        if (propertyReactive && type.getSettableProperties().size() >= 64) {
+            this.results.add(new DisabledPropertyReactiveWarning(resource, type.getTypeName()));
+            type.setPropertyReactive(false);
+        } else {
+            type.setPropertyReactive(propertyReactive);
+        }
     }
 
     private void updateTraitDefinition( TypeDeclaration type, Class concrete ) {
@@ -2256,7 +2260,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
             if ( reg != null ) {
                 String availableName = typeDescr.getType().getFullName();
-                Class< ? > resolvedType = reg.getTypeResolver().resolveType( availableName );
+                reg.getTypeResolver().resolveType( availableName );
                 return false;
             } else {
                 return false;
@@ -2347,7 +2351,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             if ( tdescr.getSuperTypes().size() > 1 ) {
                 this.results.add( new TypeDeclarationError( typeDescr, "Declared class " + fullName + "  - has more than one supertype;" ) );
                 return;
-            } else if ( tdescr.getSuperTypes().size() == 0 ) {
+            } else if (tdescr.getSuperTypes().isEmpty()) {
                 tdescr.addSuperType( "java.lang.Object" );
             }
         }
@@ -2419,7 +2423,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         // fields definitions are created. will be used by subclasses, if any.
         // Fields are SORTED in the process
-        if (typeDescr.getFields().size() > 0) {
+        if (!typeDescr.getFields().isEmpty()) {
             PriorityQueue<FieldDefinition> fieldDefs = sortFields( typeDescr.getFields(),
                                                                    pkgRegistry );
             while (fieldDefs.size() > 0) {
@@ -2441,7 +2445,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
             try {
 
-                if ( type.getTypeClassDef().getFields().size() > 0 ){
+                if (!type.getTypeClassDef().getFields().isEmpty()){
                     //since the declaration defines one or more fields, it is a DEFINITION
                     type.setNature( TypeDeclaration.Nature.DEFINITION );
                 } else{
@@ -2453,7 +2457,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 //to the behavior previous these changes
                 if ( previousTypeDeclaration == null ) {
                     // new declarations of a POJO can't declare new fields
-                    if (type.getTypeClassDef().getFields().size() > 0 ){
+                    if (!type.getTypeClassDef().getFields().isEmpty()){
                         type.setValid(false);
                         this.results.add(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName()
                                 +" can't declare new fields"));
@@ -2682,10 +2686,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 field.setIndex( ++last );
             }
 
-            String fullFieldType;
             try {
                 String typeName = field.getPattern().getObjectType();
-                fullFieldType = generatedTypes.contains(typeName) ? typeName : pkgRegistry.getTypeResolver().resolveType(typeName).getName();
+                String fullFieldType = generatedTypes.contains(typeName) ? typeName : pkgRegistry.getTypeResolver().resolveType(typeName).getName();
 
                 FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(),
                                                                 fullFieldType );
@@ -2837,11 +2840,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
 //        int i = pkgs.length;
-        int i = 0 ;
         String errors = null;
         if (!getErrors().isEmpty()) {
             errors = getErrors().toString();
         }
+        int i = 0;
         for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
             Package pkg = pkgRegistry.getPackage();
             pkg.getDialectRuntimeRegistry().onBeforeExecute();
@@ -2936,13 +2939,14 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private List<DroolsError> getErrorList() {
-        List<KnowledgeBuilderResult> list = getResultList( ResultSeverity.ERROR );
         List<DroolsError> errors = new ArrayList<DroolsError>();
-        for (KnowledgeBuilderResult p : list) {
-            if (p instanceof ConfigurableSeverityResult) {
-                errors.add( new DroolsErrorWrapper( p ) );
-            } else {
-                errors.add( (DroolsError) p );
+        for (KnowledgeBuilderResult problem : results) {
+            if ( problem.getSeverity() == ResultSeverity.ERROR ) {
+                if (problem instanceof ConfigurableSeverityResult) {
+                    errors.add( new DroolsErrorWrapper(problem) );
+                } else {
+                    errors.add( (DroolsError)problem );
+                }
             }
         }
         return errors;
@@ -2956,8 +2960,18 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         return !getInfoList().isEmpty();
     }
 
-    private List<KnowledgeBuilderResult> getWarningList() {
-        return getResultList( ResultSeverity.WARNING );
+    public List<DroolsWarning> getWarningList() {
+        List<DroolsWarning> warnings = new ArrayList<DroolsWarning>();
+        for (KnowledgeBuilderResult problem : results) {
+            if ( problem.getSeverity() == ResultSeverity.WARNING ) {
+                if (problem instanceof ConfigurableSeverityResult) {
+                    warnings.add( new DroolsWarningWrapper(problem) );
+                } else {
+                    warnings.add( (DroolsWarning)problem );
+                }
+            }
+        }
+        return warnings;
     }
 
     private List<KnowledgeBuilderResult> getInfoList() {
@@ -3068,7 +3082,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
          * DroolsError instances. Its not 1 to 1 with reported errors.
          */
         protected CompilationProblem[] collectCompilerProblems() {
-            if (this.errors.size() == 0) {
+            if (this.errors.isEmpty()) {
                 return null;
             } else {
                 final CompilationProblem[] list = new CompilationProblem[this.errors.size()];
@@ -3466,7 +3480,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if ( c1 == null ) {
             return c2 == null;
         }
-        return c2 == null ? false : c1.compareTo( c2 ) == 0;
+        return c2 != null && c1.compareTo(c2) == 0;
     }
 
     static class TypeDefinition {

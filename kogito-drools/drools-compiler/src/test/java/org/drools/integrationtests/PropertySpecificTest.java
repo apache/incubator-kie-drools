@@ -10,6 +10,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.PropertySpecificOption;
+import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.type.FactType;
 import org.drools.definition.type.Modifies;
@@ -2337,5 +2338,26 @@ public class PropertySpecificTest extends CommonTestMethodBase {
             assertEquals(2, factTypeC.get(factC, "y"));
             ksession.dispose();
         }
+    }
+
+    @Test
+    public void testDisablePropSpecWith64OrMoreFieldsAndRaiseWarning() {
+        StringBuilder drl = new StringBuilder();
+        drl.append("package org.drools\n")
+                .append("declare A\n")
+                .append("@propertyReactive\n");
+        for (int i = 0; i < 65; i++) {
+            drl.append("a" + i + " : int\n");
+        }
+        drl.append("end\n");
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.toString().getBytes()), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        assertTrue(((KnowledgeBuilderImpl)kbuilder).hasWarnings());
     }
 }

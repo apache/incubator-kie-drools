@@ -15,6 +15,7 @@ import org.drools.builder.ResultSeverity;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.CompositeKnowledgeBuilderImpl;
+import org.drools.compiler.DroolsWarning;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -90,6 +91,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return pkgBuilder.getErrors();
     }
     
+    public boolean hasWarnings() {
+        return pkgBuilder.hasWarnings();
+    }
+
+    public List<DroolsWarning> getWarnings() {
+        return pkgBuilder.getWarningList();
+    }
+
     public PackageBuilder getPackageBuilder() {
         return pkgBuilder;
     }
