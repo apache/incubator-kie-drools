@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -3415,7 +3415,7 @@
          height="20.000034"
          width="60.000008"
          id="rect8760" /></flowRegion><flowPara
-       id="flowPara8762">23</flowPara></flowRoot>  <flowRoot
+       id="flowPara8762">21</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot8764"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
