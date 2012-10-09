@@ -12,7 +12,6 @@
 	<properties>
 		<seam.version>3.1.0.Final</seam.version>
 		<weld.version>1.1.8.Final</weld.version>
-		<arquillian.version>1.0.1.Final</arquillian.version>
 		<arquillian_weld.version>1.0.0.CR3</arquillian_weld.version>
 	</properties>
 	<dependencies>
@@ -76,21 +75,9 @@
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-			<version>1.0.0.CR3</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>${arquillian.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<build>
 		<testResources>
 			<testResource>
