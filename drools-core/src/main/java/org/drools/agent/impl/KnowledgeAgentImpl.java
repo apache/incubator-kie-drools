@@ -19,6 +19,7 @@ package org.drools.agent.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -132,7 +133,7 @@ public class KnowledgeAgentImpl
         if ( configuration != null ) {
             // New Instance describes if we do incremental builds or not
             this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
-            this.useKBaseClassLoaderForCompiling = ((KnowledgeAgentConfigurationImpl) configuration).isUseKBaseClassLoaderForCompiling();
+            this.useKBaseClassLoaderForCompiling = configuration.isUseKBaseClassLoaderForCompiling();
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
             if ( configuration.isMonitorChangeSetEvents() ) {
                 monitor = true;
@@ -445,12 +446,20 @@ public class KnowledgeAgentImpl
         }
 
         ChangeSet changeSet = null;
+        Reader resourceReader = null;
         try {
-            changeSet = reader.read( resource.getReader() );
+            resourceReader = resource.getReader();
+            changeSet = reader.read( resourceReader );
         } catch ( Exception e ) {
             this.listener.exception( new RuntimeException(
                                                            "Unable to parse ChangeSet",
                                                            e ) );
+        } finally {
+            if (resourceReader != null) {
+                try {
+                    resourceReader.close();
+                } catch (IOException e) { }
+            }
         }
         if ( changeSet == null ) {
             this.listener.exception( new RuntimeException(
@@ -1411,16 +1420,23 @@ public class KnowledgeAgentImpl
     }
 
     private void retrieveDSLResource(Resource resource) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( resource.getReader() );
-        String line;
-        StringBuilder content = new StringBuilder();
-        while ( (line = bufferedReader.readLine()) != null ) {
-            content.append( line );
-            content.append( "\n" );
-        }
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader( resource.getReader() );
+            String line;
+            StringBuilder content = new StringBuilder();
+            while ( (line = bufferedReader.readLine()) != null ) {
+                content.append( line );
+                content.append( "\n" );
+            }
 
-        this.dslResources.put( resource,
-                               content.toString() );
+            this.dslResources.put( resource,
+                                   content.toString() );
+        } finally {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+        }
     }
 
     public void addEventListener(KnowledgeAgentEventListener listener) {

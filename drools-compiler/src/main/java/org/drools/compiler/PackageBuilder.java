@@ -517,11 +517,17 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
         xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
+        Reader reader = null;
         try {
-            xmlReader.read( resource.getReader() );
+            reader = resource.getReader();
+            xmlReader.read( reader );
         } catch (final SAXException e) {
             throw new DroolsParserException( e.toString(),
                     e.getCause() );
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
         return xmlReader.getPackageDescr();
     }
@@ -561,11 +567,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         DrlParser parser = new DrlParser();
         DefaultExpander expander = getDslExpander();
 
+        Reader reader = null;
         try {
             if (expander == null) {
                 expander = new DefaultExpander();
             }
-            String str = expander.expand( resource.getReader() );
+            reader = resource.getReader();
+            String str = expander.expand( reader );
             if (expander.hasErrors()) {
                 this.results.addAll( expander.getErrors() );
             }
@@ -575,6 +583,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             hasErrors = parser.hasErrors();
         } catch (IOException e) {
             throw new RuntimeException( e );
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) { }
+            }
         }
         return hasErrors ? null : pkg;
     }
@@ -616,17 +630,25 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public void addDsl( Resource resource ) throws IOException {
         this.resource = resource;
-
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        if (!file.parseAndLoad( resource.getReader() )) {
-            this.results.addAll( file.getErrors() );
-        }
-        if (this.dslFiles == null) {
-            this.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
-        }
-        this.dslFiles.add( file );
 
-        this.resource = null;
+        Reader reader = null;
+        try {
+            reader = resource.getReader();
+            if (!file.parseAndLoad( reader )) {
+                this.results.addAll( file.getErrors() );
+            }
+            if (this.dslFiles == null) {
+                this.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
+            }
+            this.dslFiles.add( file );
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+            this.resource = null;
+        }
+
     }
 
     /**
@@ -762,26 +784,34 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             reader.setClassLoader( this.configuration.getClassLoader(),
                                    null );
         }
-        ChangeSet changeSet = reader.read( resource.getReader() );
-        if (changeSet == null) {
-            // @TODO should log an error
-        }
-        for (Resource nestedResource : changeSet.getResourcesAdded()) {
-            InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-            if (iNestedResourceResource.isDirectory()) {
-                for (Resource childResource : iNestedResourceResource.listResources()) {
-                    if (( (InternalResource) childResource ).isDirectory()) {
-                        continue; // ignore sub directories
+        Reader resourceReader = null;
+        try {
+            resourceReader = resource.getReader();
+            ChangeSet changeSet = reader.read( resourceReader );
+            if (changeSet == null) {
+                // @TODO should log an error
+            }
+            for (Resource nestedResource : changeSet.getResourcesAdded()) {
+                InternalResource iNestedResourceResource = (InternalResource) nestedResource;
+                if (iNestedResourceResource.isDirectory()) {
+                    for (Resource childResource : iNestedResourceResource.listResources()) {
+                        if (( (InternalResource) childResource ).isDirectory()) {
+                            continue; // ignore sub directories
+                        }
+                        ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
+                        addKnowledgeResource( childResource,
+                                              iNestedResourceResource.getResourceType(),
+                                              iNestedResourceResource.getConfiguration() );
                     }
-                    ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
-                    addKnowledgeResource( childResource,
+                } else {
+                    addKnowledgeResource( iNestedResourceResource,
                                           iNestedResourceResource.getResourceType(),
                                           iNestedResourceResource.getConfiguration() );
                 }
-            } else {
-                addKnowledgeResource( iNestedResourceResource,
-                                      iNestedResourceResource.getResourceType(),
-                                      iNestedResourceResource.getConfiguration() );
+            }
+        } finally {
+            if (resourceReader != null) {
+                resourceReader.close();
             }
         }
     }
