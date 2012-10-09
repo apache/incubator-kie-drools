@@ -53,14 +53,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.arquillian</groupId>
-      <artifactId>arquillian-bom</artifactId>
-      <version>1.0.2.Final</version>
-      <scope>import</scope>
-      <type>pom</type>
-    </dependency>
-
-    <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
