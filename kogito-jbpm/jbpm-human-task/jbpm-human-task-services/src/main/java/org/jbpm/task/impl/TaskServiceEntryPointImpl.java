@@ -8,14 +8,18 @@ package org.jbpm.task.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
 import org.jbpm.task.Group;
+import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
+import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
@@ -31,6 +35,7 @@ import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.api.TaskStatisticsService;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.query.TaskSummary;
 
@@ -38,7 +43,8 @@ import org.jbpm.task.query.TaskSummary;
 /**
  * 
  */
-
+@Transactional
+@ApplicationScoped
 public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     @Inject
@@ -57,6 +63,9 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     private TaskContentService taskContentService;
     @Inject
     private TaskAttachmentService taskAttachmentService;
+    
+    @Inject 
+    private TaskStatisticsService taskStatisticService;
     
     @Inject @External
     private TaskLifeCycleEventListener taskLifeCycleEventListener;
@@ -444,5 +453,63 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public TaskLifeCycleEventListener getTaskLifeCycleEventListener() {
         return taskLifeCycleEventListener;
     }
+
+    public void removeTaskEventsById(long taskId) {
+        taskEventsService.removeTaskEventsById(taskId);
+    }
+
+    public OrganizationalEntity getOrganizationalEntityById(String entityId) {
+        return taskIdentityService.getOrganizationalEntityById(entityId);
+    }
+
+    public void setExpirationDate(long taskId, Date date) {
+        taskInstanceService.setExpirationDate(taskId, date);
+    }
+
+    public void setDescriptions(long taskId, List<I18NText> descriptions) {
+        taskInstanceService.setDescriptions(taskId, descriptions);
+    }
+
+    public void setSkipable(long taskId, boolean skipable) {
+        taskInstanceService.setSkipable(taskId, skipable);
+    }
+
+    public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
+        taskInstanceService.setSubTaskStrategy(taskId, strategy);
+    }
+
+    public int getPriority(long taskId) {
+        return taskInstanceService.getPriority(taskId);
+    }
+
+    public Date getExpirationDate(long taskId) {
+        return taskInstanceService.getExpirationDate(taskId);
+    }
+
+    public List<I18NText> getDescriptions(long taskId) {
+        return taskInstanceService.getDescriptions(taskId);
+    }
+
+    public boolean isSkipable(long taskId) {
+        return taskInstanceService.isSkipable(taskId);
+    }
+
+    public SubTasksStrategy getSubTaskStrategy(long taskId) {
+        return taskInstanceService.getSubTaskStrategy(taskId);
+    }
+
+    public Task getTaskInstanceById(long taskId) {
+        return taskQueryService.getTaskInstanceById(taskId);
+    }
+
+    public int getCompletedTaskByUserId(String userId) {
+        return taskStatisticService.getCompletedTaskByUserId(userId);
+    }
+
+    public int getPendingTaskByUserId(String userId) {
+        return taskStatisticService.getPendingTaskByUserId(userId);
+    }
+    
+    
     
 }

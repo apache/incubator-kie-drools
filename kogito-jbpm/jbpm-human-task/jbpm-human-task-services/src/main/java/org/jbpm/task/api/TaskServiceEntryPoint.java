@@ -12,8 +12,10 @@ import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
 import org.jbpm.task.Group;
+import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
+import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
@@ -211,8 +213,37 @@ public interface TaskServiceEntryPoint {
 
     Attachment getAttachmentById(long attachId);
     
+    void removeTaskEventsById(long taskId);
+
+    OrganizationalEntity getOrganizationalEntityById(String entityId);
+
+    void setExpirationDate(long taskId, Date date);
+
+    void setDescriptions(long taskId, List<I18NText> descriptions);
+
+    void setSkipable(long taskId, boolean skipable);
+
+    void setSubTaskStrategy(long taskId, SubTasksStrategy strategy);
+
+    int getPriority(long taskId);
+
+    Date getExpirationDate(long taskId);
+
+    List<I18NText> getDescriptions(long taskId);
+
+    boolean isSkipable(long taskId);
+    SubTasksStrategy getSubTaskStrategy(long taskId);
+
+    Task getTaskInstanceById(long taskId);
+    
+    int getCompletedTaskByUserId(String userId);
+
+    int getPendingTaskByUserId(String userId);
     
     //Listeners
     
     TaskLifeCycleEventListener getTaskLifeCycleEventListener();
+    
+    
+    
 }

@@ -16,7 +16,9 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
@@ -27,11 +29,17 @@ import org.jbpm.task.api.TaskContentService;
  *
  */
 @Transactional
+@ApplicationScoped
 public class TaskContentServiceImpl implements TaskContentService {
 
     @Inject 
     private EntityManager em;
 
+    public TaskContentServiceImpl() {
+    }
+
+    
+    
     public long addContent(long taskId, Content content) {
         Task task = em.find(Task.class, taskId);
         em.persist(content);

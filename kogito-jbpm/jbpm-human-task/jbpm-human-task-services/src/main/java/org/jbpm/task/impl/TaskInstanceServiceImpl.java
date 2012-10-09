@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
@@ -50,6 +51,7 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
  *
  */
 @Transactional
+@ApplicationScoped
 public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     @Inject

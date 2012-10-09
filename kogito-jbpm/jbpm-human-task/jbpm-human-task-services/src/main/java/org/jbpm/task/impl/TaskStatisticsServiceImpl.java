@@ -17,7 +17,10 @@ package org.jbpm.task.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Status;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.api.TaskStatisticsService;
@@ -26,6 +29,8 @@ import org.jbpm.task.query.TaskSummary;
 /**
  *
  */
+@Transactional
+@ApplicationScoped
 public class TaskStatisticsServiceImpl implements TaskStatisticsService{
     @Inject 
     private TaskQueryService queryService;

@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -43,13 +44,13 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.api.TaskDeadlinesService;
 import org.jbpm.task.events.NotificationEvent;
-import org.jbpm.task.query.DeadlineSummary;
 
 /**
  *
  *
  */
 @Transactional
+@ApplicationScoped
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
@@ -68,12 +69,12 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     @PostConstruct
     public void init() {
         setValidStatuses();
-        long now = System.currentTimeMillis();
-        List<DeadlineSummary> resultList = em.createNamedQuery("UnescalatedDeadlines").getResultList();
-        for (DeadlineSummary summary : resultList) {
-            long delay = summary.getDate().getTime() - now;
-            schedule(summary.getTaskId(), summary.getDeadlineId(), delay);
-        }
+//        long now = System.currentTimeMillis();
+//        List<DeadlineSummary> resultList = em.createNamedQuery("UnescalatedDeadlines").getResultList();
+//        for (DeadlineSummary summary : resultList) {
+//            long delay = summary.getDate().getTime() - now;
+//            schedule(summary.getTaskId(), summary.getDeadlineId(), delay);
+//        }
     }
 
     private void executeEscalatedDeadline(long taskId, long deadlineId) {

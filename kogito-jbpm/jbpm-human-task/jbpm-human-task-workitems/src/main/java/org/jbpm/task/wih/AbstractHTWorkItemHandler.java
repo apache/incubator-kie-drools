@@ -18,6 +18,7 @@ package org.jbpm.task.wih;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
@@ -116,16 +117,6 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         if (parentId != null) {
             taskData.setParentId(parentId);
         }
-        String subTaskStrategiesCommaSeparated = (String) workItem.getParameter("SubTaskStrategies");
-//        if (subTaskStrategiesCommaSeparated != null && !subTaskStrategiesCommaSeparated.equals("")) {
-//            String[] subTaskStrategies = subTaskStrategiesCommaSeparated.split(",");
-//            List<SubTasksStrategy> strategies = new ArrayList<SubTasksStrategy>();
-//            for (String subTaskStrategyString : subTaskStrategies) {
-//                SubTasksStrategy subTaskStrategy = SubTasksStrategyFactory.newStrategy(subTaskStrategyString);
-//                strategies.add(subTaskStrategy);
-//            }
-//            task.setSubTaskStrategies(strategies);
-//        }
         PeopleAssignments assignments = new PeopleAssignments();
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         String actorId = (String) workItem.getParameter("ActorId");
@@ -163,7 +154,11 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             contentObject = new HashMap<String, Object>(workItem.getParameters());
         }
         if (contentObject != null) {
-            content = ContentMarshallerHelper.marshal(contentObject, session.getEnvironment());
+            Environment env = null;
+            if(session != null){
+                session.getEnvironment();
+            }
+            content = ContentMarshallerHelper.marshal(contentObject, env);
         }
         return content;
     }

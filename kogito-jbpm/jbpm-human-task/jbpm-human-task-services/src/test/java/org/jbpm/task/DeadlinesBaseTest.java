@@ -23,10 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import javax.inject.Inject;
-
-
 import org.jbpm.task.deadlines.NotificationListener;
 import org.jbpm.task.deadlines.notifications.impl.MockNotificationListener;
 
@@ -46,17 +43,16 @@ public abstract class DeadlinesBaseTest extends BaseTest {
     @Inject
     private NotificationListener notificationListener;
     
-    
     @After
     public void tearDown(){
         super.tearDown();
-        MockNotificationListener.reset();
+        ((MockNotificationListener)notificationListener).reset();
     }
     
     
     @Test
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
-
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
         MockUserInfo userInfo = new MockUserInfo();
@@ -87,21 +83,22 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
         // emails should not be set yet
         //assertEquals(0, getWiser().getMessages().size());
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         Thread.sleep(100);
 
         // nor yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
+        while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
 
         // 1 email with two recipients should now exist
-        assertEquals(1, MockNotificationListener.getEventsRecieved().size());
-        assertEquals(2, MockNotificationListener.getEventsRecieved().get(0).getNotification().getRecipients().size());
+        assertEquals(1, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
+        assertEquals(2, ((MockNotificationListener)notificationListener).getEventsRecieved().get(0).getNotification().getRecipients().size());
+        
         //@TODO: validate events content
 //        List<String> list = new ArrayList<String>(2);
 //        list.add(getWiser().getMessages().get(0).getEnvelopeReceiver());
@@ -150,18 +147,18 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         assertEquals("'singleobject'", unmarshallObject.toString());
 
         // emails should not be set yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         Thread.sleep(100);
         // nor yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
+        while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
 
         // 1 email with two recipients should now exist
-        assertEquals(1, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(1, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         
         //@TODO: validate events content
 //        List<String> list = new ArrayList<String>(2);
@@ -229,20 +226,20 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         taskService.start(taskId, "Administrator");
         taskService.complete(taskId, "Administrator", null);
         // emails should not be set yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         Thread.sleep(100);
 
         // nor yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
+        while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
 
         // no email should ne sent as task was completed before deadline was triggered
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Completed, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
@@ -299,20 +296,20 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         taskService.start(taskId, "Administrator");
         taskService.fail(taskId, "Administrator", null);
         // emails should not be set yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         Thread.sleep(100);
 
         // nor yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
+        while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
 
         // no email should ne sent as task was completed before deadline was triggered
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Failed, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
@@ -362,20 +359,20 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         
         taskService.skip(taskId, "Administrator");
         // emails should not be set yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         Thread.sleep(100);
 
         // nor yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
+        while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
 
         // no email should ne sent as task was completed before deadline was triggered
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Obsolete, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
@@ -426,20 +423,20 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         
         taskService.exit(taskId, "Administrator");
         // emails should not be set yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         Thread.sleep(100);
 
         // nor yet
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
 
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
+        while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
 
         // no email should ne sent as task was completed before deadline was triggered
-        assertEquals(0, MockNotificationListener.getEventsRecieved().size());
+        assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Exited, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
@@ -485,7 +482,7 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
         // should have re-assigned by now
         long time = 0;
-        while (MockNotificationListener.getEventsRecieved().size() != 1 && time < 5000) {
+        while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }

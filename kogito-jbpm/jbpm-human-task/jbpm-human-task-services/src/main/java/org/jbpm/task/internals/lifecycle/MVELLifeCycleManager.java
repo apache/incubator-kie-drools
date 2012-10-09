@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
@@ -75,6 +76,7 @@ import org.mvel2.ParserContext;
  *
  */
 @Mvel
+@ApplicationScoped
 @Transactional
 public class MVELLifeCycleManager implements LifeCycleManager {
     

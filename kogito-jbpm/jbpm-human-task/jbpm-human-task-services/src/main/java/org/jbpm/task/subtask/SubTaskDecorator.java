@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.jbpm.task.ContentData;
@@ -47,6 +48,9 @@ public class SubTaskDecorator implements TaskInstanceService {
     
     @Inject 
     private TaskQueryService queryService;
+
+    public SubTaskDecorator() {
+    }
 
     public long newTask(String name, Map<String, Object> params) {
         return instanceService.newTask(name, params);

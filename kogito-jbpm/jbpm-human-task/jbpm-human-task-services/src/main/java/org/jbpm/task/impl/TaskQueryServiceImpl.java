@@ -5,6 +5,7 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -19,6 +20,7 @@ import org.jbpm.task.query.TaskSummary;
  */
 @Named
 @Transactional
+@ApplicationScoped
 public class TaskQueryServiceImpl implements TaskQueryService {
 
     @Inject 

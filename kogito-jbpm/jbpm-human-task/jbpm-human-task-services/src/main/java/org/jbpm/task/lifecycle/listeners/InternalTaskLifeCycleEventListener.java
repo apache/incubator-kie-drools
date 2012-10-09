@@ -4,6 +4,7 @@
  */
 package org.jbpm.task.lifecycle.listeners;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import org.jbpm.task.Task;
@@ -22,6 +23,7 @@ import org.jbpm.task.events.AfterTaskStoppedEvent;
  *
  */
 @Internal
+@ApplicationScoped
 public class InternalTaskLifeCycleEventListener implements TaskLifeCycleEventListener{
 
     public InternalTaskLifeCycleEventListener() {

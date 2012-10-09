@@ -5,7 +5,9 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.TaskEvent;
@@ -15,6 +17,7 @@ import org.jbpm.task.api.TaskEventsService;
  *
  */
 @Transactional
+@ApplicationScoped
 public class TaskEventsServiceImpl implements TaskEventsService {
 
     @Inject

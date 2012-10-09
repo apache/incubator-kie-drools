@@ -5,7 +5,9 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Group;
@@ -18,6 +20,7 @@ import org.jbpm.task.api.TaskIdentityService;
  */
 
 @Transactional
+@ApplicationScoped
 public class TaskIdentityServiceImpl implements TaskIdentityService {
 
     @Inject 

@@ -51,6 +51,9 @@ public class DeadlinesDecorator implements TaskInstanceService {
     @Inject 
     private EntityManager em;
 
+    public DeadlinesDecorator() { 
+    }
+    
     public long newTask(String name, Map<String, Object> params) {
         return instanceService.newTask(name, params);
     }

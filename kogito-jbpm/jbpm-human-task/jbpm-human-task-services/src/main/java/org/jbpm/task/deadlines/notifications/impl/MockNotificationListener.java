@@ -17,27 +17,32 @@ package org.jbpm.task.deadlines.notifications.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
-import javax.inject.Singleton;
 import org.jbpm.task.deadlines.NotificationListener;
 import org.jbpm.task.events.NotificationEvent;
 
 /**
  *
  */
-@Singleton
+@ApplicationScoped
 public class MockNotificationListener implements NotificationListener{
-    private static List<NotificationEvent> eventsRecieved = new ArrayList<NotificationEvent>();
-    public void onNotification(@Observes(notifyObserver= Reception.ALWAYS) NotificationEvent event) {
+    private  List<NotificationEvent> eventsRecieved = new ArrayList<NotificationEvent>();
+
+    public MockNotificationListener() {
+    }
+    
+    
+    public void onNotification(@Observes(notifyObserver = Reception.IF_EXISTS) NotificationEvent event) {
         eventsRecieved.add(event);
     }
 
-    public static List<NotificationEvent> getEventsRecieved() {
+    public  List<NotificationEvent> getEventsRecieved() {
         return eventsRecieved;
     }
     
-    public static void reset(){
+    public void reset(){
         eventsRecieved = new ArrayList<NotificationEvent>();
     }
     

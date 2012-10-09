@@ -16,6 +16,7 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
@@ -27,9 +28,15 @@ import org.jbpm.task.api.TaskCommentService;
  *
  */
 @Transactional
+@ApplicationScoped
 public class TaskCommentServiceImpl implements TaskCommentService{
     @Inject 
     private EntityManager em;
+
+    public TaskCommentServiceImpl() {
+    }
+    
+    
     
     public long addComment(long taskId, Comment comment) {
         Task task = em.find(Task.class, taskId);

@@ -47,7 +47,6 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private ExternalTaskEventListener listener;
     
     public CDIHTWorkItemHandler() {
-        
     }
     
     public void init(){

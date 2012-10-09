@@ -4,10 +4,9 @@
  */
 package org.jbpm.task.lifecycle.listeners;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
-import javax.enterprise.inject.Alternative;
-import javax.inject.Singleton;
 import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
@@ -25,11 +24,10 @@ import org.jbpm.task.events.AfterTaskStoppedEvent;
  *
  */
 
-@Singleton @External
+@ApplicationScoped @External
 public class DefaultTaskLifeCycleEventListener implements TaskLifeCycleEventListener{
 
     public DefaultTaskLifeCycleEventListener() {
-        
     }
 
     public void afterTaskStartedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskStartedEvent Task ti) {

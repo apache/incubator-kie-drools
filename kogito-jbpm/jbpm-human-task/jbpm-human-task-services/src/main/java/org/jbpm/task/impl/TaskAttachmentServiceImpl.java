@@ -16,7 +16,9 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Attachment;
@@ -28,10 +30,16 @@ import org.jbpm.task.api.TaskAttachmentService;
  *
  */
 @Transactional
+@ApplicationScoped
 public class TaskAttachmentServiceImpl implements TaskAttachmentService {
 
     @Inject 
     private EntityManager em;
+
+    public TaskAttachmentServiceImpl() {
+    }
+    
+    
 
     public long addAttachment(long taskId, Attachment attachment, Content content) {
         //@TODO: The attachment is not being persisted! 
