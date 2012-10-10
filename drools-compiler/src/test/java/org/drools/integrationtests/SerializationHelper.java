@@ -198,9 +198,8 @@ public class SerializationHelper {
         return ksession2;
     }
 
-    public static boolean areByteArraysEqual(byte[] b1,
-                                             byte[] b2) {
-        
+    private static boolean areByteArraysEqual(byte[] b1, byte[] b2) {
+
         if ( b1.length != b2.length ) {
             System.out.println( "Different length: b1=" + b1.length + " b2=" + b2.length );
             return false;
@@ -227,15 +226,16 @@ public class SerializationHelper {
 //                System.out.print( "!" );    
 //            }   
 //        }
-        
+
+        boolean result = true;
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
                 System.out.println( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
-                return false;
+                result = false;
             }
         }
 
-        return true;
+        return result;
     }
     
 }

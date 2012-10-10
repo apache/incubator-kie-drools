@@ -49,7 +49,7 @@ public class Person
     private Pet pet;
     
     private List<Address> addresses = new ArrayList<Address>();
-    private Map<Object, Address> namedAddresses = new HashMap<Object, Address>();
+    private Map<Object, Address> namedAddresses = new HashMap<Object, Address>(0);
     
 
     public Object object;
