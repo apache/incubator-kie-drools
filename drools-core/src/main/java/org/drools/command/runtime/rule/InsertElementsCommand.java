@@ -88,10 +88,9 @@ public class InsertElementsCommand
         } else {
             wmep = ksession.getWorkingMemoryEntryPoint( this.entryPoint );
         }
-        
-        
+
         for ( Object object : objects ) {
-            handles.add( ksession.insert( object ) );
+            handles.add( wmep.insert( object ) );
         }
 
         if ( outIdentifier != null ) {
