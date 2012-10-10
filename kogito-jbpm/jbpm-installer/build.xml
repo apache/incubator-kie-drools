@@ -153,6 +153,24 @@
     <echo message="Getting birt reporting engine for AS5 ..." />
     <mkdir dir="${install.home}/lib"/>
     <get src="${birt.download.url.as5}" dest="${install.home}/lib/birt-runtime-${birt.version.as5}.zip" />
+  	<mkdir dir="${install.home}/lib/birt"/>
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/engineapi/2.3.2/engineapi-2.3.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/dteapi/2.3.2/dteapi-2.3.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/chartengineapi/2.3.2/chartengineapi-2.3.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/coreapi/2.3.2/coreapi-2.3.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/dataadapterapi/2.3.2/dataadapterapi-2.3.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/modelapi/2.3.2/modelapi-2.3.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/scriptapi/2.3.2/scriptapi-2.3.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/emf/ecore/2.4.2/ecore-2.4.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/emf/ecore-xmi/2.4.1/ecore-xmi-2.4.1.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/emf/common/2.4.0/common-2.4.0.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/w3c/flute/1.2/flute-1.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/org/w3c/sac/1.3/sac-1.3.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repo1.maven.org/maven2/commons-cli/commons-cli/1.0/commons-cli-1.0.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repo1.maven.org/maven2/commons-discovery/commons-discovery/0.2/commons-discovery-0.2.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repo1.maven.org/maven2/com/lowagie/itext/1.3/itext-1.3.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repository.jboss.org/nexus/content/groups/public/com/ibm/icu/icu4j/3.8.1/icu4j-3.8.1.jar" dest="${install.home}/lib/birt" />
+    <get src="http://repo1.maven.org/maven2/rhino/js/1.6R2/js-1.6R2.jar" dest="${install.home}/lib/birt" />
   </target>
 
   <!-- Download BIRT engine for AS7 -->
@@ -622,30 +640,17 @@
     <copy todir="${jboss.server.data.dir}/birt/ReportEngine/plugins/org.eclipse.birt.report.data.oda.jdbc_2.3.2.r232_v20090212/drivers" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
     </copy>
-    <!-- Replace the reporting jars -->
-    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/report-core-1.4.0-SNAPSHOT.jar"/>
-    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/report-shared-1.4.0-SNAPSHOT.jar"/>   
+    <!-- Replace the reporting jars -->  
+  	<delete>
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/" includes="report-core-*.jar,report-shared-*.jar" />
+    </delete>
     <get src="https://repository.jboss.org/nexus/content/repositories/releases/org/jboss/bpm/report-core/1.3.0/report-core-1.3.0.jar" 
          dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
     <get src="https://repository.jboss.org/nexus/content/repositories/releases/org/jboss/bpm/report-shared/1.3.0/report-shared-1.3.0.jar" 
          dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/engineapi/2.3.2/engineapi-2.3.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/dteapi/2.3.2/dteapi-2.3.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/chartengineapi/2.3.2/chartengineapi-2.3.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/coreapi/2.3.2/coreapi-2.3.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/dataadapterapi/2.3.2/dataadapterapi-2.3.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/modelapi/2.3.2/modelapi-2.3.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/birt/scriptapi/2.3.2/scriptapi-2.3.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/emf/ecore/2.4.2/ecore-2.4.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/emf/ecore-xmi/2.4.1/ecore-xmi-2.4.1.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/eclipse/emf/common/2.4.0/common-2.4.0.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/w3c/flute/1.2/flute-1.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/org/w3c/sac/1.3/sac-1.3.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repo1.maven.org/maven2/commons-cli/commons-cli/1.0/commons-cli-1.0.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repo1.maven.org/maven2/commons-discovery/commons-discovery/0.2/commons-discovery-0.2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repo1.maven.org/maven2/com/lowagie/itext/1.3/itext-1.3.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repository.jboss.org/nexus/content/groups/public/com/ibm/icu/icu4j/3.8.1/icu4j-3.8.1.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
-    <get src="http://repo1.maven.org/maven2/rhino/js/1.6R2/js-1.6R2.jar" dest="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" />
+  	<copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib">
+  		<fileset dir="${install.home}/lib/birt"/>
+  	</copy>
   </target>
   
   <!-- Install Eclipse -->
@@ -941,7 +946,7 @@
 		<delete dir="db/export-ht"/>
 	</target>
 	
-	<target name="jbpm.schemaexport" description="Export jBPM schema to DDL file" depends="install.jBPM.runtime,download.ddl.dependencies">
+	<target name="jbpm.schemaexport" depends="install.jBPM.runtime,download.ddl.dependencies">
 	  <delete dir="db/export-jbpm"/>
 	  <!-- task definition; project.class.path contains all necessary libs -->
 	  <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask"
@@ -968,7 +973,7 @@
 	  <delete dir="db/export-jbpm/META-INF"/>
 	</target>
 
-   <target name="ht.schemaexport" description="Export HumanTask schema to DDL file" depends="install.jBPM.runtime,download.ddl.dependencies">
+   <target name="ht.schemaexport" depends="install.jBPM.runtime,download.ddl.dependencies">
       <delete dir="db/export-ht"/>
       <!-- task definition; project.class.path contains all necessary libs -->
       <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask"
