@@ -57,7 +57,10 @@ public class AllTests extends TestSuite {
         setTckConf();
 
         final TestSuite suite = new TestSuite( "JSR 94 Test Compatability Kit" );
-        suite.addTestSuite( ApiSignatureTest.class );
+
+        // Override original ApiSignatureTest to deal with new Java7 methods added in Throwable class
+        suite.addTestSuite( ApiSignatureTestJava7Compatible.class );
+
         suite.addTestSuite( ClassLoaderTest.class );
         suite.addTestSuite( ConfigurationExceptionTest.class );
         suite.addTestSuite( HandleTest.class );
