@@ -30,6 +30,7 @@ import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.TimerJobFactoryOption;
 
 public class KnowledgeStoreServiceImpl
     implements
@@ -144,7 +145,7 @@ public class KnowledgeStoreServiceImpl
 
     private KnowledgeSessionConfiguration mergeConfig(KnowledgeSessionConfiguration configuration) {
         ((SessionConfiguration) configuration).addDefaultProperties(configProps);
-        ((SessionConfiguration) configuration).setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
+        configuration.setOption(TimerJobFactoryOption.get("jpa"));
         return configuration;
     }
 

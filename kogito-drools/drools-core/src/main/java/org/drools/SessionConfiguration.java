@@ -16,14 +16,6 @@
 
 package org.drools;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import org.drools.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -37,15 +29,23 @@ import org.drools.runtime.conf.KnowledgeSessionOption;
 import org.drools.runtime.conf.MultiValueKnowledgeSessionOption;
 import org.drools.runtime.conf.QueryListenerOption;
 import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
+import org.drools.runtime.conf.TimerJobFactoryOption;
 import org.drools.runtime.conf.WorkItemHandlerOption;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.time.TimerService;
-import org.drools.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.time.impl.TimerJobFactoryManager;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.MVEL;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * SessionConfiguration
@@ -88,14 +88,16 @@ public class SessionConfiguration
 
     private transient CompositeClassLoader classLoader;
     
-    private TimerJobFactoryManager         timerJobFactoryManager;
+    private transient TimerJobFactoryManager timerJobFactoryManager;
+    private TimerJobFactoryType              timerJobFactoryType;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
-        out.writeBoolean( immutable );
+        out.writeBoolean(immutable);
         out.writeBoolean( keepReference );
-        out.writeObject( clockType );
+        out.writeObject(clockType);
         out.writeObject( queryListener );
+        out.writeObject( timerJobFactoryType );
     }
     
     private static final SessionConfiguration defaultInstance = new SessionConfiguration();
@@ -112,7 +114,7 @@ public class SessionConfiguration
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
         queryListener = (QueryListenerOption) in.readObject();
-        timerJobFactoryManager = DefaultTimerJobFactoryManager.instance;
+        timerJobFactoryType = (TimerJobFactoryType) in.readObject();
     }
 
     /**
@@ -130,13 +132,13 @@ public class SessionConfiguration
      * Creates a new session configuration with default configuration options.
      */
     public SessionConfiguration() {
-        init( null,
-              null );
+        init(null,
+                null);
     }
 
     public SessionConfiguration(ClassLoader... classLoader) {
-        init( null,
-              classLoader );
+        init(null,
+                classLoader);
     }
 
     private void init(Properties properties,
@@ -156,24 +158,17 @@ public class SessionConfiguration
         setKeepReference( Boolean.valueOf( this.chainedProperties.getProperty( KeepReferenceOption.PROPERTY_NAME,
                                                                                "true" ) ).booleanValue() );
         
-        setBeliefSystemType( BeliefSystemType.resolveClockType( this.chainedProperties.getProperty( BeliefSystemTypeOption.PROPERTY_NAME,
-                                                                                                    BeliefSystemType.SIMPLE.getId() ) ) );
+        setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( this.chainedProperties.getProperty( BeliefSystemTypeOption.PROPERTY_NAME,
+                                                                                                           BeliefSystemType.SIMPLE.getId())) );
 
         setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( ClockTypeOption.PROPERTY_NAME,
                                                                                       ClockType.REALTIME_CLOCK.getId() ) ) );
 
         setQueryListenerClass( this.chainedProperties.getProperty( QueryListenerOption.PROPERTY_NAME,
                                                                    QueryListenerOption.STANDARD.getAsString() ) );
-        
-        timerJobFactoryManager = new DefaultTimerJobFactoryManager();
-    }
 
-    public TimerJobFactoryManager getTimerJobFactoryManager() {
-        return timerJobFactoryManager;
-    }
-
-    public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
-        this.timerJobFactoryManager = timerJobFactoryManager;
+        setTimerJobFactoryType( TimerJobFactoryType.resolveTimerJobFactoryType( this.chainedProperties.getProperty( TimerJobFactoryOption.PROPERTY_NAME,
+                                                                                                                    TimerJobFactoryType.DEFUALT.getId() ) ) );
     }
 
     public void addDefaultProperties(Properties properties) {
@@ -184,9 +179,7 @@ public class SessionConfiguration
             }
         }
 
-        if ( properties != null ) {
-            this.chainedProperties.addProperties( defaultProperties );
-        }
+        this.chainedProperties.addProperties( defaultProperties );
     }
 
     public void setProperty(String name,
@@ -197,9 +190,11 @@ public class SessionConfiguration
         }
 
         if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
-            setKeepReference( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
+            setKeepReference( StringUtils.isEmpty(value) || Boolean.parseBoolean(value) );
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             setClockType( ClockType.resolveClockType( StringUtils.isEmpty( value ) ? "realtime" : value ) );
+        } else if ( name.equals( TimerJobFactoryOption.PROPERTY_NAME ) ) {
+            setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(StringUtils.isEmpty(value) ? "default" : value));
         } else if ( name.equals( QueryListenerOption.PROPERTY_NAME ) ) {
             setQueryListenerClass( StringUtils.isEmpty( value ) ? QueryListenerOption.STANDARD.getAsString() : value );
         }
@@ -215,6 +210,8 @@ public class SessionConfiguration
             return Boolean.toString( this.keepReference );
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             return this.clockType.toExternalForm();
+        } else if ( name.equals( TimerJobFactoryOption.PROPERTY_NAME ) ) {
+            return this.timerJobFactoryType.toExternalForm();
         } else if ( name.equals( QueryListenerOption.PROPERTY_NAME ) ) {
             return this.queryListener.getAsString();
         }
@@ -271,6 +268,22 @@ public class SessionConfiguration
         this.clockType = clockType;
     }
 
+    public TimerJobFactoryManager getTimerJobFactoryManager() {
+        if (timerJobFactoryManager == null) {
+            timerJobFactoryManager = getTimerJobFactoryType().createInstance();
+        }
+        return timerJobFactoryManager;
+    }
+
+    public TimerJobFactoryType getTimerJobFactoryType() {
+        return timerJobFactoryType;
+    }
+
+    private void setTimerJobFactoryType(TimerJobFactoryType timerJobFactoryType) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.timerJobFactoryType = timerJobFactoryType;
+    }
+
     @SuppressWarnings("unchecked")
     private void setQueryListenerClass(String property) {
         checkCanChange();
@@ -325,9 +338,7 @@ public class SessionConfiguration
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content,
-                                                                                                  params );
-        return workItemHandlers;
+        return (Map<String, WorkItemHandler>) MVEL.eval( content, params );
     }
 
     public WorkItemManagerFactory getWorkItemManagerFactory() {
@@ -425,7 +436,6 @@ public class SessionConfiguration
 
         if ( clazz != null ) {
             try {
-                //setTimerJobFactoryManager();
                 return clazz.newInstance();
             } catch ( Exception e ) {
                 throw new IllegalArgumentException(
@@ -445,6 +455,8 @@ public class SessionConfiguration
             return (T) ClockTypeOption.get( getClockType().toExternalForm() );
         } else if ( KeepReferenceOption.class.equals( option ) ) {
             return (T) (this.keepReference ? KeepReferenceOption.YES : KeepReferenceOption.NO);
+        } else if ( TimerJobFactoryOption.class.equals( option ) ) {
+            return (T) TimerJobFactoryOption.get( getTimerJobFactoryType().toExternalForm() );
         } else if ( QueryListenerOption.class.equals( option ) ) {
             return (T) this.queryListener;
         }
@@ -464,8 +476,10 @@ public class SessionConfiguration
     public <T extends KnowledgeSessionOption> void setOption(T option) {
         if ( option instanceof ClockTypeOption ) {
             setClockType( ClockType.resolveClockType( ((ClockTypeOption) option).getClockType() ) );
+        } else if ( option instanceof TimerJobFactoryOption ) {
+            setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(((TimerJobFactoryOption) option).getTimerJobType()));
         } else if ( option instanceof KeepReferenceOption ) {
-            setKeepReference( ((KeepReferenceOption) option).isKeepReference() );
+            setKeepReference(((KeepReferenceOption) option).isKeepReference());
         } else if ( option instanceof WorkItemHandlerOption ) {
             getWorkItemHandlers().put( ((WorkItemHandlerOption) option).getName(),
                                        ((WorkItemHandlerOption) option).getHandler() );

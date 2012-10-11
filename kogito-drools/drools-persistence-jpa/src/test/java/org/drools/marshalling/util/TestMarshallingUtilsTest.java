@@ -41,6 +41,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.conf.TimerJobFactoryOption;
 import org.drools.time.impl.TrackableTimeJobFactoryManager;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -207,7 +208,7 @@ public class TestMarshallingUtilsTest {
             KnowledgeBase knowledgeBaseA = KnowledgeBaseFactory.newKnowledgeBase(config);
             KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             ksconf.setOption(ClockTypeOption.get("pseudo"));
-            ((SessionConfiguration) ksconf).setTimerJobFactoryManager(new TrackableTimeJobFactoryManager());
+            ksconf.setOption(TimerJobFactoryOption.get("trackable"));
             ksessionA = knowledgeBaseA.newStatefulKnowledgeSession(ksconf, null);
         }
 
@@ -218,7 +219,7 @@ public class TestMarshallingUtilsTest {
             KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(config);
             KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             ksconf.setOption(ClockTypeOption.get("pseudo"));
-            ((SessionConfiguration) ksconf).setTimerJobFactoryManager(new TrackableTimeJobFactoryManager());
+            ksconf.setOption( TimerJobFactoryOption.get("trackable") );
             ksessionB = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
         }
 
