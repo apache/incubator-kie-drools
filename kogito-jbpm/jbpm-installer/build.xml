@@ -962,7 +962,7 @@
 	  <mkdir dir="db/export-jbpm/META-INF"/>
 	  <copy tofile="db/export-jbpm/META-INF/persistence.xml" file="db/jbpm-persistence-${jpa.version}.xml"/>
 	  <copy todir="db/export-jbpm/META-INF">
-    	  <fileset dir="db/config-ddl">
+    	  <fileset dir="db/">
     	  	<include name="ProcessInstanceInfo.hbm.xml"/>
     	  	<include name="ProcessInstanceInfoMapping.xml"/>
     	  </fileset>
@@ -987,9 +987,9 @@
           classpathref="generate.ddl.${jpa.version}.class.path" />
       <mkdir dir="db/export-ht"/>
       <mkdir dir="db/export-ht/META-INF"/>
-   	  <copy tofile="db/export-ht/META-INF/persistence.xml" file="db/-task-persistence-${jpa.version}.xml"/>
+   	  <copy tofile="db/export-ht/META-INF/persistence.xml" file="db/task-persistence-${jpa.version}.xml"/>
       <copy todir="db/export-ht/META-INF">
-        <fileset dir="task-service/resources/config-ddl">
+        <fileset dir="db/">
       	  <include name="Taskorm-${jpa.version}.xml"/>
         </fileset>
       </copy>   
