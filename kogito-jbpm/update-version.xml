@@ -24,11 +24,6 @@
   	               byline="true">
   	  <fileset dir="." includes="pom.xml"/>
   	</replaceregexp>
-    <replaceregexp match="&lt;releaseinfo&gt;${current}&lt;/releaseinfo&gt;"
-                   replace="&lt;releaseinfo&gt;${new}&lt;/releaseinfo&gt;" 
-                   byline="true">
-      <fileset dir="." includes="jbpm-docs/src/main/docbook/**/master.xml"/>
-    </replaceregexp> 
     <replaceregexp match="jBPM.version=${current}"
                    replace="jBPM.version=${new}" 
                    byline="true">
@@ -36,11 +31,6 @@
     </replaceregexp>             
     <replaceregexp match="jBPM.version=${current}"
                    replace="jBPM.version=${new}" 
-                   byline="true">
-      <fileset dir="." includes="jbpm-installer/build.properties"/>
-    </replaceregexp> 
-    <replaceregexp match="jBPM.url=http://hudson.jboss.org/hudson/job/jBPM/lastStableBuild/artifact/jbpm-distribution/target"
-                   replace="jBPM.url=http://sourceforge.net/projects/jbpm/files/jBPM%205/jbpm-${new}" 
                    byline="true">
       <fileset dir="." includes="jbpm-installer/build.properties"/>
     </replaceregexp> 

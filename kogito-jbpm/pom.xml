@@ -22,13 +22,16 @@
   <!-- major.minor.micro.Final -->
   <!-- For example: 1.2.3 without the suffix ".Final" corrupts the OSGi eclipse updatesite -->
   <!-- For example: 1.2.3.M2 corrupts the OSGi eclipse updatesite update order -->
-  <version>5.4.0-SNAPSHOT</version>
+  <version>5.5.0-SNAPSHOT</version>
 
   <name>jBPM multiproject</name>
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
 
   <properties>
+    <!-- remove these overrides once parent pom is branched for 5.5.x and can be upgraded for 5.6.x-->
+    <jbpm.version>5.5.0-SNAPSHOT</jbpm.version>
+    <jbpm.osgi.version>5.5.0.SNAPSHOT</jbpm.osgi.version>
     <!--
      These are properties used in the database profiles. Some of them must be initialized
      empty so that Maven applies them via filtering to the resources. 
