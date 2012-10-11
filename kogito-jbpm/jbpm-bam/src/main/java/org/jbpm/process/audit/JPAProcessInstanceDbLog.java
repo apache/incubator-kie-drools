@@ -129,12 +129,18 @@ public class JPAProcessInstanceDbLog {
     @SuppressWarnings("unchecked")
     public static List<ProcessInstanceLog> findSubProcessInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
-        List<ProcessInstanceLog> result = getEntityManager()
-            .createQuery("FROM ProcessInstanceLog p WHERE p.parentProcessInstanceId = :processInstanceId")
-                .setParameter("processInstanceId", processInstanceId).getResultList();
-        closeEntityManager(em, ut);
-        return result;
+        boolean newTx = joinTransaction(em);
+        try {
+            List<ProcessInstanceLog> result = getEntityManager()
+                .createQuery("FROM ProcessInstanceLog p WHERE p.parentProcessInstanceId = :processInstanceId")
+                    .setParameter("processInstanceId", processInstanceId).getResultList();
+     
+            return result;
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            closeEntityManager(em, newTx);
+        }
     }
     
     @SuppressWarnings("unchecked")
