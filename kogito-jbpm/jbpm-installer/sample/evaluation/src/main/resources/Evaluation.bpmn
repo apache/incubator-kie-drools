@@ -17,6 +17,21 @@
   <itemDefinition id="_performanceItem" />
   <itemDefinition id="_contentItem" />
 
+  <itemDefinition id="_2-employeeItem" />
+  <itemDefinition id="_2-reasonItem" />
+  <itemDefinition id="_2-performanceItem" />
+  <itemDefinition id="_2-contentItem" />
+
+  <itemDefinition id="_3-employeeItem" />
+  <itemDefinition id="_3-reasonItem" />
+  <itemDefinition id="_3-performanceItem" />
+  <itemDefinition id="_3-contentItem" />
+
+  <itemDefinition id="_4-employeeItem" />
+  <itemDefinition id="_4-reasonItem" />
+  <itemDefinition id="_4-performanceItem" />
+  <itemDefinition id="_4-contentItem" />
+
   <process processType="Private" isExecutable="true" id="com.sample.evaluation" name="Evaluation" tns:packageName="defaultPackage" >
 
     <!-- process variables -->
@@ -30,9 +45,9 @@
     <userTask id="_2" name="Self Evaluation" >
       <extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <script>java.util.Map contentParam = new java.util.HashMap();
+          <tns:script>java.util.Map contentParam = new java.util.HashMap();
 contentParam.put("reason", reason);
-kcontext.setVariable("content", contentParam);</script>
+kcontext.setVariable("content", contentParam);</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>
@@ -89,10 +104,10 @@ kcontext.setVariable("content", contentParam);</script>
     <userTask id="_3" name="PM Evaluation" >
       <extensionElements>
         <tns:onEntry-script>
-          <script>java.util.Map contentParam = new java.util.HashMap();
+          <tns:script>java.util.Map contentParam = new java.util.HashMap();
 contentParam.put("reason", reason);
 contentParam.put("performance", performance);
-kcontext.setVariable("content", contentParam);</script>
+kcontext.setVariable("content", contentParam);</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>
@@ -100,11 +115,13 @@ kcontext.setVariable("content", contentParam);</script>
         <dataInput id="_3_CommentInput" name="Comment" />
         <dataInput id="_3_SkippableInput" name="Skippable" />
         <dataInput id="_3_TaskNameInput" name="TaskName" />
+        <dataInput id="_3_GroupIdInput" name="GroupId" />
         <inputSet>
           <dataInputRefs>_3_ContentInput</dataInputRefs>
           <dataInputRefs>_3_CommentInput</dataInputRefs>
           <dataInputRefs>_3_SkippableInput</dataInputRefs>
           <dataInputRefs>_3_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_3_GroupIdInput</dataInputRefs>
         </inputSet>
         <outputSet>
         </outputSet>
@@ -134,19 +151,26 @@ kcontext.setVariable("content", contentParam);</script>
           <to xsi:type="tFormalExpression">_3_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_3_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">PM</from>
+          <to xsi:type="tFormalExpression">_3_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
-          <formalExpression>john</formalExpression>
+          <formalExpression></formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
     <userTask id="_4" name="HR Evaluation" >
       <extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <script>java.util.Map contentParam = new java.util.HashMap();
+          <tns:script>java.util.Map contentParam = new java.util.HashMap();
 contentParam.put("reason", reason);
 contentParam.put("performance", performance);
-kcontext.setVariable("content", contentParam);</script>
+kcontext.setVariable("content", contentParam);</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>
@@ -154,11 +178,13 @@ kcontext.setVariable("content", contentParam);</script>
         <dataInput id="_4_CommentInput" name="Comment" />
         <dataInput id="_4_SkippableInput" name="Skippable" />
         <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_GroupIdInput" name="GroupId" />
         <inputSet>
           <dataInputRefs>_4_ContentInput</dataInputRefs>
           <dataInputRefs>_4_CommentInput</dataInputRefs>
           <dataInputRefs>_4_SkippableInput</dataInputRefs>
           <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_GroupIdInput</dataInputRefs>
         </inputSet>
         <outputSet>
         </outputSet>
@@ -188,16 +214,23 @@ kcontext.setVariable("content", contentParam);</script>
           <to xsi:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">HR</from>
+          <to xsi:type="tFormalExpression">_4_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
-          <formalExpression>mary</formalExpression>
+          <formalExpression></formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
     <parallelGateway id="_5" name="Gateway" gatewayDirection="Diverging" />
     <parallelGateway id="_6" name="Gateway" gatewayDirection="Converging" />
     <endEvent id="_7" name="End" >
-        <terminateEventDefinition/>
+        <terminateEventDefinition />
     </endEvent>
 
     <!-- connections -->
