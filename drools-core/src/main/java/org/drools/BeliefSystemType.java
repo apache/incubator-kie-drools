@@ -67,7 +67,7 @@ public enum BeliefSystemType {
         return this.string;
     }
     
-    public static BeliefSystemType resolveClockType( String id ) {
+    public static BeliefSystemType resolveBeliefSystemType(String id) {
         if( SIMPLE.getId().equalsIgnoreCase( id ) ) {
             return SIMPLE;
         } else if( DEFEASIBLE.getId().equalsIgnoreCase( id ) ) {

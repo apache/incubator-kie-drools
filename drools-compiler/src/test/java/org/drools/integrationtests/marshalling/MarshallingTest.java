@@ -86,6 +86,7 @@ import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.conf.TimerJobFactoryOption;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.spi.Consequence;
@@ -2626,7 +2627,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
+        ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         ksession.insert( new A() );
@@ -2774,7 +2775,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
+        ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
@@ -2867,7 +2868,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
+        ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
@@ -2929,7 +2930,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
+        ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
@@ -3013,7 +3014,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
+        ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
@@ -3093,7 +3094,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                            ksession );
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
+        ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
 
         Environment env = EnvironmentFactory.newEnvironment();
