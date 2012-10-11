@@ -79,7 +79,7 @@ public final class JBPMHelper {
         pds.setAllowLocalTransactions(true);
         pds.getDriverProperties().put("user", properties.getProperty("persistence.datasource.user", "sa"));
         pds.getDriverProperties().put("password", properties.getProperty("persistence.datasource.password", ""));
-        pds.getDriverProperties().put("url", properties.getProperty("persistence.datasource.url", "jdbc:h2:tcp://localhost/~/jbpm-db"));
+        pds.getDriverProperties().put("url", properties.getProperty("persistence.datasource.url", "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=TRUE"));
         pds.getDriverProperties().put("driverClassName", properties.getProperty("persistence.datasource.driverClassName", "org.h2.Driver"));
         pds.init();
         return pds;

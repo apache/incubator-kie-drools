@@ -59,6 +59,9 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
     private static final String[] KNOWN_UT_JNDI_KEYS = new String[] {"UserTransaction", "java:jboss/UserTransaction", System.getProperty("jbpm.ut.jndi.lookup")};
     
     protected Environment env;
+    
+    private boolean isJTA = true;
+    private boolean sharedEM = false;
 
     public JPAWorkingMemoryDbLogger(WorkingMemory workingMemory) {
         super(workingMemory);
@@ -74,6 +77,10 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         } else {
             throw new IllegalArgumentException(
                 "Not supported session in logger: " + session.getClass());
+        }
+        Boolean bool = (Boolean) env.get("IS_JTA_TRANSACTION");
+        if (bool != null) {
+        	isJTA = bool.booleanValue();
         }
     }
 
@@ -130,7 +137,9 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
             
             em.merge(log);   
         }
-        flush(em, ut);
+        if (!sharedEM) {
+        	flush(em, ut);
+        }
     }
 
     private void addNodeEnterLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId, String nodeName) {
@@ -159,8 +168,16 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
      * This method creates a entity manager. 
      */
     private EntityManager getEntityManager() {
+    	EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+    	if (em != null) {
+    		sharedEM = true;
+    		return em;
+    	}
         EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-        return emf.createEntityManager(); 
+        if (emf != null) {
+        	return emf.createEntityManager();
+        }
+        throw new RuntimeException("Could not find EntityManager, both command-scoped EM and EMF in environment are null");
     }
 
     /**
@@ -173,7 +190,9 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         EntityManager em = getEntityManager();
         UserTransaction ut = joinTransaction(em);
         em.persist(entity);
-        flush(em, ut);
+        if (!sharedEM) {
+        	flush(em, ut);
+        }
     }
     
     /**
@@ -185,34 +204,37 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
      * @throws SystemException 
      * @throws Exception if something goes wrong. 
      */
-    private static UserTransaction joinTransaction(EntityManager em) {
+    private UserTransaction joinTransaction(EntityManager em) {
         boolean newTx = false;
         UserTransaction ut = null;
-        
-        try {
-        	em.joinTransaction();
-        
-        } catch (TransactionRequiredException e) {
-			ut = findUserTransaction();
-			try {
-				if( ut != null && ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
-	                ut.begin();
-	                newTx = true;
-	                // since new transaction was started em must join it
-	                em.joinTransaction();
-	            } 
-			} catch(Exception ex) {
-				throw new IllegalStateException("Unable to find or open a transaction: " + ex.getMessage(), ex);
+
+        if (isJTA) {
+	        try {
+	        	em.joinTransaction();
+	        
+	        } catch (TransactionRequiredException e) {
+				ut = findUserTransaction();
+				try {
+					if( ut != null && ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
+		                ut.begin();
+		                newTx = true;
+		                // since new transaction was started em must join it
+		                em.joinTransaction();
+		            } 
+				} catch(Exception ex) {
+					throw new IllegalStateException("Unable to find or open a transaction: " + ex.getMessage(), ex);
+				}
+				
+				if (!newTx) {
+	            	// rethrow TransactionRequiredException if UserTransaction was not found or started
+	            	throw e;
+	            }
+
 			}
-			
-			if (!newTx) {
-            	// rethrow TransactionRequiredException if UserTransaction was not found or started
-            	throw e;
-            }
-		}
-       
-        if( newTx ) { 
-            return ut;
+	       
+	        if( newTx ) { 
+	            return ut;
+	        }
         }
         return null;
     }

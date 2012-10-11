@@ -21,12 +21,14 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import org.drools.persistence.TransactionManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.slf4j.Logger;
@@ -62,14 +64,6 @@ public class JPAProcessInstanceDbLog {
     private static volatile Environment env;
     private static EntityManagerFactory emf;
     
-    static { 
-        try { 
-            emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
-        } catch( Exception e ) { 
-             logger.debug("Unable to instantiate emf for 'org.jbpm.persistence.jpa' persistence unit: " + e.getMessage() );   
-        }
-    }
-
     @Deprecated
     public JPAProcessInstanceDbLog() {
     }
@@ -90,42 +84,46 @@ public class JPAProcessInstanceDbLog {
     @SuppressWarnings("unchecked")
     public static List<ProcessInstanceLog> findProcessInstances() {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        boolean newTx = joinTransaction(em);
         List<ProcessInstanceLog> result = em.createQuery("FROM ProcessInstanceLog").getResultList();
-        closeEntityManager(em, ut);
+        closeEntityManager(em, newTx);
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static List<ProcessInstanceLog> findProcessInstances(String processId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        boolean newTx = joinTransaction(em);
         List<ProcessInstanceLog> result = em
             .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId")
                 .setParameter("processId", processId).getResultList();
-        closeEntityManager(em, ut);
+        closeEntityManager(em, newTx);
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static List<ProcessInstanceLog> findActiveProcessInstances(String processId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        boolean newTx = joinTransaction(em);
         List<ProcessInstanceLog> result = getEntityManager()
             .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId AND p.end is null")
                 .setParameter("processId", processId).getResultList();
-        closeEntityManager(em, ut);
+        closeEntityManager(em, newTx);
         return result;
     }
 
     public static ProcessInstanceLog findProcessInstance(long processInstanceId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
-        ProcessInstanceLog result = (ProcessInstanceLog) getEntityManager()
+        boolean newTx = joinTransaction(em);
+        try {
+        	return (ProcessInstanceLog) getEntityManager()
             .createQuery("FROM ProcessInstanceLog p WHERE p.processInstanceId = :processInstanceId")
                 .setParameter("processInstanceId", processInstanceId).getSingleResult();
-        closeEntityManager(em, ut);
-        return result;
+        } catch (NoResultException e) {
+        	return null;
+        } finally {
+        	closeEntityManager(em, newTx);
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -142,67 +140,67 @@ public class JPAProcessInstanceDbLog {
     @SuppressWarnings("unchecked")
     public static List<NodeInstanceLog> findNodeInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        boolean newTx = joinTransaction(em);
         List<NodeInstanceLog> result = getEntityManager()
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId ORDER BY date,id")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
-        closeEntityManager(em, ut);
+        closeEntityManager(em, newTx);
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static List<NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        boolean newTx = joinTransaction(em);
         List<NodeInstanceLog> result = getEntityManager()
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId AND n.nodeId = :nodeId ORDER BY date,id")
                 .setParameter("processInstanceId", processInstanceId)
                 .setParameter("nodeId", nodeId).getResultList();
-        closeEntityManager(em, ut);
+        closeEntityManager(em, newTx);
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static List<VariableInstanceLog> findVariableInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        boolean newTx = joinTransaction(em);
         List<VariableInstanceLog> result = getEntityManager()
             .createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId ORDER BY date")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
-        closeEntityManager(em, ut);
+        closeEntityManager(em, newTx);
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static List<VariableInstanceLog> findVariableInstances(long processInstanceId, String variableId) {
         EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        boolean newTx = joinTransaction(em);
         List<VariableInstanceLog> result = em
             .createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId AND v.variableId = :variableId ORDER BY date")
                 .setParameter("processInstanceId", processInstanceId)
                 .setParameter("variableId", variableId).getResultList();
-        closeEntityManager(em, ut);
+        closeEntityManager(em, newTx);
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static void clear() {
-            EntityManager em = getEntityManager();
-            UserTransaction ut = joinTransaction(em);
-            
-            List<ProcessInstanceLog> processInstances = em.createQuery("FROM ProcessInstanceLog").getResultList();
-            for (ProcessInstanceLog processInstance: processInstances) {
-                em.remove(processInstance);
-            }
-            List<NodeInstanceLog> nodeInstances = em.createQuery("FROM NodeInstanceLog").getResultList();
-            for (NodeInstanceLog nodeInstance: nodeInstances) {
-                em.remove(nodeInstance);
-            }
-            List<VariableInstanceLog> variableInstances = em.createQuery("FROM VariableInstanceLog").getResultList();
-            for (VariableInstanceLog variableInstance: variableInstances) {
-                em.remove(variableInstance);
-            }           
-            closeEntityManager(em, ut);
+        EntityManager em = getEntityManager();
+        boolean newTx = joinTransaction(em);
+        
+        List<ProcessInstanceLog> processInstances = em.createQuery("FROM ProcessInstanceLog").getResultList();
+        for (ProcessInstanceLog processInstance: processInstances) {
+            em.remove(processInstance);
+        }
+        List<NodeInstanceLog> nodeInstances = em.createQuery("FROM NodeInstanceLog").getResultList();
+        for (NodeInstanceLog nodeInstance: nodeInstances) {
+            em.remove(nodeInstance);
+        }
+        List<VariableInstanceLog> variableInstances = em.createQuery("FROM VariableInstanceLog").getResultList();
+        for (VariableInstanceLog variableInstance: variableInstances) {
+            em.remove(variableInstance);
+        }           
+        closeEntityManager(em, newTx);
     }
 
     @Deprecated
@@ -228,26 +226,43 @@ public class JPAProcessInstanceDbLog {
      * @throws SystemException 
      * @throws Exception if something goes wrong. 
      */
-    private static UserTransaction joinTransaction(EntityManager em) {
+    private static boolean joinTransaction(EntityManager em) {
+    	boolean isJTA = true;
+    	if (env != null) {    	
+	    	Boolean bool = (Boolean) env.get("IS_JTA_TRANSACTION");
+	        if (bool != null) {
+	        	isJTA = bool.booleanValue();
+	        }
+    	}
+
         boolean newTx = false;
-        UserTransaction ut = null;
-        try { 
-            ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
-                ut.begin();
-                newTx = true;
-            }
-        } catch(Exception e) { 
-            logger.error("Unable to find or open a transaction: " + e.getMessage());
-            e.printStackTrace();
+        TransactionManager transactionManager = null;
+        if (env != null) {
+        	transactionManager = (TransactionManager) env.get(EnvironmentName.TRANSACTION_MANAGER);
+        }
+        if (transactionManager != null) {
+    		newTx = transactionManager.begin();
+        } else {
+	        UserTransaction ut = null;
+	        try { 
+	            ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+	            System.out.println(ut.getStatus());
+	            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
+	            	System.out.println("starting new transaction");
+	                ut.begin();
+	                newTx = true;
+	            }
+	        } catch(Exception e) { 
+	            logger.error("Unable to find or open a transaction: " + e.getMessage());
+	            e.printStackTrace();
+	        }
         }
         
-        em.joinTransaction(); 
-       
-        if( newTx ) { 
-            return ut;
+        if (isJTA) {
+	        em.joinTransaction();
         }
-        return null;
+	       
+        return newTx;
     }
 
     /**
@@ -259,18 +274,34 @@ public class JPAProcessInstanceDbLog {
      * @param em The entity manager.
      * @param ut The (user) transaction.
      */
-    private static void closeEntityManager(EntityManager em, UserTransaction ut) {
-        em.flush(); // This saves any changes made
-        em.clear(); // This makes sure that any returned entities are no longer attached to this entity manager/persistence context
-        em.close(); // and this closes the entity manager
-        try { 
-            if( ut != null ) { 
-                // There's a tx running, close it.
-                ut.commit();
+    private static void closeEntityManager(EntityManager em, boolean newTx) {
+    	boolean sharedEM = false;
+    	if (env != null) {
+	    	Boolean bool = (Boolean) env.get("IS_SHARED_ENTITY_MANAGER");
+	        if (bool != null) {
+	        	sharedEM = bool.booleanValue();
+	        }
+    	}
+        if (!sharedEM) {
+	        em.flush(); // This saves any changes made
+	        em.clear(); // This makes sure that any returned entities are no longer attached to this entity manager/persistence context
+	        em.close(); // and this closes the entity manager
+	        TransactionManager transactionManager = null;
+	        if (env != null) {
+	        	transactionManager = (TransactionManager) env.get(EnvironmentName.TRANSACTION_MANAGER);
+	        }
+            if (transactionManager != null) {
+            	transactionManager.commit(newTx);
+            } else {
+            	if (newTx) {
+	    	        try { 
+	    	        	UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+		                ut.commit();
+	    	        } catch(Exception e) { 
+	    	            logger.error("Unable to commit transaction: " + e.getMessage(), e);
+	    	        }
+            	}
             }
-        } catch(Exception e) { 
-            logger.error("Unable to commit transaction: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -285,10 +316,26 @@ public class JPAProcessInstanceDbLog {
     private static EntityManager getEntityManager() {
         EntityManager em = null;
         if (env == null) {
+        	if (emf == null) {
+                try { 
+                    emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+                } catch( Exception e ) { 
+                     throw new RuntimeException("Unable to instantiate emf for 'org.jbpm.persistence.jpa' persistence unit, consider using JPAProcessInstanceDbLog.setEnvironment(env)", e);   
+                }
+        	}
             em = emf.createEntityManager();
         } else {
-            EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-            em = emf.createEntityManager(); 
+        	boolean sharedEM = false;
+        	Boolean bool = (Boolean) env.get("IS_SHARED_ENTITY_MANAGER");
+            if (bool != null) {
+            	sharedEM = bool.booleanValue();
+            }
+            if (sharedEM) {
+            	em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+            } else {
+	            EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+	            em = emf.createEntityManager();
+            }
         }
         return em;
     }
