@@ -1552,6 +1552,20 @@ baos.close();
 
     <para>Note that the acceptance checking order is in the natural order of
     the supplied array.</para>
+
+    <para>Also note that if you are using scheduled activations (i.e. some
+    of your rules use timers or calendars) they are marshallable only if,
+    before you use it, you configure your StatefulKnowledgeSession to use a
+    trackable timer job factory manager as it follows:</para>
+
+    <example>
+      <title>Configuring a trackable timer job factory manager</title>
+
+      <programlisting language="java">KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+ksconf.setOption(TimerJobFactoryOption.get("trackable"));
+StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksconf, null);</programlisting>
+    </example>
+
   </section>
 
   <section>
