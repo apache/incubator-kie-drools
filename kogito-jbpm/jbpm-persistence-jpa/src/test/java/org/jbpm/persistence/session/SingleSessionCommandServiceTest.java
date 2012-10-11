@@ -17,22 +17,22 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
+import org.drools.TimerJobFactoryType;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
-import org.drools.persistence.jpa.JpaTimeJobFactoryManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.persistence.util.PersistenceUtil;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.rule.Package;
 import org.drools.runtime.Environment;
+import org.drools.runtime.conf.TimerJobFactoryOption;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
@@ -55,7 +55,6 @@ import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 public class SingleSessionCommandServiceTest extends JbpmTestCase {
@@ -600,7 +599,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                 JPASignalManagerFactory.class.getName() );
         
         SessionConfiguration config = new SessionConfiguration( properties );
-        config.setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
+        config.setOption( TimerJobFactoryOption.get(TimerJobFactoryType.JPA.getId()) );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessTimer();
@@ -705,7 +704,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                 JPASignalManagerFactory.class.getName() );
 
         SessionConfiguration config = new SessionConfiguration( properties );
-        config.setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
+        config.setOption( TimerJobFactoryOption.get(TimerJobFactoryType.JPA.getId()) );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessTimer2();
