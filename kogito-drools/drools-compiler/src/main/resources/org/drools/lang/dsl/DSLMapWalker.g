@@ -136,7 +136,8 @@ variable_definition
             $entry::sentenceKeyBuffer.append("{"+$varname.text+"}");
         }
 
-        if($q == null || (!$q.getText().equals("ENUM") && !$q.getText().equals("DATE") && !$q.getText().equals("BOOLEAN"))){
+        if($q == null || (!$q.getText().equals("ENUM") && !$q.getText().equals("CF") && 
+                          !$q.getText().equals("DATE") && !$q.getText().equals("BOOLEAN"))){
             $entry::keybuffer.append($pattern != null? "(" + $pattern.text + ")" : "(.*?)");
         }else{
             $entry::keybuffer.append("(.*?)");
