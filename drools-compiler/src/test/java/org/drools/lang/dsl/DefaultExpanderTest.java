@@ -409,22 +409,23 @@ public class DefaultExpanderTest {
     }
 
     @Test
-    public void testExpandQueryWithParams() throws Exception {
+    public void testExpandExpr() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        String dsl = "[when]There is a person=Person()\n" +
-                "[when]- {field:\\w*} {operator} {value:\\d*}={field} {operator} {value}\n" +
-                "[when]- equals {variable}=this == {variable}\n" +
-                "[when]is greater than=>";
+        String dsl = "[when]Name of Applicant {nameVar:CF:Applicant.age}= System.out.println({nameVar})";
 
-        String source = "query \"isMature\"(Person p)\n" +
-                "There is a person\n" +
-                "- age is greater than 18\n" +
-                "- equals p\n" +
-                "end\n";
+        String source = "rule \"test rule for custom form in DSL\"\n" + 
+        		"     dialect \"mvel\"\n" + 
+        		"     when\n" + 
+        		"         Name of Applicant Bojan Oklahoma and NJ,Andrew AMW Test\n" + 
+        		"     then\n" + 
+        		"end";
 
-        String expected = "query \"isMature\"(Person p)\n" +
-                "Person(age  >  18, this == p)\n" +
-                "end\n";
+        String expected = "rule \"test rule for custom form in DSL\"\n" +
+                "     dialect \"mvel\"\n" + 
+                "     when\n" + 
+                "         System.out.println(Bojan Oklahoma and NJ,Andrew AMW Test)\n" + 
+                "     then\n" + 
+                "end";
 
         file.parseAndLoad( new StringReader( dsl ) );
         assertEquals( 0,
@@ -434,6 +435,7 @@ public class DefaultExpanderTest {
         ex.addDSLMapping( file.getMapping() );
 
         String drl = ex.expand( source );
+        
         assertFalse( ex.hasErrors() );
 
         assertEquals( expected, drl );
