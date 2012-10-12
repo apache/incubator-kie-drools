@@ -149,14 +149,13 @@
       <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
       instead are added to the tail of the solver phases list.</para>
 
-      <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). The best
-      solution of each <literal>Solver</literal> run and a handy overview report will be written in that
-      directory.</para>
+      <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). A benchmark
+      report will be written in that directory.</para>
 
       <note>
-        <para>It's recommended that the <literal>benchmarkDirectory</literal> is a directory not committed to source
-        control and not cleaned by your build system. This way the generated files are not bloating your source control
-        and they aren't lost when doing a build. Usually that directory is called <literal>local</literal>.</para>
+        <para>It's recommended that the <literal>benchmarkDirectory</literal> is a directory ignored for source control
+        and not cleaned by your build system. This way the generated files are not bloating your source control and they
+        aren't lost when doing a build. Usually that directory is called <literal>local</literal>.</para>
       </note>
     </section>
 
@@ -229,6 +228,24 @@
       </section>
     </section>
 
+    <section xml:id="writingTheOutputSolutionOfTheBenchmarkRuns">
+      <title>Writing the output solution of the benchmark runs</title>
+
+      <para>The best solution of each benchmark run can be written to the in the <literal>benchmarkDirectory</literal>.
+      By default, this is disabled, because the files are rarely used and considered bloat. Also, on large datasets,
+      writing the best solution of each single benchmark can take quite some time and memory (causing an
+      <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream.</para>
+
+      <para>You can enable to write the output solution in the <literal>benchmarkDirectory</literal> with
+      <literal>writeOutputSolutionEnabled</literal>:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;writeOutputSolutionEnabled&gt;true&lt;/writeOutputSolutionEnabled&gt;
+      ...
+    &lt;/problemBenchmarks&gt;</programlisting>
+    </section>
+
     <section>
       <title>Warming up the HotSpot compiler</title>
 
@@ -298,7 +315,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"></imagedata>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -346,7 +363,7 @@
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionChangedStatistic.png"
-                         format="PNG"></imagedata>
+                         format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -374,7 +391,7 @@
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"
-                         format="PNG"></imagedata>
+                         format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -398,7 +415,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"></imagedata>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -511,20 +528,6 @@
           xlink:href="https://issues.jboss.org/browse/JBRULES-681">multi-threaded solving</link> or multi-JVM
           solving.</para>
         </note>
-      </section>
-
-      <section xml:id="disableWriteTheOutputSolution">
-        <title>Disable writing the outputSolution</title>
-
-        <para>On large datasets, writing the output solution of each single benchmark can take quite some time and
-        memory (causing an <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream. You can
-        disable that the output solution is written:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      ...
-      &lt;writeOutputSolutionEnabled&gt;false&lt;/writeOutputSolutionEnabled&gt;
-      ...
-    &lt;/problemBenchmarks&gt;</programlisting>
       </section>
     </section>
 

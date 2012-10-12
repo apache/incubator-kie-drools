@@ -2279,8 +2279,8 @@ Before in *ScoreDefinition.java:
     }
 
 
-From 5.5.0.Beta1 to 5.5.0.Beta2
--------------------------------
+From 5.5.0.Beta1 to 5.5.0.CR1
+-----------------------------
 
 [RECOMMENDED] Planning variables can now have a null value when initialized.
 If you have any custom hacks for that, take a look at the reference manual how to replace them with a nullable variable.
@@ -2289,3 +2289,12 @@ If you have any custom hacks for that, take a look at the reference manual how t
 - MoveScope has been renamed to LocalSearchMoveScope
 - All *Scope classes have been moved into a subpackage scope
 - The methods get(LocalSearch|GreedyFit|BruteForce|Custom)*Scope() have been renamed to get*Scope()
+
+[MAJOR] By default, the benchmarker no longer writes the outputSolution of the benchmarker runs to disk.
+Those solution files are usually bloat in practice. To write them anyway:
+After in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      ...
+      <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
+      ...
+    </problemBenchmarks>

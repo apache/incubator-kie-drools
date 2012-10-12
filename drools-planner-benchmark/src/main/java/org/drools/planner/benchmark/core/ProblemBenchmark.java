@@ -45,7 +45,7 @@ public class ProblemBenchmark {
     private String name = null;
 
     private ProblemIO problemIO = null;
-    private boolean writeOutputSolutionEnabled = true;
+    private boolean writeOutputSolutionEnabled = false;
     private File inputSolutionFile = null;
     private File problemReportDirectory = null;
 

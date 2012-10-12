@@ -152,7 +152,7 @@ public class ProblemBenchmarksConfig {
         problemBenchmark.setName(name);
         problemBenchmark.setProblemIO(problemIO);
         problemBenchmark.setWriteOutputSolutionEnabled(
-                writeOutputSolutionEnabled == null ? true : writeOutputSolutionEnabled);
+                writeOutputSolutionEnabled == null ? false : writeOutputSolutionEnabled);
         problemBenchmark.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
         List<ProblemStatistic> problemStatisticList = new ArrayList<ProblemStatistic>(

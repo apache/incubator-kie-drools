@@ -558,7 +558,7 @@
     <section>
       <title>cartesianProductMoveSelector</title>
 
-      <para>TODO Not yet implemented.</para>
+      <para>TODO</para>
     </section>
   </section>
 
@@ -584,6 +584,18 @@
 
   <section>
     <title>Custom moves</title>
+
+    <section>
+      <title>Which move types might be missing in my implementation?</title>
+
+      <para>To determine which move types might be missing in your implementation, run a benchmarker <emphasis>for a
+      short amount of time</emphasis> and <link linkend="writingTheOutputSolutionOfTheBenchmarkRuns">configure it to
+      write the best solutions to disk</link>. Take a look at such a best solution: it will likely be a local optima.
+      Try to figure out if there's a move that could get out of that local optima faster.</para>
+
+      <para>If you find one, implement that course-grained move, mix it with the existing moves and benchmark it against
+      the previous configurations to see if you want to keep it.</para>
+    </section>
 
     <section>
       <title>Custom moves introduction</title>
