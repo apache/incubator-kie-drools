@@ -1,5 +1,6 @@
 package org.drools.persistence.jpa.processinstance;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     private InternalKnowledgeRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
-    private transient Map<Long, WorkItemInfo> workItems;
+    private transient Map<Long, WorkItemInfo> workItems=Collections.synchronizedMap(new HashMap<Long, WorkItemInfo>());;
     
     public JPAWorkItemManager(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
@@ -44,10 +45,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
         workItemInfo.update();
-        
-        if (this.workItems == null) {
-            this.workItems = new HashMap<Long, WorkItemInfo>();
-        }
+      
         workItems.put(workItem.getId(), workItemInfo);
         
         WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
@@ -77,14 +75,10 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (handler != null) {
                 handler.abortWorkItem(workItem, this);
             } else {
-                if ( workItems != null ) {
                     workItems.remove( id );
                     throwWorkItemNotFoundException( workItem );
-                }
             }
-            if (workItems != null) {
-                workItems.remove(id);
-            }
+            workItems.remove(id);
             context.remove(workItemInfo);
         }
     }
@@ -99,11 +93,9 @@ public class JPAWorkItemManager implements WorkItemManager {
 
         
         WorkItemInfo workItemInfo = null;
-        if (this.workItems != null) {
-            workItemInfo = this.workItems.get(id);
-            if (workItemInfo != null) {
-                workItemInfo = context.merge(workItemInfo);
-            }
+        workItemInfo = this.workItems.get(id);
+        if (workItemInfo != null) {
+            workItemInfo = context.merge(workItemInfo);
         }
         
         if (workItemInfo == null) {
@@ -121,9 +113,7 @@ public class JPAWorkItemManager implements WorkItemManager {
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
             context.remove(workItemInfo);
-            if (workItems != null) {
-                this.workItems.remove(workItem.getId());
-            }
+            this.workItems.remove(workItem.getId());
         }
     }
 
@@ -133,11 +123,9 @@ public class JPAWorkItemManager implements WorkItemManager {
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
 
         WorkItemInfo workItemInfo = null;
-        if (this.workItems != null) {
-            workItemInfo = this.workItems.get(id);
-            if (workItemInfo != null) {
-                workItemInfo = context.merge(workItemInfo);
-            }
+        workItemInfo = this.workItems.get(id);
+        if (workItemInfo != null) {
+            workItemInfo = context.merge(workItemInfo);
         }
         
         if (workItemInfo == null) {
@@ -154,9 +142,7 @@ public class JPAWorkItemManager implements WorkItemManager {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
             context.remove(workItemInfo);
-            if (workItems != null) {
-                workItems.remove(workItem.getId());
-            }
+            workItems.remove(workItem.getId());
         }
     }
 
@@ -166,9 +152,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
         
         WorkItemInfo workItemInfo = null;
-        if (this.workItems != null) {
-            workItemInfo = this.workItems.get(id);
-        }
+        workItemInfo = this.workItems.get(id);
         
         if (workItemInfo == null && context != null) {
 
@@ -197,9 +181,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     }
 
     public void clearWorkItems() {
-        if (workItems != null) {
-            workItems.clear();
-        }
+        workItems.clear();
     }
 
     public void clear() {
