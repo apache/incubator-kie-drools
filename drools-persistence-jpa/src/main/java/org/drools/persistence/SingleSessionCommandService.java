@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
@@ -51,13 +52,13 @@ import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.tools.jxc.gen.config.Config;
-
 public class SingleSessionCommandService
     implements
     org.drools.command.SingleSessionCommandService {
 
     Logger                             logger           = LoggerFactory.getLogger( getClass() );
+
+    private ReentrantLock lock = new ReentrantLock(true);
 
     private SessionInfo                sessionInfo;
     private SessionMarshallingHelper   marshallingHelper;
@@ -339,7 +340,8 @@ public class SingleSessionCommandService
         return this.kContext;
     }
 
-    public synchronized <T> T execute(Command<T> command) {
+    public <T> T execute(Command<T> command) {
+        lock.lock();        
         if (command instanceof DisposeCommand) {
             T result = commandService.execute( (GenericCommand<T>) command );
             this.jpm.dispose();
@@ -438,25 +440,35 @@ public class SingleSessionCommandService
         }
 
         public void afterCompletion(int status) {
-            if ( status != TransactionManager.STATUS_COMMITTED ) {
-                this.service.rollback();
-            }
-
-            // always cleanup thread local whatever the result
-            Object removedSynchronization = SingleSessionCommandService.synchronizations.remove( this.service );
-
-            this.service.jpm.clearPersistenceContext();
-            
-            this.service.jpm.endCommandScopedEntityManager();
-
-            StatefulKnowledgeSession ksession = this.service.ksession;
-            // clean up cached process and work item instances
-            if ( ksession != null ) {
-                InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
-                if ( internalProcessRuntime != null ) {
-                    internalProcessRuntime.clearProcessInstances();
+            try {
+                if (status != TransactionManager.STATUS_COMMITTED) {
+                    this.service.rollback();
                 }
-                ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
+
+                // always cleanup thread local whatever the result
+                Object removedSynchronization = SingleSessionCommandService.synchronizations
+                        .remove(this.service);
+
+                this.service.jpm.clearPersistenceContext();
+
+                this.service.jpm.endCommandScopedEntityManager();
+
+                StatefulKnowledgeSession ksession = this.service.ksession;
+                // clean up cached process and work item instances
+                if (ksession != null) {
+                    InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession)
+                            .getProcessRuntime();
+                    if (internalProcessRuntime != null) {
+                        internalProcessRuntime.clearProcessInstances();
+                    }
+                    ((JPAWorkItemManager) ksession.getWorkItemManager())
+                            .clearWorkItems();
+                }
+            } finally {
+                int holdCount = service.lock.getHoldCount();
+                for (int i = 1; i <= holdCount; i++) {
+                    service.lock.unlock();
+                }
             }
             
         }
