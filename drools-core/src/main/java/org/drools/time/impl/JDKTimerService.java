@@ -46,19 +46,21 @@ public class JDKTimerService
     InternalSchedulerService,
     AcceptsTimerJobFactoryManager {
 
+    private static ScheduledThreadPoolExecutor scheduler;
+    static {
+        int corePoolSize = Integer.valueOf(System.getProperty(
+                "drools.timerService.scheduler.corePoolSize",
+                "5"));
+        scheduler = new ScheduledThreadPoolExecutor(corePoolSize);
+    }
     private AtomicLong                    idCounter = new AtomicLong();
 
-    protected ScheduledThreadPoolExecutor scheduler;
 
     protected TimerJobFactoryManager        jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
     public JDKTimerService() {
-        this( 1 );
     }
 
-    public JDKTimerService(int size) {
-        this.scheduler = new ScheduledThreadPoolExecutor( size );
-    }
 
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
         this.jobFactoryManager = timerJobFactoryManager;
@@ -83,7 +85,11 @@ public class JDKTimerService
         // forcing a shutdownNow instead of a regular shutdown()
         // to avoid delays on shutdown. This is an irreversible 
         // operation anyway, called on session dispose.
-        this.scheduler.shutdownNow();
+        for (TimerJobInstance timerJobInstance : getTimerJobInstances()) {
+            JDKJobHandle jobHandle = (JDKJobHandle) timerJobInstance
+                    .getJobHandle();
+            removeJob(jobHandle);
+        }
     }
 
     public JobHandle scheduleJob(Job job,
@@ -132,7 +138,7 @@ public class JDKTimerService
     public boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel( true );
         jobFactoryManager.removeTimerJobInstance( ((JDKJobHandle) jobHandle).getTimerJobInstance() );
-        return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
+        return scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
     }
 
     public static class JDKJobHandle extends DefaultJobHandle
