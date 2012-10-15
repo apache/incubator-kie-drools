@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>droolsjbpm-parent</artifactId>
-    <version>5.5.0-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <!-- relativePath causes out-of-date problems on hudson slaves -->
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
@@ -22,7 +22,7 @@
   <!-- major.minor.micro.Final -->
   <!-- For example: 1.2.3 without the suffix ".Final" corrupts the OSGi eclipse updatesite -->
   <!-- For example: 1.2.3.M2 corrupts the OSGi eclipse updatesite update order -->
-  <version>5.5.0-SNAPSHOT</version>
+  <version>6.0.0-SNAPSHOT</version>
 
   <name>jBPM multiproject</name>
   <description>jBPM: a Business Process Management (BPM) Suite</description>
