@@ -14,7 +14,6 @@
      
      
     <properties>
-        <jbpm.version>5.4.0-SNAPSHOT</jbpm.version>
         <seam.version>3.1.0.Final</seam.version>
         <weld.version>1.1.8.Final</weld.version>
     </properties>
