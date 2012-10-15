@@ -457,7 +457,14 @@
 &lt;/solver&gt;</programlisting>
 
     <para>The solver phases are run in the order defined by solver configuration. When the first phase terminates, the
-    second phase starts, and so on. When the last phase terminates, the <literal>Solver</literal> terminates.</para>
+    second phase starts, and so on. When the last phase terminates, the <literal>Solver</literal> terminates. Usually, a
+    solver will first run a construction heuristic and then run 1 or multiple metaheuristics:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Optimization_algorithms/generalPhaseSequence.png"/>
+      </imageobject>
+    </mediaobject>
 
     <para>Some phases (especially construction heuristics) will terminate automatically. Other phases (especially
     metaheuristics) will only terminate if the phase is configured to terminate:</para>
@@ -485,7 +492,7 @@
   <section xml:id="scopeOverview">
     <title>Scope overview</title>
 
-    <para>A solver wll iteratively run phases. Each phase will usually iteratively run steps. Each step, in turn,
+    <para>A solver will iteratively run phases. Each phase will usually iteratively run steps. Each step, in turn,
     usually iteratively runs moves. These form 4 nested scopes: solver, phase, step and move.</para>
 
     <mediaobject>
