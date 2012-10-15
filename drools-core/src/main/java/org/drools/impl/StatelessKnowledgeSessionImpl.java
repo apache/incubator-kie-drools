@@ -285,6 +285,7 @@ public class StatelessKnowledgeSessionImpl
             }
         } finally {
             ((StatefulKnowledgeSessionImpl) ksession).session.endBatchExecution();
+            ksession.dispose();
         }
     }
 
