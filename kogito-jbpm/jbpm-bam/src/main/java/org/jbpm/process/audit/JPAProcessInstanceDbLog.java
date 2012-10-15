@@ -246,9 +246,9 @@ public class JPAProcessInstanceDbLog {
 	        UserTransaction ut = null;
 	        try { 
 	            ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-	            System.out.println(ut.getStatus());
+
 	            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
-	            	System.out.println("starting new transaction");
+
 	                ut.begin();
 	                newTx = true;
 	            }
