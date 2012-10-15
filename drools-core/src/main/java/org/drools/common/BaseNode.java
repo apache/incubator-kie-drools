@@ -106,9 +106,12 @@ public abstract class BaseNode
                        BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
 
+        /*fix JBRULES-3656
         if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource)) {
             return;
-        }
+        }*/
+        context.addRemovedNode(this);
+        //END fix JBRULES-3656
 
         this.removeAssociation( context.getRule() );
         doRemove( context,
