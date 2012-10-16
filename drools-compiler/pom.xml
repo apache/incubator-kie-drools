@@ -134,11 +134,7 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    
-    <dependency>
-        <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se-core</artifactId>
-    </dependency>     
+        
   </dependencies>
   
   <profiles>
@@ -258,7 +254,7 @@
             <Require-Bundle>org.drools.core;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
             <Import-Package>!org.drools.*,
               <!-- java compilers are optional: only need one at most -->
-              org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,org.jboss.weld.*;resolution:=optional,
+              org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,
                *
             </Import-Package>              
             <Export-Package>org.drools.lang.descr,!org.drools.commons.*, !org.drools.lang.*, org.drools.builder.impl,
