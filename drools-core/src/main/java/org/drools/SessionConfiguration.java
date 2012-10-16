@@ -83,6 +83,7 @@ public class SessionConfiguration
 
     private QueryListenerOption            queryListener;
 
+    private Map<String, WorkItemHandler>   workItemHandlers;
     private WorkItemManagerFactory         workItemManagerFactory;
     private CommandService                 commandService;
 
@@ -297,18 +298,24 @@ public class SessionConfiguration
 
     public Map<String, WorkItemHandler> getWorkItemHandlers() {
 
-        return initWorkItemHandlers(new HashMap<String, Object>());
+        if ( this.workItemHandlers == null ) {
+            initWorkItemHandlers(new HashMap<String, Object>());
+        }
+        return this.workItemHandlers;
 
     }
     
     public Map<String, WorkItemHandler> getWorkItemHandlers(Map<String, Object> params) {
         
-        return initWorkItemHandlers(params);
+        if ( this.workItemHandlers == null ) {
+            initWorkItemHandlers(params);
+        }
+        return this.workItemHandlers;
     }
     
 
-    private HashMap<String, WorkItemHandler> initWorkItemHandlers(Map<String, Object> params) {
-        HashMap<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private void initWorkItemHandlers(Map<String, Object> params) {
+        this.workItemHandlers = new HashMap<String, WorkItemHandler>();
 
         // split on each space
         String locations[] = this.chainedProperties.getProperty( "drools.workItemHandlers",
@@ -326,19 +333,20 @@ public class SessionConfiguration
                                                              factoryLocation.length() - 1 );
             }
             if ( !factoryLocation.equals( "" ) ) {
-                workItemHandlers.putAll(loadWorkItemHandlers( factoryLocation, params ));
+                loadWorkItemHandlers( factoryLocation, params );
             }
         }
         
-        return workItemHandlers;
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, WorkItemHandler> loadWorkItemHandlers(String location, Map<String, Object> params) {
+    private void loadWorkItemHandlers(String location, Map<String, Object> params) {
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        return (Map<String, WorkItemHandler>) MVEL.eval( content, params );
+        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content,
+                                                                                                  params );
+        this.workItemHandlers.putAll( workItemHandlers );
     }
 
     public WorkItemManagerFactory getWorkItemManagerFactory() {
