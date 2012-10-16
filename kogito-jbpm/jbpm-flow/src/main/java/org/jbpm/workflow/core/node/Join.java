@@ -50,6 +50,8 @@ public class Join extends NodeImpl {
      */
     public static final int TYPE_N_OF_M = 4;
     
+    public static final int TYPE_OR = 5;
+    
     private static final long serialVersionUID = 510l;
 
     private int type;

@@ -40,6 +40,9 @@ public class JoinHandler extends AbstractNodeHandler {
 			case Join.TYPE_XOR:
 				writeNode("exclusiveGateway", node, xmlDump, metaDataType);
 				break;
+			case Join.TYPE_OR:
+                writeNode("inclusiveGateway", node, xmlDump, metaDataType);
+                break;
 			default:
 				writeNode("complexGateway", node, xmlDump, metaDataType);
 		}

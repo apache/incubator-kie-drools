@@ -133,6 +133,7 @@ public class SplitInstance extends NodeInstanceImpl {
                     }
                     outgoingCopy.remove(selectedConnection);
                 }
+                 
                 for (NodeInstanceTrigger nodeInstance: nodeInstances) {
     	        	// stop if this process instance has been aborted / completed
     	        	if (getProcessInstance().getState() != ProcessInstance.STATE_ACTIVE) {
