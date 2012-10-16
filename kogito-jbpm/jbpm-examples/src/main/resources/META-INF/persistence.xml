@@ -11,7 +11,10 @@
   <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>jdbc/ProcessEngineDS</jta-data-source>       
-    <mapping-file>META-INF/jbpm-orm.xml</mapping-file>
+    <mapping-file>META-INF/JBPMorm.xml</mapping-file> 
+    <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
+    <mapping-file>META-INF/ExtraIndexes.hbm.xml</mapping-file>
+
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>

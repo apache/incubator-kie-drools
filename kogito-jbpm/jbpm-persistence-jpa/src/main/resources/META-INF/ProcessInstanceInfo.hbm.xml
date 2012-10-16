@@ -33,16 +33,4 @@
 
   </class>
 
-  <database-object>
-    <create>CREATE INDEX IDX_EVENTTYPES ON EVENTTYPES (INSTANCEID);</create>
-    <drop />
-    <dialect-scope name="org.hibernate.dialect.DB2Dialect" />
-    <dialect-scope name="org.hibernate.dialect.MySQL5Dialect" />
-    <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
-    <dialect-scope name="org.hibernate.dialect.Oracle9Dialect" />
-    <dialect-scope name="org.hibernate.dialect.OracleDialect" />
-    <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
-    <dialect-scope name="org.hibernate.dialect.SQLServerDialect" />
-  </database-object>
-
 </hibernate-mapping>

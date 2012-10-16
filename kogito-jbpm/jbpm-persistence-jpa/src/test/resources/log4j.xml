@@ -24,37 +24,9 @@
         <level value="ERROR"/>
 	</logger>
 	
-    <!--  hibernate  -->	
-    <logger name="org.hibernate">
-        <level value="WARN"/>
-    </logger>
-    <logger name="org.hibernate.cfg.search">
-        <level value="WARN"/>
-    </logger>
-    <logger name="org.hibernate.cfg.annotations">
-        <level value="WARN"/>
-    </logger>
-    <logger name="org.hibernate.cfg.AnnotationBinder">
-        <level value="WARN"/>
-    </logger>
-    <logger name="org.hibernate.cfg.SettingsFactory">
-        <level value="WARN"/>
-    </logger>
-    
     <logger name="org.hibernate.tool.hbm2ddl">
-        <level value="WARN"/>
+        <level value="DEBUG"/>
     </logger>
-    <!-- hibernate 4 verbosity -->
-	<logger name="org.hibernate.tool.hbm2ddl.TableMetadata">
-		<level value="WARN"/>
-	</logger>
-	<logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
-		<level value="FATAL"/>
-	</logger>
-	<logger name="java.sql.DatabaseMetaData">
-		<level value="WARN"/>
-	</logger>
-    
 
 	<root>
 		<priority value="INFO"/>

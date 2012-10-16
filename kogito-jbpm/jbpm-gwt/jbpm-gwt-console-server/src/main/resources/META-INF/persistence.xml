@@ -14,6 +14,9 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jdbc/testDS1</jta-data-source>       
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
+    <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
+    <mapping-file>META-INF/ExtraIndexes.hbm.xml</mapping-file>
+
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>

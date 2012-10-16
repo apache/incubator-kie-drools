@@ -9,3 +9,6 @@
 /*.iws
 /*.iml
 
+# test data
+/data
+/*.db

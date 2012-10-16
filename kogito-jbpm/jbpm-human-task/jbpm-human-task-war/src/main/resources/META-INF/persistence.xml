@@ -10,6 +10,7 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <non-jta-data-source>java:jboss/datasources/jbpmDS</non-jta-data-source>       
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
+
     <class>org.jbpm.task.Attachment</class>
     <class>org.jbpm.task.BooleanExpression</class>
     <class>org.jbpm.task.Comment</class>
