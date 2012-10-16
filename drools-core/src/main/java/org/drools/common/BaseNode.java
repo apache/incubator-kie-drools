@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.definition.rule.Rule;
+import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ReteooBuilder;
@@ -106,7 +107,7 @@ public abstract class BaseNode
                        BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
 
-        if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource)) {
+        if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource) && !(this instanceof AlphaNode)) {
             return;
         }
 
