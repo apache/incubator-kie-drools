@@ -15,15 +15,20 @@
  */
 package org.drools.core.workitem;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.junit.Test;
 
@@ -41,6 +46,11 @@ public class CustomWorkItemHandlerTest {
         // this test would fail on creation of the work item manager if injecting session is not supported
         WorkItemManager manager = ksession.getWorkItemManager();
         assertNotNull(manager);
+        
+        Map<String, WorkItemHandler> handlers = ((SessionConfiguration)config).getWorkItemHandlers();
+        assertNotNull(handlers);
+        assertEquals(1, handlers.size());
+        assertTrue(handlers.containsKey("Custom"));
     }
 
 }
