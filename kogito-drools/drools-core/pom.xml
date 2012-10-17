@@ -110,7 +110,6 @@
       <build>
         <plugins>
           <plugin><!-- TODO JBRULES-2740 use mojo's antlr-maven-plugin or antlr3-maven-plugin so the jar versions are always up to date -->
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
