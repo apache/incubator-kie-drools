@@ -380,6 +380,19 @@ public class ClassGenerator {
             mv.visitTypeInsn(CHECKCAST, internalName(clazz));
         }
 
+        protected final void castToPrimitive(Class<?> clazz) {
+            if (clazz == boolean.class) {
+                cast(Boolean.class);
+                invokeVirtual(Boolean.class, "booleanValue", boolean.class);
+            } else if (clazz == char.class) {
+                cast(Character.class);
+                invokeVirtual(Character.class, "charValue", char.class);
+            } else {
+                cast(Number.class);
+                invokeVirtual(Number.class, clazz.getName() + "Value", clazz);
+            }
+        }
+
         public void instanceOf(Class<?> clazz) {
             mv.visitTypeInsn(INSTANCEOF, internalName(clazz));
         }

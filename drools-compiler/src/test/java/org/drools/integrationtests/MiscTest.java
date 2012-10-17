@@ -10533,4 +10533,37 @@ public class MiscTest extends CommonTestMethodBase {
         }
     }
 
+    @Test
+    public void testEvalWithDoubleDereferencingDeclarationReturningPrimitive() throws Exception {
+        // JBRULES-3657
+        String str = "import org.drools.integrationtests.MiscTest.PlannerSolution\n" +
+                "rule R1 when\n" +
+                "        $leftHearingSolution : PlannerSolution(schedulingQueueFact !=null,\n" +
+                "                                               $leftVhrLocCode: schedulingQueueFact.vhrLocationCode)\n" +
+                "        $rightHearingSolution : PlannerSolution(schedulingQueueFact !=null,\n" +
+                "                                                $rightVhrLocCode: schedulingQueueFact.vhrLocationCode)\n" +
+                "       eval($leftHearingSolution.getExpertLocationId($leftVhrLocCode)!= $rightHearingSolution.getExpertLocationId($rightVhrLocCode))\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+    }
+
+    public static class PlannerSolution {
+        public SchedulingQueueFact getSchedulingQueueFact() {
+            return new SchedulingQueueFact();
+        }
+        public Integer getExpertLocationId(char aExpLocCode) {
+            return 0;
+        }
+    }
+
+    public static class SchedulingQueueFact {
+        public char getVhrLocationCode() {
+            return 'A';
+        }
+    }
 }

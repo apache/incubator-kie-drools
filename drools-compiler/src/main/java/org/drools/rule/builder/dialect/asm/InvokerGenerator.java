@@ -265,10 +265,39 @@ public class InvokerGenerator {
                 boolean isObject = readMethod.equals("getValue");
                 String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-                if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
+                if (isObject) {
+                    String declarationTypeName = internalName(declarations[i].getTypeName());
+                    if (declarationTypeName.length() == 1) {
+                        castToPrimitive(getPrimitiveTypeForInternalName(declarationTypeName.charAt(0)));
+                    } else {
+                        mv.visitTypeInsn(CHECKCAST, declarationTypeName);
+                    }
+                }
                 objAstorePos += store(objAstorePos, declarations[i].getTypeName()); // obj[i]
             }
             return declarationsParamsPos;
+        }
+
+        private Class<?> getPrimitiveTypeForInternalName(char ch) {
+            switch (ch) {
+                case 'I':
+                    return int.class;
+                case 'Z':
+                    return boolean.class;
+                case 'C':
+                    return char.class;
+                case 'B':
+                    return byte.class;
+                case 'S':
+                    return short.class;
+                case 'F':
+                    return float.class;
+                case 'J':
+                    return long.class;
+                case 'D':
+                    return double.class;
+            }
+            throw new RuntimeException("Unkown primitive type: " + ch);
         }
 
         protected void parseGlobals(String[] globals, String[] globalTypes, int wmReg, StringBuilder methodDescr) {
