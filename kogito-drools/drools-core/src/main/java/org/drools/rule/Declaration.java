@@ -39,21 +39,17 @@ package org.drools.rule;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.drools.RuntimeDroolsException;
+import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.AcceptsReadAccessor;
+import org.drools.spi.InternalReadAccessor;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ValueType;
-import org.drools.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.InternalReadAccessor;
 
 import static org.drools.core.util.ClassUtils.canonicalName;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
@@ -230,67 +226,56 @@ public class Declaration
 
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {
-        return this.readAccessor.getValue( workingMemory,
-                                           object );
+        return this.readAccessor.getValue( workingMemory, object );
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        return this.readAccessor.getCharValue( workingMemory,
-                                               object );
+        return this.readAccessor.getCharValue(workingMemory, object);
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory,
                            final Object object) {
-        return this.readAccessor.getIntValue( workingMemory,
-                                              object );
+        return this.readAccessor.getIntValue(workingMemory, object);
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        return this.readAccessor.getByteValue( workingMemory,
-                                               object );
+        return this.readAccessor.getByteValue(workingMemory, object);
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-        return this.readAccessor.getShortValue( workingMemory,
-                                                object );
+        return this.readAccessor.getShortValue(workingMemory, object);
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        return this.readAccessor.getLongValue( workingMemory,
-                                               object );
+        return this.readAccessor.getLongValue(workingMemory, object);
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-        return this.readAccessor.getFloatValue( workingMemory,
-                                                object );
+        return this.readAccessor.getFloatValue(workingMemory, object);
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
-        return this.readAccessor.getDoubleValue( workingMemory,
-                                                 object );
+        return this.readAccessor.getDoubleValue(workingMemory, object);
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
-        return this.readAccessor.getBooleanValue( workingMemory,
-                                                  object );
+        return this.readAccessor.getBooleanValue(workingMemory, object);
     }
 
     public int getHashCode(InternalWorkingMemory workingMemory,
                            final Object object) {
-        return this.readAccessor.getHashCode( workingMemory,
-                                              object );
+        return this.readAccessor.getHashCode(workingMemory, object);
     }
 
     public boolean isGlobal() {
-        if( this.readAccessor == null ) return false;
-        return this.readAccessor.isGlobal();
+        return this.readAccessor != null && this.readAccessor.isGlobal();
     }
 
     public Method getNativeReadMethod() {
@@ -340,11 +325,9 @@ public class Declaration
     }
 
     public int hashCode() {
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * this.pattern.getOffset();
-        result = PRIME * this.readAccessor.hashCode();
-        result = PRIME * this.identifier.hashCode();
+        int result = 29 * this.pattern.getOffset();
+        result += 31 * this.readAccessor.hashCode();
+        result += 37 * this.identifier.hashCode();
         return result;
     }
 

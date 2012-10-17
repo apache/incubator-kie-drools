@@ -97,20 +97,9 @@ public class JavaDialect
     protected static EnabledBuilder              ENABLED_BUILDER               = new MVELEnabledBuilder();
     protected static JavaAccumulateBuilder       ACCUMULATE_BUILDER            = new JavaAccumulateBuilder();
 
-//    public static RuleConditionBuilder        EVAL_BUILDER                  = new JavaEvalBuilder();
-//    public static RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalBuilder();
     protected static RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalStubBuilder();
-
-//    public static PredicateBuilder            PREDICATE_BUILDER             = new JavaPredicateBuilder();
-//    public static PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateBuilder();
     protected static PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateStubBuilder();
-
-//    public static ReturnValueBuilder          RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
-//    public static ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueBuilder();
     protected static ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueStubBuilder();
-
-//    public static ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
-//    public static ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
     protected static ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceStubBuilder();
 
     protected static JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
