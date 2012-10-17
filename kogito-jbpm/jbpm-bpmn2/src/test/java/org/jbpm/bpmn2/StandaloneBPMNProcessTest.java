@@ -53,8 +53,13 @@ import org.jbpm.process.ProcessBaseFactoryService;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.junit.AfterClass;
 
 public class StandaloneBPMNProcessTest extends TestCase {
+    
+    public void tearDown() {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(null);
+    }
 	
     public void testMinimalProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
