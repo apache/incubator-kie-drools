@@ -57,7 +57,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
       <!-- Any servlet container supports -->
       <scope>provided</scope>
     </dependency>
