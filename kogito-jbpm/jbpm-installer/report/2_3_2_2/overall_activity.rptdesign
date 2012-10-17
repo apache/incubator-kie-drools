@@ -10,8 +10,7 @@
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="ProcessInstanceLog" id="25">
             <property name="odaDriverClass">org.h2.Driver</property>
-            <property name="odaURL">jdbc:h2:tcp://localhost/~/test</property>
-            <property name="odaUser">sa</property>
+            <property name="odaJndiName">java:jboss/datasources/jbpmDS</property>
         </oda-data-source>
     </data-sources>
     <data-sets>

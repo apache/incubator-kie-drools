@@ -895,6 +895,11 @@
     <delete dir="${jboss.home}"/>
   	<antcall target="clean.jboss.repository" />    
   </target>
+	
+  <target name="clean.db" >
+    <delete file="${user.home}/jbpm.h2.db" failonerror="false"/>
+  	<delete file="${user.home}/jbpm.trace.db" failonerror="false"/>
+  </target>
 
   <target name="clean.jboss.repository" if="clean.repository">
   	<delete dir="${install.home}/repository"/>
@@ -915,9 +920,9 @@
   </target>
 
   <!-- Clean Demo -->
-  <target name="clean.demo" depends="clean.jboss,clean.eclipse,clean.generated.ddl" />
+  <target name="clean.demo" depends="clean.jboss,clean.eclipse,clean.generated.ddl,clean.db" />
   <!-- Clean Demo (No Eclipse) -->
-  <target name="clean.demo.noeclipse" depends="clean.jboss,clean.generated.ddl" />
+  <target name="clean.demo.noeclipse" depends="clean.jboss,clean.generated.ddl,clean.db" />
 	
   <!-- ############### generate DDL out of persitence.xml ############### -->
 	<target name="download.ddl.check">
