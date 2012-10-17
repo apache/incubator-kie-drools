@@ -48,7 +48,6 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
 import org.drools.spi.ObjectType;
