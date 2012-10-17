@@ -11774,4 +11774,26 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     }
+
+    @Test
+    public void testAlphaHashingWithConstants() {
+        // JBRULES-3658
+        String str = "import org.drools.Person;\n" +
+                "import org.drools.integrationtests.MiscTest;\n" +
+                "rule R1 when\n" +
+                "   $p : Person( age == 38 )\n" +
+                "then end\n" +
+                "rule R2 when\n" +
+                "   $p : Person( age == 37+1 )\n" +
+                "then end\n" +
+                "rule R3 when\n" +
+                "   $p : Person( age == 36+2 )\n" +
+                "then end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Person("Mario", 38));
+        assertEquals(3, ksession.fireAllRules());
+    }
 }

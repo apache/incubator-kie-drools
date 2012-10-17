@@ -28,6 +28,7 @@ import org.drools.rule.constraint.ConditionAnalyzer.MethodInvocation;
 import org.drools.rule.constraint.ConditionAnalyzer.SingleCondition;
 import org.drools.runtime.rule.Variable;
 import org.drools.spi.AcceptsReadAccessor;
+import org.drools.spi.Constraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
@@ -477,7 +478,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public int hashCode() {
+        if (isAlphaHashable()) {
+            return 29 * getLeftForEqualExpression().hashCode() + 31 * fieldValue.hashCode();
+        }
         return expression.hashCode();
+    }
+
+    private String getLeftForEqualExpression() {
+        return expression.substring(0, expression.indexOf("==")).trim();
+    }
+
+    private boolean isAlphaHashable() {
+        return fieldValue != null && constraintType == IndexUtil.ConstraintType.EQUAL && getType() == ConstraintType.ALPHA;
     }
 
     public boolean equals(final Object object) {
@@ -488,8 +500,16 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             return false;
         }
         MvelConstraint other = (MvelConstraint) object;
-        if (!expression.equals(other.expression)) {
-            return false;
+        if (isAlphaHashable()) {
+            if ( !other.isAlphaHashable() ||
+                    !getLeftForEqualExpression().equals(other.getLeftForEqualExpression()) ||
+                    !fieldValue.equals(other.fieldValue) ) {
+                return false;
+            }
+        } else {
+            if (!expression.equals(other.expression)) {
+                return false;
+            }
         }
         if (declarations.length != other.declarations.length) {
             return false;
