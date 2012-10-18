@@ -26,6 +26,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.constructionheuristic.placer.entity.EntityPlacerConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
@@ -231,6 +232,8 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         if (constructionHeuristicPickEarlyType == null) {
             constructionHeuristicPickEarlyType = inheritedConfig.getConstructionHeuristicPickEarlyType();
         }
+        entityPlacerConfigList = ConfigUtils.inheritMergeableListProperty(
+                entityPlacerConfigList, inheritedConfig.getEntityPlacerConfigList());
     }
 
     public static enum ConstructionHeuristicType {

@@ -2282,9 +2282,6 @@ Before in *ScoreDefinition.java:
 From 5.5.0.Beta1 to 5.5.0.CR1
 -----------------------------
 
-[RECOMMENDED] Planning variables can now have a null value when initialized.
-If you have any custom hacks for that, take a look at the reference manual how to replace them with a nullable variable.
-
 [MINOR] There are several changes to the scopes. None of these should impact your code.
 - MoveScope has been renamed to LocalSearchMoveScope
 - All *Scope classes have been moved into a subpackage scope
@@ -2298,3 +2295,10 @@ After in *BenchmarkConfig.xml:
       <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
       ...
     </problemBenchmarks>
+
+
+From 5.5.0.Final to 6.0.0.Beta1
+-------------------------------
+
+[RECOMMENDED] Planning variables can now have a null value when initialized.
+If you have any custom hacks for that, take a look at the reference manual how to replace them with a nullable variable.
