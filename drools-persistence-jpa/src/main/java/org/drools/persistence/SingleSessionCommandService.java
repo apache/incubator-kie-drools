@@ -400,14 +400,16 @@ public class SingleSessionCommandService
                                      boolean transactionOwner) {
         try {
             logger.error( "Could not commit session",
-                          t1 );
-            clear(txm.getStatus());
+                          t1 );           
+            
             txm.rollback( transactionOwner );
         } catch ( Exception t2 ) {
             logger.error( "Could not rollback",
                           t2 );
             throw new RuntimeException( "Could not commit session or rollback",
                                         t2 );
+        }finally{
+            clear(txm.getStatus());
         }
     }
 
