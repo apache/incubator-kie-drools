@@ -380,8 +380,7 @@ public class SingleSessionCommandService
             return result;
 
         } catch ( RuntimeException re ) {
-            rollbackTransaction( re,
-                                 transactionOwner );
+            rollbackTransaction(re, transactionOwner);
             throw re;
         } catch ( Exception t1 ) {
             rollbackTransaction( t1,
@@ -401,6 +400,7 @@ public class SingleSessionCommandService
         try {
             logger.error( "Could not commit session",
                           t1 );
+            clear(txm.getStatus());
             txm.rollback( transactionOwner );
         } catch ( Exception t2 ) {
             logger.error( "Could not rollback",
@@ -440,37 +440,7 @@ public class SingleSessionCommandService
         }
 
         public void afterCompletion(int status) {
-            try {
-                if (status != TransactionManager.STATUS_COMMITTED) {
-                    this.service.rollback();
-                }
-
-                // always cleanup thread local whatever the result
-                Object removedSynchronization = SingleSessionCommandService.synchronizations
-                        .remove(this.service);
-
-                this.service.jpm.clearPersistenceContext();
-
-                this.service.jpm.endCommandScopedEntityManager();
-
-                StatefulKnowledgeSession ksession = this.service.ksession;
-                // clean up cached process and work item instances
-                if (ksession != null) {
-                    InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession)
-                            .getProcessRuntime();
-                    if (internalProcessRuntime != null) {
-                        internalProcessRuntime.clearProcessInstances();
-                    }
-                    ((JPAWorkItemManager) ksession.getWorkItemManager())
-                            .clearWorkItems();
-                }
-            } finally {
-                int holdCount = service.lock.getHoldCount();
-                for (int i = 1; i <= holdCount; i++) {
-                    service.lock.unlock();
-                }
-            }
-            
+          service.releaseLock();  
         }
 
         public void beforeCompletion() {
@@ -483,6 +453,34 @@ public class SingleSessionCommandService
         return this.ksession;
     }
 
+    public void clear(int status){
+        try {
+            if (status != TransactionManager.STATUS_COMMITTED) {
+                this.rollback();
+            }
+
+            // always cleanup thread local whatever the result
+            Object removedSynchronization = SingleSessionCommandService.synchronizations
+                    .remove(this);
+
+            this.jpm.clearPersistenceContext();
+
+            this.jpm.endCommandScopedEntityManager();
+
+            // clean up cached process and work item instances
+            if (ksession != null) {
+                InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession)
+                        .getProcessRuntime();
+                if (internalProcessRuntime != null) {
+                    internalProcessRuntime.clearProcessInstances();
+                }
+                ((JPAWorkItemManager) ksession.getWorkItemManager())
+                        .clearWorkItems();
+            }
+        } finally {
+           releaseLock();
+        }
+    }
     public void addInterceptor(Interceptor interceptor) {
         interceptor.setNext( this.commandService );
         this.commandService = interceptor;
@@ -490,5 +488,14 @@ public class SingleSessionCommandService
 
     private void rollback() {
         this.doRollback = true;
+    }
+    
+    private void releaseLock(){
+       if(lock.isHeldByCurrentThread()){
+           int holdCount = lock.getHoldCount();
+           for (int i = 1; i <= holdCount; i++) {
+               lock.unlock();
+           }
+       }
     }
 }
