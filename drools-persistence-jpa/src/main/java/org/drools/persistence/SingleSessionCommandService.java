@@ -18,6 +18,7 @@ package org.drools.persistence;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -73,9 +74,9 @@ public class SingleSessionCommandService
 
     private volatile boolean           doRollback;
 
-    private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
+    private Map<Object, Object> synchronizations =  new HashMap<Object, Object>() ;
 
-    public static Map<Object, Object>  txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
+//    public Map<Object, Object>  txManagerClasses = new IdentityHashMap<Object, Object>() ;
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
@@ -426,7 +427,6 @@ public class SingleSessionCommandService
             synchronizations.put( this,
                                   this );
         }
-
     }
 
     private static class SynchronizationImpl
@@ -461,7 +461,7 @@ public class SingleSessionCommandService
                 }
 
                 // always cleanup thread local whatever the result
-                Object removedSynchronization = SingleSessionCommandService.synchronizations
+                Object removedSynchronization = synchronizations
                         .remove(this);
 
                 this.jpm.clearPersistenceContext();
