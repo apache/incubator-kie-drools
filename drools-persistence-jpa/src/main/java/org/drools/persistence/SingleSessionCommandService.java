@@ -355,7 +355,6 @@ public class SingleSessionCommandService
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
-            registerRollbackSync();
 
             persistenceContext.joinTransaction();
             initKsession( this.sessionInfo.getId(),
@@ -364,7 +363,7 @@ public class SingleSessionCommandService
                           persistenceContext );
 
             this.jpm.beginCommandScopedEntityManager();
-
+            registerRollbackSync();
 
             T result = null;
             if( command instanceof BatchExecutionCommand ) { 
@@ -406,10 +405,9 @@ public class SingleSessionCommandService
         } catch ( Exception t2 ) {
             logger.error( "Could not rollback",
                           t2 );
+            clear(txm.getStatus());
             throw new RuntimeException( "Could not commit session or rollback",
                                         t2 );
-        }finally{
-            clear(txm.getStatus());
         }
     }
 
