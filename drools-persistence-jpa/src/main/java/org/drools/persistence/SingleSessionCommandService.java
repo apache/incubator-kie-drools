@@ -354,6 +354,7 @@ public class SingleSessionCommandService
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
+            registerRollbackSync();
 
             persistenceContext.joinTransaction();
             initKsession( this.sessionInfo.getId(),
@@ -363,7 +364,6 @@ public class SingleSessionCommandService
 
             this.jpm.beginCommandScopedEntityManager();
 
-            registerRollbackSync();
 
             T result = null;
             if( command instanceof BatchExecutionCommand ) { 
@@ -440,7 +440,7 @@ public class SingleSessionCommandService
         }
 
         public void afterCompletion(int status) {
-          service.releaseLock();  
+          service.clear(status);
         }
 
         public void beforeCompletion() {
@@ -453,32 +453,34 @@ public class SingleSessionCommandService
         return this.ksession;
     }
 
-    public void clear(int status){
+    public void clear(int status) {
         try {
-            if (status != TransactionManager.STATUS_COMMITTED) {
-                this.rollback();
-            }
-
-            // always cleanup thread local whatever the result
-            Object removedSynchronization = SingleSessionCommandService.synchronizations
-                    .remove(this);
-
-            this.jpm.clearPersistenceContext();
-
-            this.jpm.endCommandScopedEntityManager();
-
-            // clean up cached process and work item instances
-            if (ksession != null) {
-                InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession)
-                        .getProcessRuntime();
-                if (internalProcessRuntime != null) {
-                    internalProcessRuntime.clearProcessInstances();
+            if (synchronizations.get(this) != null) {
+                if (status != TransactionManager.STATUS_COMMITTED) {
+                    this.rollback();
                 }
-                ((JPAWorkItemManager) ksession.getWorkItemManager())
-                        .clearWorkItems();
+
+                // always cleanup thread local whatever the result
+                Object removedSynchronization = SingleSessionCommandService.synchronizations
+                        .remove(this);
+
+                this.jpm.clearPersistenceContext();
+
+                this.jpm.endCommandScopedEntityManager();
+
+                // clean up cached process and work item instances
+                if (ksession != null) {
+                    InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession)
+                            .getProcessRuntime();
+                    if (internalProcessRuntime != null) {
+                        internalProcessRuntime.clearProcessInstances();
+                    }
+                    ((JPAWorkItemManager) ksession.getWorkItemManager())
+                            .clearWorkItems();
+                }
             }
         } finally {
-           releaseLock();
+            releaseLock();
         }
     }
     public void addInterceptor(Interceptor interceptor) {
