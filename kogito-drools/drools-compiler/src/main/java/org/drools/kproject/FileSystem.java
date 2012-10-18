@@ -2,7 +2,7 @@ package org.drools.kproject;
 
 
 public interface FileSystem {
-    Folder getProjectFolder();
+    Folder getRootFolder();
     
     File getFile(Path path);
     File getFile(String path);

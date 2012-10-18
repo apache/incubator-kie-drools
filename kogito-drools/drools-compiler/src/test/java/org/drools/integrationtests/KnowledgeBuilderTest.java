@@ -2,14 +2,17 @@ package org.drools.integrationtests;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.PMMLCompiler;
 import org.drools.compiler.PMMLCompilerFactory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
@@ -18,8 +21,11 @@ import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.math.BigInteger;
@@ -34,6 +40,18 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class KnowledgeBuilderTest {
+
+    private FileManager fileManager;
+
+    @Before
+    public void setUp() throws Exception {
+        this.fileManager = new FileManager().setUp();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        this.fileManager.tearDown();
+    }
 
     @Test
     public void testCompositeKnowledgeBuilder() throws Exception {
@@ -468,5 +486,4 @@ public class KnowledgeBuilderTest {
         assertEquals( res2, ((RuleImpl) r2).getRule().getResource() );
 
     }
-
 }

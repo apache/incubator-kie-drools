@@ -1,0 +1,4 @@
+package org.drools.test
+declare FactA
+    fieldB: FactB
+end

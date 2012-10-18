@@ -19,9 +19,9 @@ import java.util.Map;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
-    private PackageBuilder pkgBuilder;
+    private final PackageBuilder pkgBuilder;
 
-    private Map<ResourceType, List<ResourceDescr>> resourcesByType = new HashMap<ResourceType, List<ResourceDescr>>();
+    private final Map<ResourceType, List<ResourceDescr>> resourcesByType = new HashMap<ResourceType, List<ResourceDescr>>();
 
     private RuntimeException buildException = null;
 

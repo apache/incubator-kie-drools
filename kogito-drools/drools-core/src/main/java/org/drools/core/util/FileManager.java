@@ -29,7 +29,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.UUID;
 
@@ -37,8 +36,9 @@ public class FileManager {
     //private Set<File> files;
     private File root;
 
-    public void setUp() {
+    public FileManager setUp() {
         this.root = getRootDirectory();
+        return this;
     }
 
     public void tearDown() {
@@ -144,6 +144,9 @@ public class FileManager {
             } catch ( Exception e ) {
                 throw new RuntimeException( "Unable to sleep" );
             }
+        } else {
+            // ensure that the directory structures exists
+            new File(f.getParent()).mkdirs();
         }
 
         // Attempt to write the file
@@ -238,7 +241,7 @@ public class FileManager {
         return baos.toByteArray();
     }
     
-    private static void writeBytes(File f, byte[] data) throws IOException {
+    public static void writeBytes(File f, byte[] data) throws IOException {
         byte[] buf = new byte[1024];
         
         BufferedOutputStream bos = null;
@@ -259,9 +262,7 @@ public class FileManager {
                 bais.close();
             }            
         }
-        bos.close();
-        bais.close();             
-    }  
+    }
     
     public File write(String fileName,
                       String text) throws IOException {

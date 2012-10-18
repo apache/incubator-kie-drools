@@ -1,13 +1,5 @@
 package org.drools.kproject.memory;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.commons.jci.stores.ResourceStore;
 import org.drools.kproject.File;
@@ -15,6 +7,19 @@ import org.drools.kproject.FileSystem;
 import org.drools.kproject.Folder;
 import org.drools.kproject.Path;
 import org.drools.kproject.Resource;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceStore {
     
@@ -32,7 +37,7 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
         folders.put( "", new HashSet<Resource>() );     
     }
 
-    public Folder getProjectFolder() {
+    public Folder getRootFolder() {
         return folder;
     }
     
@@ -48,7 +53,7 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
             return new MemoryFile( this, name, folder );
         } else {
             // path is already at root
-            Folder folder = getProjectFolder();
+            Folder folder = getRootFolder();
             return new MemoryFile( this, path, folder ); 
         }
         
@@ -167,11 +172,11 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
     }
 
     public boolean isAvailable(String pResourceName) {
-        return existsFile( pResourceName );
+        return existsFile(pResourceName);
     }
 
     public byte[] getBytes(String pResourceName) {
-        return getFileContents( ( MemoryFile ) getFile( pResourceName ) );
+        return getFileContents((MemoryFile) getFile(pResourceName));
     }
 
     public void write(String pResourceName,
@@ -190,5 +195,79 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
 
     public void remove(String pResourceName) {
         throw new UnsupportedOperationException();
-    }        
+    }
+
+    public java.io.File writeAsJar(java.io.File folder, String jarName) {
+        ZipOutputStream out = null;
+        try {
+            java.io.File jarFile = new java.io.File( folder, jarName + ".jar" );
+            out = new ZipOutputStream( new FileOutputStream(jarFile) );
+
+            writeJarEntries( getRootFolder(), out );
+            out.close();
+
+            return jarFile;
+        } catch ( IOException e ) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) { }
+        }
+    }
+
+    private void writeJarEntries(Folder f, ZipOutputStream out) throws IOException {
+        byte[] buf = new byte[1024];
+        for ( Resource rs : f.getMembers() ) {
+            if ( rs instanceof Folder ) {
+                writeJarEntries( (Folder) rs, out );
+            } else {
+                out.putNextEntry( new ZipEntry( rs.getPath().toPortableString() ) );
+
+                byte[] contents = getFileContents( (MemoryFile) rs );
+
+                ByteArrayInputStream bais = new ByteArrayInputStream( contents );
+
+                int len;
+                while ( (len = bais.read( buf )) > 0 ) {
+                    out.write( buf, 0, len );
+                }
+
+                out.closeEntry();
+                bais.close();
+            }
+        }
+    }
+
+    public static MemoryFileSystem readFromJar(java.io.File jarFile) {
+        MemoryFileSystem mfs = new MemoryFileSystem();
+        ZipFile zipFile = null;
+        try {
+            zipFile = new ZipFile(jarFile);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                int separator = entry.getName().lastIndexOf('/');
+                String path = entry.getName().substring(0, separator);
+                String name = entry.getName().substring(separator + 1);
+
+                Folder folder = mfs.getFolder(path);
+                folder.create();
+
+                File file = folder.getFile( name );
+                file.create( zipFile.getInputStream(entry) );
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (zipFile != null) {
+                try {
+                    zipFile.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return mfs;
+    }
 }
