@@ -1,5 +1,9 @@
 package org.drools.core.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
@@ -43,4 +47,23 @@ public class IoUtils {
         return false;
     }
 
+    public static String readFileAsString(File file) {
+        StringBuffer sb = new StringBuffer();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                sb.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) { }
+            }
+        }
+        return sb.toString();
+    }
 }

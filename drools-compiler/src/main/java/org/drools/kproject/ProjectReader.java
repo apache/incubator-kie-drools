@@ -3,20 +3,13 @@ package org.drools.kproject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.drools.ClockType;
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.StringUtils;
-import org.drools.runtime.conf.ClockTypeOption;
 
 public class ProjectReader {
     private FileSystem fs;
@@ -40,7 +33,7 @@ public class ProjectReader {
     public void readKBasePaths() {
         Properties props = null;
         try {
-            props = loadProperties( fs.getProjectFolder().getFile( "kbasePaths.properties" ) );
+            props = loadProperties( fs.getRootFolder().getFile( "kbasePaths.properties" ) );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }

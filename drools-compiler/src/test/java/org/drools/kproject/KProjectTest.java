@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -21,8 +20,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
@@ -296,7 +293,7 @@ public class KProjectTest {
         final List<String> classes = compile( kproj, srcMfs, trgMfs, inputClasses );
 
         if ( createJar ) {
-            writeJar( namespace, trgMfs );
+            trgMfs.writeAsJar(fileManager.getRootDirectory(), namespace);
         } else {
             writeFs( namespace, trgMfs );
         }
@@ -308,7 +305,7 @@ public class KProjectTest {
                                 List<String> classes) {
         for ( KBase kbase : kproj.getKBases().values() ) {
             Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getQName() );
-            Folder trgFolder = trgMfs.getProjectFolder();
+            Folder trgFolder = trgMfs.getRootFolder();
 
             copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
         }
@@ -319,7 +316,7 @@ public class KProjectTest {
 
         copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
 
-        //printFs(trgMfs, trgMfs.getProjectFolder());
+        //printFs(trgMfs, trgMfs.getRootFolder());
         // populateClasses(kproj, classes);
 
         System.out.println( classes );
@@ -586,7 +583,7 @@ public class KProjectTest {
     public void writeFs(String outFilename, MemoryFileSystem mfs) {
         java.io.File file = fileManager.newFile( outFilename );
         file.mkdir();
-        writeFs(mfs, mfs.getProjectFolder(), file);
+        writeFs(mfs, mfs.getRootFolder(), file);
     }
     
     public void writeFs(MemoryFileSystem mfs,
@@ -608,46 +605,4 @@ public class KProjectTest {
             }
         }
     }    
-
-    public void writeJar(String outFilename,
-                         MemoryFileSystem mfs) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            ZipOutputStream out = new ZipOutputStream( baos );
-
-            writeJarEntries( mfs,
-                             mfs.getProjectFolder(),
-                             out );
-            out.close();
-
-            FileManager.write( fileManager.newFile( outFilename + ".jar" ), baos.toByteArray() );
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
-    }
-
-    public void writeJarEntries(MemoryFileSystem mfs,
-                                Folder f,
-                                ZipOutputStream out) throws IOException {
-        byte[] buf = new byte[1024];
-        for ( Resource rs : f.getMembers() ) {
-            if ( rs instanceof Folder ) {
-                writeJarEntries( mfs, (Folder) rs, out );
-            } else {
-                out.putNextEntry( new ZipEntry( rs.getPath().toPortableString() ) );
-
-                byte[] contents = mfs.getFileContents( (MemoryFile) rs );
-
-                ByteArrayInputStream bais = new ByteArrayInputStream( contents );
-
-                int len;
-                while ( (len = bais.read( buf )) > 0 ) {
-                    out.write( buf, 0, len );
-                }
-
-                out.closeEntry();
-                bais.close();
-            }
-        }
-    }
 }

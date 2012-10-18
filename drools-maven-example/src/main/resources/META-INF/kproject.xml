@@ -1,0 +1,41 @@
+<org.drools.kproject.KProjectImpl>
+  <kBases>
+    <entry>
+      <string>org.test.KBase1</string>
+      <org.drools.kproject.KBaseImpl>
+        <namespace>org.test</namespace>
+        <name>KBase1</name>
+        <includes/>
+        <files class="java.util.Arrays$ArrayList">
+          <a class="string-array">
+            <string>org.drools.test/rule.drl</string>
+            <string>org.drools.test/decA.drl</string>
+            <string>org.drools.test/decB.drl</string>
+          </a>
+        </files>
+        <equalsBehavior>EQUALITY</equalsBehavior>
+        <eventProcessingMode>STREAM</eventProcessingMode>
+        <kSessions>
+          <entry>
+            <string>org.test.KSession1</string>
+            <org.drools.kproject.KSessionImpl>
+              <namespace>org.test</namespace>
+              <name>KSession1</name>
+              <type>stateful</type>
+              <clockType>
+                <clockType>realtime</clockType>
+              </clockType>
+              <annotations class="java.util.Arrays$ArrayList">
+                <a class="string-array">
+                  <string>@ApplicationScoped; @Inject</string>
+                </a>
+              </annotations>
+              <kBase reference="../../../.."/>
+            </org.drools.kproject.KSessionImpl>
+          </entry>
+        </kSessions>
+        <kProject reference="../../../.."/>
+      </org.drools.kproject.KBaseImpl>
+    </entry>
+  </kBases>
+</org.drools.kproject.KProjectImpl>

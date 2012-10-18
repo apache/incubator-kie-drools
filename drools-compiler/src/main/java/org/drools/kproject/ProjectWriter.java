@@ -3,12 +3,10 @@ package org.drools.kproject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 public class ProjectWriter {    
@@ -40,7 +38,7 @@ public class ProjectWriter {
         props.setProperty( "kproject", kproject.getKProjectPath() );
         
         try {
-            saveProperties(fs.getProjectFolder().getFile( "kbasePaths.properties" ), props);
+            saveProperties(fs.getRootFolder().getFile( "kbasePaths.properties" ), props);
         } catch ( IOException e ) {
             throw new RuntimeException(e);
         }
