@@ -35,7 +35,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/hillClimbingNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Local_search/hillClimbingNQueens04.png"/>
         </imageobject>
       </mediaobject>
 
@@ -47,7 +47,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/hillClimbingGetsStuckInLocalOptimaNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Local_search/hillClimbingGetsStuckInLocalOptimaNQueens04.png"/>
         </imageobject>
       </mediaobject>
 
@@ -70,7 +70,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/entityTabuSearch.png"></imagedata>
+          <imagedata fileref="images/Chapter-Local_search/entityTabuSearch.png"/>
         </imageobject>
       </mediaobject>
 
@@ -83,6 +83,18 @@
 
     <section>
       <title>Algorithm description</title>
+
+      <para>Simulated annealing evaluates only a few moves per step, so it steps quickly. In the classic implementation,
+      the first accepted move is the winning step. A move is accepted if it doesn't decrease the score or - in case it
+      does decrease the score - if passes a random check. The chance that a decreasing move passes the random check
+      decreases relative to the size of the score decrement and the time the phase has been running (which is
+      represented as the temperature).</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/simulatedAnnealing.png"/>
+        </imageobject>
+      </mediaobject>
 
       <para>See Simulated Annealing acceptor below.</para>
     </section>
@@ -133,7 +145,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"></imagedata>
+            <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -151,7 +163,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Local_search/allStepsNQueens04.png" format="PNG"></imagedata>
+            <imagedata fileref="images/Chapter-Local_search/allStepsNQueens04.png" format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -247,7 +259,7 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"></imagedata>
+          <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
