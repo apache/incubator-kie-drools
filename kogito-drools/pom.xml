@@ -55,6 +55,7 @@
     <module>drools-templates</module>
     <module>drools-decisiontables</module>
     <module>drools-examples</module>
+    <module>drools-scorecards</module>
   </modules>
 
   <profiles>
