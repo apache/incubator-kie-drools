@@ -12,18 +12,8 @@
   <artifactId>drools-scorecards</artifactId>
   <name>Drools :: Scorecards</name>
   <description>Add support for PMML scorecards</description>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
   <dependencies>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -45,77 +35,55 @@
       <version>3.8</version>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>javax.xml</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <version>2.0EA3</version>
     </dependency>
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.1</version>
-    </dependency>
 
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.1.13</version>
-    </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>Lab4Inf</id>
-      <url>http://www.lab4inf.fh-muenster.de/lab4inf/maven-repository</url>
-    </repository>
-  </repositories>
-
   <build>
-  <plugins>
-    <plugin>
-      <groupId>org.codehaus.mojo</groupId>
-      <artifactId>build-helper-maven-plugin</artifactId>
-      <version>1.7</version>
-      <executions>
-        <execution>
-          <id>include-generated-sources</id>
-          <goals>
-            <goal>add-source</goal>
-          </goals>
-          <configuration>
-            <sources>
-              <source>${basedir}/target/generated-sources</source>
-            </sources>
-          </configuration>
-        </execution>
-      </executions>
-    </plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>include-generated-sources</id>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${basedir}/target/generated-sources</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-    <plugin>
-      <groupId>org.codehaus.mojo</groupId>
-      <artifactId>jaxb2-maven-plugin</artifactId>
-      <version>1.3</version>
-      <executions>
-        <execution>
-          <goals>
-            <goal>xjc</goal>
-          </goals>
-        </execution>
-      </executions>
-      <configuration>
-        <outputDirectory>${basedir}/target/generated-sources/java</outputDirectory>
-        <packageName>org.dmg.pmml.pmml_4_1.descr</packageName>
-        <schemaDirectory>${basedir}/src/main/resources/org/dmg/pmml/pmml_4_1/descr</schemaDirectory>
-        <bindingDirectory>${basedir}/src/main/resources/org/dmg/pmml/pmml_4_1/descr</bindingDirectory>
-        <extension>true</extension>
-        <clearOutputDir>false</clearOutputDir>
-        <arguments>-no-header</arguments>
-      </configuration>
-    </plugin>
-  </plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <version>1.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>xjc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>${basedir}/target/generated-sources/java</outputDirectory>
+          <packageName>org.dmg.pmml.pmml_4_1.descr</packageName>
+          <schemaDirectory>${basedir}/src/main/resources/org/dmg/pmml/pmml_4_1/descr</schemaDirectory>
+          <bindingDirectory>${basedir}/src/main/resources/org/dmg/pmml/pmml_4_1/descr</bindingDirectory>
+          <extension>true</extension>
+          <clearOutputDir>false</clearOutputDir>
+          <arguments>-no-header</arguments>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
