@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>drools-scorecards</artifactId>
-  <name>drools-scorecards</name>
+  <name>Drools :: Scorecards</name>
   <description>Add support for PMML scorecards</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
