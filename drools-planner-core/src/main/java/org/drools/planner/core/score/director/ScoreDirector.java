@@ -17,7 +17,6 @@
 package org.drools.planner.core.score.director;
 
 import java.util.List;
-import java.util.Map;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -124,14 +123,14 @@ public interface ScoreDirector {
     Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
     /**
-     * Asserts that if the {@link Score} is calculated for the current workingSolution,
-     * it would be equal to the parameter workingScore.
+     * Asserts that if the {@link Score} is calculated for the current workingSolution in a fresh {@link ScoreDirector}
+     * (with no incremental calculation residue), it is equal to the parameter workingScore.
      * <p/>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
      * @param workingScore never null
-     * @see ScoreDirectorFactory#assertScore(Solution)
+     * @see ScoreDirectorFactory#assertScoreFromScratch(Solution)
      */
-    void assertWorkingScore(Score workingScore);
+    void assertWorkingScoreFromScratch(Score workingScore);
 
     /**
      * Needs to be called after use because some implementations needs to clean up their resources.

@@ -234,7 +234,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return trailingEntities.get(0);
     }
 
-    public void assertWorkingScore(Score workingScore) {
+    public void assertWorkingScoreFromScratch(Score workingScore) {
         ScoreDirectorFactory assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();
         if (assertionScoreDirectorFactory == null) {

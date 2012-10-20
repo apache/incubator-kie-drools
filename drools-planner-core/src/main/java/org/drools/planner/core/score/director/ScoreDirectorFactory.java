@@ -46,8 +46,8 @@ public interface ScoreDirectorFactory {
      * Asserts that if the {@link Score} is calculated for the parameter solution,
      * it would be equal to the {@link Solution#getScore()} of that parameter.
      * @param solution never null
-     * @see ScoreDirector#assertWorkingScore(Score)
+     * @see ScoreDirector#assertWorkingScoreFromScratch(Score)
      */
-    void assertScore(Solution solution);
+    void assertScoreFromScratch(Solution solution);
 
 }

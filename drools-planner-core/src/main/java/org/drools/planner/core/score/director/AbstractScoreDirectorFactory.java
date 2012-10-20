@@ -64,7 +64,7 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
     // Complex methods
     // ************************************************************************
 
-    public void assertScore(Solution solution) {
+    public void assertScoreFromScratch(Solution solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
         Score score = solution.getScore();
         ScoreDirector uncorruptedScoreDirector = buildScoreDirector();

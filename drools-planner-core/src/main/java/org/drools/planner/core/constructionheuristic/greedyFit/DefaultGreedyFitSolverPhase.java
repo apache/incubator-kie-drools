@@ -74,7 +74,7 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
             // there is no need to recalculate the score, but we still need to set it
             phaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
-                phaseScope.assertWorkingScore(stepScope.getScore());
+                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
             }
             if (!it.hasNext()) {
                 stepScope.setSolutionInitialized(true);

@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.solver.scope;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -92,12 +91,12 @@ public class DefaultSolverScope {
         return scoreDirector.calculateScore();
     }
 
-    public void assertWorkingScore(Score workingScore) {
-        scoreDirector.assertWorkingScore(workingScore);
+    public void assertWorkingScoreFromScratch(Score workingScore) {
+        scoreDirector.assertWorkingScoreFromScratch(workingScore);
     }
 
     public void assertScore(Solution solution) {
-        scoreDirector.getScoreDirectorFactory().assertScore(solution);
+        scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
     }
 
     public Random getWorkingRandom() {

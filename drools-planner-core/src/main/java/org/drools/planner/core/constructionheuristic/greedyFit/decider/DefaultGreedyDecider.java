@@ -117,7 +117,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
             if (!undoScore.equals(lastCompletedStepScore)) {
                 // First assert that are probably no corrupted score rules.
                 greedyFitSolverPhaseScope.getSolverScope().getScoreDirector()
-                        .assertWorkingScore(undoScore);
+                        .assertWorkingScoreFromScratch(undoScore);
                 throw new IllegalStateException(
                         "The moveClass (" + move.getClass() + ")'s move (" + move
                                 + ") probably has a corrupted undoMove (" + undoMove + ")." +
@@ -135,7 +135,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
     private void processMove(GreedyMoveScope moveScope) {
         Score score = moveScope.getGreedyFitStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScore(score);
+            moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
         }
         moveScope.setScore(score);
         forager.addMove(moveScope);

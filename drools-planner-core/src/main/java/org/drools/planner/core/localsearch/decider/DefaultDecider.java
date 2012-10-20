@@ -156,7 +156,7 @@ public class DefaultDecider implements Decider {
     private void processMove(LocalSearchMoveScope moveScope) {
         Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getStepScope().getPhaseScope().assertWorkingScore(score);
+            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
         }
         moveScope.setScore(score);
         boolean accepted = acceptor.isAccepted(moveScope);

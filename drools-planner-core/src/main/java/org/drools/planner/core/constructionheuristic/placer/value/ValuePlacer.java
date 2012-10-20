@@ -7,7 +7,6 @@ import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristic
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMove;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.director.ScoreDirector;
@@ -106,7 +105,7 @@ public class ValuePlacer extends AbstractPlacer {
     private void processMove(ConstructionHeuristicMoveScope moveScope) {
         Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getStepScope().getPhaseScope().assertWorkingScore(score);
+            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
         }
         moveScope.setScore(score);
         // TODO work with forager

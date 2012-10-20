@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.constructionheuristic;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.constructionheuristic.placer.entity.EntityPlacer;
@@ -72,7 +71,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
             // there is no need to recalculate the score, but we still need to set it
             phaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
-                phaseScope.assertWorkingScore(stepScope.getScore());
+                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
             }
             if (!hackEntityPlacer.hasPlacement()) {
                 stepScope.setSolutionInitialized(true);
