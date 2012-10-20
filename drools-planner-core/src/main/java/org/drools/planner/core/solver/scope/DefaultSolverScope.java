@@ -91,6 +91,10 @@ public class DefaultSolverScope {
         return scoreDirector.calculateScore();
     }
 
+    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
+        scoreDirector.assertExpectedWorkingScore(expectedWorkingScore);
+    }
+
     public void assertWorkingScoreFromScratch(Score workingScore) {
         scoreDirector.assertWorkingScoreFromScratch(workingScore);
     }

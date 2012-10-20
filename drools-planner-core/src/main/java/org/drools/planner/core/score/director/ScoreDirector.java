@@ -123,6 +123,16 @@ public interface ScoreDirector {
     Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
     /**
+     * Asserts that if the {@link Score} is calculated for the current workingSolution
+     * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
+     * it is equal to the parameter expectedWorkingScore.
+     * <p/>
+     * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct,
+     * @param expectedWorkingScore never null
+     */
+    void assertExpectedWorkingScore(Score expectedWorkingScore);
+
+    /**
      * Asserts that if the {@link Score} is calculated for the current workingSolution in a fresh {@link ScoreDirector}
      * (with no incremental calculation residue), it is equal to the parameter workingScore.
      * <p/>

@@ -84,6 +84,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             phaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
                 phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
+                phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
             stepEnded(stepScope);
             stepScope = createNextStepScope(phaseScope, stepScope);

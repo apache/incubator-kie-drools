@@ -72,6 +72,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
             phaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
                 phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
+                phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
             if (!hackEntityPlacer.hasPlacement()) {
                 stepScope.setSolutionInitialized(true);

@@ -234,6 +234,16 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return trailingEntities.get(0);
     }
 
+    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
+        Score workingScore = calculateScore();
+        if (!expectedWorkingScore.equals(workingScore)) {
+            throw new IllegalStateException(
+                    "Score corruption: the expectedWorkingScore (" + expectedWorkingScore
+                            + ") is not the workingScore (" + workingScore + ")");
+
+        }
+    }
+
     public void assertWorkingScoreFromScratch(Score workingScore) {
         ScoreDirectorFactory assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();

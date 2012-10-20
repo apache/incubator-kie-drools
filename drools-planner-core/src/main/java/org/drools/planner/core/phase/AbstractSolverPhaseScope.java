@@ -120,16 +120,12 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.calculateScore();
     }
 
+    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
+        solverScope.assertExpectedWorkingScore(expectedWorkingScore);
+    }
+
     public void assertWorkingScoreFromScratch(Score workingScore) {
         solverScope.assertWorkingScoreFromScratch(workingScore);
-    }
-
-    public Random getWorkingRandom() {
-        return solverScope.getWorkingRandom();
-    }
-
-    public Score getBestScore() {
-        return solverScope.getBestScore();
     }
 
     public void assertUndoMoveIsUncorrupted(Move move, Move undoMove) {
@@ -147,6 +143,14 @@ public abstract class AbstractSolverPhaseScope {
                             + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
                             + ") is not the undoScore (" + undoScore + ").");
         }
+    }
+
+    public Random getWorkingRandom() {
+        return solverScope.getWorkingRandom();
+    }
+
+    public Score getBestScore() {
+        return solverScope.getBestScore();
     }
 
     @Override
