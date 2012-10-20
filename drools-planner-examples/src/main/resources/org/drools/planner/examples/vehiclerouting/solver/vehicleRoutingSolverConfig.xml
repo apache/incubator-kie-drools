@@ -7,6 +7,10 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     <scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+    <!--<scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingCompensationActionExperimentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>
