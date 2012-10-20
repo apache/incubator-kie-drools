@@ -50,6 +50,45 @@
         </mediaobject>
       </figure>
     </section>
+    <section>
+      <title>**INCUBATOR FEATURE** New Rule Asset - Scorecards</title>
+      <para>A scorecard is a graphical representation of a formula used to calculate an overall score. A scorecard can be used to predict the likelihood or probability of a certain outcome.
+        Drools now supports additive scorecards. An additive scorecard calculates an overall score by adding all
+        partial scores assigned to individual rule conditions.
+      </para>
+      <para>
+        Additionally, Drools Scorecards will allows for reason codes to be set, which help in identifying the
+        specific rules (buckets) that have contributed to the overall score. Drools Scorecards will be based on the PMML 4.1 Standard.
+      </para>
+      <para>The New Rule Wizard now allows for creation of scorecard assets.</para>
+      <figure>
+        <title>New Rule Dialog with New Asset Types</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/scorecard_new_asset.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>Scorecard Asset - Upload from Excel</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/scorecard_xls_asset.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>Scorecard Asset - Guided Editor</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/scorecard_asset_webeditor.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
   </section>
 
   <section xml:id="releaseNotes_5.5.0.CR1_Planner">
