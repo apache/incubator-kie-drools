@@ -23,91 +23,73 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.util.Entry;
+import org.drools.core.util.LinkedList;
+
 /**
  * Upon instantiation the EqualityKey caches the first Object's hashCode
  * this can never change. The EqualityKey has an internal datastructure
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
  */
-public class EqualityKey
+public class EqualityKey extends LinkedList<DefaultFactHandle>
     implements
     Externalizable {
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 
-    /** this is an optimisation so single stated equalities can tracked  without the overhead of  an ArrayList */
-    private InternalFactHandle handle;
-
-    /** this is always lazily maintainned  and deleted  when empty to minimise memory consumption */
-    private List<InternalFactHandle>               instances;
-
+//    /** this is an optimisation so single stated equalities can tracked  without the overhead of  an ArrayList */
+//    private InternalFactHandle handle;
+//
+//    /** this is always lazily maintainned  and deleted  when empty to minimise memory consumption */
+//    private List<InternalFactHandle>               instances;
+    
     /** This is cached in the constructor from the first added Object */
     private int          hashCode;
 
     /** Tracks whether this Fact is Stated or Justified */
     private int                status;
+    
+    private  BeliefSet beliefSet;
 
     public EqualityKey() {
 
     }
 
     public EqualityKey(final InternalFactHandle handle) {
-        this.handle = handle;
+        super( ( DefaultFactHandle ) handle );
         this.hashCode = handle.getObjectHashCode();
     }
 
     public EqualityKey(final InternalFactHandle handle,
                        final int status) {
-        this.handle = handle;
+        super( ( DefaultFactHandle ) handle );
         this.hashCode = handle.getObjectHashCode();
         this.status = status;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        handle      = (InternalFactHandle)in.readObject();
-        instances   = (List)in.readObject();
+        super.readExternal(in);
         hashCode    = in.readInt();
         status      = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(handle);
-        out.writeObject(instances);
+        super.writeExternal(out);
         out.writeInt(hashCode);
         out.writeInt(status);
     }
 
     public InternalFactHandle getFactHandle() {
-        return this.handle;
-    }
-
-    public List<InternalFactHandle> getOtherFactHandle() {
-        return this.instances;
+        return getFirst();
     }
 
     public void addFactHandle(final InternalFactHandle handle) {
-        if ( this.instances == null ) {
-            this.instances = new ArrayList<InternalFactHandle>();
-        }
-        this.instances.add( handle );
+        add( ( DefaultFactHandle ) handle );
     }
 
     public void removeFactHandle(final InternalFactHandle handle) {
-        if ( this.handle == handle ) {
-            if ( this.instances == null ) {
-                this.handle = null;
-            } else {
-                this.handle = (InternalFactHandle) this.instances.remove( 0 );
-                if ( this.instances.isEmpty() ) {
-                    this.instances = null;
-                }
-            }
-        } else {
-            this.instances.remove( handle );
-            if ( this.instances.isEmpty() ) {
-                this.instances = null;
-            }
-        }
+        remove( ( DefaultFactHandle ) handle );
     }
 
     /**
@@ -115,6 +97,14 @@ public class EqualityKey
      */
     public int getStatus() {
         return this.status;
+    }  
+
+    public BeliefSet getBeliefSet() {
+        return beliefSet;
+    }
+
+    public void setBeliefSet(BeliefSet beliefSet) {
+        this.beliefSet = beliefSet;
     }
 
     /**
@@ -122,18 +112,6 @@ public class EqualityKey
      */
     public void setStatus(final int status) {
         this.status = status;
-    }
-
-    public int size() {
-        if ( this.instances != null ) {
-            return this.instances.size() + 1;
-        } else {
-            return (this.handle != null) ? 1 : 0;
-        }
-    }
-
-    public boolean isEmpty() {
-        return (this.handle == null);
     }
 
     public String toString() {
@@ -172,7 +150,7 @@ public class EqualityKey
             return this == object;
         }
 
-        return (this.handle.getObject().equals( object ));
+        return (this.getFirst().getObject().equals( object ));
     }
 
 }

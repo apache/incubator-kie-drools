@@ -65,7 +65,8 @@ public class NamedEntryPoint
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[]                addRemovePropertyChangeListenerArgs = new Object[]{this};
 
-
+    private   TruthMaintenanceSystem        tms;
+    
     protected ObjectStore                   objectStore;
 
     protected transient InternalRuleBase    ruleBase;
@@ -181,125 +182,79 @@ public class NamedEntryPoint
                 handle = this.objectStore.getHandleForObject( object );
 
                 if ( typeConf.isTMSEnabled() ) {
-                  
-                    EqualityKey key;
-
-                    TruthMaintenanceSystem tms = wm.getTruthMaintenanceSystem();
-                    if ( handle == null ) {
-                        // lets see if the object is already logical asserted
-                        key = tms.get( object );
-                    } else {
-                        // Object is already asserted, so check and possibly correct its
-                        // status and then return the handle
-                        key = handle.getEqualityKey();
-
-                        if ( key.getStatus() == EqualityKey.STATED ) {
-                            // return null as you cannot justify a stated object.
-                            return handle;
-                        }
-
-                        if ( !logical ) {
-                            // this object was previously justified, so we have to override it to stated
-                            key.setStatus( EqualityKey.STATED );
-                            tms.removeLogicalDependencies( handle );
-                        } else {
-                            // this was object is already justified, so just add new logical dependency
-                            tms.addLogicalDependency( handle,
-                                                      tmsValue,
-                                                      activation,
-                                                      activation.getPropagationContext(),
-                                                      rule,
-                                                      typeConf );
-                        }
+                    TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
+                    
+                    if ( handle != null ) {
+                        insertWhenHandleExists( object, tmsValue, logical, rule, activation, typeConf, handle, tms );
                         return handle;
                     }
 
-                    // At this point we know the handle is null
-                    if ( key == null ) {
-                      
-                        handle = createHandle( object,
-                                               typeConf );
-
-                        key = createEqualityKey(handle);
-                        
-                        tms.put( key );
-                        
-                        if ( !logical ) {
-                            key.setStatus( EqualityKey.STATED );
-                        } else {
-                            key.setStatus( EqualityKey.JUSTIFIED );
-                            tms.addLogicalDependency( handle,
-                                                      tmsValue,
-                                                      activation,
-                                                      activation.getPropagationContext(),
-                                                      rule,
-                                                      typeConf );
-                            return handle;
-                        }
-                    } else if ( !logical ) {
-                        if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                            // Its previous justified, so switch to stated and remove logical dependencies
-                            final InternalFactHandle justifiedHandle = key.getFactHandle();
-                            tms.removeLogicalDependencies( justifiedHandle );
-
-                            if ( this.wm.discardOnLogicalOverride ) {
-                                // override, setting to new instance, and return
-                                // existing handle
-                                key.setStatus( EqualityKey.STATED );
-                                handle = key.getFactHandle();
-
-                                if ( AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
-                                    // as assertMap may be using an "identity"
-                                    // equality comparator,
-                                    // we need to remove the handle from the map,
-                                    // before replacing the object
-                                    // and then re-add the handle. Otherwise we may
-                                    // end up with a leak.
-                                    this.objectStore.updateHandle( handle,
-                                                                   object );
-                                }
-                                return handle;
-                            } else {
-                                // override, then instantiate new handle for
-                                // assertion
-                                key.setStatus( EqualityKey.STATED );
-                                handle = createHandle( object,
-                                                       typeConf );
-                                handle.setEqualityKey( key );
-                                key.addFactHandle( handle );
-                            }
-
-                        } else {
-                            handle = createHandle( object,
-                                                   typeConf );
-                            key.addFactHandle( handle );
-                            handle.setEqualityKey( key );
-
-                        }
-
-                    } else {
-                        if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                            // only add as logical dependency if this wasn't previously stated
-                            tms.addLogicalDependency( key.getFactHandle(),
-                                                      tmsValue,
-                                                      activation,
-                                                      activation.getPropagationContext(),
-                                                      rule,
-                                                      typeConf );
-                            return key.getFactHandle();
-                        } else {
-                            // You cannot justify a previously stated equality equal object, so return null
+                    // get the key for other "equal" objects, returns null if none exist
+                    EqualityKey key = tms.get( object );
+                    
+                    if ( logical ) {  
+                        if ( key != null && key.getStatus() == EqualityKey.STATED ) {
+                            // You cannot logically insert a previously stated equality equal object, so return null                            
                             return null;
                         }
-                    }
+                        
 
+                        
+                        if ( key == null ) {
+                            handle = createHandle( object,
+                                                   typeConf ); // we know the handle is null
+                            
+                            key = new EqualityKey( handle ); 
+                            handle.setEqualityKey( key );
+                            tms.put( key );                           
+                            key.setStatus( EqualityKey.JUSTIFIED ); // new Key, so we know it's JUSTIFIED                 
+                        } else {
+                            handle = key.getFactHandle();
+                        }
+                        
+                       // Any logical propagations are handled via the TMS.addLogicalDependency
+                       tms.addLogicalDependency( handle,
+                                                 object,
+                                                 tmsValue,
+                                                 activation,
+                                                 activation.getPropagationContext(),
+                                                 rule,
+                                                 typeConf );
+                        
+                        return key.getFactHandle(); 
+                                                    
+                    } else { // !logical                     
+                        if ( key == null ) {
+                            handle = createHandle( object,
+                                                   typeConf ); // we know the handle is null                            
+                            key = new EqualityKey( handle );                        
+                            handle.setEqualityKey( key );                            
+                            tms.put( key );                  
+                        } else if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                                // Its previous justified, so switch to stated
+                                key.setStatus( EqualityKey.STATED ); // must be done before the justifiedHandle retract  
+                                
+                                // remove logical dependencies
+                                final InternalFactHandle justifiedHandle = key.getFactHandle();
+                                TruthMaintenanceSystemHelper.removeLogicalDependencies( justifiedHandle );
+                                
+                                // now update existing handle to new value
+                                return update( justifiedHandle, true, object, Long.MAX_VALUE, activation );                                                                                           
+                        } else   {  // STATED 
+                            handle = createHandle( object,
+                                                   typeConf ); // we know the handle is null                                                    
+                            handle.setEqualityKey( key );                                                    
+                            key.addFactHandle( handle );                            
+                        }
+                        key.setStatus( EqualityKey.STATED ); // KEY is always stated
+                    }                    
                 } else {
+                    // TMS not enabled for this object type 
                     if ( handle != null ) {
                         return handle;
                     }
                     handle = createHandle( object,
                                            typeConf );
-
                 }
 
                 // if the dynamic parameter is true or if the user declared the fact type with the meta tag:
@@ -323,6 +278,40 @@ public class NamedEntryPoint
             this.wm.endOperation();
         }
 
+    }
+
+    private void insertWhenHandleExists(final Object object,
+                                              final Object tmsValue,
+                                              boolean logical,
+                                              final Rule rule,
+                                              final Activation activation,
+                                              ObjectTypeConf typeConf,
+                                              InternalFactHandle handle,
+                                              TruthMaintenanceSystem tms) {
+        EqualityKey key;
+        // Object is already asserted, so check and possibly correct its
+        // status and then return the handle
+        key = handle.getEqualityKey();
+
+        if ( key.getStatus() == EqualityKey.STATED ) {
+            // return null as you cannot justify a stated object.
+            return;
+        }
+
+        if ( !logical ) {
+            // this object was previously justified, so we have to override it to stated
+            key.setStatus( EqualityKey.STATED );
+            TruthMaintenanceSystemHelper.removeLogicalDependencies( handle );
+        } else {                                        
+            // this was object is already justified, so just add new logical dependency
+            tms.addLogicalDependency( handle,
+                                      object,
+                                      tmsValue,
+                                      activation,
+                                      activation.getPropagationContext(),
+                                      rule,
+                                      typeConf );
+        }
     }
 
     public void insert(final InternalFactHandle handle,
@@ -367,9 +356,11 @@ public class NamedEntryPoint
         }        
     }
 
-    public void update(final org.drools.runtime.rule.FactHandle handle,
+    public void update(final org.drools.runtime.rule.FactHandle factHandle,
                        final Object object) throws FactException {
+        InternalFactHandle handle = (InternalFactHandle) factHandle;
         update( handle,
+                false,
                 object,
                 Long.MAX_VALUE,
                 null );
@@ -379,28 +370,29 @@ public class NamedEntryPoint
                        final Object object,
                        final long mask,
                        final Activation activation) throws FactException {
-
-        update( (org.drools.FactHandle) factHandle,
+        InternalFactHandle handle = (InternalFactHandle) factHandle;
+        update( handle,
+                false,
                 object,
                 mask,
                 activation );
     }
 
-    public void update(org.drools.FactHandle factHandle,
-                       final Object object,
-                       final long mask,
-                       final Activation activation) throws FactException {
+    public InternalFactHandle update(InternalFactHandle handle,
+                                     final boolean updateLogical,
+                                     final Object object,
+                                     final long mask,
+                                     final Activation activation) throws FactException {
         try {
             this.lock.lock();
             this.ruleBase.readLock();
             this.wm.startOperation();
             this.ruleBase.executeQueuedActions();
-            
-            InternalFactHandle handle = (InternalFactHandle) factHandle;
+
 
             // the handle might have been disconnected, so reconnect if it has
             if ( handle.isDisconnected() ) {
-                handle = this.objectStore.reconnect( factHandle );
+                handle = this.objectStore.reconnect( handle );
             }
 
             final Object originalObject = handle.getObject();
@@ -412,7 +404,7 @@ public class NamedEntryPoint
             final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                                 object );
 
-            // only needed if we maintain tms, but either way we must get it before we do the retract
+            // only needed if we maintain tms, but either way we must get it before we do the update
             int status = -1;
             if ( typeConf.isTMSEnabled() ) {
                 status = handle.getEqualityKey().getStatus();
@@ -421,7 +413,7 @@ public class NamedEntryPoint
 
             if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
-                return;
+                return handle;
             }
 
             if ( activation != null ) {
@@ -439,31 +431,42 @@ public class NamedEntryPoint
             }
 
             if ( typeConf.isTMSEnabled() ) {
-            
-                // the hashCode and equality has changed, so we must update the
-                // EqualityKey
-                EqualityKey key = handle.getEqualityKey();
-                key.removeFactHandle( handle );
-            
-                TruthMaintenanceSystem tms = wm.getTruthMaintenanceSystem();
-
-                // If the equality key is now empty, then remove it
-                if ( key.isEmpty() ) {
-                    tms.remove( key );
+                EqualityKey newKey = tms.get( object );
+                EqualityKey oldKey = handle.getEqualityKey();
+                if ( newKey == null ) {                    
+                    if ( oldKey.getStatus() == EqualityKey.JUSTIFIED ) {
+                        // new target key is JUSTFIED, updates are always STATED
+                        TruthMaintenanceSystemHelper.removeLogicalDependencies( oldKey.getFactHandle() );
+                    }
+                    
+                    oldKey.removeFactHandle( handle );
+                    // If the equality key is now empty, then remove it
+                    if ( oldKey.isEmpty() ) {
+                        getTruthMaintenanceSystem().remove( oldKey );
+                    }                    
+                    
+                    newKey = new EqualityKey( handle,
+                                              EqualityKey.STATED ); // updates are always stated
+                    handle.setEqualityKey( newKey );
+                    getTruthMaintenanceSystem().put( newKey );
+                } else if ( newKey != oldKey ) {
+                    oldKey.removeFactHandle( handle );
+                    // If the equality key is now empty, then remove it
+                    if ( oldKey.isEmpty() ) {
+                        getTruthMaintenanceSystem().remove( oldKey );
+                    }  
+                    
+                    if ( newKey.getStatus() == EqualityKey.JUSTIFIED ) {
+                        // new target key is JUSTITIED, updates are always STATED
+                        TruthMaintenanceSystemHelper.removeLogicalDependencies( newKey.getFactHandle() );
+                        newKey.setStatus( EqualityKey.STATED );
+                    }
+                    // the caller needs the new handle
+                    handle = newKey.getFactHandle();
+                } else if ( !updateLogical &&  oldKey.getStatus() == EqualityKey.JUSTIFIED  ) {
+                    // new target key is JUSTIFIED, updates are always STATED
+                    TruthMaintenanceSystemHelper.removeLogicalDependencies( oldKey.getFactHandle() );                     
                 }
-    
-                // now use an existing EqualityKey, if it exists, else create a new one
-                key = tms.get( object );
-                if ( key == null ) {
-                    key = new EqualityKey( handle,
-                                           status );
-                    tms.put( key );
-                } else {
-                    key.addFactHandle( handle );
-                }
-    
-                handle.setEqualityKey( key );
-
             }
 
             this.handleFactory.increaseFactHandleRecency( handle );
@@ -488,10 +491,10 @@ public class NamedEntryPoint
             propagationContext.evaluateActionQueue( this.wm );
 
             this.wm.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
-                                                              factHandle,
-                                                              originalObject,
-                                                              object,
-                                                              this.wm );
+                                                                 handle,
+                                                                 originalObject,
+                                                                 object,
+                                                                 this.wm );
 
            this.wm.executeQueuedActions();
            
@@ -504,19 +507,16 @@ public class NamedEntryPoint
             this.ruleBase.readUnlock();
             this.lock.unlock();
         }
+        return handle;
     }
 
     public void retract(final org.drools.runtime.rule.FactHandle handle) throws FactException {
         retract( (org.drools.FactHandle) handle,
-                 true,
-                 true,
                  null,
                  null );
     }
 
     public void retract(final org.drools.FactHandle factHandle,
-                        final boolean removeLogical,
-                        final boolean updateEqualsMap,
                         final Rule rule,
                         final Activation activation) throws FactException {
         if ( factHandle == null ) {
@@ -550,8 +550,8 @@ public class NamedEntryPoint
 
             if( typeConf.isSupportsPropertyChangeListeners() ) {
                 removePropertyChangeListener( handle, true );
-            }
-
+            }          
+            
             if ( activation != null ) {
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
@@ -571,22 +571,22 @@ public class NamedEntryPoint
                                                this.wm );
 
             if ( typeConf.isTMSEnabled() ) {
-                TruthMaintenanceSystem tms = wm.getTruthMaintenanceSystem();
+                TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
 
-                // Update the equality key, which maintains a list of stated
-                // FactHandles
+                // TMS.removeLogicalDependency also cleans up Handles from the EqualityKey
+                // This can happen on the logical retraction of the last FH, where it's cleaned up in the TMS and also in the main network.
+                // However when the user retracts the FH to a logical set of insertions, then we need to clean up the TMS here.
+                                                   
+                // Update the equality key, which maintains a list of stated FactHandles
                 final EqualityKey key = handle.getEqualityKey();
 
-                // Its justified so attempt to remove any logical dependencies
-                // for
-                // the handle
+                // Its justified so attempt to remove any logical dependencies for the handle
                 if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    tms.removeLogicalDependencies( handle );
-                }
-
+                    TruthMaintenanceSystemHelper.removeLogicalDependencies( handle );
+                } 
                 key.removeFactHandle( handle );
                 handle.setEqualityKey( null );
-
+                
                 // If the equality key is now empty, then remove it
                 if ( key.isEmpty() ) {
                     tms.remove( key );
@@ -762,14 +762,7 @@ public class NamedEntryPoint
         this.objectStore.addHandle( handle,
                                     object );
         return handle;
-    }
-    
-    /** Side-effects, will add the created key to the handle. */
-    private EqualityKey createEqualityKey(InternalFactHandle handle) {
-      EqualityKey key = new EqualityKey( handle );
-      handle.setEqualityKey( key );
-      return key;
-    }
+    }    
     
     /**
      * TMS will be automatically enabled when the first logical insert happens. 
@@ -800,9 +793,10 @@ public class NamedEntryPoint
             InternalFactHandle handle = (InternalFactHandle) holder.getValue();
             
             if ( handle != null) {
-                EqualityKey key = createEqualityKey(handle);
+                EqualityKey key = new EqualityKey( handle );
+                handle.setEqualityKey( key );
                 key.setStatus(EqualityKey.STATED);
-                this.wm.getTruthMaintenanceSystem().put(key);
+                getTruthMaintenanceSystem().put(key);
             }
         }
       
@@ -854,5 +848,14 @@ public class NamedEntryPoint
         }
     }
 
+    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
+        wm.queueWorkingMemoryAction( action );
+    }
 
+    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
+        if (tms == null) {
+            tms = new TruthMaintenanceSystem(wm, this);
+        }
+        return tms;
+    }
 }

@@ -404,13 +404,9 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void retract(org.drools.FactHandle factHandle,
-                        boolean removeLogical,
-                        boolean updateEqualsMap,
                         Rule rule,
                         Activation activation) throws FactException {
         this.session.retract( factHandle,
-                              removeLogical,
-                              updateEqualsMap,
                               rule,
                               activation );
     }

@@ -160,9 +160,13 @@ public class DisconnectedFactHandle
     public void setRightTuple(RightTuple rightTuple) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
+    
+    public InternalFactHandle quickClone() {
+        return new DisconnectedFactHandle(id, identityHashCode, objectHashCode, recency, entryPointId, object );
+    }
 
-    public DefaultFactHandle clone() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    public InternalFactHandle clone() {
+        return clone();
     }
 
     public String toExternalForm() {

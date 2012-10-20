@@ -24,8 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
@@ -132,18 +134,20 @@ public class RuleFlowGroupImpl
                 triggerActivations();
             }
             ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( this,
-                                                                                                           this.workingMemory );
+                                                                                                         this.workingMemory );
         } else {
             ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( this,
-                                                                                                              this.workingMemory );
-            final Iterator<ActivationNode> it = this.list.iterator();
-            for ( ActivationNode node = it.next(); node != null; node = it.next() ) {
-                final Activation activation = node.getActivation();
+                                                                                                            this.workingMemory );
+            
+            FastIterator it = list.fastIterator();
+            for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {
+                final Activation activation = entry.getActivation();
                 activation.remove();
                 if ( activation.getActivationGroupNode() != null ) {
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
-                }
+                }                
             }
+
             nodeInstances.clear();
             notifyRuleFlowGroupListeners();
             ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( this,
@@ -167,12 +171,14 @@ public class RuleFlowGroupImpl
     }
 
     private void triggerActivations() {
-        // iterate all activations adding them to their AgendaGroups
-        final Iterator<ActivationNode> it = this.list.iterator();
-        for ( ActivationNode node = it.next(); node != null; node = it.next() ) {
-            final Activation activation = node.getActivation();
-            ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
+        
+        // iterate all activations adding them to their AgendaGroups        
+        FastIterator it = list.fastIterator();
+        for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {   
+            final Activation activation = entry.getActivation();
+            ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );            
         }
+        
         // making sure we re-evaluate agenda in case we are waiting for activations
         ((InternalAgenda) workingMemory.getAgenda()).notifyHalt();
     }
@@ -243,11 +249,12 @@ public class RuleFlowGroupImpl
     
     public Activation[] getActivations() {
         Activation[] activations = new Activation[ list.size() ];
-        final Iterator<ActivationNode> it = this.list.iterator();
+        
+        FastIterator it = list.fastIterator();
         int i = 0;
-        for ( ActivationNode node = it.next(); node != null; node = it.next() ) {
-            activations[i++] =  node.getActivation();
-        }        
+        for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {
+            activations[i++] =  entry.getActivation();
+        }       
         
         return activations;
     }

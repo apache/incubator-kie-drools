@@ -396,30 +396,31 @@ public class InputMarshaller {
     public static void readTruthMaintenanceSystem( MarshallerReaderContext context ) throws IOException {
         ObjectInputStream stream = context.stream;
 
-        TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
-        while (stream.readShort() == PersisterEnums.EQUALITY_KEY) {
-            int status = stream.readInt();
-            int factHandleId = stream.readInt();
-            InternalFactHandle handle = (InternalFactHandle) context.handles.get( factHandleId );
-
-            // ObjectTypeConf state is not marshalled, so it needs to be re-determined
-            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.wm.getEntryPoint(),
-                                                                                                         handle.getObject() );
-            if (!typeConf.isTMSEnabled()) {
-                typeConf.enableTMS();
-            }
-
-            EqualityKey key = new EqualityKey( handle,
-                                               status );
-            handle.setEqualityKey( key );
-            while (stream.readShort() == PersisterEnums.FACT_HANDLE) {
-                factHandleId = stream.readInt();
-                handle = (InternalFactHandle) context.handles.get( factHandleId );
-                key.addFactHandle( handle );
-                handle.setEqualityKey( key );
-            }
-            tms.put( key );
-        }
+        throw new UnsupportedOperationException(); // MDP need to update as we now have a TMS per EntryPoint
+//        TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
+//        while (stream.readShort() == PersisterEnums.EQUALITY_KEY) {
+//            int status = stream.readInt();
+//            int factHandleId = stream.readInt();
+//            InternalFactHandle handle = (InternalFactHandle) context.handles.get( factHandleId );
+//
+//            // ObjectTypeConf state is not marshalled, so it needs to be re-determined
+//            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.wm.getEntryPoint(),
+//                                                                                                         handle.getObject() );
+//            if (!typeConf.isTMSEnabled()) {
+//                typeConf.enableTMS();
+//            }
+//
+//            EqualityKey key = new EqualityKey( handle,
+//                                               status );
+//            handle.setEqualityKey( key );
+//            while (stream.readShort() == PersisterEnums.FACT_HANDLE) {
+//                factHandleId = stream.readInt();
+//                handle = (InternalFactHandle) context.handles.get( factHandleId );
+//                key.addFactHandle( handle );
+//                handle.setEqualityKey( key );
+//            }
+//            tms.put( key );
+//        }
     }
 
     public static void readFactHandles( MarshallerReaderContext context,
@@ -1064,21 +1065,22 @@ public class InputMarshaller {
             }
         }
 
-        TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
-        while (stream.readShort() == PersisterEnums.LOGICAL_DEPENDENCY) {
-            int factHandleId = stream.readInt();
-            InternalFactHandle handle = (InternalFactHandle) context.handles.get( factHandleId );
-            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint)handle.getEntryPoint()).getEntryPoint(),
-                                                                                                         handle.getObject() );            
-            tms.addLogicalDependency( handle,
-                                      null,
-                                      activation,
-                                      pc,
-                                      rule,
-                                      typeConf );
-        }
-
-        return activation;
+        throw new UnsupportedOperationException(); // MDP need to update as we now have a TMS per EntryPoint
+//        TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
+//        while (stream.readShort() == PersisterEnums.LOGICAL_DEPENDENCY) {
+//            int factHandleId = stream.readInt();
+//            InternalFactHandle handle = (InternalFactHandle) context.handles.get( factHandleId );
+//            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint)handle.getEntryPoint()).getEntryPoint(),
+//                                                                                                         handle.getObject() );            
+//            tms.addLogicalDependency( handle,
+//                                      null,
+//                                      activation,
+//                                      pc,
+//                                      rule,
+//                                      typeConf );
+//        }
+//
+//        return activation;
     }
 
     public static void readPropagationContexts( MarshallerReaderContext context ) throws IOException {

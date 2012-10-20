@@ -16,6 +16,7 @@
 
 package org.drools.common;
 
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
@@ -188,11 +189,12 @@ public class ArrayAgendaGroup
         int j = 0;
         for ( LinkedList<LinkedListEntry<Activation>> list : array ) {
             if ( list != null ) {
-                Iterator<LinkedListEntry<Activation>> it = list.iterator();
-                Activation activation = it.next().getObject();
-                while ( activation != null) {
-                    activations[j++] = activation;
-                    activation = it.next().getObject();
+                
+                FastIterator it = list.fastIterator();
+                for ( LinkedListEntry<Activation> entry =  list.getFirst(); entry != null; entry = (LinkedListEntry<Activation>) it.next( entry ) ) {
+                    if ( entry.getObject() != null ) {
+                        activations[j++] = entry.getObject();
+                    }
                 }
             }
 

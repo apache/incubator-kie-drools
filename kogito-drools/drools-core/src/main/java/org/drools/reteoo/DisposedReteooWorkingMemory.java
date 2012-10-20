@@ -82,7 +82,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void retract( FactHandle handle, boolean removeLogical, boolean updateEqualsMap, Rule rule, Activation activation ) throws FactException {
+    public void retract( FactHandle handle, Rule rule, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 

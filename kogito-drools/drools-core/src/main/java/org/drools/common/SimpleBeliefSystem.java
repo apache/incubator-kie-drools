@@ -15,16 +15,20 @@ import org.drools.spi.PropagationContext;
 public class SimpleBeliefSystem
         implements
         BeliefSystem {
-    private InternalWorkingMemory  wm;
+    private NamedEntryPoint  ep;
     private TruthMaintenanceSystem tms;
 
-    public SimpleBeliefSystem(InternalWorkingMemory wm,
+    public SimpleBeliefSystem(NamedEntryPoint ep,
                               TruthMaintenanceSystem tms) {
         super();
-        this.wm = wm;
+        this.ep = ep;
         this.tms = tms;
     }
 
+    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
+        return this.tms;
+    }
+    
     public void insert(LogicalDependency node,
                        BeliefSet beliefSet,
                        PropagationContext context,
@@ -34,12 +38,13 @@ public class SimpleBeliefSystem
         beliefSet.add( node.getJustifierEntry() );
         
         if ( empty) {
-            InternalFactHandle handle = (InternalFactHandle) node.getJustified();            
-            ((NamedEntryPoint)handle.getEntryPoint()).insert( handle,
-                                                             handle.getObject(),
-                                                             node.getJustifier().getRule(),
-                                                             node.getJustifier(),
-                                                             typeConf );
+            InternalFactHandle handle = beliefSet.getFactHandle();
+            
+            ep.insert( handle,
+                       handle.getObject(),
+                       node.getJustifier().getRule(),
+                       node.getJustifier(),
+                       typeConf );
         }
     }
     
@@ -47,30 +52,47 @@ public class SimpleBeliefSystem
                      BeliefSet beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf) {
+        //insert(node, beliefSet, context, typeConf );
         beliefSet.add( node.getJustifierEntry() );
     }
 
     public void delete(LogicalDependency node,
                        BeliefSet beliefSet,
                        PropagationContext context) {
-        beliefSet.remove( node.getJustifierEntry() );
-        
-        WorkingMemoryAction action = new LogicalRetractCallback( tms,
-                                                                 node,
-                                                                 beliefSet,
-                                                                 (InternalFactHandle) node.getJustified(),
-                                                                 context,
-                                                                 node.getJustifier() );
-        wm.queueWorkingMemoryAction( action );
+        if ( beliefSet.size() > 1 && beliefSet.getFactHandle().getObject() == node.getObject() ) {
+            // The "Prime" Object no longer has a backer, so it needs to be updated
+            beliefSet.remove( node.getJustifierEntry() );
+            
+            if ( beliefSet.isEmpty() ) {
+                WorkingMemoryAction action = new LogicalRetractCallback( tms,
+                                                                         node,
+                                                                         beliefSet,
+                                                                         context,
+                                                                         node.getJustifier() );
+                ep.queueWorkingMemoryAction( action );            
+            }             
+        } else {
+            beliefSet.remove( node.getJustifierEntry() );
+            
+            if ( beliefSet.isEmpty() ) {
+                WorkingMemoryAction action = new LogicalRetractCallback( tms,
+                                                                         node,
+                                                                         beliefSet,
+                                                                         context,
+                                                                         node.getJustifier() );
+                ep.queueWorkingMemoryAction( action );            
+            }            
+        }        
     }
 
-    public BeliefSet newBeliefSet() {
-        return new SimpleBeliefSet();
+    public BeliefSet newBeliefSet(InternalFactHandle fh) {
+        return new SimpleBeliefSet(this, fh);
     }
 
     public LogicalDependency newLogicalDependency(Activation activation,
-                                                  InternalFactHandle handle,
+                                                  BeliefSet beliefSet,
+                                                  Object object,
                                                   Object value) {
-        return new SimpleLogicalDependency( activation, handle, value );
+        return new SimpleLogicalDependency( activation, beliefSet, object, value );
     }
 }

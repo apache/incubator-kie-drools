@@ -200,8 +200,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public void retract(FactHandle factHandle,
-                        boolean removeLogical,
-                        boolean updateEqualsMap,
                         Rule rule,
                         Activation activation) throws FactException {
         // TODO Auto-generated method stub

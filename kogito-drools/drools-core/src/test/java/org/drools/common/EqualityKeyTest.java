@@ -33,34 +33,34 @@ public class EqualityKeyTest {
         EqualityKey key = new EqualityKey( ch1 );
         
         assertSame( ch1, key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 1, key.size() );
         
         InternalFactHandle ch2 = factory.newFactHandle( new Cheese ("c", 10), null, null, null );
         key.addFactHandle( ch2 );
         
-        assertEquals( 1, key.getOtherFactHandle().size() );
-        assertEquals( ch2, key.getOtherFactHandle().get( 0 ) );
+        assertEquals( 2, key.size() );
+        assertEquals( ch2, key.get( 1 ) );
         
         key.removeFactHandle( ch1 );
         assertSame( ch2, key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 1, key.size() );
         
         key.removeFactHandle( ch2 );
         assertNull( key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 0, key.size() );
         
         key = new EqualityKey( ch2 );
         key.addFactHandle( ch1 );
         assertSame( ch2, key.getFactHandle() );
-        assertEquals( 1, key.getOtherFactHandle().size() );
-        assertEquals( ch1, key.getOtherFactHandle().get( 0 ) );
+        assertEquals( 2, key.size() );
+        assertEquals( ch1, key.get( 1 ) );
         
         key.removeFactHandle( ch1 );
         assertSame( ch2, key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 1, key.size() );
         
         key.removeFactHandle( ch2 );
         assertNull( key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 0, key.size() );
     }
 }

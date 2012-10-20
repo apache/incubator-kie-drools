@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.drools.RuleBaseFactory;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.rule.EntryPoint;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class LazyTMSEnablingTest {
         wm = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase()
                 .newStatefulSession();
 
-        tms = wm.getTruthMaintenanceSystem();
+        tms = ((NamedEntryPoint)wm.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 
     }
 
@@ -61,7 +62,7 @@ public class LazyTMSEnablingTest {
 
         assertEquals(
                 "Shouldn't have anything, since no logical insert was performed.",
-                0, tms.getAssertMap().size());
+                0, tms.getEqualityKeyMap().size());
 
         final String fact2 = "logical";
 
@@ -69,7 +70,7 @@ public class LazyTMSEnablingTest {
 
         assertEquals(
                 "Now that a logical insert was done, it should have an element.",
-                1, tms.getAssertMap().size());
+                1, tms.getEqualityKeyMap().size());
 
         // Make sure the internals are fine.
         ObjectTypeConf typeConf = wm.getObjectTypeConfigurationRegistry()

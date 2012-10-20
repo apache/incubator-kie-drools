@@ -36,6 +36,7 @@ import org.drools.common.BeliefSet;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LogicalDependency;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.LinkedListEntry;
@@ -48,6 +49,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -507,9 +509,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( 0,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
-        TruthMaintenanceSystem tms = ((InternalWorkingMemory) workingMemory).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 
-        final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "assertMap" );
+        final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
         field.setAccessible( true );
         final ObjectHashMap m = (ObjectHashMap) field.get( tms );
         field.setAccessible( false );
@@ -677,6 +679,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
     @Test
     public void testLogicalInsertionsUpdateEqual() throws Exception {
+        // calling update on a justified FH, states it
+        
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsUpdateEqual.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -706,12 +710,23 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         h = getFactHandle( h, workingMemory );
         workingMemory.retract( h );
         workingMemory = getSerialisedStatefulSession( workingMemory );
+        
+        
+        List list = IteratorToList.convert( workingMemory.iterateObjects() );
+        // CheeseEqual was updated, making it stated, so it wouldn't have been logically retracted
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( new CheeseEqual("person", 3), list.get( 0 ));
+        FactHandle fh = workingMemory.getFactHandle( list.get(0) );
+        workingMemory.retract( fh );
+        
+        list = IteratorToList.convert( workingMemory.iterateObjects() );
         assertEquals( 0,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      list.size() );        
+        
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 
-        TruthMaintenanceSystem tms = ((InternalWorkingMemory) workingMemory).getTruthMaintenanceSystem();
-
-        final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "assertMap" );
+        final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
         field.setAccessible( true );
         final ObjectHashMap m = (ObjectHashMap) field.get( tms );
         field.setAccessible( false );
@@ -1178,12 +1193,13 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kSession.setGlobal( "key", key );
         
         kSession.fireAllRules();
-        
-        TruthMaintenanceSystem tms = ((StatefulKnowledgeSessionImpl)kSession).session.getTruthMaintenanceSystem();
+                        
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)((StatefulKnowledgeSessionImpl)kSession).session.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         
         InternalFactHandle fh = ( InternalFactHandle ) kSession.getFactHandle( key );
         
-        BeliefSet bs =  ( BeliefSet ) tms.getJustifiedMap().get( fh.getId() );
+        BeliefSet bs =  fh.getEqualityKey().getBeliefSet();
+        
         assertEquals( "value1", ((LogicalDependency) ((LinkedListEntry)bs.getFirst()).getObject()).getValue() );
         assertEquals( "value2", ((LogicalDependency) ((LinkedListEntry)bs.getFirst().getNext()).getObject()).getValue() );        
     }    

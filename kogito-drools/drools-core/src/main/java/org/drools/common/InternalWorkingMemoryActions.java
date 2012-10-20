@@ -31,8 +31,6 @@ public interface InternalWorkingMemoryActions
                        Activation activation) throws FactException;
 
     public void retract(FactHandle handle,
-                        boolean removeLogical,
-                        boolean updateEqualsMap,
                         Rule rule,
                         Activation activation) throws FactException;
 

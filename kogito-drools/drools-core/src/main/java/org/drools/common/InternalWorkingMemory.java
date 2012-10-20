@@ -67,8 +67,6 @@ public interface InternalWorkingMemory
     
     public ObjectStore getObjectStore();
 
-    public TruthMaintenanceSystem getTruthMaintenanceSystem();
-
     public void executeQueuedActions();
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action);
@@ -96,8 +94,6 @@ public interface InternalWorkingMemory
     public FactHandle getFactHandleByIdentity(final Object object);
 
     void retract(final FactHandle factHandle,
-                       final boolean removeLogical,
-                       final boolean updateEqualsMap,
                        final Rule rule,
                        final Activation activation) throws FactException;
 

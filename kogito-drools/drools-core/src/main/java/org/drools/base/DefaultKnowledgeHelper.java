@@ -29,6 +29,7 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.AgendaItem;
+import org.drools.common.BeliefSet;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
@@ -37,8 +38,10 @@ import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
+import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitableBean;
@@ -182,23 +185,25 @@ public class DefaultKnowledgeHelper
         }
     }
 
-    public void insert(final Object object) {
-        insert( object,
-                false );
+    public FactHandle insert(final Object object) {
+        return insert( object,
+                       false );
     }
 
-    public void insert(final Object object,
+    public FactHandle insert(final Object object,
                        final boolean dynamic) throws FactException {
         FactHandle handle = this.workingMemory.insert( object,
-                                                       null,
-                                                       dynamic,
-                                                       false,
-                                                       this.activation.getRule(),
-                                                       this.activation );
+                                                           null,
+                                                           dynamic,
+                                                           false,
+                                                           this.activation.getRule(),
+                                                           this.activation );
         if ( this.identityMap != null ) {
             this.getIdentityMap().put( object,
                                        handle );
         }
+        
+        return handle;
     }
 
     public void insertLogical(final Object object) {
@@ -229,8 +234,8 @@ public class DefaultKnowledgeHelper
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
         if ( this.previousJustified != null ) {
-            for ( dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {
-                if ( object.equals( ((InternalFactHandle) dep.getJustified()).getObject() ) ) {
+            for ( dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {                
+                if ( object.equals( ((BeliefSet)dep.getJustified()).getFactHandle().getObject() ) ) {
                     this.previousJustified.remove( dep );
                     break;
                 }
@@ -259,7 +264,7 @@ public class DefaultKnowledgeHelper
     public void cancelRemainingPreviousLogicalDependencies() {
         if ( this.previousJustified != null ) {
             for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
-                this.workingMemory.getTruthMaintenanceSystem().removeLogicalDependency( activation, dep, activation.getPropagationContext() );
+                TruthMaintenanceSystemHelper.removeLogicalDependency( activation, dep, activation.getPropagationContext() );
             }
         }
         
@@ -355,8 +360,6 @@ public class DefaultKnowledgeHelper
 
     public void retract(final FactHandle handle) {
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).retract( handle,
-                                                                                                   true,
-                                                                                                   true,
                                                                                                    this.activation.getRule(),
                                                                                                    this.activation );
         if ( this.identityMap != null ) {
@@ -525,12 +528,54 @@ public class DefaultKnowledgeHelper
     }
 
     protected <T> T doInsertTrait( T thing, boolean logical ) {
+        FactHandle fh = insert( thing );
+        
         if ( logical ) {
-            insertLogical( thing );
-        } else {
-            insert( thing );
+            AgendaItem agendaItem = ( AgendaItem ) activation;
+            
+            RetractTrait newUnMatch = new RetractTrait(fh);
+            ActivationUnMatchListener unmatch = agendaItem.getActivationUnMatchListener();
+            if ( unmatch != null ) {
+                newUnMatch.setNext( ( RetractTrait ) unmatch );
+            }
+            agendaItem.setActivationUnMatchListener( newUnMatch );
         }
         return thing;
+    }
+    
+    public static class RetractTrait implements ActivationUnMatchListener {
+        private FactHandle fh;
+
+        private RetractTrait next;
+        
+        public RetractTrait(FactHandle fh) {
+            this.fh = fh;
+        }
+
+        public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
+                            org.drools.runtime.rule.Activation activation) {
+            wm.retract( fh );
+            if ( next != null ) {
+                next.unMatch( wm, activation );
+            }
+        }
+
+        public FactHandle getFh() {
+            return fh;
+        }
+
+        public void setFh(FactHandle fh) {
+            this.fh = fh;
+        }
+
+        public RetractTrait getNext() {
+            return next;
+        }
+
+        public void setNext(RetractTrait next) {
+            this.next = next;
+        }                
+        
     }
 
     protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) {

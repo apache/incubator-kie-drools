@@ -48,6 +48,7 @@ import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
+import org.drools.marshalling.impl.ProtobufMessages.BeliefSet;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
@@ -116,7 +117,7 @@ public class ProtobufInputMarshaller {
                      session,
                      agenda,
                      context );
-
+        
         return session;
     }
 
@@ -150,6 +151,9 @@ public class ProtobufInputMarshaller {
 
         ProtobufMessages.KnowledgeSession _session = loadAndParseSession( context );
 
+        System.out.println( "input" );
+        System.out.println( _session.toString() );
+        
         ReteooStatefulSession session = createAndInitializeSession( context,
                                                                     id,
                                                                     executor,
@@ -257,13 +261,13 @@ public class ProtobufInputMarshaller {
             readFactHandles( context,
                              _ep,
                              ((NamedEntryPoint) wmep).getObjectStore() );
+            readTruthMaintenanceSystem( context,
+                                        wmep,
+                                        _ep);            
         }
 
         readActionQueue( context,
                          _session.getRuleData() );
-
-        readTruthMaintenanceSystem( context,
-                                    _session.getRuleData() );
         
 
         if (processMarshaller != null) {
@@ -448,15 +452,18 @@ public class ProtobufInputMarshaller {
             context.handles.put( handle.getId(),
                                  handle );
 
-            if ( handle.getObject() != null ) {
-                objectStore.addHandle( handle,
-                                       handle.getObject() );
+            if ( ! _handle.getIsJustified() ) {
+                // BeliefSystem handles the Object type 
+                if ( handle.getObject() != null ) {
+                    objectStore.addHandle( handle,
+                                           handle.getObject() );
+                }
+    
+                // add handle to object type node
+                assertHandleIntoOTN( context, 
+                                     wm, 
+                                     handle );
             }
-
-            // add handle to object type node
-            assertHandleIntoOTN( context, 
-                                 wm, 
-                                 handle );
         }
 
     }
@@ -536,10 +543,11 @@ public class ProtobufInputMarshaller {
     }
 
     public static void readTruthMaintenanceSystem( MarshallerReaderContext context, 
-                                                   RuleData _session ) throws IOException {
-
-        TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
-        ProtobufMessages.TruthMaintenanceSystem _tms = _session.getTms();
+                                                   WorkingMemoryEntryPoint wmep,
+                                                   ProtobufMessages.EntryPoint _ep ) throws IOException, ClassNotFoundException {        
+        TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
+        
+        ProtobufMessages.TruthMaintenanceSystem _tms = _ep.getTms();
         
         for( ProtobufMessages.EqualityKey _key : _tms.getKeyList() ) {
             InternalFactHandle handle = (InternalFactHandle) context.handles.get( _key.getHandleId() );
@@ -554,32 +562,70 @@ public class ProtobufInputMarshaller {
             EqualityKey key = new EqualityKey( handle,
                                                _key.getStatus() );
             handle.setEqualityKey( key );
+            
+            if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                // not yet added to the object stores
+                ((NamedEntryPoint) handle.getEntryPoint() ).getObjectStore().addHandle( handle,
+                                                                                        handle.getObject() );
+                // add handle to object type node
+                assertHandleIntoOTN( context, 
+                                     context.wm, 
+                                     handle );                
+            }
+            
             for( Integer factHandleId : _key.getOtherHandleList() ) {
                 handle = (InternalFactHandle) context.handles.get( factHandleId.intValue() );
                 key.addFactHandle( handle );
                 handle.setEqualityKey( key );
             }
             tms.put( key );
-        }
-        
-        for( ProtobufMessages.Justification _justification : _tms.getJustificationList() ) {
-            InternalFactHandle handle = (InternalFactHandle) context.handles.get( _justification.getHandleId() );
             
-            for( ProtobufMessages.Activation _activation : _justification.getActivationList() ) {
-                Activation activation = (Activation) context.filter.getTuplesCache().get( 
-                              PersisterHelper.createActivationKey( _activation.getPackageName(), 
-                                                                   _activation.getRuleName(), 
-                                                                   _activation.getTuple() ) ).getObject();
-                PropagationContext pc = activation.getPropagationContext();
-                ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint)handle.getEntryPoint()).getEntryPoint(),
-                                                                                                             handle.getObject() );                
-                tms.readLogicalDependency( handle,
-                                           null,
-                                           activation, 
-                                           pc, 
-                                           activation.getRule(),
-                                           typeConf );
+            readBeliefSet(context, tms, key, _key.getBeliefSet() );
+        }
+       
+    }
+    
+    private static void readBeliefSet(MarshallerReaderContext context,
+                                      TruthMaintenanceSystem tms,
+                                      EqualityKey key,
+                                      ProtobufMessages.BeliefSet _beliefSet) throws IOException,
+                                                                            ClassNotFoundException {
+        InternalFactHandle handle = (InternalFactHandle) context.handles.get( _beliefSet.getHandleId() );
+        for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
+            ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
+            Activation activation = (Activation) context.filter.getTuplesCache().get(
+                                                                                      PersisterHelper.createActivationKey( _activation.getPackageName(),
+                                                                                                                           _activation.getRuleName(),
+                                                                                                                           _activation.getTuple() ) ).getObject();
+
+            Object object = null;
+            ObjectMarshallingStrategy strategy = null;
+            if ( _logicalDependency.hasObjectStrategyIndex() ) {
+                strategy = context.usedStrategies.get( _logicalDependency.getObjectStrategyIndex() );
+                object = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                             context,
+                                             _logicalDependency.getObject().toByteArray(),
+                                             (context.ruleBase == null) ? null : context.ruleBase.getRootClassLoader() );
             }
+
+            Object value = null;
+            if ( _logicalDependency.hasValueStrategyIndex() ) {
+                strategy = context.usedStrategies.get( _logicalDependency.getValueStrategyIndex() );
+                value = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                            context,
+                                            _logicalDependency.getValue().toByteArray(),
+                                            (context.ruleBase == null) ? null : context.ruleBase.getRootClassLoader() );
+            }
+
+            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint) handle.getEntryPoint()).getEntryPoint(),
+                                                                                                         handle.getObject() );
+            tms.readLogicalDependency( handle,
+                                       object,
+                                       value,
+                                       activation,
+                                       activation.getPropagationContext(),
+                                       activation.getRule(),
+                                       typeConf );
         }
     }
 

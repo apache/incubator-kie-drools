@@ -91,4 +91,6 @@ public interface InternalFactHandle
 
     public void removeRightTuple( RightTuple rightTuple );
     
+    public InternalFactHandle quickClone();
+    
 }

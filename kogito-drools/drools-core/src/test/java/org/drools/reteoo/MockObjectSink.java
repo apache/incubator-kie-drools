@@ -33,6 +33,7 @@ public class MockObjectSink
     RightTupleSink {
     private final List     asserted  = new ArrayList();
     private final List     retracted = new ArrayList();
+    private final List     updated   = new ArrayList();
 
     private ObjectSinkNode previousObjectSinkNode;
     private ObjectSinkNode nextObjectSinkNode;
@@ -56,6 +57,10 @@ public class MockObjectSink
 
     public List getRetracted() {
         return this.retracted;
+    }
+    
+    public List getUpdated() {
+        return this.updated;
     }
 
     /**
@@ -130,14 +135,19 @@ public class MockObjectSink
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+        while ( rightTuple != null ) {
+            modifyPreviousTuples.removeRightTuple();
+            rightTuple = modifyPreviousTuples.peekRightTuple();
+        }
+        this.updated.add( new Object[]{factHandle, context, workingMemory} );
         
     }
 
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
+        this.updated.add( new Object[]{rightTuple, context, workingMemory} );
         
     }
 

@@ -123,8 +123,12 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
+    public InternalFactHandle quickClone() {
+        return clone();
+    }    
+    
     public InternalFactHandle clone() {
-        return new QueryElementFactHandle( object, id, recency );
+        return new QueryElementFactHandle( object, id, identityHashCode, recency );
     }
 
     public String toExternalForm() {

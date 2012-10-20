@@ -87,7 +87,6 @@ message RuleData {
     repeated EntryPoint entry_point = 10;
 
     optional ActionQueue action_queue = 11;
-    optional TruthMaintenanceSystem tms = 12;
 }
 
 message ProcessData {
@@ -187,6 +186,7 @@ message NodeMemory {
 message EntryPoint {
     optional string entry_point_id = 1;
     repeated FactHandle handle = 2;
+    optional TruthMaintenanceSystem tms = 3;
 }
 
 // a fact handle
@@ -214,6 +214,8 @@ message FactHandle {
 
     // the entry point
     optional string entry_point = 10;
+    
+    optional bool is_justified = 11;
 }
 
 message Activation {
@@ -235,18 +237,30 @@ message Tuple {
 
 message TruthMaintenanceSystem {
     repeated EqualityKey key = 1;
-    repeated Justification justification = 2;
 }
 
 message EqualityKey {
     optional int32 status = 1;
     optional int32 handle_id = 2;
     repeated int32 other_handle = 3;
+    optional BeliefSet beliefSet = 4;
 }
 
-message Justification {
+message BeliefSet {
     optional int32 handle_id = 1;
-    repeated Activation activation = 2;
+    repeated LogicalDependency logicalDependency = 2;
+}
+
+message LogicalDependency {
+    optional Activation activation = 2;
+
+    // the actual object reference
+    optional int32 object_strategy_index = 8;
+    optional bytes object = 9;
+
+    // the actual value reference
+    optional int32 value_strategy_index = 10;
+    optional bytes value = 11;
 }
 
 message ActionQueue {
