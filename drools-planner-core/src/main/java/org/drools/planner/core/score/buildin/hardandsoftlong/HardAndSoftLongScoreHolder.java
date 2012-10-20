@@ -16,8 +16,13 @@
 
 package org.drools.planner.core.score.buildin.hardandsoftlong;
 
+import org.drools.common.AgendaItem;
+import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
+import org.drools.runtime.rule.Activation;
+import org.drools.runtime.rule.RuleContext;
+import org.drools.runtime.rule.WorkingMemory;
 
 public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
 
@@ -43,6 +48,30 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
+        hardConstraintsBroken += - weight; // TODO remove minus and refactor hardConstraintsBroken
+        AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
+        agendaItem.setActivationUnMatchListener(
+                new ActivationUnMatchListener() {
+                    public void unMatch(WorkingMemory workingMemory, Activation activation) {
+                        hardConstraintsBroken -= - weight; // TODO remove minus and refactor hardConstraintsBroken
+                    }
+                }
+        );
+    }
+
+    public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
+        softConstraintsBroken += - weight; // TODO remove minus and refactor softConstraintsBroken
+        AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
+        agendaItem.setActivationUnMatchListener(
+                new ActivationUnMatchListener() {
+                    public void unMatch(WorkingMemory workingMemory, Activation activation) {
+                        softConstraintsBroken -= - weight; // TODO remove minus and refactor softConstraintsBroken
+                    }
+                }
+        );
+    }
 
     public Score extractScore() {
         return DefaultHardAndSoftLongScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);

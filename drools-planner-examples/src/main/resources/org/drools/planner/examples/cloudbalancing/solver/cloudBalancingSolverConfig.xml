@@ -13,6 +13,10 @@
     <!--<simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingMapBasedSimpleScoreCalculator</simpleScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+    <!--<scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingCompensationActionExperimentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->

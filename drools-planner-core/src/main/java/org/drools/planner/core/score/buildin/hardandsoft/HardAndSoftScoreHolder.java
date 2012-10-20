@@ -16,8 +16,14 @@
 
 package org.drools.planner.core.score.buildin.hardandsoft;
 
+import org.drools.common.AgendaItem;
+import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
+import org.drools.runtime.KnowledgeContext;
+import org.drools.runtime.rule.Activation;
+import org.drools.runtime.rule.RuleContext;
+import org.drools.runtime.rule.WorkingMemory;
 
 public class HardAndSoftScoreHolder extends AbstractScoreHolder {
 
@@ -43,6 +49,30 @@ public class HardAndSoftScoreHolder extends AbstractScoreHolder {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
+        hardConstraintsBroken += - weight; // TODO remove minus and refactor hardConstraintsBroken
+        AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
+        agendaItem.setActivationUnMatchListener(
+                new ActivationUnMatchListener() {
+                    public void unMatch(WorkingMemory workingMemory, Activation activation) {
+                        hardConstraintsBroken -= - weight; // TODO remove minus and refactor hardConstraintsBroken
+                    }
+                }
+        );
+    }
+
+    public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
+        softConstraintsBroken += - weight; // TODO remove minus and refactor softConstraintsBroken
+        AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
+        agendaItem.setActivationUnMatchListener(
+                new ActivationUnMatchListener() {
+                    public void unMatch(WorkingMemory workingMemory, Activation activation) {
+                        softConstraintsBroken -= - weight; // TODO remove minus and refactor softConstraintsBroken
+                    }
+                }
+        );
+    }
 
     public Score extractScore() {
         return DefaultHardAndSoftScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);

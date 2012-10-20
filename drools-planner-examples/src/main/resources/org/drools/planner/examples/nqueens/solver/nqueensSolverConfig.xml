@@ -10,6 +10,10 @@
     <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <!--<scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensCompensationActionExperimentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

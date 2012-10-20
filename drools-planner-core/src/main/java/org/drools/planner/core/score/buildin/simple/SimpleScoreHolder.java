@@ -16,8 +16,13 @@
 
 package org.drools.planner.core.score.buildin.simple;
 
+import org.drools.common.AgendaItem;
+import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
+import org.drools.runtime.rule.Activation;
+import org.drools.runtime.rule.RuleContext;
+import org.drools.runtime.rule.WorkingMemory;
 
 public class SimpleScoreHolder extends AbstractScoreHolder {
 
@@ -34,6 +39,18 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public void addConstraintMatch(RuleContext kcontext, final int weight) {
+        score += weight;
+        AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
+        agendaItem.setActivationUnMatchListener(
+                new ActivationUnMatchListener() {
+                    public void unMatch(WorkingMemory workingMemory, Activation activation) {
+                        score -= weight;
+                    }
+                }
+        );
+    }
 
     public Score extractScore() {
         return DefaultSimpleScore.valueOf(score);
