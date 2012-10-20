@@ -147,6 +147,11 @@ public class ScoreDirectorFactoryConfig {
     public ScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor) {
         ScoreDefinition scoreDefinition = buildScoreDefinition();
+        return buildScoreDirectorFactory(environmentMode, solutionDescriptor, scoreDefinition);
+    }
+
+    protected ScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
+            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
         AbstractScoreDirectorFactory scoreDirectorFactory;
         // TODO this should fail-fast if multiple scoreDirectorFactory's are configured
         scoreDirectorFactory = buildSimpleScoreDirectorFactory();
@@ -164,6 +169,13 @@ public class ScoreDirectorFactoryConfig {
                         + assertionScoreDirectorFactory + ") cannot have a non-null assertionScoreDirectorFactory ("
                         + assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() + ").");
             }
+            if (assertionScoreDirectorFactory.getScoreDefinition() != null
+                    || assertionScoreDirectorFactory.getScoreDefinitionClass() != null
+                    || assertionScoreDirectorFactory.getScoreDefinitionType() != null) {
+                throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory + ") must reuse the scoreDefinition of its parent." +
+                        " It cannot have a non-null scoreDefinition* property.");
+            }
             if (environmentMode.compareTo(EnvironmentMode.DEBUG) > 0) {
                 throw new IllegalArgumentException("A non-null assertionScoreDirectorFactory ("
                         + assertionScoreDirectorFactory + ") requires an environmentMode ("
@@ -171,7 +183,7 @@ public class ScoreDirectorFactoryConfig {
             }
             scoreDirectorFactory.setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactory.buildScoreDirectorFactory(
-                            EnvironmentMode.PRODUCTION, solutionDescriptor));
+                            EnvironmentMode.PRODUCTION, solutionDescriptor, scoreDefinition));
         }
         return scoreDirectorFactory;
     }

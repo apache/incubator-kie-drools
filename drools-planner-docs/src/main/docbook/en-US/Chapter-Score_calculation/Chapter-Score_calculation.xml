@@ -836,7 +836,7 @@ end</programlisting>
 
       <para>A piece of incremental score calculator code can be difficult to write and to review. You can assert its
       correctness by using a different implementation (for example a <literal>SimpleScoreCalculator</literal>) to do the
-      assertions trigged by the <literal>environmentMode</literal>. Just configure it as
+      assertions triggered by the <literal>environmentMode</literal>. Just configure it as
       <literal>assertionScoreDirectorFactory</literal>:</para>
 
       <programlisting language="xml">  &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
@@ -845,7 +845,6 @@ end</programlisting>
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;assertionScoreDirectorFactory&gt;
-      &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
       &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;/assertionScoreDirectorFactory&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>

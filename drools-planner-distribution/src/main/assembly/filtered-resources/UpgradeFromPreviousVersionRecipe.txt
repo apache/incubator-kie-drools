@@ -2302,3 +2302,5 @@ From 5.5.0.Final to 6.0.0.Beta1
 
 [RECOMMENDED] Planning variables can now have a null value when initialized.
 If you have any custom hacks for that, take a look at the reference manual how to replace them with a nullable variable.
+
+[MINOR] <assertionScoreDirectorFactory> no longer needs a <scoreDefinition*>: it inherits it from its parent.
