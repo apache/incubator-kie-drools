@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.FactHandle;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
@@ -35,7 +36,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
  */
 @XmlRootElement(name = "fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
-public class DefaultFactHandle
+public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHandle>
                               implements
                               InternalFactHandle, Serializable {
 
@@ -429,6 +430,15 @@ public class DefaultFactHandle
         setLastRightTuple( null );
     }
 
+    public DefaultFactHandle quickClone() {
+        DefaultFactHandle clone = new DefaultFactHandle( this.id, this.object, this.recency, this.entryPoint );
+        clone.key = this.key;
+
+        clone.objectHashCode = this.objectHashCode;
+        clone.identityHashCode = this.identityHashCode;
+        return clone;
+    }
+    
     public DefaultFactHandle clone() {
         DefaultFactHandle clone = new DefaultFactHandle( this.id, this.object, this.recency, this.entryPoint );
         clone.key = this.key;

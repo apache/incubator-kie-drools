@@ -31,8 +31,6 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     RuleBase getRuleBase();
     public void retract(final FactHandle factHandle,
-                        final boolean removeLogical,
-                        final boolean updateEqualsMap,
                         final Rule rule,
                         final Activation activation) throws FactException;
     public void update(org.drools.runtime.rule.FactHandle handle,

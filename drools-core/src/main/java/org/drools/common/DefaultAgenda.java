@@ -717,9 +717,9 @@ public class DefaultAgenda
             item.getActivationUnMatchListener().unMatch( workingMemory.getKnowledgeRuntime(), item );
         }
 
-        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                             context,
-                                                                             rtn.getRule() );
+        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
+                                                                context,
+                                                                rtn.getRule() );
     }
 
     /*

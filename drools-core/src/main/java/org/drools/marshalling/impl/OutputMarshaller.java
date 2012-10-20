@@ -35,6 +35,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.ActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
@@ -48,6 +49,7 @@ import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
@@ -271,36 +273,38 @@ public class OutputMarshaller {
     public static void writeTruthMaintenanceSystem(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
-        ObjectHashMap assertMap = context.wm.getTruthMaintenanceSystem().getAssertMap();
-
-        EqualityKey[] keys = new EqualityKey[assertMap.size()];
-        org.drools.core.util.Iterator it = assertMap.iterator();
-        int i = 0;
-        for ( org.drools.core.util.ObjectHashMap.ObjectEntry entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next() ) {
-            EqualityKey key = (EqualityKey) entry.getKey();
-            keys[i++] = key;
-        }
-
-        Arrays.sort( keys,
-                     EqualityKeySorter.instance );
-
-        // write the assert map of Equality keys
-        for ( EqualityKey key : keys ) {
-            stream.writeShort( PersisterEnums.EQUALITY_KEY );
-            stream.writeInt( key.getStatus() );
-            InternalFactHandle handle = key.getFactHandle();
-            stream.writeInt( handle.getId() );
-            //context.out.println( "EqualityKey int:" + key.getStatus() + " int:" + handle.getId() );
-            if ( key.getOtherFactHandle() != null && !key.getOtherFactHandle().isEmpty() ) {
-                for ( InternalFactHandle handle2 : key.getOtherFactHandle() ) {
-                    stream.writeShort( PersisterEnums.FACT_HANDLE );
-                    stream.writeInt( handle2.getId() );
-                    //context.out.println( "OtherHandle int:" + handle2.getId() );
-                }
-            }
-            stream.writeShort( PersisterEnums.END );
-        }
-        stream.writeShort( PersisterEnums.END );
+        throw new UnsupportedOperationException(); // MDP need to update as we now have a TMS per EntryPoint
+//        ObjectHashMap assertMap = context.wm.getTruthMaintenanceSystem().getAssertMap();
+//
+//        EqualityKey[] keys = new EqualityKey[assertMap.size()];
+//        org.drools.core.util.Iterator it = assertMap.iterator();
+//        int i = 0;
+//        for ( org.drools.core.util.ObjectHashMap.ObjectEntry entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next() ) {
+//            EqualityKey key = (EqualityKey) entry.getKey();
+//            keys[i++] = key;
+//        }
+//
+//        Arrays.sort( keys,
+//                     EqualityKeySorter.instance );
+//
+//        // write the assert map of Equality keys
+//        for ( EqualityKey key : keys ) {
+//            stream.writeShort( PersisterEnums.EQUALITY_KEY );
+//            stream.writeInt( key.getStatus() );
+//            InternalFactHandle handle = key.getFactHandle();
+//            stream.writeInt( handle.getId() );
+//            //context.out.println( "EqualityKey int:" + key.getStatus() + " int:" + handle.getId() );
+//            if ( key.size() > 1) {
+//                FastIterator keyIter = key.fastIterator();
+//                for ( DefaultFactHandle handle2 = key.getFirst().getNext(); handle2 != null; handle2 = ( DefaultFactHandle  ) keyIter.next( handle2 )) {
+//                    stream.writeShort( PersisterEnums.FACT_HANDLE );
+//                    stream.writeInt( handle2.getId() );
+//                    //context.out.println( "OtherHandle int:" + handle2.getId() );                    
+//                }
+//            }
+//            stream.writeShort( PersisterEnums.END );
+//        }
+//        stream.writeShort( PersisterEnums.END );
     }
 
     public static class EqualityKeySorter

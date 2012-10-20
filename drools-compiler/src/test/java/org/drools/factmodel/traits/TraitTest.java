@@ -1891,6 +1891,8 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.retract( h );
         ksession.fireAllRules();
 
+        Collection col = ksession.getObjects();
+        
         assertEquals( 0, ksession.getObjects().size() );
 
 

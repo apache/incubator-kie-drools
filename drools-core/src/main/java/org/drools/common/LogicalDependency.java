@@ -12,6 +12,8 @@ public interface LogicalDependency extends LinkedListNode<LogicalDependency> {
 
     public Activation getJustifier();
 
+    public Object getObject();
+    
     public Object getValue();
 
 }

@@ -16,6 +16,7 @@ rule "assert-item"
         i : Integer()
     then
         insertLogical(new Double(2.0));
+    System.out.println( kcontext.getRule().getName() );
 end
 
 rule "kickstart-accumulation"
@@ -23,6 +24,7 @@ rule "kickstart-accumulation"
         i : Integer()
     then
         insertLogical(new Float(1.0));
+        System.out.println( kcontext.getRule().getName() );
 end
 
 rule "item qualifies"
@@ -32,7 +34,8 @@ rule "item qualifies"
     then
         //assert(new Short((short)3));
         insert(gs);
-           insertLogical(new CheeseEqual(ga, 4));
+        insertLogical(new CheeseEqual(ga, 4));
+        System.out.println( kcontext.getRule().getName() );
 end
 
 rule "accumulate item"
@@ -42,8 +45,9 @@ rule "accumulate item"
         c : CheeseEqual(type == (ga), price == 4)
         not CheeseEqual(type == (gb), price == 5)
     then
-        update(f);
+        //update(f);
         insert(new CheeseEqual(gb, 5));
+        System.out.println( kcontext.getRule().getName() );
 end
 
 rule "clean-up-1"
@@ -52,6 +56,7 @@ rule "clean-up-1"
         not Float()
     then
         retract(s);
+        System.out.println( kcontext.getRule().getName() );
 end
 
 rule "clean-up-2"
@@ -60,4 +65,5 @@ rule "clean-up-2"
         not Float()
     then
         retract(c);
+        System.out.println( kcontext.getRule().getName() );
 end

@@ -835,11 +835,6 @@ public abstract class AbstractWorkingMemory
         this.agenda.setFocus( focus );
     }
 
-    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        if (tms == null) tms = new TruthMaintenanceSystem(this);
-        return tms;
-    }
-
     /**
      * @see WorkingMemory
      */
@@ -922,20 +917,14 @@ public abstract class AbstractWorkingMemory
 
     public void retract(final org.drools.runtime.rule.FactHandle handle) throws FactException {
         retract( (org.drools.FactHandle) handle,
-                 true,
-                 true,
                  null,
                  null );
     }
 
     public void retract(final org.drools.FactHandle factHandle,
-                        final boolean removeLogical,
-                        final boolean updateEqualsMap,
                         final Rule rule,
                         final Activation activation) throws FactException {
         this.defaultEntryPoint.retract( factHandle,
-                                        removeLogical,
-                                        updateEqualsMap,
                                         rule,
                                         activation );
     }

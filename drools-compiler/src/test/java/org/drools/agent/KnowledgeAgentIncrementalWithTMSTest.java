@@ -5,6 +5,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.builder.*;
+import org.drools.common.BeliefSet;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.LogicalDependency;
@@ -54,8 +55,6 @@ public class KnowledgeAgentIncrementalWithTMSTest extends BaseKnowledgeAgentTest
 
             ksession = kAgent.getKnowledgeBase().newStatefulKnowledgeSession();
 
-            TruthMaintenanceSystem tms = ((StatefulKnowledgeSessionImpl)ksession).session.getTruthMaintenanceSystem();
-
 
             Message message = new Message( );
             message.setMessage("Hello World");
@@ -100,13 +99,14 @@ public class KnowledgeAgentIncrementalWithTMSTest extends BaseKnowledgeAgentTest
     }
 
     private void reportDependencies( TruthMaintenanceSystem tms, int expectedNum ) {
-        ObjectHashMap jhm = tms.getJustifiedMap();
+        ObjectHashMap jhm = tms.getEqualityKeyMap();
+        
         for ( Object o : ksession.getObjects() ) {
             EqualityKey key = tms.get( o );
             if ( Object.class.equals(o.getClass()) ) {
                 assertEquals( EqualityKey.JUSTIFIED, key.getStatus() );
                 DefaultFactHandle handle = (DefaultFactHandle) ksession.getFactHandle( o );
-                List<LogicalDependency> justifiers = collectJustifiers( handle, jhm );
+                List<LogicalDependency> justifiers = collectJustifiers( handle );
 
                 assertEquals( expectedNum, justifiers.size() );
 
@@ -121,16 +121,15 @@ public class KnowledgeAgentIncrementalWithTMSTest extends BaseKnowledgeAgentTest
         }
     }
 
-    private List<LogicalDependency> collectJustifiers(DefaultFactHandle handle, ObjectHashMap jhm) {
+    private List<LogicalDependency> collectJustifiers(DefaultFactHandle handle ) {
         List<LogicalDependency> justifiers = new ArrayList<LogicalDependency>();
-        LinkedList entryList = (LinkedList) jhm.get( handle.getId() );
-        Iterator sub = entryList.iterator();
-        LinkedListEntry lle;
-        while ( ( lle = (LinkedListEntry) sub.next() ) != null ) {
-            LogicalDependency dep = (LogicalDependency) lle.getObject();
-            justifiers.add( dep );
+        
+        BeliefSet bs = handle.getEqualityKey().getBeliefSet();
+        for ( LinkedListEntry entry = ( LinkedListEntry ) bs.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext( ) ) {
+            LogicalDependency dep = (LogicalDependency) entry.getObject();
+            justifiers.add( dep );            
         }
-
+        
         return justifiers;
     }
 

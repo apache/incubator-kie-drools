@@ -52,7 +52,7 @@ public interface KnowledgeHelper
     
     
     /**
-     * Asserts an object, notice that it does not return the FactHandle
+     * Asserts an object
      * 
      * @param object -
      *            the object to be asserted
@@ -60,11 +60,11 @@ public interface KnowledgeHelper
      *             Exceptions can be thrown by conditions which are wrapped and
      *             returned as a FactException
      */
-    void insert(Object object) ;
+    FactHandle insert(Object object) ;
     
     /**
      * Asserts an object specifying that it implement the onPropertyChange
-     * listener, notice that it does not return the FactHandle.
+     * listener
      * 
      * @param object -
      *            the object to be asserted
@@ -74,13 +74,13 @@ public interface KnowledgeHelper
      *             Exceptions can be thrown by conditions which are wrapped and
      *             returned as a FactException
      */
-    void insert(Object object,
-                      boolean dynamic) ;
+    FactHandle insert(Object object,
+                boolean dynamic) ;
     
     public void insertLogical(Object object) ;
     
     public void insertLogical(Object object,
-                                    boolean dynamic) ;
+                              boolean dynamic) ;
     
     public void cancelRemainingPreviousLogicalDependencies();
     

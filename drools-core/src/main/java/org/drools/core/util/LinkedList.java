@@ -49,8 +49,6 @@ public class LinkedList<T extends LinkedListNode<T>>
     private T                  lastNode;
 
     private int                size;
-
-    private LinkedListIterator iterator;
     
     public static FastIterator fastIterator = new LinkedListFastIterator(); // contains no state, so ok to be static    
 
@@ -58,14 +56,18 @@ public class LinkedList<T extends LinkedListNode<T>>
      * Construct an empty <code>LinkedList</code>
      */
     public LinkedList() {
-        this.iterator = new LinkedListIterator();
     }
+    
+    public LinkedList(final T node) {
+        this.firstNode = node;
+        this.lastNode = node;
+        this.size++;
+    }    
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         firstNode   = (T)in.readObject();
         lastNode    = (T)in.readObject();
         size        = in.readInt();
-        iterator    = (LinkedListIterator)in.readObject();
         
         LinkedListNode current = firstNode;
         LinkedListNode previous = null;
@@ -86,7 +88,6 @@ public class LinkedList<T extends LinkedListNode<T>>
         out.writeObject(firstNode);
         out.writeObject(lastNode);
         out.writeInt(size);
-        out.writeObject(iterator);
         
         if ( firstNode == lastNode ) {
             // no other nodes
@@ -231,6 +232,14 @@ public class LinkedList<T extends LinkedListNode<T>>
         this.size--;
         return node;
     }
+    
+    public Object get(int i) {
+        Entry current = getFirst();
+        for ( int j = 0; j < i; j++ ) {
+            current = current.getNext();
+        }
+        return current;
+    }
 
     /**
      * @return
@@ -288,9 +297,8 @@ public class LinkedList<T extends LinkedListNode<T>>
         return true;
     }
 
-    public Iterator<T> iterator() {
-        this.iterator.reset( this );
-        return this.iterator;
+    public FastIterator iterator() {
+        return fastIterator();
     }
     
     public FastIterator fastIterator() {

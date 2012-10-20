@@ -30,14 +30,20 @@ import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BeliefSet;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EqualityKey;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.TruthMaintenanceSystem;
+import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -538,12 +544,22 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 true,
                                                                 rule1,
                                                                 (Activation) tuple1.getObject() );
-
+        assertEquals( EqualityKey.JUSTIFIED,
+                      ((InternalFactHandle)logicalHandle1).getEqualityKey().getStatus() );
+        
         // This assertion is stated and should override any previous justified
         // "equals" objects.
         String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
 
+        // The justified fact, should now be updated to a stated one
+        assertLength( 0,
+                      sink.getRetracted() );
+
+        assertLength( 1,
+                      sink.getUpdated() );        
+        
+        // Make sure the de-activation is unlinked and doesn't retract anything.
         node.retractLeftTuple( tuple1,
                                context1,
                                workingMemory );
@@ -551,24 +567,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertLength( 0,
                       sink.getRetracted() );
 
-        assertNotSame( logicalHandle2,
-                       logicalHandle1 );
+        assertLength( 1,
+                      sink.getUpdated() );        
+        
+        // The stated object should re-use the old handle
+        assertSame( logicalHandle2,
+                    logicalHandle1 );
+        
+        assertEquals( EqualityKey.STATED,
+                      ((InternalFactHandle)logicalHandle1).getEqualityKey().getStatus() ); 
 
-        // so while new STATED assertion is equal
-        assertEquals( workingMemory.getObject( logicalHandle1 ),
+        // Make sure it has the new object
+        assertEquals( logicalString2,
                       workingMemory.getObject( logicalHandle2 ) );
-
-        // they are not identity same
-        assertNotSame( workingMemory.getObject( logicalHandle1 ),
-                       workingMemory.getObject( logicalHandle2 ) );
-
-        // Test that a logical assertion cannot override a STATED assertion
-        node.assertLeftTuple( tuple1,
-                              context1,
-                              workingMemory );
-
-        logicalString2 = new String( "logical" );
-        logicalHandle2 = workingMemory.insert( logicalString2 );
+        
     }
 
     @Test
@@ -678,17 +690,21 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 rule2,
                                                                 (Activation) tuple2.getObject() );
 
+        assertSame( logicalHandle1, logicalHandle2 );
+        
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        
         // "logical" should only appear once
         assertEquals( 1,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
+                      getLogicalCount( tms ) );
 
-        // retract the logical object
-        workingMemory.retract( logicalHandle2 );
+        // retract the logical prime handle
+        workingMemory.retract( logicalHandle1 );
+;
 
-        // The logical object should never appear
+        // The logical object should now disappear appear
         assertEquals( 0,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
-
+                      getLogicalCount( tms ) );
     }
 
     @Test
@@ -808,13 +824,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         assertSame( logicalHandle1, logicalHandle2 );
 
-        TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         
         // "logical" should only appear once
         assertEquals( 1,
-                      tms.getJustifiedMap().size() );
+                      getLogicalCount( tms ) );
         
-        BeliefSet bs =  ( BeliefSet ) tms.getJustifiedMap().get( logicalHandle2.getId() );       
+        BeliefSet bs =  ( BeliefSet ) logicalHandle2.getEqualityKey().getBeliefSet();       
         assertEquals( "value1", ((LogicalDependency) ((LinkedListEntry)bs.getFirst()).getObject()).getValue() );
         assertEquals( "value2", ((LogicalDependency) ((LinkedListEntry)bs.getFirst().getNext()).getObject()).getValue() );
 
@@ -831,7 +847,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // check "logical" is still in the system
         assertEquals( 1,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
+                      getLogicalCount( ( tms ) ) );
 
         // now remove that final justification
         node.retractLeftTuple( tuple1,
@@ -846,7 +862,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // "logical" fact should no longer be in the system
         assertEquals( 0,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
+                      getLogicalCount( tms ) );
     }
 
     /**
@@ -1051,17 +1067,31 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         cheese.setType( "cheddar" );
         cheese.setPrice( 20 );
-
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        
         assertEquals( 1,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
+                      getLogicalCount( tms ) );
         assertEquals( 1,
-                      workingMemory.getTruthMaintenanceSystem().getAssertMap().size() );
+                      tms.getEqualityKeyMap().size() );
 
         workingMemory.retract( cheeseHandle );
 
         assertEquals( 0,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
+                      getLogicalCount( tms ) );
         assertEquals( 0,
-                      workingMemory.getTruthMaintenanceSystem().getAssertMap().size() );
+                      tms.getEqualityKeyMap().size() );
+    }
+    
+    public int getLogicalCount(TruthMaintenanceSystem tms) {
+        ObjectHashMap map = tms.getEqualityKeyMap();
+        final Iterator<ObjectEntry> it = map.iterator();
+        int i = 0;
+        for ( ObjectEntry entry =  it.next(); entry != null; entry = it.next() ) {
+            EqualityKey key = (EqualityKey) entry.getKey();
+            if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                i++;
+            }
+        }
+        return i;
     }
 }

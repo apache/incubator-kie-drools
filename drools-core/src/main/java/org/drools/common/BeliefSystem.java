@@ -29,14 +29,17 @@ public interface BeliefSystem {
                        BeliefSet beliefSet,
                        PropagationContext context);
     
-    public BeliefSet newBeliefSet();
+    public BeliefSet newBeliefSet(InternalFactHandle fh);
     
     public LogicalDependency newLogicalDependency(final Activation activation,
-                                                  final InternalFactHandle handle,
+                                                  final BeliefSet beliefSet,
+                                                  final Object object, 
                                                   final Object value);
 
     public void read(LogicalDependency node,
                      BeliefSet beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf);
+    
+    public TruthMaintenanceSystem getTruthMaintenanceSystem();
 }

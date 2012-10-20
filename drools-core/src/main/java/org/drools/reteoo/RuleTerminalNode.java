@@ -26,6 +26,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
+import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.common.UpdateContext;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
@@ -542,9 +543,9 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                                                                       null,
                                                                                       null,
                                                                                       null );
-            workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                                 propagationContext,
-                                                                                 node.getRule() );
+            TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
+                                                                    propagationContext,
+                                                                    node.getRule() );
             leftTuple.unlinkFromLeftParent();
             leftTuple.unlinkFromRightParent();
         }

@@ -18,6 +18,7 @@ package org.drools;
 
 import org.drools.common.BeliefSystem;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.SimpleBeliefSystem;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.time.SessionClock;
@@ -30,9 +31,9 @@ import org.drools.time.impl.PseudoClockScheduler;
 public enum BeliefSystemType {
 
     SIMPLE("simple") {
-        public BeliefSystem createInstance(InternalWorkingMemory wm,
+        public BeliefSystem createInstance(NamedEntryPoint ep,
                                            TruthMaintenanceSystem tms) {
-            return new SimpleBeliefSystem(wm, tms);
+            return new SimpleBeliefSystem(ep, tms);
         }
     },
 
@@ -41,13 +42,13 @@ public enum BeliefSystemType {
      * client application. It is usually used during simulations or tests
      */
     DEFEASIBLE("defeasible") {
-        public BeliefSystem createInstance(InternalWorkingMemory wm,
+        public BeliefSystem createInstance(NamedEntryPoint ep,
                                            TruthMaintenanceSystem tms) {
             return null;
         }
     };
 
-    public abstract BeliefSystem createInstance(InternalWorkingMemory wm,
+    public abstract BeliefSystem createInstance(NamedEntryPoint ep,
                                                 TruthMaintenanceSystem tms);
     
     private String string;

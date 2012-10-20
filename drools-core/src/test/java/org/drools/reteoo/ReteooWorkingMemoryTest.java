@@ -41,6 +41,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
@@ -62,7 +63,7 @@ public class ReteooWorkingMemoryTest {
     @Test
     public void testBasicWorkingMemoryActions() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
-        final TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
+        final TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         final String string = "test";
         
         workingMemory.insert( string );
@@ -70,41 +71,41 @@ public class ReteooWorkingMemoryTest {
         FactHandle fd = workingMemory.insertLogical( string );
 
         assertEquals( 1,
-                      tms.getAssertMap().size() );
+                      tms.getEqualityKeyMap().size() );
         
         EqualityKey key = tms.get( string );
         assertSame( fd,
                     key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 1, key.size() );
 
         workingMemory.update( fd,
                                     string );
 
         assertEquals( 1,
-                      tms.getAssertMap().size() );
+                      tms.getEqualityKeyMap().size() );
         key = tms.get( string );
         assertSame( fd,
                     key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 1, key.size() );
 
         workingMemory.retract( fd );
 
         assertEquals( 0,
-                      tms.getAssertMap().size() );
+                      tms.getEqualityKeyMap().size() );
         key = tms.get( string );
         assertNull( key );
 
         fd = workingMemory.insert( string );
 
         assertEquals( 1,
-                      tms.getAssertMap().size() );
+                      tms.getEqualityKeyMap().size() );
 
         assertEquals( 1,
-                      tms.getAssertMap().size() );
+                      tms.getEqualityKeyMap().size() );
         key = tms.get( string );
         assertSame( fd,
                     key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );
+        assertEquals( 1, key.size() );
     }
 
     @Test
