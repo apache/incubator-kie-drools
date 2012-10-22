@@ -11,9 +11,21 @@
     <title>Drools Expert</title>
 
     <section>
-      <title>TODO</title>
+      <title>Null-safe dereferencing operator in Drools patterns</title>
 
-      <para>TODO</para>
+      <para>The !. operator allows to derefencing in a null-safe way. More in details the matching algorithm requires
+      the value to the left of the !. operator to be not null in order to give a positive result for pattern matching
+      itself. In other words the pattern:</para>
+
+      <programlisting>Person( $streetName : address!.street )</programlisting>
+
+      <para>will be internally translated in:</para>
+
+      <programlisting>Person( address != null, $streetName : address.street )</programlisting>
+
+      <para>More information about the rationals that drove the decisions related to this implementation are available <link
+              xlink:href="https://plus.google.com/u/0/b/101003552532172845268/101003552532172845268/posts/E5Q1geu8p6P">here</link>.
+      </para>
     </section>
   </section>
 
