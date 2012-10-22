@@ -18,9 +18,9 @@ package org.drools;
 
 import java.util.Properties;
 
-import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.util.ServiceRegistryImpl;
 
 /**
@@ -148,7 +148,18 @@ public class KnowledgeBaseFactory  {
         return getKnowledgeBaseFactoryService().newEnvironment();
     }
 
-    
+    public static KnowledgeBase getKnowledgeBase(String kBaseName) {
+        return getKnowledgeBaseFactoryService().getKnowledgeBase( kBaseName );
+    }
+
+    public static StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName) {
+        return getKnowledgeBaseFactoryService().getStatefulKnowlegeSession( kSessionName );
+    }
+
+    public static KBaseUnit getKBaseUnit(String kBaseName) {
+        return getKnowledgeBaseFactoryService().getKBaseUnit(kBaseName);
+    }
+
     public static synchronized void setKnowledgeBaseServiceFactory(KnowledgeBaseFactoryService serviceFactory) {
         KnowledgeBaseFactory.factoryService = serviceFactory;
     }
