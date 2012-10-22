@@ -44,10 +44,11 @@
         tasks that need to be performed by human actors</listitem>
         <listitem>Management console supporting process instance management, task 
         lists and task form management, and reporting</listitem>
+        <listitem>Task for builder to create, generate and/or edit task forms</listitem>
         <listitem>Optional process repository to deploy your process (and other 
         related knowledge)</listitem>
         <listitem>History logging (for querying / monitoring / analysis)</listitem>
-        <listitem>Integration with Seam, Spring, OSGi, etc.</listitem>
+        <listitem>Integration with Maven, Spring, OSGi, etc.</listitem>
       </itemizedlist>
     </para>
 
@@ -104,16 +105,18 @@
             <listitem>The Eclipse plugin is an extension to the Eclipse IDE, targeted towards developers,
             and allows you to create business processes using drag and drop, advanced debugging, etc.</listitem>
             <listitem>The web-based designer allows business users to manage business processes in
-            a web-based environment.</listitem>
+            a web-based environment.  A web-based form builder also allows you to create, generate or
+            edit forms related to those processes (to start the process or to complete one of the
+            user tasks).</listitem>
           </itemizedlist>
         </listitem>
         <listitem>The Guvnor repository is an optional component that can be used to store all your
         business processes.  It supports collaboration, versioning, etc.  There is integration
         with both the Eclipse plugin and web-based designer, supporting round-tripping between
         the different tools.</listitem>
-        <listitem>The jBPM console is a web-based console that allows business users to manage
-        their business processes (start new processes, inspect running instances), their task list
-        and see reports.</listitem>
+        <listitem>The web-based management console allows business users to manage
+        their runtime (manage business processes like start new processes, inspect running instances, etc.),
+        to manage their task list and to perform Business Activity Monitoring (BAM) and see reports.</listitem>
       </itemizedlist>
     </para>
     
@@ -216,6 +219,19 @@
 
     </section>
     
+    <section>
+      <title>Form Builder</title>
+      
+    <para>A web-based form builder allows you to create, generate and/or edit your form
+    (both for starting a process or completing a user task) using a WYSIWYG editor.  By
+    dragging and dropping various form elements into a panel and filling in the necessary
+    details, task forms can be created by non-technical experts.</para>
+    
+    </section>
+    
+    <section>
+      <title>Guvnor Repository</title>
+    
     <para>Optionally, you can use one or more knowledge repositories to store your business processes
     (and other related artefacts).  The web-based designer is integrated in the Guvnor repository,
     which is targeted towards business users and allows you to manage your processes separately 
@@ -234,11 +250,13 @@
         if a new process has been deployed.</listitem>
       </itemizedlist>
     </para>
+    
+    </section>
       
     <section>
-      <title>jBPM Console</title>
+      <title>Web-based Management Consoles</title>
     
-    <para>Business processes can be managed through a web console.  It is targeted towards
+    <para>Business processes can be managed through a web-based management console.  It is targeted towards
     business users and its main features are:
       <itemizedlist>
         <listitem>Process instance management: the ability to start new process instances,
@@ -247,7 +265,7 @@
         <listitem>Human task management: being able to get a list of all your current tasks
         (either assigned to you or that you might be able to claim), completing tasks on
         your task list (using customizable task forms), etc.</listitem>
-        <listitem>Reporting: get an overview of the state of your application and/or system
+        <listitem>Business Activity Monitorong (BAM) and Reporting: get an overview of the state of your application and/or system
         using dynamically generated (customizable) reports, that give you an overview of 
         your key performance indicators (KPIs).</listitem>
       </itemizedlist>
@@ -275,10 +293,11 @@
          <listitem>Installer: the installer helps you getting a running demo setup including
          most of the jBPM components and runs you through them using a simple example and some
          10-minute tutorials including screencasts</listitem>
+         <listitem>Quickstarts: some tutorials for common tasks you might want to try out
+         after successfully running the installer</listitem>
          <listitem>Core engine: the next 4 chapters describe the core engine: the process engine API,
          the process definition language (BPMN 2.0), persistence and transactions, and examples</listitem>
-         <listitem>Eclipse editor: the next 2 chapters describe the Eclipse plugin for developers,
-         both the old one and the new BPMN 2.0 tooling which is being developed</listitem>
+         <listitem>Eclipse editor: the next chapter describe the Eclipse plugin for developers</listitem>
          <listitem>Designer: describes the web-based designer that allows business users to
          edit business processes in a web-based context</listitem>
          <listitem>Console: the jBPM console can be used for managing process instances, human task
@@ -302,7 +321,7 @@
              advanced process constructs and integration with business rules and event
              processing</listitem>
              <listitem>Integration: how to integrate with other technologies like maven, OSGi, 
-             etc.</listitem>
+             Spring, etc.</listitem>
            </itemizedlist>
          </listitem>
        </itemizedlist>
