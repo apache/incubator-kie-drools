@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * KnowledgeBaseFactoryService is the interface implemented by KnowledgeBaseFactory.
@@ -126,4 +127,9 @@ public interface KnowledgeBaseFactoryService extends Service {
      */
     Environment newEnvironment();
 
+    KnowledgeBase getKnowledgeBase(String kBaseName);
+
+    StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName);
+
+    KBaseUnit getKBaseUnit(String kBaseName);
 }
