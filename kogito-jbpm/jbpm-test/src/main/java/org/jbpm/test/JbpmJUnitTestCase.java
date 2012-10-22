@@ -185,7 +185,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
             if (kbuilder.getErrors().size() > 0) {
                 boolean errors = false;
                 for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-                    testLogger.warn(error.toString());
+                    testLogger.error(error.toString());
                     errors = true;
                 }
                 assertFalse("Could not build knowldge base.", errors);
