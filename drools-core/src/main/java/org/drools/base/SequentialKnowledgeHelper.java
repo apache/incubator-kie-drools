@@ -208,15 +208,15 @@ public class SequentialKnowledgeHelper
     public void cancelRemainingPreviousLogicalDependencies() {
     }
 
-    public void insert(Object object) {
+    public FactHandle insert(Object object) {
         // TODO Auto-generated method stub
-        
+        return null;
     }
 
-    public void insert(Object object,
+    public FactHandle insert(Object object,
                        boolean dynamic) {
         // TODO Auto-generated method stub
-        
+        return null;
     }
 
     public void insertLogical(Object object) {
