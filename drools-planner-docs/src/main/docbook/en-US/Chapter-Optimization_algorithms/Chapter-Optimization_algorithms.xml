@@ -755,7 +755,7 @@
       <literal>forceUpdateBestSolution</literal>:</para>
 
       <programlisting language="xml">  &lt;customSolverPhase&gt;
-    &lt;customSolverPhaseCommandClass&gt;...MyUnitializer&lt;/customSolverPhaseCommandClass&gt;
+    &lt;customSolverPhaseCommandClass&gt;...MyUninitializer&lt;/customSolverPhaseCommandClass&gt;
     &lt;forceUpdateBestSolution&gt;true&lt;/forceUpdateBestSolution&gt;
   &lt;/customSolverPhase&gt;</programlisting>
     </important>

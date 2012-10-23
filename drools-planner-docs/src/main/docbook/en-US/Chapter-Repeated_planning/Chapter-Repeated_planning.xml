@@ -197,7 +197,7 @@ public class ShiftAssignment {
 
     <para>In essence, the <literal>Solver</literal> will stop, run the <literal>ProblemFactChange</literal> and restart.
     Each <literal>SolverPhase</literal> will run again. Each configured <literal>Termination</literal> (except
-    <literal>terminateEarly</literal>) will reset. This means the construciton heuristic will run again, but because
+    <literal>terminateEarly</literal>) will reset. This means the construction heuristic will run again, but because
     little or no planning variables will be uninitialized (unless you have a <link
     linkend="nullablePlanningVariable">nullable planning variable</link>), this won't take long.</para>
 

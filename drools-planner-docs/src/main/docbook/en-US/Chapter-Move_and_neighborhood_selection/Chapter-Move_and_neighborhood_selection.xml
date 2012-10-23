@@ -652,7 +652,7 @@
       row.</para>
 
       <para>Planner calls the <literal>doMove(ScoreDirector)</literal> method to do a move. The <literal>Move</literal>
-      implementation must notify the <literal>ScoreDirector</literal> of any changes it make to the planning entities's
+      implementation must notify the <literal>ScoreDirector</literal> of any changes it make to planning entity's
       variables:</para>
 
       <programlisting language="java">    public void doMove(ScoreDirector scoreDirector) {
