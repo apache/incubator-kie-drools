@@ -1,0 +1,16 @@
+package defaultPackge
+
+
+import org.jbpm.bpmn2.objects.Person;
+
+rule "Person rule" ruleflow-group "MyRuleFlow"
+no-loop
+    when
+        $p : Person()
+    then
+        modify ($p){
+            setName("john")
+        }
+        System.out.println("Hello " + $p.getName());
+
+end

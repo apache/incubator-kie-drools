@@ -9,8 +9,8 @@ public final class JBPMMessages {
       com.google.protobuf.ExtensionRegistry registry) {
     registry.add(org.jbpm.marshalling.impl.JBPMMessages.processInstance);
     registry.add(org.jbpm.marshalling.impl.JBPMMessages.workItem);
-    registry.add(org.jbpm.marshalling.impl.JBPMMessages.processTimer);
     registry.add(org.jbpm.marshalling.impl.JBPMMessages.timerId);
+    registry.add(org.jbpm.marshalling.impl.JBPMMessages.processTimer);
     registry.add(org.jbpm.marshalling.impl.JBPMMessages.procTimer);
   }
   public interface ProcessInstanceOrBuilder
@@ -245,12 +245,12 @@ public final class JBPMMessages {
       private int bitField0_;
       // optional string swimlane = 1;
       public static final int SWIMLANE_FIELD_NUMBER = 1;
-      private Object swimlane_;
+      private java.lang.Object swimlane_;
       public boolean hasSwimlane() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getSwimlane() {
-        Object ref = swimlane_;
+        java.lang.Object ref = swimlane_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -264,7 +264,7 @@ public final class JBPMMessages {
         }
       }
       private com.google.protobuf.ByteString getSwimlaneBytes() {
-        Object ref = swimlane_;
+        java.lang.Object ref = swimlane_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -277,12 +277,12 @@ public final class JBPMMessages {
       
       // optional string actor_id = 2;
       public static final int ACTOR_ID_FIELD_NUMBER = 2;
-      private Object actorId_;
+      private java.lang.Object actorId_;
       public boolean hasActorId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public String getActorId() {
-        Object ref = actorId_;
+        java.lang.Object ref = actorId_;
         if (ref instanceof String) {
           return (String) ref;
         } else {
@@ -296,7 +296,7 @@ public final class JBPMMessages {
         }
       }
       private com.google.protobuf.ByteString getActorIdBytes() {
-        Object ref = actorId_;
+        java.lang.Object ref = actorId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -351,8 +351,10 @@ public final class JBPMMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -588,12 +590,12 @@ public final class JBPMMessages {
         private int bitField0_;
         
         // optional string swimlane = 1;
-        private Object swimlane_ = "";
+        private java.lang.Object swimlane_ = "";
         public boolean hasSwimlane() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         public String getSwimlane() {
-          Object ref = swimlane_;
+          java.lang.Object ref = swimlane_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             swimlane_ = s;
@@ -624,12 +626,12 @@ public final class JBPMMessages {
         }
         
         // optional string actor_id = 2;
-        private Object actorId_ = "";
+        private java.lang.Object actorId_ = "";
         public boolean hasActorId() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         public String getActorId() {
-          Object ref = actorId_;
+          java.lang.Object ref = actorId_;
           if (!(ref instanceof String)) {
             String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
             actorId_ = s;
@@ -800,8 +802,10 @@ public final class JBPMMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -1297,8 +1301,10 @@ public final class JBPMMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -1687,6 +1693,16 @@ public final class JBPMMessages {
         java.util.List<java.lang.Long> getTimerInstanceIdList();
         int getTimerInstanceIdCount();
         long getTimerInstanceId(int index);
+        
+        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> 
+            getMapEntryList();
+        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry getMapEntry(int index);
+        int getMapEntryCount();
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+            getMapEntryOrBuilderList();
+        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder getMapEntryOrBuilder(
+            int index);
       }
       public static final class RuleSetNode extends
           com.google.protobuf.GeneratedMessage
@@ -1716,6 +1732,475 @@ public final class JBPMMessages {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable;
         }
         
+        public interface TextMapEntryOrBuilder
+            extends com.google.protobuf.MessageOrBuilder {
+          
+          // optional string name = 1;
+          boolean hasName();
+          String getName();
+          
+          // optional string value = 2;
+          boolean hasValue();
+          String getValue();
+        }
+        public static final class TextMapEntry extends
+            com.google.protobuf.GeneratedMessage
+            implements TextMapEntryOrBuilder {
+          // Use TextMapEntry.newBuilder() to construct.
+          private TextMapEntry(Builder builder) {
+            super(builder);
+          }
+          private TextMapEntry(boolean noInit) {}
+          
+          private static final TextMapEntry defaultInstance;
+          public static TextMapEntry getDefaultInstance() {
+            return defaultInstance;
+          }
+          
+          public TextMapEntry getDefaultInstanceForType() {
+            return defaultInstance;
+          }
+          
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor;
+          }
+          
+          protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable;
+          }
+          
+          private int bitField0_;
+          // optional string name = 1;
+          public static final int NAME_FIELD_NUMBER = 1;
+          private java.lang.Object name_;
+          public boolean hasName() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+          public String getName() {
+            java.lang.Object ref = name_;
+            if (ref instanceof String) {
+              return (String) ref;
+            } else {
+              com.google.protobuf.ByteString bs = 
+                  (com.google.protobuf.ByteString) ref;
+              String s = bs.toStringUtf8();
+              if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+                name_ = s;
+              }
+              return s;
+            }
+          }
+          private com.google.protobuf.ByteString getNameBytes() {
+            java.lang.Object ref = name_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+              name_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          
+          // optional string value = 2;
+          public static final int VALUE_FIELD_NUMBER = 2;
+          private java.lang.Object value_;
+          public boolean hasValue() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+          }
+          public String getValue() {
+            java.lang.Object ref = value_;
+            if (ref instanceof String) {
+              return (String) ref;
+            } else {
+              com.google.protobuf.ByteString bs = 
+                  (com.google.protobuf.ByteString) ref;
+              String s = bs.toStringUtf8();
+              if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+                value_ = s;
+              }
+              return s;
+            }
+          }
+          private com.google.protobuf.ByteString getValueBytes() {
+            java.lang.Object ref = value_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+              value_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          
+          private void initFields() {
+            name_ = "";
+            value_ = "";
+          }
+          private byte memoizedIsInitialized = -1;
+          public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized != -1) return isInitialized == 1;
+            
+            memoizedIsInitialized = 1;
+            return true;
+          }
+          
+          public void writeTo(com.google.protobuf.CodedOutputStream output)
+                              throws java.io.IOException {
+            getSerializedSize();
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+              output.writeBytes(1, getNameBytes());
+            }
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+              output.writeBytes(2, getValueBytes());
+            }
+            getUnknownFields().writeTo(output);
+          }
+          
+          private int memoizedSerializedSize = -1;
+          public int getSerializedSize() {
+            int size = memoizedSerializedSize;
+            if (size != -1) return size;
+          
+            size = 0;
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeBytesSize(1, getNameBytes());
+            }
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeBytesSize(2, getValueBytes());
+            }
+            size += getUnknownFields().getSerializedSize();
+            memoizedSerializedSize = size;
+            return size;
+          }
+          
+          private static final long serialVersionUID = 0L;
+          @java.lang.Override
+          protected java.lang.Object writeReplace()
+              throws java.io.ObjectStreamException {
+            return super.writeReplace();
+          }
+          
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(
+              com.google.protobuf.ByteString data)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return newBuilder().mergeFrom(data).buildParsed();
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(
+              com.google.protobuf.ByteString data,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return newBuilder().mergeFrom(data, extensionRegistry)
+                     .buildParsed();
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(byte[] data)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return newBuilder().mergeFrom(data).buildParsed();
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(
+              byte[] data,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return newBuilder().mergeFrom(data, extensionRegistry)
+                     .buildParsed();
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(java.io.InputStream input)
+              throws java.io.IOException {
+            return newBuilder().mergeFrom(input).buildParsed();
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(
+              java.io.InputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            return newBuilder().mergeFrom(input, extensionRegistry)
+                     .buildParsed();
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseDelimitedFrom(java.io.InputStream input)
+              throws java.io.IOException {
+            Builder builder = newBuilder();
+            if (builder.mergeDelimitedFrom(input)) {
+              return builder.buildParsed();
+            } else {
+              return null;
+            }
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseDelimitedFrom(
+              java.io.InputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            Builder builder = newBuilder();
+            if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+              return builder.buildParsed();
+            } else {
+              return null;
+            }
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(
+              com.google.protobuf.CodedInputStream input)
+              throws java.io.IOException {
+            return newBuilder().mergeFrom(input).buildParsed();
+          }
+          public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry parseFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            return newBuilder().mergeFrom(input, extensionRegistry)
+                     .buildParsed();
+          }
+          
+          public static Builder newBuilder() { return Builder.create(); }
+          public Builder newBuilderForType() { return newBuilder(); }
+          public static Builder newBuilder(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry prototype) {
+            return newBuilder().mergeFrom(prototype);
+          }
+          public Builder toBuilder() { return newBuilder(this); }
+          
+          @java.lang.Override
+          protected Builder newBuilderForType(
+              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            Builder builder = new Builder(parent);
+            return builder;
+          }
+          public static final class Builder extends
+              com.google.protobuf.GeneratedMessage.Builder<Builder>
+             implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor
+                getDescriptor() {
+              return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor;
+            }
+            
+            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+                internalGetFieldAccessorTable() {
+              return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable;
+            }
+            
+            // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.newBuilder()
+            private Builder() {
+              maybeForceBuilderInitialization();
+            }
+            
+            private Builder(BuilderParent parent) {
+              super(parent);
+              maybeForceBuilderInitialization();
+            }
+            private void maybeForceBuilderInitialization() {
+              if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+              }
+            }
+            private static Builder create() {
+              return new Builder();
+            }
+            
+            public Builder clear() {
+              super.clear();
+              name_ = "";
+              bitField0_ = (bitField0_ & ~0x00000001);
+              value_ = "";
+              bitField0_ = (bitField0_ & ~0x00000002);
+              return this;
+            }
+            
+            public Builder clone() {
+              return create().mergeFrom(buildPartial());
+            }
+            
+            public com.google.protobuf.Descriptors.Descriptor
+                getDescriptorForType() {
+              return org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDescriptor();
+            }
+            
+            public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry getDefaultInstanceForType() {
+              return org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance();
+            }
+            
+            public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry build() {
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry result = buildPartial();
+              if (!result.isInitialized()) {
+                throw newUninitializedMessageException(result);
+              }
+              return result;
+            }
+            
+            private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry buildParsed()
+                throws com.google.protobuf.InvalidProtocolBufferException {
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry result = buildPartial();
+              if (!result.isInitialized()) {
+                throw newUninitializedMessageException(
+                  result).asInvalidProtocolBufferException();
+              }
+              return result;
+            }
+            
+            public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry buildPartial() {
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry result = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry(this);
+              int from_bitField0_ = bitField0_;
+              int to_bitField0_ = 0;
+              if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+                to_bitField0_ |= 0x00000001;
+              }
+              result.name_ = name_;
+              if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+                to_bitField0_ |= 0x00000002;
+              }
+              result.value_ = value_;
+              result.bitField0_ = to_bitField0_;
+              onBuilt();
+              return result;
+            }
+            
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+              if (other instanceof org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry) {
+                return mergeFrom((org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry)other);
+              } else {
+                super.mergeFrom(other);
+                return this;
+              }
+            }
+            
+            public Builder mergeFrom(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry other) {
+              if (other == org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance()) return this;
+              if (other.hasName()) {
+                setName(other.getName());
+              }
+              if (other.hasValue()) {
+                setValue(other.getValue());
+              }
+              this.mergeUnknownFields(other.getUnknownFields());
+              return this;
+            }
+            
+            public final boolean isInitialized() {
+              return true;
+            }
+            
+            public Builder mergeFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+              com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+                com.google.protobuf.UnknownFieldSet.newBuilder(
+                  this.getUnknownFields());
+              while (true) {
+                int tag = input.readTag();
+                switch (tag) {
+                  case 0:
+                    this.setUnknownFields(unknownFields.build());
+                    onChanged();
+                    return this;
+                  default: {
+                    if (!parseUnknownField(input, unknownFields,
+                                           extensionRegistry, tag)) {
+                      this.setUnknownFields(unknownFields.build());
+                      onChanged();
+                      return this;
+                    }
+                    break;
+                  }
+                  case 10: {
+                    bitField0_ |= 0x00000001;
+                    name_ = input.readBytes();
+                    break;
+                  }
+                  case 18: {
+                    bitField0_ |= 0x00000002;
+                    value_ = input.readBytes();
+                    break;
+                  }
+                }
+              }
+            }
+            
+            private int bitField0_;
+            
+            // optional string name = 1;
+            private java.lang.Object name_ = "";
+            public boolean hasName() {
+              return ((bitField0_ & 0x00000001) == 0x00000001);
+            }
+            public String getName() {
+              java.lang.Object ref = name_;
+              if (!(ref instanceof String)) {
+                String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+                name_ = s;
+                return s;
+              } else {
+                return (String) ref;
+              }
+            }
+            public Builder setName(String value) {
+              if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+              name_ = value;
+              onChanged();
+              return this;
+            }
+            public Builder clearName() {
+              bitField0_ = (bitField0_ & ~0x00000001);
+              name_ = getDefaultInstance().getName();
+              onChanged();
+              return this;
+            }
+            void setName(com.google.protobuf.ByteString value) {
+              bitField0_ |= 0x00000001;
+              name_ = value;
+              onChanged();
+            }
+            
+            // optional string value = 2;
+            private java.lang.Object value_ = "";
+            public boolean hasValue() {
+              return ((bitField0_ & 0x00000002) == 0x00000002);
+            }
+            public String getValue() {
+              java.lang.Object ref = value_;
+              if (!(ref instanceof String)) {
+                String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+                value_ = s;
+                return s;
+              } else {
+                return (String) ref;
+              }
+            }
+            public Builder setValue(String value) {
+              if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+              value_ = value;
+              onChanged();
+              return this;
+            }
+            public Builder clearValue() {
+              bitField0_ = (bitField0_ & ~0x00000002);
+              value_ = getDefaultInstance().getValue();
+              onChanged();
+              return this;
+            }
+            void setValue(com.google.protobuf.ByteString value) {
+              bitField0_ |= 0x00000002;
+              value_ = value;
+              onChanged();
+            }
+            
+            // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry)
+          }
+          
+          static {
+            defaultInstance = new TextMapEntry(true);
+            defaultInstance.initFields();
+          }
+          
+          // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry)
+        }
+        
         // repeated int64 timer_instance_id = 1;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
         private java.util.List<java.lang.Long> timerInstanceId_;
@@ -1730,8 +2215,30 @@ public final class JBPMMessages {
           return timerInstanceId_.get(index);
         }
         
+        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;
+        public static final int MAPENTRY_FIELD_NUMBER = 2;
+        private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> mapEntry_;
+        public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> getMapEntryList() {
+          return mapEntry_;
+        }
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+            getMapEntryOrBuilderList() {
+          return mapEntry_;
+        }
+        public int getMapEntryCount() {
+          return mapEntry_.size();
+        }
+        public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry getMapEntry(int index) {
+          return mapEntry_.get(index);
+        }
+        public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder getMapEntryOrBuilder(
+            int index) {
+          return mapEntry_.get(index);
+        }
+        
         private void initFields() {
           timerInstanceId_ = java.util.Collections.emptyList();;
+          mapEntry_ = java.util.Collections.emptyList();
         }
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
@@ -1747,6 +2254,9 @@ public final class JBPMMessages {
           getSerializedSize();
           for (int i = 0; i < timerInstanceId_.size(); i++) {
             output.writeInt64(1, timerInstanceId_.get(i));
+          }
+          for (int i = 0; i < mapEntry_.size(); i++) {
+            output.writeMessage(2, mapEntry_.get(i));
           }
           getUnknownFields().writeTo(output);
         }
@@ -1766,13 +2276,19 @@ public final class JBPMMessages {
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
           }
+          for (int i = 0; i < mapEntry_.size(); i++) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(2, mapEntry_.get(i));
+          }
           size += getUnknownFields().getSerializedSize();
           memoizedSerializedSize = size;
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -1880,6 +2396,7 @@ public final class JBPMMessages {
           }
           private void maybeForceBuilderInitialization() {
             if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+              getMapEntryFieldBuilder();
             }
           }
           private static Builder create() {
@@ -1890,6 +2407,12 @@ public final class JBPMMessages {
             super.clear();
             timerInstanceId_ = java.util.Collections.emptyList();;
             bitField0_ = (bitField0_ & ~0x00000001);
+            if (mapEntryBuilder_ == null) {
+              mapEntry_ = java.util.Collections.emptyList();
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              mapEntryBuilder_.clear();
+            }
             return this;
           }
           
@@ -1932,6 +2455,15 @@ public final class JBPMMessages {
               bitField0_ = (bitField0_ & ~0x00000001);
             }
             result.timerInstanceId_ = timerInstanceId_;
+            if (mapEntryBuilder_ == null) {
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                mapEntry_ = java.util.Collections.unmodifiableList(mapEntry_);
+                bitField0_ = (bitField0_ & ~0x00000002);
+              }
+              result.mapEntry_ = mapEntry_;
+            } else {
+              result.mapEntry_ = mapEntryBuilder_.build();
+            }
             onBuilt();
             return result;
           }
@@ -1956,6 +2488,32 @@ public final class JBPMMessages {
                 timerInstanceId_.addAll(other.timerInstanceId_);
               }
               onChanged();
+            }
+            if (mapEntryBuilder_ == null) {
+              if (!other.mapEntry_.isEmpty()) {
+                if (mapEntry_.isEmpty()) {
+                  mapEntry_ = other.mapEntry_;
+                  bitField0_ = (bitField0_ & ~0x00000002);
+                } else {
+                  ensureMapEntryIsMutable();
+                  mapEntry_.addAll(other.mapEntry_);
+                }
+                onChanged();
+              }
+            } else {
+              if (!other.mapEntry_.isEmpty()) {
+                if (mapEntryBuilder_.isEmpty()) {
+                  mapEntryBuilder_.dispose();
+                  mapEntryBuilder_ = null;
+                  mapEntry_ = other.mapEntry_;
+                  bitField0_ = (bitField0_ & ~0x00000002);
+                  mapEntryBuilder_ = 
+                    com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                       getMapEntryFieldBuilder() : null;
+                } else {
+                  mapEntryBuilder_.addAllMessages(other.mapEntry_);
+                }
+              }
             }
             this.mergeUnknownFields(other.getUnknownFields());
             return this;
@@ -2000,6 +2558,12 @@ public final class JBPMMessages {
                     addTimerInstanceId(input.readInt64());
                   }
                   input.popLimit(limit);
+                  break;
+                }
+                case 18: {
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder subBuilder = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.newBuilder();
+                  input.readMessage(subBuilder, extensionRegistry);
+                  addMapEntry(subBuilder.buildPartial());
                   break;
                 }
               }
@@ -2051,6 +2615,192 @@ public final class JBPMMessages {
             bitField0_ = (bitField0_ & ~0x00000001);
             onChanged();
             return this;
+          }
+          
+          // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;
+          private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> mapEntry_ =
+            java.util.Collections.emptyList();
+          private void ensureMapEntryIsMutable() {
+            if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+              mapEntry_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry>(mapEntry_);
+              bitField0_ |= 0x00000002;
+             }
+          }
+          
+          private com.google.protobuf.RepeatedFieldBuilder<
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> mapEntryBuilder_;
+          
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> getMapEntryList() {
+            if (mapEntryBuilder_ == null) {
+              return java.util.Collections.unmodifiableList(mapEntry_);
+            } else {
+              return mapEntryBuilder_.getMessageList();
+            }
+          }
+          public int getMapEntryCount() {
+            if (mapEntryBuilder_ == null) {
+              return mapEntry_.size();
+            } else {
+              return mapEntryBuilder_.getCount();
+            }
+          }
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry getMapEntry(int index) {
+            if (mapEntryBuilder_ == null) {
+              return mapEntry_.get(index);
+            } else {
+              return mapEntryBuilder_.getMessage(index);
+            }
+          }
+          public Builder setMapEntry(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry value) {
+            if (mapEntryBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureMapEntryIsMutable();
+              mapEntry_.set(index, value);
+              onChanged();
+            } else {
+              mapEntryBuilder_.setMessage(index, value);
+            }
+            return this;
+          }
+          public Builder setMapEntry(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder builderForValue) {
+            if (mapEntryBuilder_ == null) {
+              ensureMapEntryIsMutable();
+              mapEntry_.set(index, builderForValue.build());
+              onChanged();
+            } else {
+              mapEntryBuilder_.setMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          public Builder addMapEntry(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry value) {
+            if (mapEntryBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureMapEntryIsMutable();
+              mapEntry_.add(value);
+              onChanged();
+            } else {
+              mapEntryBuilder_.addMessage(value);
+            }
+            return this;
+          }
+          public Builder addMapEntry(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry value) {
+            if (mapEntryBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureMapEntryIsMutable();
+              mapEntry_.add(index, value);
+              onChanged();
+            } else {
+              mapEntryBuilder_.addMessage(index, value);
+            }
+            return this;
+          }
+          public Builder addMapEntry(
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder builderForValue) {
+            if (mapEntryBuilder_ == null) {
+              ensureMapEntryIsMutable();
+              mapEntry_.add(builderForValue.build());
+              onChanged();
+            } else {
+              mapEntryBuilder_.addMessage(builderForValue.build());
+            }
+            return this;
+          }
+          public Builder addMapEntry(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder builderForValue) {
+            if (mapEntryBuilder_ == null) {
+              ensureMapEntryIsMutable();
+              mapEntry_.add(index, builderForValue.build());
+              onChanged();
+            } else {
+              mapEntryBuilder_.addMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          public Builder addAllMapEntry(
+              java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> values) {
+            if (mapEntryBuilder_ == null) {
+              ensureMapEntryIsMutable();
+              super.addAll(values, mapEntry_);
+              onChanged();
+            } else {
+              mapEntryBuilder_.addAllMessages(values);
+            }
+            return this;
+          }
+          public Builder clearMapEntry() {
+            if (mapEntryBuilder_ == null) {
+              mapEntry_ = java.util.Collections.emptyList();
+              bitField0_ = (bitField0_ & ~0x00000002);
+              onChanged();
+            } else {
+              mapEntryBuilder_.clear();
+            }
+            return this;
+          }
+          public Builder removeMapEntry(int index) {
+            if (mapEntryBuilder_ == null) {
+              ensureMapEntryIsMutable();
+              mapEntry_.remove(index);
+              onChanged();
+            } else {
+              mapEntryBuilder_.remove(index);
+            }
+            return this;
+          }
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder getMapEntryBuilder(
+              int index) {
+            return getMapEntryFieldBuilder().getBuilder(index);
+          }
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder getMapEntryOrBuilder(
+              int index) {
+            if (mapEntryBuilder_ == null) {
+              return mapEntry_.get(index);  } else {
+              return mapEntryBuilder_.getMessageOrBuilder(index);
+            }
+          }
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+               getMapEntryOrBuilderList() {
+            if (mapEntryBuilder_ != null) {
+              return mapEntryBuilder_.getMessageOrBuilderList();
+            } else {
+              return java.util.Collections.unmodifiableList(mapEntry_);
+            }
+          }
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder addMapEntryBuilder() {
+            return getMapEntryFieldBuilder().addBuilder(
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance());
+          }
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder addMapEntryBuilder(
+              int index) {
+            return getMapEntryFieldBuilder().addBuilder(
+                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance());
+          }
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder> 
+               getMapEntryBuilderList() {
+            return getMapEntryFieldBuilder().getBuilderList();
+          }
+          private com.google.protobuf.RepeatedFieldBuilder<
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+              getMapEntryFieldBuilder() {
+            if (mapEntryBuilder_ == null) {
+              mapEntryBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder>(
+                      mapEntry_,
+                      ((bitField0_ & 0x00000002) == 0x00000002),
+                      getParentForChildren(),
+                      isClean());
+              mapEntry_ = null;
+            }
+            return mapEntryBuilder_;
           }
           
           // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode)
@@ -2178,8 +2928,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -2622,8 +3374,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -3066,8 +3820,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -3487,8 +4243,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -3839,8 +4597,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -4136,8 +4896,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -4535,8 +5297,10 @@ public final class JBPMMessages {
             return size;
           }
           
+          private static final long serialVersionUID = 0L;
           @java.lang.Override
-          protected Object writeReplace() throws java.io.ObjectStreamException {
+          protected java.lang.Object writeReplace()
+              throws java.io.ObjectStreamException {
             return super.writeReplace();
           }
           
@@ -4881,8 +5645,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -5423,8 +6189,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -5924,8 +6692,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -7017,8 +7787,10 @@ public final class JBPMMessages {
           return size;
         }
         
+        private static final long serialVersionUID = 0L;
         @java.lang.Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
           return super.writeReplace();
         }
         
@@ -7746,8 +8518,10 @@ public final class JBPMMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -9299,12 +10073,12 @@ public final class JBPMMessages {
     private int bitField0_;
     // optional string process_type = 1;
     public static final int PROCESS_TYPE_FIELD_NUMBER = 1;
-    private Object processType_;
+    private java.lang.Object processType_;
     public boolean hasProcessType() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     public String getProcessType() {
-      Object ref = processType_;
+      java.lang.Object ref = processType_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -9318,7 +10092,7 @@ public final class JBPMMessages {
       }
     }
     private com.google.protobuf.ByteString getProcessTypeBytes() {
-      Object ref = processType_;
+      java.lang.Object ref = processType_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -9341,12 +10115,12 @@ public final class JBPMMessages {
     
     // optional string process_id = 3;
     public static final int PROCESS_ID_FIELD_NUMBER = 3;
-    private Object processId_;
+    private java.lang.Object processId_;
     public boolean hasProcessId() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     public String getProcessId() {
-      Object ref = processId_;
+      java.lang.Object ref = processId_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -9360,7 +10134,7 @@ public final class JBPMMessages {
       }
     }
     private com.google.protobuf.ByteString getProcessIdBytes() {
-      Object ref = processId_;
+      java.lang.Object ref = processId_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -9575,8 +10349,10 @@ public final class JBPMMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -10046,12 +10822,12 @@ public final class JBPMMessages {
       private int bitField0_;
       
       // optional string process_type = 1;
-      private Object processType_ = "";
+      private java.lang.Object processType_ = "";
       public boolean hasProcessType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getProcessType() {
-        Object ref = processType_;
+        java.lang.Object ref = processType_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           processType_ = s;
@@ -10103,12 +10879,12 @@ public final class JBPMMessages {
       }
       
       // optional string process_id = 3;
-      private Object processId_ = "";
+      private java.lang.Object processId_ = "";
       public boolean hasProcessId() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public String getProcessId() {
-        Object ref = processId_;
+        java.lang.Object ref = processId_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           processId_ = s;
@@ -10981,12 +11757,12 @@ public final class JBPMMessages {
     private int bitField0_;
     // optional string name = 1;
     public static final int NAME_FIELD_NUMBER = 1;
-    private Object name_;
+    private java.lang.Object name_;
     public boolean hasName() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     public String getName() {
-      Object ref = name_;
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -11000,7 +11776,7 @@ public final class JBPMMessages {
       }
     }
     private com.google.protobuf.ByteString getNameBytes() {
-      Object ref = name_;
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -11083,8 +11859,10 @@ public final class JBPMMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -11334,12 +12112,12 @@ public final class JBPMMessages {
       private int bitField0_;
       
       // optional string name = 1;
-      private Object name_ = "";
+      private java.lang.Object name_ = "";
       public boolean hasName() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getName() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           name_ = s;
@@ -11505,12 +12283,12 @@ public final class JBPMMessages {
     
     // optional string name = 3;
     public static final int NAME_FIELD_NUMBER = 3;
-    private Object name_;
+    private java.lang.Object name_;
     public boolean hasName() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     public String getName() {
-      Object ref = name_;
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -11524,7 +12302,7 @@ public final class JBPMMessages {
       }
     }
     private com.google.protobuf.ByteString getNameBytes() {
-      Object ref = name_;
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
@@ -11634,8 +12412,10 @@ public final class JBPMMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -11989,12 +12769,12 @@ public final class JBPMMessages {
       }
       
       // optional string name = 3;
-      private Object name_ = "";
+      private java.lang.Object name_ = "";
       public boolean hasName() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public String getName() {
-        Object ref = name_;
+        java.lang.Object ref = name_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
           name_ = s;
@@ -12497,8 +13277,10 @@ public final class JBPMMessages {
         return size;
       }
       
+      private static final long serialVersionUID = 0L;
       @java.lang.Override
-      protected Object writeReplace() throws java.io.ObjectStreamException {
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
       
@@ -13032,8 +13814,10 @@ public final class JBPMMessages {
       return size;
     }
     
+    private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected Object writeReplace() throws java.io.ObjectStreamException {
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
     
@@ -13501,14 +14285,6 @@ public final class JBPMMessages {
           .newFileScopedGeneratedExtension(
         org.jbpm.marshalling.impl.JBPMMessages.WorkItem.class,
         org.jbpm.marshalling.impl.JBPMMessages.WorkItem.getDefaultInstance());
-  public static final int PROCESS_TIMER_FIELD_NUMBER = 12;
-  public static final
-    com.google.protobuf.GeneratedMessage.GeneratedExtension<
-      org.drools.marshalling.impl.ProtobufMessages.ProcessData,
-      java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer>> processTimer = com.google.protobuf.GeneratedMessage
-          .newFileScopedGeneratedExtension(
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class,
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.getDefaultInstance());
   public static final int TIMER_ID_FIELD_NUMBER = 13;
   public static final
     com.google.protobuf.GeneratedMessage.GeneratedExtension<
@@ -13517,6 +14293,14 @@ public final class JBPMMessages {
           .newFileScopedGeneratedExtension(
         java.lang.Long.class,
         null);
+  public static final int PROCESS_TIMER_FIELD_NUMBER = 12;
+  public static final
+    com.google.protobuf.GeneratedMessage.GeneratedExtension<
+      org.drools.marshalling.impl.ProtobufMessages.ProcessData,
+      java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer>> processTimer = com.google.protobuf.GeneratedMessage
+          .newFileScopedGeneratedExtension(
+        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class,
+        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.getDefaultInstance());
   public static final int PROC_TIMER_FIELD_NUMBER = 100;
   public static final
     com.google.protobuf.GeneratedMessage.GeneratedExtension<
@@ -13555,6 +14339,11 @@ public final class JBPMMessages {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor;
   private static
@@ -13641,7 +14430,7 @@ public final class JBPMMessages {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
       "o\022\024org.jbpm.marshalling\032+org/drools/mars" +
-      "halling/droolsmessages.proto\"\272\026\n\017Process" +
+      "halling/droolsmessages.proto\"\316\027\n\017Process" +
       "Instance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002id\030\002 \001" +
       "(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\022\035\n" +
       "\025node_instance_counter\030\005 \001(\003\022W\n\020swimlane" +
@@ -13658,7 +14447,7 @@ public final class JBPMMessages {
       "\007content\030\004 \001(\01329.org.jbpm.marshalling.Pr" +
       "ocessInstance.NodeInstanceContent\0328\n\026Exc" +
       "lusiveGroupInstance\022\036\n\026group_node_instan" +
-      "ce_id\030\001 \003(\003\032\251\017\n\023NodeInstanceContent\022D\n\004t",
+      "ce_id\030\001 \003(\003\032\275\020\n\023NodeInstanceContent\022D\n\004t",
       "ype\030\001 \001(\01626.org.jbpm.marshalling.Process" +
       "Instance.NodeInstanceType\022W\n\010rule_set\030\002 " +
       "\001(\0132E.org.jbpm.marshalling.ProcessInstan" +
@@ -13685,59 +14474,63 @@ public final class JBPMMessages {
       "deInstanceContent.CompositeContextNode\022W" +
       "\n\010for_each\030\014 \001(\0132E.org.jbpm.marshalling." +
       "ProcessInstance.NodeInstanceContent.ForE" +
-      "achNode\032(\n\013RuleSetNode\022\031\n\021timer_instance" +
-      "_id\030\001 \003(\003\032@\n\rHumanTaskNode\022\024\n\014work_item_" +
-      "id\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032?\n\014W" +
-      "orkItemNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021tim",
-      "er_instance_id\030\002 \003(\003\032H\n\016SubProcessNode\022\033" +
-      "\n\023process_instance_id\030\001 \001(\003\022\031\n\021timer_ins" +
-      "tance_id\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021timer" +
-      "_instance_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimer" +
-      "Node\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007t" +
-      "rigger\030\001 \003(\0132N.org.jbpm.marshalling.Proc" +
-      "essInstance.NodeInstanceContent.JoinNode" +
-      ".JoinTrigger\032/\n\013JoinTrigger\022\017\n\007node_id\030\001" +
-      " \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021ti" +
-      "mer_instance_id\030\001 \003(\003\032\205\002\n\024CompositeConte",
-      "xtNode\022\031\n\021timer_instance_id\030\002 \003(\003\0220\n\010var" +
-      "iable\030\003 \003(\0132\036.org.jbpm.marshalling.Varia" +
-      "ble\022I\n\rnode_instance\030\004 \003(\01322.org.jbpm.ma" +
-      "rshalling.ProcessInstance.NodeInstance\022U" +
-      "\n\017exclusive_group\030\005 \003(\0132<.org.jbpm.marsh" +
-      "alling.ProcessInstance.ExclusiveGroupIns" +
-      "tance\032X\n\013ForEachNode\022I\n\rnode_instance\030\001 " +
-      "\003(\01322.org.jbpm.marshalling.ProcessInstan" +
-      "ce.NodeInstance\"\367\001\n\020NodeInstanceType\022\021\n\r" +
-      "RULE_SET_NODE\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016",
-      "WORK_ITEM_NODE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n" +
-      "\016MILESTONE_NODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIM" +
-      "ER_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010" +
-      "\022\032\n\026COMPOSITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH" +
-      "_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\"?\n\010Variable\022\014\n" +
-      "\004name\030\001 \001(\t\022\026\n\016strategy_index\030\002 \001(\005\022\r\n\005v" +
-      "alue\030\003 \001(\014\"\203\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024p" +
-      "rocess_instances_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022" +
-      "\r\n\005state\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036.org.j" +
-      "bpm.marshalling.Variable\"\235\002\n\014ProcessTime",
-      "r\022?\n\005timer\030\001 \001(\01320.org.jbpm.marshalling." +
-      "ProcessTimer.TimerInstance\0220\n\007trigger\030\002 " +
-      "\001(\0132\037.org.drools.marshalling.Trigger\032\231\001\n" +
-      "\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002" +
-      " \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023p" +
-      "rocess_instance_id\030\005 \001(\003\022\026\n\016activated_ti" +
-      "me\030\006 \001(\003\022\026\n\016last_triggered\030\007 \001(\003:d\n\020proc" +
-      "ess_instance\022#.org.drools.marshalling.Pr" +
-      "ocessData\030\n \003(\0132%.org.jbpm.marshalling.P" +
-      "rocessInstance:V\n\twork_item\022#.org.drools",
-      ".marshalling.ProcessData\030\013 \003(\0132\036.org.jbp" +
-      "m.marshalling.WorkItem:^\n\rprocess_timer\022" +
-      "#.org.drools.marshalling.ProcessData\030\014 \003" +
-      "(\0132\".org.jbpm.marshalling.ProcessTimer:5" +
-      "\n\010timer_id\022#.org.drools.marshalling.Proc" +
-      "essData\030\r \001(\003:\\\n\nproc_timer\022$.org.drools" +
-      ".marshalling.Timers.Timer\030d \001(\0132\".org.jb" +
-      "pm.marshalling.ProcessTimerB)\n\031org.jbpm." +
-      "marshalling.implB\014JBPMMessages"
+      "achNode\032\273\001\n\013RuleSetNode\022\031\n\021timer_instanc" +
+      "e_id\030\001 \003(\003\022d\n\010mapEntry\030\002 \003(\0132R.org.jbpm." +
+      "marshalling.ProcessInstance.NodeInstance" +
+      "Content.RuleSetNode.TextMapEntry\032+\n\014Text",
+      "MapEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032@\n" +
+      "\rHumanTaskNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021" +
+      "timer_instance_id\030\002 \003(\003\032?\n\014WorkItemNode\022" +
+      "\024\n\014work_item_id\030\001 \001(\003\022\031\n\021timer_instance_" +
+      "id\030\002 \003(\003\032H\n\016SubProcessNode\022\033\n\023process_in" +
+      "stance_id\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003" +
+      "(\003\032*\n\rMilestoneNode\022\031\n\021timer_instance_id" +
+      "\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimerNode\022\020\n\010time" +
+      "r_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007trigger\030\001 \003(\013" +
+      "2N.org.jbpm.marshalling.ProcessInstance.",
+      "NodeInstanceContent.JoinNode.JoinTrigger" +
+      "\032/\n\013JoinTrigger\022\017\n\007node_id\030\001 \001(\003\022\017\n\007coun" +
+      "ter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021timer_instance" +
+      "_id\030\001 \003(\003\032\205\002\n\024CompositeContextNode\022\031\n\021ti" +
+      "mer_instance_id\030\002 \003(\003\0220\n\010variable\030\003 \003(\0132" +
+      "\036.org.jbpm.marshalling.Variable\022I\n\rnode_" +
+      "instance\030\004 \003(\01322.org.jbpm.marshalling.Pr" +
+      "ocessInstance.NodeInstance\022U\n\017exclusive_" +
+      "group\030\005 \003(\0132<.org.jbpm.marshalling.Proce" +
+      "ssInstance.ExclusiveGroupInstance\032X\n\013For",
+      "EachNode\022I\n\rnode_instance\030\001 \003(\01322.org.jb" +
+      "pm.marshalling.ProcessInstance.NodeInsta" +
+      "nce\"\367\001\n\020NodeInstanceType\022\021\n\rRULE_SET_NOD" +
+      "E\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016WORK_ITEM_NO" +
+      "DE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016MILESTONE_N" +
+      "ODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n" +
+      "\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026COMPOSIT" +
+      "E_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014D" +
+      "YNAMIC_NODE\020\013\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022" +
+      "\026\n\016strategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203",
+      "\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_insta" +
+      "nces_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001" +
+      "(\005\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.marshall" +
+      "ing.Variable\"\235\002\n\014ProcessTimer\022?\n\005timer\030\001" +
+      " \001(\01320.org.jbpm.marshalling.ProcessTimer" +
+      ".TimerInstance\0220\n\007trigger\030\002 \001(\0132\037.org.dr" +
+      "ools.marshalling.Trigger\032\231\001\n\rTimerInstan" +
+      "ce\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005dela" +
+      "y\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_insta" +
+      "nce_id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016",
+      "last_triggered\030\007 \001(\003:d\n\020process_instance" +
+      "\022#.org.drools.marshalling.ProcessData\030\n " +
+      "\003(\0132%.org.jbpm.marshalling.ProcessInstan" +
+      "ce:V\n\twork_item\022#.org.drools.marshalling" +
+      ".ProcessData\030\013 \003(\0132\036.org.jbpm.marshallin" +
+      "g.WorkItem:5\n\010timer_id\022#.org.drools.mars" +
+      "halling.ProcessData\030\r \001(\003:^\n\rprocess_tim" +
+      "er\022#.org.drools.marshalling.ProcessData\030" +
+      "\014 \003(\0132\".org.jbpm.marshalling.ProcessTime" +
+      "r:\\\n\nproc_timer\022$.org.drools.marshalling",
+      ".Timers.Timer\030d \001(\0132\".org.jbpm.marshalli" +
+      "ng.ProcessTimerB)\n\031org.jbpm.marshalling." +
+      "implB\014JBPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -13789,9 +14582,17 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor,
-              new java.lang.String[] { "TimerInstanceId", },
+              new java.lang.String[] { "TimerInstanceId", "MapEntry", },
               org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.class,
               org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder.class);
+          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor =
+            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor.getNestedTypes().get(0);
+          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor,
+              new java.lang.String[] { "Name", "Value", },
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.class,
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder.class);
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor =
             internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(1);
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable = new
@@ -13914,8 +14715,8 @@ public final class JBPMMessages {
               org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder.class);
           processInstance.internalInit(descriptor.getExtensions().get(0));
           workItem.internalInit(descriptor.getExtensions().get(1));
-          processTimer.internalInit(descriptor.getExtensions().get(2));
-          timerId.internalInit(descriptor.getExtensions().get(3));
+          timerId.internalInit(descriptor.getExtensions().get(2));
+          processTimer.internalInit(descriptor.getExtensions().get(3));
           procTimer.internalInit(descriptor.getExtensions().get(4));
           return null;
         }

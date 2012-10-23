@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_personItem" structureRef="org.jbpm.bpmn2.objects.Person" />
+  <itemDefinition id="_approvedPersonItem" structureRef="org.jbpm.bpmn2.objects.Person" />
+
+  <process processType="Private" isExecutable="true" id="BPMN2-BusinessRuleTask" name="Default Process" tns:packageName="defaultPackage" tns:version="1" >
+
+    <!-- process variables -->
+    <property id="person" itemSubjectRef="_personItem"/>
+    <property id="approvedPerson" itemSubjectRef="_approvedPersonItem"/>
+
+    <!-- nodes -->
+    <startEvent id="StartEvent_1" />
+    <endEvent id="EndEvent_1" />
+    <businessRuleTask id="BusinessRuleTask_2" name="Business Rule Task" g:ruleFlowGroup="MyRuleFlow" >
+        <ioSpecification>
+        <dataInput id="_4_CommentInput" name="person" />
+        <dataOutput id="_6_parameterOutput" name="person" />
+        <inputSet>
+          <dataInputRefs>_4_CommentInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_6_parameterOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{person}</from>
+          <to xsi:type="tFormalExpression">_4_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_6_parameterOutput</sourceRef>
+        <targetRef>approvedPerson</targetRef>
+      </dataOutputAssociation>
+    </businessRuleTask>
+    <scriptTask id="_4" name="Script" >
+      <script>System.out.println("Script1: Person name is " + person.getName());</script>
+    </scriptTask>
+    <scriptTask id="_5" name="Script" >
+      <script>System.out.println("Script2: Person name is " + approvedPerson.getName());</script>
+    </scriptTask>
+
+    <!-- connections -->
+    <sequenceFlow id="_5-EndEvent_1" sourceRef="_5" targetRef="EndEvent_1" />
+    <sequenceFlow id="_4-BusinessRuleTask_2" sourceRef="_4" targetRef="BusinessRuleTask_2" />
+    <sequenceFlow id="StartEvent_1-_4" sourceRef="StartEvent_1" targetRef="_4" />
+    <sequenceFlow id="BusinessRuleTask_2-_5" sourceRef="BusinessRuleTask_2" targetRef="_5" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="BPMN2-BusinessRuleTask" >
+      <bpmndi:BPMNShape bpmnElement="StartEvent_1" >
+        <dc:Bounds x="24" y="93" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndEvent_1" >
+        <dc:Bounds x="605" y="93" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="BusinessRuleTask_2" >
+        <dc:Bounds x="240" y="93" width="160" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="119" y="91" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="476" y="93" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_5-EndEvent_1" >
+        <di:waypoint x="516" y="117" />
+        <di:waypoint x="629" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-BusinessRuleTask_2" >
+        <di:waypoint x="159" y="115" />
+        <di:waypoint x="320" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="StartEvent_1-_4" >
+        <di:waypoint x="48" y="117" />
+        <di:waypoint x="159" y="115" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="BusinessRuleTask_2-_5" >
+        <di:waypoint x="320" y="118" />
+        <di:waypoint x="516" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

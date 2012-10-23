@@ -75,7 +75,14 @@ message ProcessInstance {
         optional CompositeContextNode composite = 11;
         optional ForEachNode for_each = 12;
 
-        message RuleSetNode { repeated int64 timer_instance_id = 1; }
+        message RuleSetNode {
+            repeated int64 timer_instance_id = 1;
+            repeated TextMapEntry mapEntry = 2;
+            message TextMapEntry {
+                optional string name = 1;
+                optional string value = 2;
+            }
+        }
         message HumanTaskNode {
             optional int64 work_item_id = 1;
             repeated int64 timer_instance_id = 2;

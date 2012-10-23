@@ -28,6 +28,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
@@ -203,5 +204,23 @@ public class SimplePersistedBPMNProcessTest extends JbpmBpmn2TestCase {
         Thread.sleep(3000);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
 
+    }
+    
+    public void testBusinessRuleTaskWithDataInputs() throws Exception {
+        Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
+        resources.put("BPMN2-BusinessRuleTaskWithDataInputs.bpmn2", ResourceType.BPMN2);
+        resources.put("BPMN2-BusinessRuleTaskWithDataInput.drl", ResourceType.DRL);
+        KnowledgeBase kbase = createKnowledgeBase(resources);
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person());
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-BusinessRuleTask", params);
+        
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 }

@@ -16,12 +16,28 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+
 import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.process.core.datatype.DataType;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.InternalAgenda;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.mvel2.MVEL;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
 
 /**
  * Runtime counterpart of a ruleset node.
@@ -31,6 +47,8 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
+    
+    private Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
 
     protected RuleSetNode getRuleSetNode() {
         return (RuleSetNode) getNode();
@@ -41,6 +59,14 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     	if ( !org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
+    	KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+    	Map<String, Object> inputs = evaluateParameters(getRuleSetNode());
+    	for (Entry<String, Object> entry : inputs.entrySet()) {
+    	    String inputKey = getRuleSetNode().getRuleFlowGroup() + "_" +getProcessInstance().getId() +"_"+entry.getKey();
+    	    
+    	    factHandles.put(inputKey, kruntime.insert(entry.getValue()));
+    	}
+    	
         addRuleSetListener();
         ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
         	.activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
@@ -78,8 +104,116 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 	public void signalEvent(String type, Object event) {
 		if (getRuleSetEventType().equals(type)) {
             removeEventListeners();
+            retractFacts();
             triggerCompleted();
 		}
+    }
+	
+	public void retractFacts() {
+	    Map<String, Object> objects = new HashMap<String, Object>();
+	    KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+	    
+	    for (Entry<String, FactHandle> entry : factHandles.entrySet()) {
+	        
+            Object object = ((StatefulKnowledgeSession)kruntime).getObject(entry.getValue());
+            String key = entry.getKey();
+            key = key.replaceAll(getRuleSetNode().getRuleFlowGroup()+"_", "");
+            key = key.replaceAll(getProcessInstance().getId()+"_", "");
+            objects.put(key , object);
+            
+            kruntime.retract(entry.getValue());
+	        
+	    }
+	    
+	    RuleSetNode ruleSetNode = getRuleSetNode();
+        if (ruleSetNode != null) {
+            for (Iterator<DataAssociation> iterator = ruleSetNode.getOutAssociations().iterator(); iterator.hasNext(); ) {
+                DataAssociation association = iterator.next();
+                if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+                    if (variableScopeInstance != null) {
+                        Object value = objects.get(association.getSources().get(0));
+                        if (value == null) {
+                            try {
+                                value = MVEL.eval(association.getSources().get(0), new MapVariableResolverFactory(objects));
+                            } catch (Throwable t) {
+                                // do nothing
+                            }
+                        }
+                        Variable varDef = variableScopeInstance.getVariableScope().findVariable(association.getTarget());
+                        DataType dataType = varDef.getType();
+                        // exclude java.lang.Object as it is considered unknown type
+                        if (!dataType.getStringType().endsWith("java.lang.Object") && value instanceof String) {
+                            value = dataType.readValue((String) value);
+                        }
+                        variableScopeInstance.setVariable(association.getTarget(), value);
+                    } else {
+                        System.out.println("Could not find variable scope for variable " + association.getTarget());
+                    }
+
+                }               
+            }
+        }
+        factHandles.clear();
+	}
+	
+	protected Map<String, Object> evaluateParameters(RuleSetNode ruleSetNode) {
+	    Map<String, Object> replacements = new HashMap<String, Object>();
+        
+        for (Map.Entry<String, Object> entry: ruleSetNode.getParameters().entrySet()) {
+            if (entry.getValue() instanceof String) {
+                
+                Object value = resolveVariable(entry.getValue());
+                if (value != null) {
+                    replacements.put(entry.getKey(), value);
+                }
+                
+            }
+        }
+        
+        return replacements;
+	}
+	
+	private Object resolveVariable(Object s) {
+        
+	    if (s instanceof String) {
+            Matcher matcher = PARAMETER_MATCHER.matcher((String) s);
+            while (matcher.find()) {
+                String paramName = matcher.group(1);
+               
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                if (variableScopeInstance != null) {
+                    Object variableValue = variableScopeInstance.getVariable(paramName);
+                    if (variableValue != null) { 
+                        return variableValue;
+                    }
+                } else {
+                    try {
+                        Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+                        if (variableValue != null) {
+                            return variableValue;
+                        }
+                    } catch (Throwable t) {
+                        System.err.println("Could not find variable scope for variable " + paramName);
+                    }
+                }
+            }
+	    } else {
+	        return s;
+	    }
+        
+        return null;
+        
+    }
+
+    public Map<String, FactHandle> getFactHandles() {
+        return factHandles;
+    }
+
+    public void setFactHandles(Map<String, FactHandle> factHandles) {
+        this.factHandles = factHandles;
     }
 
 }

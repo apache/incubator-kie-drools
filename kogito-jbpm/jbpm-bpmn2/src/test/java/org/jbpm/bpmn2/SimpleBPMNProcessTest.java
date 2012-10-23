@@ -47,6 +47,7 @@ import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
@@ -2508,6 +2509,23 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(new RuleAwareProcessEventLister());
         ProcessInstance processInstance = ksession
                 .startProcess("BPMN2-BusinessRuleTask");
+        
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
+   public void testBusinessRuleTaskWithDataInputs() throws Exception {
+        Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
+        resources.put("BPMN2-BusinessRuleTaskWithDataInputs.bpmn2", ResourceType.BPMN2);
+        resources.put("BPMN2-BusinessRuleTaskWithDataInput.drl", ResourceType.DRL);
+        KnowledgeBase kbase = createKnowledgeBase(resources);
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person());
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-BusinessRuleTask", params);
         
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
