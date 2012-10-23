@@ -106,6 +106,16 @@
     <section>
       <title>Algorithm description</title>
 
+      <para>Late acceptance also evaluates only a few moves per step. A move is accepted if it leads to score that is
+      at least the winning score of a fixed number of steps ago.
+      </para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/lateAcceptance.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>See Late Acceptance acceptor below.</para>
     </section>
   </section>
