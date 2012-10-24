@@ -106,7 +106,8 @@ public abstract class BaseNode
                        BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
 
-        if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource)) {
+        if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource) ) {
+            node.internalCleanUp(builder, workingMemories);
             return;
         }
 
@@ -117,6 +118,19 @@ public abstract class BaseNode
                   workingMemories );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
             builder.getIdGenerator().releaseId( this.getId() );
+        }
+    }
+
+    private void internalCleanUp(ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+        if ( !this.isInUse() && this instanceof NodeMemory ) {
+            if (this instanceof NodeMemory) {
+                for( InternalWorkingMemory workingMemory : workingMemories ) {
+                    workingMemory.clearNodeMemory( (NodeMemory) this );
+                }
+            }
+            if ( !(this instanceof EntryPointNode) ) {
+                builder.getIdGenerator().releaseId( this.getId() );
+            }
         }
     }
 
