@@ -37,12 +37,15 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -11639,7 +11642,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testRemoveBigRule() throws Exception {
         // JBRULES-3496
         String str =
@@ -11795,5 +11798,78 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.insert(new Person("Mario", 38));
         assertEquals(3, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMemoriesCCEWhenAddRemoveAddRule() {
+        // JBRULES-3656
+        String rule1 =
+                "import org.drools.integrationtests.MiscTest.*\n" +
+                "import java.util.Date\n" +
+                "rule \"RTR - 28717 retract\"\n" +
+                "when\n" +
+                "        $listMembership0 : SimpleMembership( $listMembershipPatientSpaceIdRoot : patientSpaceId,\n" +
+                "        ( listId != null && listId == \"28717\" ) ) and not ($patient0 : SimplePatient( $patientSpaceIdRoot : spaceId, spaceId != null &&\n" +
+                "        spaceId == $listMembershipPatientSpaceIdRoot ) and\n" +
+                "        (($ruleTime0 : RuleTime( $ruleTimeStartOfDay4_1 : startOfDay, $ruleTimeTime4_1 : time ) and $patient1 :\n" +
+                "        SimplePatient( spaceId != null && spaceId == $patientSpaceIdRoot, birthDate != null && (birthDate after[0s,1d] $ruleTimeStartOfDay4_1) ) ) ) )\n" +
+                "then\n" +
+                "end";
+
+        String rule2 =
+                "import org.drools.integrationtests.MiscTest.*\n" +
+                "import java.util.Date\n" +
+                "rule \"RTR - 28717 retract\"\n" +
+                "when  $listMembership0 : SimpleMembership( $listMembershipPatientSpaceIdRoot : patientSpaceId, ( listId != null && listId == \"28717\" ) )\n" +
+                "    and not ($patient0 : SimplePatient( $patientSpaceIdRoot : spaceId, spaceId != null && spaceId == $listMembershipPatientSpaceIdRoot )\n" +
+                "    and ( ($ruleTime0 : RuleTime( $ruleTimeStartOfDay4_1 : startOfDay, $ruleTimeTime4_1 : time )\n" +
+                "    and $patient1 : SimplePatient( spaceId != null && spaceId == $patientSpaceIdRoot, birthDate != null && (birthDate not after[0s,1d] $ruleTimeStartOfDay4_1) ) ) ) )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.getBytes()), ResourceType.DRL );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+
+        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        kbase.addKnowledgePackages( knowledgePackages );
+
+        for (KnowledgePackage kPackage : knowledgePackages) {
+            kbase.removeKnowledgePackage(kPackage.getName());
+        }
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule2.getBytes()), ResourceType.DRL );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    }
+
+    public static class RuleTime {
+        public Date getTime() {
+            return new Date();
+        }
+        public Date getStartOfDay(){
+            return new Date();
+        }
+    }
+    public static class SimpleMembership {
+        public String getListId() {
+            return "";
+        }
+        public String getPatientSpaceId() {
+            return "";
+        }
+    }
+    public class SimplePatient {
+        public String getSpaceId() {
+            return "";
+        }
+        public String getFactHandleString() {
+            return "";
+        }
+        public Date getBirthDate() {
+            return new Date();
+        }
     }
 }

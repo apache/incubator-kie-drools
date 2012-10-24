@@ -18,7 +18,7 @@ public class NodeSet implements Iterable<BaseNode> {
 
     public boolean add(BaseNode node) {
         if (nodeIds.add(node.getId())) {
-            getNodes().add(node);
+            nodes.add(node);
             return true;
         }
         return false;
