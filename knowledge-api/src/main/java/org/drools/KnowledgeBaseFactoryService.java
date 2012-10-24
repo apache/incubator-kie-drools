@@ -127,9 +127,30 @@ public interface KnowledgeBaseFactoryService extends Service {
      */
     Environment newEnvironment();
 
+    /**
+     * Look up for the definition of a KnowledgeBase with the given name in a KnowledgeJar in the classpath
+     * @param kBaseName
+     *     The name of the KnowledgeBase
+     * @return
+     *     The KnowledgeBase
+     */
     KnowledgeBase getKnowledgeBase(String kBaseName);
 
+    /**
+     * Look up for the definition of a StatefulKnowledgeSession with the given name in a KnowledgeJar in the classpath
+     * @param kSessionName
+     *     The name of the StatefulKnowledgeSession
+     * @return
+     *     The StatefulKnowledgeSession
+     */
     StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName);
 
+    /**
+     * Create a KBaseUnit wrapping the KnowledgeBase with the given name looked up in a KnowledgeJar in the classpath
+     * @param kBaseName
+     *     The name of the KnowledgeBase
+     * @return
+     *     The KBaseUnit
+     */
     KBaseUnit getKBaseUnit(String kBaseName);
 }
