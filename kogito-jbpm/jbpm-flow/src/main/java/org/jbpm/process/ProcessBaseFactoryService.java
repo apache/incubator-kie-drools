@@ -18,6 +18,7 @@ package org.jbpm.process;
 
 import java.util.Properties;
 
+import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactoryService;
@@ -26,6 +27,7 @@ import org.drools.SessionConfiguration;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class ProcessBaseFactoryService implements KnowledgeBaseFactoryService {
 
@@ -65,4 +67,16 @@ public class ProcessBaseFactoryService implements KnowledgeBaseFactoryService {
 	public Environment newEnvironment() {
 		return EnvironmentFactory.newEnvironment();
 	}
+
+    public KBaseUnit getKBaseUnit(String arg0) {
+        return null;
+    }
+
+    public KnowledgeBase getKnowledgeBase(String arg0) {
+        return new ProcessBaseImpl();
+    }
+
+    public StatefulKnowledgeSession getStatefulKnowlegeSession(String arg0) {
+        return new ProcessBaseImpl().newStatefulKnowledgeSession();
+    }
 }
