@@ -1703,6 +1703,10 @@ public final class JBPMMessages {
             getMapEntryOrBuilderList();
         org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder getMapEntryOrBuilder(
             int index);
+        
+        // optional string rule_flow_group = 3;
+        boolean hasRuleFlowGroup();
+        String getRuleFlowGroup();
       }
       public static final class RuleSetNode extends
           com.google.protobuf.GeneratedMessage
@@ -2201,6 +2205,7 @@ public final class JBPMMessages {
           // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry)
         }
         
+        private int bitField0_;
         // repeated int64 timer_instance_id = 1;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
         private java.util.List<java.lang.Long> timerInstanceId_;
@@ -2236,9 +2241,42 @@ public final class JBPMMessages {
           return mapEntry_.get(index);
         }
         
+        // optional string rule_flow_group = 3;
+        public static final int RULE_FLOW_GROUP_FIELD_NUMBER = 3;
+        private java.lang.Object ruleFlowGroup_;
+        public boolean hasRuleFlowGroup() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public String getRuleFlowGroup() {
+          java.lang.Object ref = ruleFlowGroup_;
+          if (ref instanceof String) {
+            return (String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            String s = bs.toStringUtf8();
+            if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+              ruleFlowGroup_ = s;
+            }
+            return s;
+          }
+        }
+        private com.google.protobuf.ByteString getRuleFlowGroupBytes() {
+          java.lang.Object ref = ruleFlowGroup_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+            ruleFlowGroup_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        
         private void initFields() {
           timerInstanceId_ = java.util.Collections.emptyList();;
           mapEntry_ = java.util.Collections.emptyList();
+          ruleFlowGroup_ = "";
         }
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
@@ -2257,6 +2295,9 @@ public final class JBPMMessages {
           }
           for (int i = 0; i < mapEntry_.size(); i++) {
             output.writeMessage(2, mapEntry_.get(i));
+          }
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            output.writeBytes(3, getRuleFlowGroupBytes());
           }
           getUnknownFields().writeTo(output);
         }
@@ -2279,6 +2320,10 @@ public final class JBPMMessages {
           for (int i = 0; i < mapEntry_.size(); i++) {
             size += com.google.protobuf.CodedOutputStream
               .computeMessageSize(2, mapEntry_.get(i));
+          }
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(3, getRuleFlowGroupBytes());
           }
           size += getUnknownFields().getSerializedSize();
           memoizedSerializedSize = size;
@@ -2413,6 +2458,8 @@ public final class JBPMMessages {
             } else {
               mapEntryBuilder_.clear();
             }
+            ruleFlowGroup_ = "";
+            bitField0_ = (bitField0_ & ~0x00000004);
             return this;
           }
           
@@ -2450,6 +2497,7 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode buildPartial() {
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode result = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode(this);
             int from_bitField0_ = bitField0_;
+            int to_bitField0_ = 0;
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
               timerInstanceId_ = java.util.Collections.unmodifiableList(timerInstanceId_);
               bitField0_ = (bitField0_ & ~0x00000001);
@@ -2464,6 +2512,11 @@ public final class JBPMMessages {
             } else {
               result.mapEntry_ = mapEntryBuilder_.build();
             }
+            if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+              to_bitField0_ |= 0x00000001;
+            }
+            result.ruleFlowGroup_ = ruleFlowGroup_;
+            result.bitField0_ = to_bitField0_;
             onBuilt();
             return result;
           }
@@ -2515,6 +2568,9 @@ public final class JBPMMessages {
                 }
               }
             }
+            if (other.hasRuleFlowGroup()) {
+              setRuleFlowGroup(other.getRuleFlowGroup());
+            }
             this.mergeUnknownFields(other.getUnknownFields());
             return this;
           }
@@ -2564,6 +2620,11 @@ public final class JBPMMessages {
                   org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder subBuilder = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.newBuilder();
                   input.readMessage(subBuilder, extensionRegistry);
                   addMapEntry(subBuilder.buildPartial());
+                  break;
+                }
+                case 26: {
+                  bitField0_ |= 0x00000004;
+                  ruleFlowGroup_ = input.readBytes();
                   break;
                 }
               }
@@ -2801,6 +2862,42 @@ public final class JBPMMessages {
               mapEntry_ = null;
             }
             return mapEntryBuilder_;
+          }
+          
+          // optional string rule_flow_group = 3;
+          private java.lang.Object ruleFlowGroup_ = "";
+          public boolean hasRuleFlowGroup() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
+          }
+          public String getRuleFlowGroup() {
+            java.lang.Object ref = ruleFlowGroup_;
+            if (!(ref instanceof String)) {
+              String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+              ruleFlowGroup_ = s;
+              return s;
+            } else {
+              return (String) ref;
+            }
+          }
+          public Builder setRuleFlowGroup(String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+            ruleFlowGroup_ = value;
+            onChanged();
+            return this;
+          }
+          public Builder clearRuleFlowGroup() {
+            bitField0_ = (bitField0_ & ~0x00000004);
+            ruleFlowGroup_ = getDefaultInstance().getRuleFlowGroup();
+            onChanged();
+            return this;
+          }
+          void setRuleFlowGroup(com.google.protobuf.ByteString value) {
+            bitField0_ |= 0x00000004;
+            ruleFlowGroup_ = value;
+            onChanged();
           }
           
           // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode)
@@ -14430,7 +14527,7 @@ public final class JBPMMessages {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
       "o\022\024org.jbpm.marshalling\032+org/drools/mars" +
-      "halling/droolsmessages.proto\"\316\027\n\017Process" +
+      "halling/droolsmessages.proto\"\347\027\n\017Process" +
       "Instance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002id\030\002 \001" +
       "(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\022\035\n" +
       "\025node_instance_counter\030\005 \001(\003\022W\n\020swimlane" +
@@ -14447,7 +14544,7 @@ public final class JBPMMessages {
       "\007content\030\004 \001(\01329.org.jbpm.marshalling.Pr" +
       "ocessInstance.NodeInstanceContent\0328\n\026Exc" +
       "lusiveGroupInstance\022\036\n\026group_node_instan" +
-      "ce_id\030\001 \003(\003\032\275\020\n\023NodeInstanceContent\022D\n\004t",
+      "ce_id\030\001 \003(\003\032\326\020\n\023NodeInstanceContent\022D\n\004t",
       "ype\030\001 \001(\01626.org.jbpm.marshalling.Process" +
       "Instance.NodeInstanceType\022W\n\010rule_set\030\002 " +
       "\001(\0132E.org.jbpm.marshalling.ProcessInstan" +
@@ -14474,63 +14571,64 @@ public final class JBPMMessages {
       "deInstanceContent.CompositeContextNode\022W" +
       "\n\010for_each\030\014 \001(\0132E.org.jbpm.marshalling." +
       "ProcessInstance.NodeInstanceContent.ForE" +
-      "achNode\032\273\001\n\013RuleSetNode\022\031\n\021timer_instanc" +
+      "achNode\032\324\001\n\013RuleSetNode\022\031\n\021timer_instanc" +
       "e_id\030\001 \003(\003\022d\n\010mapEntry\030\002 \003(\0132R.org.jbpm." +
       "marshalling.ProcessInstance.NodeInstance" +
-      "Content.RuleSetNode.TextMapEntry\032+\n\014Text",
-      "MapEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032@\n" +
-      "\rHumanTaskNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021" +
-      "timer_instance_id\030\002 \003(\003\032?\n\014WorkItemNode\022" +
+      "Content.RuleSetNode.TextMapEntry\022\027\n\017rule",
+      "_flow_group\030\003 \001(\t\032+\n\014TextMapEntry\022\014\n\004nam" +
+      "e\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032@\n\rHumanTaskNode\022" +
       "\024\n\014work_item_id\030\001 \001(\003\022\031\n\021timer_instance_" +
-      "id\030\002 \003(\003\032H\n\016SubProcessNode\022\033\n\023process_in" +
-      "stance_id\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003" +
-      "(\003\032*\n\rMilestoneNode\022\031\n\021timer_instance_id" +
-      "\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimerNode\022\020\n\010time" +
-      "r_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007trigger\030\001 \003(\013" +
-      "2N.org.jbpm.marshalling.ProcessInstance.",
-      "NodeInstanceContent.JoinNode.JoinTrigger" +
-      "\032/\n\013JoinTrigger\022\017\n\007node_id\030\001 \001(\003\022\017\n\007coun" +
-      "ter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021timer_instance" +
-      "_id\030\001 \003(\003\032\205\002\n\024CompositeContextNode\022\031\n\021ti" +
-      "mer_instance_id\030\002 \003(\003\0220\n\010variable\030\003 \003(\0132" +
-      "\036.org.jbpm.marshalling.Variable\022I\n\rnode_" +
-      "instance\030\004 \003(\01322.org.jbpm.marshalling.Pr" +
-      "ocessInstance.NodeInstance\022U\n\017exclusive_" +
-      "group\030\005 \003(\0132<.org.jbpm.marshalling.Proce" +
-      "ssInstance.ExclusiveGroupInstance\032X\n\013For",
-      "EachNode\022I\n\rnode_instance\030\001 \003(\01322.org.jb" +
-      "pm.marshalling.ProcessInstance.NodeInsta" +
-      "nce\"\367\001\n\020NodeInstanceType\022\021\n\rRULE_SET_NOD" +
-      "E\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016WORK_ITEM_NO" +
-      "DE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016MILESTONE_N" +
-      "ODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n" +
-      "\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026COMPOSIT" +
-      "E_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014D" +
-      "YNAMIC_NODE\020\013\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022" +
-      "\026\n\016strategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203",
-      "\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_insta" +
-      "nces_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001" +
-      "(\005\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.marshall" +
-      "ing.Variable\"\235\002\n\014ProcessTimer\022?\n\005timer\030\001" +
-      " \001(\01320.org.jbpm.marshalling.ProcessTimer" +
-      ".TimerInstance\0220\n\007trigger\030\002 \001(\0132\037.org.dr" +
-      "ools.marshalling.Trigger\032\231\001\n\rTimerInstan" +
-      "ce\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005dela" +
-      "y\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_insta" +
-      "nce_id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016",
-      "last_triggered\030\007 \001(\003:d\n\020process_instance" +
-      "\022#.org.drools.marshalling.ProcessData\030\n " +
-      "\003(\0132%.org.jbpm.marshalling.ProcessInstan" +
-      "ce:V\n\twork_item\022#.org.drools.marshalling" +
-      ".ProcessData\030\013 \003(\0132\036.org.jbpm.marshallin" +
-      "g.WorkItem:5\n\010timer_id\022#.org.drools.mars" +
-      "halling.ProcessData\030\r \001(\003:^\n\rprocess_tim" +
-      "er\022#.org.drools.marshalling.ProcessData\030" +
-      "\014 \003(\0132\".org.jbpm.marshalling.ProcessTime" +
-      "r:\\\n\nproc_timer\022$.org.drools.marshalling",
-      ".Timers.Timer\030d \001(\0132\".org.jbpm.marshalli" +
-      "ng.ProcessTimerB)\n\031org.jbpm.marshalling." +
-      "implB\014JBPMMessages"
+      "id\030\002 \003(\003\032?\n\014WorkItemNode\022\024\n\014work_item_id" +
+      "\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032H\n\016Sub" +
+      "ProcessNode\022\033\n\023process_instance_id\030\001 \001(\003" +
+      "\022\031\n\021timer_instance_id\030\002 \003(\003\032*\n\rMilestone" +
+      "Node\022\031\n\021timer_instance_id\030\001 \003(\003\032\013\n\tEvent" +
+      "Node\032\035\n\tTimerNode\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010" +
+      "JoinNode\022_\n\007trigger\030\001 \003(\0132N.org.jbpm.mar",
+      "shalling.ProcessInstance.NodeInstanceCon" +
+      "tent.JoinNode.JoinTrigger\032/\n\013JoinTrigger" +
+      "\022\017\n\007node_id\030\001 \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tSt" +
+      "ateNode\022\031\n\021timer_instance_id\030\001 \003(\003\032\205\002\n\024C" +
+      "ompositeContextNode\022\031\n\021timer_instance_id" +
+      "\030\002 \003(\003\0220\n\010variable\030\003 \003(\0132\036.org.jbpm.mars" +
+      "halling.Variable\022I\n\rnode_instance\030\004 \003(\0132" +
+      "2.org.jbpm.marshalling.ProcessInstance.N" +
+      "odeInstance\022U\n\017exclusive_group\030\005 \003(\0132<.o" +
+      "rg.jbpm.marshalling.ProcessInstance.Excl",
+      "usiveGroupInstance\032X\n\013ForEachNode\022I\n\rnod" +
+      "e_instance\030\001 \003(\01322.org.jbpm.marshalling." +
+      "ProcessInstance.NodeInstance\"\367\001\n\020NodeIns" +
+      "tanceType\022\021\n\rRULE_SET_NODE\020\000\022\023\n\017HUMAN_TA" +
+      "SK_NODE\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022\023\n\017SUBPROC" +
+      "ESS_NODE\020\003\022\022\n\016MILESTONE_NODE\020\004\022\016\n\nEVENT_" +
+      "NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n" +
+      "\nSTATE_NODE\020\010\022\032\n\026COMPOSITE_CONTEXT_NODE\020" +
+      "\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\"?" +
+      "\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016strategy_ind",
+      "ex\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203\001\n\010WorkItem\022\n\n\002" +
+      "id\030\001 \001(\003\022\034\n\024process_instances_id\030\002 \001(\003\022\014" +
+      "\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010variable\030" +
+      "\005 \003(\0132\036.org.jbpm.marshalling.Variable\"\235\002" +
+      "\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320.org.jbpm" +
+      ".marshalling.ProcessTimer.TimerInstance\022" +
+      "0\n\007trigger\030\002 \001(\0132\037.org.drools.marshallin" +
+      "g.Trigger\032\231\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022" +
+      "\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006peri" +
+      "od\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001(\003\022\026\n",
+      "\016activated_time\030\006 \001(\003\022\026\n\016last_triggered\030" +
+      "\007 \001(\003:d\n\020process_instance\022#.org.drools.m" +
+      "arshalling.ProcessData\030\n \003(\0132%.org.jbpm." +
+      "marshalling.ProcessInstance:V\n\twork_item" +
+      "\022#.org.drools.marshalling.ProcessData\030\013 " +
+      "\003(\0132\036.org.jbpm.marshalling.WorkItem:5\n\010t" +
+      "imer_id\022#.org.drools.marshalling.Process" +
+      "Data\030\r \001(\003:^\n\rprocess_timer\022#.org.drools" +
+      ".marshalling.ProcessData\030\014 \003(\0132\".org.jbp" +
+      "m.marshalling.ProcessTimer:\\\n\nproc_timer",
+      "\022$.org.drools.marshalling.Timers.Timer\030d" +
+      " \001(\0132\".org.jbpm.marshalling.ProcessTimer" +
+      "B)\n\031org.jbpm.marshalling.implB\014JBPMMessa" +
+      "ges"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -14582,7 +14680,7 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor,
-              new java.lang.String[] { "TimerInstanceId", "MapEntry", },
+              new java.lang.String[] { "TimerInstanceId", "MapEntry", "RuleFlowGroup", },
               org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.class,
               org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder.class);
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor =

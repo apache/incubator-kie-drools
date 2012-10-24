@@ -165,13 +165,12 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             List<Long> timerInstances =
                     ((RuleSetNodeInstance) nodeInstance).getTimerInstances();
             JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder _ruleSet = JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.newBuilder();
-            boolean buildRuleSetNode = false;
+            _ruleSet.setRuleFlowGroup(((RuleSetNodeInstance) nodeInstance).getRuleFlowGroup());
             if ( timerInstances != null ) {
                 
                 for ( Long id : timerInstances ) {
                     _ruleSet.addTimerInstanceId( id );
                 }
-                buildRuleSetNode = true;
             }
             
            Map<String, FactHandle> facts = ((RuleSetNodeInstance) nodeInstance).getFactHandles();
@@ -183,11 +182,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                    
                    _ruleSet.addMapEntry(_textMapEntry.build());
                }
-               buildRuleSetNode = true;
            }
-           if (buildRuleSetNode) {
-               _content.setRuleSet( _ruleSet.build() );
-           }
+           _content.setRuleSet( _ruleSet.build() );
+           
         } else if ( nodeInstance instanceof HumanTaskNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder _task = JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.newBuilder()
                     .setWorkItemId( ((HumanTaskNodeInstance) nodeInstance).getWorkItemId() );
@@ -521,6 +518,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         switch ( _content.getType() ) {
             case  RULE_SET_NODE:
                 nodeInstance = new RuleSetNodeInstance();
+                ((RuleSetNodeInstance) nodeInstance).setRuleFlowGroup(_content.getRuleSet().getRuleFlowGroup());
                 if ( _content.getRuleSet().getTimerInstanceIdCount() > 0 ) {
                     List<Long> timerInstances = new ArrayList<Long>();
                     for ( Long _timerId : _content.getRuleSet().getTimerInstanceIdList() ) {

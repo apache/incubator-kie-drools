@@ -78,6 +78,7 @@ message ProcessInstance {
         message RuleSetNode {
             repeated int64 timer_instance_id = 1;
             repeated TextMapEntry mapEntry = 2;
+            optional string rule_flow_group = 3;
             message TextMapEntry {
                 optional string name = 1;
                 optional string value = 2;

@@ -223,4 +223,22 @@ public class SimplePersistedBPMNProcessTest extends JbpmBpmn2TestCase {
         assertEquals(1, fired);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
+    
+    public void testBusinessRuleTaskDynamic() throws Exception {
+        Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
+        resources.put("BPMN2-BusinessRuleTaskDynamic.bpmn2", ResourceType.BPMN2);
+        resources.put("BPMN2-BusinessRuleTask.drl", ResourceType.DRL);
+        KnowledgeBase kbase = createKnowledgeBase(resources);
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("dynamicrule", "MyRuleFlow");
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-BusinessRuleTask", params);
+        
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 }

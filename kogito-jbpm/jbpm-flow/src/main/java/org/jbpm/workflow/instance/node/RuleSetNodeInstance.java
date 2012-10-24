@@ -49,6 +49,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     private static final long serialVersionUID = 510l;
     
     private Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
+    private String ruleFlowGroup;
 
     protected RuleSetNode getRuleSetNode() {
         return (RuleSetNode) getNode();
@@ -59,17 +60,21 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     	if ( !org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
+    	// first set rule flow group
+    	setRuleFlowGroup(resolveRuleFlowGroup(getRuleSetNode().getRuleFlowGroup()));
+    	
+    	//proceed
     	KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	Map<String, Object> inputs = evaluateParameters(getRuleSetNode());
     	for (Entry<String, Object> entry : inputs.entrySet()) {
-    	    String inputKey = getRuleSetNode().getRuleFlowGroup() + "_" +getProcessInstance().getId() +"_"+entry.getKey();
+    	    String inputKey = getRuleFlowGroup() + "_" +getProcessInstance().getId() +"_"+entry.getKey();
     	    
     	    factHandles.put(inputKey, kruntime.insert(entry.getValue()));
     	}
     	
         addRuleSetListener();
         ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-        	.activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
+        	.activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
     }
 
     public void addEventListeners() {
@@ -80,9 +85,9 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     private String getRuleSetEventType() {
     	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	if (kruntime instanceof StatefulKnowledgeSession) {
-    		return "RuleFlowGroup_" + getRuleSetNode().getRuleFlowGroup() + "_" + ((StatefulKnowledgeSession) kruntime).getId();
+    		return "RuleFlowGroup_" + getRuleFlowGroup() + "_" + ((StatefulKnowledgeSession) kruntime).getId();
     	} else {
-    		return "RuleFlowGroup_" + getRuleSetNode().getRuleFlowGroup();
+    		return "RuleFlowGroup_" + getRuleFlowGroup();
     	}
     }
     
@@ -98,7 +103,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     public void cancel() {
         super.cancel();
         ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-        	.deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+        	.deactivateRuleFlowGroup( getRuleFlowGroup() );
     }
 
 	public void signalEvent(String type, Object event) {
@@ -117,7 +122,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 	        
             Object object = ((StatefulKnowledgeSession)kruntime).getObject(entry.getValue());
             String key = entry.getKey();
-            key = key.replaceAll(getRuleSetNode().getRuleFlowGroup()+"_", "");
+            key = key.replaceAll(getRuleFlowGroup()+"_", "");
             key = key.replaceAll(getProcessInstance().getId()+"_", "");
             objects.put(key , object);
             
@@ -200,13 +205,15 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     }
                 }
             }
-	    } else {
-	        return s;
-	    }
+	    } 
         
-        return null;
+        return s;
         
     }
+	
+	private String resolveRuleFlowGroup(String origin) {
+	    return (String) resolveVariable(origin);
+	}
 
     public Map<String, FactHandle> getFactHandles() {
         return factHandles;
@@ -214,6 +221,14 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     public void setFactHandles(Map<String, FactHandle> factHandles) {
         this.factHandles = factHandles;
+    }
+
+    public String getRuleFlowGroup() {
+        return ruleFlowGroup;
+    }
+
+    public void setRuleFlowGroup(String ruleFlowGroup) {
+        this.ruleFlowGroup = ruleFlowGroup;
     }
 
 }
