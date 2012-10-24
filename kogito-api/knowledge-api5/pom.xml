@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>droolsjbpm-knowledge</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>knowledge-api</artifactId>
+
+  <name>Knowledge API</name>
+  <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            <Bundle-SymbolicName>org.drools.api;singleton:=true</Bundle-SymbolicName>
+            <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
+            <Export-Package>org.drools.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.drools.osgi.api.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <excludePackageNames>org.drools.util*</excludePackageNames>
+          <groups>
+            <group>
+              <title>Knowledge Base API</title>
+              <packages>org.drools</packages>
+            </group>
+            <group>
+              <title>Builder API</title>
+              <packages>org.drools.builder</packages>
+            </group>
+            <group>
+              <title>Definition API</title>
+              <packages>org.drools.definition*</packages>
+            </group>
+            <group>
+              <title>Event API</title>
+              <packages>org.drools.event*</packages>
+            </group>
+            <group>
+              <title>Runtime API</title>
+              <packages>org.drools.runtime*</packages>
+            </group>
+            <group>
+              <title>Time API</title>
+              <packages>org.drools.time*</packages>
+            </group>
+          </groups>
+          <!--
+            yWorks UML Doclet (AKA ydoc) is used for the UML diagrams in drools-expert-docs.
+            To use it:
+            - Download version 3.0.2 or higher from http://www.yworks.com/en/products_ydoc.html#download
+            - Install it to for example /home/gdesmet/opt/other/yworks-uml-doclet
+            - Edit yworks-uml-doclet/resources/ydoc.cfg:
+            - Replace every "original-style.xml" by "dotnet-style.xml"
+            - For "tiling", set property "enabled" to "false"
+            - Save and close ydoc.cfg
+            - Uncomment the lines below. Adjust <docletPath> accordingly.
+            - cd .../droolsjbpm/droolsjbpm-knowledge/knowledge-api
+            - mvn clean install -Dfull
+            - cd .../droolsjbpm
+            - droolsjbpm-build-bootstrap/script/docs/copy-ydoc-output.sh
+          -->
+          <!--<doclet>ydoc.doclets.YStandard</doclet>-->
+          <!--<docletPath>~/opt/other/yworks-uml-doclet/lib/ydoc.jar:~/opt/other/yworks-uml-doclet/lib/styleed.jar:~/opt/other/yworks-uml-doclet/resources</docletPath>-->
+          <!--<additionalparam>-umlautogen</additionalparam>-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opensymphony.quartz</groupId>
+      <artifactId>quartz</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
+</project>
