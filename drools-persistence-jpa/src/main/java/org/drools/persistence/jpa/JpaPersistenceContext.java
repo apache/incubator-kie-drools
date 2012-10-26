@@ -58,7 +58,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         return em.merge( workItemInfo );
     }
     
-    protected EntityManager getEntityManager() {
+    public EntityManager getEntityManager() {
         return this.em;
     }
 }

@@ -38,4 +38,9 @@ public class JtaTransactionSynchronizationAdapter
     public void beforeCompletion() {
         this.ts.beforeCompletion();
     }
+    
+    public TransactionSynchronization getTransactionSynchronization() { 
+       return this.ts; 
+    }
+    
 }

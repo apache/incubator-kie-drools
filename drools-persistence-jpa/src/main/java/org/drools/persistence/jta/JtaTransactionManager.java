@@ -17,6 +17,7 @@ package org.drools.persistence.jta;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
@@ -24,6 +25,7 @@ import javax.transaction.UserTransaction;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.TransactionSynchronizationRegistryHelper;
+import org.drools.persistence.jpa.JpaPersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -237,6 +239,17 @@ public class JtaTransactionManager
             // No JTA TransactionManager available - log a warning.
             logger.warn( "Participating in existing JTA transaction, but no JTA TransactionManager or TransactionSychronizationRegistry available: " );
         }
+    }
+
+    public void attachPersistenceContext(Object persistenceContextObject) {
+        EntityManager em = null;
+        if( persistenceContextObject instanceof EntityManager ) { 
+            em = (EntityManager) persistenceContextObject;
+        }
+        else if( persistenceContextObject instanceof JpaPersistenceContext ) { 
+            em = ((JpaPersistenceContext) persistenceContextObject).getEntityManager();
+        }
+        em.joinTransaction();
     }
 
 }
