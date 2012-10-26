@@ -401,4 +401,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		this.processInstanceManager.clearProcessInstances();
 	}
 
+    public void clearProcessInstancesState() {
+        this.processInstanceManager.clearProcessInstancesState();
+        
+    }
+
 }

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://sourceforge.net/bpmn/definitions/_1351161658562"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_testItem" structureRef="String" />
+
+  <itemDefinition id="_4-testItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="PROCESS_1" name="PROCESS_1" >
+
+    <!-- process variables -->
+    <property id="test" itemSubjectRef="_testItem"/>
+
+    <!-- nodes -->
+    <endEvent id="_16" name="End Event" />
+    <startEvent id="_2" name="Start Event" />
+    <userTask id="_4" name="User Task" >
+      <ioSpecification>
+        <dataInput id="_4_CommentInput" name="Comment" />
+        <dataInput id="_4_SkippableInput" name="Skippable" />
+        <dataInput id="_4_LocaleInput" name="Locale" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_GroupIdInput" name="GroupId" />
+        <dataInput id="_4_PriorityInput" name="Priority" />
+        <inputSet>
+          <dataInputRefs>_4_CommentInput</dataInputRefs>
+          <dataInputRefs>_4_SkippableInput</dataInputRefs>
+          <dataInputRefs>_4_LocaleInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_GroupIdInput</dataInputRefs>
+          <dataInputRefs>_4_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_4_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_LocaleInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">en-UK</from>
+          <to xsi:type="tFormalExpression">_4_LocaleInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_PriorityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>#{test}</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <scriptTask id="_5" name="Script Task" >
+      <script>System.out.println("Process has been started...");</script>
+    </scriptTask>
+    <boundaryEvent id="_6" name="Boundary Event" attachedToRef="_4" >
+      <timerEventDefinition>
+        <timeDuration xsi:type="tFormalExpression">30d</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <scriptTask id="_7" name="Script Task" >
+      <script>System.out.println("Bounded event timer fired");</script>
+    </scriptTask>
+    <scriptTask id="_9" name="Script Task" >
+      <script>System.out.println("User Task has been completed...");</script>
+    </scriptTask>
+    <endEvent id="_15" name="End Event" />
+
+    <!-- connections -->
+    <sequenceFlow id="_7-_16" sourceRef="_7" targetRef="_16" />
+    <sequenceFlow id="_5-_4" sourceRef="_5" targetRef="_4" />
+    <sequenceFlow id="_2-_5" sourceRef="_2" targetRef="_5" />
+    <sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" />
+    <sequenceFlow id="_4-_9" sourceRef="_4" targetRef="_9" />
+    <sequenceFlow id="_9-_15" sourceRef="_9" targetRef="_15" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="PROCESS_1" >
+      <bpmndi:BPMNShape bpmnElement="_16" >
+        <dc:Bounds x="847" y="237" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="152" y="142" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="470" y="140" width="95" height="65" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="285" y="145" width="85" height="55" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="482" y="181" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" >
+        <dc:Bounds x="625" y="220" width="85" height="55" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_9" >
+        <dc:Bounds x="635" y="105" width="85" height="55" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_15" >
+        <dc:Bounds x="862" y="122" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_7-_16" >
+        <di:waypoint x="667" y="247" />
+        <di:waypoint x="854" y="261" />
+        <di:waypoint x="871" y="261" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_4" >
+        <di:waypoint x="327" y="172" />
+        <di:waypoint x="469" y="172" />
+        <di:waypoint x="517" y="172" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_5" >
+        <di:waypoint x="176" y="166" />
+        <di:waypoint x="284" y="172" />
+        <di:waypoint x="327" y="172" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6-_7" >
+        <di:waypoint x="506" y="205" />
+        <di:waypoint x="624" y="247" />
+        <di:waypoint x="667" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_9" >
+        <di:waypoint x="517" y="172" />
+        <di:waypoint x="634" y="132" />
+        <di:waypoint x="677" y="132" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9-_15" >
+        <di:waypoint x="677" y="132" />
+        <di:waypoint x="869" y="146" />
+        <di:waypoint x="886" y="146" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>
