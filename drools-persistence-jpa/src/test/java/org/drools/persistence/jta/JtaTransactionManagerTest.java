@@ -17,37 +17,29 @@ package org.drools.persistence.jta;
 
 import static junit.framework.Assert.assertTrue;
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.drools.runtime.EnvironmentName.*;
+import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
+import javax.persistence.*;
 import javax.transaction.UserTransaction;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.builder.*;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
-import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.*;
 import org.hibernate.TransientObjectException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +47,9 @@ import bitronix.tm.internal.BitronixRollbackException;
 
 public class JtaTransactionManagerTest {
 
+    @Rule
+    public TestName testMethodName = new TestName();
+    
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     // Datasource (setup & clean up)
@@ -83,7 +78,7 @@ public class JtaTransactionManagerTest {
 
     @After
     public void tearDown() {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
 
     private KnowledgeBase initializeKnowledgeBase(String rule) { 
@@ -115,15 +110,10 @@ public class JtaTransactionManagerTest {
         }
     }
 
-    private String getTestName() { 
-        StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-        String methodName =  ste[2].getMethodName();
-        return methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-    }
     @Test
     public void showingTransactionTestObjectsNeedTransactions()  throws Exception {
-        String testName = getTestName();
-        
+        String testName = testMethodName.getMethodName();
+                
         // Create linked transactionTestObjects but only persist the main one.
         TransactionTestObject badMainObject = new TransactionTestObject();
         badMainObject.setName("bad" + testName);
@@ -177,7 +167,7 @@ public class JtaTransactionManagerTest {
 
     @Test
     public void basicTransactionManagerTest() {
-        String testName = getTestName();
+        String testName = testMethodName.getMethodName();
         
         // Setup the JtaTransactionmanager
         Environment env = createEnvironment(context);
