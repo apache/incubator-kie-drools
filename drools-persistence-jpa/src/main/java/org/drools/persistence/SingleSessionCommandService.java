@@ -454,6 +454,10 @@ public class SingleSessionCommandService
             if ( ksession != null ) {
                 InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
                 if ( internalProcessRuntime != null ) {
+                    if (this.service.doRollback) {
+                        internalProcessRuntime.clearProcessInstancesState();
+                    } 
+                    
                     internalProcessRuntime.clearProcessInstances();
                 }
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
