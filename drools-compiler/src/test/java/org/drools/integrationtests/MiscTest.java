@@ -2212,7 +2212,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertFalse( builder.getErrors().toString(),
                      builder.hasErrors() );
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(5);
         PackageDescr desc = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nested_fields.drl" ) ) );
         List packageAttrs = desc.getAttributes();
         assertEquals( 1,
@@ -2631,7 +2631,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testFromWithNewConstructor() throws Exception {
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(5);
         PackageDescr descr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithNewConstructor.drl" ) ) );
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage( descr );
@@ -2764,7 +2764,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testErrorsParser() throws Exception {
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         assertEquals( 0,
                       parser.getErrors().size() );
         parser.parse( new InputStreamReader( getClass().getResourceAsStream( "errors_parser_multiple.drl" ) ) );
@@ -3082,7 +3082,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     @Ignore
     public void testDumpers() throws Exception {
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
 
         if ( parser.hasErrors() ) {

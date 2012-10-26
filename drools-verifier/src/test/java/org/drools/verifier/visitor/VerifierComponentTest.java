@@ -35,7 +35,7 @@ public class VerifierComponentTest {
   public void testVisit() throws Exception {
     // Drools Package description from Drl file
     Reader drlReader = new InputStreamReader(Verifier.class.getResourceAsStream("Misc3.drl"));
-    PackageDescr descr = new DrlParser().parse(drlReader);
+    PackageDescr descr = new DrlParser(5).parse(drlReader);
 
     // Drools Verifier objects
     VerifierData verifierData = VerifierReportFactory.newVerifierData();

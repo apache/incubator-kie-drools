@@ -41,7 +41,7 @@ public class DumperTestHelper {
 
     public static void DrlFile(String filename) throws Exception {
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(5);
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
         final DrlDumper dumper = new DrlDumper();
         String result1 = dumper.dump( pkgOriginal );

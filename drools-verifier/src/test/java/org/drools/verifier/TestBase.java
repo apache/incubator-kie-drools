@@ -34,7 +34,7 @@ public class TestBase {
 
     protected PackageDescr getPackageDescr(InputStream resourceAsStream) throws DroolsParserException {
         Reader drlReader = new InputStreamReader(resourceAsStream);
-        return new DrlParser().parse(drlReader);
+        return new DrlParser(5).parse(drlReader);
     }
 
     protected void assertContainsVariable(String ruleName, String variableName) {

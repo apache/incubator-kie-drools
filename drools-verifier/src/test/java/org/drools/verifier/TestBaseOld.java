@@ -131,7 +131,7 @@ abstract public class TestBaseOld {
     public Collection< ? extends Object> getTestData(InputStream stream,
                                                      VerifierData data) throws Exception {
         Reader drlReader = new InputStreamReader( stream );
-        PackageDescr descr = new DrlParser().parse( drlReader );
+        PackageDescr descr = new DrlParser(5).parse( drlReader );
 
         PackageDescrVisitor packageDescrVisitor = new PackageDescrVisitor( data,
                                                                            Collections.EMPTY_LIST );

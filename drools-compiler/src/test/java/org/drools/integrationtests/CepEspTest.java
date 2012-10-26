@@ -82,7 +82,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                                                      DroolsParserException,
                                                                      Exception {
         final PackageBuilder builder = new PackageBuilder();
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             System.out.println( parser.getErrors() );

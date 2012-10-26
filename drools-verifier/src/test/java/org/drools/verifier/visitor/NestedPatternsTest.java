@@ -49,7 +49,7 @@ public class NestedPatternsTest {
         assertNotNull(data);
 
         Reader drlReader = new InputStreamReader(getClass().getResourceAsStream("NestedPatterns.drl"));
-        PackageDescr packageDescr = new DrlParser().parse(drlReader);
+        PackageDescr packageDescr = new DrlParser(5).parse(drlReader);
 
         assertNotNull(packageDescr);
 
