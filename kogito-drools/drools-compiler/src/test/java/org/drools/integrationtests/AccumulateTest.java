@@ -63,7 +63,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                                    final PackageBuilderConfiguration conf ) throws IOException,
                                                                            DroolsParserException,
                                                                            Exception {
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             fail( "Error messages in parser, need to sort this our (or else collect error messages)\n" + parser.getErrors() );
@@ -218,16 +218,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 5, 
                       results.size() );
 
-        assertEquals( new Integer( 165 ),
-                             results.get( 0 ) );
-        assertEquals( new Integer( 10 ),
-                             results.get( 1 ) );
-        assertEquals( new Integer( 150 ),
-                             results.get( 2 ) );
-        assertEquals( new Integer( 10 ),
-                             results.get( 3 ) );
-        assertEquals( new Integer( 210 ),
-                             results.get( 4 ) );
+        assertEquals( 165, results.get( 0 ) );
+        assertEquals( 10, results.get( 1 ) );
+        assertEquals( 150, results.get( 2 ) );
+        assertEquals( 10, results.get( 3 ) );
+        assertEquals( 210, results.get( 4 ) );
     }
 
     @Test
@@ -257,16 +252,11 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         wm.fireAllRules();
 
-        assertEquals( new Integer( 165 ),
-                             results.get( 0 ) );
-        assertEquals( new Integer( 10 ),
-                             results.get( 1 ) );
-        assertEquals( new Integer( 150 ),
-                             results.get( 2 ) );
-        assertEquals( new Integer( 10 ),
-                             results.get( 3 ) );
-        assertEquals( new Integer( 210 ),
-                             results.get( 4 ) );
+        assertEquals( 165, results.get( 0 ) );
+        assertEquals( 10, results.get( 1 ) );
+        assertEquals( 150, results.get( 2 ) );
+        assertEquals( 10, results.get( 3 ) );
+        assertEquals( 210, results.get( 4 ) );
     }
 
     @Test
@@ -788,27 +778,17 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         wm2.fireAllRules();
 
-        assertEquals( new Integer( 165 ),
-                             results1.get( 0 ) );
-        assertEquals( new Integer( 10 ),
-                             results1.get( 1 ) );
-        assertEquals( new Integer( 150 ),
-                             results1.get( 2 ) );
-        assertEquals( new Integer( 10 ),
-                             results1.get( 3 ) );
-        assertEquals( new Integer( 210 ),
-                             results1.get( 4 ) );
+        assertEquals( 165, results1.get( 0 ) );
+        assertEquals( 10, results1.get( 1 ) );
+        assertEquals( 150, results1.get( 2 ) );
+        assertEquals( 10, results1.get( 3 ) );
+        assertEquals( 210, results1.get( 4 ) );
 
-        assertEquals( new Integer( 165 ),
-                             results2.get( 0 ) );
-        assertEquals( new Integer( 10 ),
-                             results2.get( 1 ) );
-        assertEquals( new Integer( 150 ),
-                             results2.get( 2 ) );
-        assertEquals( new Integer( 10 ),
-                             results2.get( 3 ) );
-        assertEquals( new Integer( 210 ),
-                             results2.get( 4 ) );
+        assertEquals( 165, results2.get( 0 ) );
+        assertEquals( 10, results2.get( 1 ) );
+        assertEquals( 150, results2.get( 2 ) );
+        assertEquals( 10, results2.get( 3 ) );
+        assertEquals( 210, results2.get( 4 ) );
     }
 
     @Test
@@ -829,8 +809,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         wm.fireAllRules();
 
-        assertEquals( new Integer( 15 ),
-                             results.get( 0 ) );
+        assertEquals( 15, results.get( 0 ) );
     }
 
     @Test
@@ -1067,15 +1046,14 @@ public class AccumulateTest extends CommonTestMethodBase {
                                    final DataSet data ) {
         data.results = (List< ? >) session.getGlobal( "results" );
         for ( Iterator< ? > it = session.iterateObjects(); it.hasNext(); ) {
-            Object next = (Object) it.next();
+            Object next = it.next();
             if ( next instanceof Cheese ) {
                 Cheese c = (Cheese) next;
                 data.cheese[c.getOldPrice()] = c;
                 data.cheeseHandles[c.getOldPrice()] = session.getFactHandle( c );
                 assertNotNull( data.cheeseHandles[c.getOldPrice()] );
             } else if ( next instanceof Person ) {
-                Person p = (Person) next;
-                data.bob = p;
+                data.bob = (Person) next;
                 data.bobHandle = session.getFactHandle( data.bob );
             }
         }
@@ -1571,7 +1549,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         assertEquals( 1,
                       results.size() );
-        assertEquals( new Integer( 45 ),
+        assertEquals( 45,
                       results.get( 0 ) );
     }
 
@@ -1628,7 +1606,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.setGlobal( "results",
                       results );
         wm.setGlobal( "globalValue",
-                      new Integer( 50 ) );
+                      50 );
 
         wm.insert( new Cheese( "stilton",
                                10 ) );
@@ -1643,7 +1621,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         assertEquals( 1,
                       results.size() );
-        assertEquals( new Integer( 100 ),
+        assertEquals( 100,
                       results.get( 0 ) );
     }
 
@@ -1900,8 +1878,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                                              new Cheese( "Dolcelatte",
                                                          8 )};
 
-        for ( int i = 0; i < cheese.length; i++ ) {
-            ksession.insert( cheese[i] );
+        for (Cheese aCheese : cheese) {
+            ksession.insert(aCheese);
         }
 
         // ---------------- 1st scenario
@@ -1946,8 +1924,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                                              new Cheese( "Dolcelatte",
                                                          8 )};
 
-        for ( int i = 0; i < cheese.length; i++ ) {
-            ksession.insert( cheese[i] );
+        for (Cheese aCheese : cheese) {
+            ksession.insert(aCheese);
         }
 
         // ---------------- 1st scenario
@@ -2054,7 +2032,7 @@ public class AccumulateTest extends CommonTestMethodBase {
             }
         }
 
-        private NestedObj nestedObj;
+        private final NestedObj nestedObj;
 
         public MyObj(long value) {
             nestedObj = new NestedObj(value);
@@ -2089,7 +2067,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final List<String> results = new ArrayList<String>();
+        final List<Number> results = new ArrayList<Number>();
         ksession.setGlobal( "results",
                 results );
         ksession.fireAllRules();

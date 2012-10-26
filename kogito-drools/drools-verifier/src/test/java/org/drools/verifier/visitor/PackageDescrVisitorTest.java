@@ -156,7 +156,7 @@ public class PackageDescrVisitorTest {
 
     private PackageDescr getPackageDescr(InputStream resourceAsStream) throws DroolsParserException {
         Reader drlReader = new InputStreamReader(resourceAsStream);
-        return new DrlParser().parse(drlReader);
+        return new DrlParser(5).parse(drlReader);
     }
 
 }

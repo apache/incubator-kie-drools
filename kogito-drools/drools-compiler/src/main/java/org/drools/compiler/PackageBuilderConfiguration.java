@@ -29,6 +29,7 @@ import org.drools.builder.conf.DumpDirOption;
 import org.drools.builder.conf.EvaluatorOption;
 import org.drools.builder.conf.KBuilderSeverityOption;
 import org.drools.builder.conf.KnowledgeBuilderOption;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.builder.conf.MultiValueKnowledgeBuilderOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.builder.conf.PropertySpecificOption;
@@ -36,7 +37,6 @@ import org.drools.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.drools.compiler.xml.RulesSemanticModule;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.rule.Package;
@@ -124,6 +124,8 @@ public class PackageBuilderConfiguration
     private DroolsCompilerComponentFactory    componentFactory;
 
     private ClassBuilderFactory               classBuilderFactory;
+
+    private int                               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -252,6 +254,8 @@ public class PackageBuilderConfiguration
         } else if ( name.startsWith( KBuilderSeverityOption.PROPERTY_NAME ) ) {
             String key = name.substring( name.lastIndexOf('.') + 1 ); 
             this.severityMap.put(key, KBuilderSeverityOption.get(key, value).getSeverity());
+        } else if ( name.equals( LanguageLevelOption.PROPERTY_NAME ) ) {
+            setLanguageLevel( Integer.parseInt( value ) );
         }
     }
 
@@ -279,10 +283,12 @@ public class PackageBuilderConfiguration
             return String.valueOf( isProcessStringEscapes() );
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return String.valueOf( isClassLoaderCacheEnabled() );
-        } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)){
+        } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
             String key = name.substring(name.lastIndexOf('.') + 1 );
             ResultSeverity severity = this.severityMap.get(key);
             return severity.toString();
+        } else if (name.equals( LanguageLevelOption.PROPERTY_NAME )) {
+            return "" + getLanguageLevel();
         }
         return null;
     }
@@ -293,17 +299,16 @@ public class PackageBuilderConfiguration
 
     private void buildDialectConfigurationMap() {
         //DialectRegistry registry = new DialectRegistry();
-        Map dialectProperties = new HashMap();
+        Map<String, String> dialectProperties = new HashMap<String, String>();
         this.chainedProperties.mapStartsWith( dialectProperties,
                                               "drools.dialect",
                                               false );
         setDefaultDialect( (String) dialectProperties.remove( DefaultDialectOption.PROPERTY_NAME ) );
 
-        for (Object o : dialectProperties.entrySet()) {
-            Entry entry = (Entry) o;
-            String str = (String) entry.getKey();
+        for (Map.Entry<String, String> entry : dialectProperties.entrySet()) {
+            String str = entry.getKey();
             String dialectName = str.substring(str.lastIndexOf(".") + 1);
-            String dialectClass = (String) entry.getValue();
+            String dialectClass = entry.getValue();
             addDialect(dialectName, dialectClass);
         }
     }
@@ -648,6 +653,14 @@ public class PackageBuilderConfiguration
         this.classBuilderFactory = classBuilderFactory;
     }
 
+    public int getLanguageLevel() {
+        return languageLevel;
+    }
+
+    public void setLanguageLevel(int languageLevel) {
+        this.languageLevel = languageLevel;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeBuilderOption> T getOption(Class<T> option) {
         if ( DefaultDialectOption.class.equals( option ) ) {
@@ -662,6 +675,8 @@ public class PackageBuilderConfiguration
             return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if ( PropertySpecificOption.class.equals( option ) ) {
             return (T)propertySpecificOption;
+        } else if ( LanguageLevelOption.class.equals( option ) ) {
+            return (T) LanguageLevelOption.get(languageLevel);
         }
         return null;
     }
@@ -715,7 +730,8 @@ public class PackageBuilderConfiguration
             this.severityMap.put(((KBuilderSeverityOption) option).getName(), ((KBuilderSeverityOption) option).getSeverity());
         } else if ( option instanceof PropertySpecificOption ) {
             propertySpecificOption = (PropertySpecificOption)option;
+        } else if ( option instanceof LanguageLevelOption ) {
+            this.languageLevel = ((LanguageLevelOption) option).getLanguageLevel();
         }
     }
-
 }

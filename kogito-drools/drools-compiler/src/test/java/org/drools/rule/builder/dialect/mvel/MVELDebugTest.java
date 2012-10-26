@@ -19,7 +19,7 @@ public class MVELDebugTest {
     public void testDebug() throws Exception {
         String rule = "package com.sample; dialect \"mvel\" rule myRule when then\n System.out.println( \"test\" ); end";
         PackageBuilder builder = new PackageBuilder();
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(5);
         PackageDescr packageDescr = parser.parse(rule);
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         builder = new PackageBuilder( );

@@ -97,7 +97,7 @@ public abstract class Waltz {
                                InvalidPatternException {
         //read in the source
         final Reader reader = new InputStreamReader( Waltz.class.getResourceAsStream( "waltz.drl" ) );
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr packageDescr = parser.parse( reader );
         
         if( parser.hasErrors() ) {

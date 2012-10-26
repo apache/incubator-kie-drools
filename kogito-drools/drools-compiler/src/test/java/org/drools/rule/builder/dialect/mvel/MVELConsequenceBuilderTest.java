@@ -1,18 +1,5 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -48,13 +35,26 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Consequence;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
+import org.junit.Test;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
+
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class MVELConsequenceBuilderTest {
 
@@ -68,8 +68,6 @@ public class MVELConsequenceBuilderTest {
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setNamespace( "pkg1" );
         ruleDescr.setConsequence( "modify (cheese) {price = 5 };\nretract (cheese)" );
-
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
 
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
 
@@ -254,7 +252,7 @@ public class MVELConsequenceBuilderTest {
         MVELDebugHandler.setDebugMode( true );
 
         try {
-            final DrlParser parser = new DrlParser();
+            final DrlParser parser = new DrlParser(5);
             final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
 
             // just checking there is no parsing errors
@@ -263,7 +261,7 @@ public class MVELConsequenceBuilderTest {
 
             final Package pkg = new Package( "org.drools" );
 
-            final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
+            final RuleDescr ruleDescr = pkgDescr.getRules().get( 0 );
 
             final RuleBuilder builder = new RuleBuilder();
 

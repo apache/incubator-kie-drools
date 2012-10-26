@@ -28,7 +28,7 @@ public class DrlParserTest {
         String dsl = "[condition]Something=Something()\n[then]another=another();";
         String drl = "rule 'foo' \n when \n Something \n then \n another \nend";
         
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(5);
         String result = parser.getExpandedDRL( drl, new StringReader(dsl));
         assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
     }
@@ -51,7 +51,7 @@ public class DrlParserTest {
             throw new RuntimeDroolsException( "Error parsing and loading DSL file." + file.getErrors() );
         }
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(5);
         String result = parser.getExpandedDRL( drl, resolver);
         assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
     }
@@ -67,7 +67,7 @@ public class DrlParserTest {
                      + "cheese : String \n"
                      + "end";
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(5);
         PackageDescr pkgDescr = parser.parse( drl );
         TypeDeclarationDescr bean1Type = pkgDescr.getTypeDeclarations().get( 0 );
         assertNull( bean1Type.getSuperTypeName() );

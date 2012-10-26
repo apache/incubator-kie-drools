@@ -429,7 +429,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      */
     public void addPackageFromDrl( final Reader reader, final Resource sourceResource ) throws DroolsParserException, IOException {
         this.resource = sourceResource;
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
         if (pkg == null) {
@@ -452,7 +452,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
         String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(), dtableConfiguration );
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
         PackageDescr pkg = parser.parse( new StringReader( string ) );
         this.results.addAll( parser.getErrors() );
         if (pkg == null) {
@@ -473,7 +473,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if (resource instanceof DescrResource) {
             pkg = (PackageDescr) ( (DescrResource) resource ).getDescr();
         } else {
-            final DrlParser parser = new DrlParser();
+            final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
             pkg = parser.parse( resource );
             this.results.addAll( parser.getErrors() );
             if (pkg == null) {
@@ -545,7 +545,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     public void addPackageFromDrl( final Reader source, final Reader dsl ) throws DroolsParserException, IOException {
         this.resource = new ReaderResource( source, ResourceType.DSLR );
 
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         final PackageDescr pkg = parser.parse( source, dsl );
         this.results.addAll( parser.getErrors() );
         if (!parser.hasErrors()) {
@@ -564,7 +564,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         boolean hasErrors;
         PackageDescr pkg;
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         DefaultExpander expander = getDslExpander();
 
         Reader reader = null;
@@ -608,7 +608,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
         Reader knowledge = provider.getKnowledgeReader( resource );
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
 
         if (provider.hasDSLSentences()) {
             DefaultExpander expander = getDslExpander();
@@ -739,7 +739,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    public void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception, DroolsParserException {
+    public void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         PMMLCompiler compiler = getPMMLCompiler();
         if ( compiler != null ) {
             this.resource = resource;
@@ -754,7 +754,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         String theory = compiler.compile( resource.getInputStream(),
                 getPackageRegistry() );
 
-        DrlParser parser = new DrlParser();
+        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         PackageDescr pkg = parser.parse( new StringReader( theory ) );
         this.results.addAll( parser.getErrors() );
         if ( pkg == null ) {
@@ -2456,7 +2456,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if (!typeDescr.getFields().isEmpty()) {
             PriorityQueue<FieldDefinition> fieldDefs = sortFields( typeDescr.getFields(),
                                                                    pkgRegistry );
-            while (fieldDefs.size() > 0) {
+            while (!fieldDefs.isEmpty()) {
                 FieldDefinition fld = fieldDefs.poll();
                 def.addField( fld );
             }

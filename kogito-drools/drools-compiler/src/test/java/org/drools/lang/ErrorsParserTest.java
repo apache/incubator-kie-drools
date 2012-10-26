@@ -16,24 +16,25 @@
 
 package org.drools.lang;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.Tree;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.dsl.DefaultExpander;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ErrorsParserTest {
 
@@ -211,7 +212,7 @@ public class ErrorsParserTest {
     }
 
     private DRLParser newParser(final TokenStream tokenStream) {
-        final DRLParser p = new DRLParser( tokenStream );
+        final DRLParser p = new DRL5Parser( tokenStream );
         return p;
     }
 }

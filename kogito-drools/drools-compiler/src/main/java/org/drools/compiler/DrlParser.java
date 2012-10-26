@@ -26,11 +26,14 @@ import java.util.List;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.InputStreamResource;
 import org.drools.io.impl.ReaderResource;
+import org.drools.lang.DRL5Parser;
+import org.drools.lang.DRL6Parser;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsSentence;
@@ -54,7 +57,15 @@ public class DrlParser {
     private DRLLexer                lexer                 = null;
     private Resource                resource              = null;
 
+    public static final int DEFAULT_LANGUAGE_LEVEL = 6;
+    private final int languageLevel;
+
     public DrlParser() {
+        this(DEFAULT_LANGUAGE_LEVEL);
+    }
+
+    public DrlParser(int languageLevel) {
+        this.languageLevel = languageLevel;
     }
 
     /** Parse a rule from text */
@@ -284,16 +295,12 @@ public class DrlParser {
      *         not).
      */
     private DRLParser getParser( final String text ) {
-        lexer = new DRLLexer( new ANTLRStringStream( text ) );
-        DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
-        return parser;
+        return buildParser(new ANTLRStringStream(text));
     }
 
     private DRLParser getParser( final Reader reader ) {
         try {
-            lexer = new DRLLexer( new ANTLRReaderStream( reader ) );
-            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
-            return parser;
+            return buildParser(new ANTLRReaderStream(reader));
         } catch ( final Exception e ) {
             throw new RuntimeException( "Unable to parser Reader",
                                         e );
@@ -302,19 +309,17 @@ public class DrlParser {
 
     private DRLParser getParser( final InputStream is, final String encoding ) {
         try {
-            ANTLRInputStream antlrInputStream;
-            if (encoding != null) {
-                antlrInputStream = new ANTLRInputStream(is, encoding);
-            } else {
-                antlrInputStream = new ANTLRInputStream(is);
-            }
-            lexer = new DRLLexer(antlrInputStream);
-            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
-            return parser;
+            return buildParser(encoding != null ? new ANTLRInputStream(is, encoding) : new ANTLRInputStream(is));
         } catch ( final Exception e ) {
             throw new RuntimeException( "Unable to parser Reader",
                                         e );
         }
+    }
+
+    private DRLParser buildParser(CharStream input) {
+        lexer = new DRLLexer( input );
+        CommonTokenStream stream = new CommonTokenStream( lexer );
+        return languageLevel <= 5 ? new DRL5Parser( stream ) : new DRL6Parser( stream );
     }
 
     public Location getLocation() {

@@ -114,7 +114,7 @@ public class LargeRuleBaseSerializationTest {
         }
         System.out.println("Parsing "+RULE_COUNT+" rules");
         PackageBuilder pkgBuilder = new PackageBuilder();
-        DrlParser ps = new DrlParser();
+        DrlParser ps = new DrlParser(5);
         PackageDescr pkgDescr = ps.parse(new StringReader(sb.toString()));
 
         pkgBuilder.addPackage(pkgDescr);

@@ -15,19 +15,6 @@
  */
 package org.drools.builder;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.base.accumulators.AverageAccumulateFunction;
 import org.drools.base.accumulators.MaxAccumulateFunction;
 import org.drools.base.evaluators.AfterEvaluatorDefinition;
@@ -38,8 +25,23 @@ import org.drools.builder.conf.DefaultDialectOption;
 import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.builder.conf.DumpDirOption;
 import org.drools.builder.conf.EvaluatorOption;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.runtime.rule.AccumulateFunction;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class KnowledgeBuilderConfigurationTest {
 
@@ -85,6 +87,38 @@ public class KnowledgeBuilderConfigurationTest {
                       config.getProperty( DefaultDialectOption.PROPERTY_NAME ) );
     }
     
+    @Test
+    public void testLanguageLevelConfiguration() {
+        // setting the language level using the type safe method
+        config.setOption( LanguageLevelOption.get(5) );
+
+        // checking the type safe getOption() method
+        assertEquals( LanguageLevelOption.get( 5 ),
+                      config.getOption( LanguageLevelOption.class ) );
+        // checking string conversion
+        assertEquals( 5,
+                      config.getOption( LanguageLevelOption.class ).getLanguageLevel() );
+        // checking the string based getProperty() method
+        assertEquals( "5",
+                      config.getProperty( LanguageLevelOption.PROPERTY_NAME ) );
+
+        // setting the default dialect using the string based setProperty() method
+        config.setProperty( LanguageLevelOption.PROPERTY_NAME,
+                            "6" );
+
+        // checking the type safe getOption() method
+        assertEquals(LanguageLevelOption.get(6),
+                config.getOption(LanguageLevelOption.class));
+        assertEquals( "LanguageLevelOption( languageLevel=6 )",
+                      config.getOption( LanguageLevelOption.class ).toString() );
+        // checking string conversion
+        assertEquals( 6,
+                      config.getOption( LanguageLevelOption.class ).getLanguageLevel() );
+        // checking the string based getProperty() method
+        assertEquals( "6",
+                      config.getProperty( LanguageLevelOption.PROPERTY_NAME ) );
+    }
+
     @Test
     public void testAccumulateFunctionConfiguration() {
         Set<String> keySet = new HashSet<String>();

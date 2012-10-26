@@ -67,6 +67,7 @@ import org.junit.Test;
 
 public class RuleParserTest extends TestCase {
 
+
     private DRLParser parser;
 
     @Before
@@ -100,7 +101,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackage() throws Exception {
         final String source = "package foo.bar.baz";
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr pkg = parser.parse( new StringReader( source ) );
         assertFalse( parser.hasErrors() );
         assertEquals( "foo.bar.baz",
@@ -110,7 +111,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackageWithError() throws Exception {
         final String source = "package 12 foo.bar.baz";
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr pkg = parser.parse( true,
                                                new StringReader( source ) );
         assertTrue( parser.hasErrors() );
@@ -121,7 +122,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackageWithError2() throws Exception {
         final String source = "package 12 12312 231";
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr pkg = parser.parse( true,
                                                new StringReader( source ) );
         assertTrue( parser.hasErrors() );
@@ -1436,7 +1437,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderLineSpread() throws Exception {
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.dslr" ),
                                                this.getReader( "complex.dsl" ) );
 
@@ -1456,7 +1457,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderMultipleConstraints() throws Exception {
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.dslr" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
@@ -1488,7 +1489,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderMultipleConstraintsFlush() throws Exception {
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
         // this is similar to the other test, but it requires a flush to add the
         // constraints
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.dslr" ),
@@ -4171,7 +4172,7 @@ public class RuleParserTest extends TestCase {
             /** Use Reflection to get rule method from parser */
             Method ruleName = null;
             Object[] params = null;
-            for ( Method method : DRLParser.class.getMethods() ) {
+            for ( Method method : DRL5Parser.class.getMethods() ) {
                 if ( method.getName().equals( testRuleName ) ) {
                     ruleName = method;
                     Class< ? >[] parameterTypes = method.getParameterTypes();
@@ -4198,7 +4199,7 @@ public class RuleParserTest extends TestCase {
     private void createParser( CharStream charStream ) {
         DRLLexer lexer = new DRLLexer( charStream );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
-        parser = new DRLParser( tokens );
+        parser = new DRL5Parser( tokens );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,

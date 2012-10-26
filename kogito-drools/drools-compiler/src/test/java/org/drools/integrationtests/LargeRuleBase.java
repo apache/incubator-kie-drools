@@ -53,7 +53,7 @@ public class LargeRuleBase {
 
         /* love you */long time = System.currentTimeMillis();
 
-        DrlParser ps = new DrlParser();
+        DrlParser ps = new DrlParser(5);
         PackageDescr pkg = ps.parse(new StringReader(buf.toString()));
 
         System.err.println("Time taken for parsing: "

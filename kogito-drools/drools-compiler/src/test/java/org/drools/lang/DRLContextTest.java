@@ -3242,7 +3242,7 @@ public class DRLContextTest {
      *         not).
      */
     private DRLParser getParser(final String text) {
-        DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
+        DRLParser parser = new DRL5Parser(new CommonTokenStream(new DRLLexer(
                 new ANTLRStringStream(text))));
         return parser;
     }

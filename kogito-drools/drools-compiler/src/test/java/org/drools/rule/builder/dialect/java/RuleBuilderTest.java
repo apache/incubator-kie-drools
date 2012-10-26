@@ -58,7 +58,7 @@ public class RuleBuilderTest {
      */
     @Test
     public void testBuild() throws Exception {
-        final DrlParser parser = new DrlParser();
+        final DrlParser parser = new DrlParser(5);
 
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );

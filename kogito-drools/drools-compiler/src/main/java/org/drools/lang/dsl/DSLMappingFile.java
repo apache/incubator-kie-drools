@@ -16,6 +16,8 @@
 
 package org.drools.lang.dsl;
 
+import org.drools.builder.KnowledgeBuilderResult;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -56,11 +58,11 @@ public abstract class DSLMappingFile {
      * Returns the list of parsing errors
      * @return
      */
-    public List getErrors() {
+    public List<KnowledgeBuilderResult> getErrors() {
         return Collections.unmodifiableList( this.errors );
     }
 
-    protected void setErrors(List errors) {
+    protected void setErrors(List<? extends KnowledgeBuilderResult> errors) {
         this.errors = errors;
     }
 
@@ -94,9 +96,9 @@ public abstract class DSLMappingFile {
      */
     public static void saveMapping(final Writer out,
                                    final DSLMapping mapping) throws IOException {
-        for ( final Iterator it = mapping.getEntries().iterator(); it.hasNext(); ) {
-            out.write( it.next().toString() );
-            out.write( "\n" );
+        for (DSLMappingEntry dslMappingEntry : mapping.getEntries()) {
+            out.write(dslMappingEntry.toString());
+            out.write("\n");
         }
     }
 
@@ -106,9 +108,9 @@ public abstract class DSLMappingFile {
      */
     public String dumpFile() {
         final StringBuilder buf = new StringBuilder();
-        for ( final Iterator it = this.mapping.getEntries().iterator(); it.hasNext(); ) {
-            buf.append( it.next() );
-            buf.append( "\n" );
+        for (DSLMappingEntry dslMappingEntry : this.mapping.getEntries()) {
+            buf.append(dslMappingEntry);
+            buf.append("\n");
         }
         return buf.toString();
     }
