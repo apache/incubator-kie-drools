@@ -11,4 +11,6 @@ public interface InternalProcessRuntime extends ProcessRuntime, ProcessEventMana
 
     void clearProcessInstances();
 
+    void clearProcessInstancesState();
+
 }
