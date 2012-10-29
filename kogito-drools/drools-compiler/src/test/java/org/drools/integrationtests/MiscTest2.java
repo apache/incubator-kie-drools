@@ -143,4 +143,40 @@ public class MiscTest2 extends CommonTestMethodBase {
             fileManager.tearDown();
         }
     }
+
+    @Test
+    public void testAnalyzeConditionWithVariableRegExp() throws Exception {
+        // JBRULES-3659
+        String str =
+                "dialect \"mvel\"\n" +
+                "\n" +
+                "declare Person\n" +
+                "   name : String\n" +
+                "end\n" +
+                "declare Stuff\n" +
+                "   regexp : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Test Regex\"\n" +
+                "   salience 100\n" +
+                "    when\n" +
+                "    then\n" +
+                "       insert (new Stuff(\"Test\"));\n" +
+                "       insert (new Person(\"Test\"));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Test Equality\"\n" +
+                "   salience 10\n" +
+                "    when\n" +
+                "       Stuff( $regexp : regexp )\n" +
+                "        Person( name matches $regexp )\n" +
+                "        //Person( name matches \"Test\" )\n" +
+                "    then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
