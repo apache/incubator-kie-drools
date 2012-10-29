@@ -19,7 +19,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
         assertEquals(1, consequenceMetaData.getStatements().size());
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClass().getName());
+        assertEquals("org.drools.A", statment.getFactClassName());
 
         assertEquals(2, statment.getFields().size());
         ConsequenceMetaData.Field field1 = statment.getFields().get(0);
@@ -43,7 +43,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment1 = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment1.getType());
-        assertEquals("org.drools.A", statment1.getFactClass().getName());
+        assertEquals("org.drools.A", statment1.getFactClassName());
         assertEquals(1, statment1.getFields().size());
         ConsequenceMetaData.Field field1 = statment1.getFields().get(0);
         assertEquals("c", field1.getName());
@@ -52,7 +52,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment2 = consequenceMetaData.getStatements().get(1);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment2.getType());
-        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment2.getFactClass().getName());
+        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment2.getFactClassName());
         assertEquals(1, statment2.getFields().size());
         ConsequenceMetaData.Field field2 = statment2.getFields().get(0);
         assertEquals("c", field2.getName());
@@ -71,7 +71,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.RETRACT, statment.getType());
-        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment.getFactClass().getName());
+        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment.getFactClassName());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.RETRACT, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClass().getName());
+        assertEquals("org.drools.A", statment.getFactClassName());
     }
 
     @Test
@@ -98,7 +98,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
         assertEquals(1, consequenceMetaData.getStatements().size());
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClass().getName());
+        assertEquals("org.drools.A", statment.getFactClassName());
 
         assertEquals(2, statment.getFields().size());
         ConsequenceMetaData.Field field1 = statment.getFields().get(0);
@@ -122,7 +122,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment1 = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment1.getType());
-        assertEquals("org.drools.A", statment1.getFactClass().getName());
+        assertEquals("org.drools.A", statment1.getFactClassName());
         assertEquals(1, statment1.getFields().size());
         ConsequenceMetaData.Field field1 = statment1.getFields().get(0);
         assertEquals("c", field1.getName());
@@ -131,7 +131,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment2 = consequenceMetaData.getStatements().get(1);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment2.getType());
-        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment2.getFactClass().getName());
+        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment2.getFactClassName());
         assertEquals(1, statment2.getFields().size());
         ConsequenceMetaData.Field field2 = statment2.getFields().get(0);
         assertEquals("c", field2.getName());
@@ -149,7 +149,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
         assertEquals(1, consequenceMetaData.getStatements().size());
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.INSERT, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClass().getName());
+        assertEquals("org.drools.A", statment.getFactClassName());
 
         assertEquals(3, statment.getFields().size());
         ConsequenceMetaData.Field field1 = statment.getFields().get(0);
@@ -176,7 +176,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
         assertEquals(1, consequenceMetaData.getStatements().size());
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.INSERT, statment.getType());
-        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment.getFactClass().getName());
+        assertEquals("org.drools.integrationtests.RuleMetadataTest$B", statment.getFactClassName());
     }
 
     private KnowledgeBase getKnowledgeBase(String... consequences) {
