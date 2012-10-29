@@ -151,9 +151,6 @@ public class ProtobufInputMarshaller {
 
         ProtobufMessages.KnowledgeSession _session = loadAndParseSession( context );
 
-        System.out.println( "input" );
-        System.out.println( _session.toString() );
-        
         ReteooStatefulSession session = createAndInitializeSession( context,
                                                                     id,
                                                                     executor,
