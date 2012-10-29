@@ -13,6 +13,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.drools.definition.type.Position;
 import org.drools.integrationtests.MVELTest.DMap;
 import org.drools.integrationtests.MVELTest.Triangle;
 import org.drools.io.ResourceFactory;
@@ -29,7 +30,7 @@ public class TypeDeclarationMergingTest {
     public void testMask() {
         TypeDeclaration tdeclr = new TypeDeclaration(CImpl.class.getName() );
         assertEquals( 0, tdeclr.getSetMask() );
-        
+
         tdeclr.setRole( Role.EVENT );
         assertEquals( TypeDeclaration.ROLE_BIT, tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT );
         assertFalse( TypeDeclaration.TYPESAFE_BIT == ( tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT ) );
@@ -230,9 +231,55 @@ public class TypeDeclarationMergingTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        
-        PackageBuilder builder = ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
-        return builder;
-        
+
+        return ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
+    }
+
+    @Test
+    public void testNotOverwritePOJOMetadata() {
+        final String eventClassName = PositionAnnotatedEvent.class.getCanonicalName();
+        // should add metadata to metadata already defined in POJO
+        String str =
+                "package org.test \n" +
+                "declare " + eventClassName + "\n" +
+                " @role(event)\n" +
+                "end \n" +
+                "rule 'sample rule' \n" +
+                "when \n" +
+                " " + eventClassName + "( 'value1', 'value2'; ) \n" +
+                "then \n" +
+                "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        try {
+            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                    ResourceType.DRL );
+        } catch (IndexOutOfBoundsException e) {
+            final String msg = e.getMessage();
+            if ( "Error trying to access field at position 0".equals( msg ) ) {
+                fail( "@Position declared in POJO was ignored." );
+            } else {
+                fail( "Check the test, unexpected error message: " + msg );
+            }
+        }
+        assertFalse( "Check the test, unexpected error message: "
+                + kbuilder.getErrors(), kbuilder.hasErrors());
+    }
+
+    public static class PositionAnnotatedEvent {
+
+        @Position(1)
+        private String arg1;
+
+        @Position(0)
+        private String arg0;
+
+        public String getArg1() {
+            return arg1;
+        }
+
+        public String getArg0() {
+            return arg0;
+        }
     }
 }
