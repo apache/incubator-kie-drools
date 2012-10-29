@@ -40,25 +40,25 @@ public class ConsequenceMetaData implements Externalizable {
         public enum Type { INSERT, RETRACT, MODIFY }
 
         private Type type;
-        private Class<?> factClass;
+        private String factClassName;
         private List<Field> fields;
 
         public Statement() { }
 
         public Statement(Type type, Class<?> factClass) {
             this.type = type;
-            this.factClass = factClass;
+            this.factClassName = factClass.getName();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( type );
-            out.writeObject( factClass );
+            out.writeObject( factClassName );
             out.writeObject( fields );
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             type = (Type) in.readObject();
-            factClass = (Class<?>) in.readObject();
+            factClassName = (String) in.readObject();
             fields = (List<Field>) in.readObject();
         }
 
@@ -66,8 +66,8 @@ public class ConsequenceMetaData implements Externalizable {
             return type;
         }
 
-        public Class<?> getFactClass() {
-            return factClass;
+        public String getFactClassName() {
+            return factClassName;
         }
 
         public List<Field> getFields() {
@@ -87,7 +87,7 @@ public class ConsequenceMetaData implements Externalizable {
 
         @Override
         public String toString() {
-            return "Modifications to " + factClass + ": " + fields;
+            return "Modifications to " + factClassName + ": " + fields;
         }
     }
 

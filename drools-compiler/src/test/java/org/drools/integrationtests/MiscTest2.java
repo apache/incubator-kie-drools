@@ -23,19 +23,27 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.core.util.FileManager;
+import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Collection;
+
 /**
  * Run all the tests with the ReteOO engine implementation
  */
 public class MiscTest2 extends CommonTestMethodBase {
 
-    private static Logger logger = LoggerFactory.getLogger(MiscTest2.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(MiscTest2.class);
 
     @Test
     public void testUpdateWithNonEffectiveActivations() throws Exception {
@@ -58,9 +66,6 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "        System.out.println( $b ); \n" +
                 "end";
 
-
-        KnowledgeBase knowledgeBase = null;
-
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
@@ -68,7 +73,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         if ( builder.hasErrors() ) {
             throw new RuntimeException(builder.getErrors().toString());
         }
-        knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
 
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
@@ -93,5 +98,50 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals( 1, rulesFired );
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testClassNotFoundAfterDeserialization() throws Exception {
+        // JBRULES-3670
+        String drl =
+                "package completely.other.deal;\n" +
+                "\n" +
+                "declare Person\n" +
+                "   firstName : String\n" +
+                "   lastName : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"now use it B\"\n" +
+                "   when\n" +
+                "       Person( $christianName, $surname; )\n" +
+                "   then\n" +
+                "       insert( new Person( $christianName, null ) );\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException("" + kbuilder.getErrors());
+        }
+
+        FileManager fileManager = new FileManager();
+        fileManager.setUp();
+
+        try {
+            File root = fileManager.getRootDirectory();
+
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(root, "test.drl.compiled")));
+            out.writeObject( kbuilder.getKnowledgePackages());
+            out.close();
+
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(root, "test.drl.compiled")));
+            kbase.addKnowledgePackages((Collection<KnowledgePackage>) in.readObject());
+            in.close();
+        } finally {
+            fileManager.tearDown();
+        }
     }
 }

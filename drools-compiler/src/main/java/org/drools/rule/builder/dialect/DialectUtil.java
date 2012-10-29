@@ -808,7 +808,7 @@ public final class DialectUtil {
 
         Class<?> clazz = null;
         try {
-            clazz = Class.forName(namespace + "." + className, false, packageBuilder.getRootClassLoader());
+            clazz = Class.forName(className.indexOf('.') < 0 ? namespace + "." + className : className, false, packageBuilder.getRootClassLoader());
         } catch (ClassNotFoundException e) { }
 
         if (clazz != null) {
