@@ -20,6 +20,7 @@ import org.drools.Address;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -178,5 +179,54 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testShareAlphaNodesRegardlessDoubleOrSingleQuotes() {
+        // JBRULES-3640
+        String str =
+                "declare RecordA\n" +
+                "   id : long\n" +
+                "end\n" +
+                "\n" +
+                "declare RecordB\n" +
+                "   id : long\n" +
+                "role : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"insert data 1\"\n" +
+                "   salience 10\n" +
+                "   when\n" +
+                "   then\n" +
+                "       insert (new RecordA(100));\n" +
+                "       insert (new RecordB(100, \"1\"));\n" +
+                "       insert (new RecordB(100, \"2\"));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test 1\"\n" +
+                "   when\n" +
+                "       a : RecordA( )\n" +
+                "       b : RecordB( id == b.id, role == '1' )\n" +
+                "   then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test 2\"\n" +
+                "   when\n" +
+                "       a : RecordA( )\n" +
+                "       b : RecordB( id == b.id, role == \"1\" )\n" +
+                "   then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test 3\"\n" +
+                "   when\n" +
+                "       a : RecordA( )\n" +
+                "       b : RecordB( id == b.id, role == \"2\" )\n" +
+                "   then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals(4, ksession.fireAllRules());
     }
 }
