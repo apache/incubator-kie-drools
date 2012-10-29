@@ -109,8 +109,14 @@ public class ConditionAnalyzer {
         } else if (node instanceof RegExMatch) {
             condition.left = analyzeNode(node);
             condition.operation = BooleanOperator.MATCHES;
-            Pattern pattern = ((RegExMatch)node).getPattern();
-            condition.right = new FixedExpression(String.class, pattern.pattern());
+            RegExMatch regExNode = (RegExMatch)node;
+            Pattern pattern = regExNode.getPattern();
+            if (pattern != null) {
+                condition.right = new FixedExpression(String.class, pattern.pattern());
+            } else {
+                ExecutableStatement regExStmt = (ExecutableStatement)getFieldValue(RegExMatch.class, "patternStmt", regExNode);
+                condition.right = analyzeNode(((ExecutableAccessor)regExStmt).getNode());
+            }
         } else if (node instanceof Contains) {
             condition.left = analyzeNode(((Contains)node).getFirstStatement());
             condition.operation = BooleanOperator.CONTAINS;
