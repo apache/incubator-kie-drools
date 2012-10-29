@@ -1,25 +1,20 @@
 package org.drools.compiler;
 
+import java.util.Iterator;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
-import org.drools.integrationtests.MVELTest.DMap;
-import org.drools.integrationtests.MVELTest.Triangle;
+import org.drools.definition.type.Position;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.TypeDeclaration.Format;
 import org.drools.rule.TypeDeclaration.Role;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
 
@@ -222,7 +217,41 @@ public class TypeDeclarationMergingTest {
         assertEquals( true, tdecl.isTypesafe() );
         assertEquals( Role.FACT, tdecl.getRole() );        
     }      
-    
+
+    /**
+     * Tests adding metadata in DRL to the metadata already declared in a POJO.
+     */
+    @Test
+    public void testNotOverwritePOJOMetadata() {
+        final String eventClassName = PositionAnnotatedEvent.class.getCanonicalName();
+        // should add metadata to metadata already defined in POJO
+        String str =
+           "package org.test \n" +
+           "declare " + eventClassName + "\n" +
+           "    @role(event)\n" +
+           "end \n" + 
+           "rule 'sample rule' \n" +
+           "when \n" +
+           "  " + eventClassName + "( 'value1', 'value2'; ) \n" +
+           "then \n" +
+           "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        try {
+            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+        } catch (IndexOutOfBoundsException e) {
+            final String msg = e.getMessage();
+            if ( "Error trying to access field at position 0".equals( msg ) ) {
+                fail( "@Position declared in POJO was ignored." );
+            } else {
+                fail( "Check the test, unexpected error message: " + msg );
+            }         
+        }
+        assertFalse( "Check the test, unexpected error message: "
+                     + kbuilder.getErrors(), kbuilder.hasErrors());
+    }      
+
     private PackageBuilder getPackageBuilder(String str) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -234,5 +263,5 @@ public class TypeDeclarationMergingTest {
         PackageBuilder builder = ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
         return builder;
         
-    }
+    }   
 }
