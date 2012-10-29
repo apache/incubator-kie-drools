@@ -1347,8 +1347,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         typeDeclaration = createTypeDeclarationForBean( cls );
-        initTypeDeclaration( cls,
-                             typeDeclaration );
+        initTypeDeclaration( cls, typeDeclaration );
         PackageRegistry packageRegistry = pkgRegistryMap.get( packageName );
         if (packageRegistry != null) {
             packageRegistry.getPackage().addTypeDeclaration( typeDeclaration );
@@ -1372,8 +1371,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             typeDeclaration = createTypeDeclarationForBean( cls );
         }
 
-        initTypeDeclaration( cls,
-                             typeDeclaration );
+        initTypeDeclaration( cls, typeDeclaration );
         return typeDeclaration;
     }
 
@@ -1403,6 +1401,17 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private void initTypeDeclaration( Class<?> cls, TypeDeclaration typeDeclaration ) {
+        ClassDefinition clsDef = typeDeclaration.getTypeClassDef();
+        if (clsDef == null) {
+            clsDef = new ClassDefinition();
+            typeDeclaration.setTypeClassDef( clsDef );
+        }
+
+        if (typeDeclaration.isPropertyReactive()) {
+            processModifiedProps( cls, clsDef );
+        }
+        processFieldsPosition( cls, clsDef );
+
         // build up a set of all the super classes and interfaces
         Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
 
@@ -1448,18 +1457,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                          cls.isAnnotationPresent(ClassReactive.class));
 
         setPropertyReactive(null, typeDeclaration, propertyReactive);
-
-        ClassDefinition clsDef = typeDeclaration.getTypeClassDef();
-        if (clsDef == null) {
-            clsDef = new ClassDefinition();
-            if (typeDeclaration.isPropertyReactive()) {
-                processModifiedProps( cls,
-                                      clsDef );
-            }
-            processFieldsPosition( cls,
-                                   clsDef );
-            typeDeclaration.setTypeClassDef( clsDef );
-        }
 
         return typeDeclaration;
     }
