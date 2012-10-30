@@ -20,8 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.drools.runtime.Environment;
 
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
@@ -29,10 +29,8 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.AccessType;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.Content;
-import org.jbpm.task.Group;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;
@@ -41,7 +39,6 @@ import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.SubTasksStrategyFactory;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.entity.TaskCompletedEvent;
 import org.jbpm.task.event.entity.TaskEvent;
@@ -209,36 +206,10 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
             }
             task.setSubTaskStrategies(strategies);
         }
-
-        PeopleAssignments assignments = new PeopleAssignments();
-        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-
-        String actorId = (String) workItem.getParameter("ActorId");
-        if (actorId != null && actorId.trim().length() > 0) {
-            String[] actorIds = actorId.split(",");
-            for (String id : actorIds) {
-                potentialOwners.add(new User(id.trim()));
-            }
-            //Set the first user as creator ID??? hmmm might be wrong
-            if (potentialOwners.size() > 0) {
-                taskData.setCreatedBy((User) potentialOwners.get(0));
-            }
-        }
-
-        String groupId = (String) workItem.getParameter("GroupId");
-        if (groupId != null && groupId.trim().length() > 0) {
-            String[] groupIds = groupId.split(",");
-            for (String id : groupIds) {
-                potentialOwners.add(new Group(id.trim()));
-            }
-        }
-
-        assignments.setPotentialOwners(potentialOwners);
-        List<OrganizationalEntity> businessAdministrators = new ArrayList<OrganizationalEntity>();
-        businessAdministrators.add(new User("Administrator"));
-        assignments.setBusinessAdministrators(businessAdministrators);
-        task.setPeopleAssignments(assignments);
-
+        
+        PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
+        peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);
+        
         task.setTaskData(taskData);
 
         ContentData content = null;
@@ -249,6 +220,10 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         if (contentObject != null) {
             content = ContentMarshallerHelper.marshal(contentObject,  session.getEnvironment());
         }
+        
+        
+        PeopleAssignments peopleAssignments = task.getPeopleAssignments();
+        List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
         
         task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
 
