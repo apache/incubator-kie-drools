@@ -46,7 +46,7 @@ public class ProcessTest {
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		HornetQHTWorkItemHandler humanTaskHandler = new HornetQHTWorkItemHandler(ksession);
 		humanTaskHandler.setIpAddress("127.0.0.1");
-		humanTaskHandler.setPort(5445);
+		humanTaskHandler.setPort(5153);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
 		return ksession;
 	}

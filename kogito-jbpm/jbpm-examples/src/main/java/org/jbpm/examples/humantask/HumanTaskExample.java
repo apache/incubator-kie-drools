@@ -45,7 +45,7 @@ public class HumanTaskExample {
             // we can reuse the client used by the Work Item Hander.
             TaskService taskClient = new SyncTaskServiceWrapper(new AsyncHornetQTaskClient("HumanTaskExample-testClient"));
 
-            taskClient.connect("127.0.0.1", 5445);
+            taskClient.connect("127.0.0.1", 5153);
             
             Thread.sleep(1000);
             // "sales-rep" reviews request

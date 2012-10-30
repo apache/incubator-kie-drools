@@ -21,7 +21,7 @@ public class Utils {
     
     public static final String DEFAULT_TASK_SERVICE_STRATEGY = "HornetQ";
     public static final String DEFAULT_IP_ADDRESS = "127.0.0.1";
-    public static final int DEFAULT_PORT = 5445;
+    public static final int DEFAULT_PORT = 5153;
 
     public static String getTaskServiceHost(Properties properties) {
         String host = properties.getProperty("jbpm.console.task.service.host", DEFAULT_IP_ADDRESS);
@@ -36,7 +36,7 @@ public class Utils {
             defaultPort = "9123";
             
         } else if ("HornetQ".equalsIgnoreCase(strategy)) {
-            defaultPort = "5445";
+            defaultPort = "5153";
         }
         String port = properties.getProperty("jbpm.console.task.service.port", defaultPort);
         

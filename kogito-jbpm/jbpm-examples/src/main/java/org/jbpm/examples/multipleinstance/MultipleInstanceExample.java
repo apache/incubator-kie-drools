@@ -25,7 +25,7 @@ public class MultipleInstanceExample {
 			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
                         HornetQHTWorkItemHandler hornetQHTWorkItemHandler = new HornetQHTWorkItemHandler(ksession);
-                        hornetQHTWorkItemHandler.setPort(5445);
+                        hornetQHTWorkItemHandler.setPort(5153);
 			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", hornetQHTWorkItemHandler);
 			
 			// start a new process instance

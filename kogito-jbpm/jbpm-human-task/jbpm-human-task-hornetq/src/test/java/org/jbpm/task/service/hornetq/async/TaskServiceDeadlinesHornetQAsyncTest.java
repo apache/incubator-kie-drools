@@ -36,7 +36,7 @@ public class TaskServiceDeadlinesHornetQAsyncTest extends TaskServiceDeadlinesBa
 		getConf().setProperty("replyTo", "replyTo@domain.com");
 		getConf().setProperty("defaultLanguage", "en-UK");
 
-		server = new HornetQTaskServer(taskService, 5445);
+		server = new HornetQTaskServer(taskService, 5153);
 		System.out.println("Waiting for the HornetQTask Server to come up");
         try {
             startTaskServerThread(server, false);
@@ -45,7 +45,7 @@ public class TaskServiceDeadlinesHornetQAsyncTest extends TaskServiceDeadlinesBa
         }
 
 		client = new AsyncHornetQTaskClient();
-		client.connect("127.0.0.1", 5445);
+		client.connect("127.0.0.1", 5153);
 
 		setWiser(new Wiser());
 		getWiser().setHostname(getConf().getProperty("mail.smtp.host"));

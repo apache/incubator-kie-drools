@@ -575,7 +575,7 @@
 ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new AsyncHornetQHTWorkItemHandler(ksession));</programlisting>
 
       <para>By default, this handler will connect to the human task service on the local
-      machine on port 5445 via hornetq.  You can easily change connection details of the human task
+      machine on port 5153 via hornetq.  You can easily change connection details of the human task
       service by either building TaskClient yourself and pass it as handler constructor argument
       or by setting ip address and port number after handler is created.</para>
        
@@ -1167,7 +1167,7 @@ ldap.entity.id.dn=true
       HornetQ
       <itemizedlist>
         <listitem>hornetq.host : host/ip address used to bind HornetQ server (default localhost)</listitem>
-        <listitem>hornetq.port : port used to bind HornetQ server (default 5445)</listitem>
+        <listitem>hornetq.port : port used to bind HornetQ server (default 5153)</listitem>
       </itemizedlist>
       JMS
       <itemizedlist>

@@ -37,7 +37,7 @@ public class EventPersistenceServerSideHornetQSyncTest extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
         
-        server = new HornetQTaskServer(taskService, 5445);
+        server = new HornetQTaskServer(taskService, 5153);
         System.out.println("Waiting for the MinaTask Server to come up");
         try {
             startTaskServerThread(server, false);
@@ -46,7 +46,7 @@ public class EventPersistenceServerSideHornetQSyncTest extends BaseTest {
         }
         
         client = new SyncTaskServiceWrapper(new AsyncHornetQTaskClient());
-        client.connect("127.0.0.1", 5445);
+        client.connect("127.0.0.1", 5153);
         eventsAdmin = taskService.createTaskEventsAdmin();
         // We can register an internal persistent listener to the Local Task Service
         server.addEventListener(new InternalPersistentTaskEventListener(eventsAdmin));

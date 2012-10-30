@@ -86,7 +86,7 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 				address = "127.0.0.1";
 			}
 			if (port==null) {
-				port = 5445;
+				port = 5153;
 			}
 			connectionParams.put(TransportConstants.PORT_PROP_NAME, port);
 			connectionParams.put(TransportConstants.HOST_PROP_NAME, address);

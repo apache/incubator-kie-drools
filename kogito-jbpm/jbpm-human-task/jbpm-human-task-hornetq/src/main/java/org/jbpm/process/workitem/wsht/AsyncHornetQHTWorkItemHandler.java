@@ -71,7 +71,7 @@ public class AsyncHornetQHTWorkItemHandler extends AsyncGenericHTWorkItemHandler
             setClient(new AsyncHornetQTaskClient(this.connectorName));
         }
         if(getPort() <= 0){
-            setPort(5445);
+            setPort(5153);
         }
         if(getIpAddress() == null || getIpAddress().equals("")){
             setIpAddress("127.0.0.1");

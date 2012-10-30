@@ -102,7 +102,7 @@ public final class JBPMHelper {
             Thread thread = new Thread(taskServer);
             thread.start();
         } else if ("hornetq".equals(transport)) {
-            HornetQTaskServer taskServer = new HornetQTaskServer(taskService, Integer.parseInt(properties.getProperty("taskservice.port", "5445")));
+            HornetQTaskServer taskServer = new HornetQTaskServer(taskService, Integer.parseInt(properties.getProperty("taskservice.port", "5153")));
             Thread thread = new Thread(taskServer);
             thread.start();
         } else {

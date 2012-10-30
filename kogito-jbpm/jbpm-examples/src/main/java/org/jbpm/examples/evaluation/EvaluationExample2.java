@@ -42,7 +42,7 @@ public class EvaluationExample2 {
 
             SystemEventListenerFactory.setSystemEventListener(new SystemEventListener());
             TaskService taskClient = new SyncTaskServiceWrapper(new AsyncHornetQTaskClient("EvaluationExample2-testClient"));
-            taskClient.connect("127.0.0.1", 5445);
+            taskClient.connect("127.0.0.1", 5153);
 
 
             Thread.sleep(1000);

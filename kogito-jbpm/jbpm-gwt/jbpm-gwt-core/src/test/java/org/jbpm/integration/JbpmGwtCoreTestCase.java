@@ -78,7 +78,7 @@ public abstract class JbpmGwtCoreTestCase extends Assert {
 		} 
 		
         // start server
-        minaServer = new HornetQTaskServer(taskService, 5445);
+        minaServer = new HornetQTaskServer(taskService, 5153);
         minaServerThread = new Thread(minaServer);
         minaServerThread.start();
         taskSession.dispose();

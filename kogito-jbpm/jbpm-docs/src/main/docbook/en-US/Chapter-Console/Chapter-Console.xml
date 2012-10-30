@@ -151,7 +151,7 @@
      <itemizedlist>
         <listitem>jbpm.console.task.service.strategy : transport used to connect to task server (default HornetQ and accepts Mina|HornetQ|JMS)</listitem>
         <listitem>jbpm.console.task.service.host : host where Task Server is deployed (default localhost) applies to all transports</listitem>
-        <listitem>jbpm.console.task.service.port : port where Task Server is deployed (default 5445) applies to all transports</listitem>
+        <listitem>jbpm.console.task.service.port : port where Task Server is deployed (default 5153) applies to all transports</listitem>
         <listitem>JMSTaskClient.connectionFactory :  JNDI name of connection factory only for JMS (no default)</listitem>
         <listitem>JMSTaskClient.acknowledgeMode : acknowledgment mode only for JMS (no default)</listitem>
         <listitem>JMSTaskClient.transactedQueue :  transacted queue name only for JMS (no default)</listitem>

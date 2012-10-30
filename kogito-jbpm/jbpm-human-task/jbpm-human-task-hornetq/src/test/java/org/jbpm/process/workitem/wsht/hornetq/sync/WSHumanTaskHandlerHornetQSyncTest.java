@@ -29,7 +29,7 @@ public class WSHumanTaskHandlerHornetQSyncTest extends WSHumanTaskHandlerBaseSyn
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        server = new HornetQTaskServer(taskService, 5445);
+        server = new HornetQTaskServer(taskService, 5153);
         System.out.println("Waiting for the HornetQTask Server to come up");
         try {
             startTaskServerThread(server, false);
