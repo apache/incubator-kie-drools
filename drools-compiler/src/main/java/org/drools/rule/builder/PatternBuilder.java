@@ -16,8 +16,6 @@
 
 package org.drools.rule.builder;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.RecognitionException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ValueType;
@@ -35,16 +33,14 @@ import org.drools.compiler.DrlExprParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.StringUtils;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
-import org.drools.lang.DRL5Lexer;
-import org.drools.lang.DRLLexer;
 import org.drools.lang.MVELDumper;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AtomicExprDescr;
@@ -569,15 +565,7 @@ public class PatternBuilder
                 return;
             }
 
-            // TODO: WTH is this??????
-            DRL5Lexer lex = new DRL5Lexer( new ANTLRStringStream( descr.getExpression() ) );
-            boolean isSimpleIdentifier = false;
-            try {
-                lex.mID();
-                isSimpleIdentifier = lex.getCharIndex() >= descr.getExpression().length();
-            } catch ( RecognitionException e ) {
-
-            }
+            boolean isSimpleIdentifier = descr.getExpression().matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9]*");
 
             if ( isSimpleIdentifier ) {
                 // create a binding
