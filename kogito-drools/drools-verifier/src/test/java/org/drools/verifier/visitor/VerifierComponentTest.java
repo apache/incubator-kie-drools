@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.Verifier;
@@ -35,7 +36,7 @@ public class VerifierComponentTest {
   public void testVisit() throws Exception {
     // Drools Package description from Drl file
     Reader drlReader = new InputStreamReader(Verifier.class.getResourceAsStream("Misc3.drl"));
-    PackageDescr descr = new DrlParser(5).parse(drlReader);
+    PackageDescr descr = new DrlParser(LanguageLevelOption.DRL5).parse(drlReader);
 
     // Drools Verifier objects
     VerifierData verifierData = VerifierReportFactory.newVerifierData();

@@ -90,32 +90,32 @@ public class KnowledgeBuilderConfigurationTest {
     @Test
     public void testLanguageLevelConfiguration() {
         // setting the language level using the type safe method
-        config.setOption( LanguageLevelOption.get(5) );
+        config.setOption( LanguageLevelOption.DRL5 );
 
         // checking the type safe getOption() method
-        assertEquals( LanguageLevelOption.get( 5 ),
+        assertEquals( LanguageLevelOption.DRL5,
                       config.getOption( LanguageLevelOption.class ) );
         // checking string conversion
-        assertEquals( 5,
-                      config.getOption( LanguageLevelOption.class ).getLanguageLevel() );
+        assertEquals( LanguageLevelOption.DRL5,
+                      config.getOption( LanguageLevelOption.class ) );
         // checking the string based getProperty() method
-        assertEquals( "5",
+        assertEquals( "DRL5",
                       config.getProperty( LanguageLevelOption.PROPERTY_NAME ) );
 
         // setting the default dialect using the string based setProperty() method
         config.setProperty( LanguageLevelOption.PROPERTY_NAME,
-                            "6" );
+                            "DRL6" );
 
         // checking the type safe getOption() method
-        assertEquals(LanguageLevelOption.get(6),
+        assertEquals(LanguageLevelOption.DRL6,
                 config.getOption(LanguageLevelOption.class));
-        assertEquals( "LanguageLevelOption( languageLevel=6 )",
+        assertEquals( "DRL6",
                       config.getOption( LanguageLevelOption.class ).toString() );
         // checking string conversion
-        assertEquals( 6,
-                      config.getOption( LanguageLevelOption.class ).getLanguageLevel() );
+        assertEquals( LanguageLevelOption.DRL6,
+                      config.getOption( LanguageLevelOption.class ) );
         // checking the string based getProperty() method
-        assertEquals( "6",
+        assertEquals( "DRL6",
                       config.getProperty( LanguageLevelOption.PROPERTY_NAME ) );
     }
 

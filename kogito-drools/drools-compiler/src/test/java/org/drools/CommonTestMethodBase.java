@@ -8,6 +8,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -133,7 +134,7 @@ public class CommonTestMethodBase extends Assert {
     protected RuleBase loadRuleBase( final Reader reader ) throws IOException,
             DroolsParserException,
             Exception {
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             fail( "Error messages in parser, need to sort this our (or else collect error messages):\n"

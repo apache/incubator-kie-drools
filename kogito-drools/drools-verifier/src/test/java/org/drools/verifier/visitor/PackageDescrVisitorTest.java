@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
@@ -156,7 +157,7 @@ public class PackageDescrVisitorTest {
 
     private PackageDescr getPackageDescr(InputStream resourceAsStream) throws DroolsParserException {
         Reader drlReader = new InputStreamReader(resourceAsStream);
-        return new DrlParser(5).parse(drlReader);
+        return new DrlParser(LanguageLevelOption.DRL5).parse(drlReader);
     }
 
 }

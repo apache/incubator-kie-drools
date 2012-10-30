@@ -1,6 +1,7 @@
 package org.drools.verifier.visitor;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.descr.*;
 import org.drools.verifier.components.*;
@@ -26,7 +27,7 @@ public class ExprConstraintDescrVisitor {
 
     public void visit(ExprConstraintDescr descr) {
 
-        DrlExprParser drlExprParser = new DrlExprParser();
+        DrlExprParser drlExprParser = new DrlExprParser(LanguageLevelOption.DRL5);
         ConstraintConnectiveDescr constraintConnectiveDescr = drlExprParser.parse(descr.getExpression());
 
         visit(constraintConnectiveDescr.getDescrs());

@@ -14,11 +14,16 @@ public interface DRLParser {
     PackageDescr compilationUnit(Resource resource) throws RecognitionException;
 
     void enableEditorInterface();
+    void disableEditorInterface();
     LinkedList<DroolsSentence> getEditorInterface();
 
     List<DroolsParserException> getErrors();
     boolean hasErrors();
     List<String> getErrorMessages();
 
+    void reportError( RecognitionException ex );
+    void reportError( Exception ex );
+
     String chunk( int leftDelimiter, int rightDelimiter, int location );
+
 }

@@ -125,7 +125,7 @@ public class PackageBuilderConfiguration
 
     private ClassBuilderFactory               classBuilderFactory;
 
-    private int                               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
+    private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -255,7 +255,7 @@ public class PackageBuilderConfiguration
             String key = name.substring( name.lastIndexOf('.') + 1 ); 
             this.severityMap.put(key, KBuilderSeverityOption.get(key, value).getSeverity());
         } else if ( name.equals( LanguageLevelOption.PROPERTY_NAME ) ) {
-            setLanguageLevel( Integer.parseInt( value ) );
+            setLanguageLevel( LanguageLevelOption.valueOf( value ) );
         }
     }
 
@@ -653,11 +653,11 @@ public class PackageBuilderConfiguration
         this.classBuilderFactory = classBuilderFactory;
     }
 
-    public int getLanguageLevel() {
+    public LanguageLevelOption getLanguageLevel() {
         return languageLevel;
     }
 
-    public void setLanguageLevel(int languageLevel) {
+    public void setLanguageLevel(LanguageLevelOption languageLevel) {
         this.languageLevel = languageLevel;
     }
 
@@ -674,9 +674,9 @@ public class PackageBuilderConfiguration
         } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
             return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if ( PropertySpecificOption.class.equals( option ) ) {
-            return (T)propertySpecificOption;
+            return (T) propertySpecificOption;
         } else if ( LanguageLevelOption.class.equals( option ) ) {
-            return (T) LanguageLevelOption.get(languageLevel);
+            return (T) languageLevel;
         }
         return null;
     }
@@ -731,7 +731,7 @@ public class PackageBuilderConfiguration
         } else if ( option instanceof PropertySpecificOption ) {
             propertySpecificOption = (PropertySpecificOption)option;
         } else if ( option instanceof LanguageLevelOption ) {
-            this.languageLevel = ((LanguageLevelOption) option).getLanguageLevel();
+            this.languageLevel = ((LanguageLevelOption) option);
         }
     }
 }

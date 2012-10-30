@@ -1,8 +1,9 @@
-parser grammar DRLExpressions;
+parser grammar DRL6Expressions;
               
 options { 
     language = Java;
-    tokenVocab = DRLLexer;
+    tokenVocab = DRL6Lexer;
+    superClass=DRLExpressions;
 }
   
 @header {
@@ -30,7 +31,7 @@ options {
 @members {
     private ParserHelper helper;
 
-    public DRLExpressions(TokenStream input,
+    public DRL6Expressions(TokenStream input,
                           RecognizerSharedState state,
                           ParserHelper helper ) {
         this( input,
@@ -65,13 +66,13 @@ options {
         if (state.backtracking != 0){
             return false;
         }
-        if (input.get( input.index() - 1 ).getType() == DRLLexer.WS){
+        if (input.get( input.index() - 1 ).getType() == DRL6Lexer.WS){
             return true;
         }
-        if (input.LA(-1) == DRLLexer.LEFT_PAREN){
+        if (input.LA(-1) == DRL6Lexer.LEFT_PAREN){
             return true;
         }
-        return input.get( input.index() ).getType() != DRLLexer.EOF;
+        return input.get( input.index() ).getType() != DRL6Lexer.EOF;
     }
 }
 
@@ -99,7 +100,7 @@ literal
 
 operator returns [boolean negated, String opr]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
-@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
+@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRL6Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : x=TILDE?
     ( op=EQUALS        { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
     | op=NOT_EQUALS    { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
@@ -111,7 +112,7 @@ operator returns [boolean negated, String opr]
 
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
-@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
+@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRL6Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | op=LESS            { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
@@ -284,7 +285,7 @@ equalityExpression returns [BaseDescr result]
   : left=instanceOfExpression { if( buildDescr  ) { $result = $left.result; } }
   ( ( op=EQUALS | op=NOT_EQUALS )
     {  helper.setHasOperator( true );
-       if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+       if( input.LA( 1 ) != DRL6Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=instanceOfExpression
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, $right.result );
@@ -297,7 +298,7 @@ instanceOfExpression returns [BaseDescr result]
   : left=inExpression { if( buildDescr  ) { $result = $left.result; } }
   ( op=instanceof_key
     {  helper.setHasOperator( true );
-       if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+       if( input.LA( 1 ) != DRL6Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=type
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, new AtomicExprDescr($right.text) );
@@ -472,9 +473,9 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
-        ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.COLON}? (var=ID COLON
+        ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRL6Lexer.COLON}? (var=ID COLON
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
-        | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.UNIFY}? (var=ID UNIFY 
+        | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRL6Lexer.UNIFY}? (var=ID UNIFY 
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
         )?
         left=primary { if( buildDescr ) { $result = $left.result; } }

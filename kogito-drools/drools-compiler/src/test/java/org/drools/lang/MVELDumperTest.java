@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.MVELDumper.MVELDumperContext;
 import org.drools.lang.descr.AtomicExprDescr;
@@ -359,7 +360,7 @@ public class MVELDumperTest {
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {
-        DrlExprParser parser = new DrlExprParser();
+        DrlExprParser parser = new DrlExprParser(LanguageLevelOption.DRL5);
         ConstraintConnectiveDescr result = parser.parse( constraint );
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );

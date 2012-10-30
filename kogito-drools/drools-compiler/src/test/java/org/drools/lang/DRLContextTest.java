@@ -7,11 +7,13 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DroolsParserException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.drools.compiler.DRLFactory.buildParser;
 import static org.junit.Assert.*;
 
 public class DRLContextTest {
@@ -3242,8 +3244,6 @@ public class DRLContextTest {
      *         not).
      */
     private DRLParser getParser(final String text) {
-        DRLParser parser = new DRL5Parser(new CommonTokenStream(new DRLLexer(
-                new ANTLRStringStream(text))));
-        return parser;
+        return buildParser(text, LanguageLevelOption.DRL5);
     }
 }

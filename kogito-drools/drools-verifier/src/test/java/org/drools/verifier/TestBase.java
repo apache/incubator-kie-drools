@@ -1,5 +1,6 @@
 package org.drools.verifier;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
@@ -34,7 +35,7 @@ public class TestBase {
 
     protected PackageDescr getPackageDescr(InputStream resourceAsStream) throws DroolsParserException {
         Reader drlReader = new InputStreamReader(resourceAsStream);
-        return new DrlParser(5).parse(drlReader);
+        return new DrlParser(LanguageLevelOption.DRL5).parse(drlReader);
     }
 
     protected void assertContainsVariable(String ruleName, String variableName) {

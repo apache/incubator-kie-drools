@@ -10,6 +10,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.Expander;
 import org.drools.lang.descr.PackageDescr;
@@ -28,7 +29,7 @@ public class DrlParserTest {
         String dsl = "[condition]Something=Something()\n[then]another=another();";
         String drl = "rule 'foo' \n when \n Something \n then \n another \nend";
         
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, new StringReader(dsl));
         assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
     }
@@ -51,7 +52,7 @@ public class DrlParserTest {
             throw new RuntimeDroolsException( "Error parsing and loading DSL file." + file.getErrors() );
         }
 
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, resolver);
         assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
     }
@@ -67,7 +68,7 @@ public class DrlParserTest {
                      + "cheese : String \n"
                      + "end";
 
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr pkgDescr = parser.parse( drl );
         TypeDeclarationDescr bean1Type = pkgDescr.getTypeDeclarations().get( 0 );
         assertNull( bean1Type.getSuperTypeName() );

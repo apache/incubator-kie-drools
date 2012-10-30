@@ -34,6 +34,8 @@ import org.antlr.runtime.MismatchedTreeNodeException;
 import org.antlr.runtime.NoViableAltException;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
+import org.drools.builder.conf.LanguageLevelOption;
+import org.drools.compiler.DRLFactory;
 import org.drools.compiler.DroolsParserException;
 
 /**
@@ -57,10 +59,12 @@ public class DroolsParserExceptionFactory {
     public final static String                        PARSER_LOCATION_MESSAGE_PART            = " in %1$s";
     public final static String                        UNEXPECTED_EXCEPTION                    = "Line %1$d:%2$d unexpected exception at input '%3$s'. Exception: %4$s. Stack trace:\n %5$s";
 
-    private Stack<Map<DroolsParaphraseTypes, String>> paraphrases                             = null;
+    private final Stack<Map<DroolsParaphraseTypes, String>> paraphrases;
     
     // TODO: need to deal with this array
     private String[]                                  tokenNames                              = null;
+
+    private final LanguageLevelOption languageLevel;
 
     /**
      * DroolsParserErrorMessages constructor.
@@ -70,8 +74,9 @@ public class DroolsParserExceptionFactory {
      * @param paraphrases
      *            paraphrases parser structure
      */
-    public DroolsParserExceptionFactory(Stack<Map<DroolsParaphraseTypes, String>> paraphrases) {
+    public DroolsParserExceptionFactory(Stack<Map<DroolsParaphraseTypes, String>> paraphrases, LanguageLevelOption languageLevel) {
         this.paraphrases = paraphrases;
+        this.languageLevel = languageLevel;
     }
 
     /**
@@ -91,7 +96,7 @@ public class DroolsParserExceptionFactory {
                                                                    int offset ) {
         String message = String
                 .format(
-                         DroolsParserExceptionFactory.TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE,
+                         TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE,
                          line,
                          column,
                          formatParserLocation() );
@@ -128,14 +133,14 @@ public class DroolsParserExceptionFactory {
      */
     private List<String> createErrorMessage( RecognitionException e ) {
         List<String> codeAndMessage = new ArrayList<String>( 2 );
-        String message = "";
+        String message;
         if ( e instanceof MismatchedTokenException ) {
             MismatchedTokenException mte = (MismatchedTokenException) e;
             String expecting = mte instanceof DroolsMismatchedTokenException ? ((DroolsMismatchedTokenException)mte).getTokenText() : getBetterToken( mte.expecting );
             if ( tokenNames != null && mte.expecting >= 0 && mte.expecting < tokenNames.length ) {
                 message = String
                         .format(
-                                 DroolsParserExceptionFactory.MISMATCHED_TOKEN_MESSAGE_COMPLETE,
+                                 MISMATCHED_TOKEN_MESSAGE_COMPLETE,
                                  e.line,
                                  e.charPositionInLine,
                                  getBetterToken( e.token ),
@@ -146,7 +151,7 @@ public class DroolsParserExceptionFactory {
             } else {
                 message = String
                         .format(
-                                 DroolsParserExceptionFactory.MISMATCHED_TOKEN_MESSAGE_PART,
+                                 MISMATCHED_TOKEN_MESSAGE_PART,
                                  e.line,
                                  e.charPositionInLine,
                                  getBetterToken( e.token ),
@@ -159,7 +164,7 @@ public class DroolsParserExceptionFactory {
             if ( mtne.expecting >= 0 && mtne.expecting < tokenNames.length ) {
                 message = String
                         .format(
-                                 DroolsParserExceptionFactory.MISMATCHED_TREE_NODE_MESSAGE_COMPLETE,
+                                 MISMATCHED_TREE_NODE_MESSAGE_COMPLETE,
                                  e.line,
                                  e.charPositionInLine,
                                  getBetterToken( e.token ),
@@ -170,7 +175,7 @@ public class DroolsParserExceptionFactory {
             } else {
                 message = String
                         .format(
-                                 DroolsParserExceptionFactory.MISMATCHED_TREE_NODE_MESSAGE_PART,
+                                 MISMATCHED_TREE_NODE_MESSAGE_PART,
                                  e.line,
                                  e.charPositionInLine,
                                  getBetterToken( e.token ),
@@ -181,7 +186,7 @@ public class DroolsParserExceptionFactory {
         } else if ( e instanceof NoViableAltException ) {
             // NoViableAltException nvae = (NoViableAltException) e;
             message = String.format(
-                                     DroolsParserExceptionFactory.NO_VIABLE_ALT_MESSAGE,
+                                     NO_VIABLE_ALT_MESSAGE,
                                      e.line,
                                      e.charPositionInLine,
                                      getBetterToken( e.token ),
@@ -191,7 +196,7 @@ public class DroolsParserExceptionFactory {
         } else if ( e instanceof EarlyExitException ) {
             // EarlyExitException eee = (EarlyExitException) e;
             message = String.format(
-                                     DroolsParserExceptionFactory.EARLY_EXIT_MESSAGE,
+                                     EARLY_EXIT_MESSAGE,
                                      e.line,
                                      e.charPositionInLine,
                                      getBetterToken( e.token ),
@@ -202,7 +207,7 @@ public class DroolsParserExceptionFactory {
             MismatchedSetException mse = (MismatchedSetException) e;
             String expected = expectedTokensAsString( mse.expecting );
             message = String.format(
-                                     DroolsParserExceptionFactory.MISMATCHED_SET_MESSAGE,
+                                     MISMATCHED_SET_MESSAGE,
                                      e.line,
                                      e.charPositionInLine,
                                      getBetterToken( e.token ),
@@ -214,7 +219,7 @@ public class DroolsParserExceptionFactory {
             DroolsMismatchedSetException mse = (DroolsMismatchedSetException) e;
             String expected = Arrays.asList( mse.getTokenText() ).toString();
             message = String.format(
-                                     DroolsParserExceptionFactory.MISMATCHED_SET_MESSAGE,
+                                     MISMATCHED_SET_MESSAGE,
                                      e.line,
                                      e.charPositionInLine,
                                      getBetterToken( e.token ),
@@ -226,7 +231,7 @@ public class DroolsParserExceptionFactory {
             MismatchedNotSetException mse = (MismatchedNotSetException) e;
             String expected = expectedTokensAsString( mse.expecting );
             message = String.format(
-                                     DroolsParserExceptionFactory.MISMATCHED_NOT_SET_MESSAGE,
+                                     MISMATCHED_NOT_SET_MESSAGE,
                                      e.line,
                                      e.charPositionInLine,
                                      getBetterToken( e.token ),
@@ -237,7 +242,7 @@ public class DroolsParserExceptionFactory {
         } else if ( e instanceof FailedPredicateException ) {
             FailedPredicateException fpe = (FailedPredicateException) e;
             message = String.format(
-                                     DroolsParserExceptionFactory.FAILED_PREDICATE_MESSAGE,
+                                     FAILED_PREDICATE_MESSAGE,
                                      e.line,
                                      e.charPositionInLine,
                                      fpe.ruleName,
@@ -277,8 +282,7 @@ public class DroolsParserExceptionFactory {
             i++;
         }
         buf.append( " }" );
-        String expected = buf.toString();
-        return expected;
+        return buf.toString();
     }
 
     /**
@@ -352,8 +356,7 @@ public class DroolsParserExceptionFactory {
         if ( token == null ) {
             return "";
         }
-        return getBetterToken( token.getType(),
-                               token.getText() );
+        return DRLFactory.getBetterToken(token.getType(), token.getText(), languageLevel);
     }
 
     /**
@@ -364,79 +367,8 @@ public class DroolsParserExceptionFactory {
      * @return user friendly token definition
      */
     private String getBetterToken( int tokenType ) {
-        return getBetterToken( tokenType,
-                               null );
+        return DRLFactory.getBetterToken( tokenType, null, languageLevel );
     }
 
-    /**
-     * Helper method that creates a user friendly token definition
-     * 
-     * @param tokenType
-     *            token type
-     * @param defaultValue
-     *            default value for identifier token, may be null
-     * @return user friendly token definition
-     */
-    private String getBetterToken( int tokenType,
-                                   String defaultValue ) {
-        switch ( tokenType ) {
-            case DRLLexer.DECIMAL :
-                return defaultValue == null ? "int" : defaultValue;
-            case DRLLexer.FLOAT :
-                return defaultValue == null ? "float" : defaultValue;
-            case DRLLexer.STRING :
-                return defaultValue == null ? "string" : defaultValue;
-            case DRLLexer.BOOL :
-                return defaultValue == null ? "boolean" : defaultValue;
-            case DRLLexer.NULL :
-                return "null";
-            case DRLLexer.SEMICOLON :
-                return ";";
-            case DRLLexer.COLON :
-                return ":";
-            case DRLLexer.EQUALS :
-                return "==";
-            case DRLLexer.NOT_EQUALS :
-                return "!=";
-            case DRLLexer.GREATER :
-                return ">";
-            case DRLLexer.GREATER_EQUALS :
-                return ">=";
-            case DRLLexer.LESS :
-                return "<";
-            case DRLLexer.LESS_EQUALS :
-                return "<=";
-            case DRLLexer.ARROW :
-                return "->";
-            case DRLLexer.ID :
-                return defaultValue == null ? "identifier" : defaultValue;
-            case DRLLexer.LEFT_PAREN :
-                return "(";
-            case DRLLexer.RIGHT_PAREN :
-                return ")";
-            case DRLLexer.LEFT_SQUARE :
-                return "[";
-            case DRLLexer.RIGHT_SQUARE :
-                return "]";
-            case DRLLexer.LEFT_CURLY :
-                return "{";
-            case DRLLexer.RIGHT_CURLY :
-                return "}";
-            case DRLLexer.COMMA :
-                return ",";
-            case DRLLexer.DOT :
-                return ".";
-            case DRLLexer.DOUBLE_AMPER :
-                return "&&";
-            case DRLLexer.DOUBLE_PIPE :
-                return "||";
-            case DRLLexer.MISC :
-                return defaultValue == null ? "misc" : defaultValue;
-            case DRLLexer.EOF :
-                return "<eof>";
-            default :
-                return defaultValue;
-        }
-    }
 
 }

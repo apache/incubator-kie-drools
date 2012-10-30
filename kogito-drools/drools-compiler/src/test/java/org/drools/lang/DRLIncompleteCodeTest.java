@@ -2,6 +2,7 @@ package org.drools.lang;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
@@ -27,7 +28,7 @@ public class DRLIncompleteCodeTest {
     public void testIncompleteCode1() throws DroolsParserException,
             RecognitionException {
         String input = "package a.b.c import a.b.c.* rule MyRule when Class ( property memberOf collexction ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
         System.out.println(parser.getErrors());
 
@@ -46,7 +47,7 @@ public class DRLIncompleteCodeTest {
     public void testIncompleteCode2() throws DroolsParserException,
             RecognitionException {
         String input = "rule MyRule when Class ( property memberOf collection ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertNotNull(descr);
@@ -59,7 +60,7 @@ public class DRLIncompleteCodeTest {
     public void testIncompleteCode3() throws DroolsParserException,
             RecognitionException {
         String input = "rule MyRule when Class ( property > somevalue ) then end query MyQuery Class ( property == collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertNotNull(descr);
@@ -78,7 +79,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c import a.b.c.*"
                 + " rule MyRule when Class ( property == collection ) then end "
                 + " query MyQuery Class ( property == collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertEquals("a.b.c", descr.getNamespace());
@@ -98,7 +99,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c import a.b.c.*"
                 + " rule MyRule when Class ( property memberOf collection ) then end "
                 + " query MyQuery Class ( property memberOf collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertNotNull(descr);
@@ -110,7 +111,7 @@ public class DRLIncompleteCodeTest {
         String input = "packe 1111.111 import a.b.c.*"
                 + " rule MyRule when Class ( property memberOf collection ) then end "
                 + " query MyQuery Class ( property memberOf collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertNotNull(descr);
@@ -122,7 +123,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c imrt a.b.c.*"
                 + " rule MyRule when Class ( property memberOf collection ) then end "
                 + " query MyQuery Class ( property memberOf collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertNotNull(descr);
@@ -134,7 +135,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c import a.1111.c.*"
                 + " rule MyRule when Class ( property memberOf collection ) then end "
                 + " query MyQuery Class ( property memberOf collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
         System.out.println(parser.getErrors());
 
@@ -149,7 +150,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c import a.b.c.*"
                 + " rule MyRule xxxxx Class ( property memberOf collection ) then end "
                 + " query MyQuery Class ( property memberOf collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertEquals("a.b.c", descr.getNamespace());
@@ -166,7 +167,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c import a.b.c.*"
                 + " rule MyRule xxxxx Class ( property memberOf "
                 + " query MyQuery Class ( property memberOf collection ) end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertEquals("a.b.c", descr.getNamespace());
@@ -182,7 +183,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c import a.b.c.*"
                 + " rule MyRule when Class ( property memberOf collection ) then end "
                 + " qzzzzuery MyQuery Class ( property ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
         assertEquals("a.b.c", descr.getNamespace());
@@ -199,7 +200,7 @@ public class DRLIncompleteCodeTest {
         String input = "package a.b.c " + "import a.b.c.* " + "rule MyRule"
                 + "  when " + "    m: Message(  ) " + "    " + "  then"
                 + "end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
         assertNotNull(descr);
 
@@ -215,7 +216,7 @@ public class DRLIncompleteCodeTest {
                 + "import com.sample.DroolsTest.Message; "
                 + "rule \"Hello World\"" + "  when " + "  then" + "     \\\" "
                 + "end ";
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
         assertNotNull(descr);
     }

@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class MVELDebugTest {
     public void testDebug() throws Exception {
         String rule = "package com.sample; dialect \"mvel\" rule myRule when then\n System.out.println( \"test\" ); end";
         PackageBuilder builder = new PackageBuilder();
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr packageDescr = parser.parse(rule);
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         builder = new PackageBuilder( );
