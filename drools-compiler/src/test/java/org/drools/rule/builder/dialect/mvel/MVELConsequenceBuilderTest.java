@@ -8,6 +8,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.base.mvel.MVELDebugHandler;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -252,7 +253,7 @@ public class MVELConsequenceBuilderTest {
         MVELDebugHandler.setDebugMode( true );
 
         try {
-            final DrlParser parser = new DrlParser(5);
+            final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
             final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
 
             // just checking there is no parsing errors

@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
@@ -17,7 +18,7 @@ public class ConsequenceOffsetTest {
     @Test
     public void testConsequenceOffset() throws Exception {
         int offset = -1;
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         Reader reader = new InputStreamReader( ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset.drl" ) );
         
         PackageDescr packageDescr = parser.parse(reader);
@@ -52,7 +53,7 @@ public class ConsequenceOffsetTest {
     @Test
     public void testLargeSetOfImports() throws Exception {
         Reader reader = new InputStreamReader( ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffsetImports.drl" ) );
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr packageDescr = parser.parse(reader);
         PackageBuilder packageBuilder = new PackageBuilder();
         packageBuilder.addPackage(packageDescr);

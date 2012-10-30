@@ -10,6 +10,7 @@ import java.io.StringReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -53,7 +54,7 @@ public class LargeRuleBase {
 
         /* love you */long time = System.currentTimeMillis();
 
-        DrlParser ps = new DrlParser(5);
+        DrlParser ps = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr pkg = ps.parse(new StringReader(buf.toString()));
 
         System.err.println("Time taken for parsing: "

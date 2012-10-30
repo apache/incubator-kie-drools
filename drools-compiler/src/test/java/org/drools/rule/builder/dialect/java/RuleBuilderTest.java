@@ -18,6 +18,7 @@ package org.drools.rule.builder.dialect.java;
 
 import antlr.collections.List;
 import org.drools.base.EnabledBoolean;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.DateUtils;
@@ -58,7 +59,7 @@ public class RuleBuilderTest {
      */
     @Test
     public void testBuild() throws Exception {
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
 
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );

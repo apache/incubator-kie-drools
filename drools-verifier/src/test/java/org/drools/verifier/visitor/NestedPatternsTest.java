@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
@@ -49,7 +50,7 @@ public class NestedPatternsTest {
         assertNotNull(data);
 
         Reader drlReader = new InputStreamReader(getClass().getResourceAsStream("NestedPatterns.drl"));
-        PackageDescr packageDescr = new DrlParser(5).parse(drlReader);
+        PackageDescr packageDescr = new DrlParser(LanguageLevelOption.DRL5).parse(drlReader);
 
         assertNotNull(packageDescr);
 

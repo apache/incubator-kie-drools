@@ -218,7 +218,7 @@ public class QueryElementBuilder
             } else {
                 // it must be a literal/expression
                 // it's an expression and thus an input
-                DrlExprParser parser = new DrlExprParser();
+                DrlExprParser parser = new DrlExprParser( context.getConfiguration().getLanguageLevel() );
                 ConstraintConnectiveDescr bresult = parser.parse( bind.getExpression() );
                 if ( parser.hasErrors() ) {
                     for ( DroolsParserException error : parser.getErrors() ) {
@@ -350,7 +350,7 @@ public class QueryElementBuilder
     private ConstraintConnectiveDescr parseExpression( final RuleBuildContext context,
                                                        final PatternDescr patternDescr,
                                                        final String expression ) {
-        DrlExprParser parser = new DrlExprParser();
+        DrlExprParser parser = new DrlExprParser( context.getConfiguration().getLanguageLevel() );
         ConstraintConnectiveDescr result = parser.parse( expression );
         if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {

@@ -23,11 +23,15 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.lang.DRLExpressions;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.ParserHelper;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
+
+import static org.drools.compiler.DRLFactory.getDRLExpressions;
+import static org.drools.compiler.DRLFactory.getDRLLexer;
 
 /**
  * This is a helper class that provides helper methods to parse expressions
@@ -37,19 +41,21 @@ public class DrlExprParser {
 
     private ParserHelper helper = null;
 
-    public DrlExprParser() {
+    private final LanguageLevelOption languageLevel;
+
+    public DrlExprParser(LanguageLevelOption languageLevel) {
+        this.languageLevel = languageLevel;
     }
 
     /** Parse an expression from text */
     public ConstraintConnectiveDescr parse( final String text ) {
         ConstraintConnectiveDescr constraint = null;
         try {
-            DRLLexer lexer = new DRLLexer( new ANTLRStringStream( text ) );
+            DRLLexer lexer = getDRLLexer(new ANTLRStringStream(text), languageLevel);
             CommonTokenStream input = new CommonTokenStream( lexer );
             RecognizerSharedState state = new RecognizerSharedState();
-            helper = new ParserHelper( input,
-                                       state );
-            DRLExpressions parser = new DRLExpressions( input, state, helper );
+            helper = new ParserHelper( input, state, languageLevel );
+            DRLExpressions parser = getDRLExpressions( input, state, helper, languageLevel );
             parser.setBuildDescr( true );
             parser.setLeftMostExpr( null ); // setting initial value just in case
             BaseDescr expr = parser.conditionalOrExpression();

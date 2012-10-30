@@ -31,6 +31,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
@@ -64,6 +65,8 @@ import org.drools.lang.descr.WindowDeclarationDescr;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.drools.compiler.DRLFactory.buildParser;
 
 public class RuleParserTest extends TestCase {
 
@@ -101,7 +104,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackage() throws Exception {
         final String source = "package foo.bar.baz";
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr pkg = parser.parse( new StringReader( source ) );
         assertFalse( parser.hasErrors() );
         assertEquals( "foo.bar.baz",
@@ -111,7 +114,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackageWithError() throws Exception {
         final String source = "package 12 foo.bar.baz";
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr pkg = parser.parse( true,
                                                new StringReader( source ) );
         assertTrue( parser.hasErrors() );
@@ -122,7 +125,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackageWithError2() throws Exception {
         final String source = "package 12 12312 231";
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr pkg = parser.parse( true,
                                                new StringReader( source ) );
         assertTrue( parser.hasErrors() );
@@ -851,8 +854,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithoutParens() throws Exception {
         String input = "( foo )";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
+                                          DRL5Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "foo",
@@ -863,8 +866,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithParens() throws Exception {
         String input = "(fnord())";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
+                                          DRL5Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "fnord()",
@@ -875,8 +878,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithParensAndQuotedString() throws Exception {
         String input = "( fnord( \"cheese\" ) )";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
+                                          DRL5Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "fnord( \"cheese\" )",
@@ -887,8 +890,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithRandomCharac5ters() throws Exception {
         String input = "( %*9dkj)";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
+                                          DRL5Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "%*9dkj",
@@ -1437,7 +1440,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderLineSpread() throws Exception {
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.dslr" ),
                                                this.getReader( "complex.dsl" ) );
 
@@ -1457,7 +1460,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderMultipleConstraints() throws Exception {
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.dslr" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
@@ -1489,7 +1492,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderMultipleConstraintsFlush() throws Exception {
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         // this is similar to the other test, but it requires a flush to add the
         // constraints
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.dslr" ),
@@ -4197,9 +4200,7 @@ public class RuleParserTest extends TestCase {
     }
 
     private void createParser( CharStream charStream ) {
-        DRLLexer lexer = new DRLLexer( charStream );
-        CommonTokenStream tokens = new CommonTokenStream( lexer );
-        parser = new DRL5Parser( tokens );
+        parser = buildParser(charStream, LanguageLevelOption.DRL5);
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,

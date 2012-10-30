@@ -39,6 +39,7 @@ import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -82,7 +83,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                                                      DroolsParserException,
                                                                      Exception {
         final PackageBuilder builder = new PackageBuilder();
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             System.out.println( parser.getErrors() );

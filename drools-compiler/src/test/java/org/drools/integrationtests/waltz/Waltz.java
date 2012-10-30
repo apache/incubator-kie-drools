@@ -28,6 +28,7 @@ import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -97,7 +98,7 @@ public abstract class Waltz {
                                InvalidPatternException {
         //read in the source
         final Reader reader = new InputStreamReader( Waltz.class.getResourceAsStream( "waltz.drl" ) );
-        final DrlParser parser = new DrlParser(5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr packageDescr = parser.parse( reader );
         
         if( parser.hasErrors() ) {

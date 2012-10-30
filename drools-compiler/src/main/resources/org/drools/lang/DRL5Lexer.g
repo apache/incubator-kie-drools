@@ -1,7 +1,8 @@
-lexer grammar DRLLexer;
+lexer grammar DRL5Lexer;
               
 options { 
     language = Java;
+    superClass=AbstractDRLLexer;
 }
 
 tokens {
@@ -11,13 +12,14 @@ tokens {
 @header {
     package org.drools.lang;
 
+    import org.drools.builder.conf.LanguageLevelOption;
     import org.drools.compiler.DroolsParserException;
     import org.drools.core.util.StringUtils;
 }
  
 @members {
     private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
-    private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null);
+    private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null, LanguageLevelOption.DRL5);
 
     /** The standard method called to automatically emit a token at the
      *  outermost lexical rule.  The token object should point into the

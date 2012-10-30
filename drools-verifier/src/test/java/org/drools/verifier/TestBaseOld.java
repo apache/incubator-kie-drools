@@ -28,6 +28,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
@@ -131,7 +132,7 @@ abstract public class TestBaseOld {
     public Collection< ? extends Object> getTestData(InputStream stream,
                                                      VerifierData data) throws Exception {
         Reader drlReader = new InputStreamReader( stream );
-        PackageDescr descr = new DrlParser(5).parse( drlReader );
+        PackageDescr descr = new DrlParser(LanguageLevelOption.DRL5).parse( drlReader );
 
         PackageDescrVisitor packageDescrVisitor = new PackageDescrVisitor( data,
                                                                            Collections.EMPTY_LIST );

@@ -19,6 +19,7 @@ package org.drools.lang;
 import junit.framework.TestCase;
 
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.descr.AtomicExprDescr;
 import org.drools.lang.descr.BindingDescr;
@@ -36,7 +37,7 @@ public class DRLExprParserTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         new EvaluatorRegistry();
-        this.parser = new DrlExprParser();
+        this.parser = new DrlExprParser(LanguageLevelOption.DRL5);
     }
 
     protected void tearDown() throws Exception {

@@ -3,6 +3,7 @@ package org.drools.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -114,7 +115,7 @@ public class LargeRuleBaseSerializationTest {
         }
         System.out.println("Parsing "+RULE_COUNT+" rules");
         PackageBuilder pkgBuilder = new PackageBuilder();
-        DrlParser ps = new DrlParser(5);
+        DrlParser ps = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr pkgDescr = ps.parse(new StringReader(sb.toString()));
 
         pkgBuilder.addPackage(pkgDescr);

@@ -97,7 +97,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
     }
 
     private void processConstraint(StringBuilder sbuilder, ExprConstraintDescr base, boolean isInsideRelCons, MVELDumperContext context) {
-        DrlExprParser expr = new DrlExprParser();
+        DrlExprParser expr = new DrlExprParser( context.getRuleContext().getConfiguration().getLanguageLevel() );
         ConstraintConnectiveDescr result = expr.parse( base.getExpression() );
         if ( result.getDescrs().size() == 1 ) {
             dump( sbuilder,

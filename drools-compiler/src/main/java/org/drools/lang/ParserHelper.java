@@ -13,15 +13,6 @@
  */
 package org.drools.lang;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.MismatchedSetException;
@@ -29,6 +20,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
@@ -60,7 +52,17 @@ import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.rule.ConditionalBranch;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import static org.drools.compiler.DRLFactory.lexerId;
 
 /**
  * This is a class to hold all the helper functions/methods used
@@ -93,11 +95,15 @@ public class ParserHelper {
     // helper attribute
     private boolean                                   hasOperator              = false;
 
+    private final LanguageLevelOption                 languageLevel;
+
     public ParserHelper(TokenStream input,
-                        RecognizerSharedState state) {
-        this.errorMessageFactory = new DroolsParserExceptionFactory( paraphrases );
+                        RecognizerSharedState state,
+                        LanguageLevelOption languageLevel) {
+        this.errorMessageFactory = new DroolsParserExceptionFactory( paraphrases, languageLevel );
         this.input = input;
         this.state = state;
+        this.languageLevel = languageLevel;
     }
 
     public LinkedList<DroolsSentence> getEditorInterface() {
@@ -133,7 +139,7 @@ public class ParserHelper {
             if ( null == editorInterface ) {
                 editorInterface = new LinkedList<DroolsSentence>();
             }
-            if (editorInterface.size() == 0){
+            if (editorInterface.isEmpty()){
                 DroolsSentence sentence = new DroolsSentence();
                 sentence.setType( sentenceType );
                 editorInterface.add( sentence );
@@ -214,8 +220,7 @@ public class ParserHelper {
     public boolean isPluggableEvaluator( int offset,
                                          boolean negated ) {
         String text2Validate = retrieveLT( offset );
-        return text2Validate == null ? false : DroolsSoftKeywords.isOperator( text2Validate,
-                                                                              negated );
+        return text2Validate != null && DroolsSoftKeywords.isOperator(text2Validate, negated);
     }
 
     public boolean isPluggableEvaluator( boolean negated ) {
@@ -360,12 +365,9 @@ public class ParserHelper {
                                         Token token ) {
         if ( text.trim().endsWith( ";" ) ) {
             errors.add( errorMessageFactory
-                    .createTrailingSemicolonException( ((DroolsToken) token)
-                                                               .getLine(),
-                                                       ((DroolsToken) token)
-                                                               .getCharPositionInLine(),
-                                                       ((DroolsToken) token)
-                                                               .getStopIndex() ) );
+                    .createTrailingSemicolonException( token.getLine(),
+                                                       token.getCharPositionInLine(),
+                                                       ((CommonToken) token).getStopIndex() ) );
         }
     }
 
@@ -549,7 +551,7 @@ public class ParserHelper {
 
     private boolean memberOfFollowSet( BitSet follow ) {
         boolean isMember = follow.member( input.LA( 1 ) );
-        if ( input.LA( 1 ) == DRLLexer.ID ) {
+        if ( input.LA( 1 ) == lexerId(languageLevel) ) {
             String token = input.LT( 1 ).getText();
             isMember = (DroolsSoftKeywords.IMPORT.equals( token ) ||
                          DroolsSoftKeywords.GLOBAL.equals( token ) ||
@@ -695,7 +697,7 @@ public class ParserHelper {
                 setStart( literal );
                 return (T) literal;
             } else if ( FunctionDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                FunctionDescrBuilder function = null;
+                FunctionDescrBuilder function;
                 if ( ctxBuilder == null ) {
                     function = DescrFactory.newPackage().newFunction();
                 } else {

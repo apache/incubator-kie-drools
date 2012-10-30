@@ -43,6 +43,7 @@ import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.lang.DRL5Lexer;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.MVELDumper;
 import org.drools.lang.descr.AnnotationDescr;
@@ -569,7 +570,7 @@ public class PatternBuilder
             }
 
             // TODO: WTH is this??????
-            DRLLexer lex = new DRLLexer( new ANTLRStringStream( descr.getExpression() ) );
+            DRL5Lexer lex = new DRL5Lexer( new ANTLRStringStream( descr.getExpression() ) );
             boolean isSimpleIdentifier = false;
             try {
                 lex.mID();
@@ -1508,12 +1509,11 @@ public class PatternBuilder
         return reader;
     }
 
-    @SuppressWarnings("unchecked")
     protected ConstraintConnectiveDescr parseExpression( final RuleBuildContext context,
                                                          final PatternDescr patternDescr,
                                                          final BaseDescr original,
                                                          final String expression ) {
-        DrlExprParser parser = new DrlExprParser();
+        DrlExprParser parser = new DrlExprParser( context.getConfiguration().getLanguageLevel() );
         ConstraintConnectiveDescr result = parser.parse( expression );
         result.copyLocation( original );
         if ( parser.hasErrors() ) {

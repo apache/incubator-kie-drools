@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
+import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlDumper;
@@ -41,7 +42,7 @@ public class DumperTestHelper {
 
     public static void DrlFile(String filename) throws Exception {
 
-        DrlParser parser = new DrlParser(5);
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
         final DrlDumper dumper = new DrlDumper();
         String result1 = dumper.dump( pkgOriginal );
