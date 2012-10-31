@@ -1,0 +1,95 @@
+package org.drools.integrationtests
+
+import org.drools.integrationtests.activation.ActivationTest.ActivationTestKind
+import org.drools.integrationtests.activation.ActivationTest.ActivationTestKind.Kind
+import org.drools.integrationtests.activation.ActivationTest.ActivationTestFact
+
+// MODIFICATION
+
+// this rule must fire before the other two
+rule "rule1-modify"
+when
+    ActivationTestKind( kind == Kind.MODIFY )
+    $fact : ActivationTestFact( value == "default" )
+then
+    insert( "first_fired" );
+    modify( $fact ) { setValue( "non-default" ) }
+end
+
+rule "rule2-modify"
+when
+    ActivationTestKind( kind == Kind.MODIFY )
+    String( this == "first_fired" )
+    $fact : ActivationTestFact( value == "default" )
+then
+    // empty consequence
+end
+
+rule "rule3-modify"
+when
+    ActivationTestKind( kind == Kind.MODIFY )
+    String( this == "first_fired" )
+    $fact : ActivationTestFact( value == "default" )
+then
+    // empty consequence
+end
+
+// RETRACT
+
+// this rule must fire before the other two
+rule "rule1-retract"
+when
+    ActivationTestKind( kind == Kind.RETRACT )
+    $fact : ActivationTestFact( value == "default" )
+then
+    insert( "first_fired" );
+    retract( $fact );
+end
+
+rule "rule2-retract"
+when
+    ActivationTestKind( kind == Kind.RETRACT )
+    String( this == "first_fired" )
+    $fact : ActivationTestFact( value == "default" )
+then
+    // empty consequence
+end
+
+rule "rule3-retract"
+when
+    ActivationTestKind( kind == Kind.RETRACT )
+    String( this == "first_fired" )
+    $fact : ActivationTestFact( value == "default" )
+then
+    // empty consequence
+end
+
+// INSERT
+
+// this rule must fire before the other two
+rule "rule1-insert"
+when
+    ActivationTestKind( kind == Kind.INSERT )
+    not ($fact : ActivationTestFact( value == "default" ))
+then
+    insert( "first_fired" );
+    insert( new ActivationTestFact() );
+end
+
+rule "rule2-insert"
+when
+    ActivationTestKind( kind == Kind.INSERT )
+    String( this == "first_fired" )
+    not ($fact : ActivationTestFact( value == "default" ))
+then
+    // empty consequence
+end
+
+rule "rule3-insert"
+when
+    ActivationTestKind( kind == Kind.INSERT )
+    String( this == "first_fired" )
+    not ($fact : ActivationTestFact( value == "default" ))
+then
+    // empty consequence
+end
