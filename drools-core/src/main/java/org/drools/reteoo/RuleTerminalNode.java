@@ -314,11 +314,10 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             return;
         }
 
-        final Activation activation = (Activation) leftTuple.getObject();
-
+        Activation activation = (Activation) obj;
         activation.setMatched( false );
         
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         agenda.cancelActivation( leftTuple, 
                                  context, 
@@ -496,10 +495,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         }
 
         final RuleTerminalNode other = (RuleTerminalNode) object;
-        if ( !this.rule.equals(other.rule) ) {
-            return false;
-        }
-        return consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName);
+        return rule.equals(other.rule) && (consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName));
     }
 
     public short getType() {
