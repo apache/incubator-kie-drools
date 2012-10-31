@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name="linked-list")
-public class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
+public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
     implements
     LinkedListNode<T> {
 
