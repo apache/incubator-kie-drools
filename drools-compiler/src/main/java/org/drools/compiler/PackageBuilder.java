@@ -1306,53 +1306,7 @@ public class PackageBuilder {
                 tdecl = pkgReg.getPackage().getTypeDeclaration( typeName );
             }
         }
-/*
-        if ( tdecl == null ) {
-            // no typedeclr exists, so create one, which will be added to the cache
-            tdecl = new TypeDeclaration( cls.getSimpleName() );
 
-            // it's a new type declaration, so generate the @Position for it
-            ClassDefinition clsDef = tdecl.getTypeClassDef();
-            if ( clsDef == null ) {
-                clsDef = new ClassDefinition();
-
-                Collection<Field> fields = new LinkedList<Field>();
-                Class< ? > tempKlass = cls;
-                while ( tempKlass != null && tempKlass != Object.class ) {
-                    for ( Field f : tempKlass.getDeclaredFields() ) {
-                        fields.add( f );
-                    }
-                    tempKlass = tempKlass.getSuperclass();
-                }
-
-                List<FieldDefinition> orderedFields = new ArrayList<FieldDefinition>( fields.size() );
-                for ( int i = 0; i < fields.size(); i++ ) {
-                    // as these could be set in any order, initialise first, to allow setting later.
-                    orderedFields.add( null );
-                }
-
-                for ( Field fld : fields ) {
-                    Position pos = fld.getAnnotation( Position.class );
-                    if ( pos != null ) {
-                        FieldDefinition fldDef = new FieldDefinition( fld.getName(),
-                                                                      fld.getType().getName() );
-                        fldDef.setIndex( pos.value() );
-                        orderedFields.set( pos.value(),
-                                           fldDef );
-                    }
-                }
-                for ( FieldDefinition fld : orderedFields ) {
-                    if ( fld != null ) {
-                        // it's null if there is no @Position
-                        clsDef.addField( fld );
-                    }
-                }
-
-                tdecl.setTypeClassDef( clsDef );
-
-            }
-        }
-*/
         if ( tdecl == null ) {
             // no typedeclr exists, so create one, which will be added to the cache
             tdecl = new TypeDeclaration( cls.getSimpleName() );
