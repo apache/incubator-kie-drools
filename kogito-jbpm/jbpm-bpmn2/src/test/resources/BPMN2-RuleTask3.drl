@@ -1,0 +1,11 @@
+package com.sample;
+
+import org.drools.runtime.process.WorkflowProcessInstance
+
+rule MyRule
+  ruleflow-group "myRules"
+  when
+    processInstance : WorkflowProcessInstance()
+  then
+    System.out.println("Rule fired");
+end
