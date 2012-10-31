@@ -54,9 +54,9 @@ public class ActivationIterator
     }
 
     public Object next() {
-        Activation acc = null;
+        Object obj = null;
         if ( this.currentLeftTuple != null ) {
-            acc = (Activation) currentLeftTuple.getObject();
+            obj = currentLeftTuple.getObject(); // object could be a different type
             this.currentLeftTuple = ( LeftTuple ) leftTupleIter.next();
 
             while ( currentLeftTuple == null  && (node = (TerminalNode) nodeIter.next()) != null ) {
@@ -67,8 +67,7 @@ public class ActivationIterator
                 this.currentLeftTuple = (LeftTuple) leftTupleIter.next();
             }
         }
-
-        return acc;
+        return (obj == null || (obj instanceof Activation)) ? obj : null;
     }
 
 }
