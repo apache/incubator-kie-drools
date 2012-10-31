@@ -30,7 +30,7 @@ public class KBaseUnitImpl implements KBaseUnit {
     private KnowledgeBuilder kbuilder;
     private KnowledgeBase knowledgeBase;
 
-    KBaseUnitImpl(KProject kProject, String kBaseName) {
+    public KBaseUnitImpl(KProject kProject, String kBaseName) {
         this(kProject, kBaseName, null);
     }
 

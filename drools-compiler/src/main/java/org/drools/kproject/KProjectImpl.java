@@ -1,15 +1,15 @@
 package org.drools.kproject;
 
+import com.thoughtworks.xstream.XStream;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.drools.core.util.StringUtils;
 
 public class KProjectImpl implements KProject {
 
@@ -174,5 +174,12 @@ public class KProjectImpl implements KProject {
     public String toString() {
         return "KProject [kprojectPath=" + kProjectPath + ", kbases=" + kBases + "]";
     }
-        
+
+    public static KProject fromXML(InputStream kProjectStream) {
+        return (KProject)new XStream().fromXML(kProjectStream);
+    }
+
+    public static KProject fromXML(java.io.File kProjectFile) {
+        return (KProject)new XStream().fromXML(kProjectFile);
+    }
 }
