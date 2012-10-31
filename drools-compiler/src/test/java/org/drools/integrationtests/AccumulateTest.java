@@ -3,9 +3,6 @@ package org.drools.integrationtests;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +17,6 @@ import java.util.Set;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.CommonTestMethodBase;
-import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
@@ -29,10 +25,7 @@ import org.drools.OuterClass;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.RuntimeDroolsException;
-import org.drools.StatefulSession;
 import org.drools.StatelessSession;
-import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -42,93 +35,27 @@ import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.Package;
-import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.Variable;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
-    private RuleBase loadRuleBase( final Reader reader,
-                                   final PackageBuilderConfiguration conf ) throws IOException,
-                                                                           DroolsParserException,
-                                                                           Exception {
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)\n" + parser.getErrors() );
-        }
-        // pre build the package
-        JavaDialectConfiguration jconf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
-        // required because JANINO compiler fails for some java 5 code features
-        jconf.setCompiler( JavaDialectConfiguration.ECLIPSE );
-        final PackageBuilder builder = new PackageBuilder( conf );
-        builder.addPackage( packageDescr );
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-
-        // test rulebase serialization
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        return ruleBase;
-    }
-
-    public KnowledgeBase loadKnowledgeBase( final String resource,
-                                            final KnowledgeBuilderConfiguration kbconf ) {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbconf );
-        kbuilder.add( ResourceFactory.newClassPathResource( resource,
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        return kbase;
-
-    }
-
-    public KnowledgeBase loadKnowledgeBaseFromString( final String content ) {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( content ) ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
-    }
-
     @Test
     public void testAccumulateModify() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateModify.drl" );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
-
+        final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
                       results );
 
@@ -142,11 +69,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        final org.drools.runtime.rule.FactHandle[] cheeseHandles = new org.drools.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final FactHandle bobHandle = wm.insert( bob );
+        final org.drools.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -193,12 +120,10 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulate() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_Accumulate.drl" );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
-
+        final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
                       results );
 
@@ -232,12 +157,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testMVELAccumulate() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMVEL.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
-
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateMVEL.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
                       results );
 
@@ -265,11 +187,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateModifyMVEL() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModifyMVEL.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateModifyMVEL.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -284,11 +204,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        final org.drools.runtime.rule.FactHandle[] cheeseHandles = new org.drools.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final FactHandle bobHandle = wm.insert( bob );
+        final org.drools.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -334,12 +254,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateReverseModify() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModify.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
-
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModify.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
                       results );
 
@@ -353,11 +270,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        final org.drools.runtime.rule.FactHandle[] cheeseHandles = new org.drools.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final FactHandle bobHandle = wm.insert( bob );
+        final org.drools.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -406,11 +323,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateReverseModify2() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModify2.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModify2.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -478,11 +393,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateReverseModifyInsertLogical2() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyInsertLogical2.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyInsertLogical2.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -523,11 +436,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateReverseModifyMVEL() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyMVEL.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyMVEL.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -592,11 +503,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateReverseModifyMVEL2() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyMVEL2.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyMVEL2.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -661,11 +570,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateWithFromChaining() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateWithFromChaining.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateWithFromChaining.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -738,17 +645,15 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testMVELAccumulate2WM() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMVEL.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm1 = ruleBase.newStatefulSession();
-        final List results1 = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateMVEL.drl"  );
+        StatefulKnowledgeSession wm1 = createKnowledgeSession( kbase );
+        final List<?> results1 = new ArrayList<Object>();
 
         wm1.setGlobal( "results",
                        results1 );
 
-        final WorkingMemory wm2 = ruleBase.newStatefulSession();
-        final List results2 = new ArrayList();
+        StatefulKnowledgeSession  wm2 = createKnowledgeSession( kbase );
+        final List<?> results2 = new ArrayList<Object>();
 
         wm2.setGlobal( "results",
                        results2 );
@@ -798,11 +703,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateInnerClass() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateInnerClass.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateInnerClass.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -819,11 +722,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateReturningNull() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReturningNull.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReturningNull.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -956,10 +857,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                       "        System.out.println($p2.getName());\n" +
                       "end\n";
         // read in the source
-        final Reader reader = new StringReader( rule );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
 
         wm.insert( new Cheese( "stilton", 10 ) );
         wm.insert( new Person( "Alice", "brie" ) );
@@ -968,10 +867,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
-        StatefulSession session = ruleBase.newStatefulSession();
         DataSet data = new DataSet();
         data.results = new ArrayList<Object>();
 
@@ -1007,8 +905,8 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 27,
                              ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, 
+                                                                             true );
         updateReferences( session,
                           data );
 
@@ -1045,10 +943,10 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    private void updateReferences( final StatefulSession session,
+    private void updateReferences( final StatefulKnowledgeSession session,
                                    final DataSet data ) {
         data.results = (List< ? >) session.getGlobal( "results" );
-        for ( Iterator< ? > it = session.iterateObjects(); it.hasNext(); ) {
+        for ( Iterator< ? > it = session.getObjects().iterator(); it.hasNext(); ) {
             Object next = it.next();
             if ( next instanceof Cheese ) {
                 Cheese c = (Cheese) next;
@@ -1064,11 +962,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateCount( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1134,11 +1030,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateAverage( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1203,11 +1097,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateMin( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1272,11 +1164,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateMax( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1341,11 +1231,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateCollectList( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1395,11 +1283,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateCollectSet( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1457,11 +1343,9 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateReverseModifyMultiPattern( String fileName ) throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1530,11 +1414,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateWithPreviouslyBoundVariables() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulatePreviousBinds.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulatePreviousBinds.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1559,10 +1441,8 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateMVELWithModify() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMVELwithModify.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final StatefulSession wm = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateMVELwithModify.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
         final List<Number> results = new ArrayList<Number>();
         wm.setGlobal( "results",
                       results );
@@ -1600,11 +1480,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateGlobals() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateGlobals.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final StatefulSession wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateGlobals.drl"  );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
                       results );
@@ -1673,8 +1551,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     }
 
     public void execTestAccumulateMultipleFunctions( String fileName ) throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( fileName,
-                                                 null );
+        KnowledgeBase kbase = loadKnowledgeBase( fileName );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -1767,8 +1644,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     }
 
     public void execTestAccumulateMultipleFunctionsConstraint( String fileName ) throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( fileName,
-                                                 null );
+        KnowledgeBase kbase = loadKnowledgeBase( fileName );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         AgendaEventListener ael = mock( AgendaEventListener.class );

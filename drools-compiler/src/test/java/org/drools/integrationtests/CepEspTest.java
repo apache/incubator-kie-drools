@@ -51,9 +51,11 @@ import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.type.FactType;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
@@ -61,6 +63,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
@@ -78,74 +81,6 @@ import org.mockito.ArgumentCaptor;
 
 public class CepEspTest extends CommonTestMethodBase {
     
-    private RuleBase loadRuleBase( final Reader reader,
-                                   final RuleBaseConfiguration conf ) throws IOException,
-                                                                     DroolsParserException,
-                                                                     Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            System.out.println( parser.getErrors() );
-            fail( parser.getErrors().toString() );
-        }
-        // pre build the package
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase( conf );
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        return ruleBase;
-    }
-
-    private KnowledgeBase loadKnowledgeBase( final Reader reader,
-                                             final KnowledgeBaseConfiguration conf ) throws IOException,
-                                                                                    ClassNotFoundException {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( reader ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        // add the packages to a rulebase
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        kbase = SerializationHelper.serializeObject( kbase );
-        return kbase;
-    }
-
-    private KnowledgeBase loadKnowledgeBase( final String resource,
-                                             final KnowledgeBaseConfiguration conf,
-                                             final boolean serialize ) throws IOException,
-                                                                      ClassNotFoundException {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( resource,
-                                                            CepEspTest.class ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        // add the packages to a rulebase
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        if ( serialize ) {
-            kbase = SerializationHelper.serializeObject( kbase );
-        }
-        return kbase;
-    }
-    
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
-        return kbase.newStatefulKnowledgeSession();
-    }
-
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KnowledgeSessionConfiguration conf) { 
-        return kbase.newStatefulKnowledgeSession(conf, null);
-    }
-
     @Test
     public void testComplexTimestamp() {
         String rule = "";
@@ -155,20 +90,8 @@ public class CepEspTest extends CommonTestMethodBase {
                  "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
                  "   @duration( getProperties().get( 'duration' )+1 ) \n" +
                 "end\n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        assertFalse( kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Message msg = new Message();
         Properties props = new Properties();
@@ -189,16 +112,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventAssertion() throws Exception {
         // read in the source
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertion.drl" );
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
         StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
@@ -316,18 +230,14 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testEventAssertionWithDuration() throws Exception {
-        // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDuration.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDuration.drl" );
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
         final List results = new ArrayList();
 
-        wm.setGlobal( "results",
+        session.setGlobal( "results",
                       results );
 
         StockTickInterface tick1 = new StockTick( 1,
@@ -351,10 +261,10 @@ public class CepEspTest extends CommonTestMethodBase {
                                                   13000,
                                                   7 );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );
@@ -389,7 +299,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( tick4.getDuration(),
                       eh4.getDuration() );
 
-        wm.fireAllRules();
+        session.fireAllRules();
 
         assertEquals( 2,
                       results.size() );
@@ -398,18 +308,14 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testEventAssertionWithDateTimestamp() throws Exception {
-        // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDateTimestamp.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDateTimestamp.drl" );
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
         final List results = new ArrayList();
 
-        wm.setGlobal( "results",
+        session.setGlobal( "results",
                       results );
 
         StockTickInterface tick1 = new StockTick( 1,
@@ -433,10 +339,10 @@ public class CepEspTest extends CommonTestMethodBase {
                                                   13000,
                                                   7 );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );
@@ -462,7 +368,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( tick4.getTime(),
                       eh4.getStartTimestamp() );
 
-        wm.fireAllRules();
+        session.fireAllRules();
 
         assertEquals( 2,
                       results.size() );
@@ -471,27 +377,24 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testEventExpiration() throws Exception {
-        // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventExpiration.drl" );
 
-        final InternalRuleBase internal = (InternalRuleBase) ruleBase;
+        // read in the source
+        TypeDeclaration factType = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getTypeDeclaration( StockTick.class );
         final TimeIntervalParser parser = new TimeIntervalParser();
 
         assertEquals( parser.parse( "1h30m" )[0].longValue(),
-                      internal.getTypeDeclaration( StockTick.class ).getExpirationOffset() );
+                      factType.getExpirationOffset() );
     }
 
     @Test
     public void testEventExpiration2() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration2.drl" ) );
-        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                conf );
+        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbc.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( kbc, "test_CEP_EventExpiration2.drl" );
 
-        final InternalRuleBase internal = (InternalRuleBase) ruleBase;
+        final InternalRuleBase internal = (InternalRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
         Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPoint.DEFAULT );
@@ -507,13 +410,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventExpiration3() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration3.drl" ) );
-        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                conf );
-
-        final InternalRuleBase internal = (InternalRuleBase) ruleBase;
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration3.drl" );
+        
+        final InternalRuleBase internal = (InternalRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
         Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPoint.DEFAULT );
@@ -529,11 +430,9 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventExpiration4() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration4.drl" ) );
         final KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
-        final KnowledgeBase kbase = loadKnowledgeBase( reader,
-                                                       conf );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration4.drl" );
 
         final KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( "pseudo" ) );
@@ -572,17 +471,14 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
-
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_TimeRelationalOperators.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
+        
         final PseudoClockScheduler clock = (PseudoClockScheduler) wm.getSessionClock();
 
         clock.setStartupTime( 1000 );
@@ -782,15 +678,13 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testBeforeOperator() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_BeforeOperator.drl" ) );
-        final KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( EventProcessingOption.STREAM );
-        final KnowledgeBase kbase = loadKnowledgeBase( reader,
-                                                       kconf );
-
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_BeforeOperator.drl" );
+        
         KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, sconf );
 
         final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
         clock.setStartupTime( 1000 );
@@ -871,15 +765,13 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testMetByOperator() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_MetByOperator.drl" ) );
-        final KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( EventProcessingOption.STREAM );
-        final KnowledgeBase kbase = loadKnowledgeBase( reader,
-                                                       kconf );
-
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_MetByOperator.drl" );
+        
         KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, sconf );
 
         final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<PseudoClockScheduler>getSessionClock();
         clock.setStartupTime( 1000 );
@@ -964,15 +856,13 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testAfterOnArbitraryDates() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_AfterOperatorDates.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_AfterOperatorDates.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
         final List< ? > results = new ArrayList<Object>();
 
@@ -1017,15 +907,13 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testBeforeOnArbitraryDates() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_BeforeOperatorDates.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_BeforeOperatorDates.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
         final List< ? > results = new ArrayList<Object>();
 
@@ -1070,15 +958,13 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testCoincidesOnArbitraryDates() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_CoincidesOperatorDates.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_CoincidesOperatorDates.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
         final List< ? > results = new ArrayList<Object>();
 
@@ -1123,16 +1009,13 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSimpleTimeWindow() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleTimeWindow.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
         List results = new ArrayList();
 
@@ -1258,16 +1141,13 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSimpleLengthWindow() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleLengthWindow.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.REALTIME_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
         final List results = new ArrayList();
 
@@ -1345,20 +1225,17 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDelayingNot() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_DelayingNot.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_DelayingNot.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
-        final Rule rule = ruleBase.getPackage( "org.drools" ).getRule( "Delaying Not" );
+        final Rule rule = (Rule) kbase.getRule( "org.drools", "Delaying Not" );
         assertEquals( 10000,
                       ((DurationTimer) rule.getTimer()).getDuration() );
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
 
         final List results = new ArrayList();
 
@@ -1430,8 +1307,8 @@ public class CepEspTest extends CommonTestMethodBase {
         
         KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ), conf );
-
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( conf, str );
+        
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         // rule X should not be delayed as the delay would be infinite
         int rules = ksession.fireAllRules();
@@ -1456,7 +1333,7 @@ public class CepEspTest extends CommonTestMethodBase {
         
         KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ), conf );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( conf, str );
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
@@ -1580,16 +1457,14 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testIdleTimeAndTimeToNextJob() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
-        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader,
-                                                rbconf );
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleTimeWindow.drl" );
+        
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf,
-                                                          null );
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
         File testTmpDir = new File( "target/test-tmp/" );
         testTmpDir.mkdirs();
@@ -1600,7 +1475,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
             wm.setGlobal( "results",
                           results );
-            InternalWorkingMemory iwm = (InternalWorkingMemory) wm;
+            InternalWorkingMemory iwm = (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl)wm).session;
 
             // how to initialize the clock?
             // how to configure the clock?
@@ -1702,9 +1577,7 @@ public class CepEspTest extends CommonTestMethodBase {
     public void testCollectWithWindows() throws Exception {
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        final KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_CollectWithWindows.drl",
-                                                       kbconf,
-                                                       true );
+        final KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_CEP_CollectWithWindows.drl" );
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
@@ -1873,9 +1746,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                                ClassNotFoundException {
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        final KnowledgeBase kbase1 = loadKnowledgeBase( "test_CEP_StreamMode.drl",
-                                                        kbconf,
-                                                        false );
+        final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_StreamMode.drl" );
 
         KnowledgeBase kbase2 = (KnowledgeBase) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( kbase1 ),
                                                                            null );
@@ -1970,9 +1841,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
         kbconf.setOption( AssertBehaviorOption.IDENTITY );
-        final KnowledgeBase kbase1 = loadKnowledgeBase( "test_CEP_AssertBehaviorOnEntryPoints.drl",
-                                                        kbconf,
-                                                        true );
+        final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
 
         final StatefulKnowledgeSession ksession = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
@@ -2020,9 +1889,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
         kbconf.setOption( AssertBehaviorOption.EQUALITY );
-        final KnowledgeBase kbase1 = loadKnowledgeBase( "test_CEP_AssertBehaviorOnEntryPoints.drl",
-                                                        kbconf,
-                                                        true );
+        final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
 
         final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
@@ -2052,9 +1919,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventDeclarationForInterfaces() throws Exception {
         // read in the source
-        final KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventInterfaces.drl",
-                                                       null,
-                                                       true );
+        final KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventInterfaces.drl" );
 
         StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
@@ -2091,9 +1956,7 @@ public class CepEspTest extends CommonTestMethodBase {
         // read in the source
         final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
         kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_TemporalOperators.drl",
-                                                 kbconf,
-                                                 true );
+        KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators.drl" );
 
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
@@ -2108,9 +1971,7 @@ public class CepEspTest extends CommonTestMethodBase {
         // read in the source
         final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
         kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_TemporalOperators2.drl",
-                                                 kbconf,
-                                                 true );
+        KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators2.drl" );
 
         KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
@@ -2150,9 +2011,7 @@ public class CepEspTest extends CommonTestMethodBase {
         // read in the source
         final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
         kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_TemporalOperators3.drl",
-                                                 kbconf,
-                                                 true );
+        KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators3.drl" );
 
         KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
@@ -2225,8 +2084,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
-                                                 config );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -2330,8 +2188,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.CLOUD );
-        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
-                                                 config );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
@@ -2394,8 +2251,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
-                                                 config );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
@@ -2478,8 +2334,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
-                                                 config );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,

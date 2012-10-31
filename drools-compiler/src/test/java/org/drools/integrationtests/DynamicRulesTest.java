@@ -17,7 +17,10 @@
 package org.drools.integrationtests;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -47,7 +50,6 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
-import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -59,6 +61,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.EnvironmentFactory;
@@ -75,23 +78,15 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
-    
+
     @Test
     public void testDynamicRuleAdditions() throws Exception {
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) );
-
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        final Package pkg1 = SerializationHelper.serializeObject( builder.getPackage() );
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg1 );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl" ) );
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
         workingMemory.setGlobal( "total",
                                  new Integer( 0 ) );
 
-        final List list = new ArrayList();
+        final List< ? > list = new ArrayList<Object>();
         workingMemory.setGlobal( "list",
                                  list );
 
@@ -118,13 +113,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( "stilton",
                       list.get( 0 ) );
 
-        reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) );
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        final Package pkg2 = SerializationHelper.serializeObject( builder.getPackage() );
-        ruleBase.addPackage( pkg2 );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic2.drl" ) );
+        kbase.addKnowledgePackages( kpkgs );
 
-        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         workingMemory.fireAllRules();
         assertEquals( 3,
                       list.size() );
@@ -138,20 +129,16 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         list.clear();
 
-        reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) );
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        final Package pkg3 = SerializationHelper.serializeObject( builder.getPackage() );
-        ruleBase.addPackage( pkg3 );
-        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic3.drl" ) );
+        kbase.addKnowledgePackages( kpkgs );
 
         // Package 3 has a rule working on Person instances.
         // As we added person instance in advance, rule should fire now
         workingMemory.fireAllRules();
 
         assertEquals( "Rule from package 3 should have been fired",
-                             "match Person ok",
-                             bob.getStatus() );
+                      "match Person ok",
+                      bob.getStatus() );
 
         assertEquals( 1,
                       list.size() );
@@ -159,17 +146,14 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( bob,
                       list.get( 0 ) );
 
-        reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) );
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        final Package pkg4 = SerializationHelper.serializeObject( builder.getPackage() );
-        ruleBase.addPackage( pkg4 );
+        kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic4.drl" ) );
+        kbase.addKnowledgePackages( kpkgs );
         workingMemory.fireAllRules();
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         assertEquals( "Rule from package 4 should have been fired",
-                             "Who likes Stilton ok",
-                             bob.getStatus() );
+                      "Who likes Stilton ok",
+                      bob.getStatus() );
 
         assertEquals( 2,
                       list.size() );
@@ -181,26 +165,16 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testDynamicRuleRemovals() throws Exception {
+        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl", "test_Dynamic3.drl", "test_Dynamic4.drl" ) );
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
-        final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic2.drl" ) );
+        kbase.addKnowledgePackages( kpkgs );
 
-        org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-        RuleBase ruleBase = getRuleBase();
-        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-        ruleBase.addPackage( pkg );
-        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final PackageBuilder builder2 = new PackageBuilder();
-        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
-        ruleBase.addPackage( SerializationHelper.serializeObject( builder2.getPackage() ) );
-        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        workingMemory.addEventListener( ael );
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
+        final List< ? > list = new ArrayList<Object>();
         workingMemory.setGlobal( "list",
                                  list );
 
@@ -225,94 +199,73 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                            5 );
         workingMemory.insert( cheddar );
 
-        assertEquals( 15,
-                      workingMemory.getAgenda().getActivations().length );
+        verify( ael, times( 15 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        verify( ael, never() ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
-        reteooRuleBase.removeRule( "org.drools.test",
-                                   "Who likes Stilton" );
-        assertEquals( 12,
-                      workingMemory.getAgenda().getActivations().length );
+        kbase.removeRule( "org.drools.test",
+                          "Who likes Stilton" );
 
-        reteooRuleBase.removeRule( "org.drools.test",
-                                   "like cheese" );
+        verify( ael, times( 3 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
-        //        reteooRuleBase.removeRule( "org.drools.test",
-        //                                   "like cheese2" );
+        kbase.removeRule( "org.drools.test",
+                          "like cheese" );
+
+        verify( ael, times( 7 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
         final Cheese muzzarela = new Cheese( "muzzarela",
                                              5 );
-        assertEquals( 8,
-                      workingMemory.getAgenda().getActivations().length );
-
         workingMemory.insert( muzzarela );
 
-        assertEquals( 9,
-                      workingMemory.getAgenda().getActivations().length );
+        verify( ael, times( 16 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
 
-        reteooRuleBase.removePackage( "org.drools.test" );
-        reteooRuleBase = SerializationHelper.serializeObject( reteooRuleBase );
+        kbase.removeKnowledgePackage( "org.drools.test" );
+        verify( ael, times( 16 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
-        assertEquals( 0,
-                      workingMemory.getAgenda().getActivations().length );
+        kbase = SerializationHelper.serializeObject( kbase );
     }
 
     @Test
     public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl", 
+                                                                                      "test_Dynamic2.drl", 
+                                                                                      "test_Dynamic3.drl", 
+                                                                                      "test_Dynamic4.drl" ) );
 
-        org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
 
-        RuleBase ruleBase = getRuleBase();
-        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
+        assertEquals( 1,
+                      kbase.getKnowledgePackages().size() );
+        assertEquals( 5,
+                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        kbase.removeRule( "org.drools.test",
+                          "Who likes Stilton" );
+        assertEquals( 4,
+                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbase.removeRule( "org.drools.test",
+                          "like cheese" );
+        assertEquals( 3,
+                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        if ( reteooRuleBase != null ) {
-            assertEquals( 1,
-                          reteooRuleBase.getPackages().length );
-            assertEquals( 5,
-                          reteooRuleBase.getPackages()[0].getRules().length );
-
-            reteooRuleBase.removeRule( "org.drools.test",
-                                       "Who likes Stilton" );
-            assertEquals( 4,
-                          reteooRuleBase.getPackages()[0].getRules().length );
-
-            reteooRuleBase.removeRule( "org.drools.test",
-                                       "like cheese" );
-            assertEquals( 3,
-                          reteooRuleBase.getPackages()[0].getRules().length );
-
-            reteooRuleBase.removePackage( "org.drools.test" );
-            assertEquals( 0,
-                          reteooRuleBase.getPackages().length );
-        }
+        kbase.removeKnowledgePackage( "org.drools.test" );
+        assertEquals( 0,
+                      kbase.getKnowledgePackages().size() );
     }
 
     @Test
     public void testDynamicFunction() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
-
         //FIXME JBRULES-1258 serialising a package breaks function removal -- left the serialisation commented out for now
-        final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
-        //final Package pkg = builder.getPackage();
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_DynamicFunction1.drl" ) );
+        KnowledgeBase kbase = loadKnowledgeBase( );
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbase.addKnowledgePackages( kpkgs );
+        kbase = SerializationHelper.serializeObject( kbase );
+        
+        final StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
 
-        final List list = new ArrayList();
+        final List<?> list = new ArrayList<Object>();
         workingMemory.setGlobal( "list",
                                  list );
 
@@ -327,8 +280,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         // Check a function can be removed from a package.
         // Once removed any efforts to use it should throw an Exception
-        ruleBase.removeFunction( "org.drools.test",
-                                 "addFive" );
+        kbase.removeFunction( "org.drools.test",
+                              "addFive" );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
@@ -341,10 +294,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
 
         // Check a new function can be added to replace an old function
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction2.drl" ) ) );
-
-        ruleBase.addPackage( SerializationHelper.serializeObject( builder.getPackage() ) );
+        Collection<KnowledgePackage> kpkgs2 = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicFunction2.drl" ) );
+        kbase.addKnowledgePackages( kpkgs2 );
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
@@ -355,10 +306,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( new Integer( 6 ),
                       list.get( 1 ) );
 
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction3.drl" ) ) );
-
-        ruleBase.addPackage( SerializationHelper.serializeObject( builder.getPackage() ) );
+        Collection<KnowledgePackage> kpkgs3 = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicFunction3.drl" ) );
+        kbase.addKnowledgePackages( kpkgs3 );
 
         final Cheese feta = new Cheese( "feta",
                                         5 );
@@ -372,41 +321,41 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testRemovePackage() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_RemovePackage.drl" ) );
+        final String packageName = kpkgs.iterator().next().getName();
+        KnowledgeBase kbase = loadKnowledgeBase( );
 
-        RuleBase ruleBase = getRuleBase();
-        final String packageName = builder.getPackage().getName();
-        ruleBase.addPackage( SerializationHelper.serializeObject( builder.getPackage() ) );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        kbase.addKnowledgePackages( kpkgs );
+        kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
         session.insert( new Precondition( "genericcode",
                                           "genericvalue" ) );
         session.fireAllRules();
 
-        RuleBase ruleBaseWM = session.getRuleBase();
-        ruleBaseWM.removePackage( packageName );
-        final PackageBuilder builder1 = new PackageBuilder();
-        builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
-        ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        KnowledgeBase ruleBaseWM = session.getKnowledgeBase();
+        ruleBaseWM.removeKnowledgePackage( packageName );
+        
+        kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_RemovePackage.drl" ) );
+        ruleBaseWM.addKnowledgePackages( kpkgs );
         ruleBaseWM = SerializationHelper.serializeObject( ruleBaseWM );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
+
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, 
+                                                                             true );
         session.fireAllRules();
 
-        ruleBaseWM.removePackage( packageName );
-        ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        ruleBaseWM.removeKnowledgePackage( packageName );
+        ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
 
-        ruleBaseWM.removePackage( packageName );
-        ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        ruleBaseWM.removeKnowledgePackage( packageName );
+        ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
     }
 
     @Test
     public void testDynamicRules() throws Exception {
-        RuleBase ruleBase = getRuleBase();
-        StatefulSession session = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase( );
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
         final Cheese a = new Cheese( "stilton",
                                      10 );
         final Cheese b = new Cheese( "stilton",
@@ -417,21 +366,20 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.insert( b );
         session.insert( c );
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules.drl" ) ) );
-        final Package pkg = builder.getPackage();
-        ruleBase.addPackage( SerializationHelper.serializeObject( pkg ) );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_DynamicRules.drl" ) );
+        kbase.addKnowledgePackages( kpkgs );
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, 
+                                                                             true );
 
         session.fireAllRules();
     }
 
     @Test
     public void testDynamicRules2() throws Exception {
-        RuleBase ruleBase = getRuleBase();
-        StatefulSession session = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase( );
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
         // Assert some simple facts
         final FactA a = new FactA( "hello",
@@ -443,36 +391,33 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.insert( a );
         session.insert( b );
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules2.drl" ) ) );
-        final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_DynamicRules2.drl" ) );
+        kbase.addKnowledgePackages( kpkgs );
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, 
+                                                                             true );
 
         session.fireAllRules();
     }
 
     @Test
     public void testRuleBaseAddRemove() throws Exception {
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        KnowledgeBase kbase = loadKnowledgeBase( );
 
         //add and remove
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-        Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
-        ruleBase.addPackage( pkg );
-        ruleBase.removePackage( pkg.getName() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_Dynamic1.drl" ) );
+        String pkgName = kpkgs.iterator().next().getName();
+        kbase.addKnowledgePackages( kpkgs );
+        kbase.removeKnowledgePackage( pkgName );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         //add and remove again
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-        pkg = SerializationHelper.serializeObject( builder.getPackage() );
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        ruleBase.removePackage( pkg.getName() );
+        kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_Dynamic1.drl" ) );
+        pkgName = kpkgs.iterator().next().getName();
+        kbase.addKnowledgePackages( kpkgs );
+        kbase.removeKnowledgePackage( pkgName );
+        kbase = SerializationHelper.serializeObject( kbase );
     }
 
     @Test
@@ -570,60 +515,44 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectDynamicRules() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectDynamicRules1.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CollectDynamicRules1.drl" );
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        List list = new ArrayList();
-        workingMemory.setGlobal( "results",
+        List<?> list = new ArrayList<Object>();
+        session.setGlobal( "results",
                                  list );
 
-        workingMemory.insert( new Cheese( "stilton",
+        session.insert( new Cheese( "stilton",
                                           10 ) );
-        workingMemory.insert( new Cheese( "brie",
+        session.insert( new Cheese( "brie",
                                           10 ) );
-        workingMemory.insert( new Cheese( "stilton",
+        session.insert( new Cheese( "stilton",
                                           10 ) );
-        workingMemory.insert( new Cheese( "muzzarela",
+        session.insert( new Cheese( "muzzarela",
                                           10 ) );
 
-        final PackageBuilder builder2 = new PackageBuilder();
-        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectDynamicRules2.drl" ) ) );
-        final Package pkg2 = builder2.getPackage();
-        ruleBase.addPackage( pkg2 );
-        workingMemory.fireAllRules();
+        kbase.addKnowledgePackages( loadKnowledgePackages( "test_CollectDynamicRules2.drl" ) );
+        session.fireAllRules();
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         // fire all rules is automatic
         assertEquals( 1,
                       list.size() );
         assertEquals( 2,
-                      ((List) list.get( 0 )).size() );
+                      ((List<?>) list.get( 0 )).size() );
 
     }
 
     @Test
     public void testDynamicNotNode() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_CollectDynamicRules1.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
-        kbase.addKnowledgePackages( kpkgs );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CollectDynamicRules1.drl" );
         kbase = SerializationHelper.serializeObject( kbase );
         Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
-                    new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, env);
-        List results = new ArrayList();
+        env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                 new IdentityPlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT )} );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( null, env );
+        List<?> results = new ArrayList<Object>();
         ksession.setGlobal( "results",
                             results );
 
@@ -637,19 +566,11 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ksession.insert( b );
         ksession.insert( c );
 
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicNotNode.drl" ) );
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-        //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                               false );
 
         results = (List) ksession.getGlobal( "results" );
@@ -663,22 +584,14 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         ksession.retract( ksession.getFactHandle( b ) );
 
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
+        kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicNotNode.drl" ) );
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-        //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                               false );
 
-        results = (List) ksession.getGlobal( "results" );
+        results = (List<?>) ksession.getGlobal( "results" );
         ksession.fireAllRules();
 
         assertEquals( 1,
@@ -688,14 +601,10 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     @Test
     public void testDynamicRulesAddRemove() {
         try {
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            KnowledgeBase kbase = loadKnowledgeBase( "test_DynamicRulesTom.drl" );
+            StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
-            PackageBuilder tomBuilder = new PackageBuilder();
-            tomBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesTom.drl" ) ) );
-            ruleBase.addPackage( tomBuilder.getPackage() );
-
-            StatefulSession session = ruleBase.newStatefulSession();
-            List results = new ArrayList();
+            List<?> results = new ArrayList<Object>();
             session.setGlobal( "results",
                                results );
 
@@ -729,9 +638,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             assertTrue( results.contains( h10.getObject() ) );
             results.clear();
 
-            PackageBuilder fredBuilder = new PackageBuilder();
-            fredBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesFred.drl" ) ) );
-            ruleBase.addPackage( fredBuilder.getPackage() );
+            kbase.addKnowledgePackages( loadKnowledgePackages( "test_DynamicRulesFred.drl" ) );
             session.fireAllRules();
 
             assertEquals( 2,
@@ -740,11 +647,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             assertTrue( results.contains( h4.getObject() ) );
             results.clear();
 
-            ruleBase.removePackage( "tom" );
+            kbase.removeKnowledgePackage( "tom" );
 
-            PackageBuilder edBuilder = new PackageBuilder();
-            edBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesEd.drl" ) ) );
-            ruleBase.addPackage( edBuilder.getPackage() );
+            kbase.addKnowledgePackages( loadKnowledgePackages( "test_DynamicRulesEd.drl" ) );
             session.fireAllRules();
 
             assertEquals( 2,
@@ -769,23 +674,18 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testDynamicRuleRemovalsSubNetwork() throws Exception {
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicRulesWithSubnetwork1.drl", 
+                                                                                                         "test_DynamicRulesWithSubnetwork.drl" ) );
+        
+        KnowledgeBase kbase = loadKnowledgeBase();
+        kbase.addKnowledgePackages( kpkgs );
+        
+        kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicRulesWithSubnetwork2.drl" ) );
+        kbase.addKnowledgePackages( kpkgs );
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork1.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
-        final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
-        org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-        final RuleBase ruleBase = getRuleBase();
-        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-        ruleBase.addPackage( pkg );
-        final PackageBuilder builder2 = new PackageBuilder();
-        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork2.drl" ) ) );
-        ruleBase.addPackage( SerializationHelper.serializeObject( builder2.getPackage() ) );
-
-        final StatefulSession session = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
+        final List<?> list = new ArrayList<Object>();
         session.setGlobal( "results",
                            list );
 
@@ -826,15 +726,15 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.insert( order );
 
         assertEquals( 11,
-                      session.getAgenda().getActivations().length );
+                      getInternalAgenda( session ).getActivations().length );
 
-        reteooRuleBase.removeRule( "org.drools",
-                                   "Apply Discount on all books" );
+        kbase.removeRule( "org.drools",
+                          "Apply Discount on all books" );
         assertEquals( 10,
-                      session.getAgenda().getActivations().length );
+                      getInternalAgenda( session ).getActivations().length );
 
-        reteooRuleBase.removeRule( "org.drools",
-                                   "like book" );
+        kbase.removeRule( "org.drools",
+                          "like book" );
 
         final OrderItem item5 = new OrderItem( order,
                                                5,
@@ -842,70 +742,53 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                                OrderItem.TYPE_CD,
                                                5 );
         assertEquals( 8,
-                      session.getAgenda().getActivations().length );
+                      getInternalAgenda( session ).getActivations().length );
 
         session.insert( item5 );
 
         assertEquals( 10,
-                      session.getAgenda().getActivations().length );
+                      getInternalAgenda( session ).getActivations().length );
 
-        reteooRuleBase.removePackage( "org.drools" );
+        kbase.removeKnowledgePackage( "org.drools" );
 
         assertEquals( 0,
-                      session.getAgenda().getActivations().length );
+                      getInternalAgenda( session ).getActivations().length );
     }
 
     @Test
     public void testDynamicRuleRemovalsUnusedWorkingMemorySubNetwork() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( "test_DynamicRulesWithSubnetwork1.drl",
+                                                 "test_DynamicRulesWithSubnetwork2.drl",
+                                                 "test_DynamicRulesWithSubnetwork.drl" );
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork1.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork2.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        assertEquals( 1,
+                      kbase.getKnowledgePackages().size() );
+        assertEquals( 4,
+                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
+        kbase.removeRule( "org.drools",
+                "Apply Discount on all books" );
+        assertEquals( 3,
+                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        final RuleBase ruleBase = getRuleBase();
-        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
+        kbase.removeRule( "org.drools",
+                "like book" );
+        assertEquals( 2,
+                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        ruleBase.addPackage( pkg );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        if ( reteooRuleBase != null ) {
-            assertEquals( 1,
-                          reteooRuleBase.getPackages().length );
-            assertEquals( 4,
-                          reteooRuleBase.getPackages()[0].getRules().length );
-
-            reteooRuleBase.removeRule( "org.drools",
-                                       "Apply Discount on all books" );
-            assertEquals( 3,
-                          reteooRuleBase.getPackages()[0].getRules().length );
-
-            reteooRuleBase.removeRule( "org.drools",
-                                       "like book" );
-            assertEquals( 2,
-                          reteooRuleBase.getPackages()[0].getRules().length );
-
-            reteooRuleBase.removePackage( "org.drools" );
-            assertEquals( 0,
-                          reteooRuleBase.getPackages().length );
-        }
+        kbase.removeKnowledgePackage( "org.drools" );
+        assertEquals( 0,
+                      kbase.getKnowledgePackages().size() );
     }
 
     @Test
     public void testRemovePackageSubNetwork() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_DynamicRulesWithSubnetwork.drl" );
+        String packageName = kbase.getKnowledgePackages().iterator().next().getName();
+        
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
 
-        final RuleBase ruleBase = getRuleBase();
-        final String packageName = builder.getPackage().getName();
-        ruleBase.addPackage( SerializationHelper.serializeObject( builder.getPackage() ) );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        List results = new ArrayList();
+        List<?> results = new ArrayList<Object>();
         workingMemory.setGlobal( "results",
                                  results );
 
@@ -951,11 +834,12 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       ((List) results.get( 0 )).size() );
         results.clear();
 
-        final RuleBase ruleBaseWM = workingMemory.getRuleBase();
-        ruleBaseWM.removePackage( packageName );
-        final PackageBuilder builder1 = new PackageBuilder();
-        builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
-        ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        KnowledgeBase ruleBaseWM = workingMemory.getKnowledgeBase();
+        ruleBaseWM.removeKnowledgePackage( packageName );
+        
+        Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_DynamicRulesWithSubnetwork.drl" );
+        ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
+        
         workingMemory.fireAllRules();
         results = (List) workingMemory.getGlobal( "results" );
         assertEquals( 1,
@@ -964,8 +848,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       ((List) results.get( 0 )).size() );
         results.clear();
 
-        ruleBaseWM.removePackage( packageName );
-        ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        ruleBaseWM.removeKnowledgePackage( packageName );
+        ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       results.size() );
@@ -973,8 +857,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       ((List) results.get( 0 )).size() );
         results.clear();
 
-        ruleBaseWM.removePackage( packageName );
-        ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        ruleBaseWM.removeKnowledgePackage( packageName );
+        ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       results.size() );
@@ -1018,7 +902,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                      kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // now lets add some knowledge to the kbase
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1161,7 +1045,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         final AgendaEventListener alistener = mock( AgendaEventListener.class );
         ksession.addEventListener( alistener );
@@ -1214,7 +1098,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackageFromDrl( new StringReader( str ) );
         assertTrue( "Should not have errors",
-                           pkgBuilder.getErrors().isEmpty() );
+                    pkgBuilder.getErrors().isEmpty() );
 
         // Add once ...
         ReteooRuleBase rb = new ReteooRuleBase( "dummy" );
@@ -1246,8 +1130,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
-        
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+
         AgendaEventListener ael = mock( AgendaEventListener.class );
         session.addEventListener( ael );
 
@@ -1256,17 +1140,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
 
         addDrlToKBase( kbase, "test_JBRULES_2206_1.drl" );
-        
+
         // two matching rules were added, so 2 activations should have been created 
-        verify( ael, times(2) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        verify( ael, times( 2 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
         int fireCount = session.fireAllRules();
         // both should have fired
         assertEquals( 2, fireCount );
-        
+
         addDrlToKBase( kbase, "test_JBRULES_2206_2.drl" );
-        
+
         // one rule was overridden and should activate 
-        verify( ael, times(3) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        verify( ael, times( 3 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
         fireCount = session.fireAllRules();
         // that rule should fire again
         assertEquals( 1, fireCount );
@@ -1274,7 +1158,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.dispose();
     }
 
-    private void addDrlToKBase(KnowledgeBase kbase, String drlName) {
+    private void addDrlToKBase(KnowledgeBase kbase,
+                               String drlName) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( drlName,
                                                             DynamicRulesTest.class ),
