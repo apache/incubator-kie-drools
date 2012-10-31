@@ -11517,6 +11517,42 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+    
+    @Test
+    public void noDormantCheckOnModifies() throws Exception {
+         // Test case for BZ 862325
+         String str = "package org.drools;\n"
+                 + " rule R1\n"
+                 + "    salience 10\n" 
+                 + "    when\n" 
+                 + "        $c : Cheese( price == 10 ) \n"
+                 + "        $p : Person( ) \n"
+                 + "    then \n"
+                 + "        modify($c) { setPrice( 5 ) }\n"
+                 + "        modify($p) { setAge( 20 ) }\n"
+                 + "end\n" 
+                 + "rule R2\n"
+                 + "    when\n" 
+                 + "        $p : Person( )"
+                 + "    then \n"
+                 + "        // noop\n"
+                 + "end\n";
+        // load up the knowledge base
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        ksession.insert( new Person("Bob", 19) );
+        ksession.insert( new Cheese("brie", 10) );
+        ksession.fireAllRules();
+        
+        // both rules should fire exactly once
+        verify( ael, times(2) ).afterActivationFired( any( org.drools.event.rule.AfterActivationFiredEvent.class ) );
+        // no cancellations should have happened 
+        verify( ael, never() ).activationCancelled( any( org.drools.event.rule.ActivationCancelledEvent.class ) );
+    }    
 
     @Test
     public void testNullConstantLeft() {
