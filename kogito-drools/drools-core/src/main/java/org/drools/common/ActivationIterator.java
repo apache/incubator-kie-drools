@@ -3,7 +3,6 @@ package org.drools.common;
 import org.drools.KnowledgeBase;
 import org.drools.core.util.Iterator;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
@@ -49,17 +48,18 @@ public class ActivationIterator
     }
 
     public static ActivationIterator iterator(StatefulKnowledgeSession ksession) {
-        return new ActivationIterator( ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory(),
+        return new ActivationIterator( ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
                                        ksession.getKnowledgeBase() );
     }
 
     public Object next() {
         Activation acc = null;
         if ( this.currentLeftTuple != null ) {
-            acc = (Activation) currentLeftTuple.getObject();
-            this.currentLeftTuple = ( LeftTuple ) leftTupleIter.next();
+            Object obj = currentLeftTuple.getObject();
+            acc = obj == Boolean.TRUE ? null : (Activation)obj;
+            currentLeftTuple = ( LeftTuple ) leftTupleIter.next();
 
-            while ( currentLeftTuple == null  && (node = (TerminalNode) nodeIter.next()) != null ) {
+            while ( currentLeftTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
                 if ( !(node instanceof RuleTerminalNode) ) {
                     continue;
                 }                    
