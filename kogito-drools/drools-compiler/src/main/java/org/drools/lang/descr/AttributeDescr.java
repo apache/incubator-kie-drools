@@ -25,6 +25,9 @@ public class AttributeDescr extends BaseDescr {
     private String            name;
     private String            value;
     private Type              type;
+    
+    // default constructor for serialization
+    public AttributeDescr() {}
 
     public AttributeDescr(final String name) {
         this(name,
