@@ -35,9 +35,14 @@ public class LinkedListTest {
     @Before
     public void setUp() throws Exception {
         this.list = new LinkedList();
-        this.node1 = new AbstractBaseLinkedListNode();
-        this.node2 = new AbstractBaseLinkedListNode();
-        this.node3 = new AbstractBaseLinkedListNode();
+        this.node1 = new AbstractBaseLinkedListNodeMock();
+        this.node2 = new AbstractBaseLinkedListNodeMock();
+        this.node3 = new AbstractBaseLinkedListNodeMock();
+    }
+
+    private static class AbstractBaseLinkedListNodeMock
+            extends AbstractBaseLinkedListNode<AbstractBaseLinkedListNodeMock> {
+
     }
 
     /*
