@@ -15,8 +15,8 @@
  */
 package org.jbpm.persistence.util;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.drools.runtime.EnvironmentName.*;
+import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -34,14 +34,12 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.util.EntityManagerFactoryProxy;
-import org.drools.marshalling.util.UserTransactionProxy;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.*;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.marshalling.util.EntityManagerFactoryProxy;
+import org.jbpm.marshalling.util.UserTransactionProxy;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +56,9 @@ public class PersistenceUtil {
     
     // Persistence and data source constants
     public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa";
+    public static final String DROOLS_LOCAL_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa.local";
     public static final String JBPM_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
+    public static final String JBPM_LOCAL_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa.local";
         
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     
@@ -171,15 +171,6 @@ public class PersistenceUtil {
         if( ! driverClass.startsWith("org.h2") ) { 
            TEST_MARSHALLING = false; 
         }
-    }
-    
-    /**
-     * Please use {@link #cleanUp(HashMap)} because tearDown() ends up conflicting with Junit methods at times. 
-     * @see {@link PersistenceUtil#cleanUp(HashMap)}
-     */
-    @Deprecated
-    public static void tearDown(HashMap<String, Object> context) {
-       cleanUp(context);     
     }
     
     /**

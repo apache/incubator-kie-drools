@@ -54,9 +54,11 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
     
     @Test
     public void boundaryEventTimerAndCompleteHumanTaskWithoutPersistence() throws InterruptedException {
+        this.setPersistence(false);
+        
         // Setup session
         KnowledgeBase kbase = createKnowledgeBase(PROCESS_FILE_NAME);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
        
         // Do stuff
         HumanTaskMockHandler humanTaskMockHandler = new HumanTaskMockHandler();
@@ -67,8 +69,8 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
    
         // The process reaches the end node
         int processState = process.getState();
-        assertTrue("Expected process state to be " + processStateName[2] + " not " + processStateName[processState],
-                ProcessInstance.STATE_COMPLETED == process.getState());
+        assertEquals("Expected process state to be " + processStateName[ProcessInstance.STATE_COMPLETED],
+                ProcessInstance.STATE_COMPLETED, processState);
     }
     
     @Test

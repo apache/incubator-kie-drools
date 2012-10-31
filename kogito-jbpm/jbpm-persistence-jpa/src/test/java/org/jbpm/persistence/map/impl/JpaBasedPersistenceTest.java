@@ -1,22 +1,18 @@
 package org.jbpm.persistence.map.impl;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.util.HashMap;
 
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.KnowledgeBase;
-import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jta.JtaTransactionManager;
-import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.*;
+import org.jbpm.persistence.util.PersistenceUtil;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
@@ -43,7 +39,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @After
     public void tearDown() throws Exception {
-       PersistenceUtil.tearDown(context); 
+       cleanUp(context); 
     }
     
     @Override

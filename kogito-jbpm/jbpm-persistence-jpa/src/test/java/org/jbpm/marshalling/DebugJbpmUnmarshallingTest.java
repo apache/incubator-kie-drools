@@ -1,29 +1,19 @@
 package org.jbpm.marshalling;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.drools.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
-import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.marshalling.util.CompareViaReflectionUtil;
-import org.drools.marshalling.util.MarshalledData;
-import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
+import org.jbpm.marshalling.util.*;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -100,7 +90,7 @@ public class DebugJbpmUnmarshallingTest {
             fail( "[" + e.getClass().getSimpleName() + "]: " + e.getMessage() );
         }
         finally {  
-            tearDown(testContext);
+            cleanUp(testContext);
         }
         
     }
@@ -147,7 +137,7 @@ public class DebugJbpmUnmarshallingTest {
                 fail( "[" + e.getClass().getSimpleName() + "]: " + e.getMessage() );
             }
             finally {  
-                tearDown(testContext);
+                cleanUp(testContext);
             }
 
             objects[i] = unmarshalledObject;
@@ -186,7 +176,7 @@ public class DebugJbpmUnmarshallingTest {
           marshalledDataList = retrieveMarshallingData(emf);
         }
         finally { 
-            tearDown(testContext);
+            cleanUp(testContext);
         }
         return marshalledDataList;
     }

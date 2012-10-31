@@ -1,38 +1,26 @@
 package org.jbpm.bpmn2;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
+import org.drools.SessionConfiguration;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.builder.*;
 import org.drools.definition.process.Node;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.NodeInstanceContainer;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
-import org.drools.runtime.process.WorkflowProcessInstance;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
-import org.jbpm.process.audit.NodeInstanceLog;
+import org.drools.runtime.*;
+import org.drools.runtime.process.*;
+import org.jbpm.process.audit.*;
+import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
+import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 /**
@@ -54,7 +42,7 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	private WorkingMemoryInMemoryLogger logger;
 
 	public JbpmBpmn2TestCase() {
-		this(false);
+		this(true);
 	}
 	
 	public JbpmBpmn2TestCase(boolean persistence) {
@@ -74,7 +62,7 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 
     protected void tearDown() {
         if(persistence) { 
-            PersistenceUtil.tearDown(context);
+            cleanUp(context);
         }
     }
     
@@ -150,8 +138,13 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 		    JPAProcessInstanceDbLog.setEnvironment(result.getEnvironment());
 		    return result;
 		} else {
-			StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession();
-			logger = new WorkingMemoryInMemoryLogger(result);
+		    Properties defaultProps = new Properties();
+		    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+		    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+		    SessionConfiguration sessionConfig = new SessionConfiguration(defaultProps);
+
+		    StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession(sessionConfig, EnvironmentFactory.newEnvironment());
+		    logger = new WorkingMemoryInMemoryLogger(result);
 			return result;
 		}
 	}

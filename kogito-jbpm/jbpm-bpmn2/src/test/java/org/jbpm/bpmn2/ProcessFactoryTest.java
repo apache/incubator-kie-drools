@@ -27,7 +27,11 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
-	
+
+    public ProcessFactoryTest() {
+        super(false);
+    }
+    
 	public void testProcessFactory() {
 		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
 		factory
@@ -45,7 +49,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes()), ResourceType.BPMN2);
 		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.startProcess("org.jbpm.process");
 	}
 

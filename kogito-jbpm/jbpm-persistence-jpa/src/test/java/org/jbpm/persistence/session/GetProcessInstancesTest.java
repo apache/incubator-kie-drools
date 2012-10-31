@@ -1,6 +1,6 @@
 package org.jbpm.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.util.HashMap;
 

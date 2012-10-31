@@ -1,63 +1,37 @@
 package org.jbpm.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.drools.runtime.EnvironmentName.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
+import javax.transaction.*;
 
 import junit.framework.Assert;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.builder.*;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
-import org.drools.persistence.util.PersistenceUtil;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.impl.WorkImpl;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessContext;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkflowProcessInstance;
+import org.drools.runtime.*;
+import org.drools.runtime.process.*;
 import org.jbpm.persistence.JbpmTestCase;
-import org.jbpm.persistence.session.objects.MyEntity;
-import org.jbpm.persistence.session.objects.MyEntityMethods;
-import org.jbpm.persistence.session.objects.MyEntityOnlyFields;
-import org.jbpm.persistence.session.objects.MySubEntity;
-import org.jbpm.persistence.session.objects.MySubEntityMethods;
-import org.jbpm.persistence.session.objects.MyVariableExtendingSerializable;
-import org.jbpm.persistence.session.objects.MyVariableSerializable;
-import org.jbpm.persistence.session.objects.TestWorkItemHandler;
+import org.jbpm.persistence.session.objects.*;
+import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -65,14 +39,8 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.jbpm.workflow.core.node.*;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,13 +53,13 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
 
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
+        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
 
     @Test

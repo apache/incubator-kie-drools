@@ -21,6 +21,7 @@ bin/
 /settings*.xml
 /lib-jdbc/
 bitronix-default-config.properties
+*.db
 
 # modules that don't exist in this branch
 /jbpm-human-task-war/

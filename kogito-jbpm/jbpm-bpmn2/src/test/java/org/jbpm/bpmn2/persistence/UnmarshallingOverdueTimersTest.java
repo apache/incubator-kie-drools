@@ -1,88 +1,38 @@
 package org.jbpm.bpmn2.persistence;
-import static junit.framework.Assert.*;
-import static org.drools.runtime.EnvironmentName.*;
+
+import static junit.framework.Assert.assertTrue;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import java.util.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.builder.*;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.*;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.bpmn2.concurrency.MultipleProcessesPerThreadTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.jbpm.persistence.util.PersistenceUtil;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class UnmarshallingOverdueTimersTest {
 
     private static Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
 
-    private static EntityManagerFactory emf;
-    private static PoolingDataSource pds;
+    private HashMap<String, Object> context;
 
     @Before
     public void setup() {
-        pds = new PoolingDataSource();
-
-        // The name must match what's in the persistence.xml!
-        pds.setUniqueName("jdbc/testDS1");
-
-        pds.setMaxPoolSize(16);
-        pds.setAllowLocalTransactions(true);
-
-        pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        pds.getDriverProperties().put("user", "sa");
-        pds.getDriverProperties().put("password", "sasa");
-        pds.getDriverProperties().put("url", "jdbc:h2:file:jbpm-test");
-        pds.getDriverProperties().put("driverClassName", "org.h2.Driver" );
-
-        pds.init();
-
-        emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
-        assertNotNull("EntityManagerFactory is null.", emf);
+         context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
     }
 
     @After
     public void tearDown() throws Exception {
-        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-        if (txm != null) {
-            txm.shutdown();
-        }
-
-        try {
-            emf.close();
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
-        try {
-            pds.close();
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
+        cleanUp(context);
     }
 
     private static KnowledgeBase loadKnowledgeBase(String bpmn2FileName) {
@@ -93,18 +43,8 @@ public class UnmarshallingOverdueTimersTest {
         return kbase;
     }
 
-    private static Environment createEnvironment() { 
-        Environment env = EnvironmentFactory.newEnvironment();
-
-        env.set(ENTITY_MANAGER_FACTORY, emf);
-        env.set(TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
-        env.set(GLOBALS, new MapGlobalResolver());
-        
-        return env;
-    }
-    
-    private static StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) {
-        Environment env = createEnvironment();
+    private StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) {
+        Environment env = createEnvironment(context);
         return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
     }
 
@@ -115,12 +55,12 @@ public class UnmarshallingOverdueTimersTest {
         return ksessionId;
     }
 
-    private static StatefulKnowledgeSession reloadStatefulKnowledgeSession(String bpmn2FileName, int ksessionId) {
+    private StatefulKnowledgeSession reloadStatefulKnowledgeSession(String bpmn2FileName, int ksessionId) {
         KnowledgeBase kbase = loadKnowledgeBase(bpmn2FileName);
 
         logger.debug(". reloading ksession " + ksessionId);
         Environment env = null;
-        env = createEnvironment();
+        env = createEnvironment(context);
 
         return JPAKnowledgeService.loadStatefulKnowledgeSession(ksessionId, kbase, null, env);
     }

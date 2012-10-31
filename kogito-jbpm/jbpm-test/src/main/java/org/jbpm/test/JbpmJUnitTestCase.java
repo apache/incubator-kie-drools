@@ -4,10 +4,7 @@ import static org.jbpm.test.JBPMHelper.createEnvironment;
 import static org.jbpm.test.JBPMHelper.txStateName;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -17,10 +14,7 @@ import javax.transaction.Transaction;
 
 import junit.framework.Assert;
 
-import org.drools.ClockType;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.SystemEventListenerFactory;
+import org.drools.*;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
@@ -49,6 +43,8 @@ import org.h2.tools.Server;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
+import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
@@ -251,7 +247,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
 	    StatefulKnowledgeSession result;
-        final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 	    // Do NOT use the Pseudo clock yet.. 
         // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         
@@ -265,6 +261,12 @@ public abstract class JbpmJUnitTestCase extends Assert {
 		} else {
 		    Environment env = EnvironmentFactory.newEnvironment();
 		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+		    
+		    Properties defaultProps = new Properties();
+		    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+		    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+		    conf = new SessionConfiguration(defaultProps);
+		    
 			result = kbase.newStatefulKnowledgeSession(conf, env);
 			logger = new WorkingMemoryInMemoryLogger(result);
 		}

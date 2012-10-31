@@ -17,15 +17,11 @@
 package org.jbpm.bpmn2;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
+import org.drools.*;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -35,6 +31,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.process.Process;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
@@ -50,6 +47,8 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.ProcessBaseFactoryService;
+import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
+import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -838,7 +837,12 @@ public class StandaloneBPMNProcessTest extends TestCase {
 	}
 
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-		return kbase.newStatefulKnowledgeSession();
+	    Properties defaultProps = new Properties();
+	    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+	    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+	    SessionConfiguration sessionConfig = new SessionConfiguration(defaultProps);
+	    
+		return kbase.newStatefulKnowledgeSession(sessionConfig, EnvironmentFactory.newEnvironment());
 	}
 	
 	public void assertProcessInstanceCompleted(long processInstanceId, StatefulKnowledgeSession ksession) {

@@ -19,7 +19,7 @@
         <class>org.jbpm.process.audit.NodeInstanceLog</class>
         <class>org.jbpm.process.audit.VariableInstanceLog</class>
         
-        <class>org.drools.marshalling.util.MarshalledData</class>
+        <class>org.jbpm.marshalling.util.MarshalledData</class>
         
 	    <properties>
 	        <property name="hibernate.max_fetch_depth" value="3"/>

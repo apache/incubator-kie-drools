@@ -1,6 +1,6 @@
 package org.jbpm.tasks;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static junit.framework.Assert.*;
 
@@ -30,7 +30,7 @@ import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.PersistenceUtil;
+import org.jbpm.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;

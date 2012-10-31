@@ -1,28 +1,19 @@
 package org.jbpm.persistence.processinstance;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.event.process.DefaultProcessEventListener;
-import org.drools.event.process.ProcessCompletedEvent;
-import org.drools.event.process.ProcessStartedEvent;
+import org.drools.builder.*;
+import org.drools.event.process.*;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.LoggingPrintStream;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.persistence.JbpmTestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.jbpm.persistence.util.LoggingPrintStream;
+import org.junit.*;
 
 /**
  * This test 

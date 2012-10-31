@@ -1,18 +1,16 @@
 package org.jbpm.bpmn2.concurrency.persistence;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.util.HashMap;
 
 import org.drools.KnowledgeBase;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.bpmn2.concurrency.MultipleProcessesPerThreadTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.jbpm.persistence.util.PersistenceUtil;
+import org.junit.*;
 
 /**
  * Class to reproduce bug with multiple threads using persistence and each

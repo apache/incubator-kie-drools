@@ -1,10 +1,8 @@
 package org.jbpm.integration;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +12,6 @@ import javax.persistence.Persistence;
 import junit.framework.Assert;
 
 import org.drools.SystemEventListenerFactory;
-import org.drools.persistence.util.PersistenceUtil;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
 import org.jbpm.task.service.TaskService;
@@ -42,7 +39,7 @@ public abstract class JbpmGwtCoreTestCase extends Assert {
     @BeforeClass
 	public static void setUp(){
         if( context == null ) { 
-            context = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME, false);
+            context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
         }
     	if (minaServerThread==null){
     	    System.setProperty("jbpm.console.directory","./src/test/resources");

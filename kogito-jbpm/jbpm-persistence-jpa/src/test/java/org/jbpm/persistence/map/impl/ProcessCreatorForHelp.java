@@ -3,20 +3,16 @@ package org.jbpm.persistence.map.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.persistence.map.impl.Buddy;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.impl.WorkImpl;
+import org.jbpm.persistence.session.objects.Person;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.core.node.*;
 
 public class ProcessCreatorForHelp {
 
@@ -58,7 +54,7 @@ public class ProcessCreatorForHelp {
         Variable variable = new Variable();
         variable.setName(variableName);
         ObjectDataType extendingSerializableDataType = new ObjectDataType();
-        extendingSerializableDataType.setClassName(Buddy.class.getName());
+        extendingSerializableDataType.setClassName(Person.class.getName());
         variable.setType(extendingSerializableDataType);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
