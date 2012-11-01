@@ -26,6 +26,9 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
+import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
+import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
@@ -228,5 +231,17 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         assertEquals(4, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testKnowledgeBaseEventSupportLeak() throws Exception {
+        // JBRULES-3666
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBaseEventListener listener = new DefaultKnowledgeBaseEventListener();
+        kbase.addEventListener(listener);
+        kbase.addEventListener(listener);
+        assertEquals(1, ((KnowledgeBaseImpl) kbase).getRuleBase().getRuleBaseEventListeners().size());
+        kbase.removeEventListener(listener);
+        assertEquals(0, ((KnowledgeBaseImpl) kbase).getRuleBase().getRuleBaseEventListeners().size());
     }
 }
