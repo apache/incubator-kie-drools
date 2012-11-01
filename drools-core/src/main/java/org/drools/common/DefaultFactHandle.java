@@ -16,8 +16,12 @@
 
 package org.drools.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,9 +31,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.drools.FactHandle;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
+import org.drools.definition.rule.Rule;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.spi.RuleComponent;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -494,4 +500,38 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.disconnected = true;
     }
 
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+         id = in.readInt();
+        recency =  in.readLong();
+        object = in.readObject();
+        key = (EqualityKey) in.readObject();
+        objectHashCode = in.readInt();
+        identityHashCode = in.readInt();
+        firstRightTuple = (RightTuple) in.readObject();
+        lastRightTuple = (RightTuple) in.readObject();
+        firstLeftTuple = (LeftTuple) in.readObject();
+        lastLeftTuple = (LeftTuple) in.readObject();
+        entryPoint = (WorkingMemoryEntryPoint) in.readObject();
+        disconnected = in.readBoolean();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt( id );
+        out.writeLong( recency );
+        out.writeObject( object );
+        out.writeObject( key );
+        out.writeInt(objectHashCode);
+        out.writeInt(identityHashCode);
+        out.writeObject(firstRightTuple);
+        out.writeObject(lastRightTuple);
+        out.writeObject(firstLeftTuple);
+        out.writeObject(lastLeftTuple);
+        out.writeObject(entryPoint);
+        out.writeBoolean(disconnected);
+        
+    }
+
+    
 }
