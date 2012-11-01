@@ -121,12 +121,11 @@ public class KnowledgeBaseImpl
     }
 
     public void addEventListener(KnowledgeBaseEventListener listener) {
-        KnowledgeBaseEventListenerWrapper wrapper = new KnowledgeBaseEventListenerWrapper( this,
-                                                                                           listener );
-        this.mappedKnowledgeBaseListeners.put( listener,
-                                               wrapper );
-        this.ruleBase.addEventListener( wrapper );
-
+        if (!mappedKnowledgeBaseListeners.containsKey(listener)) {
+            KnowledgeBaseEventListenerWrapper wrapper = new KnowledgeBaseEventListenerWrapper( this, listener );
+            mappedKnowledgeBaseListeners.put( listener, wrapper );
+            ruleBase.addEventListener( wrapper );
+        }
     }
 
     public void removeEventListener(KnowledgeBaseEventListener listener) {
