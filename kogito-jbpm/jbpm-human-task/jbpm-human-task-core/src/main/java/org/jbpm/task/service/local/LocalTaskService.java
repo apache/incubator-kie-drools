@@ -201,6 +201,14 @@ public class LocalTaskService implements TaskService {
         return session.getTasksAssignedAsTaskStakeholder(userId, language);
     }
 
+    public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language) {
+        return session.getTasksByStatusByProcessId(processInstanceId, status, language);
+    }
+
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language) {
+        return session.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+    }
+
     public List<TaskSummary> getTasksOwned(String userId, String language) {
         return session.getTasksOwned(userId, language);
     }

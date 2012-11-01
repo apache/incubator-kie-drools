@@ -1139,11 +1139,27 @@ public class TaskServiceSession {
         return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatusWithGroups", params);
     }
 
+    public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language){
+        HashMap<String, Object> params = addParametersToMap(
+                                         "processInstanceId", processInstanceId,
+                                         "status", status,
+                                         "language", language);
+        List<TaskSummary> result = (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatusByProcessId", params);
+        return result;
+    }
 
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language){
+        HashMap<String, Object> params = addParametersToMap(
+                                         "processInstanceId", processInstanceId,
+                                         "status", status,
+                                         "taskName", taskName,
+                                         "language", language);
+        List<TaskSummary> result = (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatusByProcessIdByTaskName", params);
+        return result;
+    }
 
-
-    private interface TransactedOperation {
-        void doOperation();
+    public interface TransactedOperation {
+        void doOperation() throws Exception;
     }
 
     public void executeEscalatedDeadline(EscalatedDeadlineHandler escalatedDeadlineHandler, TaskService service, long taskId, long deadlineId) { 

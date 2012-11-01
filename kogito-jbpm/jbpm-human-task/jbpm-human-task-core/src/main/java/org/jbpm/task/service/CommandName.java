@@ -95,7 +95,10 @@ public enum CommandName {
     
     QueryTaskByWorkItemId,
     QueryTaskByWorkItemIdResponse,
-    
+
+    QueryTasksByStatusByProcessId,
+    QueryTasksByStatusByProcessIdByTaskName,
+        
     RegisterForEventRequest,
     UnRegisterForEventRequest,
     EventTriggerResponse,

@@ -16,6 +16,8 @@
 package org.jbpm.task.admin;
 
 import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -74,9 +76,9 @@ public class TasksAdminImpl implements TasksAdmin {
     }
     public List<TaskSummary> getCompletedTasksByProcessId(Long processId) {
         HashMap<String, Object> params = addParametersToMap(
-                "status", Status.Completed,
+                "status", Arrays.asList(Status.Completed),
                 "language", "en-UK",
-                "processId", processId);
+                "processInstanceId", processId);
         
         return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatusByProcessId", params);
     }

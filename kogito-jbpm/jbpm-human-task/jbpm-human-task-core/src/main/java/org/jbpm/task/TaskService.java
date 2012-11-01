@@ -165,4 +165,7 @@ public interface TaskService {
     @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
 
+    public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language);
+
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
 }

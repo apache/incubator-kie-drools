@@ -504,6 +504,41 @@ public class TaskServerHandler {
                     session.write(resultsCmnd);
                     break;
                 }
+                case QueryTasksByStatusByProcessId: {
+                    // prepare
+                    response = CommandName.QueryTaskSummaryResponse;
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksByStatusByProcessId(
+                            (Long) cmd.getArguments().get(0),
+                            (List<Status>) cmd.getArguments().get(1),
+                            (String) cmd.getArguments().get(2));
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
+                    Command resultsCmnd = new Command(cmd.getId(),
+                            CommandName.QueryTaskSummaryResponse,
+                            args);
+                    session.write(resultsCmnd);
+                    break;
+                }
+                case QueryTasksByStatusByProcessIdByTaskName: {
+                    // prepare
+                    response = CommandName.QueryTaskSummaryResponse;
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksByStatusByProcessIdByTaskName(
+                            (Long) cmd.getArguments().get(0),
+			                (List<Status>) cmd.getArguments().get(1),
+                            (String) cmd.getArguments().get(2),
+                            (String) cmd.getArguments().get(3));
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
+                    Command resultsCmnd = new Command(cmd.getId(),
+                            CommandName.QueryTaskSummaryResponse,
+                            args);
+                    session.write(resultsCmnd);
+                    break;
+                }
                 case RegisterForEventRequest: {
                     // prepare
                     response = CommandName.EventTriggerResponse;
