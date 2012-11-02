@@ -362,7 +362,7 @@ public class InputMarshaller {
 
         while (stream.readShort() == PersisterEnums.AGENDA_GROUP) {
             String agendaGroupName = stream.readUTF();
-            agenda.getStackList().add( agenda.getAgendaGroup( agendaGroupName ) );
+            agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( agendaGroupName ) );
         }
 
         while (stream.readShort() == PersisterEnums.RULE_FLOW_GROUP) {
