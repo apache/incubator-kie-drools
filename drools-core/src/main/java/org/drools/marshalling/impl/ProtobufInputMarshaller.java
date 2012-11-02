@@ -397,7 +397,7 @@ public class ProtobufInputMarshaller {
         }
 
         for ( String _groupName : _agenda.getFocusStack().getGroupNameList() ) {
-            agenda.getStackList().add( agenda.getAgendaGroup( _groupName ) );
+            agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( _groupName ) );
         }
 
         for ( ProtobufMessages.Agenda.RuleFlowGroup _ruleFlowGroup : _agenda.getRuleFlowGroupList() ) {

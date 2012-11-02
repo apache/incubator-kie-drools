@@ -871,6 +871,13 @@ public class DefaultAgenda
         return this.focusStack;
     }
 
+    public void addAgendaGroupOnStack(AgendaGroup agendaGroup) {
+        if (!focusStack.isEmpty() && focusStack.getLast().equals(agendaGroup)) {
+            focusStack.removeLast();
+        }
+        focusStack.add(agendaGroup);
+    }
+
     public Map<String, RuleFlowGroup> getRuleFlowGroupsMap() {
         return this.ruleFlowGroups;
     }
@@ -1205,28 +1212,30 @@ public class DefaultAgenda
                             // cleared during execution of this activation
                             ruleFlowGroup.removeActivation( item );
                         }
-                        if ( filter == null || filter.accept( item ) ) {
-                            // fire it
-                            fireActivation( item );
-                            result = true;
-                        } else {
-                            // otherwise cancel it and try the next
+                        try {
+                            if ( filter == null || filter.accept( item ) ) {
+                                // fire it
+                                fireActivation( item );
+                                result = true;
+                            } else {
+                                // otherwise cancel it and try the next
 
-                            //necessary to perfom queued actions like signal to a next node in a ruleflow/jbpm process
-                            this.workingMemory.executeQueuedActions();
+                                //necessary to perfom queued actions like signal to a next node in a ruleflow/jbpm process
+                                this.workingMemory.executeQueuedActions();
 
-                            final EventSupport eventsupport = (EventSupport) this.workingMemory;
-                            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                                          this.workingMemory,
-                                                                                          ActivationCancelledCause.FILTER );
-                            tryagain = true;
+                                final EventSupport eventsupport = (EventSupport) this.workingMemory;
+                                eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                                              this.workingMemory,
+                                                                                              ActivationCancelledCause.FILTER );
+                                tryagain = true;
+                            }
+                        } finally {
+                            // The routine below cleans up ruleflow activations
+                            if ( ruleFlowGroup != null ) {
+                                ruleFlowGroup.deactivateIfEmpty();
+                                this.workingMemory.executeQueuedActions();
+                            }
                         }
-                        // The routine bellow cleans up ruleflow activations
-                        if ( ruleFlowGroup != null ) {
-                            ruleFlowGroup.deactivateIfEmpty();
-                            this.workingMemory.executeQueuedActions();
-                        }
-
                     }
                 }
             } while ( tryagain );
