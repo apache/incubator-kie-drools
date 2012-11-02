@@ -20,14 +20,21 @@ import org.drools.Address;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -91,6 +98,88 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         System.out.println( rulesFired );
         assertEquals( 1, rulesFired );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testReuseAgendaAfterException() throws Exception {
+        // JBRULES-3677
+
+        String str = "import org.drools.Person;\n" +
+                "global java.util.List results;" +
+                "rule R1\n" +
+                "ruleflow-group \"test\"\n" +
+                "when\n" +
+                "   Person( $age : age ) \n" +
+                "then\n" +
+                "   if ($age > 40) throw new RuntimeException(\"Too old\");\n" +
+                "   results.add(\"OK\");" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> res = new ArrayList<String>();
+        ksession.setGlobal( "results", res );
+
+        AgendaEventListener agendaEventListener = new AgendaEventListener() {
+            public void activationCreated(org.drools.event.rule.ActivationCreatedEvent event) {
+            }
+
+            public void activationCancelled(org.drools.event.rule.ActivationCancelledEvent event) {
+            }
+
+            public void beforeActivationFired(org.drools.event.rule.BeforeActivationFiredEvent event) {
+            }
+
+            public void afterActivationFired(org.drools.event.rule.AfterActivationFiredEvent event) {
+            }
+
+            public void agendaGroupPopped(org.drools.event.rule.AgendaGroupPoppedEvent event) {
+            }
+
+            public void agendaGroupPushed(org.drools.event.rule.AgendaGroupPushedEvent event) {
+            }
+
+            public void beforeRuleFlowGroupActivated(org.drools.event.rule.RuleFlowGroupActivatedEvent event) {
+            }
+
+            public void afterRuleFlowGroupActivated(org.drools.event.rule.RuleFlowGroupActivatedEvent event) {
+                ksession.fireAllRules();
+            }
+
+            public void beforeRuleFlowGroupDeactivated(org.drools.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            }
+
+            public void afterRuleFlowGroupDeactivated(org.drools.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            }
+        };
+
+        ksession.addEventListener(agendaEventListener);
+
+        FactHandle fact1 = ksession.insert(new Person("Mario", 38));
+        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+
+        assertEquals(1, res.size());
+        res.clear();
+
+        ksession.retract(fact1);
+
+        FactHandle fact2 = ksession.insert(new Person("Mario", 48));
+        try {
+            ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+            fail("should throw an Exception");
+        } catch (Exception e) { }
+        ksession.retract(fact2);
+
+        assertEquals(0, res.size());
+
+        // try to reuse the ksession after the Exception
+        FactHandle fact3 = ksession.insert(new Person("Mario", 38));
+        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+        assertEquals(1, res.size());
+        ksession.retract(fact3);
 
         ksession.dispose();
     }
