@@ -824,6 +824,10 @@ public class DefaultAgenda
      * @see org.drools.common.AgendaI#getAgendaGroup(java.lang.String)
      */
     public AgendaGroup getAgendaGroup(final String name) {
+        return getAgendaGroup(name, workingMemory == null ? null : ((InternalRuleBase)workingMemory.getRuleBase()));
+    }
+
+    public AgendaGroup getAgendaGroup(final String name, InternalRuleBase ruleBase) {
         String groupName = (name == null || name.length() == 0) ? AgendaGroup.MAIN : name;
 
         AgendaGroup agendaGroup = this.agendaGroups.get( groupName );
@@ -831,7 +835,7 @@ public class DefaultAgenda
             // The AgendaGroup is defined but not yet added to the
             // Agenda, so create the AgendaGroup and add to the Agenda.
             agendaGroup = agendaGroupFactory.createAgendaGroup( name,
-                                                                ((InternalRuleBase) this.workingMemory.getRuleBase()) );
+                                                                ruleBase );
             addAgendaGroup( agendaGroup );
         }
         return agendaGroup;
@@ -872,10 +876,9 @@ public class DefaultAgenda
     }
 
     public void addAgendaGroupOnStack(AgendaGroup agendaGroup) {
-        if (!focusStack.isEmpty() && focusStack.getLast().equals(agendaGroup)) {
-            focusStack.removeLast();
+        if (focusStack.isEmpty() || focusStack.getLast() != agendaGroup) {
+            focusStack.add(agendaGroup);
         }
-        focusStack.add(agendaGroup);
     }
 
     public Map<String, RuleFlowGroup> getRuleFlowGroupsMap() {
