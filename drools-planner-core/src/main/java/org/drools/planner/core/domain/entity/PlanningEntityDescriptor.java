@@ -116,8 +116,7 @@ public class PlanningEntityDescriptor {
 
     private void processPropertyAnnotations() {
         PropertyDescriptor[] propertyDescriptors = planningEntityBeanInfo.getPropertyDescriptors();
-        int mapSize = propertyDescriptors.length;
-        planningVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(mapSize);
+        planningVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
