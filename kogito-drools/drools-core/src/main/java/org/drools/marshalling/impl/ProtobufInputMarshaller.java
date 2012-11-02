@@ -16,23 +16,14 @@
 
 package org.drools.marshalling.impl;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.TimeUnit;
-
+import com.google.protobuf.ExtensionRegistry;
 import org.drools.SessionConfiguration;
 import org.drools.common.ActivationsFilter;
-import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.EventFactHandle;
+import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
@@ -48,14 +39,12 @@ import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
-import org.drools.marshalling.impl.ProtobufMessages.BeliefSet;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RuleTerminalNode;
@@ -74,7 +63,15 @@ import org.drools.time.impl.IntervalTrigger;
 import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 
-import com.google.protobuf.ExtensionRegistry;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An input marshaller that uses protobuf. 
@@ -263,8 +260,8 @@ public class ProtobufInputMarshaller {
                                         _ep);            
         }
 
-        readActionQueue( context,
-                         _session.getRuleData() );
+        readActionQueue(context,
+                _session.getRuleData());
         
 
         if (processMarshaller != null) {
@@ -390,8 +387,7 @@ public class ProtobufInputMarshaller {
         ProtobufMessages.Agenda _agenda = _ruleData.getAgenda();
 
         for ( org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {
-            BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( _agendaGroup.getName(),
-                                                                               context.ruleBase );
+            InternalAgendaGroup group = (InternalAgendaGroup) agenda.getAgendaGroup( _agendaGroup.getName(), context.ruleBase );
             group.setActive( _agendaGroup.getIsActive() );
             agenda.getAgendaGroupsMap().put( group.getName(),
                                              group );
@@ -457,8 +453,8 @@ public class ProtobufInputMarshaller {
                 }
     
                 // add handle to object type node
-                assertHandleIntoOTN( context, 
-                                     wm, 
+                assertHandleIntoOTN( context,
+                                     wm,
                                      handle );
             }
         }
