@@ -1085,5 +1085,5 @@ public class TimerAndCalendarTest {
         } catch (InterruptedException e) {
             throw new RuntimeException( e );
         }
-    }        
+    }
 }
