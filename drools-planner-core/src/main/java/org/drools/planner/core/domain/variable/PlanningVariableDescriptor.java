@@ -47,7 +47,6 @@ public class PlanningVariableDescriptor {
     private boolean nullable;
     private SelectionFilter uninitializedEntityFilter;
     private PlanningValueSorter valueSorter;
-    private Map<String, DependentPlanningVariableDescriptor> dependentPlanningVariableDescriptorMap;
 
     public PlanningVariableDescriptor(PlanningEntityDescriptor planningEntityDescriptor,
             PropertyDescriptor variablePropertyDescriptor) {
@@ -57,7 +56,6 @@ public class PlanningVariableDescriptor {
 
     public void processAnnotations() {
         processPropertyAnnotations();
-        dependentPlanningVariableDescriptorMap = new HashMap<String, DependentPlanningVariableDescriptor>(2);
     }
 
     private void processPropertyAnnotations() {
@@ -184,12 +182,6 @@ public class PlanningVariableDescriptor {
         // TODO Support plugging in other ValueRange implementations
     }
 
-    public void addDependentPlanningVariableDescriptor(
-            DependentPlanningVariableDescriptor dependentPlanningVariableDescriptor) {
-        dependentPlanningVariableDescriptorMap.put(
-                dependentPlanningVariableDescriptor.getVariablePropertyName(), dependentPlanningVariableDescriptor);
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -220,10 +212,6 @@ public class PlanningVariableDescriptor {
 
     public boolean isNullable() {
         return nullable;
-    }
-
-    public Collection<DependentPlanningVariableDescriptor> getDependentPlanningVariableDescriptors() {
-        return dependentPlanningVariableDescriptorMap.values();
     }
 
     @Deprecated

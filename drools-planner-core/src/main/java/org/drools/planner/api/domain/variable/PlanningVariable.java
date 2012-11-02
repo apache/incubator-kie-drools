@@ -21,9 +21,7 @@ import java.lang.annotation.Target;
 import java.util.Comparator;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.variable.event.PlanningVariableListener;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueUninitializedEntityFilter;
 import org.drools.planner.core.score.director.ScoreDirector;
 
 import static java.lang.annotation.ElementType.*;
@@ -114,8 +112,5 @@ public @interface PlanningVariable {
      * @return true if changes to this variable need to trigger chain correction
      */
     boolean chained() default false;
-
-    @Deprecated // TODO This is probably a failed experiment
-    Class<? extends PlanningVariableListener>[] listenerClasses() default {};
 
 }
