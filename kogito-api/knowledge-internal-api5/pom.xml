@@ -44,7 +44,7 @@
             <Bundle-SymbolicName>org.drools.internalapi;singleton:=true</Bundle-SymbolicName>
             <Require-Bundle>org.drools.api;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
             <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
+            <Export-Package>!org.drools.cdi.*,org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
@@ -64,6 +64,7 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
+      <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
     </dependency>
   </dependencies>
 </project>
