@@ -298,8 +298,12 @@ public class MVELSingleSessionManager extends AbstractSessionManager {
         if (this.session == null) {
             this.template = loadSessionTemplate();
             this.session = loadSessionFromTemplate(template, kbase);
-            // since all was just registered fire all rules
-            this.session.fireAllRules();
+            try {
+                // since all was just registered fire all rules
+                this.session.fireAllRules();
+            } catch (Exception e) {
+               logger.error("Error when invoking fireAllRules on session initialization", e);
+            }
         }
         return this.session;
     }
