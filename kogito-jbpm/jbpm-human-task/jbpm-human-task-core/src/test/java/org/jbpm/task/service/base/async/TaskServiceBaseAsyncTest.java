@@ -17,6 +17,8 @@ package org.jbpm.task.service.base.async;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ import java.util.Map;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Group;
+import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.MvelFilePath;
@@ -32,6 +35,9 @@ import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.CollectionUtils;
 
 public abstract class TaskServiceBaseAsyncTest extends BaseTest {
@@ -222,6 +228,108 @@ public abstract class TaskServiceBaseAsyncTest extends BaseTest {
                 actual.size());
         assertTrue(CollectionUtils.equals(expected.get("sly"),
                 actual));
+    }
+    
+    public void testCompleteTaskByProcessInstanceId() {
+        Map<String, Object> vars = fillVariables(users, groups);
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { processInstanceId=99} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId(); 
+        
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { processInstanceId=500} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'Another task')] })";
+        addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task secondTask = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( secondTask, null, addTaskResponseHandler );
+        
+        BlockingTaskSummaryResponseHandler taskSummaryHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksByStatusByProcessId(99L, Collections.singletonList(Status.Ready), "en-UK", taskSummaryHandler);
+        
+        List<TaskSummary> tasks = taskSummaryHandler.getResults();
+        assertEquals(1, tasks.size());
+        assertEquals(taskId, tasks.get(0).getId());
+        
+        // Go straight from Ready to Inprogress
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        client.start( taskId, users.get( "darth" ).getId(), responseHandler );
+        responseHandler.waitTillDone(5000);
+        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );  
+        
+        // Check is Complete
+        responseHandler = new BlockingTaskOperationResponseHandler();
+        client.complete( taskId, users.get( "darth" ).getId(), null, responseHandler ); 
+        responseHandler.waitTillDone(5000);
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task2 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Completed, task2.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task2.getTaskData().getActualOwner() );                  
+    }
+    
+    public void testCompleteTaskByProcessInstanceIdTaskname() {
+        Map<String, Object> vars = fillVariables(users, groups);
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { processInstanceId=99} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId(); 
+        
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { processInstanceId=500} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'Another task')] })";
+        addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task secondTask = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( secondTask, null, addTaskResponseHandler );
+        
+        BlockingTaskSummaryResponseHandler taskSummaryHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksByStatusByProcessIdByTaskName(99L, Collections.singletonList(Status.Ready), "This is my task name",  "en-UK", taskSummaryHandler);
+        
+        List<TaskSummary> tasks = taskSummaryHandler.getResults();
+        assertEquals(1, tasks.size());
+        assertEquals(taskId, tasks.get(0).getId());
+        
+        // Go straight from Ready to Inprogress
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        client.start( taskId, users.get( "darth" ).getId(), responseHandler );
+        responseHandler.waitTillDone(5000);
+        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );  
+        
+        // Check is Complete
+        responseHandler = new BlockingTaskOperationResponseHandler();
+        client.complete( taskId, users.get( "darth" ).getId(), null, responseHandler ); 
+        responseHandler.waitTillDone(5000);
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task2 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Completed, task2.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task2.getTaskData().getActualOwner() );                  
     }
 
     public static class BlockingAllOpenTasksForUseResponseHandler
