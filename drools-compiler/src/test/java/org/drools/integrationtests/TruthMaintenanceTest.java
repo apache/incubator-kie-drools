@@ -30,11 +30,11 @@ import org.drools.StatefulSession;
 import org.drools.TotalHolder;
 import org.drools.WorkingMemory;
 import org.drools.YoungestFather;
+import org.drools.beliefsystem.BeliefSet;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.AgendaItem;
-import org.drools.common.BeliefSet;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LogicalDependency;
@@ -1165,7 +1165,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         //System.err.println(reportWMObjects(kSession));
     }
 
-    @Test @Ignore("FIXME for Planner")
+    @Test 
+    @Ignore("FIXME for Planner")
     public void testUnMatchListenerForChainedPlanningEntities() {
         String str =""+
                 "package org.drools.test;\n" +
@@ -1187,7 +1188,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                 "     agendaItem.setActivationUnMatchListener(new org.drools.event.rule.ActivationUnMatchListener() {" +
                 "            public void unMatch(org.drools.runtime.rule.WorkingMemory workingMemory, org.drools.runtime.rule.Activation activation) {" +
                 "                finalTotalHolder.subtract(finalWf);" +
-"    System.out.println(\"unmatch \" + finalTotalHolder.getTotal());\n" +
+                "                System.out.println(\"unmatch \" + finalTotalHolder.getTotal());\n" +
                 "            }" +
                 "     });" +
                 "end";

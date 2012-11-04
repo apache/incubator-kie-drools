@@ -175,6 +175,17 @@ public class NamedEntryPoint
                         typeConf );
                 return handle;
             }
+            
+            final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.ASSERTION,
+                                                                                      rule,
+                                                                                      (activation == null) ? null : activation.getTuple(),
+                                                                                      handle,
+                                                                                      this.wm.agenda.getActiveActivations(),
+                                                                                      this.wm.agenda.getDormantActivations(),
+                                                                                      entryPoint );
+            
+            
             try {
                 this.lock.lock();
                 this.ruleBase.readLock();
@@ -185,7 +196,7 @@ public class NamedEntryPoint
                     TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
                     
                     if ( handle != null ) {
-                        insertWhenHandleExists( object, tmsValue, logical, rule, activation, typeConf, handle, tms );
+                        insertWhenHandleExists( object, tmsValue, logical, rule, activation, typeConf, handle, tms, propagationContext );
                         return handle;
                     }
 
@@ -236,7 +247,8 @@ public class NamedEntryPoint
                                 
                                 // remove logical dependencies
                                 final InternalFactHandle justifiedHandle = key.getFactHandle();
-                                TruthMaintenanceSystemHelper.removeLogicalDependencies( justifiedHandle );
+                                ((PropagationContextImpl)propagationContext).setFactHandle( justifiedHandle ); // necessary to stop recursive retractions
+                                TruthMaintenanceSystemHelper.clearLogicalDependencies( justifiedHandle, propagationContext );
                                 
                                 // now update existing handle to new value
                                 return update( justifiedHandle, true, object, Long.MAX_VALUE, activation );                                                                                           
@@ -287,7 +299,8 @@ public class NamedEntryPoint
                                               final Activation activation,
                                               ObjectTypeConf typeConf,
                                               InternalFactHandle handle,
-                                              TruthMaintenanceSystem tms) {
+                                              TruthMaintenanceSystem tms,
+                                              final PropagationContext propagationContext ) {
         EqualityKey key;
         // Object is already asserted, so check and possibly correct its
         // status and then return the handle
@@ -301,7 +314,7 @@ public class NamedEntryPoint
         if ( !logical ) {
             // this object was previously justified, so we have to override it to stated
             key.setStatus( EqualityKey.STATED );
-            TruthMaintenanceSystemHelper.removeLogicalDependencies( handle );
+            TruthMaintenanceSystemHelper.removeLogicalDependencies( handle, propagationContext );
         } else {                                        
             // this was object is already justified, so just add new logical dependency
             tms.addLogicalDependency( handle,
@@ -430,13 +443,25 @@ public class NamedEntryPoint
                                             object );
             }
 
+            this.handleFactory.increaseFactHandleRecency( handle );
+            Rule rule = activation == null ? null : activation.getRule();
+            final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.MODIFICATION,
+                                                                                      rule,
+                                                                                      (activation == null) ? null : activation.getTuple(),
+                                                                                      handle,
+                                                                                      this.wm.agenda.getActiveActivations(),
+                                                                                      this.wm.agenda.getDormantActivations(),
+                                                                                      entryPoint,
+                                                                                      mask );
+            
             if ( typeConf.isTMSEnabled() ) {
                 EqualityKey newKey = tms.get( object );
                 EqualityKey oldKey = handle.getEqualityKey();
                 if ( newKey == null ) {                    
                     if ( oldKey.getStatus() == EqualityKey.JUSTIFIED ) {
                         // new target key is JUSTFIED, updates are always STATED
-                        TruthMaintenanceSystemHelper.removeLogicalDependencies( oldKey.getFactHandle() );
+                        TruthMaintenanceSystemHelper.removeLogicalDependencies( oldKey.getFactHandle(), propagationContext );
                     }
                     
                     oldKey.removeFactHandle( handle );
@@ -458,30 +483,16 @@ public class NamedEntryPoint
                     
                     if ( newKey.getStatus() == EqualityKey.JUSTIFIED ) {
                         // new target key is JUSTITIED, updates are always STATED
-                        TruthMaintenanceSystemHelper.removeLogicalDependencies( newKey.getFactHandle() );
+                        TruthMaintenanceSystemHelper.removeLogicalDependencies( newKey.getFactHandle(), propagationContext );
                         newKey.setStatus( EqualityKey.STATED );
                     }
                     // the caller needs the new handle
                     handle = newKey.getFactHandle();
                 } else if ( !updateLogical &&  oldKey.getStatus() == EqualityKey.JUSTIFIED  ) {
                     // new target key is JUSTIFIED, updates are always STATED
-                    TruthMaintenanceSystemHelper.removeLogicalDependencies( oldKey.getFactHandle() );                     
+                    TruthMaintenanceSystemHelper.removeLogicalDependencies( oldKey.getFactHandle(), propagationContext );                     
                 }
             }
-
-            this.handleFactory.increaseFactHandleRecency( handle );
-
-            Rule rule = activation == null ? null : activation.getRule();
-
-            final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.MODIFICATION,
-                                                                                      rule,
-                                                                                      (activation == null) ? null : activation.getTuple(),
-                                                                                      handle,
-                                                                                      this.wm.agenda.getActiveActivations(),
-                                                                                      this.wm.agenda.getDormantActivations(),
-                                                                                      entryPoint,
-                                                                                      mask );
 
             this.entryPointNode.modifyObject( handle,
                                               propagationContext,
@@ -582,7 +593,7 @@ public class NamedEntryPoint
 
                 // Its justified so attempt to remove any logical dependencies for the handle
                 if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    TruthMaintenanceSystemHelper.removeLogicalDependencies( handle );
+                    TruthMaintenanceSystemHelper.removeLogicalDependencies( handle, propagationContext );
                 } 
                 key.removeFactHandle( handle );
                 handle.setEqualityKey( null );
@@ -597,15 +608,14 @@ public class NamedEntryPoint
             
 
             this.wm.workingMemoryEventSupport.fireObjectRetracted( propagationContext,
-                                                                handle,
-                                                                object,
-                                                                this.wm );
-
-            this.objectStore.removeHandle( handle );
-
-            this.handleFactory.destroyFactHandle( handle );
+                                                                   handle,
+                                                                   object,
+                                                                   this.wm );
 
             this.wm.executeQueuedActions();
+            
+            this.objectStore.removeHandle( handle );
+            this.handleFactory.destroyFactHandle( handle );            
             
             if ( rule == null ) {
                 // This is not needed for internal WM actions as the firing rule will unstage
@@ -617,7 +627,7 @@ public class NamedEntryPoint
             this.lock.unlock();
         }
     }
-
+    
     protected void addPropertyChangeListener(final InternalFactHandle handle, final boolean dynamicFlag ) {
         Object object = handle.getObject();
         try {
@@ -848,9 +858,9 @@ public class NamedEntryPoint
         }
     }
 
-    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
+    public void enQueueWorkingMemoryAction(WorkingMemoryAction action) {
         wm.queueWorkingMemoryAction( action );
-    }
+    }  
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
         if (tms == null) {

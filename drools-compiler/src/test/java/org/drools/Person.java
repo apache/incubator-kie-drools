@@ -53,6 +53,8 @@ public class Person
     
 
     public Object object;
+    
+    public Object notInEqualTestObject;
 
     public Person() {
 
@@ -207,6 +209,14 @@ public class Person
 
     public void setHair(final String hair) {
         this.hair = hair;
+    }
+
+    public Object getNotInEqualTestObject() {
+        return notInEqualTestObject;
+    }
+
+    public void setNotInEqualTestObject(Object notInEqualTestObject) {
+        this.notInEqualTestObject = notInEqualTestObject;
     }
 
     public String toString() {

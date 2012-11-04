@@ -141,8 +141,6 @@ public abstract class AbstractWorkingMemory
 
     protected ReentrantLock                                      lock;
 
-    protected boolean                                            discardOnLogicalOverride;
-
     /**
      * This must be thread safe as it is incremented and read via different
      * EntryPoints
@@ -316,9 +314,6 @@ public abstract class AbstractWorkingMemory
         ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
 
         this.propagationIdCounter = new AtomicLong( propagationContext );
-
-        // Only takes effect if are using idententity behaviour for assert
-        this.discardOnLogicalOverride = LogicalOverride.DISCARD.equals(conf.getLogicalOverride());
 
         this.firing = new AtomicBoolean( false );
 
@@ -1008,7 +1003,7 @@ public abstract class AbstractWorkingMemory
         } finally {
             endOperation();
         }
-    }
+    }  
 
     /**
      * Retrieve the <code>JoinMemory</code> for a particular

@@ -78,20 +78,6 @@ public class RuleBaseConfigurationTest {
         assertEquals( AssertBehaviour.EQUALITY, cfg.getAssertBehaviour() );
     }
     
-    @Test
-    public void testLogicalOverride() {
-        Properties properties = new Properties();
-        properties.setProperty( "drools.logicalOverride", "preserve" );
-        RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
-        
-        assertEquals( LogicalOverride.PRESERVE, cfg.getLogicalOverride() );
-        
-        properties = new Properties();
-        properties.setProperty( "drools.logicalOverride", "discard" );
-        cfg = new RuleBaseConfiguration(properties);
-        
-        assertEquals( LogicalOverride.DISCARD, cfg.getLogicalOverride() );
-    }
     
     @Test
     public void testSequential() {

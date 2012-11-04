@@ -33,7 +33,7 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalD
     private Object                                   value;
 
     private final LinkedListEntry<LogicalDependency> justifierEntry = new LinkedListEntry<LogicalDependency>( this );
-
+    
     public SimpleLogicalDependency(final Activation justifier,
                                    final Object justified) {
         super();
@@ -86,6 +86,10 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalD
     public Object getValue() {
         return this.value;
     }
+    
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     public boolean equals(final Object object) {
         if ( this == object ) {
@@ -103,4 +107,11 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalD
     public int hashCode() {
         return this.justifier.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "SimpleLogicalDependency [justifier=" + justifier.getRule().getName() + ",\n justified=" + justified + ",\n object=" + object + ", value=" + value  + "]";
+    }
+    
+    
 }

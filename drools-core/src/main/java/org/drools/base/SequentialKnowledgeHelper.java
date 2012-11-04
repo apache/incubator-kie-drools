@@ -209,13 +209,11 @@ public class SequentialKnowledgeHelper
     }
 
     public FactHandle insert(Object object) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public FactHandle insert(Object object,
                        boolean dynamic) {
-        // TODO Auto-generated method stub
         return null;
     }
 

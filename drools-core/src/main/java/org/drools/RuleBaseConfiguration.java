@@ -100,7 +100,6 @@ import java.util.Properties;
  * drools.indexLeftBetaMemory = &lt;true/false&gt;
  * drools.indexRightBetaMemory = &lt;true/false&gt;
  * drools.assertBehaviour = &lt;identity|equality&gt;
- * drools.logicalOverride = &lt;discard|preserve&gt;
  * drools.executorService = &lt;qualified class name&gt;
  * drools.conflictResolver = &lt;qualified class name&gt;
  * drools.consequenceExceptionHandler = &lt;qualified class name&gt;
@@ -139,7 +138,6 @@ public class RuleBaseConfiguration
     private boolean                        indexLeftBetaMemory;
     private boolean                        indexRightBetaMemory;
     private AssertBehaviour                assertBehaviour;
-    private LogicalOverride                logicalOverride;
     private String                         executorService;
     private String                         consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
@@ -194,7 +192,6 @@ public class RuleBaseConfiguration
         out.writeBoolean( indexRightBetaMemory );
         out.writeObject( indexPrecedenceOption );
         out.writeObject( assertBehaviour );
-        out.writeObject( logicalOverride );
         out.writeObject( executorService );
         out.writeObject( consequenceExceptionHandler );
         out.writeObject( ruleBaseUpdateHandler );
@@ -226,7 +223,6 @@ public class RuleBaseConfiguration
         indexRightBetaMemory = in.readBoolean();
         indexPrecedenceOption = (IndexPrecedenceOption) in.readObject();
         assertBehaviour = (AssertBehaviour) in.readObject();
-        logicalOverride = (LogicalOverride) in.readObject();
         executorService = (String) in.readObject();
         consequenceExceptionHandler = (String) in.readObject();
         ruleBaseUpdateHandler = (String) in.readObject();
@@ -312,8 +308,6 @@ public class RuleBaseConfiguration
             setIndexPrecedenceOption(StringUtils.isEmpty(value) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
         } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
             setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(StringUtils.isEmpty(value) ? "identity" : value));
-        } else if ( name.equals( LogicalOverrideOption.PROPERTY_NAME ) ) {
-            setLogicalOverride(LogicalOverride.determineLogicalOverride(StringUtils.isEmpty(value) ? "discard" : value));
         } else if ( name.equals( "drools.executorService" ) ) {
             setExecutorService(StringUtils.isEmpty(value) ? DefaultExecutorService.class.getName() : value);
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
@@ -371,8 +365,6 @@ public class RuleBaseConfiguration
             return getIndexPrecedenceOption().getValue();
         } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
             return getAssertBehaviour().toExternalForm();
-        } else if ( name.equals( "drools.logicalOverride" ) ) {
-            return getLogicalOverride().toExternalForm();
         } else if ( name.equals( "drools.executorService" ) ) {
             return getExecutorService();
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
@@ -465,8 +457,6 @@ public class RuleBaseConfiguration
 
         setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( AssertBehaviorOption.PROPERTY_NAME,
                                                                                                           "identity" ) ) );
-        setLogicalOverride( LogicalOverride.determineLogicalOverride( this.chainedProperties.getProperty( "drools.logicalOverride",
-                                                                                                          "discard" ) ) );
 
         setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
                                                                 "org.drools.concurrent.DefaultExecutorService" ) );
@@ -656,15 +646,6 @@ public class RuleBaseConfiguration
     public void setIndexPrecedenceOption(final IndexPrecedenceOption precedence) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.indexPrecedenceOption = precedence;
-    }
-
-    public LogicalOverride getLogicalOverride() {
-        return this.logicalOverride;
-    }
-
-    public void setLogicalOverride(final LogicalOverride logicalOverride) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.logicalOverride = logicalOverride;
     }
 
     public String getExecutorService() {
@@ -1185,8 +1166,6 @@ public class RuleBaseConfiguration
             return (T) getIndexPrecedenceOption();
         } else if ( AssertBehaviorOption.class.equals( option ) ) {
             return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? AssertBehaviorOption.IDENTITY : AssertBehaviorOption.EQUALITY);
-        } else if ( LogicalOverrideOption.class.equals( option ) ) {
-            return (T) ((this.logicalOverride == LogicalOverride.DISCARD) ? LogicalOverrideOption.DISCARD : LogicalOverrideOption.PRESERVE);
         } else if ( SequentialAgendaOption.class.equals( option ) ) {
             return (T) ((this.sequentialAgenda == SequentialAgenda.SEQUENTIAL) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
         } else if ( PermGenThresholdOption.class.equals( option ) ) {
@@ -1242,8 +1221,6 @@ public class RuleBaseConfiguration
             setIndexPrecedenceOption( (IndexPrecedenceOption) option );
         } else if ( option instanceof AssertBehaviorOption ) {
             setAssertBehaviour( (option == AssertBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY );
-        } else if ( option instanceof LogicalOverrideOption ) {
-            setLogicalOverride( (option == LogicalOverrideOption.DISCARD) ? LogicalOverride.DISCARD : LogicalOverride.PRESERVE );
         } else if ( option instanceof SequentialAgendaOption ) {
             setSequentialAgenda( (option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC );
         } else if ( option instanceof PermGenThresholdOption ) {

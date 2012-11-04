@@ -1,0 +1,45 @@
+package org.drools.beliefsystem.defeasible;
+
+global java.util.List list;
+
+declare Matter
+    id      : int       @key
+    name    : String
+end
+
+rule "Pos" salience -100 when
+    Matter( $n : name )
+then
+    list.add( "++" + $n );
+end
+
+rule "Neg" salience -100 when
+    Matter( $n : name ) from entry-point "neg"
+then
+    list.add( "--" + $n );
+end
+
+
+rule "A+" when
+    String( this == "a" )
+then
+    insertLogical( new Matter( 0, "plus" ) );
+end
+
+rule "B+" when
+    String( this == "b" )
+then
+    insertLogical( new Matter( 0, "plus" ) );
+end
+
+rule "C-" when
+    String( this == "c" )
+then
+    insertLogical( new Matter( 0, "minus" ), "neg" );
+end
+
+rule "D-" when
+    String( this == "d" )
+then
+    insertLogical( new Matter( 0, "minus" ), "neg" );
+end

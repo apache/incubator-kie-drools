@@ -139,11 +139,18 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
      */
     public void updateHandle(InternalFactHandle handle, Object object){
         this.assertMap.remove( handle );
-        Object oldObject = handle.getObject();
+        if ( AssertBehaviour.EQUALITY.equals(this.behaviour) ) {
+            this.identityMap.remove( handle );    
+        }
         handle.setObject( object );
         this.assertMap.put( handle,
                             handle,
                             false );
+        if ( AssertBehaviour.EQUALITY.equals(this.behaviour) ) {
+            this.identityMap.put( handle,
+                                  handle,
+                                  false );    
+        }        
     }
 
     /* (non-Javadoc)

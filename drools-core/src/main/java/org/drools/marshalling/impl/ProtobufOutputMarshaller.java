@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.InitialFact;
+import org.drools.beliefsystem.BeliefSet;
 import org.drools.common.ActivationIterator;
 import org.drools.common.AgendaItem;
-import org.drools.common.BeliefSet;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
@@ -103,9 +103,9 @@ public class ProtobufOutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
 
         ProtobufMessages.KnowledgeSession _session = serializeSession( context );
-
+        
         PersisterHelper.writeToStreamWithHeader( context,
-                                                 _session );
+                                                 _session );              
     }
 
     private static ProtobufMessages.KnowledgeSession serializeSession(MarshallerWriteContext context) throws IOException {

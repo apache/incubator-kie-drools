@@ -16,10 +16,12 @@
 
 package org.drools;
 
-import org.drools.common.BeliefSystem;
+import org.drools.beliefsystem.BeliefSystem;
+import org.drools.beliefsystem.jtms.JTMSBeliefSet;
+import org.drools.beliefsystem.jtms.JTMSBeliefSystem;
+import org.drools.beliefsystem.simple.SimpleBeliefSystem;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NamedEntryPoint;
-import org.drools.common.SimpleBeliefSystem;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.time.SessionClock;
 import org.drools.time.impl.JDKTimerService;
@@ -41,10 +43,10 @@ public enum BeliefSystemType {
      * A Pseudo clock is a clock that is completely controlled by the
      * client application. It is usually used during simulations or tests
      */
-    DEFEASIBLE("defeasible") {
+    JTMS("jtms") {
         public BeliefSystem createInstance(NamedEntryPoint ep,
                                            TruthMaintenanceSystem tms) {
-            return null;
+            return new JTMSBeliefSystem( ep, tms );
         }
     };
 
@@ -71,8 +73,8 @@ public enum BeliefSystemType {
     public static BeliefSystemType resolveBeliefSystemType(String id) {
         if( SIMPLE.getId().equalsIgnoreCase( id ) ) {
             return SIMPLE;
-        } else if( DEFEASIBLE.getId().equalsIgnoreCase( id ) ) {
-            return DEFEASIBLE;
+        } else if( JTMS.getId().equalsIgnoreCase( id ) ) {
+            return JTMS;
         }
         throw new IllegalArgumentException( "Illegal enum value '" + id + "' for BeliefSystem" );
     }
