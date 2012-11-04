@@ -27,9 +27,9 @@ import java.util.Map;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.beliefsystem.BeliefSet;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.AgendaItem;
-import org.drools.common.BeliefSet;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
@@ -135,6 +135,10 @@ public class DefaultKnowledgeHelper
         this.previousBlocked = null;
     }
       
+    public LinkedList<LogicalDependency> getpreviousJustified() {
+        return previousJustified;
+    }
+    
     public void blockActivation(org.drools.runtime.rule.Activation act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
@@ -264,7 +268,7 @@ public class DefaultKnowledgeHelper
     public void cancelRemainingPreviousLogicalDependencies() {
         if ( this.previousJustified != null ) {
             for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
-                TruthMaintenanceSystemHelper.removeLogicalDependency( activation, dep, activation.getPropagationContext() );
+                TruthMaintenanceSystemHelper.removeLogicalDependency( dep, activation.getPropagationContext() );
             }
         }
         

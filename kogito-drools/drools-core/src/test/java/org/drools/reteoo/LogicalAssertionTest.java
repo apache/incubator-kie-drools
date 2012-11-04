@@ -28,7 +28,9 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.ClassObjectType;
-import org.drools.common.BeliefSet;
+import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.beliefsystem.BeliefSet;
+import org.drools.common.AgendaItem;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalAgenda;
@@ -36,8 +38,10 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
@@ -54,6 +58,7 @@ import org.drools.spi.PropagationContext;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -103,8 +108,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
-                // do nothing
+                                 WorkingMemory workingMemory) {                  
+                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                if ( list != null ) {
+                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                    }
+                }
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -128,11 +138,11 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         null,
                                                         true );
 
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        null );
+        final PropagationContextImpl context1 = new PropagationContextImpl( 0,
+                                                                            PropagationContext.ASSERTION,
+                                                                            null,
+                                                                            null,
+                                                                            null );
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
@@ -148,6 +158,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                       (Activation) tuple1.getObject() );
         new RightTuple( logicalHandle,
                         sink );
+        context1.setFactHandle( handle1 );
         // Retract the tuple and test the logically asserted fact was also retracted
         node.retractLeftTuple( tuple1,
                                context1,
@@ -229,7 +240,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                // do nothing
+                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                if ( list != null ) {
+                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                    }
+                }
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -306,7 +322,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * @throws Exception
      */
     @Test
-    public void testStatedOverrideDiscard() throws Exception {
+    public void testStatedOverride() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
@@ -336,7 +352,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                // do nothing
+                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                if ( list != null ) {
+                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                    }
+                }
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -455,134 +476,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     }
 
-    /**
-     * This tests that Stated asserts always take precedent
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testStatedOverridePreserve() throws Exception {
-        // create a RuleBase with a single ObjectTypeNode we attach a
-        // MockObjectSink so we can detect assertions and retractions
-        final Rule rule1 = new Rule( "test-rule1" );
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setLogicalOverride( LogicalOverride.PRESERVE );
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
-
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ruleBase.getReteooBuilder().getIdGenerator() );
-
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
-
-        final Rete rete = ruleBase.getRete();
-        final EntryPointNode entryPoint = new EntryPointNode( 0,
-                                                              rete,
-                                                              buildContext );
-        entryPoint.attach( buildContext );
-
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
-                                                                  entryPoint,
-                                                                  new ClassObjectType( String.class ),
-                                                                  buildContext );
-        objectTypeNode.attach( buildContext );
-        final MockObjectSink sink = new MockObjectSink();
-        objectTypeNode.addObjectSink( sink );
-        final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
-                                                            new MockTupleSource( idGenerator.getNextId() ),
-                                                            rule1,
-                                                            rule1.getLhs(),
-                                                            0,
-                                                            buildContext );
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
-
-        final Agenda agenda = workingMemory.getAgenda();
-
-        final Consequence consequence = new Consequence() {
-            private static final long serialVersionUID = 510l;
-
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
-                // do nothing
-            }
-
-            public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
-
-            }
-
-            public void writeExternal(ObjectOutput out) throws IOException {
-
-            }
-
-            public String getName() {
-                return "default";
-            }
-        };
-        rule1.setConsequence( consequence );
-
-        final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
-                                                                 "cheese" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
-                                                        null,
-                                                        true );
-
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        null );
-
-        // Test that a STATED assertion overrides a logical assertion
-        node.assertLeftTuple( tuple1,
-                              context1,
-                              workingMemory );
-
-        final String logicalString1 = new String( "logical" );
-        final FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
-                                                                null,
-                                                                false,
-                                                                true,
-                                                                rule1,
-                                                                (Activation) tuple1.getObject() );
-        assertEquals( EqualityKey.JUSTIFIED,
-                      ((InternalFactHandle)logicalHandle1).getEqualityKey().getStatus() );
-        
-        // This assertion is stated and should override any previous justified
-        // "equals" objects.
-        String logicalString2 = new String( "logical" );
-        FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
-
-        // The justified fact, should now be updated to a stated one
-        assertLength( 0,
-                      sink.getRetracted() );
-
-        assertLength( 1,
-                      sink.getUpdated() );        
-        
-        // Make sure the de-activation is unlinked and doesn't retract anything.
-        node.retractLeftTuple( tuple1,
-                               context1,
-                               workingMemory );
-
-        assertLength( 0,
-                      sink.getRetracted() );
-
-        assertLength( 1,
-                      sink.getUpdated() );        
-        
-        // The stated object should re-use the old handle
-        assertSame( logicalHandle2,
-                    logicalHandle1 );
-        
-        assertEquals( EqualityKey.STATED,
-                      ((InternalFactHandle)logicalHandle1).getEqualityKey().getStatus() ); 
-
-        // Make sure it has the new object
-        assertEquals( logicalString2,
-                      workingMemory.getObject( logicalHandle2 ) );
-        
-    }
-
     @Test
     public void testRetract() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
@@ -612,7 +505,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                // do nothing
+                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                if ( list != null ) {
+                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                    }
+                }
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -739,7 +637,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                // do nothing
+                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                if ( list != null ) {
+                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                    }
+                }
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -902,7 +805,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                // do nothing
+                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                if ( list != null ) {
+                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                    }
+                }
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -1021,7 +929,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                // do nothing
+                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                if ( list != null ) {
+                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                    }
+                }
             }
 
             public void readExternal(ObjectInput in) throws IOException,

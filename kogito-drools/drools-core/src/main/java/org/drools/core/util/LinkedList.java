@@ -117,6 +117,27 @@ public class LinkedList<T extends LinkedListNode<T>>
     }
 
     /**
+     * Add a <code>LinkedListNode</code> to the end of the list. If the <code>LinkedList</code> is empty then the first and
+     * last nodes are set to the added node.
+     *
+     * @param node
+     *      The <code>LinkedListNode</code> to be added
+     */
+    public void addLast(final T node) {
+        if ( this.firstNode == null ) {
+            this.firstNode = node;
+            this.lastNode = node;
+        } else {
+            T currentLast = getLast();
+            currentLast.setNext( node );
+            node.setPrevious( currentLast );
+            this.lastNode = node;            
+        }
+        
+        this.size++;
+    }    
+    
+    /**
      * Removes a <code>LinkedListNode</code> from the list. This works by attach the previous reference to the child reference.
      * When the node to be removed is the first node it calls <code>removeFirst()</code>. When the node to be removed is the last node
      * it calls <code>removeLast()</code>.

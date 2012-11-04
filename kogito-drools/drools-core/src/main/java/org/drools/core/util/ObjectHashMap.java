@@ -223,6 +223,10 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
             final ObjectEntry other = (ObjectEntry) object;
             return this.key.equals( other.key ) && this.value.equals( other.value );
         }
+        
+        public String toString() {
+            return "key=" + key.toString() + " : value=" + value.toString();
+        }
     }
 
 }

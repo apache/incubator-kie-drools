@@ -254,30 +254,6 @@ public class KnowledgeBaseConfigurationTest {
     }
     
     @Test
-    public void testLogicalOverrideConfiguration() {
-        // setting the option using the type safe method
-        config.setOption( LogicalOverrideOption.PRESERVE );
-
-        // checking the type safe getOption() method
-        assertEquals( LogicalOverrideOption.PRESERVE,
-                      config.getOption( LogicalOverrideOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "preserve",
-                      config.getProperty( LogicalOverrideOption.PROPERTY_NAME ) );
-
-        // setting the options using the string based setProperty() method
-        config.setProperty( LogicalOverrideOption.PROPERTY_NAME,
-                            "discard" );
-        
-        // checking the type safe getOption() method
-        assertEquals( LogicalOverrideOption.DISCARD,
-                      config.getOption( LogicalOverrideOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "discard",
-                      config.getProperty( LogicalOverrideOption.PROPERTY_NAME ) );
-    }
-    
-    @Test
     public void testSequentialAgendaConfiguration() {
         // setting the option using the type safe method
         config.setOption( SequentialAgendaOption.DYNAMIC );

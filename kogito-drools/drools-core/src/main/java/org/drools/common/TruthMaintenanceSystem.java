@@ -21,6 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactException;
+import org.drools.beliefsystem.BeliefSet;
+import org.drools.beliefsystem.BeliefSystem;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
@@ -33,6 +35,7 @@ import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
@@ -148,51 +151,40 @@ public class TruthMaintenanceSystem {
         }
     }
 
-    public static class LogicalRetractCallback
+    public static class LogicalCallback
             implements
             WorkingMemoryAction {
-        private TruthMaintenanceSystem tms;
-        private LogicalDependency      node;
-        private BeliefSet              beliefSet;
+        
         private InternalFactHandle     handle;
         private PropagationContext     context;
         private Activation             activation;
+        
         private boolean                update;
+        private boolean                fullyRetract;
 
-        public LogicalRetractCallback() {
+        public LogicalCallback() {
 
         }
 
-        public LogicalRetractCallback(final TruthMaintenanceSystem tms,
-                                      final LogicalDependency node,
-                                      final BeliefSet beliefSet,
+        public LogicalCallback(final InternalFactHandle handle,
                                       final PropagationContext context,
-                                      final Activation activation) {
-            this.tms = tms;
-            this.node = node;
-            this.beliefSet = beliefSet;
-            this.handle = beliefSet.getFactHandle();
+                                      final Activation activation,
+                                      final boolean update,
+                                      final boolean fullyRetract) {
+            this.handle = handle;
             this.context = context;
+            this.activation = activation;
+            this.update = update;
+            this.fullyRetract = fullyRetract;
         }
 
-        public LogicalRetractCallback(MarshallerReaderContext context) throws IOException {
+        public LogicalCallback(MarshallerReaderContext context) throws IOException {
             this.handle = context.handles.get( context.readInt() );
             this.context = context.propagationContexts.get( context.readLong() );
             this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getObject();
-
-            this.beliefSet = handle.getEqualityKey().getBeliefSet();
-            this.tms = this.beliefSet.getBeliefSystem().getTruthMaintenanceSystem();
-
-            for ( LinkedListEntry entry = (LinkedListEntry) beliefSet.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                final LogicalDependency node = (LogicalDependency) entry.getObject();
-                if ( node.getJustifier() == this.activation ) {
-                    this.node = node;
-                    break;
-                }
-            }
         }
 
-        public LogicalRetractCallback(MarshallerReaderContext context,
+        public LogicalCallback(MarshallerReaderContext context,
                                       Action _action) {
             LogicalRetract _retract = _action.getLogicalRetract();
 
@@ -202,17 +194,8 @@ public class TruthMaintenanceSystem {
                                                                                 _retract.getActivation().getRuleName(),
                                                                                 _retract.getActivation().getTuple() ) ).getObject();
             this.context = this.activation.getPropagationContext();
-
-            this.beliefSet = handle.getEqualityKey().getBeliefSet();
-            this.tms = this.beliefSet.getBeliefSystem().getTruthMaintenanceSystem();
-
-            for ( LinkedListEntry entry = (LinkedListEntry) beliefSet.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                final LogicalDependency node = (LogicalDependency) entry.getObject();
-                if ( node.getJustifier() == this.activation ) {
-                    this.node = node;
-                    break;
-                }
-            }
+            this.fullyRetract = _retract.getFullyRetract();
+            this.update = _retract.getUpdate();
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
@@ -229,6 +212,8 @@ public class TruthMaintenanceSystem {
                     .setActivation( PersisterHelper.createActivation( this.activation.getRule().getPackageName(),
                                                                       this.activation.getRule().getName(),
                                                                       this.activation.getTuple() ) )
+                    .setFullyRetract( fullyRetract )
+                    .setUpdate( update )
                     .build();
             return ProtobufMessages.ActionQueue.Action.newBuilder()
                     .setType( ProtobufMessages.ActionQueue.ActionType.LOGICAL_RETRACT )
@@ -238,35 +223,62 @@ public class TruthMaintenanceSystem {
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            tms = (TruthMaintenanceSystem) in.readObject();
-            node = (LogicalDependency) in.readObject();
-            beliefSet = (BeliefSet) in.readObject();
             handle = (InternalFactHandle) in.readObject();
             context = (PropagationContext) in.readObject();
             activation = (Activation) in.readObject();
+            fullyRetract = in.readBoolean();
+            update =  in.readBoolean();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( tms );
-            out.writeObject( node );
-            out.writeObject( beliefSet );
             out.writeObject( handle );
             out.writeObject( context );
             out.writeObject( activation );
+            out.writeBoolean( fullyRetract );
+            out.writeBoolean( update );
+        }
+        
+        public boolean isUpdate() {
+            return update;
+        }
+
+        public void setUpdate(boolean update) {
+            this.update = update;
+        }
+
+        public boolean isFullyRetract() {
+            return fullyRetract;
+        }
+
+        public void setFullyRetract(boolean fullyRetract) {
+            this.fullyRetract = fullyRetract;
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-            //            if ( update ) {
-            //                workingMemory.update( handle, object );
-            //            } else {
-            //                ((NamedEntryPoint)  this.handle.getEntryPoint()).retract( handle, removeLogical, updateEqualsMap, rule, activation );
-            // this needs to be scheduled so we don't upset the current
-            // working memory operation
-            workingMemory.retract( this.handle,
-                                   (Rule) context.getRuleOrigin(),
-                                   this.activation );
-            //            }
-
+            NamedEntryPoint nep = (NamedEntryPoint) handle.getEntryPoint() ;
+            
+            BeliefSet bs = handle.getEqualityKey().getBeliefSet();
+            bs.setWorkingMemoryAction( null );
+            
+            if ( update ) {
+                if ( !bs.isEmpty() ) {
+                    // We need the isEmpty check, in case the BeliefSet was made empty (due to retract) after this was scheduled
+                    ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), Long.MAX_VALUE, null );
+                }
+            } else  {
+                if ( fullyRetract ) {
+                    ((NamedEntryPoint) handle.getEntryPoint()).retract( this.handle,
+                                                                        (Rule) context.getRuleOrigin(),
+                                                                        this.activation );                    
+                } else {                
+                    final ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(),
+                                                                                                                handle.getObject() );                
+                    ((NamedEntryPoint) handle.getEntryPoint() ).getEntryPointNode().retractObject( handle, 
+                                                                                                   context, 
+                                                                                                   typeConf, 
+                                                                                                   workingMemory );
+                }
+            }
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
@@ -278,4 +290,7 @@ public class TruthMaintenanceSystem {
         this.equalityKeyMap.clear();
     }
 
+    public BeliefSystem getBeliefSystem() {
+        return beliefSystem;
+    } 
 }

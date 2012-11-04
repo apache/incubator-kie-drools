@@ -258,6 +258,21 @@ public abstract class AbstractHashTable
         public boolean equal(Object object1,
                              Object object2);
     }
+    
+    public String toString() {
+        StringBuilder sbuilder = new StringBuilder();
+        Iterator it = iterator();
+        boolean isFirst = true;
+        for (Entry entry = ( Entry ) it.next(); entry != null; entry = ( Entry ) it.next() ) {
+            sbuilder.append( entry.toString() );
+            if ( !isFirst ) {
+                sbuilder.append( ", " );
+            }
+            isFirst = false;
+        }
+        
+        return sbuilder.toString();
+    }
 
     public abstract static class AbstractObjectComparator implements ObjectComparator { 
     }

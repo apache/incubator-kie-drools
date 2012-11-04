@@ -27,7 +27,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
-import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
+import org.drools.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.marshalling.ObjectMarshallingStrategy;
@@ -60,7 +60,7 @@ public class PersisterHelper {
                 return new PropagateAction( context );
             }
             case WorkingMemoryAction.LogicalRetractCallback : {
-                return new LogicalRetractCallback( context );
+                return new LogicalCallback( context );
             }
             case WorkingMemoryAction.WorkingMemoryReteExpireAction : {
                 return new WorkingMemoryReteExpireAction( context );
@@ -90,7 +90,7 @@ public class PersisterHelper {
                                            _action );
             }
             case LOGICAL_RETRACT : {
-                return new LogicalRetractCallback(context,
+                return new LogicalCallback(context,
                                                   _action );
             }
             case EXPIRE : {
