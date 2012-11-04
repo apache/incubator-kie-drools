@@ -19,7 +19,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.jbpm.task.OrganizationalEntity;
 
 import org.jbpm.task.Status;
 import org.jbpm.task.SubTasksStrategy;
@@ -46,6 +49,7 @@ public class TaskSummary
     private int processSessionId;
     private SubTasksStrategy subTaskStrategy;
     private long parentId;
+    private List<String> potentialOwners;
 
     public TaskSummary(long id,
             long processInstanceId,
@@ -83,6 +87,8 @@ public class TaskSummary
         this.subTaskStrategy = subTaskStrategy;
         this.parentId = parentId;
     }
+    
+    
 
     public TaskSummary() {
     }
@@ -369,8 +375,15 @@ public class TaskSummary
     public void setParentId(long parentId) {
         this.parentId = parentId;
     }
-    
-    
+
+    public List<String> getPotentialOwners() {
+        return potentialOwners;
+    }
+
+    public void setPotentialOwners(List<String> potentialOwners) {
+        this.potentialOwners = potentialOwners;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

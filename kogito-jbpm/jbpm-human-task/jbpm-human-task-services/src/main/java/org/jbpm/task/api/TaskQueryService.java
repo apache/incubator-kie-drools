@@ -53,4 +53,8 @@ public interface TaskQueryService {
     Task getTaskInstanceById(long taskId);
     
     Task getTaskByWorkItemId(long workItemId);
+    
+    List<TaskSummary> getTasksAssignedByGroup(String groupId, String language);
+    
+    List<TaskSummary> getTasksAssignedByGroups(List<String> groupsId, String language);
 }

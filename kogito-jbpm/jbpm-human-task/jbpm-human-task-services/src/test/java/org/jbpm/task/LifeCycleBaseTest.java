@@ -241,6 +241,112 @@ public abstract class LifeCycleBaseTest extends BaseTest {
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
+    
+    
+     @Test
+    public void testForwardGroupClaimQueryAssignee() throws Exception {
+        
+
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy' )], businessAdministrators = [ new User('Administrator') ], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        
+        // One potential owner, should go straight to state Reserved
+        String str2 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str2 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')], businessAdministrators = [ new User('Administrator') ], }),";
+        str2 += "names = [ new I18NText( 'en-UK', 'This is my second task name')] })";
+
+         // One potential owner, should go straight to state Reserved
+        String str3 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str3 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Crusaders'), new Group('Knights Templer')], businessAdministrators = [ new User('Administrator') ], }),";
+        str3 += "names = [ new I18NText( 'en-UK', 'This is my third task name')] })";
+        
+        
+        List<String> groupIds = new ArrayList<String>();
+        
+        groupIds.add("Knights Templer");
+        groupIds.add("non existing group");
+        groupIds.add("non existing group 2");
+        groupIds.add("Crusaders");
+        
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.Ready);
+        statuses.add(Status.Created);
+        statuses.add(Status.InProgress);
+        statuses.add(Status.Reserved);
+        
+
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        long taskId = task.getId();
+        
+        
+        Task task3 = (Task) TaskFactory.evalTask(new StringReader(str2));
+        taskService.addTask(task3, new HashMap<String, Object>());
+        
+        Task task4 = (Task) TaskFactory.evalTask(new StringReader(str3));
+        taskService.addTask(task4, new HashMap<String, Object>());
+        
+        List<TaskSummary> tasksAssignedByGroups = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
+        assertEquals(1, tasksAssignedByGroups.size());
+
+        // A Task with multiple potential owners moves to "Ready" state until someone claims it.
+
+          List<TaskSummary> allTasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
+        assertEquals(1, allTasks.size());
+        List<TaskSummary> personalTasks = taskService.getTasksOwned("salaboy", statuses, "en-UK");
+        assertEquals(2, personalTasks.size());
+        allTasks.addAll(personalTasks);
+        assertEquals(3, allTasks.size());
+
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Reserved, task1.getTaskData().getStatus());
+        List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
+        assertEquals(2, tasksAssignedAsPotentialOwner.size());
+        
+        taskService.forward(taskId, "salaboy", "Crusaders");
+
+        
+        allTasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
+        assertEquals(2, allTasks.size());
+        personalTasks = taskService.getTasksOwned("salaboy", statuses, "en-UK");
+        assertEquals(1, personalTasks.size());
+        allTasks.addAll(personalTasks);
+        assertEquals(3, allTasks.size());
+        
+        Task task2 = taskService.getTaskById(taskId);
+        assertEquals(Status.Ready, task2.getTaskData().getStatus());
+        assertNull(task2.getTaskData().getActualOwner());
+        assertEquals(1, task2.getPeopleAssignments().getPotentialOwners().size());
+        List<TaskSummary> tasksAssignedByGroup = taskService.getTasksAssignedByGroup("Crusaders", "en-UK");
+        
+        assertEquals(2, tasksAssignedByGroup.size());
+       
+        
+        tasksAssignedByGroups = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
+        assertEquals(2, tasksAssignedByGroups.size());
+        
+        taskService.claim(taskId, "salaboy");
+        
+        task2 = taskService.getTaskById(taskId);
+        assertEquals(Status.Reserved, task2.getTaskData().getStatus());
+        assertEquals("salaboy", task2.getTaskData().getActualOwner().getId());
+        assertEquals(1, task2.getPeopleAssignments().getPotentialOwners().size());
+        
+        List<TaskSummary> tasksOwned = taskService.getTasksOwned("salaboy");
+        assertEquals(2, tasksOwned.size());
+  
+        allTasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
+        assertEquals(1, allTasks.size());
+        personalTasks = taskService.getTasksOwned("salaboy", statuses, "en-UK");
+        assertEquals(2, personalTasks.size());
+        allTasks.addAll(personalTasks);
+        assertEquals(3, allTasks.size());
+        
+        
+    }
 
     @Test
     public void testStartFromReadyStateWithPotentialOwner() throws Exception {
@@ -283,10 +389,10 @@ public abstract class LifeCycleBaseTest extends BaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
-
         // A Task with multiple potential owners moves to "Ready" state until someone claims it.
-
-
+        List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
+        assertEquals(1, tasksAssignedAsPotentialOwner.size());
+        
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Ready, task1.getTaskData().getStatus());
 

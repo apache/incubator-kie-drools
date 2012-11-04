@@ -82,7 +82,7 @@ public interface TaskServiceEntryPoint {
     void deleteOutput(long taskId, String userId);
 
     void deployTaskDef(TaskDef def);
-
+    
     void exit(long taskId, String userId);
 
     void fail(long taskId, String userId, Map<String, Object> faultData);
@@ -239,6 +239,10 @@ public interface TaskServiceEntryPoint {
     int getCompletedTaskByUserId(String userId);
 
     int getPendingTaskByUserId(String userId);
+    
+    List<TaskSummary> getTasksAssignedByGroup(String groupId, String language); 
+    
+    List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language); 
     
     //Listeners
     

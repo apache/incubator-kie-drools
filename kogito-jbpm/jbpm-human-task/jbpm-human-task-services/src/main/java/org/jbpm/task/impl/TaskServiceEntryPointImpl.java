@@ -509,6 +509,14 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public int getPendingTaskByUserId(String userId) {
         return taskStatisticService.getPendingTaskByUserId(userId);
     }
+
+    public List<TaskSummary> getTasksAssignedByGroup(String groupId, String language) {
+        return taskQueryService.getTasksAssignedByGroup(groupId, language);
+    }
+
+    public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language) {
+        return taskQueryService.getTasksAssignedByGroups(groupIds, language);
+    }
     
     
     
