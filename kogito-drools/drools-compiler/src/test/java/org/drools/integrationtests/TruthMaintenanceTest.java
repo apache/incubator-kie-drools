@@ -27,11 +27,13 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.Sensor;
 import org.drools.StatefulSession;
+import org.drools.TotalHolder;
 import org.drools.WorkingMemory;
 import org.drools.YoungestFather;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.AgendaItem;
 import org.drools.common.BeliefSet;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -42,6 +44,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.definition.KnowledgePackage;
+import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
@@ -52,6 +55,7 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -1159,6 +1163,75 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals(1, youngestFathers.size());
 
         //System.err.println(reportWMObjects(kSession));
+    }
+
+    @Test @Ignore("FIXME for Planner")
+    public void testUnMatchListenerForChainedPlanningEntities() {
+        String str =""+
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.Father;\n" +
+                "import org.drools.TotalHolder;\n" +
+                "\n" +
+                "global TotalHolder totalHolder;\n" +
+                "\n" +
+                "rule \"sumWeightOfFather\"\n" +
+                "when\n" +
+                "    $h: Father(father != null, $wf : weightOfFather)\n" +
+                "then\n" +
+                "    totalHolder.add($wf);\n" +
+"    System.out.println(\"match \" + totalHolder.getTotal());\n" +
+                "    final TotalHolder finalTotalHolder = totalHolder;\n" +
+                "    final int finalWf = $wf;\n" +
+                "     org.drools.common.AgendaItem agendaItem = (org.drools.common.AgendaItem) kcontext.getActivation();" +
+                "     agendaItem.setActivationUnMatchListener(new org.drools.event.rule.ActivationUnMatchListener() {" +
+                "            public void unMatch(org.drools.runtime.rule.WorkingMemory workingMemory, org.drools.runtime.rule.Activation activation) {" +
+                "                finalTotalHolder.subtract(finalWf);" +
+"    System.out.println(\"unmatch \" + finalTotalHolder.getTotal());\n" +
+                "            }" +
+                "     });" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
+                ResourceType.DRL );
+        assertFalse(kbuilder.getErrors().toString(), kbuilder.hasErrors());
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
+
+        kSession.setGlobal("totalHolder", new TotalHolder());
+        Father abraham = new Father("abraham", null, 100);
+        Father homer = new Father("homer", null, 20);
+        Father bart = new Father("bart", null, 3);
+
+        FactHandle abrahamHandle = kSession.insert(abraham);
+        FactHandle bartHandle = kSession.insert(bart);
+        kSession.fireAllRules();
+        assertEquals(0, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+
+        bart.setFather(abraham);
+        kSession.update(bartHandle, bart);
+        kSession.fireAllRules();
+        assertEquals(100, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+
+        bart.setFather(null);
+        kSession.update(bartHandle, bart);
+        kSession.fireAllRules();
+        assertEquals(0, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+
+        bart.setFather(abraham);
+        kSession.update(bartHandle, bart);
+        kSession.fireAllRules();
+        assertEquals(100, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+
+        FactHandle homerHandle = kSession.insert(homer);
+        homer.setFather(abraham);
+        kSession.update(homerHandle, homer);
+        bart.setFather(homer);
+        kSession.update(bartHandle, bart);
+        kSession.fireAllRules();
+        assertEquals(120, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
     }
     
     @Test

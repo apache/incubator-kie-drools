@@ -20,9 +20,16 @@ public class Father {
     
     private String name;
     private Father father;
+    private int weight;
 
     public Father(String name) {
         this.name = name;
+    }
+
+    public Father(String name, Father father, int weight) {
+        this.name = name;
+        this.father = father;
+        this.weight = weight;
     }
 
     public Father getFather() {
@@ -31,6 +38,14 @@ public class Father {
 
     public void setFather(Father father) {
         this.father = father;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public Father getPatriarch() {
@@ -42,6 +57,13 @@ public class Father {
             elder = elder.getFather();
         }
         return elder;
+    }
+
+    public int getWeightOfFather() {
+        if (father == null) {
+            return 0;
+        }
+        return father.getWeight();
     }
 
     @Override
