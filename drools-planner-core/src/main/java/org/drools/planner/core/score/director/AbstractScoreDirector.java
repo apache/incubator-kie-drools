@@ -274,10 +274,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         // Do nothing
     }
 
-    public AbstractScoreDirector clone() {
-        AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector();
-        setWorkingSolution(workingSolution.cloneSolution());
-        //TODO Maybe add clone.assertExpectedWorkingScore(workingSolution.getScore); ?
+    public ScoreDirector clone() {
+        ScoreDirector clone = scoreDirectorFactory.buildScoreDirector();
+        clone.setWorkingSolution(workingSolution.cloneSolution());
         return clone;
     }
 
