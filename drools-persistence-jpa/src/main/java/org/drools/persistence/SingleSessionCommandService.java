@@ -18,8 +18,10 @@ package org.drools.persistence;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
@@ -51,13 +53,13 @@ import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.tools.jxc.gen.config.Config;
-
 public class SingleSessionCommandService
     implements
     org.drools.command.SingleSessionCommandService {
 
     Logger                             logger           = LoggerFactory.getLogger( getClass() );
+
+    private ReentrantLock lock = new ReentrantLock(true);
 
     private SessionInfo                sessionInfo;
     private SessionMarshallingHelper   marshallingHelper;
@@ -72,9 +74,9 @@ public class SingleSessionCommandService
 
     private volatile boolean           doRollback;
 
-    private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
+    private Map<Object, Object> synchronizations =  new HashMap<Object, Object>() ;
 
-    public static Map<Object, Object>  txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
+//    public Map<Object, Object>  txManagerClasses = new IdentityHashMap<Object, Object>() ;
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
@@ -339,7 +341,8 @@ public class SingleSessionCommandService
         return this.kContext;
     }
 
-    public synchronized <T> T execute(Command<T> command) {
+    public <T> T execute(Command<T> command) {
+        lock.lock();        
         if (command instanceof DisposeCommand) {
             T result = commandService.execute( (GenericCommand<T>) command );
             this.jpm.dispose();
@@ -360,7 +363,6 @@ public class SingleSessionCommandService
                           persistenceContext );
 
             this.jpm.beginCommandScopedEntityManager();
-
             registerRollbackSync();
 
             T result = null;
@@ -378,8 +380,7 @@ public class SingleSessionCommandService
             return result;
 
         } catch ( RuntimeException re ) {
-            rollbackTransaction( re,
-                                 transactionOwner );
+            rollbackTransaction(re, transactionOwner);
             throw re;
         } catch ( Exception t1 ) {
             rollbackTransaction( t1,
@@ -398,11 +399,13 @@ public class SingleSessionCommandService
                                      boolean transactionOwner) {
         try {
             logger.error( "Could not commit session",
-                          t1 );
+                          t1 );           
+            
             txm.rollback( transactionOwner );
         } catch ( Exception t2 ) {
             logger.error( "Could not rollback",
                           t2 );
+            clear(txm.getStatus());
             throw new RuntimeException( "Could not commit session or rollback",
                                         t2 );
         }
@@ -424,7 +427,6 @@ public class SingleSessionCommandService
             synchronizations.put( this,
                                   this );
         }
-
     }
 
     private static class SynchronizationImpl
@@ -438,27 +440,7 @@ public class SingleSessionCommandService
         }
 
         public void afterCompletion(int status) {
-            if ( status != TransactionManager.STATUS_COMMITTED ) {
-                this.service.rollback();
-            }
-
-            // always cleanup thread local whatever the result
-            Object removedSynchronization = SingleSessionCommandService.synchronizations.remove( this.service );
-
-            this.service.jpm.clearPersistenceContext();
-            
-            this.service.jpm.endCommandScopedEntityManager();
-
-            StatefulKnowledgeSession ksession = this.service.ksession;
-            // clean up cached process and work item instances
-            if ( ksession != null ) {
-                InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
-                if ( internalProcessRuntime != null ) {
-                    internalProcessRuntime.clearProcessInstances();
-                }
-                ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
-            }
-            
+          service.clear(status);
         }
 
         public void beforeCompletion() {
@@ -471,6 +453,36 @@ public class SingleSessionCommandService
         return this.ksession;
     }
 
+    public void clear(int status) {
+        try {
+            if (synchronizations.get(this) != null) {
+                if (status != TransactionManager.STATUS_COMMITTED) {
+                    this.rollback();
+                }
+
+                // always cleanup thread local whatever the result
+                Object removedSynchronization = synchronizations
+                        .remove(this);
+
+                this.jpm.clearPersistenceContext();
+
+                this.jpm.endCommandScopedEntityManager();
+
+                // clean up cached process and work item instances
+                if (ksession != null) {
+                    InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession)
+                            .getProcessRuntime();
+                    if (internalProcessRuntime != null) {
+                        internalProcessRuntime.clearProcessInstances();
+                    }
+                    ((JPAWorkItemManager) ksession.getWorkItemManager())
+                            .clearWorkItems();
+                }
+            }
+        } finally {
+            releaseLock();
+        }
+    }
     public void addInterceptor(Interceptor interceptor) {
         interceptor.setNext( this.commandService );
         this.commandService = interceptor;
@@ -478,5 +490,14 @@ public class SingleSessionCommandService
 
     private void rollback() {
         this.doRollback = true;
+    }
+    
+    private void releaseLock(){
+       if(lock.isHeldByCurrentThread()){
+           int holdCount = lock.getHoldCount();
+           for (int i = 1; i <= holdCount; i++) {
+               lock.unlock();
+           }
+       }
     }
 }
