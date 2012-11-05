@@ -55,13 +55,13 @@ public interface ScoreDirector {
      * @return never null
      */
     Solution getWorkingSolution();
-    
+
     /**
      * The workingSolution must never be the same instance as the bestSolution, it should be a (un)changed clone.
      * @param workingSolution never null
      */
     void setWorkingSolution(Solution workingSolution);
-    
+
     void beforeEntityAdded(Object entity);
 
     void afterEntityAdded(Object entity);
@@ -73,7 +73,7 @@ public interface ScoreDirector {
     void beforeVariableChanged(Object entity, String variableName);
 
     void afterVariableChanged(Object entity, String variableName);
-    
+
     void beforeEntityRemoved(Object entity);
 
     void afterEntityRemoved(Object entity);
