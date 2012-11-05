@@ -9,7 +9,7 @@
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-maven-example</artifactId>
+  <artifactId>drools-maven-plugin-example</artifactId>
 
   <dependencies>
     <dependency>
