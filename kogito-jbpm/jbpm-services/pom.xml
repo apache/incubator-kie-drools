@@ -8,16 +8,15 @@
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>jbpm-human-task</artifactId>
-  <name>jBPM :: Human Task</name>
+  <artifactId>jbpm-services</artifactId>
+  <name>jBPM :: Services</name>
   <packaging>pom</packaging>
   
   <modules>
-    <module>jbpm-human-task-core</module>
-    <module>jbpm-human-task-hornetq</module>
-    <module>jbpm-human-task-mina</module>
-    <module>jbpm-human-task-jms</module>
-    <module>jbpm-human-task-war</module>
+    <module>jbpm-human-task-services</module>
+    <module>jbpm-human-task-workitems</module>
+    <module>droolsjbpm-knowledge-services</module>
+    
   </modules>
 
   <dependencies>
