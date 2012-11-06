@@ -33,6 +33,7 @@ import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
+import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 
 
 @ApplicationScoped
@@ -44,14 +45,14 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private TaskServiceEntryPoint taskService;
 
     @Inject @External
-    private ExternalTaskEventListener listener;
+    private TaskLifeCycleEventListener listener;
     
     public CDIHTWorkItemHandler() {
     }
     
     public void init(){
-        listener.setClassLoader(classLoader);
-        listener.setSession(session);
+        ((ExternalTaskEventListener)listener).setClassLoader(classLoader);
+        ((ExternalTaskEventListener)listener).setSession(session);
     }
 
     public ClassLoader getClassLoader() {
@@ -83,9 +84,9 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
                     throw new RuntimeException(e);
                 }
             } else if (action.equals(OnErrorAction.LOG)) {
-                StringBuffer logMsg = new StringBuffer();
-                logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItem.getId());
-                logMsg.append(". Error reported by task server: " + e.getMessage());
+                StringBuilder logMsg = new StringBuilder();
+                logMsg.append(new Date()).append(": Error when creating task on task server for work item id ").append(workItem.getId());
+                logMsg.append(". Error reported by task server: ").append(e.getMessage());
                 logger.error(logMsg.toString(), e);
             }
         }

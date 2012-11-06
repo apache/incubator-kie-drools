@@ -5,6 +5,7 @@
 package org.jbpm.task.utils;
 
 
+import org.jboss.solder.core.Veto;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jbpm.task.api.TaskServiceEntryPoint;
@@ -14,6 +15,7 @@ import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 /**
  *
  */
+@Veto
 public class TaskServiceModule {
     private static TaskServiceModule instance;
     private TaskServiceEntryPoint taskService;
