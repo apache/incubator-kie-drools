@@ -2,6 +2,7 @@ package org.drools.builder.impl;
 
 import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeJarBuilder;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KProject;
@@ -21,6 +22,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static org.drools.builder.impl.KBaseUnitCachingFactory.getOrCreateKBaseUnit;
+import static org.drools.core.util.IoUtils.copyFile;
 import static org.drools.kproject.KProjectImpl.fromXML;
 
 public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
@@ -28,6 +30,12 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
     public static final String KBASES_FOLDER = "kbases";
     public static final String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
     public static final String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
+
+    private final KnowledgeBuilderConfiguration kConf;
+
+    public KnowledgeJarBuilderImpl(KnowledgeBuilderConfiguration kConf) {
+        this.kConf = kConf;
+    }
 
     public File buildKJar(File rootFolder, File outputFolder, String jarName) {
         KProject kProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
@@ -38,7 +46,7 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         KProject kProject = loadKProject();
         for (KBase kBase : kProject.getKBases().values()) {
-            units.add(getOrCreateKBaseUnit( kProject, kBase.getQName() ));
+            units.add(getOrCreateKBaseUnit( kConf, kProject, kBase.getQName() ));
         }
         return units;
     }
@@ -47,13 +55,26 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         KProject kProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
         for (KBase kBase : kProject.getKBases().values()) {
-            units.add(new KBaseUnitImpl( kProject, kBase.getQName(), sourceFolder ));
+            units.add(new KBaseUnitImpl( kConf, kProject, kBase.getQName(), sourceFolder ));
         }
         return units;
     }
 
+    public void copyKBasesToOutput(File rootFolder, File outputFolder) {
+        File kProjectFile = new File(rootFolder, KPROJECT_RELATIVE_PATH);
+        KProject kProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
+        copyFile(kProjectFile, new File(outputFolder, KPROJECT_JAR_PATH));
+
+        for (KBase kBase : kProject.getKBases().values()) {
+            for (String kBaseFile : kBase.getFiles()) {
+                String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
+                copyFile(new File(rootFolder + "/src", file), new File(outputFolder, file));
+            }
+        }
+    }
+
     public KBaseUnit getKBaseUnit(String kBaseName) {
-        return getOrCreateKBaseUnit( loadKProject(), kBaseName );
+        return getOrCreateKBaseUnit( kConf, loadKProject(), kBaseName );
     }
 
     public KnowledgeBase getKnowledgeBase(String kBaseName) {
@@ -66,7 +87,7 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
         for (KBase kBase : kProject.getKBases().values()) {
             KSession kSession = kBase.getKSessions().get(kSessionName);
             if (kSession != null) {
-                return getOrCreateKBaseUnit( kProject, kBase.getQName() ).newStatefulKnowledegSession(kSessionName);
+                return getOrCreateKBaseUnit( kConf, kProject, kBase.getQName() ).newStatefulKnowledegSession(kSessionName);
             }
         }
         return null;
@@ -101,7 +122,8 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
     private File writeAsJar(File rootFolder, File outputFolder, String jarName, Map<String, String> entries) {
         ZipOutputStream out = null;
         try {
-            java.io.File jarFile = new java.io.File( outputFolder, jarName );
+            outputFolder.mkdirs();
+            File jarFile = new File( outputFolder, jarName );
             out = new ZipOutputStream( new FileOutputStream(jarFile) );
 
             writeJarEntries( out, rootFolder, entries );

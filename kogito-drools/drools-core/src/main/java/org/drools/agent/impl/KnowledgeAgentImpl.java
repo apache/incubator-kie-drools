@@ -132,7 +132,7 @@ public class KnowledgeAgentImpl
         boolean monitor = false;
         if ( configuration != null ) {
             // New Instance describes if we do incremental builds or not
-            this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
+            this.newInstance = configuration.isNewInstance();
             this.useKBaseClassLoaderForCompiling = configuration.isUseKBaseClassLoaderForCompiling();
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
             if ( configuration.isMonitorChangeSetEvents() ) {

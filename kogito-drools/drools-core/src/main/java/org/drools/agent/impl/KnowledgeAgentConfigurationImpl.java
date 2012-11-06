@@ -48,7 +48,6 @@ public class KnowledgeAgentConfigurationImpl
     }
 
 
-    private ChainedProperties       chainedProperties;
     private CompositeClassLoader    classLoader;
     private boolean                 immutable              = false;
     private boolean                 classLoaderCache       = true;
@@ -64,13 +63,11 @@ public class KnowledgeAgentConfigurationImpl
 
 
     public KnowledgeAgentConfigurationImpl(Properties properties) {
-        init( properties,
-              null );
+        init( properties );
     }
 
     public KnowledgeAgentConfigurationImpl() {
-        init( null,
-              null );
+        init( null );
     }
 
     /**
@@ -106,37 +103,37 @@ public class KnowledgeAgentConfigurationImpl
 
         setClassLoader( classLoaders );
 
-        this.chainedProperties = new ChainedProperties( "knowledgeagent.conf",
-                                                        this.classLoader,
-                                                        true );
+        ChainedProperties chainedProperties = new ChainedProperties("knowledgeagent.conf",
+                                                                    this.classLoader,
+                                                                    true);
 
         if ( properties != null ) {
-            this.chainedProperties.addProperties( properties );
+            chainedProperties.addProperties(properties);
         }
 
         setProperty( MonitorChangesetEventsOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( MonitorChangesetEventsOption.PROPERTY_NAME,
-                                                         "true" ) );
+                     chainedProperties.getProperty(MonitorChangesetEventsOption.PROPERTY_NAME,
+                             "true") );
 
         setProperty( ScanDirectoriesOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( ScanDirectoriesOption.PROPERTY_NAME,
-                                                         "true" ) );
+                     chainedProperties.getProperty(ScanDirectoriesOption.PROPERTY_NAME,
+                             "true") );
 
         setProperty( ScanResourcesOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( ScanResourcesOption.PROPERTY_NAME,
-                                                         "true" ) );
+                     chainedProperties.getProperty(ScanResourcesOption.PROPERTY_NAME,
+                             "true") );
 
         setProperty( NewInstanceOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( NewInstanceOption.PROPERTY_NAME,
-                                                         "true" ) );
+                     chainedProperties.getProperty(NewInstanceOption.PROPERTY_NAME,
+                             "true") );
 
         setProperty( UseKnowledgeBaseClassloaderOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( UseKnowledgeBaseClassloaderOption.PROPERTY_NAME,
-                                                         "false" ) );
+                     chainedProperties.getProperty(UseKnowledgeBaseClassloaderOption.PROPERTY_NAME,
+                             "false") );
 
         setProperty( ValidationTimeoutOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( ValidationTimeoutOption.PROPERTY_NAME,
-                                                         "0" ) );
+                     chainedProperties.getProperty(ValidationTimeoutOption.PROPERTY_NAME,
+                             "0") );
 
     }
 
@@ -150,24 +147,24 @@ public class KnowledgeAgentConfigurationImpl
         }
 
         if ( name.equals( MonitorChangesetEventsOption.PROPERTY_NAME ) ) {
-            setMonitorChangeSetEvents( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
+            setMonitorChangeSetEvents(StringUtils.isEmpty(value) || Boolean.parseBoolean(value));
         } else if ( name.equals( ScanDirectoriesOption.PROPERTY_NAME ) ) {
-            boolean bool = StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value );
+            boolean bool = StringUtils.isEmpty(value) || Boolean.parseBoolean(value);
             setScanDirectories( bool );
             if ( bool ) {
                 setScanResources( true );
                 setMonitorChangeSetEvents( true );
             }
         } else if ( name.equals( ScanResourcesOption.PROPERTY_NAME ) ) {
-            boolean bool = StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value );
+            boolean bool = StringUtils.isEmpty(value) || Boolean.parseBoolean(value);
             setScanResources( bool );
             if ( bool ) {
                 setMonitorChangeSetEvents( true );
             }
         } else if ( name.equals( NewInstanceOption.PROPERTY_NAME ) ) {
-            setNewInstance( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
+            setNewInstance(StringUtils.isEmpty(value) || Boolean.parseBoolean(value));
         } else if ( name.equals( UseKnowledgeBaseClassloaderOption.PROPERTY_NAME ) ) {
-            setUseKBaseClassLoaderForCompiling( StringUtils.isEmpty( value ) ? false : Boolean.parseBoolean( value ) );
+            setUseKBaseClassLoaderForCompiling(!StringUtils.isEmpty(value) && Boolean.parseBoolean(value));
         } else if ( name.equals( ValidationTimeoutOption.PROPERTY_NAME ) ) {
             try {
                 int millisec =  StringUtils.isEmpty( value ) ? 0 : Integer.parseInt( value );

@@ -1,6 +1,8 @@
 package org.drools.kproject;
 
 import org.drools.KBaseUnit;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.impl.KBaseUnitImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -20,6 +22,14 @@ public class KnowledgeContainer {
     private Map<String, KBaseUnit> kBaseUnits = new HashMap<String, KBaseUnit>();
     private Map<String, String> kSessionNames = new HashMap<String, String>();
 
+    public KnowledgeContainer() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        KProject kProject = loadKProject(classLoader);
+        if (kProject != null) {
+            build(classLoader, kProject);
+        }
+    }
+
     public boolean deploy(java.io.File kJar) {
         InputStream kProjectStream = null;
         URLClassLoader urlClassLoader = null;
@@ -29,25 +39,31 @@ public class KnowledgeContainer {
             return false;
         }
 
-        kProjectStream = urlClassLoader.getResourceAsStream(KPROJECT_JAR_PATH);
+        KProject kProject = loadKProject(urlClassLoader);
+        if (kProject == null) {
+            return false;
+        }
+
+        return build(urlClassLoader, kProject);
+    }
+
+    private KProject loadKProject(ClassLoader classLoader) {
+        InputStream kProjectStream = classLoader.getResourceAsStream(KPROJECT_JAR_PATH);
+        if (kProjectStream == null) {
+            return null;
+        }
         KProject kProject = fromXML(kProjectStream);
         try {
             kProjectStream.close();
         } catch (IOException e) { }
-
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(urlClassLoader);
-            return build(kProject);
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
-        }
+        return kProject;
     }
 
-    private boolean build(KProject kProject) {
+    private boolean build(ClassLoader classLoader, KProject kProject) {
+        KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
         boolean buildOk = true;
         for (KBase kBase : kProject.getKBases().values()) {
-            KBaseUnit kBaseUnit = new KBaseUnitImpl(kProject, kBase.getQName());
+            KBaseUnit kBaseUnit = new KBaseUnitImpl(kConf, kProject, kBase.getQName());
             buildOk = !kBaseUnit.hasErrors() && buildOk;
             kBaseUnits.put(kBaseUnit.getKBaseName(), kBaseUnit);
             for (KSession kSession : kBase.getKSessions().values()) {

@@ -6,9 +6,11 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KProject;
@@ -23,6 +25,8 @@ import static org.drools.builder.impl.KnowledgeJarBuilderImpl.KBASES_FOLDER;
 
 public class KBaseUnitImpl implements KBaseUnit {
 
+    private final KnowledgeBuilderConfiguration kConf;
+
     private final KProject kProject;
     private final String kBaseName;
     private final File sourceFolder;
@@ -30,11 +34,12 @@ public class KBaseUnitImpl implements KBaseUnit {
     private KnowledgeBuilder kbuilder;
     private KnowledgeBase knowledgeBase;
 
-    public KBaseUnitImpl(KProject kProject, String kBaseName) {
-        this(kProject, kBaseName, null);
+    public KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KProject kProject, String kBaseName) {
+        this(kConf, kProject, kBaseName, null);
     }
 
-    KBaseUnitImpl(KProject kProject, String kBaseName, File sourceFolder) {
+    KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KProject kProject, String kBaseName, File sourceFolder) {
+        this.kConf = kConf;
         this.kProject = kProject;
         this.kBaseName = kBaseName;
         this.sourceFolder = sourceFolder;
@@ -75,10 +80,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             return kbuilder;
         }
 
-        // TODO KnowledgeBuilderConfiguration ?
-        // KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder = kConf != null ? KnowledgeBuilderFactory.newKnowledgeBuilder(kConf) : KnowledgeBuilderFactory.newKnowledgeBuilder();
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         KBase kBase = getKBase();
@@ -96,7 +98,9 @@ public class KBaseUnitImpl implements KBaseUnit {
             ckbuilder.add(ResourceFactory.newFileResource(file), ResourceType.determineResourceType(file.getName()));
         } else {
             String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
-            InputStream ruleStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
+            InputStream ruleStream = kConf != null ?
+                    ((PackageBuilderConfiguration)kConf).getClassLoader().getResourceAsStream(file) :
+                    Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
             ckbuilder.add(ResourceFactory.newInputStreamResource(ruleStream), ResourceType.determineResourceType(file));
         }
     }
