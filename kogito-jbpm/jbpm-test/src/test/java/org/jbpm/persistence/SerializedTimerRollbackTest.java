@@ -41,6 +41,7 @@ import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.utils.OnErrorAction;
@@ -67,6 +68,7 @@ public class SerializedTimerRollbackTest {
         ds.getDriverProperties().put( "password", "sasa" );
         ds.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
         ds.init();
+        UserGroupCallbackManager.getInstance().setCallback(null);
     }
     
     @After
