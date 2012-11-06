@@ -90,6 +90,10 @@ public class KnowledgeBuilderFactory {
         return getKnowledgeBuilderServiceFactory().newKnowledgeJarBuilder();
     }
 
+    public static KnowledgeJarBuilder newKnowledgeJarBuilder(KnowledgeBuilderConfiguration conf) {
+        return getKnowledgeBuilderServiceFactory().newKnowledgeJarBuilder(conf);
+    }
+
     /**
      * DecisionTable resources require a ResourceConfiguration, that configuration instance is created
      * here. Note that if you are passing a Reader, you must use an InputStreamReader so the encoding 

@@ -68,6 +68,8 @@ public interface KnowledgeBuilderFactoryService  extends Service {
 
     public KnowledgeJarBuilder newKnowledgeJarBuilder();
 
+    public KnowledgeJarBuilder newKnowledgeJarBuilder(KnowledgeBuilderConfiguration conf);
+
     /**
      * Instantiate and return a new KnowledgeBuilder using the given KnowledgeBuilderConfiguration
      * 
