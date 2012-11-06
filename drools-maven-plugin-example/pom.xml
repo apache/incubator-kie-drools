@@ -11,6 +11,8 @@
 
   <artifactId>drools-maven-plugin-example</artifactId>
 
+  <packaging>kjar</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
@@ -31,6 +33,7 @@
         <configuration>
           <jarName>test.jar</jarName>
         </configuration>
+        <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>

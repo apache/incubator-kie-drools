@@ -2,11 +2,16 @@ package org.drools.core.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IoUtils {
 
@@ -65,5 +70,57 @@ public class IoUtils {
             }
         }
         return sb.toString();
+    }
+
+    public static void copyFile(File sourceFile, File destFile) {
+        destFile.getParentFile().mkdirs();
+        if(!destFile.exists()) {
+            try {
+                destFile.createNewFile();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Unable to create file " + destFile.getAbsolutePath(), ioe);
+            }
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to copy " + sourceFile.getAbsolutePath() + " to " + destFile.getAbsolutePath(), ioe);
+        } finally {
+            if(source != null) {
+                try {
+                    source.close();
+                } catch (IOException e) { }
+            }
+            if(destination != null) {
+                try {
+                    destination.close();
+                } catch (IOException e) { }
+            }
+        }
+    }
+
+    public static List<String> recursiveListFile(File folder) {
+        List<String> files = new ArrayList<String>();
+        for (File child : folder.listFiles()) {
+            filesInFolder(files, child, "");
+        }
+        return files;
+    }
+
+    private static void filesInFolder(List<String> files, File file, String relativePath) {
+        if (file.isDirectory()) {
+            relativePath += file.getName() + "/";
+            for (File child : file.listFiles()) {
+                filesInFolder(files, child, relativePath);
+            }
+        } else {
+            files.add(relativePath + file.getName());
+        }
     }
 }

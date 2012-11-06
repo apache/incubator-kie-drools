@@ -12,7 +12,7 @@ import java.io.File;
  *
  * @goal jar
  * 
- * @phase process-sources
+ * @phase package
  */
 public class JarMojo extends AbstractMojo {
 

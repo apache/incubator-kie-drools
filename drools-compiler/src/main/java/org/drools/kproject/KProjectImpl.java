@@ -175,6 +175,10 @@ public class KProjectImpl implements KProject {
         return "KProject [kprojectPath=" + kProjectPath + ", kbases=" + kBases + "]";
     }
 
+    public String toXML() {
+        return new XStream().toXML(this);
+    }
+
     public static KProject fromXML(InputStream kProjectStream) {
         return (KProject)new XStream().fromXML(kProjectStream);
     }

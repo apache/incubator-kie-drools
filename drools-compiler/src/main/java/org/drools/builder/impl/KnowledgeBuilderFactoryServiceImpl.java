@@ -36,7 +36,11 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     }
 
     public KnowledgeJarBuilder newKnowledgeJarBuilder() {
-        return new KnowledgeJarBuilderImpl();
+        return newKnowledgeJarBuilder(null);
+    }
+
+    public KnowledgeJarBuilder newKnowledgeJarBuilder(KnowledgeBuilderConfiguration conf) {
+        return new KnowledgeJarBuilderImpl(conf);
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
