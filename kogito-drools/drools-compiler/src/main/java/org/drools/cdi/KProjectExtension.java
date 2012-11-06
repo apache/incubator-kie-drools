@@ -43,7 +43,6 @@ import org.drools.kproject.KProject;
 import org.drools.kproject.KSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
-import org.jboss.weld.environment.se.discovery.url.ClasspathScanningException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -530,8 +529,8 @@ public class KProjectExtension
         
         try {
             urlPath = URLDecoder.decode( urlPath, "UTF-8" );
-        } catch ( UnsupportedEncodingException ex ) {
-            throw new ClasspathScanningException( "Error decoding URL using UTF-8" );
+        } catch ( UnsupportedEncodingException e ) {
+            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
         }
 
         log.debug( "KProject URL Type + URL: " + urlType + ":" + urlPath );
