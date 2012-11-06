@@ -1,81 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.jbpm</groupId>
-    <artifactId>jbpm</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>jbpm-services</artifactId>
-  <name>jBPM :: Services</name>
-  <packaging>pom</packaging>
-  
-  <modules>
-    <module>jbpm-human-task-services</module>
-    <module>jbpm-human-task-workitems</module>
-    <module>droolsjbpm-knowledge-services</module>
+    <artifactId>jbpm-services</artifactId>
+    <name>jBPM :: Services</name>
+    <packaging>pom</packaging>
+    <properties>
+        <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     
-  </modules>
-
-  <dependencies>
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.javassist</groupId>
-      <artifactId>javassist</artifactId>
-    </dependency>
-    <!-- test --> 
-    <dependency>
-      <groupId>org.subethamail</groupId>
-      <artifactId>subethasmtp-wiser</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>3.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.btm</groupId>
-      <artifactId>btm</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
+        <maven.tx.type>RESOURCE_LOCAL</maven.tx.type>
+        <maven.data.source/>
+        <!--  
+        <maven.tx.type>JTA</maven.tx.type>
+        <maven.data.source>&lt;jta-data-source&gt;jdbc/taskDS&lt;/jta-data-source&gt;</maven.data.source>
+        -->
     
-    <maven.tx.type>RESOURCE_LOCAL</maven.tx.type>
-    <maven.data.source/>
-    <!--  
-    <maven.tx.type>JTA</maven.tx.type>
-    <maven.data.source>&lt;jta-data-source&gt;jdbc/taskDS&lt;/jta-data-source&gt;</maven.data.source>
-    -->
+        <!-- H2
+        -->
+        <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+        <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
+        <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+        <maven.jdbc.db.name/>
+        <maven.jdbc.db.port/>
+        <maven.jdbc.db.server/>     
+        <maven.jdbc.username>sa</maven.jdbc.username>
+        <maven.jdbc.password>sasa</maven.jdbc.password>
+        <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
+        <maven.jdbc.schema/>
     
-    <!-- H2
-     -->
-    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-    <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
-    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-    <maven.jdbc.db.name/>
-    <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>     
-    <maven.jdbc.username>sa</maven.jdbc.username>
-    <maven.jdbc.password>sasa</maven.jdbc.password>
-    <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
-    <maven.jdbc.schema/>
-  </properties>
-  
+    </properties>
+    <modules>
+        <module>jbpm-human-task-services</module>
+        <module>jbpm-human-task-workitems</module>
+        <module>droolsjbpm-knowledge-services</module>
+    
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.seam.persistence</groupId>
+            <artifactId>seam-persistence</artifactId>
+            
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+        <!-- test --> 
+        <dependency>
+            <groupId>org.subethamail</groupId>
+            <artifactId>subethasmtp-wiser</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.btm</groupId>
+            <artifactId>btm</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
 </project>

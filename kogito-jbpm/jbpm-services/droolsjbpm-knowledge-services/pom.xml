@@ -3,28 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-		<groupId>org.jbpm</groupId>
-		<artifactId>jbpm-services</artifactId>
-		<version>6.0.0-SNAPSHOT</version>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-services</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jbpm</groupId>
     <artifactId>droolsjbpm-knowledge-services</artifactId>
-    <version>0.1-SNAPSHOT</version>
     <name>Drools jBPM :: Knowledge Services</name>
   
-    <properties>
-        <jbpm.version>6.0.0-SNAPSHOT</jbpm.version>
-        <drools.version>6.0.0-SNAPSHOT</drools.version>
-        <seam.version>3.1.0.Final</seam.version>
-        <weld.version>1.1.8.Final</weld.version>
-        <hibernate-core.version>3.3.2.GA</hibernate-core.version>
-        <hibernate-em.version>3.4.0.GA</hibernate-em.version>
-        <arquillian.version>1.0.1.Final</arquillian.version>
-        <arquillian_weld.version>1.0.0.CR3</arquillian_weld.version>
-        <com.h2database.version>[1.3.166,)</com.h2database.version>
-        
-    </properties>
-   
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -39,7 +25,7 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-workitems</artifactId>
-            <version>${jbpm.version}</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -126,22 +112,4 @@
             <type>jar</type>
         </dependency>
     </dependencies>
-    <!-- Repositories -->
-    <repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-   
 </project>
