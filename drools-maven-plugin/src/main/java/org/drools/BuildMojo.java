@@ -5,8 +5,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeJarBuilder;
-import org.drools.builder.impl.KnowledgeJarBuilderImpl;
+import org.drools.builder.impl.KnowledgeContainerImpl;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -55,7 +54,7 @@ public class BuildMojo extends AbstractMojo {
         }
 
         KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, projectClassLoader);
-        KnowledgeJarBuilderImpl kbuilder = (KnowledgeJarBuilderImpl)KnowledgeBuilderFactory.newKnowledgeJarBuilder(kConf);
+        KnowledgeContainerImpl kbuilder = (KnowledgeContainerImpl)KnowledgeBuilderFactory.newKnowledgeContainer(kConf);
 
         for (KBaseUnit kBaseUnit : kbuilder.getKBaseUnits(rootFolder, sourceFolder)) {
             if (kBaseUnit.hasErrors()) {

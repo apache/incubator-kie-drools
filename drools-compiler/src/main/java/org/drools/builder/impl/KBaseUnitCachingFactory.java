@@ -2,7 +2,7 @@ package org.drools.builder.impl;
 
 import org.drools.KBaseUnit;
 import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.kproject.KProject;
+import org.drools.kproject.KBase;
 
 import java.util.Map;
 
@@ -14,12 +14,21 @@ public class KBaseUnitCachingFactory {
 
     private static final Map<String, KBaseUnit> cache = new EvictionCache<String, KBaseUnit>(EVICTION_TIME);
 
-    static KBaseUnit getOrCreateKBaseUnit(KnowledgeBuilderConfiguration kConf, KProject kProject, String kBaseName) {
+    static KBaseUnit getOrCreateKBaseUnit(KnowledgeBuilderConfiguration kConf, KBase kBase) {
+        String kBaseName = kBase.getQName();
         KBaseUnit unit = cache.get(kBaseName);
         if (unit == null) {
-            unit = new KBaseUnitImpl(kConf, kProject, kBaseName);
+            unit = new KBaseUnitImpl(kConf, kBase);
             cache.put(kBaseName, unit);
         }
         return unit;
+    }
+
+    static void evictKBaseUnit(String kBaseName) {
+        cache.remove(kBaseName);
+    }
+
+    static void clear() {
+        cache.clear();
     }
 }

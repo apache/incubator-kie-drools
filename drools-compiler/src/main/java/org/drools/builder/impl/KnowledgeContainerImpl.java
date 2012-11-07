@@ -3,7 +3,9 @@ package org.drools.builder.impl;
 import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeJarBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeContainer;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KProject;
 import org.drools.kproject.KSession;
@@ -13,19 +15,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static org.drools.builder.impl.KBaseUnitCachingFactory.evictKBaseUnit;
 import static org.drools.builder.impl.KBaseUnitCachingFactory.getOrCreateKBaseUnit;
 import static org.drools.core.util.IoUtils.copyFile;
 import static org.drools.kproject.KProjectImpl.fromXML;
 
-public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
+public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     public static final String KBASES_FOLDER = "kbases";
     public static final String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
@@ -33,8 +39,31 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
 
     private final KnowledgeBuilderConfiguration kConf;
 
-    public KnowledgeJarBuilderImpl(KnowledgeBuilderConfiguration kConf) {
+    private final Map<String, KBase> kBases = new HashMap<String, KBase>();
+    private final Map<String, String> kSessions = new HashMap<String, String>();
+    private final Map<String, KnowledgeBuilderConfiguration> kConfs = new HashMap<String, KnowledgeBuilderConfiguration>();
+
+    public KnowledgeContainerImpl(KnowledgeBuilderConfiguration kConf) {
         this.kConf = kConf;
+        ClassLoader classLoader = ((PackageBuilderConfiguration)kConf).getClassLoader();
+        indexKSessions(loadKProjects(classLoader), null, false);
+    }
+
+    public static void clearCache() {
+        KBaseUnitCachingFactory.clear();
+    }
+
+    public void deploy(File kJar) {
+        URLClassLoader urlClassLoader;
+        try {
+            urlClassLoader = new URLClassLoader( new URL[] { kJar.toURI().toURL() } );
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
+        indexKSessions( loadKProjects(urlClassLoader),
+                        KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, urlClassLoader),
+                        true );
     }
 
     public File buildKJar(File rootFolder, File outputFolder, String jarName) {
@@ -44,9 +73,8 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
 
     public List<KBaseUnit> getKBaseUnits() {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
-        KProject kProject = loadKProject();
-        for (KBase kBase : kProject.getKBases().values()) {
-            units.add(getOrCreateKBaseUnit( kConf, kProject, kBase.getQName() ));
+        for (KBase kBase : kBases.values()) {
+            units.add(getOrCreateKBaseUnit(getKConf(kBase.getQName()), kBase));
         }
         return units;
     }
@@ -55,7 +83,7 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         KProject kProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
         for (KBase kBase : kProject.getKBases().values()) {
-            units.add(new KBaseUnitImpl( kConf, kProject, kBase.getQName(), sourceFolder ));
+            units.add(new KBaseUnitImpl( kConf, kBase, sourceFolder ));
         }
         return units;
     }
@@ -74,7 +102,7 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
     }
 
     public KBaseUnit getKBaseUnit(String kBaseName) {
-        return getOrCreateKBaseUnit( kConf, loadKProject(), kBaseName );
+        return getOrCreateKBaseUnit(getKConf(kBaseName), kBases.get(kBaseName));
     }
 
     public KnowledgeBase getKnowledgeBase(String kBaseName) {
@@ -83,27 +111,55 @@ public class KnowledgeJarBuilderImpl implements KnowledgeJarBuilder {
     }
 
     public StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName) {
-        KProject kProject = loadKProject();
-        for (KBase kBase : kProject.getKBases().values()) {
-            KSession kSession = kBase.getKSessions().get(kSessionName);
-            if (kSession != null) {
-                return getOrCreateKBaseUnit( kConf, kProject, kBase.getQName() ).newStatefulKnowledegSession(kSessionName);
-            }
-        }
-        return null;
+        return getKBaseUnit(kSessions.get(kSessionName)).newStatefulKnowledegSession(kSessionName);
     }
 
-    private KProject loadKProject() {
-        InputStream kProjectStream = null;
+    private KnowledgeBuilderConfiguration getKConf(String kBaseName) {
+        KnowledgeBuilderConfiguration conf = kConfs.get(kBaseName);
+        return conf != null ? conf : kConf;
+    }
+
+    private List<KProject> loadKProjects(ClassLoader classLoader) {
+        List<KProject> kProjects = new ArrayList<KProject>();
+
+        final Enumeration<URL> e;
         try {
-            kProjectStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(KPROJECT_JAR_PATH);
-            return fromXML(kProjectStream);
-        } finally {
-            try {
-                if (kProjectStream != null) {
-                    kProjectStream.close();
+            e = classLoader.getResources( KPROJECT_JAR_PATH );
+        } catch ( IOException exc ) {
+            return kProjects;
+        }
+
+        while ( e.hasMoreElements() ) {
+            kProjects.add(fromXML(e.nextElement()));
+        }
+        return kProjects;
+    }
+
+    private void indexKSessions(List<KProject> kProjects, KnowledgeBuilderConfiguration conf, boolean doEvict) {
+        for (KProject kProject : kProjects) {
+            for (KBase kBase : kProject.getKBases().values()) {
+                cleanUpExistingKBase(kBase, doEvict);
+                kBases.put(kBase.getQName(), kBase);
+                if (conf != null) {
+                    kConfs.put(kBase.getQName(), conf);
                 }
-            } catch (IOException e) { }
+                for (KSession kSession : kBase.getKSessions().values()) {
+                    kSessions.put(kSession.getQName(), kBase.getQName());
+                }
+            }
+        }
+    }
+
+    private void cleanUpExistingKBase(KBase kBase, boolean doEvict) {
+        if (doEvict) {
+            evictKBaseUnit(kBase.getQName());
+        }
+        KBase oldKbase = kBases.get(kBase.getQName());
+        if (oldKbase != null) {
+            kConfs.remove(oldKbase.getQName());
+            for (KSession kSession : oldKbase.getKSessions().values()) {
+                kSessions.remove(kSession.getQName());
+            }
         }
     }
 

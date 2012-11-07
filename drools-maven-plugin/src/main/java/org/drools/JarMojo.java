@@ -3,7 +3,7 @@ package org.drools;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeJarBuilder;
+import org.drools.builder.KnowledgeContainer;
 
 import java.io.File;
 
@@ -41,7 +41,7 @@ public class JarMojo extends AbstractMojo {
     private String jarName;
 
     public void execute() throws MojoExecutionException {
-        KnowledgeJarBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeJarBuilder();
+        KnowledgeContainer kbuilder = KnowledgeBuilderFactory.newKnowledgeContainer();
         File kJar = kbuilder.buildKJar(rootFolder, outputDirectory, jarName);
         getLog().info("Knowledge jar file written in " + kJar.getAbsolutePath());
     }

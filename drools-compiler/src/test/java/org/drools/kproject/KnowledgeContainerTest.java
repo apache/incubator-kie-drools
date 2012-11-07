@@ -2,8 +2,7 @@ package org.drools.kproject;
 
 import com.thoughtworks.xstream.XStream;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeJarBuilder;
-import org.drools.builder.impl.KnowledgeJarBuilderImpl;
+import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.FileManager;
@@ -11,13 +10,10 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +27,7 @@ public class KnowledgeContainerTest {
 
     @Before
     public void setUp() throws Exception {
+        KnowledgeContainerImpl.clearCache();
         this.fileManager = new FileManager().setUp();
     }
 
@@ -41,19 +38,18 @@ public class KnowledgeContainerTest {
 
     @Test
     public void testKContainer() throws Exception {
-        KnowledgeContainer kContainer = new KnowledgeContainer();
+        KnowledgeContainerImpl kContainer = (KnowledgeContainerImpl)KnowledgeBuilderFactory.newKnowledgeContainer();
 
         // create a kjar and deploy it
         // the deploy method causes the compilation of all the KnowledgeBases defined in the kjar
         // TODO Q: is it ok? to compile all the kbases during the deploy? would it be better to have a lazy compilation?
         // the method returns true if and only if ALL the kbases can be compiled without errors
         // TODO Q: how to report the compilation problems of a specific kbase? I'd prefer to avoid Exception if possible
-        File kJar1 = createKJar("test1.jar", "rule1", "rule2");
-        boolean ok = kContainer.deploy(kJar1);
-        assertTrue( ok );
+        File kJar1 = createKJar(kContainer, "test1.jar", "rule1", "rule2");
+        kContainer.deploy(kJar1);
 
         // create a ksesion and check it works as expected
-        StatefulKnowledgeSession ksession = kContainer.createKnowledgeSession("org.test.KSession1");
+        StatefulKnowledgeSession ksession = kContainer.getStatefulKnowlegeSession("org.test.KSession1");
         checkKSession(ksession, "rule1", "rule2");
 
         // deploy a second kjar
@@ -61,12 +57,11 @@ public class KnowledgeContainerTest {
         // defined with the former deploy it will replace the old one
         // TODO Q: I am not considering the name of the single drl files inside the kjar
         //         as (I think) the kagent does. Is that correct?
-        File kJar2 = createKJar("test2.jar", "rule2", "rule3");
-        ok = kContainer.deploy(kJar2);
-        assertTrue( ok );
+        File kJar2 = createKJar(kContainer, "test2.jar", "rule2", "rule3");
+        kContainer.deploy(kJar2);
 
         // create a ksesion and check it works as expected
-        StatefulKnowledgeSession ksession2 = kContainer.createKnowledgeSession("org.test.KSession1");
+        StatefulKnowledgeSession ksession2 = kContainer.getStatefulKnowlegeSession("org.test.KSession1");
         checkKSession(ksession2, "rule2", "rule3");
     }
 
@@ -82,7 +77,7 @@ public class KnowledgeContainerTest {
         }
     }
 
-    private File createKJar(String kjarName, String... rules) throws IOException {
+    private File createKJar(KnowledgeContainerImpl kContainer, String kjarName, String... rules) throws IOException {
         List<String> files = new ArrayList<String>();
 
         for (String rule : rules) {
@@ -102,10 +97,9 @@ public class KnowledgeContainerTest {
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        fileManager.write(fileManager.newFile(KnowledgeJarBuilderImpl.KPROJECT_RELATIVE_PATH), new XStream().toXML(kproj));
+        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), new XStream().toXML(kproj));
 
-        KnowledgeJarBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeJarBuilder();
-        return kbuilder.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), kjarName);
+        return kContainer.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), kjarName);
     }
 
     private String createDRL(String ruleName) {

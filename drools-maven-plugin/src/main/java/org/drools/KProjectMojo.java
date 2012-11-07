@@ -1,24 +1,18 @@
 package org.drools;
 
-import com.thoughtworks.xstream.XStream;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.drools.builder.impl.KnowledgeJarBuilderImpl;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
+import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.kproject.KBase;
-import org.drools.kproject.KProject;
 import org.drools.kproject.KProjectImpl;
 import org.drools.kproject.KSession;
-import org.drools.runtime.conf.ClockTypeOption;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static java.util.Arrays.asList;
 import static org.drools.core.util.IoUtils.recursiveListFile;
 
 /**
@@ -55,7 +49,7 @@ public class KProjectMojo extends AbstractMojo {
     private boolean recreate;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        File file = new File( rootFolder, KnowledgeJarBuilderImpl.KPROJECT_RELATIVE_PATH );
+        File file = new File( rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH );
         if (!recreate && file.exists()) {
             return;
         }
