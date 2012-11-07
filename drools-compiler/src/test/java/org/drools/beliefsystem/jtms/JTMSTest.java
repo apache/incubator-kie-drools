@@ -449,7 +449,7 @@ public class JTMSTest {
 
     @Test    
     public void testConflictTMS() {
-        StatefulKnowledgeSession kSession = getSessionFromFile( "posNegTMS.drl" );
+        StatefulKnowledgeSession kSession = getSessionFromFile( "posNegTms.drl" );
 
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
