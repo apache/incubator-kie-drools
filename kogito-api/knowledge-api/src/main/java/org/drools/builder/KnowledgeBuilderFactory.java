@@ -86,12 +86,12 @@ public class KnowledgeBuilderFactory {
                                                                                      classLoaders );
     }
 
-    public static KnowledgeJarBuilder newKnowledgeJarBuilder() {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeJarBuilder();
+    public static KnowledgeContainer newKnowledgeContainer() {
+        return getKnowledgeBuilderServiceFactory().newKnowledgeContainer();
     }
 
-    public static KnowledgeJarBuilder newKnowledgeJarBuilder(KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeJarBuilder(conf);
+    public static KnowledgeContainer newKnowledgeContainer(KnowledgeBuilderConfiguration conf) {
+        return getKnowledgeBuilderServiceFactory().newKnowledgeContainer(conf);
     }
 
     /**

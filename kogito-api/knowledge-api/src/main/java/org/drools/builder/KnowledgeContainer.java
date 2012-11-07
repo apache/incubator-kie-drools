@@ -7,7 +7,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import java.io.File;
 import java.util.List;
 
-public interface KnowledgeJarBuilder {
+public interface KnowledgeContainer {
 
     File buildKJar(File rootFolder, File outputFolder, String jarName);
 
