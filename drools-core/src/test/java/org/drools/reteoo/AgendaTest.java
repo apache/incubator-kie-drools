@@ -273,20 +273,6 @@ public class AgendaTest extends DroolsTestCase {
         node1.retractLeftTuple( tuple, context0, workingMemory );
         
         assertEquals( 50, cheese.getPrice() );
-//        // make sure we have an activation in the current focus
-//        assertEquals( 1,
-//                      agenda.getFocus().size() );
-//
-//        assertEquals( 1,
-//                      agenda.getScheduledActivations().length );
-//
-//        agenda.clearAndCancel();
-//
-//        assertEquals( 0,
-//                      agenda.getFocus().size() );
-//
-//        assertEquals( 0,
-//                      agenda.getScheduledActivations().length );
     }
     
     

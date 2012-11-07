@@ -22851,7 +22851,7 @@ public final class ProtobufMessages {
       org.drools.marshalling.impl.ProtobufMessages.Activation getActivation();
       org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder();
       
-      // optional bool fullyRetract = 3;
+      // optional bool fully_retract = 3;
       boolean hasFullyRetract();
       boolean getFullyRetract();
       
@@ -22911,8 +22911,8 @@ public final class ProtobufMessages {
         return activation_;
       }
       
-      // optional bool fullyRetract = 3;
-      public static final int FULLYRETRACT_FIELD_NUMBER = 3;
+      // optional bool fully_retract = 3;
+      public static final int FULLY_RETRACT_FIELD_NUMBER = 3;
       private boolean fullyRetract_;
       public boolean hasFullyRetract() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
@@ -23381,7 +23381,7 @@ public final class ProtobufMessages {
           return activationBuilder_;
         }
         
-        // optional bool fullyRetract = 3;
+        // optional bool fully_retract = 3;
         private boolean fullyRetract_ ;
         public boolean hasFullyRetract() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
@@ -32473,7 +32473,7 @@ public final class ProtobufMessages {
       "\001(\0132\".org.drools.marshalling.Activation\022" +
       "\035\n\025object_strategy_index\030\010 \001(\005\022\016\n\006object" +
       "\030\t \001(\014\022\034\n\024value_strategy_index\030\n \001(\005\022\r\n\005",
-      "value\030\013 \001(\014\"\302\013\n\013ActionQueue\022:\n\006action\030\001 " +
+      "value\030\013 \001(\014\"\303\013\n\013ActionQueue\022:\n\006action\030\001 " +
       "\003(\0132*.org.drools.marshalling.ActionQueue" +
       ".Action\032\207\005\n\006Action\022<\n\004type\030\001 \001(\0162..org.d" +
       "rools.marshalling.ActionQueue.ActionType" +
@@ -32493,61 +32493,61 @@ public final class ProtobufMessages {
       ".org.drools.marshalling.ActionQueue.Sign" +
       "alProcessInstance\032!\n\016BehaviorExpire\022\017\n\007n" +
       "ode_id\030\001 \001(\005\032,\n\022DeactivateCallback\022\026\n\016ru",
-      "leflow_group\030\001 \001(\t\032\201\001\n\016LogicalRetract\022\021\n" +
+      "leflow_group\030\001 \001(\t\032\202\001\n\016LogicalRetract\022\021\n" +
       "\thandle_id\030\001 \001(\005\0226\n\nactivation\030\002 \001(\0132\".o" +
-      "rg.drools.marshalling.Activation\022\024\n\014full" +
-      "yRetract\030\003 \001(\010\022\016\n\006update\030\004 \001(\010\032\034\n\tPropag" +
-      "ate\022\017\n\007node_id\030\001 \001(\005\032\257\001\n\006Assert\022\021\n\thandl" +
-      "e_id\030\001 \001(\005\022\026\n\016remove_logical\030\002 \001(\010\022\031\n\021up" +
-      "date_equals_map\030\003 \001(\010\022\027\n\017origin_pkg_name" +
-      "\030\004 \001(\t\022\030\n\020origin_rule_name\030\005 \001(\t\022,\n\005tupl" +
-      "e\030\006 \001(\0132\035.org.drools.marshalling.Tuple\032," +
-      "\n\006Expire\022\021\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030\002",
-      " \001(\005\032%\n\006Signal\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 " +
-      "\001(\014\032Q\n\025SignalProcessInstance\022\014\n\004type\030\001 \001" +
-      "(\t\022\r\n\005event\030\002 \001(\014\022\033\n\023process_instance_id" +
-      "\030\003 \001(\003\"\237\001\n\nActionType\022\023\n\017BEHAVIOR_EXPIRE" +
-      "\020\001\022\027\n\023DEACTIVATE_CALLBACK\020\002\022\023\n\017LOGICAL_R" +
-      "ETRACT\020\003\022\r\n\tPROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006E" +
-      "XPIRE\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027SIGNAL_PROCESS_IN" +
-      "STANCE\020\010\"\325\005\n\006Timers\0223\n\005timer\030\001 \003(\0132$.org" +
-      ".drools.marshalling.Timers.Timer\032\206\002\n\005Tim" +
-      "er\0226\n\004type\030\001 \001(\0162(.org.drools.marshallin",
-      "g.Timers.TimerType\022:\n\006expire\030\002 \001(\0132*.org" +
-      ".drools.marshalling.Timers.ExpireTimer\022B" +
-      "\n\nactivation\030\003 \001(\0132..org.drools.marshall" +
-      "ing.Timers.ActivationTimer\022>\n\010behavior\030\004" +
-      " \001(\0132,.org.drools.marshalling.Timers.Beh" +
-      "aviorTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022\021\n\thand" +
-      "le_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001(\t\022\022\n\nc" +
-      "lass_name\030\003 \001(\t\022\033\n\023next_fire_timestamp\030\004" +
-      " \001(\003\032{\n\017ActivationTimer\0226\n\nactivation\030\001 " +
-      "\001(\0132\".org.drools.marshalling.Activation\022",
-      "0\n\007trigger\030\002 \001(\0132\037.org.drools.marshallin" +
-      "g.Trigger\032a\n\rBehaviorTimer\022\032\n\022DEPRECATED" +
-      "_node_id\030\001 \001(\005\022!\n\031DEPRECATED_behavior_in" +
-      "dex\030\002 \001(\005\022\021\n\thandle_id\030\003 \001(\005\"B\n\tTimerTyp" +
-      "e\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIO" +
-      "R\020\003\022\013\n\007PROCESS\020\004\"\272\005\n\007Trigger\0229\n\004type\030\001 \001" +
-      "(\0162+.org.drools.marshalling.Trigger.Trig" +
-      "gerType\0229\n\004cron\030\002 \001(\0132+.org.drools.marsh" +
-      "alling.Trigger.CronTrigger\022A\n\010interval\030\003" +
-      " \001(\0132/.org.drools.marshalling.Trigger.In",
-      "tervalTrigger\022?\n\003pit\030\004 \001(\01322.org.drools." +
-      "marshalling.Trigger.PointInTimeTrigger\032\247" +
-      "\001\n\013CronTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010en" +
-      "d_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014re" +
-      "peat_count\030\004 \001(\005\022\027\n\017cron_expression\030\005 \001(" +
-      "\t\022\026\n\016next_fire_time\030\006 \001(\003\022\025\n\rcalendar_na" +
-      "me\030\007 \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart_ti" +
-      "me\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_lim" +
-      "it\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016next_f" +
-      "ire_time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcalend",
-      "ar_name\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026\n\016n" +
-      "ext_fire_time\030\001 \001(\003\"8\n\013TriggerType\022\010\n\004CR" +
-      "ON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002B/\n" +
-      "\033org.drools.marshalling.implB\020ProtobufMe" +
-      "ssages"
+      "rg.drools.marshalling.Activation\022\025\n\rfull" +
+      "y_retract\030\003 \001(\010\022\016\n\006update\030\004 \001(\010\032\034\n\tPropa" +
+      "gate\022\017\n\007node_id\030\001 \001(\005\032\257\001\n\006Assert\022\021\n\thand" +
+      "le_id\030\001 \001(\005\022\026\n\016remove_logical\030\002 \001(\010\022\031\n\021u" +
+      "pdate_equals_map\030\003 \001(\010\022\027\n\017origin_pkg_nam" +
+      "e\030\004 \001(\t\022\030\n\020origin_rule_name\030\005 \001(\t\022,\n\005tup" +
+      "le\030\006 \001(\0132\035.org.drools.marshalling.Tuple\032" +
+      ",\n\006Expire\022\021\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030",
+      "\002 \001(\005\032%\n\006Signal\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002" +
+      " \001(\014\032Q\n\025SignalProcessInstance\022\014\n\004type\030\001 " +
+      "\001(\t\022\r\n\005event\030\002 \001(\014\022\033\n\023process_instance_i" +
+      "d\030\003 \001(\003\"\237\001\n\nActionType\022\023\n\017BEHAVIOR_EXPIR" +
+      "E\020\001\022\027\n\023DEACTIVATE_CALLBACK\020\002\022\023\n\017LOGICAL_" +
+      "RETRACT\020\003\022\r\n\tPROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006" +
+      "EXPIRE\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027SIGNAL_PROCESS_I" +
+      "NSTANCE\020\010\"\325\005\n\006Timers\0223\n\005timer\030\001 \003(\0132$.or" +
+      "g.drools.marshalling.Timers.Timer\032\206\002\n\005Ti" +
+      "mer\0226\n\004type\030\001 \001(\0162(.org.drools.marshalli",
+      "ng.Timers.TimerType\022:\n\006expire\030\002 \001(\0132*.or" +
+      "g.drools.marshalling.Timers.ExpireTimer\022" +
+      "B\n\nactivation\030\003 \001(\0132..org.drools.marshal" +
+      "ling.Timers.ActivationTimer\022>\n\010behavior\030" +
+      "\004 \001(\0132,.org.drools.marshalling.Timers.Be" +
+      "haviorTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022\021\n\than" +
+      "dle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001(\t\022\022\n\n" +
+      "class_name\030\003 \001(\t\022\033\n\023next_fire_timestamp\030" +
+      "\004 \001(\003\032{\n\017ActivationTimer\0226\n\nactivation\030\001" +
+      " \001(\0132\".org.drools.marshalling.Activation",
+      "\0220\n\007trigger\030\002 \001(\0132\037.org.drools.marshalli" +
+      "ng.Trigger\032a\n\rBehaviorTimer\022\032\n\022DEPRECATE" +
+      "D_node_id\030\001 \001(\005\022!\n\031DEPRECATED_behavior_i" +
+      "ndex\030\002 \001(\005\022\021\n\thandle_id\030\003 \001(\005\"B\n\tTimerTy" +
+      "pe\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVI" +
+      "OR\020\003\022\013\n\007PROCESS\020\004\"\272\005\n\007Trigger\0229\n\004type\030\001 " +
+      "\001(\0162+.org.drools.marshalling.Trigger.Tri" +
+      "ggerType\0229\n\004cron\030\002 \001(\0132+.org.drools.mars" +
+      "halling.Trigger.CronTrigger\022A\n\010interval\030" +
+      "\003 \001(\0132/.org.drools.marshalling.Trigger.I",
+      "ntervalTrigger\022?\n\003pit\030\004 \001(\01322.org.drools" +
+      ".marshalling.Trigger.PointInTimeTrigger\032" +
+      "\247\001\n\013CronTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010e" +
+      "nd_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014r" +
+      "epeat_count\030\004 \001(\005\022\027\n\017cron_expression\030\005 \001" +
+      "(\t\022\026\n\016next_fire_time\030\006 \001(\003\022\025\n\rcalendar_n" +
+      "ame\030\007 \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart_t" +
+      "ime\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_li" +
+      "mit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016next_" +
+      "fire_time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcalen",
+      "dar_name\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026\n\016" +
+      "next_fire_time\030\001 \001(\003\"8\n\013TriggerType\022\010\n\004C" +
+      "RON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002B/" +
+      "\n\033org.drools.marshalling.implB\020ProtobufM" +
+      "essages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
