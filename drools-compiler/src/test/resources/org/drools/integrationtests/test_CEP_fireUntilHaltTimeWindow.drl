@@ -1,0 +1,14 @@
+package org.drools.integrationtests
+
+declare Stock
+    @role( event )
+    name : String
+    value : Double
+end
+
+rule "collect time window contents"
+when
+    Stock( value == 0.0 ) over window:time(2s)
+then
+    // empty consequence
+end
