@@ -297,7 +297,7 @@ message ActionQueue {
     message LogicalRetract {
         optional int32 handle_id = 1;
         optional Activation activation = 2;
-        optional bool fullyRetract = 3;
+        optional bool fully_retract = 3;
         optional bool update = 4;
 
     }

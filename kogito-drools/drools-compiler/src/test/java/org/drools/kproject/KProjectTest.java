@@ -47,7 +47,6 @@ import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
@@ -93,8 +92,7 @@ public class KProjectTest {
     }
 
     @Test
-    @Ignore
-    public void treatCreateMultpleJarAndFileResources() throws IOException,
+    public void ctreatCreateMultpleJarAndFileResources() throws IOException,
                        ClassNotFoundException,
                        InterruptedException {
         createKProjectJar( "jar1", true );
