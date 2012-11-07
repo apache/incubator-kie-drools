@@ -71,14 +71,14 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
     }
 
     public KnowledgeBase getKnowledgeBase(String kBaseName) {
-        return KnowledgeBuilderFactory.newKnowledgeJarBuilder().getKnowledgeBase(kBaseName);
+        return KnowledgeBuilderFactory.newKnowledgeContainer().getKnowledgeBase(kBaseName);
     }
 
     public StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName) {
-        return KnowledgeBuilderFactory.newKnowledgeJarBuilder().getStatefulKnowlegeSession(kSessionName);
+        return KnowledgeBuilderFactory.newKnowledgeContainer().getStatefulKnowlegeSession(kSessionName);
     }
 
     public KBaseUnit getKBaseUnit(String kBaseName) {
-        return KnowledgeBuilderFactory.newKnowledgeJarBuilder().getKBaseUnit(kBaseName);
+        return KnowledgeBuilderFactory.newKnowledgeContainer().getKBaseUnit(kBaseName);
     }
 }

@@ -5,8 +5,8 @@ import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeJarBuilder;
-import org.drools.builder.impl.KnowledgeJarBuilderImpl;
+import org.drools.builder.KnowledgeContainer;
+import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.FileManager;
@@ -34,6 +34,7 @@ public class KJarTest {
 
     @Before
     public void setUp() throws Exception {
+        KnowledgeContainerImpl.clearCache();
         this.fileManager = new FileManager().setUp();
         contextClassLoader = Thread.currentThread().getContextClassLoader();
     }
@@ -75,7 +76,6 @@ public class KJarTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.getKnowledgeBase("org.test.KBase1");
         StatefulKnowledgeSession ksession = KnowledgeBaseFactory.getStatefulKnowlegeSession("org.test.KSession1");
 
-        // fails because the ksession has been created from a different kbase
         useKSession(kbase, ksession);
     }
 
@@ -114,12 +114,12 @@ public class KJarTest {
                 .setClockType( ClockTypeOption.get("realtime") );
 
         XStream xstream = new XStream();
-        fileManager.write(fileManager.newFile(KnowledgeJarBuilderImpl.KPROJECT_RELATIVE_PATH), xstream.toXML( kproj ));
+        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), xstream.toXML( kproj ));
 
-        KnowledgeJarBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeJarBuilder();
+        KnowledgeContainer kcontainer = KnowledgeBuilderFactory.newKnowledgeContainer();
 
         // input and output folder are the same
-        File kJar = kbuilder.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), "test.jar");
+        File kJar = kcontainer.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), "test.jar");
 
         // we now have a KJAR
         // you now have two choices, write the KJAR to disk and use URLClassLoader

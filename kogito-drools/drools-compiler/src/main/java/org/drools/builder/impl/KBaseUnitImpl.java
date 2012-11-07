@@ -13,7 +13,6 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.kproject.KBase;
-import org.drools.kproject.KProject;
 import org.drools.kproject.KSession;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -21,27 +20,25 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import java.io.File;
 import java.io.InputStream;
 
-import static org.drools.builder.impl.KnowledgeJarBuilderImpl.KBASES_FOLDER;
+import static org.drools.builder.impl.KnowledgeContainerImpl.KBASES_FOLDER;
 
 public class KBaseUnitImpl implements KBaseUnit {
 
     private final KnowledgeBuilderConfiguration kConf;
 
-    private final KProject kProject;
-    private final String kBaseName;
+    private final KBase kBase;
     private final File sourceFolder;
 
     private KnowledgeBuilder kbuilder;
     private KnowledgeBase knowledgeBase;
 
-    public KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KProject kProject, String kBaseName) {
-        this(kConf, kProject, kBaseName, null);
+    public KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KBase kBase) {
+        this(kConf, kBase, null);
     }
 
-    KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KProject kProject, String kBaseName, File sourceFolder) {
+    KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KBase kBase, File sourceFolder) {
         this.kConf = kConf;
-        this.kProject = kProject;
-        this.kBaseName = kBaseName;
+        this.kBase = kBase;
         this.sourceFolder = sourceFolder;
     }
 
@@ -60,7 +57,7 @@ public class KBaseUnitImpl implements KBaseUnit {
     }
 
     public String getKBaseName() {
-        return kBaseName;
+        return kBase.getQName();
     }
 
     public boolean hasErrors() {
@@ -80,10 +77,9 @@ public class KBaseUnitImpl implements KBaseUnit {
             return kbuilder;
         }
 
-        kbuilder = kConf != null ? KnowledgeBuilderFactory.newKnowledgeBuilder(kConf) : KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kConf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
-        KBase kBase = getKBase();
         for (String kBaseFile : kBase.getFiles()) {
             buildKBaseFile(ckbuilder, kBase, kBaseFile);
         }
@@ -98,31 +94,20 @@ public class KBaseUnitImpl implements KBaseUnit {
             ckbuilder.add(ResourceFactory.newFileResource(file), ResourceType.determineResourceType(file.getName()));
         } else {
             String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
-            InputStream ruleStream = kConf != null ?
-                    ((PackageBuilderConfiguration)kConf).getClassLoader().getResourceAsStream(file) :
-                    Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
+            InputStream ruleStream = ((PackageBuilderConfiguration)kConf).getClassLoader().getResourceAsStream(file);
             ckbuilder.add(ResourceFactory.newInputStreamResource(ruleStream), ResourceType.determineResourceType(file));
         }
     }
 
-    private KBase getKBase() {
-        KBase kBase = kProject.getKBases().get(kBaseName);
-        if (kBase == null) {
-            throw new RuntimeException("Unknown Knowledge Base: " + kBaseName);
-        }
-        return kBase;
-    }
-
     private KSession getKSession(String ksessionName) {
-        KSession kSession = getKBase().getKSessions().get(ksessionName);
+        KSession kSession = kBase.getKSessions().get(ksessionName);
         if (kSession == null) {
-            throw new RuntimeException("Unknown Knowledge Session: " + ksessionName + " in Knowledge Base: " + kBaseName);
+            throw new RuntimeException("Unknown Knowledge Session: " + ksessionName + " in Knowledge Base: " + getKBaseName());
         }
         return kSession;
     }
 
     private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration() {
-        KBase kBase = getKBase();
         KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption(kBase.getEqualsBehavior());
         kbConf.setOption(kBase.getEventProcessingMode());

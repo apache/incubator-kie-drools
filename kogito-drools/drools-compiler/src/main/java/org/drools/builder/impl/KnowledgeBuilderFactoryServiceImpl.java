@@ -7,8 +7,9 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.JaxbConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeBuilderFactoryService;
-import org.drools.builder.KnowledgeJarBuilder;
+import org.drools.builder.KnowledgeContainer;
 import org.drools.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.compiler.PackageBuilder;
@@ -35,12 +36,12 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         return new KnowledgeBuilderImpl( new PackageBuilder() );
     }
 
-    public KnowledgeJarBuilder newKnowledgeJarBuilder() {
-        return newKnowledgeJarBuilder(null);
+    public KnowledgeContainer newKnowledgeContainer() {
+        return newKnowledgeContainer(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, getClass().getClassLoader()));
     }
 
-    public KnowledgeJarBuilder newKnowledgeJarBuilder(KnowledgeBuilderConfiguration conf) {
-        return new KnowledgeJarBuilderImpl(conf);
+    public KnowledgeContainer newKnowledgeContainer(KnowledgeBuilderConfiguration conf) {
+        return new KnowledgeContainerImpl(conf);
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
