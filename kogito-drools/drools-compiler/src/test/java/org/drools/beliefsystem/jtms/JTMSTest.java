@@ -50,7 +50,7 @@ public class JTMSTest {
     
     protected StatefulKnowledgeSession getSessionFromFile( String ruleFile ) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( ResourceFactory.newClassPathResource( ruleFile ),
+        kBuilder.add( ResourceFactory.newClassPathResource( ruleFile, getClass() ),
                 ResourceType.DRL );
         if ( kBuilder.hasErrors() ) {
             System.err.println( kBuilder.getErrors() );
@@ -428,7 +428,7 @@ public class JTMSTest {
     
     @Test
     public void testConflictStrict() {
-        StatefulKnowledgeSession kSession = getSessionFromFile( "org/drools/beliefsystem/jtms/posNegConflict.drl" );
+        StatefulKnowledgeSession kSession = getSessionFromFile( "posNegConflict.drl" );
 
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
@@ -449,7 +449,7 @@ public class JTMSTest {
 
     @Test    
     public void testConflictTMS() {
-        StatefulKnowledgeSession kSession = getSessionFromFile( "org/drools/beliefsystem/jtms/posNegTMS.drl" );
+        StatefulKnowledgeSession kSession = getSessionFromFile( "posNegTMS.drl" );
 
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
