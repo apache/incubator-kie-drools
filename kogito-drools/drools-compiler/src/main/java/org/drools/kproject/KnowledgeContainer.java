@@ -11,7 +11,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.drools.builder.impl.KnowledgeJarBuilderImpl.KPROJECT_JAR_PATH;
@@ -24,8 +27,7 @@ public class KnowledgeContainer {
 
     public KnowledgeContainer() {
         ClassLoader classLoader = getClass().getClassLoader();
-        KProject kProject = loadKProject(classLoader);
-        if (kProject != null) {
+        for (KProject kProject : loadKProjects(classLoader)) {
             build(classLoader, kProject);
         }
     }
@@ -39,24 +41,33 @@ public class KnowledgeContainer {
             return false;
         }
 
-        KProject kProject = loadKProject(urlClassLoader);
-        if (kProject == null) {
+        List<KProject> kProjects = loadKProjects(urlClassLoader);
+        if (kProjects.isEmpty()) {
             return false;
         }
 
-        return build(urlClassLoader, kProject);
+        boolean ok = true;
+        for (KProject kProject : kProjects) {
+            ok = build(urlClassLoader, kProject) && ok;
+        }
+
+        return ok;
     }
 
-    private KProject loadKProject(ClassLoader classLoader) {
-        InputStream kProjectStream = classLoader.getResourceAsStream(KPROJECT_JAR_PATH);
-        if (kProjectStream == null) {
-            return null;
-        }
-        KProject kProject = fromXML(kProjectStream);
+    private List<KProject> loadKProjects(ClassLoader classLoader) {
+        List<KProject> kProjects = new ArrayList<KProject>();
+
+        final Enumeration<URL> e;
         try {
-            kProjectStream.close();
-        } catch (IOException e) { }
-        return kProject;
+            e = classLoader.getResources( KPROJECT_JAR_PATH );
+        } catch ( IOException exc ) {
+            return kProjects;
+        }
+
+        while ( e.hasMoreElements() ) {
+            kProjects.add(fromXML(e.nextElement()));
+        }
+        return kProjects;
     }
 
     private boolean build(ClassLoader classLoader, KProject kProject) {

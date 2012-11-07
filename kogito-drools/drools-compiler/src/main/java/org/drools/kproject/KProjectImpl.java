@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.XStream;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -185,5 +186,9 @@ public class KProjectImpl implements KProject {
 
     public static KProject fromXML(java.io.File kProjectFile) {
         return (KProject)new XStream().fromXML(kProjectFile);
+    }
+
+    public static KProject fromXML(URL kProjectUrl) {
+        return (KProject)new XStream().fromXML(kProjectUrl);
     }
 }
