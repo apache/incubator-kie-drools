@@ -59,9 +59,9 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         return processInstances;
     }
 
-    public Collection<ProcessDesc> getProcessesBySessionId(String sessionId) {
-        List<ProcessDesc> processes = em.createQuery("select pd from ProcessDesc pd where pd.sessionId=:sessionId GROUP BY pd.id ORDER BY pd.dataTimeStamp DESC")
-                .setParameter("sessionId", sessionId).getResultList();
+    public Collection<ProcessDesc> getProcessesByDomainName(String domainName) {
+        List<ProcessDesc> processes = em.createQuery("select pd from ProcessDesc pd where pd.domainName=:domainName GROUP BY pd.id ORDER BY pd.dataTimeStamp DESC")
+                .setParameter("domainName", domainName).getResultList();
         return processes;
     }
 

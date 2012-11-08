@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 
@@ -30,8 +31,8 @@ import javax.persistence.Temporal;
 public class ProcessDesc implements Serializable {
     
     @Id
-    @GeneratedValue()
-    private long pk;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private long pki;
     
     private String id;
     private String name;
@@ -50,6 +51,20 @@ public class ProcessDesc implements Serializable {
         this.dataTimeStamp = new Date();
     }
 
+    public ProcessDesc(long pk, String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String domainName, Date dataTimeStamp) {
+        this.pki = pk;
+        this.id = id;
+        this.name = name;
+        this.version = version;
+        this.packageName = packageName;
+        this.type = type;
+        this.knowledgeType = knowledgeType;
+        this.namespace = namespace;
+        this.domainName = domainName;
+        this.dataTimeStamp = dataTimeStamp;
+    }
+
+    
     public ProcessDesc(String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String domainName) {
         this.id = id;
         this.name = name;
@@ -62,8 +77,15 @@ public class ProcessDesc implements Serializable {
         this.dataTimeStamp = new Date();
     }
 
-    
+    public long getPki() {
+        return pki;
+    }
 
+    public void setPki(long pk) {
+        this.pki = pk;
+    }
+    
+    
     public String getId() {
         return id;
     }
@@ -99,12 +121,13 @@ public class ProcessDesc implements Serializable {
     public Date getDataTimeStamp() {
         return dataTimeStamp;
     }
-    
 
     @Override
     public String toString() {
-        return "ProcessDesc["+dataTimeStamp.toString()+"]{" + "id=" + id + ", name=" + name + ", version=" + version + ", packageName=" + packageName + ", type=" + type + ", knowledgeType=" + knowledgeType + ", namespace=" + namespace + ", domainName=" + domainName + '}';
+        return "ProcessDesc["+dataTimeStamp.toString()+"]{" + "pk=" + pki + ", id=" + id + ", name=" + name + ", version=" + version + ", packageName=" + packageName + ", type=" + type + ", knowledgeType=" + knowledgeType + ", namespace=" + namespace + ", domainName=" + domainName + '}';
     }
+    
+
     
     
 }

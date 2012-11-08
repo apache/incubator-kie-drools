@@ -38,7 +38,7 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
  *
  * @author salaboy
  */
-@ApplicationScoped @External @Alternative
+@ApplicationScoped @External
 public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
     
     @Inject

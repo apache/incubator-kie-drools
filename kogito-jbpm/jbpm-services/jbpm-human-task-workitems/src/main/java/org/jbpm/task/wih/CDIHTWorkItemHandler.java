@@ -33,7 +33,6 @@ import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
-import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 
 
 @ApplicationScoped
@@ -45,14 +44,14 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private TaskServiceEntryPoint taskService;
 
     @Inject @External
-    private TaskLifeCycleEventListener listener;
+    private ExternalTaskEventListener listener;
     
     public CDIHTWorkItemHandler() {
     }
     
     public void init(){
-        ((ExternalTaskEventListener)listener).setClassLoader(classLoader);
-        ((ExternalTaskEventListener)listener).setSession(session);
+        listener.setClassLoader(classLoader);
+        listener.setSession(session);
     }
 
     public ClassLoader getClassLoader() {

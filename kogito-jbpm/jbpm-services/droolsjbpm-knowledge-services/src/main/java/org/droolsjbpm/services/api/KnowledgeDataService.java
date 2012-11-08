@@ -30,7 +30,7 @@ public interface KnowledgeDataService {
 
     Collection<ProcessInstanceDesc> getProcessInstancesBySessionId(String sessionId);
 
-    Collection<ProcessDesc> getProcessesBySessionId(String sessionId);
+    Collection<ProcessDesc> getProcessesByDomainName(String sessionId);
 
     Collection<ProcessDesc> getProcesses();
     

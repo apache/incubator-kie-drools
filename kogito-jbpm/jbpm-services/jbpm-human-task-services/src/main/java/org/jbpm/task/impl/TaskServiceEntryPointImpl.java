@@ -67,7 +67,7 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     @Inject 
     private TaskStatisticsService taskStatisticService;
     
-    @Inject @External
+    @Inject
     private TaskLifeCycleEventListener taskLifeCycleEventListener;
     
     private UserInfo userInfo;
