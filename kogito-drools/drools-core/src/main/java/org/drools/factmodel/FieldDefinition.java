@@ -42,6 +42,7 @@ public class FieldDefinition
     private boolean            inherited  = false;
     private int                index      = -1;
     private String             initExpr   = null;
+    private boolean            recursive  = false;
 
     private List<AnnotationDefinition> annotations;
 
@@ -463,5 +464,13 @@ public class FieldDefinition
             }
         }
         return false;
+    }
+
+    public boolean isRecursive() {
+        return recursive;
+    }
+
+    public void setRecursive(boolean recursive) {
+        this.recursive = recursive;
     }
 }

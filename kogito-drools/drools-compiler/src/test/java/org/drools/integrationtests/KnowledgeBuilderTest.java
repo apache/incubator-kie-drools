@@ -105,6 +105,11 @@ public class KnowledgeBuilderTest {
         Object b = bType.newInstance();
         aType.set( a, "fieldB", b );
         bType.set( b, "fieldA", a );
+
+        // JBRULES-3683 - check that the recurisive type declaration doesn't cause a StackOverflowError
+        a.toString();
+        b.toString();
+
         ksession.insert( a );
         ksession.insert( b );
 

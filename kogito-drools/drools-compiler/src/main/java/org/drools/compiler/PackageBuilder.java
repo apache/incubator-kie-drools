@@ -2132,7 +2132,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
                 generateDeclaredBean( typeDescr,
                                       type,
-                                      pkgRegistry );
+                                      pkgRegistry,
+                                      unresolvedTypeDefinitions );
 
                 Class clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
                 type.setTypeClass( clazz );
@@ -2368,7 +2369,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      */
     private void generateDeclaredBean( AbstractClassTypeDeclarationDescr typeDescr,
                                        TypeDeclaration type,
-                                       PackageRegistry pkgRegistry ) {
+                                       PackageRegistry pkgRegistry,
+                                       List<TypeDefinition> unresolvedTypeDefinitions ) {
 
         // extracts type, supertype and interfaces
         String fullName = typeDescr.getType().getFullName();
@@ -2455,6 +2457,14 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                    pkgRegistry );
             while (!fieldDefs.isEmpty()) {
                 FieldDefinition fld = fieldDefs.poll();
+                if (unresolvedTypeDefinitions != null) {
+                    for (TypeDefinition typeDef : unresolvedTypeDefinitions) {
+                        if (fld.getTypeName().equals(typeDef.getTypeClassName())) {
+                            fld.setRecursive(true);
+                            break;
+                        }
+                    }
+                }
                 def.addField( fld );
             }
         }
@@ -2699,7 +2709,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      * @return
      */
     private PriorityQueue<FieldDefinition> sortFields( Map<String, TypeFieldDescr> flds,
-            PackageRegistry pkgRegistry ) {
+                                                       PackageRegistry pkgRegistry ) {
         PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>();
         int last = 0;
 
@@ -3517,6 +3527,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         private TypeDefinition( TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr ) {
             this.type = type;
             this.typeDescr = typeDescr;
+        }
+
+        public String getTypeClassName() {
+            return type.getTypeClassName();
         }
     }
 
