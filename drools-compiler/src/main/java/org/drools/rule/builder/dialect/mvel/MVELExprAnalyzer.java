@@ -58,11 +58,7 @@ public class MVELExprAnalyzer {
      * 
      * @param expr
      *            The expression to analyze.
-<<<<<<< HEAD
      * @param availableIdentifiers
-=======
-     * @param availDecls
->>>>>>> JBRULES-3414 Segment based unlinking
      *            Total set of declarations available.
      * 
      * @return The <code>Set</code> of declarations used by the expression.
@@ -253,18 +249,6 @@ public class MVELExprAnalyzer {
 
     /**
      * Analyse an expression.
-<<<<<<< HEAD
-     *
-=======
-     * 
-     * @param availDecls
-     *            Total set of declarations available.
-     * @param ast
-     *            The AST for the expression.
-     * 
-     * @return The <code>Set</code> of declarations used by the expression.
-     * 
->>>>>>> JBRULES-3414 Segment based unlinking
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
