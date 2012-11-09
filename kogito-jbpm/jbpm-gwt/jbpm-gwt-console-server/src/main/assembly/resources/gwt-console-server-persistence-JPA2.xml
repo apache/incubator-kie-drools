@@ -9,7 +9,7 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/jbpmDS</jta-data-source>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
-    <mapping-file>META-INF/ProcessInstanceInfoMapping.xml</mapping-file>
+    <mapping-file>META-INF/ProcessInstanceInfoMapping-JPA2.xml</mapping-file>
 
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>

@@ -8,7 +8,7 @@
   <persistence-unit name="org.jbpm.persistence.jpa.ddl" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
-    <mapping-file>META-INF/ProcessInstanceInfoMapping.xml</mapping-file>
+    <mapping-file>META-INF/ProcessInstanceInfoMapping-JPA2.xml</mapping-file>
 
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>    

@@ -61,10 +61,6 @@
       <source>src/main/assembly/resources/gwt-console-server-persistence-JPA2.xml</source>
       <destName>WEB-INF/classes/META-INF/persistence.xml</destName>
     </file>
-    <file>
-      <source>src/main/assembly/resources/ProcessInstanceInfoMapping-JPA2.xml</source>
-      <destName>WEB-INF/classes/META-INF/ProcessInstanceInfoMapping.xml</destName>
-    </file>
   </files>
 
 </assembly>

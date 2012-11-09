@@ -8,7 +8,8 @@
     <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/testDS1</jta-data-source>        
-        <mapping-file>META-INF/JBPMorm-JPA2.xml</mapping-file>
+        <mapping-file>META-INF/JBPMorm.xml</mapping-file>
+        <mapping-file>META-INF/ProcessInstanceInfoMapping-JPA2.xml</mapping-file>
         <!-- This line MUST be commented and NOT active when using JPA 2: 
         <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
         -->

@@ -44,10 +44,6 @@
       <source>src/main/assembly/resources/gwt-console-server-persistence-JPA1.xml</source>
       <destName>WEB-INF/classes/META-INF/persistence.xml</destName>
     </file>
-    <file>
-      <source>src/main/assembly/resources/ProcessInstanceInfo.hbm.xml-JPA1.xml</source>
-      <destName>WEB-INF/classes/META-INF/ProcessInstanceInfo.hbm.xml</destName>
-    </file>
   </files>
 
 </assembly>
