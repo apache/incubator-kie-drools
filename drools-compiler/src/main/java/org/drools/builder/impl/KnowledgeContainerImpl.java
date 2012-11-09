@@ -3,21 +3,25 @@ package org.drools.builder.impl;
 import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeContainer;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KProject;
 import org.drools.kproject.KSession;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -33,37 +37,37 @@ import static org.drools.kproject.KProjectImpl.fromXML;
 
 public class KnowledgeContainerImpl implements KnowledgeContainer {
 
+    private static final Logger log = LoggerFactory.getLogger(KnowledgeContainer.class);
+
     public static final String KBASES_FOLDER = "kbases";
     public static final String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
     public static final String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
 
-    private final KnowledgeBuilderConfiguration kConf;
-
     private final Map<String, KBase> kBases = new HashMap<String, KBase>();
     private final Map<String, String> kSessions = new HashMap<String, String>();
-    private final Map<String, KnowledgeBuilderConfiguration> kConfs = new HashMap<String, KnowledgeBuilderConfiguration>();
+    private final Map<String, String> urls = new HashMap<String, String>();
+
+    private final ClassLoader classLoader;
 
     public KnowledgeContainerImpl(KnowledgeBuilderConfiguration kConf) {
-        this.kConf = kConf;
-        ClassLoader classLoader = ((PackageBuilderConfiguration)kConf).getClassLoader();
-        indexKSessions(loadKProjects(classLoader), null, false);
+        classLoader = ((PackageBuilderConfiguration)kConf).getClassLoader();
+        loadKProjects(classLoader, false);
     }
 
     public static void clearCache() {
         KBaseUnitCachingFactory.clear();
     }
 
-    public void deploy(File kJar) {
-        URLClassLoader urlClassLoader;
-        try {
-            urlClassLoader = new URLClassLoader( new URL[] { kJar.toURI().toURL() } );
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+    public void deploy(File... kJars) {
+        for (File kJar : kJars) {
+            URLClassLoader urlClassLoader;
+            try {
+                urlClassLoader = new URLClassLoader( new URL[] { kJar.toURI().toURL() } );
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+            loadKProjects(urlClassLoader, true );
         }
-
-        indexKSessions( loadKProjects(urlClassLoader),
-                        KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, urlClassLoader),
-                        true );
     }
 
     public File buildKJar(File rootFolder, File outputFolder, String jarName) {
@@ -74,7 +78,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     public List<KBaseUnit> getKBaseUnits() {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         for (KBase kBase : kBases.values()) {
-            units.add(getOrCreateKBaseUnit(getKConf(kBase.getQName()), kBase));
+            units.add(getOrCreateKBaseUnit(urls.get(kBase.getQName()), kBase));
         }
         return units;
     }
@@ -83,7 +87,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         KProject kProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
         for (KBase kBase : kProject.getKBases().values()) {
-            units.add(new KBaseUnitImpl( kConf, kBase, sourceFolder ));
+            units.add(new KBaseUnitImpl( sourceFolder.getAbsolutePath() + "/" + kBase.getQName(), kBase, classLoader ));
         }
         return units;
     }
@@ -96,13 +100,23 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         for (KBase kBase : kProject.getKBases().values()) {
             for (String kBaseFile : kBase.getFiles()) {
                 String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
-                copyFile(new File(rootFolder + "/src", file), new File(outputFolder, file));
+                copyFile(new File(rootFolder + "/src", file), new File(outputFolder, kBaseFile));
             }
         }
     }
 
     public KBaseUnit getKBaseUnit(String kBaseName) {
-        return getOrCreateKBaseUnit(getKConf(kBaseName), kBases.get(kBaseName));
+        KBase kBase = kBases.get(kBaseName);
+        if (kBase == null) {
+            throw new RuntimeException("Unknown KnowledgeBase: " + kBaseName);
+        }
+        KBaseUnitImpl unit = getOrCreateKBaseUnit(urls.get(kBaseName), kBase);
+        if (!unit.hasIncludes() && kBase.getIncludes() != null) {
+            for ( String include : kBase.getIncludes() ) {
+                unit.addInclude(kBases.get(include));
+            }
+        }
+        return unit;
     }
 
     public KnowledgeBase getKnowledgeBase(String kBaseName) {
@@ -114,38 +128,31 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         return getKBaseUnit(kSessions.get(kSessionName)).newStatefulKnowledegSession(kSessionName);
     }
 
-    private KnowledgeBuilderConfiguration getKConf(String kBaseName) {
-        KnowledgeBuilderConfiguration conf = kConfs.get(kBaseName);
-        return conf != null ? conf : kConf;
+    public StatelessKnowledgeSession getStatelessKnowlegeSession(String kSessionName) {
+        return getKBaseUnit(kSessions.get(kSessionName)).newStatelessKnowledegSession(kSessionName);
     }
 
-    private List<KProject> loadKProjects(ClassLoader classLoader) {
-        List<KProject> kProjects = new ArrayList<KProject>();
-
-        final Enumeration<URL> e;
+    private void loadKProjects(ClassLoader classLoader, boolean doEvict) {
+        Enumeration<URL> e = null;
         try {
             e = classLoader.getResources( KPROJECT_JAR_PATH );
         } catch ( IOException exc ) {
-            return kProjects;
+            log.error("Unable to load kproject(s) caused by: " + exc);
         }
 
         while ( e.hasMoreElements() ) {
-            kProjects.add(fromXML(e.nextElement()));
+            URL url = e.nextElement();
+            indexKSessions(fromXML(url), fixURL(url), doEvict);
         }
-        return kProjects;
     }
 
-    private void indexKSessions(List<KProject> kProjects, KnowledgeBuilderConfiguration conf, boolean doEvict) {
-        for (KProject kProject : kProjects) {
-            for (KBase kBase : kProject.getKBases().values()) {
-                cleanUpExistingKBase(kBase, doEvict);
-                kBases.put(kBase.getQName(), kBase);
-                if (conf != null) {
-                    kConfs.put(kBase.getQName(), conf);
-                }
-                for (KSession kSession : kBase.getKSessions().values()) {
-                    kSessions.put(kSession.getQName(), kBase.getQName());
-                }
+    private void indexKSessions(KProject kProject, String url, boolean doEvict) {
+        for (KBase kBase : kProject.getKBases().values()) {
+            cleanUpExistingKBase(kBase, doEvict);
+            kBases.put(kBase.getQName(), kBase);
+            urls.put(kBase.getQName(), url);
+            for (KSession kSession : kBase.getKSessions().values()) {
+                kSessions.put(kSession.getQName(), kBase.getQName());
             }
         }
     }
@@ -156,7 +163,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         }
         KBase oldKbase = kBases.get(kBase.getQName());
         if (oldKbase != null) {
-            kConfs.remove(oldKbase.getQName());
+            urls.remove(oldKbase.getQName());
             for (KSession kSession : oldKbase.getKSessions().values()) {
                 kSessions.remove(kSession.getQName());
             }
@@ -168,8 +175,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         jarEntries.put(KPROJECT_RELATIVE_PATH, KPROJECT_JAR_PATH);
         for (KBase kBase : kProject.getKBases().values()) {
             for (String kBaseFile : kBase.getFiles()) {
-                String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
-                jarEntries.put("src/" + file, file);
+                jarEntries.put("src/" + KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile, kBaseFile);
             }
         }
         return writeAsJar(rootFolder, outputFolder, jarName, jarEntries);
@@ -212,5 +218,46 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
             out.closeEntry();
             fis.close();
         }
+    }
+
+    private String fixURL(URL url) {
+        String urlPath = url.toExternalForm();
+
+        // determine resource type (eg: jar, file, bundle)
+        String urlType = "file";
+        int colonIndex = urlPath.indexOf( ":" );
+        if ( colonIndex != -1 ) {
+            urlType = urlPath.substring( 0, colonIndex );
+        }
+
+        urlPath = url.getPath();
+
+
+        if ( "jar".equals( urlType ) ) {
+            // switch to using getPath() instead of toExternalForm()
+
+            if ( urlPath.indexOf( '!' ) > 0 ) {
+                urlPath = urlPath.substring( 0, urlPath.indexOf( '!' ) );
+            }
+        } else {
+            urlPath = urlPath.substring( 0, urlPath.length() - "/META-INF/kproject.xml".length() );
+        }
+
+
+        // remove any remaining protocols, normally only if it was a jar
+        colonIndex = urlPath.lastIndexOf( ":" );
+        if ( colonIndex >= 0 ) {
+            urlPath = urlPath.substring( colonIndex +  1  );
+        }
+
+        try {
+            urlPath = URLDecoder.decode(urlPath, "UTF-8");
+        } catch ( UnsupportedEncodingException e ) {
+            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
+        }
+
+        log.debug( "KProject URL Type + URL: " + urlType + ":" + urlPath );
+
+        return urlPath;
     }
 }

@@ -10,36 +10,44 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KSession;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.InputStream;
-
-import static org.drools.builder.impl.KnowledgeContainerImpl.KBASES_FOLDER;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class KBaseUnitImpl implements KBaseUnit {
 
-    private final KnowledgeBuilderConfiguration kConf;
+    private static final Logger log = LoggerFactory.getLogger(KBaseUnit.class);
+
+    private final String url;
 
     private final KBase kBase;
-    private final File sourceFolder;
+    private final ClassLoader classLoader;
 
     private KnowledgeBuilder kbuilder;
     private KnowledgeBase knowledgeBase;
 
-    public KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KBase kBase) {
-        this(kConf, kBase, null);
+    private List<KBase> includes = null;
+
+    public KBaseUnitImpl(String url, KBase kBase) {
+        this(url, kBase, null);
     }
 
-    KBaseUnitImpl(KnowledgeBuilderConfiguration kConf, KBase kBase, File sourceFolder) {
-        this.kConf = kConf;
+    public KBaseUnitImpl(String url, KBase kBase, ClassLoader classLoader) {
+        this.url = url;
         this.kBase = kBase;
-        this.sourceFolder = sourceFolder;
+        this.classLoader = classLoader;
     }
 
     public KnowledgeBase getKnowledgeBase() {
@@ -54,6 +62,17 @@ public class KBaseUnitImpl implements KBaseUnit {
         knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration() );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return knowledgeBase;
+    }
+
+    void addInclude(KBase kBase) {
+        if (includes == null) {
+            includes = new ArrayList<KBase>();
+        }
+        includes.add(kBase);
+    }
+
+    boolean hasIncludes() {
+        return includes != null;
     }
 
     public String getKBaseName() {
@@ -72,30 +91,72 @@ public class KBaseUnitImpl implements KBaseUnit {
         return getKnowledgeBase().newStatefulKnowledgeSession(getKnowledgeSessionConfiguration(ksessionName), null);
     }
 
+    public StatelessKnowledgeSession newStatelessKnowledegSession(String ksessionName) {
+        return getKnowledgeBase().newStatelessKnowledgeSession(getKnowledgeSessionConfiguration(ksessionName));
+    }
+
     private KnowledgeBuilder getKBuilder() {
         if (kbuilder != null) {
             return kbuilder;
         }
 
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kConf);
-        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-
-        for (String kBaseFile : kBase.getFiles()) {
-            buildKBaseFile(ckbuilder, kBase, kBaseFile);
+        if (classLoader != null) {
+            KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kConf);
+        } else {
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         }
-
+        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+        buildKBaseFiles(ckbuilder, kBase);
+        if (includes != null) {
+            for (KBase include : includes) {
+                buildKBaseFiles(ckbuilder, include);
+            }
+        }
         ckbuilder.build();
         return kbuilder;
     }
 
-    private void buildKBaseFile(CompositeKnowledgeBuilder ckbuilder, KBase kBase, String kBaseFile) {
-        if (sourceFolder != null) {
-            File file = new File(sourceFolder, kBase.getQName() + "/" + kBaseFile);
-            ckbuilder.add(ResourceFactory.newFileResource(file), ResourceType.determineResourceType(file.getName()));
+    private void buildKBaseFiles(CompositeKnowledgeBuilder ckbuilder, KBase kBase) {
+        String rootPath = url;
+        if ( rootPath.lastIndexOf( ':' ) > 0 ) {
+            rootPath = url.substring( rootPath.lastIndexOf( ':' ) + 1 );
+        }
+
+        if ( url.endsWith( ".jar" ) ) {
+            File actualZipFile = new File( rootPath );
+            if ( !actualZipFile.exists() ) {
+                log.error( "Unable to build KBase:" + kBase.getName() + " as jarPath cannot be found\n" + rootPath );
+            }
+
+            ZipFile zipFile = null;
+            try {
+                zipFile = new ZipFile( actualZipFile );
+            } catch ( Exception e ) {
+                log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be opened\n" + e.getMessage() );
+            }
+
+            try {
+                for ( String file : kBase.getFiles() ) {
+                    ZipEntry zipEntry = zipFile.getEntry( file );
+                    ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
+                }
+            } catch ( Exception e ) {
+                try {
+                    zipFile.close();
+                } catch ( IOException e1 ) {
+
+                }
+                log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be read\n" + e.getMessage() );
+            }
         } else {
-            String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
-            InputStream ruleStream = ((PackageBuilderConfiguration)kConf).getClassLoader().getResourceAsStream(file);
-            ckbuilder.add(ResourceFactory.newInputStreamResource(ruleStream), ResourceType.determineResourceType(file));
+            try {
+                for ( String file : kBase.getFiles() ) {
+                    ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
+                }
+            } catch ( Exception e) {
+                log.error( "Unable to build KBase:" + kBase.getName() + "\n" + e.getMessage() );
+            }
         }
     }
 
