@@ -57,13 +57,13 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <configuration>
+            <executable>java</executable>
             <classpathScope>runtime</classpathScope>
-            <executable>${JAVA_HOME}/bin/java</executable>
             <arguments>
               <argument>-Xms256m</argument>
               <argument>-Xmx512m</argument>
               <argument>-server</argument>
-              <argument>-classpath</argument>
+              <argument>-cp</argument>
               <classpath/>
               <argument>org.drools.planner.examples.app.DroolsPlannerExamplesApp</argument>
             </arguments>
