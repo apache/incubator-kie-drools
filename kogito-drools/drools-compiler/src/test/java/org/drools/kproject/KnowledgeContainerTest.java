@@ -2,14 +2,13 @@ package org.drools.kproject;
 
 import com.thoughtworks.xstream.XStream;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeContainer;
 import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.EventProcessingOption;
-import org.drools.core.util.FileManager;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -21,24 +20,11 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class KnowledgeContainerTest {
-
-    private FileManager fileManager;
-
-    @Before
-    public void setUp() throws Exception {
-        KnowledgeContainerImpl.clearCache();
-        this.fileManager = new FileManager().setUp();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        this.fileManager.tearDown();
-    }
+public class KnowledgeContainerTest extends AbstractKnowledgeTest {
 
     @Test
     public void testKContainer() throws Exception {
-        KnowledgeContainerImpl kContainer = (KnowledgeContainerImpl)KnowledgeBuilderFactory.newKnowledgeContainer();
+        KnowledgeContainer kContainer = KnowledgeBuilderFactory.newKnowledgeContainer();
 
         // create a kjar and deploy it
         // the deploy method causes the compilation of all the KnowledgeBases defined in the kjar
@@ -65,6 +51,27 @@ public class KnowledgeContainerTest {
         checkKSession(ksession2, "rule2", "rule3");
     }
 
+    @Test
+    public void testMultpleJarAndFileResources() throws Exception {
+        createKProjectJar( "jar1", true );
+        createKProjectJar( "jar2", true );
+        createKProjectJar( "jar3", true );
+        createKProjectJar( "fol4", false );
+
+        File file1 = fileManager.newFile( "jar1.jar" );
+        File file2 = fileManager.newFile( "jar2.jar" );
+        File file3 = fileManager.newFile( "jar3.jar" );
+        File fol4 = fileManager.newFile( "fol4" );
+
+        KnowledgeContainer kContainer = KnowledgeBuilderFactory.newKnowledgeContainer();
+        kContainer.deploy(file1, file2, file3, fol4);
+
+        testKBaseUnit(kContainer, "jar1");
+        testKBaseUnit(kContainer, "jar2");
+        testKBaseUnit(kContainer, "jar3");
+        testKBaseUnit(kContainer, "fol4");
+    }
+
     private void checkKSession(StatefulKnowledgeSession ksession, String... rules) {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
@@ -77,7 +84,7 @@ public class KnowledgeContainerTest {
         }
     }
 
-    private File createKJar(KnowledgeContainerImpl kContainer, String kjarName, String... rules) throws IOException {
+    private File createKJar(KnowledgeContainer kContainer, String kjarName, String... rules) throws IOException {
         List<String> files = new ArrayList<String>();
 
         for (String rule : rules) {
@@ -110,5 +117,43 @@ public class KnowledgeContainerTest {
                 "then\n" +
                 "list.add( drools.getRule().getName() );\n" +
                 "end\n";
+    }
+
+    public void testKBaseUnit(KnowledgeContainer kContainer, String jarName) {
+        List<String> list = new ArrayList<String>();
+
+        StatelessKnowledgeSession stlsKsession = kContainer.getStatelessKnowlegeSession(jarName + ".test1.KSession1");
+        stlsKsession.setGlobal( "list", list );
+        stlsKsession.execute( "dummy" );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+
+        list.clear();
+        StatefulKnowledgeSession stflKsession = kContainer.getStatefulKnowlegeSession(jarName + ".test1.KSession2");
+        stflKsession.setGlobal( "list", list );
+        stflKsession.fireAllRules();
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+
+        list.clear();
+        stflKsession = kContainer.getStatefulKnowlegeSession(jarName + ".test2.KSession3");
+        stflKsession.setGlobal( "list", list );
+        stflKsession.fireAllRules();
+        assertEquals( 2, list.size() );
+
+        assertTrue( list.contains( jarName + ".test2:rule1" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2" ) );
+
+        list.clear();
+        stlsKsession = kContainer.getStatelessKnowlegeSession(jarName + ".test3.KSession4");
+        stlsKsession.setGlobal( "list", list );
+        stlsKsession.execute( "dummy" );
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+        assertTrue( list.contains( jarName + ".test2:rule1" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2" ) );
     }
 }
