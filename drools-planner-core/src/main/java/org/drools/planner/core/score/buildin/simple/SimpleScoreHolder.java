@@ -26,7 +26,7 @@ import org.drools.runtime.rule.WorkingMemory;
 
 public class SimpleScoreHolder extends AbstractScoreHolder {
 
-    private int score;
+    protected int score;
 
     public int getScore() {
         return score;
