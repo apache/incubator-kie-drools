@@ -25,7 +25,8 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * The ScoreDirector hold the {@link Solution} workingSolution and calculates the score for that {@link Solution}.
+ * The ScoreDirector holds the {@link Solution workingSolution}
+ * and calculates the {@link Score} for that {@link Solution}.
  */
 public interface ScoreDirector {
 
@@ -48,7 +49,7 @@ public interface ScoreDirector {
      * The {@link Solution} that is used to calculate the {@link Score}.
      * <p/>
      * Because a {@link Score} is best calculated incrementally (by delta's),
-     * the {@link ScoreDirector} needs to be notified when it's workingSolution changes.
+     * the {@link ScoreDirector} needs to be notified when it's {@link Solution workingSolution} changes.
      * <p/>
      * If the {@link Solution} has been changed since {@link #calculateScore} has been called,
      * the {@link Solution#getScore()} of this {@link Solution} won't be correct.
@@ -57,7 +58,8 @@ public interface ScoreDirector {
     Solution getWorkingSolution();
 
     /**
-     * The workingSolution must never be the same instance as the bestSolution, it should be a (un)changed clone.
+     * The {@link Solution workingSolution} must never be the same instance as the {@link Solution bestSolution},
+     * it should be a (un)changed clone.
      * @param workingSolution never null
      */
     void setWorkingSolution(Solution workingSolution);
@@ -99,13 +101,13 @@ public interface ScoreDirector {
     List<Object> getWorkingPlanningEntityList();
 
     /**
-     * @return true if the workingSolution is initialized
+     * @return true if the {@link Solution workingSolution} is initialized
      */
     boolean isWorkingSolutionInitialized();
 
     /**
-     * Calculates the {@link Score} and updates the workingSolution accordingly.
-     * @return never null, the {@link Score} of the working solution
+     * Calculates the {@link Score} and updates the {@link Solution workingSolution} accordingly.
+     * @return never null, the {@link Score} of the {@link Solution workingSolution}
      */
     Score calculateScore();
 
@@ -113,6 +115,16 @@ public interface ScoreDirector {
      * @return at least 0L
      */
     long getCalculateCount();
+
+    /**
+     * Clones this {@link ScoreDirector} and its {@link Solution workingSolution}.
+     * Use {@link #getWorkingSolution()} to retrieve the {@link Solution workingSolution} of that clone.
+     * <p/>
+     * This is heavy method, because it usually breaks incremental score calculation. Use it sparingly.
+     * Therefore it's best to clone lazily by delaying the clone call as long as possible.
+     * @return never null
+     */
+    ScoreDirector clone();
 
     /**
      * @param chainedVariableDescriptor never null, must be {@link PlanningVariableDescriptor#isChained()} true
@@ -123,9 +135,9 @@ public interface ScoreDirector {
     Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
     /**
-     * Asserts that if the {@link Score} is calculated for the current workingSolution
+     * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
      * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
-     * it is equal to the parameter expectedWorkingScore.
+     * it is equal to the parameter {@link Score expectedWorkingScore}.
      * <p/>
      * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct,
      * @param expectedWorkingScore never null
@@ -133,8 +145,9 @@ public interface ScoreDirector {
     void assertExpectedWorkingScore(Score expectedWorkingScore);
 
     /**
-     * Asserts that if the {@link Score} is calculated for the current workingSolution in a fresh {@link ScoreDirector}
-     * (with no incremental calculation residue), it is equal to the parameter workingScore.
+     * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
+     * in a fresh {@link ScoreDirector} (with no incremental calculation residue),
+     * it is equal to the parameter {@link Score workingScore}.
      * <p/>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
      * @param workingScore never null

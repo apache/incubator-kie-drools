@@ -218,6 +218,12 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         calculateCount++;
     }
 
+    public AbstractScoreDirector clone() {
+        AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector();
+        clone.setWorkingSolution(workingSolution.cloneSolution());
+        return clone;
+    }
+
     public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
         List<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
                 .get(planningValue);
@@ -272,12 +278,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     public void dispose() {
         // Do nothing
-    }
-
-    public ScoreDirector clone() {
-        ScoreDirector clone = scoreDirectorFactory.buildScoreDirector();
-        clone.setWorkingSolution(workingSolution.cloneSolution());
-        return clone;
     }
 
     @Override
