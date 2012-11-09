@@ -18,34 +18,26 @@ package org.drools.persistence.map.impl;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
-import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.RerunWithLocalTransactions;
 import org.drools.runtime.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
+    @Rule
+    public RerunWithLocalTransactions rerunWithLocalTx = new RerunWithLocalTransactions();
+    
     private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     
     private HashMap<String, Object> context;
@@ -55,10 +47,10 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_LOCAL_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
         
-        if( useTransactions() ) { 
+        if( usingJtaTransactions() ) { 
             useTransactions = true;
             Environment env = createEnvironment(context);
             Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
@@ -68,9 +60,13 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
         }
     }
     
+    private boolean usingJtaTransactions() { 
+       return (useTransactions() && ! usingLocalTransactions()); 
+    }
+    
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
     
 

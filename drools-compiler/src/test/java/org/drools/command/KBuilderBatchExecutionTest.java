@@ -115,6 +115,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
     @SuppressWarnings("unchecked")
     public void testGetKnowledgePackages() { 
         int NUM_FACTS = 5;
+        int origCounter = counter;
         
         String ruleString 
         = "package org.drools.integrationtests;\n"
@@ -152,7 +153,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         }
         ksession.fireAllRules();
         
-        assertEquals(NUM_FACTS, counter);
+        assertEquals(NUM_FACTS, counter - origCounter);
     }
 
     private static int counter = 0;

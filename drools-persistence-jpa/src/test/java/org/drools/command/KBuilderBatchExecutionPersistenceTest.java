@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 Red Hat Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.command;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
@@ -7,15 +22,19 @@ import java.util.HashMap;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.*;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
+import org.junit.Rule;
 
-public class KBuilderBatchExecutionPersistenceTest extends KBuilderBatchExecutionTest {
+public class KBuilderBatchExecutionPersistenceTest extends KBuilderBatchExecutionTest implements VariablePersistence {
 
-    private HashMap<String, Object> context;
+    @Rule
+    public RerunWithLocalTransactions rerunWithLocalTx = new RerunWithLocalTransactions();
     
+    private HashMap<String, Object> context;
+
     @After
     public void cleanUpPersistence() throws Exception {
         disposeKSession();
@@ -23,12 +42,34 @@ public class KBuilderBatchExecutionPersistenceTest extends KBuilderBatchExecutio
         context = null;
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
-        if( context == null ) { 
-            context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
+        if (context == null) {
+            context = PersistenceUtil.setupWithPoolingDataSource(getPersistenceUnitName());
         }
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
-    }  
-    
+    }
+
+    private String PERSISTENCE_UNIT = PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+
+    public void setPersistenceUnitToDroolsLocal() {
+        PERSISTENCE_UNIT = DROOLS_LOCAL_PERSISTENCE_UNIT_NAME;
+    }
+
+    public void setPersistenceUnitToDroolsJTA() {
+        PERSISTENCE_UNIT = DROOLS_PERSISTENCE_UNIT_NAME;
+    }
+
+    public void setPersistenceUnitToJbpmLocal() {
+        PERSISTENCE_UNIT = JBPM_LOCAL_PERSISTENCE_UNIT_NAME;
+    }
+
+    public void setPersistenceUnitToJbpmJTA() {
+        PERSISTENCE_UNIT = JBPM_PERSISTENCE_UNIT_NAME;
+    }
+
+    public String getPersistenceUnitName() {
+        return PERSISTENCE_UNIT;
+    }
+
 }

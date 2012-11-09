@@ -16,42 +16,29 @@
 package org.drools.persistence;
 
 import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
-import org.drools.KnowledgeBase;
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
-import org.drools.command.BatchExecutionCommand;
-import org.drools.command.Command;
-import org.drools.command.CommandService;
-import org.drools.command.Context;
-import org.drools.command.Interceptor;
-import org.drools.command.impl.DefaultCommandService;
-import org.drools.command.impl.FixedKnowledgeCommandContext;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import javax.persistence.EntityManager;
+
+import org.drools.*;
+import org.drools.command.*;
+import org.drools.command.impl.*;
 import org.drools.command.runtime.DisposeCommand;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.jpa.JpaPersistenceContext;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.persistence.local.LocalTransactionManager;
+import org.drools.runtime.*;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.tools.jxc.gen.config.Config;
 
 public class SingleSessionCommandService
     implements
@@ -73,8 +60,6 @@ public class SingleSessionCommandService
     private volatile boolean           doRollback;
 
     private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
-
-    public static Map<Object, Object>  txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
@@ -112,32 +97,9 @@ public class SingleSessionCommandService
 
         checkEnvironment( this.env );
 
-        this.sessionInfo = new SessionInfo();
-
         initTransactionManager( this.env );
 
-        // create session but bypass command service
-        this.ksession = kbase.newStatefulKnowledgeSession( conf,
-                                                           this.env );
-
-        this.kContext = new FixedKnowledgeCommandContext( null,
-                                                          null,
-                                                          null,
-                                                          this.ksession,
-                                                          null );
-
-        this.commandService = new DefaultCommandService( kContext );
-
-        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
-
-        this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
-                                                               conf );
-        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
-        config.setMarshallProcessInstances( false );
-        config.setMarshallWorkItems( false );
-
-        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        initNewKnowledgeSession(kbase, conf);
 
         // Use the App scoped EntityManager if the user has provided it, and it is open.
         // - open the entity manager before the transaction begins. 
@@ -149,7 +111,8 @@ public class SingleSessionCommandService
 
             registerRollbackSync();
 
-            persistenceContext.joinTransaction();
+            txm.attachPersistenceContext(persistenceContext);
+            
             persistenceContext.persist( this.sessionInfo );
 
             txm.commit( transactionOwner );
@@ -166,6 +129,29 @@ public class SingleSessionCommandService
 
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
+    }
+    
+    protected void initNewKnowledgeSession(KnowledgeBase kbase, KnowledgeSessionConfiguration conf) { 
+        this.sessionInfo = new SessionInfo();
+        
+        // create session but bypass command service
+        this.ksession = kbase.newStatefulKnowledgeSession(conf, this.env);
+        
+        this.marshallingHelper = new SessionMarshallingHelper( this.ksession, conf );
+
+        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
+        config.setMarshallProcessInstances(false);
+        config.setMarshallWorkItems(false);
+        
+        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
+        
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        
+        this.kContext = new FixedKnowledgeCommandContext( null, null, null, this.ksession, null );
+
+        this.commandService = new DefaultCommandService(kContext);
+
+        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
     }
 
     public SingleSessionCommandService(Integer sessionId,
@@ -189,18 +175,15 @@ public class SingleSessionCommandService
         try {
             transactionOwner = txm.begin();
 
-            registerRollbackSync();
-
-            persistenceContext.joinTransaction();
-            initKsession( sessionId,
-                          kbase,
-                          conf,
-                          persistenceContext );
-
-            txm.commit( transactionOwner );
-        } catch ( RuntimeException re ) {
-            rollbackTransaction( re,
-                                 transactionOwner );
+            registerRollbackSync();            
+           
+            txm.attachPersistenceContext(persistenceContext);
+            
+            initExistingKnowledgeSession( sessionId, kbase, conf, persistenceContext);
+            
+            txm.commit(transactionOwner);
+        } catch (RuntimeException re){
+            rollbackTransaction(re, transactionOwner);
             throw re;
         } catch ( Exception t1 ) {
             rollbackTransaction( t1,
@@ -210,10 +193,11 @@ public class SingleSessionCommandService
         }
     }
 
-    protected void initKsession(Integer sessionId,
-                                KnowledgeBase kbase,
-                                KnowledgeSessionConfiguration conf,
-                                PersistenceContext persistenceContext) {
+    protected void initExistingKnowledgeSession(Integer sessionId,
+                             KnowledgeBase kbase,
+                             KnowledgeSessionConfiguration conf,
+                             PersistenceContext persistenceContext) {
+
         if ( !doRollback && this.ksession != null ) {
             return;
             // nothing to initialise
@@ -268,7 +252,6 @@ public class SingleSessionCommandService
         }
 
         this.commandService = new DefaultCommandService( kContext );
-        this.commandService = new DefaultCommandService(kContext);
     }
 
     public void initTransactionManager(Environment env) {
@@ -299,10 +282,6 @@ public class SingleSessionCommandService
                                                 e );
                 }
             } else {
-                logger.debug( "Instantiating  JtaTransactionManager" );
-                this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
-                                                      env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-                                                      tm );
                 try {
                     Class< ? > jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
                     Constructor< ? > jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
@@ -314,16 +293,52 @@ public class SingleSessionCommandService
                                                 e );
                 }
             }
-            env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER,
-                     this.jpm );
-            env.set( EnvironmentName.TRANSACTION_MANAGER,
-                     this.txm );
-        }
-    }
+            
+            // Determine whether to use JTA or local transactions
+            EntityManager appScopedEM = ((JpaPersistenceContext) this.jpm.getApplicationScopedPersistenceContext()).getEntityManager();
+            boolean useResourceLocalTxm = false;
+            boolean useJTATxm = false;
+            
+            // Test for local/JTA
+            try { 
+                appScopedEM.getTransaction();
+                useResourceLocalTxm = true;
+            } catch(Exception e) { 
+                boolean illegalStateExceptionThrown = false;
+                Throwable cause = e;
+                while( cause != null && ! illegalStateExceptionThrown ) { 
+                    illegalStateExceptionThrown = (cause instanceof IllegalStateException);
+                    cause = cause.getCause();
+                }
+                if( illegalStateExceptionThrown ) { 
+                    useJTATxm = true;
+                }
+                else { 
+                    // this resource is not JTA
+                    throw new RuntimeException("Unable to determine persistence-unit type (JTA/Local)", e);
+                }
+            }
 
-    public static class EndOperationListenerImpl
-        implements
-        EndOperationListener {
+            if( useJTATxm ) { 
+                logger.debug( "Instantiating " + JtaTransactionManager.class.getSimpleName() );
+                this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
+                        env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
+                        tm );
+            } else if( useResourceLocalTxm ) { 
+                logger.debug( "Instantiating " + LocalTransactionManager.class.getSimpleName() );
+                this.txm = new LocalTransactionManager();
+            } else { 
+                throw new RuntimeException("Unknown resource type (neither JTA nor local transaction based)");
+            }
+
+        }
+
+        this.jpm.setTransactionManager(txm);
+        env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, this.jpm );
+        env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
+    }
+    
+    public static class EndOperationListenerImpl implements EndOperationListener {
         private SessionInfo info;
 
         public EndOperationListenerImpl(SessionInfo info) {
@@ -353,15 +368,20 @@ public class SingleSessionCommandService
         try {
             transactionOwner = txm.begin();
 
-            persistenceContext.joinTransaction();
-            initKsession( this.sessionInfo.getId(),
+            // For local tx's, it's important/nice that 
+            //  this happen before attaching the cmd-scoped entity manager
+            registerRollbackSync();
+            
+            txm.attachPersistenceContext(persistenceContext); 
+            
+            initExistingKnowledgeSession( this.sessionInfo.getId(),
                           this.marshallingHelper.getKbase(),
                           this.marshallingHelper.getConf(),
                           persistenceContext );
-
+            
+            // Attaches both cmd scoped and app scoped em's
             this.jpm.beginCommandScopedEntityManager();
 
-            registerRollbackSync();
 
             T result = null;
             if( command instanceof BatchExecutionCommand ) { 
@@ -443,7 +463,7 @@ public class SingleSessionCommandService
             }
 
             // always cleanup thread local whatever the result
-            Object removedSynchronization = SingleSessionCommandService.synchronizations.remove( this.service );
+            SingleSessionCommandService.synchronizations.remove( this.service );
 
             this.service.jpm.clearPersistenceContext();
             

@@ -12,4 +12,6 @@ public interface PersistenceContextManager {
     void clearPersistenceContext();
 
     void dispose();
+    
+    void setTransactionManager(TransactionManager txm);
 }

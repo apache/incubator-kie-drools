@@ -15,63 +15,44 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.Person;
-import org.drools.SessionConfiguration;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.*;
+import org.drools.builder.*;
 import org.drools.command.CommandFactory;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.FireAllRulesInterceptor;
-import org.drools.command.impl.LoggingInterceptor;
+import org.drools.command.impl.*;
 import org.drools.io.ResourceFactory;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.*;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.persistence.util.*;
+import org.drools.runtime.*;
 import org.drools.runtime.rule.FactHandle;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.*;
 
-public class JpaPersistentStatefulSessionTest {
+public class JpaPersistentStatefulSessionTest extends VariablePersistenceUnitTest {
 
-    private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
+    @Rule
+    public RerunWithLocalTransactions rerunWithLocalTxs = new RerunWithLocalTransactions();
     
     private HashMap<String, Object> context;
     private Environment env;
 
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = PersistenceUtil.setupWithPoolingDataSource(getPersistenceUnitName());
         env = createEnvironment(context);
     }
         
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
 
 
@@ -181,6 +162,11 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test
     public void testUserTransactions() throws Exception {
+        // Skip if using local tx's
+        if( getPersistenceUnitName().equals(DROOLS_LOCAL_PERSISTENCE_UNIT_NAME) ) { 
+            return;
+        }
+        
         String str = "";
         str += "package org.drools.test\n";
         str += "global java.util.List list\n";
