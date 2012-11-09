@@ -554,6 +554,11 @@ public class Queen {
         <section xml:id="valueRangeFromPlanningEntity">
           <title><literal>ValueRange</literal> from planning entity</title>
 
+          <important>
+            <para><emphasis role="bold">ValueRange from planning entity is currently not yet supported by the new
+            MoveSelectors.</emphasis></para>
+          </important>
+
           <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
           if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not belong to his
           department, lectures of that teacher can limit their room value range to the rooms of his department.</para>

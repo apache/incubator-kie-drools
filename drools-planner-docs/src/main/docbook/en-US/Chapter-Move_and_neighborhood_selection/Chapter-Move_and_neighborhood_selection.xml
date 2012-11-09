@@ -552,13 +552,99 @@
     <section>
       <title>unionMoveSelector</title>
 
-      <para>TODO</para>
+      <para>A <literal>unionMoveSelector</literal> selects a <literal>Move</literal> by selecting 1 of its child
+      <literal>MoveSelector</literal>s to supply the next <literal>Move</literal>.</para>
+
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;...MoveSelector/&gt;
+      &lt;...MoveSelector/&gt;
+      &lt;...MoveSelector/&gt;
+      ...
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      ... &lt;!-- Normal moveSelector properties --&gt;
+      &lt;selectorProbabilityWeightFactoryClass&gt;...ProbabilityWeightFactory&lt;/selectorProbabilityWeightFactoryClass&gt;
+      &lt;changeMoveSelector&gt;
+        &lt;fixedProbabilityWeight&gt;...&lt;/fixedProbabilityWeight&gt;
+        ...
+      &lt;/changeMoveSelector&gt;
+      &lt;swapMoveSelector&gt;
+        &lt;fixedProbabilityWeight&gt;...&lt;/fixedProbabilityWeight&gt;
+        ...
+      &lt;/swapMoveSelector&gt;
+      &lt;...MoveSelector&gt;
+        &lt;fixedProbabilityWeight&gt;...&lt;/fixedProbabilityWeight&gt;
+        ...
+      &lt;/...MoveSelector&gt;
+      ...
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+      <para>In <literal>selectionOrder</literal> <literal>RANDOM</literal>, the
+      <literal>selectorProbabilityWeightFactory</literal> determines how often a child MoveSelector is selected to
+      supply the next Move. By default, each child <literal>MoveSelector</literal> has the same chance of being
+      selected. Change the fixedProbabilityWeight of such a child to select it more often. For example, the
+      <literal>unionMoveSelector</literal> can return a <literal>SwapMove</literal> twice as often as a
+      <literal>ChangeMove</literal>:</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;changeMoveSelector&gt;
+        &lt;fixedProbabilityWeight&gt;1.0&lt;/fixedProbabilityWeight&gt;
+        ...
+      &lt;/changeMoveSelector&gt;
+      &lt;swapMoveSelector&gt;
+        &lt;fixedProbabilityWeight&gt;2.0&lt;/fixedProbabilityWeight&gt;
+        ...
+      &lt;/swapMoveSelector&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+      <para>The number of possible <literal>ChangeMove</literal>s is very different from the number of possible
+      <literal>SwapMove</literal>s and it's problem dependent. To give each individual <literal>Move</literal> the same
+      selection chance (as opposed to each <literal>MoveSelector</literal>), use the
+      <literal>FairSelectorProbabilityWeightFactory</literal>:</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;selectorProbabilityWeightFactoryClass&gt;org.drools.planner.core.heuristic.selector.common.decorator.FairSelectorProbabilityWeightFactory&lt;/selectorProbabilityWeightFactoryClass&gt;
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
     </section>
 
     <section>
       <title>cartesianProductMoveSelector</title>
 
-      <para>TODO</para>
+      <para>A <literal>cartesianProductMoveSelector</literal> selects a new <literal>CompositeMove</literal>. It builds
+      that <literal>CompositeMove</literal> by selecting 1 <literal>Move</literal> per child
+      <literal>MoveSelector</literal> and adding it to the <literal>CompositiveMove</literal>.</para>
+
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">    &lt;cartesianProductMoveSelector&gt;
+      &lt;...MoveSelector/&gt;
+      &lt;...MoveSelector/&gt;
+      &lt;...MoveSelector/&gt;
+      ...
+    &lt;/cartesianProductMoveSelector&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;cartesianProductMoveSelector&gt;
+      ... &lt;!-- Normal moveSelector properties --&gt;
+      &lt;changeMoveSelector&gt;
+        ...
+      &lt;/changeMoveSelector&gt;
+      &lt;swapMoveSelector&gt;
+        ...
+      &lt;/swapMoveSelector&gt;
+      &lt;...MoveSelector&gt;
+        ...
+      &lt;/...MoveSelector&gt;
+      ...
+    &lt;/cartesianProductMoveSelector&gt;</programlisting>
     </section>
   </section>
 
