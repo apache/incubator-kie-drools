@@ -40,6 +40,8 @@ public class I18NText implements Externalizable {
 
     private String language;
 
+    private String shortText;
+
     @Lob @Column(length=65535)
     private String text;
 
@@ -53,6 +55,12 @@ public class I18NText implements Externalizable {
             language = "";
         }
         out.writeUTF( language );
+
+        if( shortText == null ) {
+            shortText = "";
+        }
+        out.writeUTF( shortText );
+
         if( text == null ) { 
             text = "";
         }
@@ -63,12 +71,18 @@ public class I18NText implements Externalizable {
                                             ClassNotFoundException {
         id = in.readLong();
         language = in.readUTF();
+        shortText = in.readUTF();
         text = in.readUTF();        
     }
 
     public I18NText(String language,
                     String text) {
         this.language = language;
+        if (text != null && text.length() > 256) {
+            this.shortText = text.substring(0, 256);
+        } else {
+            this.shortText = text;
+        }
         this.text = text;
     }
 
@@ -101,6 +115,7 @@ public class I18NText implements Externalizable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + ((shortText == null) ? 0 : shortText.hashCode());
         result = prime * result + ((text == null) ? 0 : text.hashCode());
         return result;
     }
@@ -114,6 +129,9 @@ public class I18NText implements Externalizable {
         if ( language == null ) {
             if ( other.language != null ) return false;
         } else if ( !language.equals( other.language ) ) return false;
+        if ( shortText == null ) {
+            if ( other.shortText != null ) return false;
+        } else if ( !shortText.equals( other.shortText ) ) return false;
         if ( text == null ) {
             if ( other.text != null ) return false;
         } else if ( !text.equals( other.text ) ) return false;

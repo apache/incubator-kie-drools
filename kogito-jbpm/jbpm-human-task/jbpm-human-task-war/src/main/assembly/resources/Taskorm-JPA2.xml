@@ -781,7 +781,7 @@ where
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-   <named-query name="TasksByStatusByProcessIdByTaskName">
+    <named-query name="TasksByStatusByProcessIdByTaskName">
         <query>
             select
             new org.jbpm.task.query.TaskSummary(
@@ -810,7 +810,7 @@ where
             where
             t.archived = 0 and
             t.taskData.processInstanceId = :processInstanceId and
-            name.text = :taskName and
+            name.shortText = :taskName and
             (
             name.language = :language
             or t.names.size = 0

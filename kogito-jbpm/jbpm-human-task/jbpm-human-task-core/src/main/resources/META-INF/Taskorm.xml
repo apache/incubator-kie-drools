@@ -781,7 +781,7 @@ where
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-   <named-query name="TasksByStatusByProcessIdByTaskName">
+    <named-query name="TasksByStatusByProcessIdByTaskName">
         <query>
             select
             new org.jbpm.task.query.TaskSummary(
@@ -801,8 +801,8 @@ where
             t.taskData.processId,
             t.taskData.processSessionId)
             from
-            Task t 
-            left join t.taskData.actualOwner as actualOwner            
+            Task t
+            left join t.taskData.actualOwner as actualOwner
             left join t.taskData.createdBy as createdBy
             left join t.subjects as subject
             left join t.descriptions as description
@@ -810,7 +810,7 @@ where
             where
             t.archived = 0 and
             t.taskData.processInstanceId = :processInstanceId and
-            name.text = :taskName and
+            name.shortText = :taskName and
             (
             name.language = :language
             or t.names.size = 0
