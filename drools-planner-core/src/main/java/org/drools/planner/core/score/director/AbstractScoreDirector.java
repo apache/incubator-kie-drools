@@ -219,6 +219,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public AbstractScoreDirector clone() {
+        // Breaks incremental score calculation.
+        // Subclasses should overwrite this method to avoid breaking it if possible.
         AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector();
         clone.setWorkingSolution(workingSolution.cloneSolution());
         return clone;
