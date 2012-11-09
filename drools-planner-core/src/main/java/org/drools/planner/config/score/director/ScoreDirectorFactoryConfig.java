@@ -153,7 +153,7 @@ public class ScoreDirectorFactoryConfig {
     protected ScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
         AbstractScoreDirectorFactory scoreDirectorFactory;
-        // TODO this should fail-fast if multiple scoreDirectorFactory's are configured
+        // TODO this should fail-fast if multiple scoreDirectorFactory's are configured or if non are configured
         scoreDirectorFactory = buildSimpleScoreDirectorFactory();
         if (scoreDirectorFactory == null) {
             scoreDirectorFactory = buildIncrementalScoreDirectorFactory();
