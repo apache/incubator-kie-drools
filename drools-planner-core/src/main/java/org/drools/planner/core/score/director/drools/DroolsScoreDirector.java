@@ -180,6 +180,17 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         return score;
     }
 
+    @Override
+    public AbstractScoreDirector clone() {
+        // TODO experiment with serializing the WorkingMemory to clone it and its entities but not its other facts.
+        // See drools-compiler's test SerializationHelper.getSerialisedStatefulKnowledgeSession(...)
+        // and use an identity FactFactory that:
+        // - returns the reference for a non-@PlanningEntity fact
+        // - returns a clone for a @PlanningEntity fact (Pitfall: chained planning entities)
+        // Note: currently that will break incremental score calculation, but future drools versions might fix that
+        return super.clone();
+    }
+
     protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
         if (!(uncorruptedScoreDirector instanceof DroolsScoreDirector)) {
             return "Unable to analyze: the uncorruptedScoreDirector class (" + uncorruptedScoreDirector.getClass()
