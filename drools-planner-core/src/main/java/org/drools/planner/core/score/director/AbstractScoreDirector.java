@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
  * <p/>
  * Implementation note: Extending classes should follow these guidelines:
  * <ul>
- *     <li>before* method: last statement should be a call to the super method</li>
- *     <li>after* method: first statement should be a call to the super method</li>
+ * <li>before* method: last statement should be a call to the super method</li>
+ * <li>after* method: first statement should be a call to the super method</li>
  * </ul>
  * @see ScoreDirector
  */
@@ -217,7 +217,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         workingSolution.setScore(score);
         calculateCount++;
     }
-    
+
     public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
         List<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
                 .get(planningValue);
@@ -272,6 +272,12 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     public void dispose() {
         // Do nothing
+    }
+
+    public ScoreDirector clone() {
+        ScoreDirector clone = scoreDirectorFactory.buildScoreDirector();
+        clone.setWorkingSolution(workingSolution.cloneSolution());
+        return clone;
     }
 
     @Override
