@@ -3,6 +3,7 @@ package org.drools.builder;
 import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 import java.io.File;
 import java.util.List;
@@ -18,4 +19,8 @@ public interface KnowledgeContainer {
     KnowledgeBase getKnowledgeBase(String kBaseName);
 
     StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName);
+
+    StatelessKnowledgeSession getStatelessKnowlegeSession(String kSessionName);
+
+    void deploy(File... kJars);
 }
