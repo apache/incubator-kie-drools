@@ -61,7 +61,7 @@
             <classpathScope>runtime</classpathScope>
             <arguments>
               <argument>-Xms256m</argument>
-              <argument>-Xmx512m</argument>
+              <argument>-Xmx1024m</argument>
               <argument>-server</argument>
               <argument>-cp</argument>
               <classpath/>
