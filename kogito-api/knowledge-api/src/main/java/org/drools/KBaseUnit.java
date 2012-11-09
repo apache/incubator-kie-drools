@@ -3,6 +3,7 @@ package org.drools;
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 /**
  * This class wraps the definition of a named KnowledgeBase defined in a KnowledgeJar
@@ -43,4 +44,13 @@ public interface KBaseUnit {
      *     The StatefulKnowledgeSession
      */
     StatefulKnowledgeSession newStatefulKnowledegSession(String ksessionName);
+
+    /**
+     * Instance a new StatelessKnowledgeSession identified by the gievn name from the KnowledgeBase wrapped by this KBaseUnit
+     * @param kSessionName
+     *     The name of the StatelessKnowledgeSession
+     * @return
+     *     The StatelessKnowledgeSession
+     */
+    StatelessKnowledgeSession newStatelessKnowledegSession(String ksessionName);
 }
