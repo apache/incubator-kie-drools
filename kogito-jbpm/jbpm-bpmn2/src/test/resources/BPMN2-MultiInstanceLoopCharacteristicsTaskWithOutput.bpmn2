@@ -27,7 +27,7 @@
     <userTask id="_2" name="Hello" tns:taskName="Human Task">
       <extensionElements>
         <tns:onEntry-script>
-          <script>System.out.println("Hello");context.setVariable("itemOut", "test");</script>
+          <tns:script>System.out.println("Hello");context.setVariable("itemOut", "test");</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>

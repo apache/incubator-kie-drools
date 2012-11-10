@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <definitions id="Definition"
-             targetNamespace="http://www.jboss.org/drools"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -30,9 +29,9 @@
     <userTask id="_2" name="Self Evaluation" >
       <extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <script>java.util.Map contentParam = new java.util.HashMap();
+          <tns:script>java.util.Map contentParam = new java.util.HashMap();
 contentParam.put("reason", reason);
-kcontext.setVariable("content", contentParam);</script>
+kcontext.setVariable("content", contentParam);</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>
@@ -89,10 +88,10 @@ kcontext.setVariable("content", contentParam);</script>
     <userTask id="_3" name="PM Evaluation" >
       <extensionElements>
         <tns:onEntry-script>
-          <script>java.util.Map contentParam = new java.util.HashMap();
+          <tns:script>java.util.Map contentParam = new java.util.HashMap();
 contentParam.put("reason", reason);
 contentParam.put("performance", performance);
-kcontext.setVariable("content", contentParam);</script>
+kcontext.setVariable("content", contentParam);</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>
@@ -143,10 +142,10 @@ kcontext.setVariable("content", contentParam);</script>
     <userTask id="_4" name="HR Evaluation" >
       <extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <script>java.util.Map contentParam = new java.util.HashMap();
+          <tns:script>java.util.Map contentParam = new java.util.HashMap();
 contentParam.put("reason", reason);
 contentParam.put("performance", performance);
-kcontext.setVariable("content", contentParam);</script>
+kcontext.setVariable("content", contentParam);</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>

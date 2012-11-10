@@ -22,16 +22,16 @@
     <task id="_2" name="Task" tns:taskName="MyTask" >
       <extensionElements>
         <tns:onEntry-script>
-          <script>list.add("On-entry1");</script>
+          <tns:script>list.add("On-entry1");</tns:script>
         </tns:onEntry-script>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <script>list.add("On-entry2");</script>
+          <tns:script>list.add("On-entry2");</tns:script>
         </tns:onEntry-script>
         <tns:onExit-script>
-          <script>list.add("On-exit1");</script>
+          <tns:script>list.add("On-exit1");</tns:script>
         </tns:onExit-script>
         <tns:onExit-script scriptFormat="http://www.java.com/java">
-          <script>list.add("On-exit2");</script>
+          <tns:script>list.add("On-exit2");</tns:script>
         </tns:onExit-script>
       </extensionElements>
     </task>
