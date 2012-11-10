@@ -45,6 +45,7 @@
   </scm>
 
   <modules>
+    <module>kie-api</module>
     <module>knowledge-api</module>
     <module>knowledge-internal-api</module>
   </modules>
