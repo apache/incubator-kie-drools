@@ -1,13 +1,20 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import org.drools.Cheese;
+import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StringConcrete;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.base.mvel.MVELDebugHandler;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
@@ -20,6 +27,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -36,6 +44,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.junit.Test;
@@ -43,8 +52,10 @@ import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
 
+
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -439,4 +450,40 @@ public class MVELConsequenceBuilderTest {
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );
         assertNotSame(  context.getRule().getNamedConsequences().get( "name1"), context.getRule().getNamedConsequences().get( "name2" ) );
     }
+    
+    
+	@Test
+	public void testConcreteClassWithGenericMember() {
+		
+
+		String javaDrl = 	"package foo \n" +
+							"import org.drools.StringConcrete \n" +
+							"rule java \n" + 
+							"when \n" + 
+							"$S : StringConcrete()  \n" +
+							"then \n" +
+							"System.out.println( $S.getFoo().concat(\"this works with java dialect\") ); \n" +
+							"end \n";
+
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		
+		kbuilder.add( ResourceFactory.newReaderResource( new StringReader( javaDrl ) ), ResourceType.DRL );
+
+		assertFalse( kbuilder.hasErrors() );
+		
+		String mvelDrl = 	"package foo \n" +
+							"import org.drools.StringConcrete \n" +
+							"rule mvel \n" + 
+							"dialect \"mvel\" \n" +
+							"when \n" + 
+							"$S : StringConcrete()  \n" +
+							"then \n" +
+							"System.out.println( $S.getFoo().concat(\"but not in mvel\") ); \n" +
+							"end \n";
+
+		kbuilder.add( ResourceFactory.newReaderResource( new StringReader( mvelDrl ) ), ResourceType.DRL );
+
+		System.err.println( kbuilder.getErrors() );
+		assertFalse( kbuilder.hasErrors() );
+	}
 }
