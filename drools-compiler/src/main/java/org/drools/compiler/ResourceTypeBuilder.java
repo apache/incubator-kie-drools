@@ -1,8 +1,8 @@
 package org.drools.compiler;
 
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 public interface ResourceTypeBuilder {
 

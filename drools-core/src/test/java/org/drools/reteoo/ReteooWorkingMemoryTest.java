@@ -27,12 +27,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+
 import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -50,8 +53,6 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.GlobalResolver;
 
 import com.google.protobuf.Message;
@@ -190,7 +191,7 @@ public class ReteooWorkingMemoryTest {
         
         rbase.getRete().addObjectSink( epn );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        org.drools.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
+        org.kie.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
         
         WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "xxx" );
         try {

@@ -1,24 +1,15 @@
 package org.drools.games.wumpus;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import static org.drools.KnowledgeBaseFactory.*;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import static org.drools.builder.ResourceType.DRL;
-import org.drools.builder.conf.DeclarativeAgendaOption;
-import org.drools.event.rule.DebugAgendaEventListener;
-import org.drools.event.rule.DebugWorkingMemoryEventListener;
-import org.drools.event.rule.DefaultAgendaEventListener;
-import org.drools.event.rule.DefaultWorkingMemoryEventListener;
-import org.drools.games.pong.PongConfiguration;
+import static org.kie.builder.ResourceType.DRL;
+import static org.kie.io.ResourceFactory.newClassPathResource;
+
 import org.drools.games.wumpus.view.GameView;
-import org.drools.io.ResourceFactory;
-import static org.drools.io.ResourceFactory.newClassPathResource;
-import org.drools.runtime.Channel;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.runtime.Channel;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class WumpusWorldMain {
 

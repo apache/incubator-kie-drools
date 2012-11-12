@@ -48,11 +48,11 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
-import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.KnowledgeHelper;
+import org.kie.runtime.rule.AccumulateFunction;
 
 public class AccumulateNodeStep
     implements

@@ -9,10 +9,10 @@ import java.util.Map;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.process.instance.WorkItem;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
 
 public class OldOutputMarshallerMethods {
 

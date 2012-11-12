@@ -23,8 +23,8 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
 
 public class EncodedResource  extends BaseResource implements InternalResource {
     private final InternalResource resource;

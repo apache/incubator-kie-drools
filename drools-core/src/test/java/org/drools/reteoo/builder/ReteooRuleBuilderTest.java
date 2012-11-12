@@ -52,7 +52,7 @@ public class ReteooRuleBuilderTest {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.builder.ReteooRuleBuilder#addRule(org.drools.rule.Rule, org.drools.reteoo.ReteooRuleBase, java.util.Map, int)}.
+     * Test method for {@link org.kie.reteoo.builder.ReteooRuleBuilder#addRule(org.kie.rule.Rule, org.kie.reteoo.ReteooRuleBase, java.util.Map, int)}.
      */
     @Test
     public void testAddRuleWithPatterns() {

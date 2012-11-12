@@ -49,11 +49,11 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.util.PackageBuilderUtil;
-import org.drools.runtime.rule.AccumulateFunction;
-import org.drools.runtime.rule.TypedAccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.InternalReadAccessor;
+import org.kie.runtime.rule.AccumulateFunction;
+import org.kie.runtime.rule.TypedAccumulateFunction;
 
 /**
  * A builder for the java dialect accumulate version

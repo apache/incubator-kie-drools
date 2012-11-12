@@ -5,7 +5,7 @@
    xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
 
    <import name="java.util.List" />
-   <import name="org.drools.Person" />
+   <import name="org.kie.Person" />
 
    <global identifier="list" type="List" />
 

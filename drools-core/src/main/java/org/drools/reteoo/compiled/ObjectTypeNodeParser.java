@@ -171,7 +171,7 @@ public class ObjectTypeNodeParser {
     }
 
     /**
-     * Returns the first {@link org.drools.reteoo.AlphaNode} from the specified {@link ObjectHashMap}.
+     * Returns the first {@link org.kie.reteoo.AlphaNode} from the specified {@link ObjectHashMap}.
      *
      * @param hashedAlphaNodes map of hashed AlphaNodes
      * @return first alpha from the specified map
@@ -198,7 +198,7 @@ public class ObjectTypeNodeParser {
      *
      * @param alphaNode hashed alpha to get reader for
      * @return ClassFieldReader
-     * @throws IllegalArgumentException thrown if the AlphaNode's {@link org.drools.spi.AlphaNodeFieldConstraint} is not a
+     * @throws IllegalArgumentException thrown if the AlphaNode's {@link org.kie.spi.AlphaNodeFieldConstraint} is not a
      *                                  {@link MvelConstraint}.
      */
     private ClassFieldReader getClassFieldReaderForHashedAlpha(final AlphaNode alphaNode) throws IllegalArgumentException {

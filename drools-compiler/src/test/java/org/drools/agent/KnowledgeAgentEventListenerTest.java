@@ -4,21 +4,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeResourceProcessedEvent;
+import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
+import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 

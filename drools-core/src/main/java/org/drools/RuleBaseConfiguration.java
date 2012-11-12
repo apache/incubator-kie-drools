@@ -16,47 +16,48 @@
 
 package org.drools;
 
-import org.drools.builder.conf.ClassLoaderCacheOption;
-import org.drools.builder.conf.DeclarativeAgendaOption;
-import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.concurrent.DefaultExecutorService;
-import org.drools.conf.AlphaThresholdOption;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.CompositeKeyDepthOption;
-import org.drools.conf.ConsequenceExceptionHandlerOption;
-import org.drools.conf.EventProcessingOption;
-import org.drools.conf.IndexLeftBetaMemoryOption;
-import org.drools.conf.IndexPrecedenceOption;
-import org.drools.conf.IndexRightBetaMemoryOption;
-import org.drools.conf.KnowledgeBaseOption;
-import org.drools.conf.LogicalOverrideOption;
-import org.drools.conf.MBeansOption;
-import org.drools.conf.MaintainTMSOption;
-import org.drools.conf.MaxThreadsOption;
-import org.drools.conf.MultiValueKnowledgeBaseOption;
-import org.drools.conf.MultithreadEvaluationOption;
-import org.drools.conf.PermGenThresholdOption;
-import org.drools.conf.RemoveIdentitiesOption;
-import org.drools.conf.SequentialAgendaOption;
-import org.drools.conf.SequentialOption;
-import org.drools.conf.ShareAlphaNodesOption;
-import org.drools.conf.ShareBetaNodesOption;
-import org.drools.conf.SingleValueKnowledgeBaseOption;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.reteoo.LeftTupleSinkNode;
 import org.drools.reteoo.ReteooComponentFactory;
-import org.drools.runtime.rule.ConsequenceExceptionHandler;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
-import org.drools.util.CompositeClassLoader;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.builder.conf.ClassLoaderCacheOption;
+import org.kie.builder.conf.DeclarativeAgendaOption;
+import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.conf.AlphaThresholdOption;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.CompositeKeyDepthOption;
+import org.kie.conf.ConsequenceExceptionHandlerOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.conf.IndexLeftBetaMemoryOption;
+import org.kie.conf.IndexPrecedenceOption;
+import org.kie.conf.IndexRightBetaMemoryOption;
+import org.kie.conf.KnowledgeBaseOption;
+import org.kie.conf.LogicalOverrideOption;
+import org.kie.conf.MBeansOption;
+import org.kie.conf.MaintainTMSOption;
+import org.kie.conf.MaxThreadsOption;
+import org.kie.conf.MultiValueKnowledgeBaseOption;
+import org.kie.conf.MultithreadEvaluationOption;
+import org.kie.conf.PermGenThresholdOption;
+import org.kie.conf.RemoveIdentitiesOption;
+import org.kie.conf.SequentialAgendaOption;
+import org.kie.conf.SequentialOption;
+import org.kie.conf.ShareAlphaNodesOption;
+import org.kie.conf.ShareBetaNodesOption;
+import org.kie.conf.SingleValueKnowledgeBaseOption;
+import org.kie.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -459,16 +460,16 @@ public class RuleBaseConfiguration
                                                                                                           "identity" ) ) );
 
         setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
-                                                                "org.drools.concurrent.DefaultExecutorService" ) );
+                                                                "org.kie.concurrent.DefaultExecutorService" ) );
 
         setConsequenceExceptionHandler( this.chainedProperties.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME,
-                                                                            "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
+                                                                            "org.kie.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
 
         setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
                                                                       "" ) );
 
         setConflictResolver( determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
-                                                        "org.drools.conflict.DepthConflictResolver" ) ) );
+                                                        "org.kie.conflict.DepthConflictResolver" ) ) );
 
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );

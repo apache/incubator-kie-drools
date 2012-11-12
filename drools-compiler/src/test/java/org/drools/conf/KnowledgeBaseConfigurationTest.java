@@ -18,11 +18,29 @@ package org.drools.conf;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.conf.AlphaThresholdOption;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.CompositeKeyDepthOption;
+import org.kie.conf.ConsequenceExceptionHandlerOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.conf.IndexLeftBetaMemoryOption;
+import org.kie.conf.IndexPrecedenceOption;
+import org.kie.conf.IndexRightBetaMemoryOption;
+import org.kie.conf.MaintainTMSOption;
+import org.kie.conf.MaxThreadsOption;
+import org.kie.conf.MultithreadEvaluationOption;
+import org.kie.conf.PermGenThresholdOption;
+import org.kie.conf.RemoveIdentitiesOption;
+import org.kie.conf.SequentialAgendaOption;
+import org.kie.conf.SequentialOption;
+import org.kie.conf.ShareAlphaNodesOption;
+import org.kie.conf.ShareBetaNodesOption;
+import org.kie.runtime.rule.ConsequenceExceptionHandler;
+
 import static org.junit.Assert.*;
 
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.runtime.rule.ConsequenceExceptionHandler;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 
 public class KnowledgeBaseConfigurationTest {

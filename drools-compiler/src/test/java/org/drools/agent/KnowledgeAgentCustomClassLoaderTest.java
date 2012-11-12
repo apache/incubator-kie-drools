@@ -8,14 +8,15 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest {
 
@@ -59,9 +60,9 @@ public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest 
      */
     private void testKagentWithCustomClassLoader(boolean newInstance, boolean useKBaseClassLoaderForCompiling) throws Exception {
 
-        //A simple rule using a class (org.drools.agent.test.KnowledgeAgentInstance)
+        //A simple rule using a class (org.kie.agent.test.KnowledgeAgentInstance)
         //that is not present in the classloader.
-        String rule = this.createCustomRule(true, "org.drools.test", new String[]{"org.drools.agent.test.KnowledgeAgentInstance"}, new String[]{"rule1"}, null, "   KnowledgeAgentInstance($id: instanceId)\n","  list.add(\"Instance number \"+$id);\n");
+        String rule = this.createCustomRule(true, "org.kie.test", new String[]{"org.kie.agent.test.KnowledgeAgentInstance"}, new String[]{"rule1"}, null, "   KnowledgeAgentInstance($id: instanceId)\n","  list.add(\"Instance number \"+$id);\n");
         this.fileManager.write("rule1.drl", rule);
 
         //The change set to process the created resource
@@ -132,7 +133,7 @@ public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest 
         ksession.setGlobal("list", list);
 
         //Create a new KnowledgeAgentInstance and set its instanceId = 2
-        Class<?> modelClass = ucl.loadClass("org.drools.agent.test.KnowledgeAgentInstance");
+        Class<?> modelClass = ucl.loadClass("org.kie.agent.test.KnowledgeAgentInstance");
         Object modelInstance = modelClass.newInstance();
         modelClass.getMethod("setInstanceId", int.class).invoke(modelInstance, 2);
 

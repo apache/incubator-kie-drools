@@ -75,42 +75,42 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getMemory()
+     * @see org.kie.reteoo.LeftTuple#getMemory()
      */
     public LeftTupleList getMemory() {
         return this.memory;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
+     * @see org.kie.reteoo.LeftTuple#setMemory(org.kie.core.util.index.LeftTupleList)
      */
     public void setMemory(LeftTupleList memory) {
         this.memory = memory;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getPrevious()
+     * @see org.kie.reteoo.LeftTuple#getPrevious()
      */
     public Entry getPrevious() {
         return previous;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setPrevious(org.drools.core.util.Entry)
+     * @see org.kie.reteoo.LeftTuple#setPrevious(org.kie.core.util.Entry)
      */
     public void setPrevious(Entry previous) {
         this.previous = previous;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setNext(org.drools.core.util.Entry)
+     * @see org.kie.reteoo.LeftTuple#setNext(org.kie.core.util.Entry)
      */
     public void setNext(final Entry next) {
         this.next = next;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getNext()
+     * @see org.kie.reteoo.LeftTuple#getNext()
      */
     public Entry getNext() {
         return this.next;

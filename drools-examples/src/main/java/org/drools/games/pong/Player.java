@@ -1,6 +1,6 @@
 package org.drools.games.pong;
 
-import org.drools.definition.type.PropertyReactive;
+import org.kie.definition.type.PropertyReactive;
 
 @PropertyReactive
 public class Player {

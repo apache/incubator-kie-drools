@@ -17,8 +17,9 @@
 package org.drools.agent.impl;
 
 import java.util.Set;
-import org.drools.definition.KnowledgeDefinition;
-import org.drools.definition.KnowledgePackage;
+
+import org.kie.definition.KnowledgeDefinition;
+import org.kie.definition.KnowledgePackage;
 
 public class ResourceDiffResult {
     private final KnowledgePackage pkg;

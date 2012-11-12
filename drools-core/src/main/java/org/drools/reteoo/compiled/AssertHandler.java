@@ -46,8 +46,8 @@ class AssertHandler extends AbstractCompilerHandler {
 
     /**
      * This flag is used to instruct the AssertHandler to tell it to generate a local varible
-     * in the {@link org.drools.reteoo.compiled.CompiledNetwork#assertObject} for holding the value returned
-     * from the {@link org.drools.common.InternalFactHandle#getObject()}.
+     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#assertObject} for holding the value returned
+     * from the {@link org.kie.common.InternalFactHandle#getObject()}.
      *
      * This is only needed if there is at least 1 set of hashed alpha nodes in the network
      */

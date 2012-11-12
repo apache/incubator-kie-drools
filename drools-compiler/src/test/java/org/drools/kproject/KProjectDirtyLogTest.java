@@ -4,10 +4,10 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
-import org.drools.runtime.conf.ClockTypeOption;
 import org.junit.Test;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.conf.ClockTypeOption;
 
 public class KProjectDirtyLogTest {
 

@@ -16,8 +16,8 @@
 
 package org.drools.builder.conf.impl;
 
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
 
 public class DecisionTableConfigurationImpl implements DecisionTableConfiguration {
     

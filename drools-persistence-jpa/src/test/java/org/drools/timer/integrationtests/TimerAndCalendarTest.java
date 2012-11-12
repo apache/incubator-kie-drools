@@ -12,33 +12,33 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.ClockType;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.base.MapGlobalResolver;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.conf.EventProcessingOption;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.type.FactType;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.conf.EventProcessingOption;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.type.FactType;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.time.SessionClock;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -71,7 +71,7 @@ public class TimerAndCalendarTest {
                            TimeUnit.MILLISECONDS );
 
         // build timer rule, if the rule is fired, the list size will increase every 500ms
-        String timerRule = "package org.drools.test\n" +
+        String timerRule = "package org.kie.test\n" +
                            "global java.util.List list \n" +
                            "rule TimerRule \n" +
                            "   timer (int:1000 500) \n" +
@@ -150,7 +150,7 @@ public class TimerAndCalendarTest {
                            TimeUnit.MILLISECONDS );
 
         // build timer rule, if the rule is fired, the list size will increase every 300ms
-        String timerRule = "package org.drools.test\n" +
+        String timerRule = "package org.kie.test\n" +
                            "global java.util.List list \n" +
                            "rule TimerRule \n" +
                            "   timer (cron: * * * * * ?) \n" +
@@ -210,7 +210,7 @@ public class TimerAndCalendarTest {
 
     @Test
     public void testEventExpires() throws Exception {
-        String timerRule = "package org.drools.test\n" +
+        String timerRule = "package org.kie.test\n" +
                            "declare TestEvent \n" +
                            "    @role( event )\n" +
                            "    @expires( 10s )\n" +
@@ -230,7 +230,7 @@ public class TimerAndCalendarTest {
         kbase.addKnowledgePackages( kpackages );
         StatefulKnowledgeSession ksession = createSession( kbase );
 
-        FactType type = kbase.getFactType( "org.drools.test",
+        FactType type = kbase.getFactType( "org.kie.test",
                                            "TestEvent" );
         Assert.assertNotNull( "could not get type",
                               type );

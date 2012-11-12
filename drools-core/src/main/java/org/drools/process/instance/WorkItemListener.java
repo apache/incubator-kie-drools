@@ -16,7 +16,7 @@
 
 package org.drools.process.instance;
 
-import org.drools.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItem;
 
 public interface WorkItemListener {
 

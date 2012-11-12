@@ -16,8 +16,8 @@
 
 package org.drools.compiler;
 
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.util.ServiceRegistryImpl;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.util.ServiceRegistryImpl;
 
 import java.io.InputStream;
 
@@ -37,7 +37,7 @@ public class PMMLCompilerFactory {
     }
 
     private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( PMMLCompiler.class,  "org.drools.pmml_4_0.PMML4Compiler" );
+        ServiceRegistryImpl.getInstance().addDefault( PMMLCompiler.class,  "org.kie.pmml_4_0.PMML4Compiler" );
         setProvider(ServiceRegistryImpl.getInstance().get(PMMLCompiler.class));
     }
 }

@@ -21,9 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.OrderEvent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -36,10 +33,6 @@ import org.drools.StockTickInterface;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -47,36 +40,43 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.type.FactType;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ObjectType;
-import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.type.FactType;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.time.SessionClock;
 import org.mockito.ArgumentCaptor;
 
 public class CepEspTest extends CommonTestMethodBase {
@@ -1233,7 +1233,7 @@ public class CepEspTest extends CommonTestMethodBase {
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
-        final Rule rule = (Rule) kbase.getRule( "org.drools", "Delaying Not" );
+        final Rule rule = (Rule) kbase.getRule( "org.kie", "Delaying Not" );
         assertEquals( 10000,
                       ((DurationTimer) rule.getTimer()).getDuration() );
 
@@ -1292,7 +1292,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testDelayingNot2() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1318,7 +1318,7 @@ public class CepEspTest extends CommonTestMethodBase {
     
     @Test
     public void testDelayingNotWithPreEpochClock() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1693,7 +1693,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testPseudoSchedulerRemoveJobTest() {
-        String str = "import org.drools.integrationtests.CepEspTest.A\n";
+        String str = "import org.kie.integrationtests.CepEspTest.A\n";
         str += "declare A\n";
         str += "    @role( event )\n";
         str += "end\n";
@@ -2164,8 +2164,8 @@ public class CepEspTest extends CommonTestMethodBase {
                                          InstantiationException,
                                          IllegalAccessException,
                                          InterruptedException {
-        String str = "package org.drools.cloud\n" +
-                     "import org.drools.*\n" +
+        String str = "package org.kie.cloud\n" +
+                     "import org.kie.*\n" +
                      "declare Event\n" +
                      "        @role ( event )\n" +
                      "        name : String\n" +
@@ -2201,7 +2201,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 0,
                       rulesFired );
 
-        org.drools.definition.type.FactType event = kbase.getFactType( "org.drools.cloud",
+        org.kie.definition.type.FactType event = kbase.getFactType( "org.kie.cloud",
                                                                        "Event" );
         Object e1 = event.newInstance();
         event.set( e1,
@@ -2227,7 +2227,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSalienceWithEventsPseudoClock() throws IOException,
                                                    ClassNotFoundException {
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +
@@ -2310,7 +2310,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSalienceWithEventsRealtimeClock() throws IOException,
                                                      ClassNotFoundException, InterruptedException {
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +

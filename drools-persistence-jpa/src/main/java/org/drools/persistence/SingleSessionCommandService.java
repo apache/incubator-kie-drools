@@ -21,11 +21,8 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.command.BatchExecutionCommand;
-import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
 import org.drools.command.Interceptor;
@@ -42,12 +39,15 @@ import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.time.AcceptsTimerJobFactoryManager;
+import org.kie.KnowledgeBase;
+import org.kie.command.BatchExecutionCommand;
+import org.kie.command.Command;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,14 +280,14 @@ public class SingleSessionCommandService
         } else {
             if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
                 try {
-                    Class< ? > cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
+                    Class< ? > cls = Class.forName( "org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager" );
                     Constructor< ? > con = cls.getConstructors()[0];
                     this.txm = (TransactionManager) con.newInstance( tm );
                     logger.debug( "Instantiating  DroolsSpringTransactionManager" );
 
                     //                    if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
                     // configure spring for JPA and local transactions
-                    cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
+                    cls = Class.forName( "org.kie.container.spring.beans.persistence.DroolsSpringJpaManager" );
                     con = cls.getConstructors()[0];
                     this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
                     //                    } else {
@@ -295,7 +295,7 @@ public class SingleSessionCommandService
                     //                    }
                 } catch ( Exception e ) {
                     logger.warn( "Could not instatiate DroolsSpringTransactionManager" );
-                    throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager",
+                    throw new RuntimeException( "Could not instatiate org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager",
                                                 e );
                 }
             } else {

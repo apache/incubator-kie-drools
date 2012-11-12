@@ -1,6 +1,16 @@
 package org.drools.verifier;
 
-import org.drools.builder.conf.LanguageLevelOption;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.jar.JarInputStream;
+
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
@@ -11,15 +21,7 @@ import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 import org.junit.Before;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.jar.JarInputStream;
-
-import static org.junit.Assert.*;
+import org.kie.builder.conf.LanguageLevelOption;
 
 public class TestBase {
 

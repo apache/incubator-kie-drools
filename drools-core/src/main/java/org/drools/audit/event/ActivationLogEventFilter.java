@@ -42,7 +42,7 @@ public class ActivationLogEventFilter
     }
 
     /**
-     * @see org.drools.audit.event.ILogEventFilter
+     * @see org.kie.audit.event.ILogEventFilter
      */
     public boolean acceptEvent(final LogEvent event) {
         switch ( event.getType() ) {

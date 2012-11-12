@@ -9,7 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.drools.examples" level="info"/>
+  <logger name="org.kie.examples" level="info"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

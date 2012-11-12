@@ -30,8 +30,6 @@ import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategy.Context;
 import org.drools.marshalling.impl.ProtobufMessages.Header;
 import org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
 import org.drools.reteoo.LeftTuple;
@@ -39,6 +37,8 @@ import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.rule.SlidingTimeWindow.BehaviorExpireWMAction;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategy.Context;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ByteString.Output;

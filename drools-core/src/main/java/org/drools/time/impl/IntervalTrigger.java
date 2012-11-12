@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
+import org.kie.runtime.Calendars;
 
 public class IntervalTrigger
     implements
@@ -227,7 +227,7 @@ public class IntervalTrigger
             boolean included = true;
             for ( String calName : this.calendarNames ) {
                 // all calendars must not block, as soon as one blocks break
-                org.drools.time.Calendar cal = this.calendars.get( calName );
+                org.kie.time.Calendar cal = this.calendars.get( calName );
                 if ( cal != null && !cal.isTimeIncluded( this.nextFireTime.getTime() ) ) {
                     included = false;
                     break;

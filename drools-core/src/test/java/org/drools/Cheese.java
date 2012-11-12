@@ -52,28 +52,28 @@ public class Cheese
     }
 
     /* (non-Javadoc)
-     * @see org.drools.CheeseInterface#getType()
+     * @see org.kie.CheeseInterface#getType()
      */
     public String getType() {
         return this.type;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.CheeseInterface#getPrice()
+     * @see org.kie.CheeseInterface#getPrice()
      */
     public int getPrice() {
         return this.price;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.CheeseInterface#setPrice(int)
+     * @see org.kie.CheeseInterface#setPrice(int)
      */
     public void setPrice(final int price) {
         this.price = price;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.CheeseInterface#setType(java.lang.String)
+     * @see org.kie.CheeseInterface#setType(java.lang.String)
      */
     public void setType(final String type) {
         this.type = type;

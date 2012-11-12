@@ -18,7 +18,7 @@ package org.drools.process.instance;
 
 import java.util.Map;
 
-public interface WorkItem extends org.drools.runtime.process.WorkItem {
+public interface WorkItem extends org.kie.runtime.process.WorkItem {
 
     void setName(String name);
 

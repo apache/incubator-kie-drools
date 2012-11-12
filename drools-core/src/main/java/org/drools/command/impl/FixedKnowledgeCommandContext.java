@@ -16,14 +16,14 @@
 
 package org.drools.command.impl;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilder;
 import org.drools.command.Context;
 import org.drools.command.World;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.WorkItemManager;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class FixedKnowledgeCommandContext
     implements

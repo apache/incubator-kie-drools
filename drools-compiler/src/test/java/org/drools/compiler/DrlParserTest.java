@@ -6,12 +6,6 @@ import static org.junit.Assert.assertNull;
 import java.io.StringReader;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.builder.conf.LanguageLevelOption;
-import org.drools.io.ResourceFactory;
 import org.drools.lang.Expander;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -21,6 +15,12 @@ import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.io.ResourceFactory;
 
 public class DrlParserTest {
 

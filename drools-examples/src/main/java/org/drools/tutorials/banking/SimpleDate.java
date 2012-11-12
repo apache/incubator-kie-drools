@@ -18,7 +18,6 @@ package org.drools.tutorials.banking;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
 

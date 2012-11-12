@@ -15,10 +15,10 @@ import java.util.Collection;
  */
 public class ObjectTypeNodeCompiler {
     private static final String NEWLINE = "\n";
-    private static final String PACKAGE_NAME = "org.drools.reteoo.compiled";
+    private static final String PACKAGE_NAME = "org.kie.reteoo.compiled";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replaceAll("\\.", "/");
     /**
-     * This field hold the fully qualified class name that the {@link org.drools.reteoo.ObjectTypeNode} is representing.
+     * This field hold the fully qualified class name that the {@link org.kie.reteoo.ObjectTypeNode} is representing.
      */
     private String className;
 
@@ -113,7 +113,7 @@ public class ObjectTypeNodeCompiler {
     }
 
     /**
-     * Returns the fully qualified name of the generated subclass of {@link org.drools.reteoo.compiled.CompiledNetwork}
+     * Returns the fully qualified name of the generated subclass of {@link org.kie.reteoo.compiled.CompiledNetwork}
      *
      * @return name of generated class
      */
@@ -122,7 +122,7 @@ public class ObjectTypeNodeCompiler {
     }
 
     /**
-     * Returns the fully qualified binary name of the generated subclass of {@link org.drools.reteoo.compiled.CompiledNetwork}
+     * Returns the fully qualified binary name of the generated subclass of {@link org.kie.reteoo.compiled.CompiledNetwork}
      *
      * @return binary name of generated class
      */

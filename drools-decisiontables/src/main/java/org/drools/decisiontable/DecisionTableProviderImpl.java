@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
+import org.kie.builder.KnowledgeBuilderFactory;
 
 public class DecisionTableProviderImpl
     implements

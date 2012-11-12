@@ -15,17 +15,17 @@
  */
 
 //created on: 7.6.2007
-package org.drools.verifier.rangeChecks.patterns;
+package org.kie.verifier.rangeChecks.patterns;
 
 //list any import classes here.
-import org.drools.base.evaluators.Operator;
+import org.kie.base.evaluators.Operator;
 
-import org.drools.verifier.components.*;
-import org.drools.verifier.report.components.MissingNumberPattern;
-import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.FindMissingNumber;
+import org.kie.verifier.components.*;
+import org.kie.verifier.report.components.MissingNumberPattern;
+import org.kie.verifier.report.components.Cause;
+import org.kie.verifier.FindMissingNumber;
 
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.data.VerifierReport;
 
 import java.util.ArrayList;
 import java.util.List;

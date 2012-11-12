@@ -24,7 +24,7 @@ import org.drools.spi.AgendaFilter;
  */
 public class RuleNameEndsWithAgendaFilter
     implements
-    AgendaFilter, org.drools.runtime.rule.AgendaFilter {
+    AgendaFilter, org.kie.runtime.rule.AgendaFilter {
     private final String  suffix;
 
     private final boolean accept;
@@ -48,7 +48,7 @@ public class RuleNameEndsWithAgendaFilter
         }
     }
 
-    public boolean accept( org.drools.runtime.rule.Activation activation ) {
+    public boolean accept( org.kie.runtime.rule.Activation activation ) {
         if ( activation.getRule().getName().endsWith( this.suffix ) ) {
             return this.accept;
         } else {

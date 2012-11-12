@@ -16,7 +16,7 @@
 
 package org.drools.agent;
 
-import org.drools.SystemEventListener;
+import org.kie.SystemEventListener;
 
 /**
  * This interface is used to provide callback style logging for the agents

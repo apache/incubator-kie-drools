@@ -9,18 +9,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.drools.KnowledgeBase;
-import org.drools.SystemEventListenerFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.SystemEventListenerFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.io.ResourceFactory;
 
 public class ScannerChangeSetTest {
 

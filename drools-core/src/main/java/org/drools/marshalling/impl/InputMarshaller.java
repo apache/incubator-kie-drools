@@ -59,7 +59,6 @@ import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
@@ -93,8 +92,6 @@ import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingLengthWindow.SlidingLengthWindowContext;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.SlidingTimeWindow.SlidingTimeWindowContext;
-import org.drools.runtime.Environment;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.FactHandleFactory;
@@ -105,6 +102,9 @@ import org.drools.time.impl.CronTrigger;
 import org.drools.time.impl.IntervalTrigger;
 import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.Environment;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class InputMarshaller {
 

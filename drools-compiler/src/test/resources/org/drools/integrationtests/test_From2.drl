@@ -1,9 +1,9 @@
-package org.drools.test;
+package org.kie.test;
  
 //we don't use the import, as class is fully qualified below
-//import org.drools.integrationtests.helloworld.Message
-import org.drools.Cheese;
-import org.drools.Cheesery;
+//import org.kie.integrationtests.helloworld.Message
+import org.kie.Cheese;
+import org.kie.Cheesery;
 import java.util.List;
 
 global List list1;

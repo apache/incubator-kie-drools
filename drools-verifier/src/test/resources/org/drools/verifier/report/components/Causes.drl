@@ -15,7 +15,7 @@
  */
 
 //created on: 25-Feb-2010
-package org.drools.verifier.report.components
+package org.kie.verifier.report.components
 
 //list any import classes here.
 

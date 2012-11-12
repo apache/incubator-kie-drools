@@ -18,7 +18,7 @@ public class JavaInterfacePointsDescr extends AbstractJavaBlockDescr implements 
     }
     
     /* (non-Javadoc)
-     * @see org.drools.rule.builder.dialect.java.parser.JavaBlockDescr#getStart()
+     * @see org.kie.rule.builder.dialect.java.parser.JavaBlockDescr#getStart()
      */
     public int getStart() {
         return start;
@@ -27,7 +27,7 @@ public class JavaInterfacePointsDescr extends AbstractJavaBlockDescr implements 
         this.start = start;
     }
     /* (non-Javadoc)
-     * @see org.drools.rule.builder.dialect.java.parser.JavaBlockDescr#getEnd()
+     * @see org.kie.rule.builder.dialect.java.parser.JavaBlockDescr#getEnd()
      */
     public int getEnd() {
         return end;

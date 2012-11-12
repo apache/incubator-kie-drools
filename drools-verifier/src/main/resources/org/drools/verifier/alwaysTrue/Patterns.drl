@@ -20,21 +20,21 @@
 // Rules in this package look for patterns and rules that are always satisfied.
 //
 //
-package org.drools.verifier.alwaysTrue
+package org.kie.verifier.alwaysTrue
 
 
-import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.SubPattern;
-import org.drools.verifier.components.VerifierRule;
+import org.kie.verifier.components.Restriction;
+import org.kie.verifier.components.Pattern;
+import org.kie.verifier.components.SubPattern;
+import org.kie.verifier.components.VerifierRule;
 
-import org.drools.verifier.report.components.AlwaysTrue;
-import org.drools.verifier.report.components.Opposites;
-import org.drools.verifier.report.components.VerifierMessage;
-import org.drools.verifier.report.components.Severity;
-import org.drools.verifier.report.components.MessageType;
+import org.kie.verifier.report.components.AlwaysTrue;
+import org.kie.verifier.report.components.Opposites;
+import org.kie.verifier.report.components.VerifierMessage;
+import org.kie.verifier.report.components.Severity;
+import org.kie.verifier.report.components.MessageType;
 
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.data.VerifierReport;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -104,7 +104,7 @@ end
 //
 // Dependencies:
 //    Needs at least one of the following packages or rules to fire:
-//         package org.drools.verifier.alwaysTrue;
+//         package org.kie.verifier.alwaysTrue;
 //            rule "Pattern possibility that is always true"
 //
 // Example:

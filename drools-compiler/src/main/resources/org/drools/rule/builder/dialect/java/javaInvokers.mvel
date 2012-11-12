@@ -1,16 +1,16 @@
 @declare{"getMethodBytecode"}
     public java.util.List getMethodBytecode() {
-        return org.drools.rule.Rule.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" );
+        return org.kie.rule.Rule.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" );
     }
 @end{}
 
 
 @declare{"equals"}
     public boolean equals(Object object) {
-        if ( object == null || !(object instanceof  org.drools.spi.CompiledInvoker) ) {
+        if ( object == null || !(object instanceof  org.kie.spi.CompiledInvoker) ) {
             return false;
         }
-        return org.drools.core.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.spi.CompiledInvoker ) object).getMethodBytecode() );
+        return org.kie.core.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.kie.spi.CompiledInvoker ) object).getMethodBytecode() );
     }
 @end{}
 
@@ -21,8 +21,8 @@
 @end{}
 
 @declare{"replaceDeclaration"}
-    public void replaceDeclaration(org.drools.rule.Declaration declaration,
-                                   org.drools.rule.Declaration resolved) { 
+    public void replaceDeclaration(org.kie.rule.Declaration declaration,
+                                   org.kie.rule.Declaration resolved) { 
         // this class does not cache declarations
     }
 @end{}
@@ -31,28 +31,28 @@
 @declare{"returnValueInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.kie.spi.ReturnValueExpression, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
-    public org.drools.spi.FieldValue evaluate(java.lang.Object object,
-                            org.drools.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] previousDeclarations,
-                            org.drools.rule.Declaration[] localDeclarations,
-                            org.drools.WorkingMemory workingMemory,
+    public org.kie.spi.FieldValue evaluate(java.lang.Object object,
+                            org.kie.spi.Tuple tuple,
+                            org.kie.rule.Declaration[] previousDeclarations,
+                            org.kie.rule.Declaration[] localDeclarations,
+                            org.kie.WorkingMemory workingMemory,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
         @code{i0++}
         @end{}
         @if{readLocalsFromTuple}
-          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( localDeclarations[@{i0}] ) ).getObject() );
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) tuple.get( localDeclarations[@{i0}] ) ).getObject() );
           @code{i0++}
           @end{}
         @else{}
-          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, object );
           @code{i0++}
           @end{}
         @end{}
@@ -81,23 +81,23 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression
 @declare{"predicateInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.kie.spi.PredicateExpression, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
     public boolean evaluate(java.lang.Object object,
-                            org.drools.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] previousDeclarations,
-                            org.drools.rule.Declaration[] localDeclarations,
-                            org.drools.WorkingMemory workingMemory,
+                            org.kie.spi.Tuple tuple,
+                            org.kie.rule.Declaration[] previousDeclarations,
+                            org.kie.rule.Declaration[] localDeclarations,
+                            org.kie.WorkingMemory workingMemory,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
           @code{i0++}
         @end{}
-        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
+        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, object );
           @code{i0++}
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
@@ -123,19 +123,19 @@ public class @{invokerClassName} implements org.drools.spi.PredicateExpression, 
 @declare{"evalInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.kie.spi.EvalExpression, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
     
     // no need for context
     public Object createContext() { return null; }
 
-    public boolean evaluate(org.drools.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] declarations,
-                            org.drools.WorkingMemory workingMemory,
+    public boolean evaluate(org.kie.spi.Tuple tuple,
+                            org.kie.rule.Declaration[] declarations,
+                            org.kie.WorkingMemory workingMemory,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( declarations[@{i0}] ) ).getObject() );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) tuple.get( declarations[@{i0}] ) ).getObject() );
             @code{i0++}
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
@@ -148,7 +148,7 @@ public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.d
             @end{","} );
     }
     
-    public org.drools.spi.EvalExpression clone() {
+    public org.kie.spi.EvalExpression clone() {
         // this class is stateless, so no cloning needed
         return this;
     }
@@ -169,9 +169,9 @@ package @{package};
 
 import org.mvel2.asm.ClassReader;
 import org.mvel2.asm.util.TraceMethodVisitor;
-import org.drools.core.util.asm.MethodComparator.Tracer;
+import org.kie.core.util.asm.MethodComparator.Tracer;
 import java.util.Collections;
-public class @{invokerClassName} implements org.drools.spi.Accumulator, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.kie.spi.Accumulator, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
@@ -181,10 +181,10 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
     public void init(java.lang.Object workingMemoryContext,
                      java.lang.Object context,
-                     org.drools.spi.Tuple leftTuple,
-                     org.drools.rule.Declaration[] declarations,
-                     org.drools.WorkingMemory workingMemory) throws Exception {
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
+                     org.kie.spi.Tuple leftTuple,
+                     org.kie.rule.Declaration[] declarations,
+                     org.kie.WorkingMemory workingMemory) throws Exception {
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{i0++}
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
@@ -198,22 +198,22 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
     public void accumulate(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.spi.Tuple leftTuple,
-                           org.drools.common.InternalFactHandle handle,
-                           org.drools.rule.Declaration[] declarations,
-                           org.drools.rule.Declaration[] innerDeclarations,
-                           org.drools.WorkingMemory workingMemory) throws Exception {
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
+                           org.kie.spi.Tuple leftTuple,
+                           org.kie.common.InternalFactHandle handle,
+                           org.kie.rule.Declaration[] declarations,
+                           org.kie.rule.Declaration[] innerDeclarations,
+                           org.kie.WorkingMemory workingMemory) throws Exception {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
         @if{isMultiPattern}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( innerDeclarations[@{i0}] ) ).getObject() );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) leftTuple.get( innerDeclarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
           @end{}
         @else{}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, handle.getObject() );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, handle.getObject() );
             @code{ i0++ }
           @end{}
         @end{}
@@ -229,22 +229,22 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
     public void reverse(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.spi.Tuple leftTuple,
-                           org.drools.common.InternalFactHandle handle,
-                           org.drools.rule.Declaration[] declarations,
-                           org.drools.rule.Declaration[] innerDeclarations,
-                           org.drools.WorkingMemory workingMemory) throws Exception {
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
+                           org.kie.spi.Tuple leftTuple,
+                           org.kie.common.InternalFactHandle handle,
+                           org.kie.rule.Declaration[] declarations,
+                           org.kie.rule.Declaration[] innerDeclarations,
+                           org.kie.WorkingMemory workingMemory) throws Exception {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
         @if{isMultiPattern}
-          @code{ i0 = 0}@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( innerDeclarations[@{i0}] ) ).getObject() );
+          @code{ i0 = 0}@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) leftTuple.get( innerDeclarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
           @end{}
         @else{}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, handle.getObject() );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, handle.getObject() );
             @code{ i0++ }
           @end{}
         @end{}
@@ -258,10 +258,10 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
     public Object getResult(java.lang.Object workingMemoryContext,
                             java.lang.Object context,
-                            org.drools.spi.Tuple leftTuple,
-                            org.drools.rule.Declaration[] declarations,
-                            org.drools.WorkingMemory workingMemory) throws Exception {
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
+                            org.kie.spi.Tuple leftTuple,
+                            org.kie.rule.Declaration[] declarations,
+                            org.kie.WorkingMemory workingMemory) throws Exception {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.kie.common.InternalWorkingMemory) workingMemory, ( (org.kie.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
@@ -298,7 +298,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
                 bos.write(data, 0, byteCount);
             }
         } catch ( java.io.IOException e ) {
-            throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}@{'$'}@{className}' ");
+            throw new org.kie.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}@{'$'}@{className}' ");
         }
         return Collections.singletonList( bos );
     }
@@ -308,7 +308,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 @declare{"consequenceInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.Consequence, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.kie.spi.Consequence, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
@@ -318,15 +318,15 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
         return this.consequenceName;
     }
 
-    public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
-                         org.drools.WorkingMemory workingMemory) throws Exception {
-        org.drools.spi.Tuple tuple = knowledgeHelper.getTuple();
-        org.drools.rule.Declaration[] declarations = ((org.drools.reteoo.RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations(); 
+    public void evaluate(org.kie.spi.KnowledgeHelper knowledgeHelper,
+                         org.kie.WorkingMemory workingMemory) throws Exception {
+        org.kie.spi.Tuple tuple = knowledgeHelper.getTuple();
+        org.kie.rule.Declaration[] declarations = ((org.kie.reteoo.RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations(); 
 
         @foreach{declr : declarations, index : indexes, notPattern : notPatterns}
-          org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( declarations[@{index} ] );
-          @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} )  declarations[@{index}].@{declr.nativeReadMethod.name}((org.drools.common.InternalWorkingMemory) workingMemory, @{declr.identifier}__Handle__.getObject() );
-          @if{notPattern}@{declr.identifier}__Handle__ =  (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( @{declr.identifier} );@end{}
+          org.kie.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.kie.common.InternalFactHandle ) tuple.get( declarations[@{index} ] );
+          @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} )  declarations[@{index}].@{declr.nativeReadMethod.name}((org.kie.common.InternalWorkingMemory) workingMemory, @{declr.identifier}__Handle__.getObject() );
+          @if{notPattern}@{declr.identifier}__Handle__ =  (org.kie.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( @{declr.identifier} );@end{}
         @end{}        
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
@@ -353,17 +353,17 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
 @declare{"actionInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.Action, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.kie.spi.Action, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.WorkingMemory workingMemory) throws Exception {
+    public void execute(org.kie.spi.KnowledgeHelper knowledgeHelper,
+                        org.kie.WorkingMemory workingMemory) throws Exception {
         execute(knowledgeHelper, workingMemory, null);
     }
 
-    public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.WorkingMemory workingMemory, org.drools.spi.ProcessContext context ) throws Exception {
+    public void execute(org.kie.spi.KnowledgeHelper knowledgeHelper,
+                        org.kie.WorkingMemory workingMemory, org.kie.spi.ProcessContext context ) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
@@ -388,11 +388,11 @@ public class @{invokerClassName} implements org.drools.spi.Action, org.drools.sp
 @declare{"returnValueEvaluatorInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.kie.spi.ReturnValueEvaluator, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.drools.WorkingMemory workingMemory, org.drools.spi.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.kie.WorkingMemory workingMemory, org.kie.spi.ProcessContext processContext) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}

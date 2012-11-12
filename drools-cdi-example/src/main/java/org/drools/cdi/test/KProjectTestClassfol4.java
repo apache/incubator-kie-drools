@@ -2,11 +2,11 @@ package org.drools.cdi.test;
  
 import javax.inject.Inject;
 
-import org.drools.KnowledgeBase;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.cdi.KBase;
 import org.drools.cdi.KSession;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
 
 
 public class KProjectTestClassfol4 implements org.drools.cdi.test.KProjectTestClass {

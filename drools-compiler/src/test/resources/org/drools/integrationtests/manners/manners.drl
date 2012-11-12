@@ -1,4 +1,4 @@
-package org.drools.integrationtests.manners
+package org.kie.integrationtests.manners
 
 rule assignFirstSeat
     when

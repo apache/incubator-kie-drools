@@ -16,9 +16,9 @@
 
 package org.drools.event.rule.impl;
 
-import org.drools.event.rule.BeforeActivationFiredEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.Activation;
+import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.Activation;
 
 
 public class BeforeActivationFiredEventImpl extends ActivationEventImpl implements BeforeActivationFiredEvent {

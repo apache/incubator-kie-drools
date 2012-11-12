@@ -22,13 +22,13 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.definition.rule.Rule;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.RuleComponent;
+import org.kie.definition.rule.Rule;
 
 /**
  * The base class for all Rete nodes.
@@ -79,7 +79,7 @@ public abstract class BaseNode
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.ReteooNode#getId()
+     * @see org.kie.spi.ReteooNode#getId()
      */
     public int getId() {
         return this.id;

@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.kie.compiler;
 
 declare MyBean
     fieldint  : int = 12

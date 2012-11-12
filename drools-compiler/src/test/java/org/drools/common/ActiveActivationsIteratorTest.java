@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.core.util.Iterator;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.Activation;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.Activation;
 
 public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testActiveActivationsIteratorTest() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule0 agenda-group 'a1' salience ( Integer.parseInt('1'+$s) ) when\n" +
                      "    $s : String( this != 'xx' )\n" +

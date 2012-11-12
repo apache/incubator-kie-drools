@@ -16,9 +16,9 @@
 
 package org.drools.event;
 
-import org.drools.event.process.ProcessStartedEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.ProcessInstance;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessStartedEventImpl extends ProcessEvent implements ProcessStartedEvent {
 

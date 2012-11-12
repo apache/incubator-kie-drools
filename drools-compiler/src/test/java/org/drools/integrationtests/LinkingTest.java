@@ -8,14 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.FactHandle;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.base.ClassObjectType;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalAgendaGroup;
@@ -30,7 +23,6 @@ import org.drools.integrationtests.SubNetworkLinkingTest.D;
 import org.drools.integrationtests.SubNetworkLinkingTest.E;
 import org.drools.integrationtests.SubNetworkLinkingTest.F;
 import org.drools.integrationtests.SubNetworkLinkingTest.G;
-import org.drools.io.ResourceFactory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
@@ -43,15 +35,23 @@ import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RuleMemory;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class LinkingTest {
     
     @Test
     public void testJoinNodes() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -133,7 +133,7 @@ public class LinkingTest {
     @Test
     public void testExistsNodes1() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -185,7 +185,7 @@ public class LinkingTest {
     @Test
     public void testExistsNodes2() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -256,7 +256,7 @@ public class LinkingTest {
     @Test
     public void testNotNodeUnlinksWithNoConstriants() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -339,7 +339,7 @@ public class LinkingTest {
     @Test
     public void testNotNodeDoesNotUnlinksWithConstriants() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -401,7 +401,7 @@ public class LinkingTest {
     @Test
     public void testNotNodes1() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -454,7 +454,7 @@ public class LinkingTest {
     @Test
     public void testNotNodes2() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -528,7 +528,7 @@ public class LinkingTest {
     @Test
     public void testForallNodes() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -606,7 +606,7 @@ public class LinkingTest {
     @Test
     public void testAccumulateNodes1() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -657,7 +657,7 @@ public class LinkingTest {
     @Test
     public void testAccumulateNodes2() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -714,7 +714,7 @@ public class LinkingTest {
     @Test
     public void testSubnetwork() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
@@ -787,7 +787,7 @@ public class LinkingTest {
     @Test
     public void testNestedSubnetwork() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;

@@ -19,13 +19,13 @@ import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.HashMap;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class SimpleBatchExecutionPersistenceTest extends SimpleBatchExecutionTest {
 

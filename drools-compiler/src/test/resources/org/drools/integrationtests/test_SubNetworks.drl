@@ -1,4 +1,4 @@
-package org.drools;
+package org.kie;
 
 import java.awt.Dimension;
 

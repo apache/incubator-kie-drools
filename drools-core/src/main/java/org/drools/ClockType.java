@@ -16,9 +16,9 @@
 
 package org.drools;
 
-import org.drools.time.SessionClock;
 import org.drools.time.impl.JDKTimerService;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.kie.time.SessionClock;
 
 /**
  * This enum represents all engine supported clocks

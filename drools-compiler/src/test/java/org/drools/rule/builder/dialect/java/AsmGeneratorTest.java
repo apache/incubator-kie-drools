@@ -7,22 +7,22 @@ import java.util.List;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class AsmGeneratorTest extends CommonTestMethodBase {
      
     @Test
     public void testPatterDeclarations() {
         String s = 
-            "package org.drools.test\n" +
+            "package org.kie.test\n" +
             "global java.util.List list\n" +        
             "rule r1 when\n" +
             "    s1 : String( this == 's1' )\n" +
@@ -63,8 +63,8 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
     @Test
     public void testAllGeneratedConstructs() {
         String s = 
-            "package org.drools.test\n" +
-            "import org.drools.Person\n" +
+            "package org.kie.test\n" +
+            "import org.kie.Person\n" +
             "global java.util.List list\n" +
             "rule r1 when\n" +
             "    s1 : String( this == 's1' )\n" +
@@ -111,9 +111,9 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
     @Test
     public void testOr() {
         String s = 
-            "package org.drools.test\n" +
-            "import org.drools.Person\n" +
-            "import org.drools.Cheese\n" +
+            "package org.kie.test\n" +
+            "import org.kie.Person\n" +
+            "import org.kie.Cheese\n" +
             "global java.util.List list\n" +
             "rule r1 when\n" +
             "    s1 : String( this == 's1' )\n" +

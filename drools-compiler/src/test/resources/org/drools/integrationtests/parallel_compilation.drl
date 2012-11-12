@@ -1,6 +1,6 @@
-package org.drools.integrationtests
+package org.kie.integrationtests
 
-import org.drools.integrationtests.ParallelCompilationTest.User;
+import org.kie.integrationtests.ParallelCompilationTest.User;
 
 
 rule "When a user is young, print his name."

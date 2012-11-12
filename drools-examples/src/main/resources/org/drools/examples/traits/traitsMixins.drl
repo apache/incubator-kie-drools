@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.examples.traits
+package org.kie.examples.traits
 
-import org.drools.examples.traits.Scholar;
+import org.kie.examples.traits.Scholar;
 
 
 declare Person

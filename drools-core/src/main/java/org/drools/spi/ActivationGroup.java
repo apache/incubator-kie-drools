@@ -24,7 +24,7 @@ import org.drools.core.util.LinkedList;
 
 public interface ActivationGroup
     extends
-    org.drools.runtime.rule.ActivationGroup  {
+    org.kie.runtime.rule.ActivationGroup  {
     public String getName();
 
     public void addActivation(Activation activation);

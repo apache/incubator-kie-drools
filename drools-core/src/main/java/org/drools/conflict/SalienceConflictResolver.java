@@ -24,7 +24,7 @@ import org.drools.spi.ConflictResolver;
  * conflict.
  * 
  * @see #getInstance
- * @see org.drools.rule.Rule#getSalience
+ * @see org.kie.rule.Rule#getSalience
  * 
  *
  * @version $Id: SalienceConflictResolver.java,v 1.3 2004/06/25 02:46:39

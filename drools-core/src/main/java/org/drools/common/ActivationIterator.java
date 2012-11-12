@@ -1,13 +1,13 @@
 package org.drools.common;
 
-import org.drools.KnowledgeBase;
 import org.drools.core.util.Iterator;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Activation;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ActivationIterator
     implements

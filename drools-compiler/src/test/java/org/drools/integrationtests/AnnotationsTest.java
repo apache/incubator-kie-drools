@@ -16,20 +16,20 @@
 
 package org.drools.integrationtests;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.conf.EventProcessingOption;
-import org.drools.conf.MBeansOption;
-import org.drools.definition.rule.Rule;
-import org.drools.definition.type.Position;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.conf.EventProcessingOption;
+import org.kie.conf.MBeansOption;
+import org.kie.definition.rule.Rule;
+import org.kie.definition.type.Position;
+import org.kie.io.ResourceFactory;
 
 import java.io.StringReader;
 import java.lang.annotation.*;
@@ -86,10 +86,10 @@ public class AnnotationsTest {
     @Test
     public void annotationTest() {
 
-        String drl = "package org.drools.test;\n " +
+        String drl = "package org.kie.test;\n " +
                      "" +
-                     "import org.drools.definition.type.Position; \n " +
-                     "import org.drools.integrationtests.AnnotationsTest.Annot; \n" +
+                     "import org.kie.definition.type.Position; \n " +
+                     "import org.kie.integrationtests.AnnotationsTest.Annot; \n" +
                      "" +
                      "declare AnnotatedBean \n" +
                      " @Deprecated \n" +
@@ -99,7 +99,7 @@ public class AnnotationsTest {
                      "         ,strProp=\"hello world\" " +
                      "         ,enumProp=AnnPropEnum.THREE " +
                      "         ,dblArrProp={1.0,2.0} " +
-                     "         ,typeArrProp={String.class, org.drools.integrationtests.AnnotationsTest.class} " +
+                     "         ,typeArrProp={String.class, org.kie.integrationtests.AnnotationsTest.class} " +
                      "         ,strArrProp={\"x1\",\"x2\"} " +
                      "         ,enumArrProp={AnnPropEnum.ONE, AnnPropEnum.THREE} " +
                      "         ) \n " +
@@ -127,7 +127,7 @@ public class AnnotationsTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        Class clazz = kbase.getFactType( "org.drools.test",
+        Class clazz = kbase.getFactType( "org.kie.test",
                                          "AnnotatedBean" ).getFactClass();
         assertNotNull( clazz );
         try {
@@ -169,7 +169,7 @@ public class AnnotationsTest {
         assertArrayEquals( new AnnPropEnum[]{AnnPropEnum.ONE, AnnPropEnum.THREE},
                            ann.enumArrProp() );
 
-        Class clazz2 = kbase.getFactType( "org.drools.test",
+        Class clazz2 = kbase.getFactType( "org.kie.test",
                                           "SecondBean" ).getFactClass();
         assertNotNull( clazz2 );
         Annotation[] anns2 = clazz2.getAnnotations();
@@ -207,7 +207,7 @@ public class AnnotationsTest {
     @Test
     public void annotationErrorTest() {
 
-        String drl = "package org.drools.test;\n " +
+        String drl = "package org.kie.test;\n " +
                      "" +
                      "declare MissingAnnotationBean \n" +
                      " @IgnoreMissingAnnotation1 \n" +
@@ -221,9 +221,9 @@ public class AnnotationsTest {
         assertEquals( 0,
                       kbuilder.getErrors().size() );
 
-        String drl2 = "package org.drools.test;\n " +
+        String drl2 = "package org.kie.test;\n " +
                       "" +
-                      "import org.drools.integrationtests.AnnotationsTest.Annot; \n" +
+                      "import org.kie.integrationtests.AnnotationsTest.Annot; \n" +
                       "" +
                       "" +
                       "declare MissingAnnotationBean \n" +
@@ -242,7 +242,7 @@ public class AnnotationsTest {
 
     @Test
     public void testRuleAnnotation() {
-        String drl = "package org.drools\n" +
+        String drl = "package org.kie\n" +
                      "rule X\n" +
                      "    @author(\"John Doe\")\n" +
                      "    @output(Hello World!)\n" + // backward compatibility
@@ -260,7 +260,7 @@ public class AnnotationsTest {
                                                  drl,
                                                  conf );
 
-        Rule rule = kbase.getRule( "org.drools",
+        Rule rule = kbase.getRule( "org.kie",
                                    "X" );
 
         Assert.assertEquals( "John Doe",
@@ -276,7 +276,7 @@ public class AnnotationsTest {
 
     @Test
     public void testRuleAnnotation2() {
-        String drl = "package org.drools\n" +
+        String drl = "package org.kie\n" +
                      "rule X\n" +
                      "    @alt(\" \\\"<- these are supposed to be the only quotes ->\\\" \")\n" +
                      "when\n"+
@@ -291,7 +291,7 @@ public class AnnotationsTest {
                                                  drl,
                                                  conf );
 
-        Rule rule = kbase.getRule( "org.drools",
+        Rule rule = kbase.getRule( "org.kie",
                                    "X" );
 
         Assert.assertEquals( " \"<- these are supposed to be the only quotes ->\" ",

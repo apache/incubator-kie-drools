@@ -22,15 +22,18 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
+
 import static org.junit.Assert.*;
 
 import org.drools.Cheese;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityAssertMapComparator;
-import org.drools.conf.AssertBehaviorOption;
 import org.drools.core.util.AbstractHashTable.EqualityEquals;
 import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
@@ -39,8 +42,6 @@ import org.drools.core.util.TripleImpl;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.TripleStoreTest.Individual;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 
 public class ObjectHashMapTest {
     @Test

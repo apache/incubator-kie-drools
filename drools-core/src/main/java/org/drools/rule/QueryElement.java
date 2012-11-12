@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.runtime.rule.Variable;
+import org.kie.runtime.rule.Variable;
 
 public class QueryElement extends ConditionalElement
     implements

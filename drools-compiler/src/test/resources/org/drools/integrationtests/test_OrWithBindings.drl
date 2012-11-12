@@ -1,7 +1,7 @@
 package com.sample
 
-import org.drools.Person
-import org.drools.Cheese
+import org.kie.Person
+import org.kie.Cheese
 
 global java.util.List results
 

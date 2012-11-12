@@ -28,13 +28,13 @@ import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.drools.ChangeSet;
-import org.drools.SystemEventListener;
-import org.drools.SystemEventListenerFactory;
-import org.drools.event.io.ResourceChangeListener;
-import org.drools.io.Resource;
-import org.drools.io.ResourceChangeMonitor;
-import org.drools.io.ResourceChangeNotifier;
+import org.kie.ChangeSet;
+import org.kie.SystemEventListener;
+import org.kie.SystemEventListenerFactory;
+import org.kie.event.io.ResourceChangeListener;
+import org.kie.io.Resource;
+import org.kie.io.ResourceChangeMonitor;
+import org.kie.io.ResourceChangeNotifier;
 
 public class ResourceChangeNotifierImpl
     implements

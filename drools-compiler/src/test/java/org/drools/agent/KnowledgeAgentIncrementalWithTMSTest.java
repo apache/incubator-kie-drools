@@ -1,25 +1,27 @@
 package org.drools.agent;
 
-import org.drools.ChangeSet;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.beliefsystem.BeliefSet;
-import org.drools.builder.*;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.LogicalDependency;
 import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.core.util.*;
-import org.drools.definition.KnowledgePackage;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ChangeSetImpl;
 import org.drools.io.impl.FileSystemResource;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
+import org.kie.ChangeSet;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.builder.*;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -139,7 +141,7 @@ public class KnowledgeAgentIncrementalWithTMSTest extends BaseKnowledgeAgentTest
     private void createRuleResource() {
         String ruleString = "package com.sample\n" +
                 " \n" +
-                "import org.drools.Message;\n" +
+                "import org.kie.Message;\n" +
                 " \n" +
                 "rule \"Hello World\"\n" +
                 "    when\n" +

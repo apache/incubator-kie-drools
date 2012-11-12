@@ -25,9 +25,9 @@ import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.runtime.rule.AgendaFilter;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.AgendaFilter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class FireAllRulesCommand

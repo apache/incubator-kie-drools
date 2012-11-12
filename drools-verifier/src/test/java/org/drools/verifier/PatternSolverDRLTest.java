@@ -16,16 +16,15 @@
 
 package org.drools.verifier;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
-
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PatternSolverDRLTest extends TestBaseOld {
 

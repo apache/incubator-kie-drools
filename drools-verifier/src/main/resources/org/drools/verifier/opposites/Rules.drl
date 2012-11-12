@@ -15,7 +15,7 @@
  */
 
 //created on: 3.6.2008
-package org.drools.verifier.opposites
+package org.kie.verifier.opposites
 
 //list any import classes here.
 

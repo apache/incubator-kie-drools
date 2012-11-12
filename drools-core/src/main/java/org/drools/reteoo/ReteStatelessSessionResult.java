@@ -22,12 +22,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Iterator;
 
-import org.drools.runtime.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.StatelessSessionResult;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.ObjectStore;
 import org.drools.spi.GlobalResolver;
+import org.kie.runtime.ObjectFilter;
 
 public class ReteStatelessSessionResult
     implements
@@ -75,7 +75,7 @@ public class ReteStatelessSessionResult
         return this.objectStore.iterateObjects();
     }
 
-    public Iterator iterateObjects(org.drools.runtime.ObjectFilter filter) {
+    public Iterator iterateObjects(org.kie.runtime.ObjectFilter filter) {
         return this.objectStore.iterateObjects( filter );
     }
 

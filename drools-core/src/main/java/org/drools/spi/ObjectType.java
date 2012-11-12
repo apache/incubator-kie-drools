@@ -23,7 +23,7 @@ import org.drools.base.ValueType;
 /**
  * Semantic object type differentiator.
  *
- * @see org.drools.rule.Declaration
+ * @see org.kie.rule.Declaration
  */
 public interface ObjectType
     extends

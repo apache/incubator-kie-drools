@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.builder.KnowledgeBuilderResult;
-import org.drools.io.Resource;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -26,6 +24,8 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.io.Resource;
 
 /**
  * A Dialect implementation handles the building and execution of code

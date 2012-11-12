@@ -19,9 +19,9 @@ package org.drools;
 import java.io.Externalizable;
 import java.util.Set;
 
-import org.drools.definition.type.FactType;
 import org.drools.rule.Package;
-import org.drools.runtime.Environment;
+import org.kie.definition.type.FactType;
+import org.kie.runtime.Environment;
 
 /**
  * Active collection of <code>Rule</code>s.
@@ -54,7 +54,7 @@ public interface RuleBase
      * </p>
      *
      * @see WorkingMemory
-     * @see org.drools.conflict.DefaultConflictResolver
+     * @see org.kie.conflict.DefaultConflictResolver
      *
      * @return A newly initialized <code>WorkingMemory</code>.
      *
@@ -81,7 +81,7 @@ public interface RuleBase
      *               created session.
      *
      * @see WorkingMemory
-     * @see org.drools.conflict.DefaultConflictResolver
+     * @see org.kie.conflict.DefaultConflictResolver
      *
      * @return A newly initialized <code>WorkingMemory</code>.
      */

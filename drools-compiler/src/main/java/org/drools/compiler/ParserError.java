@@ -16,7 +16,7 @@
 
 package org.drools.compiler;
 
-import org.drools.io.Resource;
+import org.kie.io.Resource;
 
 public class ParserError extends DroolsError {
     private final int    row;

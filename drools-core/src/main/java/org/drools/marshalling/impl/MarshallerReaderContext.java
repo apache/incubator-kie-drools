@@ -27,17 +27,17 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.PropagationContext;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KnowledgeRuntime;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext                                           stream;

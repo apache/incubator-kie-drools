@@ -16,17 +16,12 @@
 
 package org.drools.verifier.subsumption;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.ClassObjectFilter;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilder;
@@ -35,6 +30,11 @@ import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.ClassObjectFilter;
 
 public class SubsumptantSubPatternsTest {
 

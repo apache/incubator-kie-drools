@@ -18,17 +18,17 @@ package org.drools.xml.changeset;
 
 import java.util.HashSet;
 
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.util.StringUtils;
-import org.drools.io.Resource;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.internal.InternalResource;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.io.Resource;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

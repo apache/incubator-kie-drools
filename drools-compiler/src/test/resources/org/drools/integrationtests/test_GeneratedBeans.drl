@@ -1,4 +1,4 @@
-package org.drools.generatedbeans;
+package org.kie.generatedbeans;
 
 global java.util.List list;
 global Cheese cg;

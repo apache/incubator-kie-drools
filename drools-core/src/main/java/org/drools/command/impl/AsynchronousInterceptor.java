@@ -16,7 +16,7 @@
 
 package org.drools.command.impl;
 
-import org.drools.command.Command;
+import org.kie.command.Command;
 
 
 public class AsynchronousInterceptor extends AbstractInterceptor {

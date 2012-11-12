@@ -7,11 +7,11 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DroolsParserException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import static org.drools.compiler.DRLFactory.buildParser;
 import static org.junit.Assert.*;

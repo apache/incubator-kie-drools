@@ -18,12 +18,12 @@ package org.drools.command.builder;
 
 import java.util.Collection;
 
-import org.drools.builder.KnowledgeBuilder;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.definition.KnowledgePackage;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.definition.KnowledgePackage;
 
 public class KnowledgeBuilderGetKnowledgePackagesCommand
     implements

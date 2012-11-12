@@ -5,12 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
-import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -23,6 +20,9 @@ import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.conf.LRUnlinkingOption;
 
 public class NodeSegmentUnlinkingTest {
     ReteooRuleBase       ruleBase;

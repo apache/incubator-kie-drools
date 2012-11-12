@@ -71,15 +71,15 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     paramsPos[i] = factPos;
 
                     // InternalFactHandle fact[i] = tuple.get(declarations[i]);
-                    mv.visitVarInsn(ALOAD, 3); // org.drools.spi.Tuple
-                    mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
+                    mv.visitVarInsn(ALOAD, 3); // org.kie.spi.Tuple
+                    mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
                     invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
                     mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
-                    // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
-                    mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
+                    // declarations[i].getValue((org.kie.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
+                    mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // WorkingMemory

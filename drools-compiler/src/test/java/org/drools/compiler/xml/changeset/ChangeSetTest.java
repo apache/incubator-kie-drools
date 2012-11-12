@@ -11,23 +11,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.ChangeSet;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.UrlResource;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.xml.XmlChangeSetReader;
 import org.junit.Test;
+import org.kie.ChangeSet;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.xml.sax.SAXException;
 
 public class ChangeSetTest extends CommonTestMethodBase {
@@ -111,7 +111,7 @@ public class ChangeSetTest extends CommonTestMethodBase {
         str += "xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' ";
         str += "xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         str += "    <add> ";
-        str += "        <resource source='http://localhost:8081/jboss-brms/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST' type='PKG' basicAuthentication='enabled' username='admin' password='pwd'/>";
+        str += "        <resource source='http://localhost:8081/jboss-brms/org.kie.guvnor.Guvnor/package/defaultPackage/LATEST' type='PKG' basicAuthentication='enabled' username='admin' password='pwd'/>";
         str += "    </add> ";
         str += "</change-set>";
 
@@ -122,7 +122,7 @@ public class ChangeSetTest extends CommonTestMethodBase {
                       changeSet.getResourcesAdded().size() );
         UrlResource resource = ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 0 );
         assertNull( resource.getConfiguration() );
-        assertEquals( "http://localhost:8081/jboss-brms/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST",
+        assertEquals( "http://localhost:8081/jboss-brms/org.kie.guvnor.Guvnor/package/defaultPackage/LATEST",
                       resource.getURL().toString() );
         assertEquals( "enabled", resource.getBasicAuthentication() );
         assertEquals( "admin", resource.getUsername() );

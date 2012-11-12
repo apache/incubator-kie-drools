@@ -1,4 +1,4 @@
-package org.drools;
+package org.kie;
 
 rule "Accumulate non existing function - Java"
     dialect "java"

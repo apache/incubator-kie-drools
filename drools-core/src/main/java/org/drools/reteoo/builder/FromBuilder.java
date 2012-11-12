@@ -32,7 +32,7 @@ public class FromBuilder
     ReteooComponentBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.builder.ReteooComponentBuilder#build(org.drools.reteoo.builder.BuildContext, org.drools.reteoo.builder.BuildUtils, org.drools.rule.RuleConditionElement)
+     * @see org.kie.reteoo.builder.ReteooComponentBuilder#build(org.kie.reteoo.builder.BuildContext, org.kie.reteoo.builder.BuildUtils, org.kie.rule.RuleConditionElement)
      */
     public void build(final BuildContext context,
                       final BuildUtils utils,

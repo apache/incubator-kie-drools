@@ -7,22 +7,22 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.builder.conf.DefaultDialectOption;
 import org.drools.compiler.DroolsParserException;
-import org.drools.conf.SequentialOption;
-import org.drools.conf.ShareAlphaNodesOption;
-import org.drools.conf.ShareBetaNodesOption;
-import org.drools.definition.KnowledgePackage;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.builder.conf.DefaultDialectOption;
+import org.kie.conf.SequentialOption;
+import org.kie.conf.ShareAlphaNodesOption;
+import org.kie.conf.ShareBetaNodesOption;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class FailureOnRemovalTest extends CommonTestMethodBase {
     

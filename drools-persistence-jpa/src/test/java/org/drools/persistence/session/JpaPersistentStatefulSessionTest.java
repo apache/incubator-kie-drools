@@ -31,28 +31,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.SessionConfiguration;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.CommandFactory;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.FireAllRulesInterceptor;
 import org.drools.command.impl.LoggingInterceptor;
-import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.CommandFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testFactHandleSerialization() {
         String str = "";
-        str += "package org.drools.test\n";
+        str += "package org.kie.test\n";
         str += "import java.util.concurrent.atomic.AtomicInteger\n";
         str += "global java.util.List list\n";
         str += "rule rule1\n";
@@ -141,7 +141,7 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testLocalTransactionPerStatement() {
         String str = "";
-        str += "package org.drools.test\n";
+        str += "package org.kie.test\n";
         str += "global java.util.List list\n";
         str += "rule rule1\n";
         str += "when\n";
@@ -182,7 +182,7 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testUserTransactions() throws Exception {
         String str = "";
-        str += "package org.drools.test\n";
+        str += "package org.kie.test\n";
         str += "global java.util.List list\n";
         str += "rule rule1\n";
         str += "when\n";
@@ -271,7 +271,7 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testInterceptor() {
         String str = "";
-        str += "package org.drools.test\n";
+        str += "package org.kie.test\n";
         str += "global java.util.List list\n";
         str += "rule rule1\n";
         str += "when\n";
@@ -310,7 +310,7 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testSetFocus() {
         String str = "";
-        str += "package org.drools.test\n";
+        str += "package org.kie.test\n";
         str += "global java.util.List list\n";
         str += "rule rule1\n";
         str += "agenda-group \"badfocus\"";

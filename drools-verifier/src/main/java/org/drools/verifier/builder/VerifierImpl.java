@@ -21,26 +21,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderErrors;
-import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierError;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.verifier.visitor.PackageDescrVisitor;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * This is the main user class for verifier. This will use rules to validate

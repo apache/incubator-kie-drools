@@ -93,7 +93,7 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader implements 
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
+     * @see org.kie.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
     public Object getValue(InternalWorkingMemory workingMemory,
                            Object object) {

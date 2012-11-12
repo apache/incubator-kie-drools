@@ -20,7 +20,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
@@ -52,6 +51,7 @@ import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

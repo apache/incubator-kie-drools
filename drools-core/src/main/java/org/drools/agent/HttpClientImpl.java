@@ -92,7 +92,7 @@ public class HttpClientImpl
 
     public static void main(String[] args) throws Exception {
         HttpClientImpl cl = new HttpClientImpl();
-        URL url = new URL( "http://localhost:8888/org.drools.guvnor.Guvnor/package/com.billasurf.manufacturing.plant/SNAP" );
+        URL url = new URL( "http://localhost:8888/org.kie.guvnor.Guvnor/package/com.billasurf.manufacturing.plant/SNAP" );
 
         LastUpdatedPing ping = cl.checkLastUpdated( url );
 

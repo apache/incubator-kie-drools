@@ -21,8 +21,8 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.AgendaFilter;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.AgendaFilter;
 
 public class DisposeCommand
     implements

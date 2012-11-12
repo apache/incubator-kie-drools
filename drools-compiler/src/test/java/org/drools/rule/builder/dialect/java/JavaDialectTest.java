@@ -1,17 +1,10 @@
 package org.drools.rule.builder.dialect.java;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELPredicateExpression;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ObjectTypeNode;
@@ -23,6 +16,13 @@ import org.drools.spi.CompiledInvoker;
 import org.drools.spi.FieldValue;
 import org.drools.spi.PredicateExpression;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 import java.io.StringReader;
 import java.util.List;
@@ -39,7 +39,7 @@ public class JavaDialectTest {
         // Tests evals are generated and executed with Java dialect
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.kie.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";
@@ -90,7 +90,7 @@ public class JavaDialectTest {
         
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.kie.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";

@@ -16,9 +16,9 @@
 
 package org.drools.event.knowlegebase.impl;
 
-import org.drools.KnowledgeBase;
-import org.drools.definition.process.Process;
-import org.drools.event.knowledgebase.BeforeProcessRemovedEvent;
+import org.kie.KnowledgeBase;
+import org.kie.definition.process.Process;
+import org.kie.event.knowledgebase.BeforeProcessRemovedEvent;
 
 public class BeforeProcessRemovedEventImpl extends KnowledgeBaseEventImpl implements BeforeProcessRemovedEvent {
     private Process process;

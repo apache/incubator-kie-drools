@@ -68,7 +68,7 @@ public class KnowledgeBaseMonitoring
     private static final String OP_STOP_INTERNAL_MBEANS = "stopInternalMBeans";
     private static final String OP_START_INTERNAL_MBEANS = "startInternalMBeans";
 
-    private static final String  KBASE_PREFIX    = "org.drools.kbases";
+    private static final String  KBASE_PREFIX    = "org.kie.kbases";
 
     // ************************************************************************************************
     // MBean attributes
@@ -184,7 +184,7 @@ public class KnowledgeBaseMonitoring
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getGlobals()
+     * @see org.kie.management.KnowledgeBaseMBean#getGlobals()
      */
     @SuppressWarnings("unchecked")
     public TabularData getGlobals() throws OpenDataException {
@@ -200,21 +200,21 @@ public class KnowledgeBaseMonitoring
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getId()
+     * @see org.kie.management.KnowledgeBaseMBean#getId()
      */
     public String getId() {
         return kbase.getId();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getPackages()
+     * @see org.kie.management.KnowledgeBaseMBean#getPackages()
      */
     public String[] getPackages() {
         return kbase.getPackagesMap().keySet().toArray( new String[0] );
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getSessionCount()
+     * @see org.kie.management.KnowledgeBaseMBean#getSessionCount()
      */
     public long getSessionCount() {
         return kbase.getWorkingMemoryCounter();

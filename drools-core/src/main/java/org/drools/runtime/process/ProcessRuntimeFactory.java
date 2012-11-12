@@ -1,7 +1,7 @@
 package org.drools.runtime.process;
 
 import org.drools.common.AbstractWorkingMemory;
-import org.drools.util.ServiceRegistryImpl;
+import org.kie.util.ServiceRegistryImpl;
 
 
 public class ProcessRuntimeFactory {

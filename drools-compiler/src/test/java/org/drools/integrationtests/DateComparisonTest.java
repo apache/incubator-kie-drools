@@ -9,17 +9,17 @@ import java.util.List;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.logger.KnowledgeRuntimeLogger;
+import org.kie.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample class to launch a rule.
@@ -31,7 +31,7 @@ public class DateComparisonTest extends CommonTestMethodBase {
         List<String> results = new ArrayList<String>();
         // load up the knowledge base
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
         str += "dialect \"mvel\"\n";
         str += "global java.util.List results;\n";
         str += "rule \"test date greater than\"\n";

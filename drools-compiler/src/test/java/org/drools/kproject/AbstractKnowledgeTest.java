@@ -1,20 +1,20 @@
 package org.drools.kproject;
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.KnowledgeBase;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.FileManager;
 import org.drools.kproject.memory.MemoryFile;
 import org.drools.kproject.memory.MemoryFileSystem;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.KnowledgeBase;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -165,7 +165,7 @@ public class AbstractKnowledgeTest {
     public String generateKProjectTestClass(KProject kproject,
                                             String namespace) {
 
-        return "package org.drools.cdi.test;\n" +
+        return "package org.kie.cdi.test;\n" +
                 "import javax.inject.Named;\n" +
                 "import javax.inject.Inject;\n" +
                 "import javax.inject.Inject;\n" +
@@ -179,7 +179,7 @@ public class AbstractKnowledgeTest {
                 "import " + KPTest.class.getName() + ";\n" +
 
                 "@KPTest(\"" + namespace + "\") \n" +
-                "public class KProjectTestClass" + namespace + " implements org.drools.kproject.KProjectTestClass {\n" +
+                "public class KProjectTestClass" + namespace + " implements org.kie.kproject.KProjectTestClass {\n" +
                 "    private @Inject @KBase(\"" + namespace + ".test1.KBase1\")  " +
                 "    KnowledgeBase kBase1; \n" +
                 "    public KnowledgeBase getKBase1() {\n" +

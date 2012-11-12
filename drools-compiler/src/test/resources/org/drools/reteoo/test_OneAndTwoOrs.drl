@@ -1,6 +1,6 @@
-package org.drools.reteoo;
+package org.kie.reteoo;
 
-import org.drools.Message;
+import org.kie.Message;
  
 rule "Hello World 1"
     when

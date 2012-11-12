@@ -35,7 +35,7 @@ public class NodeSuiteTest
     NodeTestCasesSource {
     
     /* (non-Javadoc)
-     * @see org.drools.reteoo.test.NodeTestCasesSource#getTestCases()
+     * @see org.kie.reteoo.test.NodeTestCasesSource#getTestCases()
      */
     public List<NodeTestCase> getTestCases() throws Exception {
         List<NodeTestCase> result = new ArrayList<NodeTestCase>();

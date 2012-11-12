@@ -18,33 +18,33 @@ package org.drools.integrationtests;
 
 import org.drools.Address;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.WorkingMemory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.core.util.FileManager;
-import org.drools.definition.KnowledgePackage;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
-import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.marshalling.impl.ProtobufMessages;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.knowledgebase.DefaultKnowledgeBaseEventListener;
+import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // JBRULES-3604
         String str = "package inheritance\n" +
                 "\n" +
-                "import org.drools.Address\n" +
+                "import org.kie.Address\n" +
                 "\n" +
                 "rule \"Parent\"\n" +
                 "    enabled false\n" +
@@ -100,7 +100,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         Address address = new Address();
 
         address.setSuburb("xyz");
-        org.drools.runtime.rule.FactHandle addressHandle = ksession.insert(address);
+        org.kie.runtime.rule.FactHandle addressHandle = ksession.insert(address);
 
         int rulesFired = ksession.fireAllRules();
 
@@ -264,7 +264,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testReuseAgendaAfterException() throws Exception {
         // JBRULES-3677
 
-        String str = "import org.drools.Person;\n" +
+        String str = "import org.kie.Person;\n" +
                 "global java.util.List results;" +
                 "rule R1\n" +
                 "ruleflow-group \"test\"\n" +
@@ -282,35 +282,35 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.setGlobal( "results", res );
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void activationCreated(org.drools.event.rule.ActivationCreatedEvent event) {
+            public void activationCreated(org.kie.event.rule.ActivationCreatedEvent event) {
             }
 
-            public void activationCancelled(org.drools.event.rule.ActivationCancelledEvent event) {
+            public void activationCancelled(org.kie.event.rule.ActivationCancelledEvent event) {
             }
 
-            public void beforeActivationFired(org.drools.event.rule.BeforeActivationFiredEvent event) {
+            public void beforeActivationFired(org.kie.event.rule.BeforeActivationFiredEvent event) {
             }
 
-            public void afterActivationFired(org.drools.event.rule.AfterActivationFiredEvent event) {
+            public void afterActivationFired(org.kie.event.rule.AfterActivationFiredEvent event) {
             }
 
-            public void agendaGroupPopped(org.drools.event.rule.AgendaGroupPoppedEvent event) {
+            public void agendaGroupPopped(org.kie.event.rule.AgendaGroupPoppedEvent event) {
             }
 
-            public void agendaGroupPushed(org.drools.event.rule.AgendaGroupPushedEvent event) {
+            public void agendaGroupPushed(org.kie.event.rule.AgendaGroupPushedEvent event) {
             }
 
-            public void beforeRuleFlowGroupActivated(org.drools.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void beforeRuleFlowGroupActivated(org.kie.event.rule.RuleFlowGroupActivatedEvent event) {
             }
 
-            public void afterRuleFlowGroupActivated(org.drools.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void afterRuleFlowGroupActivated(org.kie.event.rule.RuleFlowGroupActivatedEvent event) {
                 ksession.fireAllRules();
             }
 
-            public void beforeRuleFlowGroupDeactivated(org.drools.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void beforeRuleFlowGroupDeactivated(org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {
             }
 
-            public void afterRuleFlowGroupDeactivated(org.drools.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void afterRuleFlowGroupDeactivated(org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {
             }
         };
 

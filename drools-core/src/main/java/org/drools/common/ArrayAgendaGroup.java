@@ -87,7 +87,7 @@ public class ArrayAgendaGroup
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.AgendaGroup#getName()
+     * @see org.kie.spi.AgendaGroup#getName()
      */
     public String getName() {
         return this.name;
@@ -99,7 +99,7 @@ public class ArrayAgendaGroup
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.AgendaGroup#size()
+     * @see org.kie.spi.AgendaGroup#size()
      */
     public int size() {
         return this.size;

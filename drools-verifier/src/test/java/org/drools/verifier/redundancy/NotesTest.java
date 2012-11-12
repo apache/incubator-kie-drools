@@ -16,6 +16,8 @@
 
 package org.drools.verifier.redundancy;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -23,8 +25,6 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
@@ -37,6 +37,7 @@ import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Test;
 
 public class NotesTest extends TestBaseOld {
 

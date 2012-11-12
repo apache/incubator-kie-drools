@@ -36,7 +36,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
      * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
      *
-     * @see org.drools.rule.ConditionalElement#clone()
+     * @see org.kie.rule.ConditionalElement#clone()
      */
     @Override
     public NamedConsequence clone() {
@@ -47,7 +47,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
      * It is not possible to declare any new variables, so always
      * return an Empty Map
      *
-     * @see org.drools.rule.RuleConditionElement#getInnerDeclarations()
+     * @see org.kie.rule.RuleConditionElement#getInnerDeclarations()
      */
     public Map<String,Declaration> getInnerDeclarations() {
         return Collections.emptyMap();
@@ -57,7 +57,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
      * It is not possible to nest elements inside an entry point, so
      * always return an empty list.
      *
-     * @see org.drools.rule.RuleConditionElement#getNestedElements()
+     * @see org.kie.rule.RuleConditionElement#getNestedElements()
      */
     public List<RuleConditionElement> getNestedElements() {
         return Collections.emptyList();
@@ -67,7 +67,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
      * It is not possible to declare and export any variables,
      * so always return an empty map
      *
-     * @see org.drools.rule.RuleConditionElement#getOuterDeclarations()
+     * @see org.kie.rule.RuleConditionElement#getOuterDeclarations()
      */
     public Map<String,Declaration> getOuterDeclarations() {
         return Collections.emptyMap();
@@ -76,7 +76,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
     /**
      * Not possible to resolve any declaration, so always return null.
      *
-     * @see org.drools.rule.RuleConditionElement#resolveDeclaration(java.lang.String)
+     * @see org.kie.rule.RuleConditionElement#resolveDeclaration(java.lang.String)
      */
     public Declaration resolveDeclaration(String identifier) {
         return null;

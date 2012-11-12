@@ -2,8 +2,8 @@ package org.drools.compiler;
 
 import java.io.InputStream;
 
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.util.ServiceRegistryImpl;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.util.ServiceRegistryImpl;
 
 public class DecisionTableFactory {
     private static DecisionTableProvider provider;
@@ -27,7 +27,7 @@ public class DecisionTableFactory {
     }
     
     private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( DecisionTableProvider.class,  "org.drools.decisiontable.DecisionTableProviderImpl" );
+        ServiceRegistryImpl.getInstance().addDefault( DecisionTableProvider.class,  "org.kie.decisiontable.DecisionTableProviderImpl" );
         setDecisionTableProvider(ServiceRegistryImpl.getInstance().get( DecisionTableProvider.class ) );
     }
 }

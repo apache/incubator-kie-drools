@@ -22,7 +22,7 @@ import java.io.Reader;
 
 import javax.xml.parsers.SAXParser;
 
-import org.drools.ChangeSet;
+import org.kie.ChangeSet;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

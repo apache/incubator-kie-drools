@@ -16,6 +16,10 @@
 
 package org.drools.verifier;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,10 +33,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ConsequenceTest extends TestBaseOld {
 

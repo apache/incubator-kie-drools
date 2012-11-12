@@ -17,15 +17,12 @@
 package org.drools.event.knowledgebase;
 
 import org.drools.Cheese;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
@@ -37,6 +34,28 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.knowledgebase.AfterFunctionRemovedEvent;
+import org.kie.event.knowledgebase.AfterKnowledgeBaseLockedEvent;
+import org.kie.event.knowledgebase.AfterKnowledgeBaseUnlockedEvent;
+import org.kie.event.knowledgebase.AfterKnowledgePackageAddedEvent;
+import org.kie.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
+import org.kie.event.knowledgebase.AfterProcessAddedEvent;
+import org.kie.event.knowledgebase.AfterProcessRemovedEvent;
+import org.kie.event.knowledgebase.AfterRuleAddedEvent;
+import org.kie.event.knowledgebase.AfterRuleRemovedEvent;
+import org.kie.event.knowledgebase.BeforeFunctionRemovedEvent;
+import org.kie.event.knowledgebase.BeforeKnowledgeBaseLockedEvent;
+import org.kie.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
+import org.kie.event.knowledgebase.BeforeKnowledgePackageAddedEvent;
+import org.kie.event.knowledgebase.BeforeKnowledgePackageRemovedEvent;
+import org.kie.event.knowledgebase.BeforeProcessAddedEvent;
+import org.kie.event.knowledgebase.BeforeProcessRemovedEvent;
+import org.kie.event.knowledgebase.BeforeRuleAddedEvent;
+import org.kie.event.knowledgebase.BeforeRuleRemovedEvent;
+import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -138,7 +157,7 @@ public class KnowledgeBaseEventSupportTest {
             }
         } );
 
-        pkg = new KnowledgePackageImp( new Package( "org.drools.test1" ) );
+        pkg = new KnowledgePackageImp( new Package( "org.kie.test1" ) );
         pkg.pkg.addRule( rule1 );
         pkg.pkg.addRule( rule2 );
     }
@@ -208,7 +227,7 @@ public class KnowledgeBaseEventSupportTest {
         assertEquals( 0,
                       listener2.getAfterRuleRemoved() );
 
-        this.kbase.removeKnowledgePackage( "org.drools.test1" );
+        this.kbase.removeKnowledgePackage( "org.kie.test1" );
 
         assertEquals( 1,
                       listener1.getBeforeKnowledgePackageRemoved() );

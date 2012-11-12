@@ -1,8 +1,8 @@
-package org.drools.integrationtests;
+package org.kie.integrationtests;
 
 //list any import classes here.
-import org.drools.FirstClass;
-import org.drools.FirstClass.AlternativeKey;
+import org.kie.FirstClass;
+import org.kie.FirstClass.AlternativeKey;
 
 
 //declare any global variables here

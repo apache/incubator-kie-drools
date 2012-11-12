@@ -3,7 +3,7 @@ package org.drools.marshalling.impl;
 import java.io.IOException;
 import java.util.List;
 
-import org.drools.runtime.process.ProcessInstance;
+import org.kie.runtime.process.ProcessInstance;
 
 public interface ProcessMarshaller {
 

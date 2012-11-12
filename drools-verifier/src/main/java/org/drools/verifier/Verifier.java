@@ -19,11 +19,11 @@ package org.drools.verifier;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 public interface Verifier {
 

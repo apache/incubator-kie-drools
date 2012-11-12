@@ -86,7 +86,7 @@ public abstract class CompiledNetwork implements ObjectSink {
 
     /**
      * Sets the OTN for this network. Calling this method will set all variables in the generated subclasses
-     * by walking the {@link org.drools.reteoo.ObjectTypeNode} using a {@link ObjectTypeNodeParser}.
+     * by walking the {@link org.kie.reteoo.ObjectTypeNode} using a {@link ObjectTypeNodeParser}.
      * @param objectTypeNode node for whom this network was created
      */
     public final void setObjectTypeNode(final ObjectTypeNode objectTypeNode) {

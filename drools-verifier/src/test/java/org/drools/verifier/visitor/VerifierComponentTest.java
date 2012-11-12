@@ -8,7 +8,6 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.Verifier;
@@ -29,6 +28,7 @@ import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 public class VerifierComponentTest {
 

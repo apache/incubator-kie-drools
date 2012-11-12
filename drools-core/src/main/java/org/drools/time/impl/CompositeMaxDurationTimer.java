@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.runtime.Calendars;
 import org.drools.spi.Activation;
 import org.drools.time.Trigger;
+import org.kie.runtime.Calendars;
 
 /**
  * While a rule might have multiple DurationTimers, due to LHS CEP rules, there can only ever

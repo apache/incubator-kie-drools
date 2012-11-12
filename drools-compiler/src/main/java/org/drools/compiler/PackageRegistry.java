@@ -6,13 +6,13 @@ import java.util.Map;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
-import org.drools.io.Resource;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
+import org.kie.io.Resource;
 
 public class PackageRegistry {
     private final Package              pkg;

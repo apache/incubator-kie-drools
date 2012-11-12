@@ -22,7 +22,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class GetWorkItemCommand implements GenericCommand<WorkItem> {
 
@@ -49,7 +49,7 @@ public class GetWorkItemCommand implements GenericCommand<WorkItem> {
     }
 
     public String toString() {
-        return "((org.drools.process.instance.WorkItemManager) session.getWorkItemManager()).getWorkItem("
+        return "((org.kie.process.instance.WorkItemManager) session.getWorkItemManager()).getWorkItem("
             + workItemId +  ");";
     }
 

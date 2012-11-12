@@ -16,8 +16,8 @@
 
 package org.drools.verifier;
 
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 public class EmptyVerifierConfiguration extends VerifierConfigurationImpl {
 

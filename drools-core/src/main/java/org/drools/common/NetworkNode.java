@@ -19,8 +19,8 @@ package org.drools.common;
 import java.io.Externalizable;
 import java.util.Map;
 
-import org.drools.definition.rule.Rule;
 import org.drools.spi.RuleComponent;
+import org.kie.definition.rule.Rule;
 
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used

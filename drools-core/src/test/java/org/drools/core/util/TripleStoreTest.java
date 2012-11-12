@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.runtime.rule.Variable;
 import org.junit.Test;
+import org.kie.runtime.rule.Variable;
 
 public class TripleStoreTest {
 

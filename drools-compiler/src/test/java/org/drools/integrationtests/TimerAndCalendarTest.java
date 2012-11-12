@@ -21,30 +21,30 @@ import org.drools.CommonTestMethodBase;
 import org.drools.FactA;
 import org.drools.FactHandle;
 import org.drools.Foo;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Pet;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
-import org.drools.definition.KnowledgePackage;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.rule.Package;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.time.Calendar;
-import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.junit.Ignore;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.time.Calendar;
+import org.kie.time.SessionClock;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
@@ -118,8 +118,8 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     @Test
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
         String str = "";
-        str += "package org.drools.test\n";
-        str += "import org.drools.Alarm\n";
+        str += "package org.kie.test\n";
+        str += "import org.kie.Alarm\n";
         str += "global java.util.List list;";
         str += "rule \"COMPTEUR\"\n";
         str += "  timer 50\n";
@@ -1042,7 +1042,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     @Test
     public void testTimerRemoval() {
         try {
-            String str = "package org.drools.test\n" +
+            String str = "package org.kie.test\n" +
                     "import " + TimeUnit.class.getName() + "\n" +
             		"global java.util.List list \n" +
             		"global " + CountDownLatch.class.getName() + " latch\n" + 
@@ -1080,7 +1080,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             
             ksession.fireAllRules();           
             Thread.sleep(200); // this makes sure it actually enters a rule
-            kbase.removeRule("org.drools.test", "TimerRule");
+            kbase.removeRule("org.kie.test", "TimerRule");
             latch.countDown();
             Thread.sleep(100); // allow the last rule, if we were in the middle of one to actually fire, before clearing
             list.clear();
@@ -1240,7 +1240,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     public void testIntervalTimerExpressionWithOr() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         
-        String text = "package org.drools.test\n"
+        String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
                       + "import " + Foo.class.getCanonicalName() + "\n"
@@ -1306,7 +1306,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     public void testExprTimeRescheduled() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         
-        String text = "package org.drools.test\n"
+        String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
                       + "rule r1 timer (expr: f1.field2, f1.field4)\n"
@@ -1381,7 +1381,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test @Ignore // TODO: fails randomly FIXME
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        String drl = "package org.drools.test;" +
+        String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +
                 "\n" +
@@ -1449,7 +1449,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test @Ignore // TODO: fix random failures
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
-        String drl = "package org.drools.test;" +
+        String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +
                 "\n" +

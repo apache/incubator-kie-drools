@@ -16,9 +16,9 @@
 
 package org.drools.event.knowlegebase.impl;
 
-import org.drools.KnowledgeBase;
-import org.drools.definition.rule.Rule;
-import org.drools.event.knowledgebase.AfterRuleAddedEvent;
+import org.kie.KnowledgeBase;
+import org.kie.definition.rule.Rule;
+import org.kie.event.knowledgebase.AfterRuleAddedEvent;
 
 public class AfterRuleAddedEventImpl extends KnowledgeBaseEventImpl implements AfterRuleAddedEvent {
     private Rule rule;

@@ -21,7 +21,7 @@ public enum TimerJobFactoryType {
     JPA("jpa") {
         public TimerJobFactoryManager createInstance() {
             try {
-                return (TimerJobFactoryManager)Class.forName("org.drools.persistence.jpa.JpaTimeJobFactoryManager").newInstance();
+                return (TimerJobFactoryManager)Class.forName("org.kie.persistence.jpa.JpaTimeJobFactoryManager").newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

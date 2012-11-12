@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.runtime.Globals;
 import org.drools.spi.GlobalResolver;
+import org.kie.runtime.Globals;
 
 public class MapGlobalResolver
     implements

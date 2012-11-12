@@ -12,15 +12,9 @@ import java.util.List;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
@@ -28,10 +22,8 @@ import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.definition.type.FactType;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.CompositeObjectSinkAdapter;
@@ -41,8 +33,16 @@ import org.drools.reteoo.ObjectSinkNodeList;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.IndexableConstraint;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.type.FactType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 
 public class IndexingTest extends CommonTestMethodBase {
@@ -51,7 +51,7 @@ public class IndexingTest extends CommonTestMethodBase {
     public void testBuildsIndexedAlphaNodes() {
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.kie.Person\n";
         drl += "rule test1\n";
         drl += "when\n";
         drl += "   Person(name == \"Mark\", age == 37)\n";
@@ -92,7 +92,7 @@ public class IndexingTest extends CommonTestMethodBase {
         // tests indexes are correctly built        
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.kie.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";
@@ -212,8 +212,8 @@ public class IndexingTest extends CommonTestMethodBase {
     @Test
     public void testIndexingOnQueryUnification() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
@@ -264,7 +264,7 @@ public class IndexingTest extends CommonTestMethodBase {
     }
     @Test
     public void testRangeIndex() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1\n" +
                 "when\n" +
                 "   $s : String()" +
@@ -286,7 +286,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testRangeIndex2() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1\n" +
                 "when\n" +
                 "   $s : String()" +
@@ -308,7 +308,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testNotNode() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 salience 10\n" +
                 "when\n" +
                 "   Person( $age : age )" +
@@ -334,7 +334,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testNotNodeModifyRight() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 salience 10 when\n" +
                 "   Person( $age : age )\n" +
                 "   not Cheese( price < $age )\n" +
@@ -359,7 +359,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testRange() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 salience 10 when\n" +
                 "   Person( $age : age, $doubleAge : doubleAge )\n" +
                 "   not Cheese( this.price > $age && < $doubleAge )\n" +
@@ -385,7 +385,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testRange2() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.kie.test\n" +
                 "declare A\n" +
                 "    a: int\n" +
                 "end\n" +
@@ -406,9 +406,9 @@ public class IndexingTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType aType = kbase.getFactType( "org.drools.test", "A" );
-        FactType bType = kbase.getFactType( "org.drools.test", "B" );
-        FactType cType = kbase.getFactType( "org.drools.test", "C" );
+        FactType aType = kbase.getFactType( "org.kie.test", "A" );
+        FactType bType = kbase.getFactType( "org.kie.test", "B" );
+        FactType cType = kbase.getFactType( "org.kie.test", "C" );
 
         Object a1 = aType.newInstance();
         aType.set( a1, "a", 5 );

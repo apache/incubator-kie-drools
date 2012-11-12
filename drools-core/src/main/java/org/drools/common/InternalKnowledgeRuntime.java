@@ -2,9 +2,9 @@ package org.drools.common;
 
 import java.util.Queue;
 
-import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.time.TimerService;
+import org.kie.runtime.KnowledgeRuntime;
 
 public interface InternalKnowledgeRuntime extends KnowledgeRuntime {
 

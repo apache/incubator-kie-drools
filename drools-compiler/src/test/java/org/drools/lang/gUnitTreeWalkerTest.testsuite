@@ -1,7 +1,7 @@
 gunit Tree2TestDRL walks DRL;
 
 @header{
-package org.drools.lang;
+package org.kie.lang;
 }
 
 package_statement walks package_statement:
@@ -212,9 +212,9 @@ rule simple_rule
 	cons();
 end>>
 		OK
-<<package org.drools.test;
+<<package org.kie.test;
  
-import org.drools.Cheese;
+import org.kie.Cheese;
  
 rule "simple rule"
     when
@@ -464,9 +464,9 @@ end
 /**
  * test Multiple Rules
  */
-	<<package org.drools.test;
+	<<package org.kie.test;
 
-import org.drools.integrationtests.Cheese;
+import org.kie.integrationtests.Cheese;
 
 rule "Like Stilton"
     when
@@ -485,9 +485,9 @@ end    >>
 /**
  * test Basic Binding
  */
-	<<package org.drools.test;
+	<<package org.kie.test;
 
-import org.drools.Cheese;
+import org.kie.Cheese;
 
 rule "like cheddar"
     when
@@ -499,10 +499,10 @@ end    >>
 /**
  * test Bound Variables
  */
-	<<package org.drools.test;
+	<<package org.kie.test;
 
-import org.drools.Cheese;
-import org.drools.Person;
+import org.kie.Cheese;
+import org.kie.Person;
 
 rule "Who likes Stilton"
     when
@@ -516,7 +516,7 @@ end    >>
  * test Or Nesting
  */
 	<<
-import org.drools.Person
+import org.kie.Person
 
 rule simple_rule 
   when
@@ -530,7 +530,7 @@ end>>
  * test And Or Rules
  */
 	<<
-import org.drools.Person
+import org.kie.Person
 
 rule simple_rule 
   when
@@ -544,7 +544,7 @@ end>>
  * test Or With Binding
  */
 	<<
-import org.drools.Person
+import org.kie.Person
 
 rule simple_rule 
   when
@@ -647,9 +647,9 @@ end>>
 /**
  * test Not With Constraint
  */
-	<<package org.drools.test;
+	<<package org.kie.test;
 
-import org.drools.Cheese;
+import org.kie.Cheese;
 
 global java.util.List list;
 global java.lang.Integer five;
@@ -665,9 +665,9 @@ end    >>
 /**
  * test Global
  */
-	<<package org.drools.test;
+	<<package org.kie.test;
 
-import org.drools.Cheese;
+import org.kie.Cheese;
 
 global java.lang.String foo
 global java.lang.Integer bar;
@@ -953,7 +953,7 @@ end
 /**
  * test Qualified Classname
  */
-	<<package org.drools.test;
+	<<package org.kie.test;
 
 rule "Who likes Stilton"
     when
@@ -1055,7 +1055,7 @@ end>>
 /**
  * test Semicolon
  */
-	<<package org.drools;
+	<<package org.kie;
 
 global java.util.List list;
 
@@ -1086,7 +1086,7 @@ end;
 /**
  * test Eval
  */
-	<<package org.drools
+	<<package org.kie
 
 rule "Test Parse"
 
@@ -1147,7 +1147,7 @@ end
 /**
  * test Or CE
  */
-	<<package org.drools;
+	<<package org.kie;
 
 rule "testing OR CE"
 when
@@ -1184,7 +1184,7 @@ end>>
 /**
  * test Syntax Damage
  */
-	<<package org.drools;
+	<<package org.kie;
 
 rule "test rule"
 	salience 10
@@ -1198,7 +1198,7 @@ end
 /**
  * test Syntax Damage
  */
-	<<package org.drools;
+	<<package org.kie;
 
 rule "Avoid NPE on wrong syntax"
 when
@@ -1211,7 +1211,7 @@ end>>
 /**
  * test Pluggable Operators
  */
-	<<package org.drools;
+	<<package org.kie;
 
 rule "test pluggable operators"
 when

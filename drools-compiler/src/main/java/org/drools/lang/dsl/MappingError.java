@@ -92,7 +92,7 @@ public class MappingError extends DroolsError {
     /**
      * @inheritDoc 
      *
-     * @see org.drools.compiler.DroolsError#getMessage()
+     * @see org.kie.compiler.DroolsError#getMessage()
      */
     public String getMessage() {
         switch ( this.errorCode ) {

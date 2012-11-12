@@ -27,7 +27,6 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.UpdateContext;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.AccumulateNode;
@@ -62,6 +61,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
 import org.drools.rule.WindowReference;
 import org.drools.time.TemporalDependencyMatrix;
+import org.kie.conf.EventProcessingOption;
 
 import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
 

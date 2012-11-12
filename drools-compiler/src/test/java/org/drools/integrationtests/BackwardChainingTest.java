@@ -1,7 +1,7 @@
 package org.drools.integrationtests;
 
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.drools.runtime.rule.Variable.v;
+import static org.kie.runtime.rule.Variable.v;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,19 +17,12 @@ import java.util.Set;
 import org.drools.Address;
 import org.drools.CommonTestMethodBase;
 import org.drools.InitialFact;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
-import org.drools.definition.KnowledgePackage;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
@@ -43,15 +36,22 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.QueryResultsRow;
-import org.drools.runtime.rule.Row;
-import org.drools.runtime.rule.Variable;
-import org.drools.runtime.rule.ViewChangedEventListener;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.QueryResultsRow;
+import org.kie.runtime.rule.Row;
+import org.kie.runtime.rule.Variable;
+import org.kie.runtime.rule.ViewChangedEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +63,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryPositional() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
                      "    Person( $name := name, $likes := likes, $age := age; ) \n" +
@@ -208,8 +208,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryNamed() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
                      "    Person( $name := name, $likes := likes, $age := age ) \n" +
@@ -340,8 +340,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryMixed() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
                      "    Person( $name := name, $likes := likes, $age := age; ) \n" +
@@ -472,8 +472,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryPatternBindingAsResult() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
                      "    $p := Person( $name := name, $likes := likes, $age := age; ) \n" +
@@ -556,8 +556,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithNestedAcecssorsAllOutputs() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, String $street ) \n" +
                      "   Person( $name := name, $likes := likes, $street := address.street ) \n" +
@@ -616,8 +616,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithNestedAcecssorsMixedArgs() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, String $street ) \n" +
                      "   Person( $name := name, $likes := likes, $street := address.street ) \n" +
@@ -684,8 +684,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryWithDynamicData() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
                      "    $p := Person( ) from new Person( $name, $likes, $age ) \n" +
@@ -754,8 +754,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryWithDyanmicInsert() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "package org.kie.test  \n" +
+                     "import org.kie.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
                      "    $p := Person( ) from new Person( $name, $likes, $age ) \n" +
@@ -819,7 +819,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryWithOr() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.kie.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -829,9 +829,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "dialect \"mvel\"\n" +
                      "\n" +
 
-                     "import org.drools.integrationtests.BackwardChainingTest.Q\n" +
-                     "import org.drools.integrationtests.BackwardChainingTest.R\n" +
-                     "import org.drools.integrationtests.BackwardChainingTest.S\n" +
+                     "import org.kie.integrationtests.BackwardChainingTest.Q\n" +
+                     "import org.kie.integrationtests.BackwardChainingTest.R\n" +
+                     "import org.kie.integrationtests.BackwardChainingTest.S\n" +
 
                      "\n" +
                      "query q(int x)\n" +
@@ -970,20 +970,20 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
 
         String str = "" +
-                     "package org.drools.test2  \n" +
+                     "package org.kie.test2  \n" +
                      "global java.util.List list\n" +
                      "dialect \"mvel\"\n" +
 
                      "query man( String name ) \n" +
-                     "   org.drools.integrationtests.BackwardChainingTest.Man( name := name ) \n" +
+                     "   org.kie.integrationtests.BackwardChainingTest.Man( name := name ) \n" +
                      "end\n" +
 
                      "query woman( String name ) \n" +
-                     "   org.drools.integrationtests.BackwardChainingTest.Woman( name := name ) \n" +
+                     "   org.kie.integrationtests.BackwardChainingTest.Woman( name := name ) \n" +
                      "end\n" +
 
                      "query parent( String parent, String child ) \n" +
-                     "   org.drools.integrationtests.BackwardChainingTest.Parent( parent := parent, child := child ) \n" +
+                     "   org.kie.integrationtests.BackwardChainingTest.Parent( parent := parent, child := child ) \n" +
                      "end\n" +
 
                      "query father( String father, String child ) \n" +
@@ -1313,7 +1313,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.kie.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -1613,7 +1613,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testSubNetworksAndQueries() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.kie.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -1724,7 +1724,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             food.addAll( (Collection) row.get( "food" ) );
             logger.debug( row.get( "food" ).toString() );
         }
@@ -1781,7 +1781,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             food.addAll( (Collection) row.get( "food" ) );
             logger.debug( row.get( "food" ).toString() );
         }
@@ -1830,7 +1830,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testDynamicRulesWithSharing() throws IOException,
                                              ClassNotFoundException {
         String str = "" +
-                     "package org.drools.test1  \n" +
+                     "package org.kie.test1  \n" +
                      "\n" +
                      "declare Location\n" +
                      "    thing : String \n" +
@@ -1867,9 +1867,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }           
 
         str = "" +
-                "package org.drools.test2  \n" +
+                "package org.kie.test2  \n" +
                 
-                "import org.drools.test1.*\n" +
+                "import org.kie.test1.*\n" +
                 "import java.util.List\n" +
                 "import java.util.ArrayList\n" +
 
@@ -1892,9 +1892,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }        
         
         str = "" +
-                "package org.drools.test3  \n" +
+                "package org.kie.test3  \n" +
 
-                "import org.drools.test1.*\n" +
+                "import org.kie.test1.*\n" +
                 "import java.util.List\n" +
                 "import java.util.ArrayList\n" +
 
@@ -1918,9 +1918,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
         
         str = "" +
-                "package org.drools.test4  \n" +
+                "package org.kie.test4  \n" +
 
-                "import org.drools.test1.*\n" +
+                "import org.kie.test1.*\n" +
                 "import java.util.List\n" +
                 "import java.util.ArrayList\n" +
 
@@ -1949,7 +1949,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.test1" ), pkgs.get( "org.drools.test2" ) } ) );
+        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.kie.test1" ), pkgs.get( "org.kie.test2" ) } ) );
 
         kbase = SerializationHelper.serializeObject( kbase );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -1966,7 +1966,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list ); 
         
         list.clear();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.test3" ) } ) );
+        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.kie.test3" ) } ) );
         
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -1974,7 +1974,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list );
 
         list.clear();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.test4" ) } ) );
+        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.kie.test4" ) } ) );
         
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -1987,11 +1987,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.kie.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
-                     "import org.drools.Person\n" +
+                     "import org.kie.Person\n" +
 
                      "global List list\n" +
 
@@ -2773,7 +2773,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryWithObject() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.kie.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -2783,9 +2783,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "dialect \"mvel\"\n" +
                      "\n" +
 
-                     "import org.drools.integrationtests.BackwardChainingTest.Q\n" +
-                     "import org.drools.integrationtests.BackwardChainingTest.R\n" +
-                     "import org.drools.integrationtests.BackwardChainingTest.S\n" +
+                     "import org.kie.integrationtests.BackwardChainingTest.Q\n" +
+                     "import org.kie.integrationtests.BackwardChainingTest.R\n" +
+                     "import org.kie.integrationtests.BackwardChainingTest.S\n" +
 
                      "query object(Object o)\n" +
                      "    o := Object() \n" +

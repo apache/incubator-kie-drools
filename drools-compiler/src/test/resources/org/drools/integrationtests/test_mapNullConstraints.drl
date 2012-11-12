@@ -1,5 +1,5 @@
 //created on: Jun 2, 2011
-package org.drools
+package org.kie
 
 rule "1. home != null"
     salience 80

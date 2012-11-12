@@ -23,9 +23,9 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
-import org.drools.util.ClassLoaderUtil;
 
 import org.junit.Test;
+import org.kie.util.ClassLoaderUtil;
 
 /**
  * @version $Id$

@@ -29,16 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.process.Process;
-import org.drools.definition.rule.Query;
-import org.drools.definition.rule.Rule;
-import org.drools.definition.type.FactType;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.AfterFunctionRemovedEvent;
@@ -59,7 +53,6 @@ import org.drools.event.BeforeRuleAddedEvent;
 import org.drools.event.BeforeRuleBaseLockedEvent;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.event.BeforeRuleRemovedEvent;
-import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
 import org.drools.event.knowlegebase.impl.AfterFunctionRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterKnowledgeBaseLockedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterKnowledgeBaseUnlockedEventImpl;
@@ -81,10 +74,17 @@ import org.drools.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Package;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.process.Process;
+import org.kie.definition.rule.Query;
+import org.kie.definition.rule.Rule;
+import org.kie.definition.type.FactType;
+import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
 
 public class KnowledgeBaseImpl
     implements

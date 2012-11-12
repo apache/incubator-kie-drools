@@ -17,8 +17,8 @@ package org.drools.marshalling.util;
 
 import static org.drools.marshalling.util.MarshallingDBUtil.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.*;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
@@ -39,24 +39,24 @@ import javax.transaction.TransactionManager;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.drools.process.instance.WorkItem;
-import org.drools.runtime.Environment;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.time.impl.DefaultTimerJobInstance;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.marshalling.Marshaller;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.Environment;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

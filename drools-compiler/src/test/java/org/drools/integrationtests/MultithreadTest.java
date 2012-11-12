@@ -26,16 +26,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.StockTick;
-import org.drools.conf.EventProcessingOption;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * This is a test case for multi-thred issues
@@ -49,7 +49,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
     public void testConcurrentInsertions() {
-        String str = "import org.drools.integrationtests.MultithreadTest.Bean\n" +
+        String str = "import org.kie.integrationtests.MultithreadTest.Bean\n" +
                 "\n" +
                 "rule \"R\"\n" +
                 "when\n" +
@@ -134,7 +134,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     @Test(timeout = 15000)
     public void testSlidingTimeWindows() {
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                 "declare StockTick @role(event) end\n" +
                 "rule R\n" +
                 " duration(1s)" +
@@ -499,7 +499,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 //        final String KEY = "REPLACE";
 //        final int SIZE = 100;
 //        final Package[] pkgs = new Package[SIZE];
-//        final String DRL = "package org.drools\n" + "    no-loop true\n" + "    dialect \"java\"\n" + "rule \"" + KEY + "\"\n" + "salience 1\n" + "when\n" + "    $fact:Cheese(price == " + KEY + ", oldPrice not in (11,5))\n" + // thread-lock
+//        final String DRL = "package org.kie\n" + "    no-loop true\n" + "    dialect \"java\"\n" + "rule \"" + KEY + "\"\n" + "salience 1\n" + "when\n" + "    $fact:Cheese(price == " + KEY + ", oldPrice not in (11,5))\n" + // thread-lock
 //                           "then\n" + "    //$fact.excludeProduct(" + KEY + ", 1, null, null);\n" + "end\n";
 //        System.out.print( "Building " + pkgs.length + " packages" );
 //        for ( int i = 0; i < pkgs.length; i++ ) {
@@ -529,7 +529,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 //    
 //    public void testEventExpiration() {
 //        String rule = 
-//            "package org.drools\n" +
+//            "package org.kie\n" +
 //            "declare StockTick @role(event) @expires(0s) end\n" +
 //            "rule test no-loop true\n" + 
 //            "when\n" +

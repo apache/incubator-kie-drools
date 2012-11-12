@@ -37,9 +37,6 @@ import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.FactA;
 import org.drools.FactB;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -50,32 +47,35 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.event.rule.ActivationCancelledEvent;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.io.ResourceFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Package;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.rule.ActivationCancelledEvent;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
 
@@ -202,12 +202,12 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         verify( ael, times( 15 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
         verify( ael, never() ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.kie.test",
                           "Who likes Stilton" );
 
         verify( ael, times( 3 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.kie.test",
                           "like cheese" );
 
         verify( ael, times( 7 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
@@ -218,7 +218,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         verify( ael, times( 16 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
 
-        kbase.removeKnowledgePackage( "org.drools.test" );
+        kbase.removeKnowledgePackage( "org.kie.test" );
         verify( ael, times( 16 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
         kbase = SerializationHelper.serializeObject( kbase );
@@ -239,17 +239,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 5,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.kie.test",
                           "Who likes Stilton" );
         assertEquals( 4,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.kie.test",
                           "like cheese" );
         assertEquals( 3,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeKnowledgePackage( "org.drools.test" );
+        kbase.removeKnowledgePackage( "org.kie.test" );
         assertEquals( 0,
                       kbase.getKnowledgePackages().size() );
     }
@@ -280,7 +280,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         // Check a function can be removed from a package.
         // Once removed any efforts to use it should throw an Exception
-        kbase.removeFunction( "org.drools.test",
+        kbase.removeFunction( "org.kie.test",
                               "addFive" );
 
         final Cheese cheddar = new Cheese( "cheddar",
@@ -426,7 +426,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
-            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
+            Class cheeseClass = loader1.loadClass( "org.kie.Cheese" );
 
             PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader1 );
             PackageBuilder builder = new PackageBuilder( conf );
@@ -446,7 +446,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates second class loader and use it to load fact classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
-            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
+            cheeseClass = loader2.loadClass( "org.kie.Cheese" );
 
             conf = new PackageBuilderConfiguration( loader2 );
             builder = new PackageBuilder( conf );
@@ -476,7 +476,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader1 );
-            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
+            Class cheeseClass = loader1.loadClass( "org.kie.Cheese" );
 
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -493,7 +493,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader2 );
-            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
+            cheeseClass = loader2.loadClass( "org.kie.Cheese" );
 
             builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -580,7 +580,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 0,
                       results.size() );
 
-        kbase.removeKnowledgePackage( "org.drools" );
+        kbase.removeKnowledgePackage( "org.kie" );
 
         ksession.retract( ksession.getFactHandle( b ) );
 
@@ -728,12 +728,12 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 11,
                       getInternalAgenda( session ).getActivations().length );
 
-        kbase.removeRule( "org.drools",
+        kbase.removeRule( "org.kie",
                           "Apply Discount on all books" );
         assertEquals( 10,
                       getInternalAgenda( session ).getActivations().length );
 
-        kbase.removeRule( "org.drools",
+        kbase.removeRule( "org.kie",
                           "like book" );
 
         final OrderItem item5 = new OrderItem( order,
@@ -749,7 +749,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 10,
                       getInternalAgenda( session ).getActivations().length );
 
-        kbase.removeKnowledgePackage( "org.drools" );
+        kbase.removeKnowledgePackage( "org.kie" );
 
         assertEquals( 0,
                       getInternalAgenda( session ).getActivations().length );
@@ -766,17 +766,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 4,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.drools",
+        kbase.removeRule( "org.kie",
                 "Apply Discount on all books" );
         assertEquals( 3,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.drools",
+        kbase.removeRule( "org.kie",
                 "like book" );
         assertEquals( 2,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeKnowledgePackage( "org.drools" );
+        kbase.removeKnowledgePackage( "org.kie" );
         assertEquals( 0,
                       kbase.getKnowledgePackages().size() );
     }
@@ -987,8 +987,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader1.loadClass( "org.drools.Primitives" );
-            //loader1.loadClass( "org.drools.TestEnum" );
+            //loader1.loadClass( "org.kie.Primitives" );
+            //loader1.loadClass( "org.kie.TestEnum" );
 
             // create a builder with the given classloader
             KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
@@ -1011,8 +1011,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader2.loadClass( "org.drools.Primitives" );
-            //loader2.loadClass( "org.drools.TestEnum" );
+            //loader2.loadClass( "org.kie.Primitives" );
+            //loader2.loadClass( "org.kie.TestEnum" );
 
             // set context classloader and use it
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
@@ -1053,19 +1053,19 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         // pattern does not match, so do not activate
         ksession.insert( new Person( "toni" ) );
         verify( alistener,
-                never() ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+                never() ).activationCreated( any( org.kie.event.rule.ActivationCreatedEvent.class ) );
 
         // pattern matches, so create activation
         ksession.insert( new Person( "bob" ) );
         verify( alistener,
-                times( 1 ) ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+                times( 1 ) ).activationCreated( any( org.kie.event.rule.ActivationCreatedEvent.class ) );
 
         // already active, so no new activation should be created
         ksession.insert( new Person( "mark" ) );
         verify( alistener,
-                times( 1 ) ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+                times( 1 ) ).activationCreated( any( org.kie.event.rule.ActivationCreatedEvent.class ) );
 
-        kbase.removeKnowledgePackage( "org.drools" );
+        kbase.removeKnowledgePackage( "org.kie" );
 
         assertEquals( 0,
                       kbase.getKnowledgePackages().size() );
@@ -1080,7 +1080,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         // rule should be reactivated, since data is still in the session
         verify( alistener,
-                times( 2 ) ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+                times( 2 ) ).activationCreated( any( org.kie.event.rule.ActivationCreatedEvent.class ) );
 
     }
 

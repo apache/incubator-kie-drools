@@ -19,8 +19,8 @@ package org.drools.agent;
 import java.io.IOException;
 import java.net.URL;
 
-import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
+import org.kie.definition.KnowledgePackage;
 
 /**
  * A nicely mockable Http client interface.

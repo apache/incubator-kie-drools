@@ -26,15 +26,15 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.ClassObjectType;
-import org.drools.definition.KnowledgeDefinition;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;
-import org.drools.io.Resource;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
+import org.kie.definition.KnowledgeDefinition;
+import org.kie.io.Resource;
 
 /**
  * The type declaration class stores all type's metadata

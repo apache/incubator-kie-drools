@@ -18,7 +18,7 @@ package org.drools.factmodel.traits;
 
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
-import org.drools.runtime.rule.Variable;
+import org.kie.runtime.rule.Variable;
 
 import java.io.*;
 import java.util.Map;

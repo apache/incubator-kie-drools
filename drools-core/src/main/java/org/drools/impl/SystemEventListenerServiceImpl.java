@@ -16,10 +16,10 @@
 
 package org.drools.impl;
 
-import org.drools.SystemEventListener;
-import org.drools.SystemEventListenerService;
 import org.drools.agent.impl.DoNothingSystemEventListener;
 import org.drools.core.util.DelegatingSystemEventListener;
+import org.kie.SystemEventListener;
+import org.kie.SystemEventListenerService;
 
 public class SystemEventListenerServiceImpl implements SystemEventListenerService{
     

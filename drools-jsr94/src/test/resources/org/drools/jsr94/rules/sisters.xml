@@ -4,7 +4,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools-5.0.xsd">
          
-  <import name="org.drools.jsr94.rules.Person" />
+  <import name="org.kie.jsr94.rules.Person" />
 
   <rule name="FindSisters">
       <lhs>  

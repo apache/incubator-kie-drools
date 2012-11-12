@@ -1,6 +1,6 @@
-package org.drools.integrationtests;
+package org.kie.integrationtests;
 
-import org.drools.InsertedObject;
+import org.kie.InsertedObject;
 
 rule rule1
   when

@@ -389,7 +389,7 @@ public class ObjectTypeNode extends ObjectSource
      * never removed from the rulebase in the current implementation
      *
      * @inheritDoc
-     * @see org.drools.common.BaseNode#remove(org.drools.reteoo.RuleRemovalContext, org.drools.reteoo.ReteooBuilder, org.drools.common.BaseNode, org.drools.common.InternalWorkingMemory[])
+     * @see org.kie.common.BaseNode#remove(org.kie.reteoo.RuleRemovalContext, org.kie.reteoo.ReteooBuilder, org.kie.common.BaseNode, org.kie.common.InternalWorkingMemory[])
      */
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,

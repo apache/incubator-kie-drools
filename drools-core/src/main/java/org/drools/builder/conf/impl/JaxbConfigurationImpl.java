@@ -19,9 +19,9 @@ package org.drools.builder.conf.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.JaxbConfiguration;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
+import org.kie.builder.JaxbConfiguration;
 
 import com.sun.tools.xjc.Options;
 

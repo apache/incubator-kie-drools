@@ -19,19 +19,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.io.Resource;
 import org.drools.io.impl.ChangeSetImpl;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeResourceProcessedEvent;
+import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
+import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
+import org.kie.io.Resource;
 
 /**
  * Helper class to programmatically add and remove Resources from a change-set.

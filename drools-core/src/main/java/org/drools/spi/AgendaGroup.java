@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.util.Collection;
 
 import org.drools.common.DefaultAgenda;
-import org.drools.runtime.rule.Activation;
+import org.kie.runtime.rule.Activation;
 
 /**
  *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
@@ -30,7 +30,7 @@ import org.drools.runtime.rule.Activation;
  */
 public interface AgendaGroup
     extends
-    org.drools.runtime.rule.AgendaGroup {
+    org.kie.runtime.rule.AgendaGroup {
     
     /**
      * Static reference to determine the default <code>AgendaGroup</code> name.

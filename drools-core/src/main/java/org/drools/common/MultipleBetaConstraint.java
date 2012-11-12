@@ -1,13 +1,13 @@
 package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.conf.IndexPrecedenceOption;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.kie.conf.IndexPrecedenceOption;
 
 import java.io.IOException;
 import java.io.ObjectInput;

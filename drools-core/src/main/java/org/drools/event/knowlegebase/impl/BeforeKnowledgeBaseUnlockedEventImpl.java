@@ -16,8 +16,8 @@
 
 package org.drools.event.knowlegebase.impl;
 
-import org.drools.KnowledgeBase;
-import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
+import org.kie.KnowledgeBase;
+import org.kie.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 
 public class BeforeKnowledgeBaseUnlockedEventImpl extends KnowledgeBaseEventImpl implements BeforeKnowledgeBaseUnlockedEvent {
 

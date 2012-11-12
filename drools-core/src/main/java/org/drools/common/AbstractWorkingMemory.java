@@ -54,11 +54,7 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.process.ProcessEventManager;
 import org.drools.management.DroolsManagementAgent;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactImpl;
@@ -71,30 +67,34 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.Calendars;
-import org.drools.runtime.Channel;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.Globals;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.ProcessRuntimeFactory;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.time.AcceptsTimerJobFactoryManager;
-import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.process.ProcessEventManager;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.runtime.Calendars;
+import org.kie.runtime.Channel;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.Globals;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.time.SessionClock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -766,7 +766,7 @@ public abstract class AbstractWorkingMemory
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
      */
-    public Object getObject(org.drools.runtime.rule.FactHandle handle) {
+    public Object getObject(org.kie.runtime.rule.FactHandle handle) {
         // the handle might have been disconnected, so reconnect if it has
         if ( ((InternalFactHandle)handle).isDisconnected() ) {
             handle = this.defaultEntryPoint.getObjectStore().reconnect( handle );
@@ -804,7 +804,7 @@ public abstract class AbstractWorkingMemory
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateObjects(org.drools.runtime.ObjectFilter filter) {
+    public Iterator iterateObjects(org.kie.runtime.ObjectFilter filter) {
         return getObjectStore().iterateObjects( filter );
     }
 
@@ -820,7 +820,7 @@ public abstract class AbstractWorkingMemory
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public Iterator iterateFactHandles(org.kie.runtime.ObjectFilter filter) {
         return getObjectStore().iterateFactHandles( filter );
     }
 
@@ -910,7 +910,7 @@ public abstract class AbstractWorkingMemory
                                        typeConf );
     }
 
-    public void retract(final org.drools.runtime.rule.FactHandle handle) throws FactException {
+    public void retract(final org.kie.runtime.rule.FactHandle handle) throws FactException {
         retract( (org.drools.FactHandle) handle,
                  null,
                  null );
@@ -928,7 +928,7 @@ public abstract class AbstractWorkingMemory
         return ((InternalWorkingMemoryEntryPoint) this.defaultEntryPoint).getEntryPointNode();
     }
 
-    public void update(final org.drools.runtime.rule.FactHandle handle,
+    public void update(final org.kie.runtime.rule.FactHandle handle,
                        final Object object) throws FactException {
         update( (org.drools.FactHandle) handle,
                 object,
@@ -936,7 +936,7 @@ public abstract class AbstractWorkingMemory
                 null );
     }
 
-    public void update(final org.drools.runtime.rule.FactHandle factHandle,
+    public void update(final org.kie.runtime.rule.FactHandle factHandle,
                        final Object object,
                        final long mask,
                        final Activation activation) throws FactException {

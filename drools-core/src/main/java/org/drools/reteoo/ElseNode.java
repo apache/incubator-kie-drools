@@ -357,7 +357,7 @@ public class ElseNode extends BetaNode {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
+     * @see org.kie.reteoo.BaseNode#updateNewNode(org.kie.reteoo.WorkingMemoryImpl, org.kie.spi.PropagationContext)
      */
     public void updateSink( final LeftTupleSink sink,
                             final PropagationContext context,

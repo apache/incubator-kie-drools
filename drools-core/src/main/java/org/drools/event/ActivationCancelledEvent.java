@@ -16,8 +16,8 @@
 
 package org.drools.event;
 
-import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.spi.Activation;
+import org.kie.event.rule.ActivationCancelledCause;
 
 public class ActivationCancelledEvent extends ActivationEvent {
     private ActivationCancelledCause cause;

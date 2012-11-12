@@ -28,7 +28,7 @@ import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.process.instance.WorkItem;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
-import org.drools.runtime.Environment;
+import org.kie.runtime.Environment;
 
 @Entity
 @SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")

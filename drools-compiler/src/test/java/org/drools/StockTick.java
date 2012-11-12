@@ -56,49 +56,49 @@ public class StockTick implements Serializable, StockTickInterface {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#getCompany()
+     * @see org.kie.StockTickInterface#getCompany()
      */
     public String getCompany() {
         return company;
     }
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#setCompany(java.lang.String)
+     * @see org.kie.StockTickInterface#setCompany(java.lang.String)
      */
     public void setCompany(String company) {
         this.company = company;
     }
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#getPrice()
+     * @see org.kie.StockTickInterface#getPrice()
      */
     public double getPrice() {
         return price;
     }
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#setPrice(double)
+     * @see org.kie.StockTickInterface#setPrice(double)
      */
     public void setPrice(double price) {
         this.price = price;
     }
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#getSeq()
+     * @see org.kie.StockTickInterface#getSeq()
      */
     public long getSeq() {
         return seq;
     }
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#setSeq(long)
+     * @see org.kie.StockTickInterface#setSeq(long)
      */
     public void setSeq(long seq) {
         this.seq = seq;
     }
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#getTime()
+     * @see org.kie.StockTickInterface#getTime()
      */
     public long getTime() {
         return time;
     }
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#setTime(long)
+     * @see org.kie.StockTickInterface#setTime(long)
      */
     public void setTime(long time) {
         this.time = time;
@@ -109,21 +109,21 @@ public class StockTick implements Serializable, StockTickInterface {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#getDuration()
+     * @see org.kie.StockTickInterface#getDuration()
      */
     public long getDuration() {
         return duration;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#setDuration(long)
+     * @see org.kie.StockTickInterface#setDuration(long)
      */
     public void setDuration(long duration) {
         this.duration = duration;
     }
     
     /* (non-Javadoc)
-     * @see org.drools.StockTickInterface#getDateTimestamp()
+     * @see org.kie.StockTickInterface#getDateTimestamp()
      */
     public Date getDateTimestamp() {
         return new Date( this.time );

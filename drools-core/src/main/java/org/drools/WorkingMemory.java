@@ -20,13 +20,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.runtime.Environment;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItemManager;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
-import org.drools.time.SessionClock;
+import org.kie.runtime.Environment;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.time.SessionClock;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -131,7 +131,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The associated object.
      */
-    Object getObject(org.drools.runtime.rule.FactHandle handle);
+    Object getObject(org.kie.runtime.rule.FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> associated with an Object.
@@ -163,7 +163,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateObjects(org.drools.runtime.ObjectFilter filter);
+    Iterator<?> iterateObjects(org.kie.runtime.ObjectFilter filter);
 
     /**
      * Returns an Iterator for the FactHandles in the Working Memory. This Iterator is not thread safe.
@@ -183,7 +183,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateFactHandles(org.drools.runtime.ObjectFilter filter);
+    Iterator<?> iterateFactHandles(org.kie.runtime.ObjectFilter filter);
 
     /**
      * Set the focus to the specified AgendaGroup

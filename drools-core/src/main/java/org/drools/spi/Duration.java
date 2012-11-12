@@ -21,8 +21,8 @@ import java.io.Serializable;
 /**
  * Interface for specifying truthness duration.
  * 
- * @see org.drools.rule.Rule#setDuration
- * @see org.drools.rule.Rule#getDuration
+ * @see org.kie.rule.Rule#setDuration
+ * @see org.kie.rule.Rule#getDuration
  */
 public interface Duration
     extends

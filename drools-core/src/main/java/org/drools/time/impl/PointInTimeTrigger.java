@@ -21,8 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
-import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
+import org.kie.runtime.Calendars;
 
 public class PointInTimeTrigger
     implements
@@ -40,7 +40,7 @@ public class PointInTimeTrigger
         if ( calendars != null && calendarNames != null && calendarNames.length > 0 ) {
             for ( String calName : calendarNames ) {
                 // all calendars must not block, as soon as one blocks break
-                org.drools.time.Calendar cal = calendars.get( calName );
+                org.kie.time.Calendar cal = calendars.get( calName );
                 if ( cal != null && !cal.isTimeIncluded( timestamp ) ) {
                     included = false;
                     break;

@@ -11,19 +11,19 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.conf.EventProcessingOption;
-import org.drools.conf.MBeansOption;
-import org.drools.io.ResourceFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.conf.EventProcessingOption;
+import org.kie.conf.MBeansOption;
+import org.kie.io.ResourceFactory;
 
 public class MBeansMonitoringTest {
 
@@ -43,8 +43,8 @@ public class MBeansMonitoringTest {
                                  MBeanException,
                                  ReflectionException,
                                  NullPointerException {
-        String drl = "package org.drools.test\n" +
-        		     "import org.drools.StockTick\n" +
+        String drl = "package org.kie.test\n" +
+        		     "import org.kie.StockTick\n" +
                      "declare StockTick\n" +
                      "    @role(event)\n" +
                      "    @expires(10s)\n" +
@@ -63,10 +63,10 @@ public class MBeansMonitoringTest {
                                                  conf );
 
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-        ObjectName kbOn = new ObjectName("org.drools.kbases:type=monitoredKbase");
+        ObjectName kbOn = new ObjectName("org.kie.kbases:type=monitoredKbase");
         mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
         
-        Object expOffset = mbserver.getAttribute( new ObjectName( "org.drools.kbases:type=monitoredKbase,group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.StockTick"), "ExpirationOffset" );
+        Object expOffset = mbserver.getAttribute( new ObjectName( "org.kie.kbases:type=monitoredKbase,group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.kie.StockTick"), "ExpirationOffset" );
         Assert.assertEquals( 10001, ((Number)expOffset).longValue() );
     }
 

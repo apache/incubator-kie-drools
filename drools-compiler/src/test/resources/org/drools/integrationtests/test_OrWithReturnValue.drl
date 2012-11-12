@@ -1,4 +1,4 @@
-package org.drools
+package org.kie
  
 rule "r1"
 when

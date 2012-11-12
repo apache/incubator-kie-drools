@@ -30,7 +30,7 @@ import java.util.Comparator;
  * 
  * @see Activation
  * @see Tuple
- * @see org.drools.rule.Rule
+ * @see org.kie.rule.Rule
  * 
  *
  * @version $Id: ConflictResolver.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $

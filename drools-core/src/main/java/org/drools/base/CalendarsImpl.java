@@ -25,10 +25,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.runtime.Calendars;
-import org.drools.runtime.Globals;
 import org.drools.spi.GlobalResolver;
-import org.drools.time.Calendar;
+import org.kie.runtime.Calendars;
+import org.kie.runtime.Globals;
+import org.kie.time.Calendar;
 
 public class CalendarsImpl
     implements

@@ -1,7 +1,7 @@
 //created on: 12 juin 2006
 package Number
 
-import org.drools.IndexedNumber;
+import org.kie.IndexedNumber;
 import java.util.List;
 
 global java.util.List orderedNumbers;

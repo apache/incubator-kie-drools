@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.examples.state
+package org.kie.examples.state
  
-import org.drools.examples.state.State;
+import org.kie.examples.state.State;
 
 rule "D to E"
     when

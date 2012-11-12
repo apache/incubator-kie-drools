@@ -32,10 +32,10 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.xml.jaxb.util.JaxbCollectionAdapter;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand

@@ -3,14 +3,14 @@ package org.drools.test;
 import java.util.ArrayList;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.io.impl.ByteArrayResource;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class PositionalTest extends CommonTestMethodBase {
 
@@ -18,7 +18,7 @@ public class PositionalTest extends CommonTestMethodBase {
     public void testPositional() {
 
         String drl =
-                "import org.drools.test.Man;\n" +
+                "import org.kie.test.Man;\n" +
                 "\n" +
                 "global java.util.List list;" +
                 "\n" +

@@ -17,10 +17,10 @@
 package org.drools.command.impl;
 
 import org.drools.StatefulSession;
-import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
 import org.drools.command.Interceptor;
+import org.kie.command.Command;
 
 public abstract class AbstractInterceptor implements Interceptor {
 

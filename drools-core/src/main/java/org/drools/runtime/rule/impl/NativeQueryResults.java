@@ -36,9 +36,9 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.rule.Declaration;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.spi.ObjectType;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.QueryResultsRow;
 
 public class NativeQueryResults
     implements

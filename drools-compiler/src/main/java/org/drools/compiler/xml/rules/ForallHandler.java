@@ -43,7 +43,7 @@ public class ForallHandler extends BaseAbstractHandler
     
 
     /* (non-Javadoc)
-     * @see org.drools.xml.Handler#start(java.lang.String, java.lang.String, org.xml.sax.Attributes)
+     * @see org.kie.xml.Handler#start(java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     public Object start(final String uri,
                         final String localName,
@@ -58,7 +58,7 @@ public class ForallHandler extends BaseAbstractHandler
     }
 
     /* (non-Javadoc)
-     * @see org.drools.xml.Handler#end(java.lang.String, java.lang.String)
+     * @see org.kie.xml.Handler#end(java.lang.String, java.lang.String)
      */
     public Object end(final String uri,
                       final String localName,
@@ -76,7 +76,7 @@ public class ForallHandler extends BaseAbstractHandler
     }
 
     /* (non-Javadoc)
-     * @see org.drools.xml.Handler#generateNodeFor()
+     * @see org.kie.xml.Handler#generateNodeFor()
      */
     public Class generateNodeFor() {
         return ForallDescr.class;

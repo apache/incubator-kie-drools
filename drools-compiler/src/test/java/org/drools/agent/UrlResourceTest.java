@@ -3,6 +3,8 @@ package org.drools.agent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.io.ResourceFactory;
+
 import static org.junit.Assert.*;
 
 import org.drools.core.util.FileManager;
@@ -10,7 +12,6 @@ import org.drools.core.util.StringUtils;
 import org.drools.io.impl.UrlResource;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
-import org.drools.io.ResourceFactory;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 

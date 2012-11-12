@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
 import org.drools.audit.event.LogEvent;
-import org.drools.event.KnowledgeRuntimeEventManager;
+import org.kie.event.KnowledgeRuntimeEventManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

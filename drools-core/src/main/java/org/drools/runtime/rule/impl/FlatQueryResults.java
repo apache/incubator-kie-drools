@@ -39,12 +39,12 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.rule.Declaration;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.spi.ObjectType;
 import org.drools.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 import org.drools.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.QueryResultsRow;
 
 @XmlAccessorType( XmlAccessType.FIELD )
 @XmlType(name="query-results")

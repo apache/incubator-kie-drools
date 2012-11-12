@@ -41,8 +41,8 @@ class DeclarationsHandler extends AbstractCompilerHandler {
     /**
      * This field keeps track of the current set of hashed AlphaNodes for a ClassReader.
      *
-     * @see #startHashedAlphaNodes(org.drools.base.ClassFieldReader)
-     * @see #startHashedAlphaNode(org.drools.reteoo.AlphaNode, Object)
+     * @see #startHashedAlphaNodes(org.kie.base.ClassFieldReader)
+     * @see #startHashedAlphaNode(org.kie.reteoo.AlphaNode, Object)
      */
     private HashedAlphasDeclaration currentHashedAlpha;
 

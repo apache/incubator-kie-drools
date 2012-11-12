@@ -1,12 +1,12 @@
-package org.drools.reteoo;
+package org.kie.reteoo;
 
 import java.util.List;
 
-import org.drools.common.InternalAgenda;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleNetworkEvaluatorActivation;
-import org.drools.common.Memory;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.kie.common.InternalAgenda;
+import org.kie.common.InternalWorkingMemory;
+import org.kie.common.RuleNetworkEvaluatorActivation;
+import org.kie.common.Memory;
+import org.kie.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 
 public class RuleMemory
         implements

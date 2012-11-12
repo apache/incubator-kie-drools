@@ -26,15 +26,15 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
-import org.drools.ChangeSet;
-import org.drools.SystemEventListener;
-import org.drools.SystemEventListenerFactory;
-import org.drools.concurrent.ExecutorProviderFactory;
-import org.drools.io.Resource;
-import org.drools.io.ResourceChangeNotifier;
-import org.drools.io.ResourceChangeScanner;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.internal.InternalResource;
+import org.kie.ChangeSet;
+import org.kie.SystemEventListener;
+import org.kie.SystemEventListenerFactory;
+import org.kie.concurrent.ExecutorProviderFactory;
+import org.kie.io.Resource;
+import org.kie.io.ResourceChangeNotifier;
+import org.kie.io.ResourceChangeScanner;
+import org.kie.io.ResourceChangeScannerConfiguration;
 
 public class ResourceChangeScannerImpl
     implements

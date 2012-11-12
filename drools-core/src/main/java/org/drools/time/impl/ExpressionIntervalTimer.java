@@ -23,10 +23,10 @@ import org.drools.base.mvel.MVELObjectExpression;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.ScheduledAgendaItem;
-import org.drools.runtime.Calendars;
 import org.drools.spi.Activation;
 import org.drools.time.TimeUtils;
 import org.drools.time.Trigger;
+import org.kie.runtime.Calendars;
 
 import java.io.Externalizable;
 import java.io.IOException;

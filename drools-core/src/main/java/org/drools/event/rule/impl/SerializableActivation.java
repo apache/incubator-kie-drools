@@ -26,11 +26,11 @@ import java.util.List;
 
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
-import org.drools.definition.rule.Rule;
 import org.drools.rule.Declaration;
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.PropagationContext;
+import org.kie.definition.rule.Rule;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.PropagationContext;
 
 public class SerializableActivation
     implements

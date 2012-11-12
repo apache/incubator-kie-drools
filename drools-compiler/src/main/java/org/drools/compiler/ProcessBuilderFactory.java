@@ -1,6 +1,6 @@
 package org.drools.compiler;
 
-import org.drools.util.ServiceRegistryImpl;
+import org.kie.util.ServiceRegistryImpl;
 
 
 public class ProcessBuilderFactory {

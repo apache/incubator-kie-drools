@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class Operator
     implements
-    Externalizable, org.drools.runtime.rule.Operator {
+    Externalizable, org.kie.runtime.rule.Operator {
 
     private static final long                  serialVersionUID = 510l;
 
@@ -146,14 +146,14 @@ public class Operator
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.evaluators.OperatorInterface#getOperatorString()
+     * @see org.kie.base.evaluators.OperatorInterface#getOperatorString()
      */
     public String getOperatorString() {
         return this.operator;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.evaluators.OperatorInterface#isNegated()
+     * @see org.kie.base.evaluators.OperatorInterface#isNegated()
      */
     public boolean isNegated() {
         return this.isNegated;

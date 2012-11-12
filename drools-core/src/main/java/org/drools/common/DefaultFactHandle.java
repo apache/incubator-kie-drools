@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.drools.FactHandle;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
-import org.drools.definition.rule.Rule;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.RuleComponent;
+import org.kie.definition.rule.Rule;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * Implementation of <code>FactHandle</code>.

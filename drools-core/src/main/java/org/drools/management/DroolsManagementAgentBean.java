@@ -17,11 +17,11 @@ package org.drools.management;
 
 import java.util.List;
 
-import org.drools.KnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * Simple POJO that encapsulates DroolsManagmentAgent to make it work with Spring Framework

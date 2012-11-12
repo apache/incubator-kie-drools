@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.runtime.Channel;
+import org.kie.runtime.Channel;
 
 public class UserSession {
     private int id;

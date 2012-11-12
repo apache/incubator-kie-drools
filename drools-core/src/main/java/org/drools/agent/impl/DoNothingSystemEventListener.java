@@ -16,7 +16,7 @@
 
 package org.drools.agent.impl;
 
-import org.drools.SystemEventListener;
+import org.kie.SystemEventListener;
 
 public class DoNothingSystemEventListener
     implements

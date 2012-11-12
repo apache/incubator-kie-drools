@@ -1,6 +1,6 @@
 package TrafficControl
 
-import org.drools.*
+import org.kie.*
 
 rule "Target Retract"
     salience -100

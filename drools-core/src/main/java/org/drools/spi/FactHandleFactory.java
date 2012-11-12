@@ -23,7 +23,7 @@ import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s

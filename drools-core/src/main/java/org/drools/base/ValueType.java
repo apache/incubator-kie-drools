@@ -158,21 +158,21 @@ public class ValueType
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#getName()
+     * @see org.kie.base.ValueTypeInterface#getName()
      */
     public String getName() {
         return this.name;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#getClassType()
+     * @see org.kie.base.ValueTypeInterface#getClassType()
      */
     public Class<?> getClassType() {
         return this.classType;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#getSimpleType()
+     * @see org.kie.base.ValueTypeInterface#getSimpleType()
      */
     public int getSimpleType() {
         return this.simpleType;
@@ -261,14 +261,14 @@ public class ValueType
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#isBoolean()
+     * @see org.kie.base.ValueTypeInterface#isBoolean()
      */
     public boolean isBoolean() {
         return ((this.classType == Boolean.class) || (this.classType == Boolean.TYPE));
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#isNumber()
+     * @see org.kie.base.ValueTypeInterface#isNumber()
      */
     public boolean isNumber() {
         return (this.simpleType == SimpleValueType.INTEGER ||
@@ -277,28 +277,28 @@ public class ValueType
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#isIntegerNumber()
+     * @see org.kie.base.ValueTypeInterface#isIntegerNumber()
      */
     public boolean isIntegerNumber() {
         return this.simpleType == SimpleValueType.INTEGER;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#isFloatNumber()
+     * @see org.kie.base.ValueTypeInterface#isFloatNumber()
      */
     public boolean isFloatNumber() {
         return this.simpleType == SimpleValueType.DECIMAL;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#isChar()
+     * @see org.kie.base.ValueTypeInterface#isChar()
      */
     public boolean isChar() {
         return this.simpleType == SimpleValueType.CHAR;
     }
     
     /* (non-Javadoc)
-     * @see org.drools.base.ValueTypeInterface#isEvent()
+     * @see org.kie.base.ValueTypeInterface#isEvent()
      */
     public boolean isEvent() {
         return this.classType == EventFactHandle.class;

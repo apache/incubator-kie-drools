@@ -20,19 +20,19 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
-import org.drools.SystemEventListener;
-import org.drools.SystemEventListenerFactory;
 import org.drools.WorkingMemory;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.definition.KnowledgeDefinition;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.agent.ResourceDiffProducer;
-import org.drools.definition.process.WorkflowProcess;
 import org.drools.rule.Function;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
+import org.kie.SystemEventListener;
+import org.kie.SystemEventListenerFactory;
+import org.kie.definition.KnowledgeDefinition;
+import org.kie.definition.process.WorkflowProcess;
 
 public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements ResourceDiffProducer {
 
@@ -72,7 +72,7 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
        
 
         //ok, so I get an old rule: is it modified in the new pkg? is it even present on it?
-        org.drools.definition.rule.Rule newRule = newPkg.getRule(oldRule.getName());
+        org.kie.definition.rule.Rule newRule = newPkg.getRule(oldRule.getName());
 
         if (newRule == null){
             //the old rule is not present on the new package. Add it to
@@ -98,9 +98,9 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
         }
 
         //I hate to do this. But if it is not instance of
-        //org.drools.rule.Rule I can't get his LHS.
+        //org.kie.rule.Rule I can't get his LHS.
         if (!(newRule instanceof org.drools.rule.Rule)){
-            listener.warning("BinaryResourceDiffProducerImpl: Rules must be subclasses of org.drools.rule.Rule.");
+            listener.warning("BinaryResourceDiffProducerImpl: Rules must be subclasses of org.kie.rule.Rule.");
             return;
         }
 
@@ -178,7 +178,7 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
     public void visitWorkflowProcess(final WorkflowProcess oldDefinition) {
     	String oldProcessId = oldDefinition.getId();
     	boolean found = false;
-    	for (org.drools.definition.process.Process process: newPkg.getProcesses()) {
+    	for (org.kie.definition.process.Process process: newPkg.getProcesses()) {
     		if (oldProcessId.equals(process.getId())) {
     			found = true;
     			break;

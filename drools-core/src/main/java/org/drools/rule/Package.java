@@ -34,10 +34,10 @@ import java.util.Set;
 import org.drools.base.*;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
-import org.drools.definition.process.Process;
-import org.drools.definition.type.FactType;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.io.Resource;
+import org.kie.definition.process.Process;
+import org.kie.definition.type.FactType;
+import org.kie.io.Resource;
 
 /**
  * Collection of related <code>Rule</code>s.

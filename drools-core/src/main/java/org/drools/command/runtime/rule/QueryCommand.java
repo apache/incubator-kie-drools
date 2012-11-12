@@ -30,9 +30,9 @@ import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.Variable;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.Variable;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class QueryCommand  implements GenericCommand<QueryResults>, IdentifiableResult {

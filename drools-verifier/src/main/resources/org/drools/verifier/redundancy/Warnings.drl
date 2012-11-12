@@ -15,7 +15,7 @@
  */
 
 //created on: 9.12.2007
-package org.drools.verifier.redundancy
+package org.kie.verifier.redundancy
 
 //list any import classes here.
 global VerifierReport result;
@@ -26,20 +26,20 @@ global VerifierReport result;
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.drools.verifier.components.SubRule;
-import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.components.Consequence;
+import org.kie.verifier.components.SubRule;
+import org.kie.verifier.components.VerifierRule;
+import org.kie.verifier.components.Consequence;
 
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.data.VerifierReport;
 
-import org.drools.verifier.components.RuleComponent;
-import org.drools.verifier.report.components.Redundancy;
-import org.drools.verifier.report.components.Equivalence;
-import org.drools.verifier.report.components.Subsumption;
-import org.drools.verifier.report.components.VerifierMessage;
-import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.Severity;
-import org.drools.verifier.report.components.MessageType;
+import org.kie.verifier.components.RuleComponent;
+import org.kie.verifier.report.components.Redundancy;
+import org.kie.verifier.report.components.Equivalence;
+import org.kie.verifier.report.components.Subsumption;
+import org.kie.verifier.report.components.VerifierMessage;
+import org.kie.verifier.report.components.Cause;
+import org.kie.verifier.report.components.Severity;
+import org.kie.verifier.report.components.MessageType;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -144,13 +144,13 @@ end
 // Dependencies:
 //
 //    Needs at least one rule from these packages:
-//        package org.drools.verifier.equivalency.rules
+//        package org.kie.verifier.equivalency.rules
 //            rule "Find equivalent Rules"
-//        package org.drools.verifier.redundancy.rules
+//        package org.kie.verifier.redundancy.rules
 //            rule "Find redundant Rules, strong redundancy"
 //
 //    And this rule:
-//        package org.drools.verifier.redundancy.possibilities
+//        package org.kie.verifier.redundancy.possibilities
 //            rule "Find rule possibility redundancy"
 //
 rule "Find redundant rules" extends "Find redundant LHS"
@@ -212,13 +212,13 @@ end
 // Dependencies:
 //
 //    Needs at least one rule from these packages:
-//        package org.drools.verifier.equivalency.rules
+//        package org.kie.verifier.equivalency.rules
 //            rule "Find equivalent Rules"
-//        package org.drools.verifier.redundancy.rules
+//        package org.kie.verifier.redundancy.rules
 //            rule "Find redundant Rules, strong redundancy"
 //
 //    And this rule:
-//        package org.drools.verifier.redundancy.possibilities
+//        package org.kie.verifier.redundancy.possibilities
 //            rule "Find rule possibility redundancy"
 //
 rule "Find subsumptant rule possibilities from different rules"

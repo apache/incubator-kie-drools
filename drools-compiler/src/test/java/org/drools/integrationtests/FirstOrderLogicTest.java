@@ -11,30 +11,53 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.*;
+import org.drools.Address;
+import org.drools.Cheese;
+import org.drools.Cheesery;
+import org.drools.ClockType;
+import org.drools.CommonTestMethodBase;
+import org.drools.FactA;
+import org.drools.FactB;
+import org.drools.FactC;
+import org.drools.FactHandle;
+import org.drools.Message;
+import org.drools.Order;
+import org.drools.OrderItem;
+import org.drools.Person;
+import org.drools.PersonInterface;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.SpecialString;
+import org.drools.State;
+import org.drools.StatefulSession;
+import org.drools.StockTick;
+import org.drools.Triangle;
+import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryConsoleLogger;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.definition.KnowledgePackage;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.*;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.time.SessionClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1460,7 +1483,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     public void testLotsOfOrs() throws Exception {
         // Decomposed this test down to just two rules, while still exhibiting the problem
         // Uncomment rest of rule as those are fixed, to complicate it again.
-        String str = "package org.drools.test\n" + 
+        String str = "package org.kie.test\n" + 
                 "\n" + 
                 "import " + FirstOrderLogicTest.class.getCanonicalName() + ".Field;\n" + 
                 " \n" + 
@@ -1526,7 +1549,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test 
     public void testOrs() throws Exception {
-        String str = "package org.drools\n" + 
+        String str = "package org.kie\n" + 
                 "rule X\n" + 
                 "    when\n" +
                 "        Message( message == 'test' )\n" +

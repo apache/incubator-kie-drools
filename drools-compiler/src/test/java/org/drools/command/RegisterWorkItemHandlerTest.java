@@ -2,26 +2,27 @@ package org.drools.command;
 
 import static org.junit.Assert.*;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.CommandFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 public class RegisterWorkItemHandlerTest {
     
     @Test
     public void testRegisterWorkItemHandlerWithStatelessSession() {
         String str = 
-                "package org.drools.workitem.test \n" +
+                "package org.kie.workitem.test \n" +
                 "import " + DefaultWorkItemManager.class.getCanonicalName() + "\n" +
                 "import " + WorkItem.class.getCanonicalName() + "\n" +
                 "import " + WorkItemImpl.class.getCanonicalName() + "\n" + 
@@ -47,12 +48,12 @@ public class RegisterWorkItemHandlerTest {
         StatelessKnowledgeSession ks = kbase.newStatelessKnowledgeSession();
         ks.execute( CommandFactory.newRegisterWorkItemHandlerCommand( new WorkItemHandler() {
             
-            public void executeWorkItem(org.drools.runtime.process.WorkItem workItem,
+            public void executeWorkItem(org.kie.runtime.process.WorkItem workItem,
                                         WorkItemManager manager) {
                 answer[0] = true;
             }
             
-            public void abortWorkItem(org.drools.runtime.process.WorkItem workItem,
+            public void abortWorkItem(org.kie.runtime.process.WorkItem workItem,
                                       WorkItemManager manager) {
                 // TODO Auto-generated method stub
                 

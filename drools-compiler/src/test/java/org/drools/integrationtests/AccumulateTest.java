@@ -17,8 +17,6 @@ import java.util.Set;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.OuterClass;
@@ -26,24 +24,26 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.Variable;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.Variable;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -69,11 +69,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.drools.runtime.rule.FactHandle[] cheeseHandles = new org.drools.runtime.rule.FactHandle[cheese.length];
+        final org.kie.runtime.rule.FactHandle[] cheeseHandles = new org.kie.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final org.drools.runtime.rule.FactHandle bobHandle = wm.insert( bob );
+        final org.kie.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -204,11 +204,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.drools.runtime.rule.FactHandle[] cheeseHandles = new org.drools.runtime.rule.FactHandle[cheese.length];
+        final org.kie.runtime.rule.FactHandle[] cheeseHandles = new org.kie.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final org.drools.runtime.rule.FactHandle bobHandle = wm.insert( bob );
+        final org.kie.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -270,11 +270,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.drools.runtime.rule.FactHandle[] cheeseHandles = new org.drools.runtime.rule.FactHandle[cheese.length];
+        final org.kie.runtime.rule.FactHandle[] cheeseHandles = new org.kie.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final org.drools.runtime.rule.FactHandle bobHandle = wm.insert( bob );
+        final org.kie.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -843,9 +843,9 @@ public class AccumulateTest extends CommonTestMethodBase {
         // JBRULES-3482
         // once this compils, update it to actually assert on correct outputs.
         
-        String rule = "package org.drools.test;\n" +
-                      "import org.drools.Cheese;\n" +
-                      "import org.drools.Person;\n" +
+        String rule = "package org.kie.test;\n" +
+                      "import org.kie.Cheese;\n" +
+                      "import org.kie.Person;\n" +
                         
                       "rule \"Class cast causer\"\n" +
                       "    when\n" +
@@ -1726,8 +1726,8 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test
     public void testAccumulateMinMax() throws Exception {
-        String drl = "package org.drools.test \n" +
-                     "import org.drools.Cheese \n" +
+        String drl = "package org.kie.test \n" +
+                     "import org.kie.Cheese \n" +
                      "global java.util.List results \n " +
                      "rule minMax \n" +
                      "when \n" +
@@ -1773,7 +1773,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     
     @Test
     public void testAccumulateCE() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.kie\n" +
         		     "global java.util.List results\n" +
         		     "rule \"ocount\"\n" + 
         		     "when\n" + 
@@ -1822,7 +1822,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateAndRetract() {
 
-        String drl = "package org.drools;\n" +
+        String drl = "package org.kie;\n" +
                 "\n" +
                 "import java.util.ArrayList;\n" +
                 "\n" +
@@ -1924,8 +1924,8 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test
     public void testAccumulateWithBoundExpression() {
-        String drl = "package org.drools;\n" +
-                "import org.drools.integrationtests.AccumulateTest.MyObj;\n" +
+        String drl = "package org.kie;\n" +
+                "import org.kie.integrationtests.AccumulateTest.MyObj;\n" +
                 "global java.util.List results\n" +
                 "rule init\n" +
                 "   when\n" +
@@ -1960,8 +1960,8 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test(timeout = 5000)
     public void testInfiniteLoopAddingPkgAfterSession() throws Exception {
         // JBRULES-3488
-        String rule = "package org.drools.test;\n" +
-        "import org.drools.integrationtests.AccumulateTest.Triple;\n" +
+        String rule = "package org.kie.test;\n" +
+        "import org.kie.integrationtests.AccumulateTest.Triple;\n" +
         "rule \"accumulate 2 times\"\n" +
         "when\n" +
         "  $LIST : java.util.List( )" +
@@ -2175,7 +2175,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         // JBRULES-3538
         String str =
                 "import java.util.*;\n" +
-                "import org.drools.integrationtests.AccumulateTest.MyPerson;\n" +
+                "import org.kie.integrationtests.AccumulateTest.MyPerson;\n" +
                 "dialect \"mvel\"\n" +
                 "\n" +
                 "rule \"Test\"\n" +

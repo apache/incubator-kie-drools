@@ -3,17 +3,17 @@ package org.drools.kproject;
 import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.CompositeKnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.StringUtils;
-import org.drools.io.ResourceFactory;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.CompositeKnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.io.ResourceFactory;
 
 
 public class KBaseBuilder {

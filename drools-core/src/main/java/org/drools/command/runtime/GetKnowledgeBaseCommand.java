@@ -16,14 +16,14 @@
 
 package org.drools.command.runtime;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class GetKnowledgeBaseCommand
     implements

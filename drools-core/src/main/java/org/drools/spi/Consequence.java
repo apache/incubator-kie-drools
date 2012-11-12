@@ -21,7 +21,7 @@ import org.drools.WorkingMemory;
 /**
  * Consequence to be fired upon successful match of a <code>Rule</code>.
  * 
- * @see org.drools.rule.Rule
+ * @see org.kie.rule.Rule
  */
 public interface Consequence
     extends

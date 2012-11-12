@@ -12,7 +12,7 @@ LC_AMOUNT
 AMOUNT
 
 
-package org.drools.decisiontable;
+package org.kie.decisiontable;
 //generated from Decision Table
 
 global FeeResult result;

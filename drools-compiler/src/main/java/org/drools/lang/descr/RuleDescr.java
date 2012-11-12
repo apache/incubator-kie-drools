@@ -21,9 +21,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
 
-import org.drools.io.Resource;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
+import org.kie.io.Resource;
 
 public class RuleDescr extends AnnotatedBaseDescr
     implements

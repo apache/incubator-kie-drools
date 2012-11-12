@@ -16,26 +16,26 @@
 
 package org.drools.verifier.alwaysFalse;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 import org.drools.verifier.TestBaseOld;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierRule;
@@ -46,6 +46,9 @@ import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Test;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 public class AlwaysFalseTest extends TestBaseOld {
 

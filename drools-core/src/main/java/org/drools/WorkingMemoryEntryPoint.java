@@ -23,7 +23,7 @@ import org.drools.FactHandle;
  * An interface for instances that allow handling of entry-point-scoped
  * facts
  */
-public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.WorkingMemoryEntryPoint {
+public interface WorkingMemoryEntryPoint extends org.kie.runtime.rule.WorkingMemoryEntryPoint {
     /**
      * Assert a fact.
      * 
@@ -65,7 +65,7 @@ public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.Working
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void retract(org.drools.runtime.rule.FactHandle handle) throws FactException;
+    void retract(org.kie.runtime.rule.FactHandle handle) throws FactException;
 
     /**
      * Inform the WorkingMemory that a Fact has been modified and that it
@@ -79,7 +79,7 @@ public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.Working
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void update(org.drools.runtime.rule.FactHandle handle,
+    void update(org.kie.runtime.rule.FactHandle handle,
                 Object object) throws FactException;
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);

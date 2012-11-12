@@ -10,18 +10,18 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.DefaultCommandService;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.common.InternalFactHandle;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 @SuppressWarnings("unchecked")
 public class GetFactHandlesCommandTest {

@@ -38,7 +38,7 @@ import org.drools.spi.PropagationContext;
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
  * matched <code>Rule</code>.
  *
- * @see org.drools.rule.Rule
+ * @see org.kie.rule.Rule
  */
 public class QueryTerminalNode extends AbstractTerminalNode implements LeftTupleSinkNode {
 
@@ -119,7 +119,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.drools.impl.TupleSink
+    // org.kie.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**

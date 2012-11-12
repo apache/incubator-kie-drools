@@ -1,4 +1,4 @@
-package org.drools;
+package org.kie;
 
 rule "test declaration of non existing field"
 when

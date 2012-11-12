@@ -253,7 +253,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         }
 
         /* (non-Javadoc)
-         * @see org.drools.util.Iterator#next()
+         * @see org.kie.util.Iterator#next()
          */
         public Object next() {
             while ( this.row <= this.length ) {
@@ -297,7 +297,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         }
 
         /* (non-Javadoc)
-         * @see org.drools.util.Iterator#reset()
+         * @see org.kie.util.Iterator#reset()
          */
         public void reset() {
             this.table = this.hashTable.getTable();

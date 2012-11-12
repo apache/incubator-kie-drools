@@ -19,10 +19,10 @@ package org.drools.command.runtime;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.WorkingMemoryEventListener;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class RemoveEventListenerCommand
     implements

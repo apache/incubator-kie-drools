@@ -16,11 +16,11 @@
 package org.drools.xml;
 
 import java.util.Collection;
-import org.drools.ChangeSet;
-import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.ChangeSet;
+import org.kie.io.Resource;
 
 /**
  *

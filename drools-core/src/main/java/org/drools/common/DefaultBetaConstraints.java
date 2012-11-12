@@ -17,7 +17,6 @@
 package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.conf.IndexPrecedenceOption;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
@@ -26,6 +25,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.kie.conf.IndexPrecedenceOption;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -119,7 +119,7 @@ public class DefaultBetaConstraints
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
+     * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
@@ -130,7 +130,7 @@ public class DefaultBetaConstraints
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
+     * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final InternalWorkingMemory workingMemory,
@@ -153,7 +153,7 @@ public class DefaultBetaConstraints
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
+     * @see org.kie.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
                                        final InternalFactHandle handle) {
@@ -166,7 +166,7 @@ public class DefaultBetaConstraints
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
+     * @see org.kie.common.BetaNodeConstraints#isAllowedCachedRight(org.kie.reteoo.ReteTuple)
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final LeftTuple tuple) {
@@ -200,7 +200,7 @@ public class DefaultBetaConstraints
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#getConstraints()
+     * @see org.kie.common.BetaNodeConstraints#getConstraints()
      */
     public BetaNodeFieldConstraint[] getConstraints() {
         return constraints;

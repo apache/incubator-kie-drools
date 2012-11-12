@@ -28,8 +28,8 @@ import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.Variable;
 import org.drools.spi.PropagationContext;
+import org.kie.runtime.rule.Variable;
 
 public class StandardQueryViewChangedEventListener
     implements

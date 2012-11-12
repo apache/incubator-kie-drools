@@ -3,8 +3,8 @@ package org.drools.compiler;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.drools.Service;
-import org.drools.builder.DecisionTableConfiguration;
+import org.kie.Service;
+import org.kie.builder.DecisionTableConfiguration;
 
 public interface DecisionTableProvider extends Service {
 

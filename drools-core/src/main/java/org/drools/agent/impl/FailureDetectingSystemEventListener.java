@@ -19,7 +19,7 @@ package org.drools.agent.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.SystemEventListener;
+import org.kie.SystemEventListener;
 
 public class FailureDetectingSystemEventListener
     implements SystemEventListener {

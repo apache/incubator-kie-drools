@@ -1,8 +1,8 @@
 package org.drools.lang.descr;
 
-import org.drools.io.Resource;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
+import org.kie.io.Resource;
 
 public class ProcessDescr extends BaseDescr
     implements

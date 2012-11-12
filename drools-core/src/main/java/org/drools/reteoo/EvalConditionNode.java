@@ -31,11 +31,11 @@ import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
-import org.drools.definition.rule.Rule;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
+import org.kie.definition.rule.Rule;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -150,7 +150,7 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.drools.reteoo.impl.TupleSink
+    // org.kie.reteoo.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**

@@ -18,7 +18,6 @@ package org.drools.rule.builder.dialect.java;
 
 import antlr.collections.List;
 import org.drools.base.EnabledBoolean;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.DateUtils;
@@ -39,6 +38,7 @@ import org.drools.time.TimeUtils;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.type.DateFormatsImpl;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -55,14 +55,14 @@ import static org.mockito.Mockito.when;
 public class RuleBuilderTest {
 
     /**
-     * Test method for {@link org.drools.rule.builder.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
+     * Test method for {@link org.kie.rule.builder.RuleBuilder#build(org.kie.rule.Package, org.kie.lang.descr.RuleDescr)}.
      */
     @Test
     public void testBuild() throws Exception {
         final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
 
         final PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
+        pkgBuilder.addPackage( new PackageDescr( "org.kie" ) );
         Package pkg = pkgBuilder.getPackage();
 
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
@@ -241,7 +241,7 @@ public class RuleBuilderTest {
 
     @Test
     public void testBuildBigDecimalLiteralConstraint() throws Exception {
-        final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        final PackageDescr pkgDescr = new PackageDescr( "org.kie" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         AndDescr andDescr = new AndDescr();
         PatternDescr patDescr = new PatternDescr( "java.math.BigDecimal",
@@ -271,7 +271,7 @@ public class RuleBuilderTest {
 
     @Test
     public void testInvalidDialect() throws Exception {
-        final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        final PackageDescr pkgDescr = new PackageDescr( "org.kie" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         ruleDescr.addAttribute( new AttributeDescr( "dialect", "mvl" ) );
         ruleDescr.setConsequence( "" );
@@ -286,7 +286,7 @@ public class RuleBuilderTest {
     
     @Test
     public void testBuildBigIntegerLiteralConstraint() throws Exception {
-        final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        final PackageDescr pkgDescr = new PackageDescr( "org.kie" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         AndDescr andDescr = new AndDescr();
         PatternDescr patDescr = new PatternDescr( "java.math.BigInteger",

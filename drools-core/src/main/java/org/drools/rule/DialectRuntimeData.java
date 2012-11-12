@@ -16,7 +16,7 @@
 
 package org.drools.rule;
 
-import org.drools.util.CompositeClassLoader;
+import org.kie.util.CompositeClassLoader;
 
 
 public interface DialectRuntimeData extends Cloneable {

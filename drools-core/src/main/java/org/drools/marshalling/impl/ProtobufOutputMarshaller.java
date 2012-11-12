@@ -51,8 +51,6 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.marshalling.impl.ProtobufMessages.Timers;
@@ -68,7 +66,6 @@ import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.time.JobContext;
@@ -79,6 +76,9 @@ import org.drools.time.impl.IntervalTrigger;
 import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.time.impl.TimerJobInstance;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 import com.google.protobuf.ByteString;
 

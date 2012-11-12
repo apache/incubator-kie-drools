@@ -20,8 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.FactHandleFactory;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public abstract class AbstractFactHandleFactory
     implements
@@ -44,7 +44,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-    * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
+    * @see org.kie.reteoo.FactHandleFactory#newFactHandle()
     */
     public final InternalFactHandle newFactHandle(final Object object,
                                                   final ObjectTypeConf conf,
@@ -58,7 +58,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
+     * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
      */
     public final InternalFactHandle newFactHandle(final int id,
                                                   final Object object,
@@ -74,7 +74,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
+     * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
      */
     public abstract InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
@@ -84,7 +84,7 @@ public abstract class AbstractFactHandleFactory
                                                      final WorkingMemoryEntryPoint wmEntryPoint);
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
+     * @see org.kie.reteoo.FactHandleFactory#increaseFactHandleRecency(org.kie.FactHandle)
      */
     public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
         factHandle.setRecency( this.counter.incrementAndGet() );
@@ -95,7 +95,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newInstance()
+     * @see org.kie.reteoo.FactHandleFactory#newInstance()
      */
     public abstract FactHandleFactory newInstance();
     

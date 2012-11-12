@@ -1,27 +1,27 @@
-package org.drools.common;
+package org.kie.common;
 
 import java.util.Map;
 
-import org.drools.WorkingMemory;
-import org.drools.core.util.index.LeftTupleList;
-import org.drools.core.util.index.RightTupleList;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftInputAdapterNode;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.reteoo.AccumulateNode;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.NodeTypeEnums;
-import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.RuleMemory;
-import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.SegmentMemory;
-import org.drools.rule.Rule;
-import org.drools.spi.PropagationContext;
+import org.kie.WorkingMemory;
+import org.kie.core.util.index.LeftTupleList;
+import org.kie.core.util.index.RightTupleList;
+import org.kie.reteoo.BetaMemory;
+import org.kie.reteoo.BetaNode;
+import org.kie.reteoo.JoinNode;
+import org.kie.reteoo.LeftInputAdapterNode;
+import org.kie.reteoo.AccumulateNode.AccumulateMemory;
+import org.kie.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.kie.reteoo.AccumulateNode;
+import org.kie.reteoo.LeftTuple;
+import org.kie.reteoo.LeftTupleSource;
+import org.kie.reteoo.NodeTypeEnums;
+import org.kie.reteoo.RightInputAdapterNode;
+import org.kie.reteoo.RightTuple;
+import org.kie.reteoo.RuleMemory;
+import org.kie.reteoo.RuleTerminalNode;
+import org.kie.reteoo.SegmentMemory;
+import org.kie.rule.Rule;
+import org.kie.spi.PropagationContext;
 
 public class RuleNetworkEvaluatorActivation extends AgendaItem {
     

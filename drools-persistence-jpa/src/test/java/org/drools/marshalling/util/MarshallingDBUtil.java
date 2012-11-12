@@ -16,8 +16,8 @@ package org.drools.marshalling.util;
  * limitations under the License.
  */
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.*;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.io.File;
 import java.io.FilenameFilter;

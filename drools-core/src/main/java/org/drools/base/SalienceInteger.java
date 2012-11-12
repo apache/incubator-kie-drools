@@ -22,10 +22,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
-import org.drools.definition.rule.Rule;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
+import org.kie.definition.rule.Rule;
 
 public class SalienceInteger
     implements

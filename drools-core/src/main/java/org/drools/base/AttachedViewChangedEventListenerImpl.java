@@ -20,8 +20,8 @@ import org.drools.QueryResults;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.rule.AttachedViewChangedEventListener;
 import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
+import org.kie.runtime.rule.AttachedViewChangedEventListener;
 
 public class AttachedViewChangedEventListenerImpl
     implements

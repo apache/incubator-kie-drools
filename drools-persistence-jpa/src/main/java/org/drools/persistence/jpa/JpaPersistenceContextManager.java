@@ -21,8 +21,8 @@ import javax.persistence.FlushModeType;
 
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 
 public class JpaPersistenceContextManager
     implements

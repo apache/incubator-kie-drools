@@ -1,8 +1,8 @@
 package org.test;
 
-import org.drools.factmodel.traits.Entity;
+import org.kie.factmodel.traits.Entity;
 
-import org.drools.factmodel.traits.ISomethingWithBehaviour;
+import org.kie.factmodel.traits.ISomethingWithBehaviour;
 
 
 global java.util.List list;

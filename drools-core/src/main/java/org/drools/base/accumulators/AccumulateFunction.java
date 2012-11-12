@@ -19,7 +19,7 @@ package org.drools.base.accumulators;
 /**
  * An interface for accumulate external function implementations
  */
-public interface AccumulateFunction extends org.drools.runtime.rule.TypedAccumulateFunction {
+public interface AccumulateFunction extends org.kie.runtime.rule.TypedAccumulateFunction {
 
 
 }

@@ -1,7 +1,7 @@
 //created on: 10/11/2006
-package org.drools.integrationtests
+package org.kie.integrationtests
 
-import org.drools.Sensor;
+import org.kie.Sensor;
 
 global java.util.List sensors;
 

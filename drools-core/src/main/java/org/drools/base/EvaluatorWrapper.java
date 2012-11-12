@@ -86,7 +86,7 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.drools.spi.Evaluator#getValueType()
+     * @see org.kie.spi.Evaluator#getValueType()
      */
     public ValueType getValueType() {
         return evaluator.getValueType();
@@ -94,15 +94,15 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.drools.spi.Evaluator#getOperator()
+     * @see org.kie.spi.Evaluator#getOperator()
      */
-    public org.drools.runtime.rule.Operator getOperator() {
+    public org.kie.runtime.rule.Operator getOperator() {
         return evaluator.getOperator();
     }
 
     /**
      * @return
-     * @see org.drools.spi.Evaluator#getCoercedValueType()
+     * @see org.kie.spi.Evaluator#getCoercedValueType()
      */
     public ValueType getCoercedValueType() {
         return evaluator.getCoercedValueType();
@@ -111,7 +111,7 @@ public class EvaluatorWrapper
     /**
      * @param handle
      * @return
-     * @see org.drools.spi.Evaluator#prepareLeftObject(org.drools.common.InternalFactHandle)
+     * @see org.kie.spi.Evaluator#prepareLeftObject(org.kie.common.InternalFactHandle)
      */
     public Object prepareLeftObject( InternalFactHandle handle ) {
         return evaluator.prepareLeftObject( handle );
@@ -120,7 +120,7 @@ public class EvaluatorWrapper
     /**
      * @param handle
      * @return
-     * @see org.drools.spi.Evaluator#prepareRightObject(org.drools.common.InternalFactHandle)
+     * @see org.kie.spi.Evaluator#prepareRightObject(org.kie.common.InternalFactHandle)
      */
     public Object prepareRightObject( InternalFactHandle handle ) {
         return evaluator.prepareRightObject( handle );
@@ -132,7 +132,7 @@ public class EvaluatorWrapper
      * @param object
      * @param value
      * @return
-     * @see org.drools.spi.Evaluator#evaluate(org.drools.common.InternalWorkingMemory, org.drools.spi.InternalReadAccessor, java.lang.Object, org.drools.spi.FieldValue)
+     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, java.lang.Object, org.kie.spi.FieldValue)
      */
     public boolean evaluate( InternalWorkingMemory workingMemory,
                              InternalReadAccessor extractor,
@@ -151,7 +151,7 @@ public class EvaluatorWrapper
      * @param rightExtractor
      * @param right
      * @return
-     * @see org.drools.spi.Evaluator#evaluate(org.drools.common.InternalWorkingMemory, org.drools.spi.InternalReadAccessor, java.lang.Object, org.drools.spi.InternalReadAccessor, java.lang.Object)
+     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, java.lang.Object, org.kie.spi.InternalReadAccessor, java.lang.Object)
      */
     public boolean evaluate( InternalWorkingMemory workingMemory,
                              InternalReadAccessor leftExtractor,
@@ -170,7 +170,7 @@ public class EvaluatorWrapper
      * @param context
      * @param right
      * @return
-     * @see org.drools.spi.Evaluator#evaluateCachedLeft(org.drools.common.InternalWorkingMemory, org.drools.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
+     * @see org.kie.spi.Evaluator#evaluateCachedLeft(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
      */
     public boolean evaluateCachedLeft( InternalWorkingMemory workingMemory,
                                        VariableContextEntry context,
@@ -185,7 +185,7 @@ public class EvaluatorWrapper
      * @param context
      * @param left
      * @return
-     * @see org.drools.spi.Evaluator#evaluateCachedRight(org.drools.common.InternalWorkingMemory, org.drools.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
+     * @see org.kie.spi.Evaluator#evaluateCachedRight(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
      */
     public boolean evaluateCachedRight( InternalWorkingMemory workingMemory,
                                         VariableContextEntry context,
@@ -197,7 +197,7 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.drools.spi.Evaluator#isTemporal()
+     * @see org.kie.spi.Evaluator#isTemporal()
      */
     public boolean isTemporal() {
         return evaluator.isTemporal();
@@ -205,7 +205,7 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.drools.spi.Evaluator#getInterval()
+     * @see org.kie.spi.Evaluator#getInterval()
      */
     public Interval getInterval() {
         return evaluator.getInterval();

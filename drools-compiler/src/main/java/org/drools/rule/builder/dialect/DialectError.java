@@ -1,7 +1,7 @@
 package org.drools.rule.builder.dialect;
 
 import org.drools.compiler.DroolsError;
-import org.drools.io.Resource;
+import org.kie.io.Resource;
 
 public class DialectError extends DroolsError {
     private String message;

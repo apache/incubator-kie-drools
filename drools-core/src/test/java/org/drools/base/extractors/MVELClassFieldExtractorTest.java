@@ -21,6 +21,8 @@ import java.util.Vector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.util.ClassLoaderUtil;
+
 import static org.junit.Assert.*;
 
 import org.drools.Address;
@@ -30,7 +32,6 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.core.util.ClassUtils;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.ClassLoaderUtil;
 
 public class MVELClassFieldExtractorTest {
 

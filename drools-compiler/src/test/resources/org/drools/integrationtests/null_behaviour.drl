@@ -1,6 +1,6 @@
-package org.drools.test;
+package org.kie.test;
 
-import org.drools.Person;
+import org.kie.Person;
 
 rule "pair with same name (or null name)"
   when

@@ -16,7 +16,7 @@
 package org.drools.persistence.map.impl;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,23 +24,23 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
-import org.drools.io.ResourceFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

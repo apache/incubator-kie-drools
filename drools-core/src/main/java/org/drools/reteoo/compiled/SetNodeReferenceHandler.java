@@ -22,7 +22,7 @@ import org.drools.rule.ContextEntry;
 
 /**
  * This handler is used to create the member variable assignment statements section of a generated subclass of a
- * {@link CompiledNetwork#setNetworkNodeReference(org.drools.common.NetworkNode)}.
+ * {@link CompiledNetwork#setNetworkNodeReference(org.kie.common.NetworkNode)}.
  * Currently we only need to create member variable assignments for the following types of nodes:
  * <p/>
  * <li>Non-hashed {@link AlphaNode}s</li>

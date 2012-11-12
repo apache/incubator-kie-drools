@@ -3,9 +3,9 @@ package org.drools.common;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Serializable {
     

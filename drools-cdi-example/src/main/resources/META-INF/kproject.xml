@@ -1,4 +1,4 @@
-<org.drools.kproject.KProjectImpl>
+<org.kie.kproject.KProjectImpl>
   <groupArtifactVersion>
     <groupId>org.test</groupId>
     <artifactId>fol4</artifactId>
@@ -9,7 +9,7 @@
   <kBases>
     <entry>
       <string>fol4.test1.KBase1</string>
-      <org.drools.kproject.KBaseImpl>
+      <org.kie.kproject.KBaseImpl>
         <namespace>fol4.test1</namespace>
         <name>KBase1</name>
         <includes/>
@@ -29,7 +29,7 @@
         <kSessions>
           <entry>
             <string>fol4.test1.KSession2</string>
-            <org.drools.kproject.KSessionImpl>
+            <org.kie.kproject.KSessionImpl>
               <namespace>fol4.test1</namespace>
               <name>KSession2</name>
               <type>stateful</type>
@@ -42,11 +42,11 @@
                 </a>
               </annotations>
               <kBase reference="../../../.."/>
-            </org.drools.kproject.KSessionImpl>
+            </org.kie.kproject.KSessionImpl>
           </entry>
           <entry>
             <string>fol4.test1.KSession1</string>
-            <org.drools.kproject.KSessionImpl>
+            <org.kie.kproject.KSessionImpl>
               <namespace>fol4.test1</namespace>
               <name>KSession1</name>
               <type>stateless</type>
@@ -59,15 +59,15 @@
                 </a>
               </annotations>
               <kBase reference="../../../.."/>
-            </org.drools.kproject.KSessionImpl>
+            </org.kie.kproject.KSessionImpl>
           </entry>
         </kSessions>
         <kProject reference="../../../.."/>
-      </org.drools.kproject.KBaseImpl>
+      </org.kie.kproject.KBaseImpl>
     </entry>
     <entry>
       <string>fol4.test3.KBase3</string>
-      <org.drools.kproject.KBaseImpl>
+      <org.kie.kproject.KBaseImpl>
         <namespace>fol4.test3</namespace>
         <name>KBase3</name>
         <includes>
@@ -87,7 +87,7 @@
         <kSessions>
           <entry>
             <string>fol4.test3.KSession4</string>
-            <org.drools.kproject.KSessionImpl>
+            <org.kie.kproject.KSessionImpl>
               <namespace>fol4.test3</namespace>
               <name>KSession4</name>
               <type>stateless</type>
@@ -100,15 +100,15 @@
                 </a>
               </annotations>
               <kBase reference="../../../.."/>
-            </org.drools.kproject.KSessionImpl>
+            </org.kie.kproject.KSessionImpl>
           </entry>
         </kSessions>
         <kProject reference="../../../.."/>
-      </org.drools.kproject.KBaseImpl>
+      </org.kie.kproject.KBaseImpl>
     </entry>
     <entry>
       <string>fol4.test2.KBase2</string>
-      <org.drools.kproject.KBaseImpl>
+      <org.kie.kproject.KBaseImpl>
         <namespace>fol4.test2</namespace>
         <name>KBase2</name>
         <includes/>
@@ -128,7 +128,7 @@
         <kSessions>
           <entry>
             <string>fol4.test2.KSession3</string>
-            <org.drools.kproject.KSessionImpl>
+            <org.kie.kproject.KSessionImpl>
               <namespace>fol4.test2</namespace>
               <name>KSession3</name>
               <type>stateful</type>
@@ -141,11 +141,11 @@
                 </a>
               </annotations>
               <kBase reference="../../../.."/>
-            </org.drools.kproject.KSessionImpl>
+            </org.kie.kproject.KSessionImpl>
           </entry>
         </kSessions>
         <kProject reference="../../../.."/>
-      </org.drools.kproject.KBaseImpl>
+      </org.kie.kproject.KBaseImpl>
     </entry>
   </kBases>
-</org.drools.kproject.KProjectImpl>
+</org.kie.kproject.KProjectImpl>

@@ -20,8 +20,8 @@ package org.drools.command.runtime.process;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.WorkItemHandler;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItemHandler;
 
 public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
 

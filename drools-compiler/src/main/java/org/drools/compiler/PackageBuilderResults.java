@@ -6,8 +6,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 
-import org.drools.builder.KnowledgeBuilderResult;
-import org.drools.builder.KnowledgeBuilderResults;
+import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.builder.KnowledgeBuilderResults;
 
 public class PackageBuilderResults extends ArrayList<KnowledgeBuilderResult>
     implements

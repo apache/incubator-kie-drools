@@ -19,8 +19,8 @@ package org.drools.command.runtime;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.runtime.Channel;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.Channel;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class RegisterChannelCommand
     implements

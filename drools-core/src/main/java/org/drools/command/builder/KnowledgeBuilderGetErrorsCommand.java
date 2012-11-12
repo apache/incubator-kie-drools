@@ -16,15 +16,15 @@
 
 package org.drools.command.builder;
 
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.io.Resource;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 public class KnowledgeBuilderGetErrorsCommand
     implements

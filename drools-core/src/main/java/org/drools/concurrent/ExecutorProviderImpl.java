@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import org.kie.concurrent.ExecutorProvider;
+
 public class ExecutorProviderImpl implements ExecutorProvider {
 
     private static final java.util.concurrent.ExecutorService executor = Executors.newCachedThreadPool(new ThreadFactory() {

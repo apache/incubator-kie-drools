@@ -23,9 +23,9 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.definition.KnowledgeDescr;
-import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
+import org.kie.definition.KnowledgeDescr;
+import org.kie.io.Resource;
 
 public class DescrResource extends BaseResource implements InternalResource {
     private static final long serialVersionUID = 3931132608413160031L;

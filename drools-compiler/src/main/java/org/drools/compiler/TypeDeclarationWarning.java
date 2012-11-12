@@ -16,7 +16,7 @@
 
 package org.drools.compiler;
 
-import org.drools.builder.ResultSeverity;
+import org.kie.builder.ResultSeverity;
 
 public class TypeDeclarationWarning extends BaseKnowledgeBuilderResultImpl {
     private String message;

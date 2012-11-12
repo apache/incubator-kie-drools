@@ -1,11 +1,11 @@
 package org.drools.verifier.visitor;
 
 
+import static org.junit.Assert.assertNotNull;
+
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.TestBase;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
 
 public class PatternDescrVisitorTest extends TestBase {
 

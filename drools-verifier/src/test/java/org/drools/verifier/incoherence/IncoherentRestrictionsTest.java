@@ -16,6 +16,12 @@
 
 package org.drools.verifier.incoherence;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,12 +30,8 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.TestBaseOld;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilder;
@@ -40,6 +42,9 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Test;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 public class IncoherentRestrictionsTest extends TestBaseOld {
 

@@ -2,9 +2,9 @@
 
     package org.drools.lang;
 
-    import org.drools.builder.conf.LanguageLevelOption;
-    import org.drools.compiler.DroolsParserException;
+        import org.drools.compiler.DroolsParserException;
     import org.drools.core.util.StringUtils;
+import org.kie.builder.conf.LanguageLevelOption;
 
 
 import org.antlr.runtime.*;

@@ -30,7 +30,6 @@ import org.drools.common.AgendaItem;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
@@ -55,6 +54,7 @@ import org.drools.spi.ObjectType;
 import org.drools.time.impl.CompositeMaxDurationTimer;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.Timer;
+import org.kie.conf.EventProcessingOption;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 

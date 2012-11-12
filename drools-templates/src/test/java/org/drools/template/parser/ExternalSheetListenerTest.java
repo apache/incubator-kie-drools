@@ -1,16 +1,13 @@
 package org.drools.template.parser;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.Agenda;
 import org.drools.FactException;
@@ -24,14 +21,16 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.runtime.Environment;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.process.ProcessInstance;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
-import org.drools.time.SessionClock;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.runtime.Environment;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.time.SessionClock;
 
 public class ExternalSheetListenerTest {
 
@@ -182,10 +181,6 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-                public Object getObject(FactHandle arg0) {
-                    return null;
-                }
-
                 public QueryResults getQueryResults(String arg0) {
                     return null;
                 }
@@ -199,7 +194,7 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-                public void update(org.drools.runtime.rule.FactHandle arg0, Object arg1)
+                public void update(org.kie.runtime.rule.FactHandle arg0, Object arg1)
                         throws FactException {
 
                 }
@@ -212,7 +207,7 @@ public class ExternalSheetListenerTest {
 
                 }
 
-                public void retract(org.drools.runtime.rule.FactHandle arg0) throws FactException {
+                public void retract(org.kie.runtime.rule.FactHandle arg0) throws FactException {
 
                 }
 
@@ -413,7 +408,7 @@ public class ExternalSheetListenerTest {
 
                 }
 
-                public Object getObject(org.drools.runtime.rule.FactHandle handle) {
+                public Object getObject(org.kie.runtime.rule.FactHandle handle) {
                     // TODO Auto-generated method stub
                     return null;
                 }
@@ -423,12 +418,12 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-                public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles() {
+                public Collection< ? extends org.kie.runtime.rule.FactHandle> getFactHandles() {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
+                public Collection< ? extends org.kie.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
                     // TODO Auto-generated method stub
                     return null;
                 }

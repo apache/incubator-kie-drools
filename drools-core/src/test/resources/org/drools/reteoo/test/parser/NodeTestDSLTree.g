@@ -7,9 +7,9 @@ options{
 }
 
 @header {
-    package org.drools.reteoo.test.parser;
+    package org.kie.reteoo.test.parser;
 
-    import org.drools.reteoo.test.dsl.*;
+    import org.kie.reteoo.test.dsl.*;
 
 }
 

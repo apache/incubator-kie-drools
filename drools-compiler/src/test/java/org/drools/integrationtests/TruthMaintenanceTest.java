@@ -20,9 +20,6 @@ import org.drools.CheeseEqual;
 import org.drools.ClassObjectFilter;
 import org.drools.CommonTestMethodBase;
 import org.drools.Father;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.Sensor;
@@ -31,9 +28,6 @@ import org.drools.TotalHolder;
 import org.drools.WorkingMemory;
 import org.drools.YoungestFather;
 import org.drools.beliefsystem.BeliefSet;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -43,22 +37,28 @@ import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.definition.KnowledgePackage;
 import org.drools.event.rule.ActivationUnMatchListener;
-import org.drools.event.rule.ObjectInsertedEvent;
-import org.drools.event.rule.ObjectRetractedEvent;
-import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.rule.ObjectInsertedEvent;
+import org.kie.event.rule.ObjectRetractedEvent;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.logger.KnowledgeRuntimeLogger;
+import org.kie.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
 public class TruthMaintenanceTest extends CommonTestMethodBase {
@@ -146,9 +146,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         KnowledgePackage test = null, test2 = null;
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.drools.test" )) {
+            if( kpkg.getName().equals( "org.kie.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+            } else if( kpkg.getName().equals( "org.kie.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -165,9 +165,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                           test.getRules().iterator().next().getName() );
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.drools.test" )) {
+            if( kpkg.getName().equals( "org.kie.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+            } else if( kpkg.getName().equals( "org.kie.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -210,9 +210,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.drools.test" )) {
+            if( kpkg.getName().equals( "org.kie.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+            } else if( kpkg.getName().equals( "org.kie.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -225,9 +225,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.drools.test" )) {
+            if( kpkg.getName().equals( "org.kie.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+            } else if( kpkg.getName().equals( "org.kie.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -1052,7 +1052,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test
     public void testTMSwithQueries() {
         String str =""+
-                "package org.drools.test;\n" +
+                "package org.kie.test;\n" +
                 "\n" +
                 "global java.util.List list; \n" +
                 "\n" +
@@ -1112,10 +1112,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         // facts must be updated, before changing other facts, as they act as HEAD in buckets.
         // leaving test here as @ignore here for future reference.
         String str =""+
-                "package org.drools.test;\n" +
+                "package org.kie.test;\n" +
                 "\n" +
-                "import org.drools.Father;\n" +
-                "import org.drools.YoungestFather;\n" +
+                "import org.kie.Father;\n" +
+                "import org.kie.YoungestFather;\n" +
                 "\n" +
                 "rule \"findMarriedCouple\"\n" +
                 "when\n" +
@@ -1168,7 +1168,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test
     public void testTMSAdditionalValueArgument() {
         String str =""+
-                "package org.drools.test;\n" +
+                "package org.kie.test;\n" +
                 "\n" +
                 "global String key \n" + 
                 "\n" +

@@ -45,7 +45,7 @@ public class BuildUtilsTest {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.builder.BuildUtils#calculateTemporalDistance(org.drools.common.InternalRuleBase, org.drools.rule.GroupElement)}.
+     * Test method for {@link org.kie.reteoo.builder.BuildUtils#calculateTemporalDistance(org.kie.common.InternalRuleBase, org.kie.rule.GroupElement)}.
      */
     @Test
     public void testCalculateTemporalDistance() {

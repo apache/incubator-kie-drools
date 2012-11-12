@@ -16,7 +16,6 @@
 package org.drools.examples.sudoku;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,10 +33,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import org.drools.KnowledgeBase;
 import org.drools.examples.sudoku.rules.DroolsUtil;
 import org.drools.examples.sudoku.swing.SudokuGridSamples;
 import org.drools.examples.sudoku.swing.SudokuGridView;
+import org.kie.KnowledgeBase;
 
 /**
  * This example shows how Drools can be used to solve a 9x9 Sudoku Grid.

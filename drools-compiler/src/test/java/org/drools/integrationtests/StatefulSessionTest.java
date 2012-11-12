@@ -3,28 +3,29 @@ package org.drools.integrationtests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+
 import static org.junit.Assert.*;
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.FactHandle;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.concurrent.Future;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
 
 import java.io.InputStreamReader;
@@ -62,8 +63,8 @@ public class StatefulSessionTest extends CommonTestMethodBase {
     @Test
     public void testInsertObject() throws Exception {
         String str = "";
-        str += "package org.drools \n";
-        str += "import org.drools.Cheese \n";
+        str += "package org.kie \n";
+        str += "import org.kie.Cheese \n";
         str += "rule rule1 \n";
         str += "  when \n";
         str += "    $c : Cheese() \n";

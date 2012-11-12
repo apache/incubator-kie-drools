@@ -29,13 +29,13 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
-import org.drools.command.Setter;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DisconnectedFactHandle;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.command.Setter;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.mvel2.MVEL;
 
 @XmlAccessorType(XmlAccessType.NONE)

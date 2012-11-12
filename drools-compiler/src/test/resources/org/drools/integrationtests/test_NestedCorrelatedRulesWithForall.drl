@@ -1,6 +1,6 @@
 package org.test
 
-import org.drools.SpecialString
+import org.kie.SpecialString
 import java.util.List
 
 global List list1;

@@ -57,7 +57,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * <code>RuleSet</code> loader.
  *
  * Note you can override the default entity resolver by setting the System property of:
- *  <code>org.drools.io.EntityResolve</code> to your own custom entity resolver.
+ *  <code>org.kie.io.EntityResolve</code> to your own custom entity resolver.
  *  This can be done using -Dorg.drools.io.EntityResolver=YourClassHere on the command line, for instance.
  */
 public class ExtensibleXmlParser extends DefaultHandler {
@@ -67,7 +67,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
-    public static final String  ENTITY_RESOLVER_PROPERTY_NAME = "org.drools.io.EntityResolver";
+    public static final String  ENTITY_RESOLVER_PROPERTY_NAME = "org.kie.io.EntityResolver";
 
     /** Namespace URI for the general tags. */
     public static final String  RULES_NAMESPACE_URI           = "http://drools.org/rules";

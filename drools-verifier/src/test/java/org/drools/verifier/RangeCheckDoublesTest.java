@@ -16,6 +16,9 @@
 
 package org.drools.verifier;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,11 +30,7 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
-
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class RangeCheckDoublesTest extends TestBaseOld {
 

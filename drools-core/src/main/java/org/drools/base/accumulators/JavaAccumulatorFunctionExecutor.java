@@ -45,13 +45,13 @@ public class JavaAccumulatorFunctionExecutor
     private static final long     serialVersionUID = 510l;
 
     private ReturnValueExpression expression;
-    private org.drools.runtime.rule.AccumulateFunction    function;
+    private org.kie.runtime.rule.AccumulateFunction    function;
 
     public JavaAccumulatorFunctionExecutor() {
 
     }
 
-    public JavaAccumulatorFunctionExecutor(final org.drools.runtime.rule.AccumulateFunction function) {
+    public JavaAccumulatorFunctionExecutor(final org.kie.runtime.rule.AccumulateFunction function) {
         super();
         this.function = function;
     }
@@ -59,7 +59,7 @@ public class JavaAccumulatorFunctionExecutor
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         expression = (ReturnValueExpression) in.readObject();
-        function = (org.drools.runtime.rule.AccumulateFunction) in.readObject();
+        function = (org.kie.runtime.rule.AccumulateFunction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -72,7 +72,7 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#createContext()
+     * @see org.kie.spi.Accumulator#createContext()
      */
     public Serializable createContext() {
         JavaAccumulatorFunctionContext context = new JavaAccumulatorFunctionContext();
@@ -84,7 +84,7 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#init(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public void init(Object workingMemoryContext,
                      Object context,
@@ -95,7 +95,7 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#accumulate(java.lang.Object, org.drools.spi.Tuple, org.drools.common.InternalFactHandle, org.drools.rule.Declaration[], org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public void accumulate(Object workingMemoryContext,
                            Object context,
@@ -132,7 +132,7 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#getResult(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     * @see org.kie.spi.Accumulator#getResult(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public Object getResult(Object workingMemoryContext,
                             Object context,

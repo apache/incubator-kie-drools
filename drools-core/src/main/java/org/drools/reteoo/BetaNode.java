@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
-import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
@@ -63,15 +62,16 @@ import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.kie.builder.conf.LRUnlinkingOption;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
  * both TupleSink and ObjectSink and as such can receive <code>Tuple</code>s and <code>FactHandle</code>s. BetaNode uses BetaMemory
  * to store the propagated instances.
  *
- * @see org.drools.reteoo.LeftTupleSource
- * @see org.drools.reteoo.LeftTupleSink
- * @see org.drools.reteoo.BetaMemory
+ * @see org.kie.reteoo.LeftTupleSource
+ * @see org.kie.reteoo.LeftTupleSink
+ * @see org.kie.reteoo.BetaMemory
  */
 public abstract class BetaNode extends LeftTupleSource
         implements
@@ -757,7 +757,7 @@ this.leftInput.remove( context,
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#hashCode()
+     * @see org.kie.reteoo.BaseNode#hashCode()
      */
     public int hashCode() {
         int hash = ( 23 * leftInput.hashCode() ) + ( 29 * rightInput.hashCode() ) + ( 31 * constraints.hashCode() );

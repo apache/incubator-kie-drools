@@ -35,9 +35,9 @@ import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
+import org.kie.runtime.rule.FactHandle;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly

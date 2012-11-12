@@ -18,7 +18,7 @@ package org.drools.common;
 
 import org.drools.FactHandle;
 import org.drools.reteoo.WindowTupleList;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 

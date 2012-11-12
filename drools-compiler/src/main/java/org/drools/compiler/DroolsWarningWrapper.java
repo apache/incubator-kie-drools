@@ -1,6 +1,6 @@
 package org.drools.compiler;
 
-import org.drools.builder.KnowledgeBuilderResult;
+import org.kie.builder.KnowledgeBuilderResult;
 
 public class DroolsWarningWrapper extends DroolsWarning {
 

@@ -59,21 +59,21 @@ public class FieldTemplateImpl
         out.writeObject(valueType);
     }
     /* (non-Javadoc)
-     * @see org.drools.facttemplates.FieldTemplate#getIndex()
+     * @see org.kie.facttemplates.FieldTemplate#getIndex()
      */
     public int getIndex() {
         return this.index;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.facttemplates.FieldTemplate#getName()
+     * @see org.kie.facttemplates.FieldTemplate#getName()
      */
     public String getName() {
         return this.name;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.facttemplates.FieldTemplate#getValueType()
+     * @see org.kie.facttemplates.FieldTemplate#getValueType()
      */
     public ValueType getValueType() {
         return this.valueType;

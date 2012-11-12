@@ -2,7 +2,7 @@ package org.drools;
 
 import java.io.Serializable;
 
-import org.drools.definition.type.PropertyReactive;
+import org.kie.definition.type.PropertyReactive;
 
 public class FactA implements Serializable {
     String  field1;

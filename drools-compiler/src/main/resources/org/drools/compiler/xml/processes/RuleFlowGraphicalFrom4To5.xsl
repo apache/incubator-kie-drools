@@ -78,28 +78,28 @@
   <xsl:template name="printNodes">
     <xsl:param name="className"/>
     <xsl:choose>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.RuleSetNodeImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.RuleSetNodeImpl'">
         <xsl:call-template name="RenderRuleSetNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.ActionNodeImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.ActionNodeImpl'">
         <xsl:call-template name="RenderActionNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.SplitImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.SplitImpl'">
         <xsl:call-template name="RenderSplitNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.JoinImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.JoinImpl'">
         <xsl:call-template name="RenderJoinNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.SubFlowNodeImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.SubFlowNodeImpl'">
         <xsl:call-template name="RenderSubflowNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.StartNodeImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.StartNodeImpl'">
         <xsl:call-template name="RenderStartNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.EndNodeImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.EndNodeImpl'">
         <xsl:call-template name="RenderEndNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.MilestoneNodeImpl'">
+      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.MilestoneNodeImpl'">
         <xsl:call-template name="RenderMilestoneNode"/>
       </xsl:when>
     </xsl:choose>
@@ -113,7 +113,7 @@
       <xsl:choose>
         <xsl:when test="./type != '1'">
           <xsl:element name="constraints">
-            <xsl:for-each select="constraints/entry/org.drools.ruleflow.core.impl.ConstraintImpl">
+            <xsl:for-each select="constraints/entry/org.kie.ruleflow.core.impl.ConstraintImpl">
               <xsl:call-template name="RenderConstraintNode"></xsl:call-template>
             </xsl:for-each>
           </xsl:element>
@@ -126,14 +126,14 @@
     <xsl:element name="constraint">
       <xsl:attribute name="toNodeId">
         <xsl:choose>
-          <xsl:when test="../org.drools.ruleflow.core.impl.ConnectionImpl[@id != '']">
-            <xsl:for-each select = "../org.drools.ruleflow.core.impl.ConnectionImpl/to">
+          <xsl:when test="../org.kie.ruleflow.core.impl.ConnectionImpl[@id != '']">
+            <xsl:for-each select = "../org.kie.ruleflow.core.impl.ConnectionImpl/to">
               <xsl:call-template name="printReferenceOrId"/>
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:variable name="constraintReference"><xsl:value-of select="../org.drools.ruleflow.core.impl.ConnectionImpl/@reference"/></xsl:variable>
-            <xsl:for-each select = "//org.drools.ruleflow.core.impl.ConnectionImpl[@id = $constraintReference]/to">
+            <xsl:variable name="constraintReference"><xsl:value-of select="../org.kie.ruleflow.core.impl.ConnectionImpl/@reference"/></xsl:variable>
+            <xsl:for-each select = "//org.kie.ruleflow.core.impl.ConnectionImpl[@id = $constraintReference]/to">
               <xsl:call-template name="printReferenceOrId"/>
             </xsl:for-each>
           </xsl:otherwise>
@@ -261,7 +261,7 @@
 
   <xsl:template name="renderSourceBendpoints">
     <xsl:param name="theId"/>
-    <xsl:for-each select="//source/org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper/default/element[./@id=$theId or ./@reference=$theId]">
+    <xsl:for-each select="//source/org.kie.eclipse.flow.common.editor.core.DefaultElementWrapper/default/element[./@id=$theId or ./@reference=$theId]">
       <xsl:if test="../../../../bendpoints/child::*">
         <xsl:attribute name="bendpoints">
           <xsl:text>[</xsl:text>
@@ -277,7 +277,7 @@
 
   <xsl:template name="renderTargetBendpoints">
     <xsl:param name="theId"/>
-    <xsl:for-each select="//target/org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper/default/element[./@id=$theId or ./@reference=$theId]">
+    <xsl:for-each select="//target/org.kie.eclipse.flow.common.editor.core.DefaultElementWrapper/default/element[./@id=$theId or ./@reference=$theId]">
       <xsl:if test="../../../../bendpoints/child::*">
         <xsl:attribute name="bendpoints">
           <xsl:text>[</xsl:text>

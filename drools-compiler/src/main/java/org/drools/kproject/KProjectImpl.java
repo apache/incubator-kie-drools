@@ -37,14 +37,14 @@ public class KProjectImpl implements KProject {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#getListener()
+     * @see org.kie.kproject.KProject#getListener()
      */
     public PropertyChangeListener getListener() {
         return listener;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#setListener(java.beans.PropertyChangeListener)
+     * @see org.kie.kproject.KProject#setListener(java.beans.PropertyChangeListener)
      */
     public KProject setListener(PropertyChangeListener listener) {
         this.listener = listener;
@@ -58,14 +58,14 @@ public class KProjectImpl implements KProject {
 
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#getKProjectPath()
+     * @see org.kie.kproject.KProject#getKProjectPath()
      */
     public String getKProjectPath() {
         return kProjectPath;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#setKProjectPath(java.lang.String)
+     * @see org.kie.kproject.KProject#setKProjectPath(java.lang.String)
      */
     public KProject setKProjectPath(String kprojectPath) {
         if ( listener != null ) {
@@ -76,14 +76,14 @@ public class KProjectImpl implements KProject {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#getKBasesPath()
+     * @see org.kie.kproject.KProject#getKBasesPath()
      */
     public String getKBasesPath() {
         return kBasesPath;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#setKBasesPath(java.lang.String)
+     * @see org.kie.kproject.KProject#setKBasesPath(java.lang.String)
      */
     public KProject setKBasesPath(String kprojectPath) {
         if ( listener != null ) {
@@ -94,7 +94,7 @@ public class KProjectImpl implements KProject {
     }  
     
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#addKBase(org.drools.kproject.KBaseImpl)
+     * @see org.kie.kproject.KProject#addKBase(org.kie.kproject.KBaseImpl)
      */
     public KBase newKBase(String namespace,
                          String name) {
@@ -108,7 +108,7 @@ public class KProjectImpl implements KProject {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#removeKBase(org.drools.kproject.KBase)
+     * @see org.kie.kproject.KProject#removeKBase(org.kie.kproject.KBase)
      */
     public void removeKBase(String qName) {
         Map<String, KBase> newMap = new HashMap<String, KBase>();
@@ -118,7 +118,7 @@ public class KProjectImpl implements KProject {
     }    
     
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#removeKBase(org.drools.kproject.KBase)
+     * @see org.kie.kproject.KProject#removeKBase(org.kie.kproject.KBase)
      */
     public void moveKBase(String oldQName, String newQName) {
         Map<String, KBase> newMap = new HashMap<String, KBase>();
@@ -129,14 +129,14 @@ public class KProjectImpl implements KProject {
     }        
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#getKBases()
+     * @see org.kie.kproject.KProject#getKBases()
      */
     public Map<String, KBase> getKBases() {
         return Collections.unmodifiableMap( kBases );
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#setKBases(java.util.Map)
+     * @see org.kie.kproject.KProject#setKBases(java.util.Map)
      */
     private void setKBases(Map<String, KBase> kBases) {        
         if ( listener != null ) {
@@ -169,7 +169,7 @@ public class KProjectImpl implements KProject {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KProject#toString()
+     * @see org.kie.kproject.KProject#toString()
      */
     @Override
     public String toString() {

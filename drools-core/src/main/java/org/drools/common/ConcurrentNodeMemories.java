@@ -38,7 +38,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     /**
      * @inheritDoc
-     * @see org.drools.common.NodeMemories#clearNodeMemory(org.drools.common.MemoryFactory)
+     * @see org.kie.common.NodeMemories#clearNodeMemory(org.kie.common.MemoryFactory)
      */
     public void clearNodeMemory( MemoryFactory node ) {
         this.memories.set( node.getId(),
@@ -57,7 +57,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * fails the checks, it will move into the critical sessions and re-check everything
      * before effectively doing any change on data structures. 
      *
-     * @see org.drools.common.NodeMemories#getNodeMemory(org.drools.common.MemoryFactory)
+     * @see org.kie.common.NodeMemories#getNodeMemory(org.kie.common.MemoryFactory)
      */
     public Memory getNodeMemory( MemoryFactory node ) {
         if( node.getId() >= this.memories.length() ) {

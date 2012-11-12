@@ -20,9 +20,9 @@ import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
-import org.drools.runtime.rule.Variable;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
+import org.kie.runtime.rule.Variable;
 
 
 public class StudentProxy3 extends TraitProxy implements IStudent {

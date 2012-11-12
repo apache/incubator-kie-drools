@@ -1,4 +1,4 @@
-package org.drools;
+package org.kie;
 
 rule "Cheese"
 no-loop true

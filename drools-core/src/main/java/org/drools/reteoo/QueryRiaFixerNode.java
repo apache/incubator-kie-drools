@@ -134,7 +134,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
     // ------------------------------------------------------------
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.drools.reteoo.impl.TupleSink
+    // org.kie.reteoo.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**

@@ -28,13 +28,14 @@ import java.util.jar.JarOutputStream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.util.ClassLoaderUtil;
+
 import static org.junit.Assert.*;
 
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
-import org.drools.util.ClassLoaderUtil;
 
 public class ClassBuilderTest {
 
@@ -66,14 +67,14 @@ public class ClassBuilderTest {
     }
     
     /*
-     * Test method for 'org.drools.common.asm.ClassBuilder.buildClass(ClassDefinition)'
+     * Test method for 'org.kie.common.asm.ClassBuilder.buildClass(ClassDefinition)'
      */
     @Test
     public void testBuildClass() {
         try {
             ClassBuilder builder = new ClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass1",
+            ClassDefinition classDef = new ClassDefinition( "org.kie.TestClass1",
                                                             null,
                                                             new String[]{"java.io.Serializable"} );
             FieldDefinition intDef = new FieldDefinition( "intAttr",
@@ -151,7 +152,7 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new ClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass2",
+            ClassDefinition classDef = new ClassDefinition( "org.kie.TestClass2",
                                                             null,
                                                             new String[]{} );
             FieldDefinition long1Def = new FieldDefinition( "longAttr1",
@@ -281,7 +282,7 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new ClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass3",
+            ClassDefinition classDef = new ClassDefinition( "org.kie.TestClass3",
                                                             null,
                                                             new String[]{} );
             FieldDefinition intDef = new FieldDefinition( "intAttr",
@@ -326,7 +327,7 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new ClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass4",
+            ClassDefinition classDef = new ClassDefinition( "org.kie.TestClass4",
                                                             null,
                                                             new String[]{} );
             FieldDefinition long1Def = new FieldDefinition( "longAttr1",
@@ -419,7 +420,7 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new ClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass5",
+            ClassDefinition classDef = new ClassDefinition( "org.kie.TestClass5",
                                                             null,
                                                             new String[]{} );
 
@@ -531,7 +532,7 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new ClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition("org.drools.TestClass4", null, new String[] {});
+            ClassDefinition classDef = new ClassDefinition("org.kie.TestClass4", null, new String[] {});
             Class clazz = build(builder, classDef);
             ClassLoader cl = clazz.getClassLoader();
 

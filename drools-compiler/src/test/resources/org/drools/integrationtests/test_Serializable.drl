@@ -1,8 +1,8 @@
-package org.drools.test;
+package org.kie.test;
 
-import org.drools.Person;
-import org.drools.Cheese;
-import org.drools.Cheesery;
+import org.kie.Person;
+import org.kie.Cheese;
+import org.kie.Cheesery;
 import java.util.List
 
 global List list

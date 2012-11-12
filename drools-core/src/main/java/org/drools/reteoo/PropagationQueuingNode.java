@@ -107,7 +107,7 @@ public class PropagationQueuingNode extends ObjectSource
     }     
 
     /**
-     * @see org.drools.reteoo.ObjectSource#updateSink(org.drools.reteoo.ObjectSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.kie.reteoo.ObjectSource#updateSink(org.kie.reteoo.ObjectSink, org.kie.spi.PropagationContext, org.kie.common.InternalWorkingMemory)
      */
     public void updateSink( ObjectSink sink,
                             PropagationContext context,
@@ -132,28 +132,28 @@ public class PropagationQueuingNode extends ObjectSource
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#getNextObjectSinkNode()
+     * @see org.kie.reteoo.ObjectSinkNode#getNextObjectSinkNode()
      */
     public ObjectSinkNode getNextObjectSinkNode() {
         return this.nextObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#getPreviousObjectSinkNode()
+     * @see org.kie.reteoo.ObjectSinkNode#getPreviousObjectSinkNode()
      */
     public ObjectSinkNode getPreviousObjectSinkNode() {
         return this.previousObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#setNextObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
+     * @see org.kie.reteoo.ObjectSinkNode#setNextObjectSinkNode(org.kie.reteoo.ObjectSinkNode)
      */
     public void setNextObjectSinkNode( ObjectSinkNode next ) {
         this.nextObjectSinkNode = next;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#setPreviousObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
+     * @see org.kie.reteoo.ObjectSinkNode#setPreviousObjectSinkNode(org.kie.reteoo.ObjectSinkNode)
      */
     public void setPreviousObjectSinkNode( ObjectSinkNode previous ) {
         this.previousObjectSinkNode = previous;
@@ -164,7 +164,7 @@ public class PropagationQueuingNode extends ObjectSource
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSink#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.kie.reteoo.ObjectSink#assertObject(InternalFactHandle, org.kie.spi.PropagationContext, org.kie.common.InternalWorkingMemory)
      */
     public void assertObject( InternalFactHandle factHandle,
                               PropagationContext context,

@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * This class is used to hold information for Hashed {@link org.drools.reteoo.AlphaNode}s for generated subclasses
+ * This class is used to hold information for Hashed {@link org.kie.reteoo.AlphaNode}s for generated subclasses
  * of {@link CompiledNetwork}.
  *
- * @see org.drools.reteoo.compiled.DeclarationsHandler
+ * @see org.kie.reteoo.compiled.DeclarationsHandler
  */
 class HashedAlphasDeclaration {
     private final String variableName;
@@ -35,7 +35,7 @@ class HashedAlphasDeclaration {
 
     /**
      * This map contains keys which are different values of the same field and the node id that of the
-     * {@link org.drools.common.NetworkNode} the value is from.
+     * {@link org.kie.common.NetworkNode} the value is from.
      */
     private final Map<Object, String> hashedValuesToNodeIds = new HashMap<Object, String>();
 

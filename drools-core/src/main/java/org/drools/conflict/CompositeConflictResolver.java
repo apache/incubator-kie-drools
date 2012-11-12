@@ -29,8 +29,8 @@ import org.drools.spi.ConflictResolver;
  * </p>
  * 
  * @see Activation
- * @see org.drools.spi.Tuple
- * @see org.drools.rule.Rule
+ * @see org.kie.spi.Tuple
+ * @see org.kie.rule.Rule
  */
 public class CompositeConflictResolver extends AbstractConflictResolver {
     private static final long        serialVersionUID = 510l;

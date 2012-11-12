@@ -28,12 +28,12 @@ public class GenerateKSessionProducer {
                 "package " + kSession.getNamespace() + ";\n" + 
         		"import javax.enterprise.inject.Produces;\n" + 
         		"\n" + 
-        		"import org.drools.KnowledgeBase;\n" + 
-        		"import org.drools.KnowledgeBaseFactory;\n" + 
-        		"import org.drools.runtime.KnowledgeSessionConfiguration;\n" + 
-        		"import org.drools.runtime.StatefulKnowledgeSession;\n" + 
-        		"import org.drools.runtime.StatelessKnowledgeSession;\n" +
-        		"import org.drools.runtime.conf.ClockTypeOption;\n" + 
+        		"import org.kie.KnowledgeBase;\n" + 
+        		"import org.kie.KnowledgeBaseFactory;\n" + 
+        		"import org.kie.runtime.KnowledgeSessionConfiguration;\n" + 
+        		"import org.kie.runtime.StatefulKnowledgeSession;\n" + 
+        		"import org.kie.runtime.StatelessKnowledgeSession;\n" +
+        		"import org.kie.runtime.conf.ClockTypeOption;\n" + 
         		"import " + kBase.getQName() + ";\n" +
         		"public class " + kSession.getName() + "Producer {\n" + 
         		"    \n" + 

@@ -8,6 +8,8 @@ import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.runtime.rule.FactHandle;
+
 import static org.junit.Assert.*;
 
 import java.util.*;
@@ -25,14 +27,13 @@ import org.drools.core.util.Queueable;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.PropagationContext;
 
 /**
- * Thes test class uses auxiliary test classes in org.drools.util:
+ * Thes test class uses auxiliary test classes in org.kie.util:
  * Group and Item as a mock-up for the corresponding Agenda classes.
  * 
  * The test testShuffled uses a sequence of shuffled Item arrays, inserts
@@ -143,7 +144,7 @@ public class BinaryHeapQueueTest {
         }
 
         /* (non-Javadoc)
-         * @see org.drools.spi.AgendaGroup#size()
+         * @see org.kie.spi.AgendaGroup#size()
          */
         public int size() {
             return this.queue.size();

@@ -18,9 +18,9 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
 
-import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.stores.ResourceStore;
 import org.drools.rule.JavaDialectRuntimeData;
+import org.kie.builder.KnowledgeBuilderResult;
 
 public class PackageStore
     implements

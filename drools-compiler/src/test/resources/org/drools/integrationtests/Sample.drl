@@ -1,6 +1,6 @@
-package org.drools.integrationtests
+package org.kie.integrationtests
  
-import org.drools.Message;
+import org.kie.Message;
 
 dialect "mvel" 
  
