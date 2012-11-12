@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.impl;
 
-import org.drools.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItem;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.ImmutableDefaultFactory;
 import org.mvel2.integration.impl.SimpleValueResolver;

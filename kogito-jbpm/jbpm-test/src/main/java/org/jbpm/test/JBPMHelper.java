@@ -7,19 +7,19 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.KnowledgeBase;
-import org.drools.SystemEventListenerFactory;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.h2.tools.Server;
 import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.MinaHTWorkItemHandler;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.jbpm.task.service.mina.MinaTaskServer;
+import org.kie.KnowledgeBase;
+import org.kie.SystemEventListenerFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;

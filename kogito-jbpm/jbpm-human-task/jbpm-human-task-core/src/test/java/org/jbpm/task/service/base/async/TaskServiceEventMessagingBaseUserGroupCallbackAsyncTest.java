@@ -21,13 +21,18 @@ import java.util.Map;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.*;
+import org.jbpm.task.AsyncTaskService;
+import org.jbpm.task.BaseTestNoUserGroupSetup;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.entity.TaskClaimedEvent;
 import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.responsehandlers.*;
+import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 
 public abstract class TaskServiceEventMessagingBaseUserGroupCallbackAsyncTest extends BaseTestNoUserGroupSetup {
 

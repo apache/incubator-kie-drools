@@ -16,13 +16,9 @@
 
 package org.jbpm.task.service.mina.sync;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.TaskServiceEscalationBaseSyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
 public class TaskServiceEscalationMinaSyncTest extends TaskServiceEscalationBaseSyncTest {

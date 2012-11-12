@@ -22,18 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.KnowledgeBase;
 import org.drools.command.Context;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.process.Process;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -41,6 +34,12 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
+import org.kie.KnowledgeBase;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.process.Process;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.ProcessInstance;
 
 /**
  * This class encapsulates the logic for executing operations via the Drools/jBPM api and retrieving information 

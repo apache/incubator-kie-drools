@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.process.Process;
-import org.drools.definition.rule.Global;
-import org.drools.definition.rule.Query;
-import org.drools.definition.rule.Rule;
-import org.drools.definition.type.FactType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.process.Process;
+import org.kie.definition.rule.Global;
+import org.kie.definition.rule.Query;
+import org.kie.definition.rule.Rule;
+import org.kie.definition.type.FactType;
 
 public class ProcessPackage implements KnowledgePackage {
 

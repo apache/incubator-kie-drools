@@ -17,9 +17,9 @@
 package org.jbpm.task.service.mina;
 
 import org.apache.mina.core.session.IoSession;
-import org.drools.SystemEventListener;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler;
+import org.kie.SystemEventListener;
 
 public class MinaTaskClientHandler extends BaseMinaHandler {
 

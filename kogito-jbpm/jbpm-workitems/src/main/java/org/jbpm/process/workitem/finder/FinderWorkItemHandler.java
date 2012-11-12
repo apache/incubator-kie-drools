@@ -22,11 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import org.apache.commons.finder.FileFinder;
-//import org.apache.commons.finder.Finder;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemManager;
 
 public class FinderWorkItemHandler implements WorkItemHandler {
 

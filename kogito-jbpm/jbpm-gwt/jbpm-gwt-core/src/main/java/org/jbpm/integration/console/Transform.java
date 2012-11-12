@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.definition.process.Process;
-import org.drools.runtime.process.NodeInstance;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.TaskRef;
@@ -32,6 +30,8 @@ import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
+import org.kie.definition.process.Process;
+import org.kie.runtime.process.NodeInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

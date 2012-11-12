@@ -1,8 +1,8 @@
 package org.jbpm.compiler;
 
 import org.drools.compiler.DescrBuildError;
-import org.drools.definition.process.Process;
 import org.drools.lang.descr.BaseDescr;
+import org.kie.definition.process.Process;
 
 public class ProcessBuildError extends DescrBuildError {
     private final Process process;

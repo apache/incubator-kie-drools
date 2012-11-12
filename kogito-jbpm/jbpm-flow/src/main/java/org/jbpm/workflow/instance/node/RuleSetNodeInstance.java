@@ -24,11 +24,6 @@ import java.util.regex.Matcher;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.core.datatype.DataType;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.EventListener;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -36,6 +31,11 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.rule.FactHandle;
 import org.mvel2.MVEL;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 

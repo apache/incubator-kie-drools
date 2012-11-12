@@ -22,9 +22,6 @@ import javax.naming.Context;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
-import org.drools.SystemEventListenerFactory;
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
 import org.easymock.EasyMock;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
@@ -32,8 +29,9 @@ import org.jbpm.task.service.base.sync.IcalBaseSyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.kie.SystemEventListenerFactory;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 
 public class IcalJMSSyncTest extends IcalBaseSyncTest {

@@ -1,30 +1,51 @@
 package org.jbpm.bpmn2.persistence;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.junit.Assert.assertEquals;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.KnowledgeBase;
 import org.drools.WorkingMemory;
-import org.drools.builder.*;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.definition.KnowledgePackage;
-import org.drools.event.*;
-import org.drools.event.process.DefaultProcessEventListener;
-import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AgendaEventListener;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.AgendaGroupPushedEvent;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.DefaultProcessEventListener;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.*;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class TimerCycleOnBinaryPackageTest {
     

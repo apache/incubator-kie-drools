@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeContainerImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
 
 /**
  * 

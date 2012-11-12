@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.BaseTest;
@@ -35,6 +33,8 @@ import org.jbpm.task.event.entity.TaskCompletedEvent;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 

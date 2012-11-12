@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
@@ -33,6 +32,7 @@ import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.jbpm.task.service.jms.JMSTaskServer;
 import org.jbpm.task.service.jms.TaskServiceConstants;
 import org.jbpm.task.service.mina.MinaTaskServer;
+import org.kie.SystemEventListenerFactory;
 
 public class HumanTaskServiceServlet extends HttpServlet {
 

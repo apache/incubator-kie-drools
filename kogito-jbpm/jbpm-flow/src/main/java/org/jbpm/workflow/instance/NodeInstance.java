@@ -16,8 +16,8 @@
 
 package org.jbpm.workflow.instance;
 
-import org.drools.definition.process.Node;
 import org.jbpm.process.instance.ContextInstance;
+import org.kie.definition.process.Node;
 
 /**
  * Represents a node instance in a RuleFlow. This is the runtime counterpart
@@ -27,9 +27,9 @@ import org.jbpm.process.instance.ContextInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeInstance extends org.drools.runtime.process.NodeInstance {
+public interface NodeInstance extends org.kie.runtime.process.NodeInstance {
 
-    void trigger(org.drools.runtime.process.NodeInstance from, String type);
+    void trigger(org.kie.runtime.process.NodeInstance from, String type);
 
     void cancel();
     

@@ -3,16 +3,16 @@ package org.jbpm.process.instance.impl;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.event.process.ProcessCompletedEvent;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.process.ProcessNodeLeftEvent;
-import org.drools.event.process.ProcessNodeTriggeredEvent;
-import org.drools.event.process.ProcessStartedEvent;
-import org.drools.event.process.ProcessVariableChangedEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.process.WorkflowProcessInstance;
-import org.drools.runtime.rule.FactHandle;
+import org.kie.event.process.ProcessCompletedEvent;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.process.ProcessNodeLeftEvent;
+import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.event.process.ProcessVariableChangedEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.rule.FactHandle;
 
 public class RuleAwareProcessEventLister implements ProcessEventListener {
     

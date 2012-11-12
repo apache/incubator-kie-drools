@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AllowedToDelegate;
 import org.jbpm.task.Attachment;
@@ -32,6 +31,7 @@ import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
+import org.kie.SystemEventListenerFactory;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;

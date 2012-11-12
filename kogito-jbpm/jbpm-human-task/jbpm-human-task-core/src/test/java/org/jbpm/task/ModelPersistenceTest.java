@@ -18,7 +18,10 @@ package org.jbpm.task;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.jbpm.task.service.TaskServiceSession;
 

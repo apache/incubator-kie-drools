@@ -1,32 +1,28 @@
 package org.jbpm.integrationtests;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
-import org.drools.command.runtime.rule.FireAllRulesCommand;
-import org.drools.definition.type.FactType;
-import org.drools.event.DebugProcessEventListener;
-import org.drools.event.rule.DebugAgendaEventListener;
-import org.drools.io.ResourceFactory;
-import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.AgendaFilter;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.fail;
+import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.event.DebugProcessEventListener;
+import org.drools.rule.Rule;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.definition.type.FactType;
+import org.kie.event.rule.DebugAgendaEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.AgendaFilter;
 
 public class AgendaFilterTest {
 

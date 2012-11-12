@@ -18,13 +18,13 @@ package org.jbpm.process.workitem.wsht;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.runtime.process.WorkItem;
 import org.jbpm.task.Group;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
+import org.kie.runtime.process.WorkItem;
 
 /**
  * A class responsible for assigning the various ownerships (actors, groups, business 

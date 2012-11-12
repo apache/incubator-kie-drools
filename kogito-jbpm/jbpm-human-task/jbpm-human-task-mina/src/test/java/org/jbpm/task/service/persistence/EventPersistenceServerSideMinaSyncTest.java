@@ -15,7 +15,8 @@
  */
 package org.jbpm.task.service.persistence;
 
-import static org.jbpm.task.event.EventPersistenceServerSideTest.*;
+import static org.jbpm.task.event.EventPersistenceServerSideTest.doTestMultiplePersistentEvents;
+import static org.jbpm.task.event.EventPersistenceServerSideTest.doTestPersistentEventHandlers;
 
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.TaskService;

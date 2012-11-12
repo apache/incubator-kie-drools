@@ -15,7 +15,8 @@
  */
 package org.jbpm.task.service.test.sync;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.*;
+import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
+import static org.jbpm.task.service.test.impl.TestServerUtil.startServer;
 
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;

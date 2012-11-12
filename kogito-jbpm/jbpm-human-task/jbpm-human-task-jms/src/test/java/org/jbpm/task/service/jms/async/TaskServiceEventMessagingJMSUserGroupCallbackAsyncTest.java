@@ -21,7 +21,6 @@ import java.util.Properties;
 import javax.naming.Context;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
 import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.service.TaskClient;
@@ -29,6 +28,7 @@ import org.jbpm.task.service.base.async.TaskServiceEventMessagingBaseUserGroupCa
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
+import org.kie.SystemEventListenerFactory;
 
 public class TaskServiceEventMessagingJMSUserGroupCallbackAsyncTest extends TaskServiceEventMessagingBaseUserGroupCallbackAsyncTest {
 

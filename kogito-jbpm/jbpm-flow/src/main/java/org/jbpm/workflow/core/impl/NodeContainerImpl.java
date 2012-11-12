@@ -20,9 +20,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.definition.process.Node;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.NodeContainer;
+import org.kie.definition.process.Node;
 
 /**
  * 

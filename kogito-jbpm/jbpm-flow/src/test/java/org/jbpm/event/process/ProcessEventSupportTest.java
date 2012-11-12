@@ -19,21 +19,8 @@ package org.jbpm.event.process;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.event.process.ProcessCompletedEvent;
-import org.drools.event.process.ProcessEvent;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.process.ProcessNodeLeftEvent;
-import org.drools.event.process.ProcessNodeTriggeredEvent;
-import org.drools.event.process.ProcessStartedEvent;
-import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.rule.Package;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessContext;
-import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -48,6 +35,19 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.process.ProcessCompletedEvent;
+import org.kie.event.process.ProcessEvent;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.process.ProcessNodeLeftEvent;
+import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.event.process.ProcessVariableChangedEvent;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
+import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessEventSupportTest extends JbpmTestCase {
 

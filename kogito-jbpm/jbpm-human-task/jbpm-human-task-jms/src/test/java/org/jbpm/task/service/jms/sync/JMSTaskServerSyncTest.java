@@ -11,7 +11,6 @@ import javax.persistence.Persistence;
 import junit.framework.TestCase;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
 import org.jbpm.task.Group;
 import org.jbpm.task.I18NText;
@@ -20,14 +19,15 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.User;
-import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
+import org.kie.SystemEventListenerFactory;
 
 /**
  * Test case to see if this component works.

@@ -19,8 +19,7 @@ package org.jbpm.task.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.task.service.ResponseHandler;
-import org.jbpm.task.service.BaseHandler;
+import org.kie.task.service.ResponseHandler;
 
 public class BaseClientHandler implements BaseHandler {
 

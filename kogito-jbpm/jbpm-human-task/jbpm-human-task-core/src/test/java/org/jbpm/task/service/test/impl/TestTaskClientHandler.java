@@ -18,10 +18,10 @@ package org.jbpm.task.service.test.impl;
 
 import java.util.concurrent.BlockingQueue;
 
-import org.drools.SystemEventListener;
 import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler;
+import org.kie.SystemEventListener;
 
 class TestTaskClientHandler extends BaseClientHandler {
     

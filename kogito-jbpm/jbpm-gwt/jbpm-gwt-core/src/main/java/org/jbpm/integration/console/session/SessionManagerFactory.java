@@ -17,7 +17,7 @@ package org.jbpm.integration.console.session;
 
 import java.lang.reflect.Constructor;
 
-import org.drools.KnowledgeBase;
+import org.kie.KnowledgeBase;
 
 /**
  * Factory for providing <code>SessionManager</code> instances

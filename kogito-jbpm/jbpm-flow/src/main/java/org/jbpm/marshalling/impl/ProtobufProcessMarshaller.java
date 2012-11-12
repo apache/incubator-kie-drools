@@ -5,30 +5,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProcessMarshaller;
 import org.drools.marshalling.impl.ProtobufMessages;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItem;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItem;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
-import java.util.*;
 
 public class ProtobufProcessMarshaller
         implements
@@ -37,16 +36,16 @@ public class ProtobufProcessMarshaller
     public void writeProcessInstances(MarshallerWriteContext context) throws IOException {
         ProtobufMessages.ProcessData.Builder _pdata = (ProtobufMessages.ProcessData.Builder) context.parameterObject;
                                                   
-        List<org.drools.runtime.process.ProcessInstance> processInstances = new ArrayList<org.drools.runtime.process.ProcessInstance>( context.wm.getProcessInstances() );
+        List<ProcessInstance> processInstances = new ArrayList<ProcessInstance>( context.wm.getProcessInstances() );
         Collections.sort( processInstances,
-                          new Comparator<org.drools.runtime.process.ProcessInstance>() {
-                              public int compare(org.drools.runtime.process.ProcessInstance o1,
-                                                 org.drools.runtime.process.ProcessInstance o2) {
+                          new Comparator<ProcessInstance>() {
+                              public int compare(ProcessInstance o1,
+                                                 ProcessInstance o2) {
                                   return (int) (o1.getId() - o2.getId());
                               }
                           } );
 
-        for ( org.drools.runtime.process.ProcessInstance processInstance : processInstances ) {
+        for ( ProcessInstance processInstance : processInstances ) {
             String processType = processInstance.getProcess().getType();
             JBPMMessages.ProcessInstance _instance = (JBPMMessages.ProcessInstance) ProcessMarshallerRegistry.INSTANCE.getMarshaller( processType )
                     .writeProcessInstance( context, 

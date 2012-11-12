@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.xml.XmlDumper;
-import org.drools.definition.process.Connection;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.xml.ExtensibleXmlParser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ForEachNode;
+import org.kie.definition.process.Connection;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 

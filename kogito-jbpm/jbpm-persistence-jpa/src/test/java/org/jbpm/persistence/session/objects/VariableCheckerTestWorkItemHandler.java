@@ -1,8 +1,8 @@
 package org.jbpm.persistence.session.objects;
 
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 public class VariableCheckerTestWorkItemHandler implements WorkItemHandler {
 

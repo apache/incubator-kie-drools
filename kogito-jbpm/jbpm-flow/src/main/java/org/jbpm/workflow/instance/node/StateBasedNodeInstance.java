@@ -26,12 +26,8 @@ import java.util.regex.Pattern;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
-import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.EventListener;
-import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.spi.Activation;
 import org.drools.time.TimeUtils;
@@ -49,6 +45,10 @@ import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
 
 public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {

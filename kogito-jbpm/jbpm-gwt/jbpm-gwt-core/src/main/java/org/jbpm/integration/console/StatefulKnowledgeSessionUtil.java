@@ -15,11 +15,11 @@
  */
 package org.jbpm.integration.console;
 
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.integration.console.kbase.KnowledgeBaseManager;
 import org.jbpm.integration.console.kbase.KnowledgeBaseManagerFactory;
 import org.jbpm.integration.console.session.SessionManager;
 import org.jbpm.integration.console.session.SessionManagerFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,14 +15,12 @@
  */
 package org.jbpm.task.admin;
 
-import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
+import static org.jbpm.task.service.persistence.TaskPersistenceManager.addParametersToMap;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;

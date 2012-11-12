@@ -16,9 +16,9 @@
 
 package org.jbpm.task.service.mina;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.service.TaskService;
+import org.kie.SystemEventListenerFactory;
 
 
 public class MinaTaskServer extends BaseMinaTaskServer {

@@ -18,9 +18,9 @@ package org.jbpm.task.service.test.impl;
 
 import java.util.concurrent.BlockingQueue;
 
-import org.drools.SystemEventListener;
 import org.jbpm.task.service.TaskServerHandler;
 import org.jbpm.task.service.TaskService;
+import org.kie.SystemEventListener;
 
 class TestTaskServerHandler {
 	

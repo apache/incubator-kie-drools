@@ -1,27 +1,20 @@
 package org.jbpm.process.builder.dialect.mvel;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELReturnValueExpression;
-import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.ProcessContext;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.impl.MVELAction;
 import org.jbpm.process.instance.impl.MVELReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 
@@ -56,7 +49,7 @@ public class MVELReturnValueEvaluatorBuilder
                                                                                        boundIdentifiers,
                                                                                        null,
                                                                                        "context",
-                                                                                       org.drools.runtime.process.ProcessContext.class );                      
+                                                                                       org.kie.runtime.process.ProcessContext.class );                      
             context.setTypesafe( typeSafe );
 
             Set<String> variableNames = analysis.getNotBoundedIdentifiers();
@@ -87,7 +80,7 @@ public class MVELReturnValueEvaluatorBuilder
                                                                        variables,
                                                                        context,
                                                                        "context",
-                                                                       org.drools.runtime.process.ProcessContext.class);              
+                                                                       org.kie.runtime.process.ProcessContext.class);              
             //VELReturnValueExpression expr = new MVELReturnValueExpression( unit, context.getDialect().getId() );
 
             MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator( unit,

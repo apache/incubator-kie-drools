@@ -2,7 +2,6 @@ package org.jbpm.process.builder.dialect.java;
 
 import java.util.Iterator;
 
-import org.drools.definition.process.Process;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -15,6 +14,7 @@ import org.jbpm.process.builder.ProcessErrorHandler;
 import org.jbpm.process.builder.ProcessInvokerErrorHandler;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.builder.dialect.ProcessDialect;
+import org.kie.definition.process.Process;
 
 public class JavaProcessDialect implements ProcessDialect {
 

@@ -37,14 +37,14 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 
 //import net.fortuna.ical4j.model.Calendar;
 //import net.fortuna.ical4j.model.DateTime;

@@ -16,11 +16,12 @@
 
 package org.jbpm.task.service.test.async;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.*;
+import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
+import static org.jbpm.task.service.test.impl.TestServerUtil.startAsyncServer;
 
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.ClaimTaskTwiceTest;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.test.impl.TestTaskServer;

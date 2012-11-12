@@ -19,8 +19,8 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.definition.process.Connection;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.definition.process.Connection;
 
 /**
  * Default implementation of a start node.

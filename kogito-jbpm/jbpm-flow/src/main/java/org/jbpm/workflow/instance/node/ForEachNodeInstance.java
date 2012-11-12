@@ -21,17 +21,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.ForEachNode.ForEachJoinNode;
 import org.jbpm.workflow.core.node.ForEachNode.ForEachSplitNode;
-import org.jbpm.workflow.instance.NodeInstance;
-import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
 
 /**
@@ -110,18 +109,18 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachSplitNode) getNode();
         }
 
-        public void internalTrigger(org.drools.runtime.process.NodeInstance fromm, String type) {
+        public void internalTrigger(NodeInstance fromm, String type) {
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
-            ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+            ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             if (collection.isEmpty()) {
             	ForEachNodeInstance.this.triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
             } else {
             	List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
             	for (Object o: collection) {
             		String variableName = getForEachNode().getVariableName();
-            		NodeInstance nodeInstance = (NodeInstance)
-            		((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
+            		org.jbpm.workflow.instance.NodeInstance nodeInstance = (org.jbpm.workflow.instance.NodeInstance)
+            		((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
             		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
             			nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
             		variableScopeInstance.setVariable(variableName, o);
@@ -147,7 +146,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachJoinNode) getNode();
         }
 
-        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(NodeInstance from, String type) {
             
             if (getForEachNode().getOutputVariableName() != null) {
                 Collection outputCollection = evaluateCollectionExpression(getForEachNode().getOutputCollectionExpression());
@@ -167,7 +166,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
                 subprocessVariableScopeInstance.setVariable(getForEachNode().getOutputCollectionExpression(), outputCollection);
             }
             if (getNodeInstanceContainer().getNodeInstances().size() == 1) {
-            	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+            	((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {
                 	
                 	if (System.getProperty("jbpm.enable.multi.con") == null) {

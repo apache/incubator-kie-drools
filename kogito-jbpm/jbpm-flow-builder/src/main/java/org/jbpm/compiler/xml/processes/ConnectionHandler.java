@@ -2,7 +2,6 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.definition.process.Node;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -10,6 +9,7 @@ import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.kie.definition.process.Node;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

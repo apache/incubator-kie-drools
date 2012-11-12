@@ -19,9 +19,9 @@ package org.jbpm.task.service.mina;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
-import org.drools.SystemEventListener;
 import org.jbpm.task.service.TaskServerHandler;
 import org.jbpm.task.service.TaskService;
+import org.kie.SystemEventListener;
 
 public class MinaTaskServerHandler extends IoHandlerAdapter {
 	

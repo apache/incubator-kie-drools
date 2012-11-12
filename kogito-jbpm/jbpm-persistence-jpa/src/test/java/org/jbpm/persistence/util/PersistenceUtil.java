@@ -15,9 +15,10 @@
  */
 package org.jbpm.persistence.util;
 
-import static org.drools.runtime.EnvironmentName.*;
+import static org.kie.runtime.EnvironmentName.*;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeTestDb;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,17 +31,19 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.*;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.marshalling.util.EntityManagerFactoryProxy;
 import org.jbpm.marshalling.util.UserTransactionProxy;
 import org.junit.Assert;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

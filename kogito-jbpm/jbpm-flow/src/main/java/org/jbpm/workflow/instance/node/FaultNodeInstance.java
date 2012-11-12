@@ -18,8 +18,6 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.Collection;
 
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
@@ -28,6 +26,8 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.WorkflowProcessInstance;
 
 /**
  * Runtime counterpart of a fault node.

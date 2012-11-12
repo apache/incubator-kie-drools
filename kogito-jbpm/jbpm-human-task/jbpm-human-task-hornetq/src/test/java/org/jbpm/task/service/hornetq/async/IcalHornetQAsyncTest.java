@@ -16,13 +16,13 @@
 
 package org.jbpm.task.service.hornetq.async;
 
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
 import org.jbpm.task.service.base.async.IcalBaseAsyncTest;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 
 public class IcalHornetQAsyncTest extends IcalBaseAsyncTest {

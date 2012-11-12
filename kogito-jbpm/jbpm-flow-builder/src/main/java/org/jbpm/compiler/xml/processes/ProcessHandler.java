@@ -62,7 +62,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Class generateNodeFor() {
-        return org.drools.definition.process.Process.class;
+        return org.kie.definition.process.Process.class;
     }    
 
 }

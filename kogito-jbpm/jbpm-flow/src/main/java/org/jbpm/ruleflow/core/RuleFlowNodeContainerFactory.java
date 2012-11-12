@@ -16,7 +16,6 @@
 
 package org.jbpm.ruleflow.core;
 
-import org.drools.definition.process.Node;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
@@ -34,6 +33,7 @@ import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.kie.definition.process.Node;
 
 public abstract class RuleFlowNodeContainerFactory {
 

@@ -16,7 +16,7 @@
 
 package org.jbpm.process.instance.impl;
 
-import org.drools.runtime.process.ProcessContext;
+import org.kie.runtime.process.ProcessContext;
 
 public interface Action {
     

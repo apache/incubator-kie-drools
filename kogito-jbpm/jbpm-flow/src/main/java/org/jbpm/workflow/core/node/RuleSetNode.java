@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.definition.process.Connection;
+import org.kie.definition.process.Connection;
 
 /**
  * Default implementation of a RuleSet node.

@@ -1,6 +1,8 @@
 package org.jbpm.process.workitem.email;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,10 +15,10 @@ import javax.mail.internet.MimeMessage;
 
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.WorkItemManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.AuthenticationHandler;

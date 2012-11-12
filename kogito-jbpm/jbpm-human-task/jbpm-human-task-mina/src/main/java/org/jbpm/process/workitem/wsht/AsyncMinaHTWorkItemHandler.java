@@ -15,13 +15,13 @@
  */
 package org.jbpm.process.workitem.wsht;
 
-import org.jbpm.task.utils.OnErrorAction;
-import org.drools.runtime.KnowledgeRuntime;
+import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.AsyncTaskService;
+import org.jbpm.task.utils.OnErrorAction;
+import org.kie.SystemEventListenerFactory;
+import org.kie.runtime.KnowledgeRuntime;
 /**
  *
  * This class provides the default configurations for a Mina WorkItem Handler

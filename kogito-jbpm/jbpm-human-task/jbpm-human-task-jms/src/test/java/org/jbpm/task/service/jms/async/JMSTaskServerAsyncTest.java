@@ -11,7 +11,6 @@ import javax.persistence.Persistence;
 import junit.framework.TestCase;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.Group;
@@ -29,6 +28,7 @@ import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.kie.SystemEventListenerFactory;
 
 /**
  * Test case to see if this component works.

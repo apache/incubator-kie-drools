@@ -1,8 +1,13 @@
 package org.jbpm.integration;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,13 +16,13 @@ import javax.persistence.Persistence;
 
 import junit.framework.Assert;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.junit.BeforeClass;
+import org.kie.SystemEventListenerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

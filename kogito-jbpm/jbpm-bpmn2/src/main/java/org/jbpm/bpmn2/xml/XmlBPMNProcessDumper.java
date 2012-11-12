@@ -22,10 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.xml.XmlDumper;
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.NodeContainer;
-import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.rule.builder.dialect.java.JavaDialect;
@@ -57,6 +53,10 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
+import org.kie.definition.process.WorkflowProcess;
 
 public class XmlBPMNProcessDumper {
 	

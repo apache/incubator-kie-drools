@@ -20,14 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuntimeDroolsException;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.Process;
-import org.drools.runtime.process.EventListener;
-import org.drools.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.StartProcessHelper;
@@ -37,6 +31,11 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
+import org.kie.KnowledgeBase;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
 
 /**

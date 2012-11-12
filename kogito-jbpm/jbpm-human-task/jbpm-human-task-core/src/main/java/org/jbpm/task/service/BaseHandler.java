@@ -16,7 +16,7 @@
 
 package org.jbpm.task.service;
 
-import org.drools.task.service.ResponseHandler;
+import org.kie.task.service.ResponseHandler;
 
 public interface BaseHandler {
 	

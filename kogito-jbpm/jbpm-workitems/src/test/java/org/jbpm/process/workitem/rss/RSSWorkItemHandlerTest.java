@@ -22,8 +22,7 @@ import junit.framework.TestCase;
 
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.WorkItemManager;
-import org.jbpm.process.workitem.rss.RSSWorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 // @author: salaboy
 public class RSSWorkItemHandlerTest extends TestCase {

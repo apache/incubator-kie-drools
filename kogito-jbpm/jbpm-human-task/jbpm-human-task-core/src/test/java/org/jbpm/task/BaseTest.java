@@ -16,19 +16,28 @@
 
 package org.jbpm.task;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import junit.framework.TestCase;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.identity.UserGroupCallbackManager;
-import org.jbpm.task.service.*;
+import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
+import org.jbpm.task.service.SendIcal;
+import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.TaskServiceSession;
+import org.kie.SystemEventListenerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

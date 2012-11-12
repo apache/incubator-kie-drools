@@ -20,19 +20,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.drools.WorkItemHandlerNotFoundException;
-import org.drools.definition.process.Node;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.EventListener;
-import org.drools.runtime.process.NodeInstance;
 import org.drools.spi.ProcessContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -42,8 +36,12 @@ import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
+import org.kie.definition.process.Node;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.EventListener;
 import org.mvel2.MVEL;
 
 /**

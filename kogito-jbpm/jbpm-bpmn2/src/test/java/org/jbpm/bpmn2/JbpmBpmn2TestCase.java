@@ -1,27 +1,46 @@
 package org.jbpm.bpmn2;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.drools.KnowledgeBase;
 import org.drools.SessionConfiguration;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
-import org.drools.builder.*;
-import org.drools.definition.process.Node;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.io.ResourceFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.*;
-import org.drools.runtime.process.*;
-import org.jbpm.process.audit.*;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
+import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.process.Node;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.NodeInstanceContainer;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkflowProcessInstance;
 
 /**
  * Base test case for the jbpm-bpmn2 module. 

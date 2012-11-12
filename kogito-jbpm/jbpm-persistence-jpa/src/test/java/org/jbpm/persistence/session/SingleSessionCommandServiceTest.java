@@ -1,17 +1,28 @@
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.apache.log4j.xml.DOMConfigurator;
-import org.drools.*;
-import org.drools.command.runtime.process.*;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
+import org.drools.TimerJobFactoryType;
+import org.drools.command.runtime.process.CompleteWorkItemCommand;
+import org.drools.command.runtime.process.GetProcessInstanceCommand;
+import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.PackageBuilder;
-import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
@@ -19,25 +30,34 @@ import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.rule.Package;
-import org.drools.runtime.Environment;
-import org.drools.runtime.conf.TimerJobFactoryOption;
-import org.drools.runtime.process.*;
 import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.persistence.JbpmTestCase;
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory;
 import org.jbpm.persistence.processinstance.JPASignalManagerFactory;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
-import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.node.*;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.runtime.Environment;
+import org.kie.runtime.conf.TimerJobFactoryOption;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItem;
 
 public class SingleSessionCommandServiceTest extends JbpmTestCase {
 

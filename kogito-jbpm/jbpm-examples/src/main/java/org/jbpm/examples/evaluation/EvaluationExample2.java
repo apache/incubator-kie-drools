@@ -5,20 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.KnowledgeBase;
-import org.drools.SystemEventListenerFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
+import org.kie.KnowledgeBase;
+import org.kie.SystemEventListenerFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.logger.KnowledgeRuntimeLogger;
+import org.kie.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 
 /**
@@ -115,7 +115,7 @@ public class EvaluationExample2 {
         return kbuilder.newKnowledgeBase();
     }
 
-    private static class SystemEventListener implements org.drools.SystemEventListener {
+    private static class SystemEventListener implements org.kie.SystemEventListener {
 
         public void debug(String arg0) {
         }

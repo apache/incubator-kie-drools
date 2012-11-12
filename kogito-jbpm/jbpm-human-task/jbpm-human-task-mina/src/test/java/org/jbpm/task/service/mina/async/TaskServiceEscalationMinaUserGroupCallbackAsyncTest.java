@@ -16,7 +16,6 @@
 
 package org.jbpm.task.service.mina.async;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.base.async.TaskServiceEscalationBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 import org.jbpm.task.service.mina.MinaTaskServer;

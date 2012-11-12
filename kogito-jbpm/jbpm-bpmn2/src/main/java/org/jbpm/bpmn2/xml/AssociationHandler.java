@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.definition.process.Process;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -29,9 +28,9 @@ import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.workflow.core.Node;
+import org.kie.definition.process.Process;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
 /**
  * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
  *

@@ -15,22 +15,37 @@
  */
 package org.jbpm.task.admin;
 
-import org.jbpm.task.identity.UserGroupCallbackManager;
-import java.util.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.*;
 
-
+import org.jbpm.task.Group;
+import org.jbpm.task.I18NText;
+import org.jbpm.task.MockUserInfo;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.*;
+import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskService;
-
+import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.SystemEventListenerFactory;
 
 /**
  */

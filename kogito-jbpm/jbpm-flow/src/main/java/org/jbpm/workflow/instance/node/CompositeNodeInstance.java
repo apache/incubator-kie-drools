@@ -23,22 +23,21 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.NodeContainer;
-import org.drools.runtime.process.EventListener;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.instance.NodeInstance;
-import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.NodeInstanceContainer;
+import org.kie.runtime.process.EventListener;
 
 /**
  * Runtime counterpart of a composite node.
@@ -77,7 +76,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return getCompositeNode();
     }
     
-    public void internalTrigger(final org.drools.runtime.process.NodeInstance from, String type) {
+    public void internalTrigger(final NodeInstance from, String type) {
     	super.internalTrigger(from, type);
         CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(type);
         if (nodeAndType != null) {
@@ -148,8 +147,8 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         this.nodeInstances.remove(nodeInstance);
     }
 
-    public Collection<org.drools.runtime.process.NodeInstance> getNodeInstances() {
-        return new ArrayList<org.drools.runtime.process.NodeInstance>(getNodeInstances(false));
+    public Collection<org.kie.runtime.process.NodeInstance> getNodeInstances() {
+        return new ArrayList<org.kie.runtime.process.NodeInstance>(getNodeInstances(false));
     }
     
     public Collection<NodeInstance> getNodeInstances(boolean recursive) {
@@ -159,7 +158,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             for (Iterator<NodeInstance> iterator = nodeInstances.iterator(); iterator.hasNext(); ) {
                 NodeInstance nodeInstance = iterator.next();
                 if (nodeInstance instanceof NodeInstanceContainer) {
-                    result.addAll(((NodeInstanceContainer)
+                    result.addAll(((org.jbpm.workflow.instance.NodeInstanceContainer)
                 		nodeInstance).getNodeInstances(true));
                 }
             }
@@ -255,7 +254,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return (CompositeNode.CompositeNodeStart) getNode();
         }
         
-        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(org.kie.runtime.process.NodeInstance from, String type) {
             triggerCompleted();
         }
         
@@ -273,7 +272,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return (CompositeNode.CompositeNodeEnd) getNode();
         }
         
-        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(org.kie.runtime.process.NodeInstance from, String type) {
             triggerCompleted();
         }
         

@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.io.Resource;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.Process;
 import org.jbpm.process.core.context.AbstractContext;
+import org.kie.io.Resource;
 
 /**
  * Default implementation of a Process

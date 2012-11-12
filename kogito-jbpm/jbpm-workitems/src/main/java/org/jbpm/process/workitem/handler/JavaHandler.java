@@ -2,7 +2,7 @@ package org.jbpm.process.workitem.handler;
 
 import java.util.Map;
 
-import org.drools.runtime.process.ProcessContext;
+import org.kie.runtime.process.ProcessContext;
 
 public interface JavaHandler {
 	

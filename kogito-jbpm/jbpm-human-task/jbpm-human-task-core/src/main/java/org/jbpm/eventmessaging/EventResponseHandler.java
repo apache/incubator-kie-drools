@@ -16,7 +16,7 @@
 
 package org.jbpm.eventmessaging;
 
-import org.drools.task.service.ResponseHandler;
+import org.kie.task.service.ResponseHandler;
 
 public interface EventResponseHandler extends ResponseHandler {
     public void execute(Payload payload);

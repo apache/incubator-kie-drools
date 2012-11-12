@@ -15,7 +15,12 @@
  */
 package org.jbpm.marshalling.util;
 
-import static org.jbpm.marshalling.util.MarshallingTestUtil.*;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.STORE_KNOWLEDGE_BASE;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.byteArrayHashCode;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.getTestMethodName;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -32,10 +37,10 @@ import javax.persistence.Transient;
 
 import junit.framework.Assert;
 
-import org.drools.KnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
+import org.kie.KnowledgeBase;
 
 @Entity
 @SequenceGenerator(name="marshalledDataIdSeq", sequenceName="MARSHALLEDDATA_ID_SEQ")

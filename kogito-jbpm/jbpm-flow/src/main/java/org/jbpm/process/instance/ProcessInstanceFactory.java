@@ -19,7 +19,7 @@ package org.jbpm.process.instance;
 import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 
 /**
  * 

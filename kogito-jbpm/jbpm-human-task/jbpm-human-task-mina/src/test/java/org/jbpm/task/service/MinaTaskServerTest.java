@@ -17,7 +17,6 @@
 package org.jbpm.task.service;
 
 import org.jbpm.task.BaseTest;
-
 import org.jbpm.task.service.mina.MinaTaskServer;
 
 public class MinaTaskServerTest extends BaseTest {

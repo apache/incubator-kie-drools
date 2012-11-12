@@ -3,11 +3,11 @@ package org.jbpm.bpmn2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
-import org.drools.event.process.DefaultProcessEventListener;
-import org.drools.event.process.ProcessStartedEvent;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
+import org.kie.KnowledgeBase;
+import org.kie.event.process.DefaultProcessEventListener;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 
 
 public class SignalEventsTest extends JbpmBpmn2TestCase {

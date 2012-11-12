@@ -16,7 +16,6 @@
 
 package org.jbpm.task.service.base.async;
 
-import org.jbpm.task.MvelFilePath;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -26,14 +25,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.drools.process.instance.impl.DefaultWorkItemManager;
-import org.drools.runtime.process.WorkItemManager;
-import org.jbpm.task.*;
+import org.jbpm.task.AsyncTaskService;
+import org.jbpm.task.BaseTestNoUserGroupSetup;
+import org.jbpm.task.Content;
+import org.jbpm.task.MockUserInfo;
+import org.jbpm.task.MvelFilePath;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
+import org.jbpm.task.User;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
@@ -42,6 +47,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingSetContentResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.runtime.process.WorkItemManager;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

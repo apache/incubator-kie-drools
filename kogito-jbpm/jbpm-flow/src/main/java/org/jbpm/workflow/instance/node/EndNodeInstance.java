@@ -17,12 +17,12 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.runtime.process.NodeInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
+import org.kie.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of an end node.

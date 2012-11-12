@@ -17,9 +17,9 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Package;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.rule.Activation;
 import org.jbpm.JbpmTestCase;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.rule.Activation;
 
 public class ProcessFlowControlTest extends JbpmTestCase {
     protected RuleBase getRuleBase() throws Exception {

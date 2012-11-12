@@ -7,10 +7,10 @@ import java.io.ObjectOutputStream;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.TaskClientConnector;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
+import org.kie.SystemEventListenerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

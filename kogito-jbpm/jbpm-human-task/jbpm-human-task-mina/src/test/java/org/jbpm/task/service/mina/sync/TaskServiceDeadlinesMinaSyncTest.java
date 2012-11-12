@@ -18,13 +18,9 @@ package org.jbpm.task.service.mina.sync;
 
 import java.util.Properties;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.TaskServiceDeadlinesBaseSyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 import org.subethamail.wiser.Wiser;
 

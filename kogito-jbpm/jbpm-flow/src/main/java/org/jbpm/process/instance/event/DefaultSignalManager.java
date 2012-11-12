@@ -30,9 +30,9 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
-import org.drools.runtime.process.EventListener;
-import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.ProcessInstance;
 
 public class DefaultSignalManager implements SignalManager {
 	

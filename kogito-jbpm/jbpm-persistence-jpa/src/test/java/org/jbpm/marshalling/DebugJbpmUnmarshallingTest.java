@@ -1,6 +1,6 @@
 package org.jbpm.marshalling;
 
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
 import static org.jbpm.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
 import static org.jbpm.persistence.util.PersistenceUtil.*;

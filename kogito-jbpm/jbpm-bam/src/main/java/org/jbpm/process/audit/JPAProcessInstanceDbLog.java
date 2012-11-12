@@ -29,8 +29,8 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.drools.persistence.TransactionManager;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

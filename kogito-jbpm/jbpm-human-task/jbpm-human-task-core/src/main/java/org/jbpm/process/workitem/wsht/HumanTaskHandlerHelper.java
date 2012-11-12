@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.runtime.Environment;
-import org.drools.runtime.process.WorkItem;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.task.Deadline;
@@ -22,6 +20,8 @@ import org.jbpm.task.Notification;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Reassignment;
 import org.jbpm.task.User;
+import org.kie.runtime.Environment;
+import org.kie.runtime.process.WorkItem;
 
 public class HumanTaskHandlerHelper {
 	

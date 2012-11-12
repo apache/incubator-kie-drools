@@ -2,14 +2,14 @@ package org.jbpm.process.builder;
 
 import java.util.List;
 
-import org.drools.definition.process.Node;
-import org.drools.definition.process.Process;
 import org.drools.lang.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
 
 public class WorkItemNodeBuilder extends EventBasedNodeBuilder {
 

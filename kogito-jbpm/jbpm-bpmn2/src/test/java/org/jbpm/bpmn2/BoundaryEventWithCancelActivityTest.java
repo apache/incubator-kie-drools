@@ -1,16 +1,21 @@
 package org.jbpm.bpmn2;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.*;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.definition.KnowledgePackage;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 
 public class BoundaryEventWithCancelActivityTest extends JbpmBpmn2TestCase {
 

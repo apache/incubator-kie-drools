@@ -16,12 +16,12 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
+import org.kie.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of an event node.

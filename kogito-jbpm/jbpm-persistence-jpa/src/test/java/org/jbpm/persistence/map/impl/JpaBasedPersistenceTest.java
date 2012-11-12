@@ -1,19 +1,24 @@
 package org.jbpm.persistence.map.impl;
 
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.useTransactions;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.HashMap;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.KnowledgeBase;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jta.JtaTransactionManager;
-import org.drools.runtime.*;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.KnowledgeBase;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 

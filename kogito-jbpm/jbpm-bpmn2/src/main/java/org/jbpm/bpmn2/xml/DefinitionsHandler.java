@@ -19,13 +19,13 @@ package org.jbpm.bpmn2.xml;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.definition.process.Process;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.kie.definition.process.Process;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

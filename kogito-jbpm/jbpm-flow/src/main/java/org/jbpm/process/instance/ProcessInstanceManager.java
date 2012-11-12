@@ -18,7 +18,7 @@ package org.jbpm.process.instance;
 
 import java.util.Collection;
 
-import org.drools.runtime.process.ProcessInstance;
+import org.kie.runtime.process.ProcessInstance;
 
 public interface ProcessInstanceManager {
 

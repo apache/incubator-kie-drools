@@ -9,20 +9,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.definition.process.Process;
-import org.drools.process.instance.WorkItem;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
-import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
+import org.kie.definition.process.Process;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkflowProcessInstance;
 
 /**
  * This is an implementation of the {@link ProcessInstanceManager} that uses JPA.
@@ -138,7 +136,7 @@ public class JPAProcessInstanceManager
             WorkflowProcessInstance pi = ((WorkflowProcessInstance) processInstance);
 
             
-            for (org.drools.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {
+            for (NodeInstance nodeInstance : pi.getNodeInstances()) {
                 if (nodeInstance instanceof StateBasedNodeInstance) {
                     List<Long> timerIds = ((StateBasedNodeInstance) nodeInstance).getTimerInstances();
                     if (timerIds != null) {

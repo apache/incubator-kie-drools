@@ -21,7 +21,7 @@ package org.jbpm.workflow.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface Connection extends org.drools.definition.process.Connection {
+public interface Connection extends org.kie.definition.process.Connection {
 
     void setMetaData(String name, Object value);
     

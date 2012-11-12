@@ -15,8 +15,6 @@
  */
 package org.jbpm.task.service.persistence;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.persistence.EntityManager;
 
 import org.drools.persistence.TransactionManager;

@@ -16,15 +16,11 @@
 
 package org.jbpm.task.service.mina.async;
 
-import org.drools.SystemEventListenerFactory;
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.IcalBaseAsyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 
 public class IcalMinaAsyncTest extends IcalBaseAsyncTest {

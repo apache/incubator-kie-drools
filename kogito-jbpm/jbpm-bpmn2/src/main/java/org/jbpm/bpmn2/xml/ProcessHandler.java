@@ -22,8 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.definition.process.Node;
-import org.drools.definition.process.NodeContainer;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -61,6 +59,8 @@ import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.StateNode;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -571,7 +571,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 Constraint constraint = new ConstraintImpl();
                 constraint.setConstraint(condition);
                 constraint.setType("rule");
-                for (org.drools.definition.process.Connection connection: stateNode.getDefaultOutgoingConnections()) {
+                for (org.kie.definition.process.Connection connection: stateNode.getDefaultOutgoingConnections()) {
                     stateNode.setConstraint(connection, constraint);
                 }
             } else if (node instanceof NodeContainer) {

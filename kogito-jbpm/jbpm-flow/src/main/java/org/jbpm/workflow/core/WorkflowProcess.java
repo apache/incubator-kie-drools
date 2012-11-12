@@ -26,7 +26,7 @@ import org.jbpm.process.core.Process;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface WorkflowProcess extends org.drools.definition.process.WorkflowProcess, Process, NodeContainer {
+public interface WorkflowProcess extends org.kie.definition.process.WorkflowProcess, Process, NodeContainer {
 
     /**
      * Returns the imports of this RuleFlow process.

@@ -3,7 +3,6 @@ package org.jbpm.process.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.definition.process.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -18,6 +17,7 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.definition.process.Node;
 
 public class ProcessNodeBuilderRegistry {
 	

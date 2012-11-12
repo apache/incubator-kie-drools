@@ -18,7 +18,7 @@ package org.jbpm.task.service.responsehandlers;
 
 import java.lang.reflect.Constructor;
 
-import org.drools.task.service.ResponseHandler;
+import org.kie.task.service.ResponseHandler;
 
 /**
  * Abstract base class for client ResponseHandlers. Provides synchonized access to <field>done</field> which represents

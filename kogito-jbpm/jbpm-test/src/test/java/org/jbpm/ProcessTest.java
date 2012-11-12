@@ -1,9 +1,9 @@
 package org.jbpm;
 
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 
 /**
  * This is a sample file to test a process.

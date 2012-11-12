@@ -16,10 +16,10 @@
 
 package org.jbpm.workflow.instance;
 
-import org.drools.runtime.process.EventListener;
 import org.jbpm.process.instance.ProcessInstance;
+import org.kie.runtime.process.EventListener;
 
-public interface WorkflowProcessInstance extends ProcessInstance, org.drools.runtime.process.WorkflowProcessInstance {
+public interface WorkflowProcessInstance extends ProcessInstance, org.kie.runtime.process.WorkflowProcessInstance {
 
     void addEventListener(String type, EventListener eventListener, boolean external);
     

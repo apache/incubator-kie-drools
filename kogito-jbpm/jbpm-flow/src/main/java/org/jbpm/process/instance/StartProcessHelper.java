@@ -21,10 +21,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 
-import org.drools.KnowledgeBase;
-import org.drools.definition.process.Process;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.ProcessInstance;
+import org.kie.KnowledgeBase;
+import org.kie.definition.process.Process;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.ProcessInstance;
 
 public final class StartProcessHelper {
     

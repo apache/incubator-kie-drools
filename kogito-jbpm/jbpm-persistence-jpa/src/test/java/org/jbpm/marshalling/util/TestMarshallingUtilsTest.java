@@ -15,27 +15,41 @@
  */
 package org.jbpm.marshalling.util;
 
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.jbpm.marshalling.util.CompareViaReflectionUtil.compareInstances;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.jbpm.marshalling.util.MarshallingTestUtil.*;
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.unmarshallObject;
+import static org.jbpm.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.runtime.EnvironmentName.*;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.*;
-import org.drools.conf.EventProcessingOption;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.runtime.*;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.runtime.conf.TimerJobFactoryOption;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.runtime.conf.TimerJobFactoryOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

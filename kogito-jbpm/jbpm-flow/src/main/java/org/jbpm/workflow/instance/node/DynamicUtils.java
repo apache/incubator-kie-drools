@@ -24,20 +24,20 @@ import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.WorkItem;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.kie.definition.process.Process;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.WorkItem;
 
 public class DynamicUtils {
 	
@@ -49,7 +49,7 @@ public class DynamicUtils {
 	}
 	
 	public static void addDynamicWorkItem(
-			final org.drools.runtime.process.ProcessInstance dynamicProcessInstance, KnowledgeRuntime ksession,
+			final org.kie.runtime.process.ProcessInstance dynamicProcessInstance, KnowledgeRuntime ksession,
 			String workItemName, Map<String, Object> parameters) {
 		internalAddDynamicWorkItem((WorkflowProcessInstance) dynamicProcessInstance, null, ksession, workItemName, parameters);
 	}
@@ -118,7 +118,7 @@ public class DynamicUtils {
 	}
 	
 	public static void addDynamicSubProcess(
-			final org.drools.runtime.process.ProcessInstance processInstance, KnowledgeRuntime ksession,
+			final org.kie.runtime.process.ProcessInstance processInstance, KnowledgeRuntime ksession,
 			final String processId, final Map<String, Object> parameters) {
 		internalAddDynamicSubProcess((WorkflowProcessInstance) processInstance, null, ksession, processId, parameters);
 	}

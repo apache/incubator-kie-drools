@@ -16,7 +16,9 @@
 
 package org.jbpm.process.workitem.email;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,12 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.WorkItemManager;
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

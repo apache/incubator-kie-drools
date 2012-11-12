@@ -16,7 +16,8 @@
 
 package org.jbpm.task.service.test.async;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.*;
+import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
+import static org.jbpm.task.service.test.impl.TestServerUtil.startAsyncServer;
 
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.TaskServiceLifeCycleBaseAsyncTest;

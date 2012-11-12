@@ -17,20 +17,20 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.event.rule.ActivationCancelledEvent;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.AgendaGroupPoppedEvent;
-import org.drools.event.rule.AgendaGroupPushedEvent;
-import org.drools.event.rule.BeforeActivationFiredEvent;
-import org.drools.event.rule.RuleFlowGroupActivatedEvent;
-import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.rule.Rule;
-import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.spi.Activation;
 import org.jbpm.workflow.core.node.MilestoneNode;
+import org.kie.event.rule.ActivationCancelledEvent;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.AgendaGroupPoppedEvent;
+import org.kie.event.rule.AgendaGroupPushedEvent;
+import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of a milestone node.

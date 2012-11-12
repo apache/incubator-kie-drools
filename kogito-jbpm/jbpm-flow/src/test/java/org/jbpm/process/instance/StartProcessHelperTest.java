@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
-import org.drools.definition.process.Process;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.definition.process.Process;
 
 public class StartProcessHelperTest {
 

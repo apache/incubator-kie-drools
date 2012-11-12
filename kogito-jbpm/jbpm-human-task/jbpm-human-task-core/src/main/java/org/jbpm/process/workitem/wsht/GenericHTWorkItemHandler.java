@@ -19,28 +19,28 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.task.TaskService;
-import org.jbpm.task.utils.OnErrorAction;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.task.Task;
-import org.jbpm.task.event.TaskEventKey;
-import org.jbpm.task.service.ContentData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.entity.TaskCompletedEvent;
 import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.event.entity.TaskFailedEvent;
 import org.jbpm.task.event.entity.TaskSkippedEvent;
+import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.jbpm.task.utils.OnErrorAction;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 

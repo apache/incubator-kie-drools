@@ -7,30 +7,15 @@ import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
-import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.knowledgebase.AfterProcessAddedEvent;
-import org.drools.event.knowledgebase.AfterProcessRemovedEvent;
-import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.EventListener;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItemManager;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.time.impl.TrackableTimeJobFactoryManager;
-import org.drools.util.CompositeClassLoader;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.event.SignalManager;
@@ -40,6 +25,20 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
+import org.kie.event.knowledgebase.AfterProcessAddedEvent;
+import org.kie.event.knowledgebase.AfterProcessRemovedEvent;
+import org.kie.event.knowledgebase.DefaultKnowledgeBaseEventListener;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.DefaultAgendaEventListener;
+import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.util.CompositeClassLoader;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -198,7 +197,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     	return signalManager;
     }
 
-    public Collection<ProcessInstance> getProcessInstances() {
+    public Collection<org.kie.runtime.process.ProcessInstance> getProcessInstances() {
         return processInstanceManager.getProcessInstances();
     }
 

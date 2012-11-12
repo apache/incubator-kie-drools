@@ -1,24 +1,26 @@
 package org.jbpm.persistence.timer;
 
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.jbpm.test.JBPMHelper.*;
+import static org.jbpm.test.JBPMHelper.loadStatefulKnowledgeSession;
+import static org.jbpm.test.JBPMHelper.newStatefulKnowledgeSession;
+import static org.jbpm.test.JBPMHelper.processStateName;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.KnowledgeBase;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.test.JBPMHelper;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -262,16 +264,16 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
 
     private static class HumanTaskMockHandler implements WorkItemHandler {
 
-        private org.drools.runtime.process.WorkItemManager workItemManager;
-        private org.drools.runtime.process.WorkItem workItem;
+        private org.kie.runtime.process.WorkItemManager workItemManager;
+        private org.kie.runtime.process.WorkItem workItem;
 
-        public void executeWorkItem(org.drools.runtime.process.WorkItem workItem, org.drools.runtime.process.WorkItemManager manager) {
+        public void executeWorkItem(org.kie.runtime.process.WorkItem workItem, org.kie.runtime.process.WorkItemManager manager) {
             this.workItem = workItem;
             this.workItemManager = manager;
             System.out.println("Work completed!");
         }
 
-        public void abortWorkItem(org.drools.runtime.process.WorkItem workItem, org.drools.runtime.process.WorkItemManager manager) {
+        public void abortWorkItem(org.kie.runtime.process.WorkItem workItem, org.kie.runtime.process.WorkItemManager manager) {
             this.workItemManager.abortWorkItem(workItem.getId());
             System.out.println("Work aborted.");
         }

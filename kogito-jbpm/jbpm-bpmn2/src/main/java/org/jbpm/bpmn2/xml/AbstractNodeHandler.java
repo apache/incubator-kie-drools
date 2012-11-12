@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.drools.compiler.xml.XmlDumper;
 import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -89,7 +88,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             // id is not in the expected format, generating a new one
             long newId = 0;
             NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-            for (org.drools.definition.process.Node n: nodeContainer.getNodes()) {
+            for (org.kie.definition.process.Node n: nodeContainer.getNodes()) {
                 if (n.getId() > newId) {
                     newId = n.getId();
                 }

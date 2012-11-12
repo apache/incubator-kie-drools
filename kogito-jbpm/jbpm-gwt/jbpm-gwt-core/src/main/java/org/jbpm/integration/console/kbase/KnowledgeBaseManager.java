@@ -15,7 +15,7 @@
  */
 package org.jbpm.integration.console.kbase;
 
-import org.drools.KnowledgeBase;
+import org.kie.KnowledgeBase;
 
 /**
  * Manager interface responsible for maintaining knowledge base that includes:

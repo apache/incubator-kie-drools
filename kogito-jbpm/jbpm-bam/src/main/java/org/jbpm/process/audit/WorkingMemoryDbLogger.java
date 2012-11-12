@@ -24,8 +24,8 @@ import org.drools.audit.WorkingMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
-import org.drools.event.KnowledgeRuntimeEventManager;
 import org.hibernate.Session;
+import org.kie.event.KnowledgeRuntimeEventManager;
 
 /**
  * This class has been deprecated in favor of {@link JPAWorkingMemoryDbLogger}. 

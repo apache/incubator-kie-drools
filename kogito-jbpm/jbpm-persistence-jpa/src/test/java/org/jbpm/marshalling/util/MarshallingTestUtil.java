@@ -15,16 +15,26 @@
  */
 package org.jbpm.marshalling.util;
 
-import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.jbpm.marshalling.util.MarshallingDBUtil.*;
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.jbpm.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
+import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.getDatasourceProperties;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -33,21 +43,28 @@ import javax.transaction.TransactionManager;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.drools.*;
+import org.drools.SessionConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.*;
-import org.drools.marshalling.impl.*;
+import org.drools.marshalling.impl.InputMarshaller;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.ProcessMarshaller;
+import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.drools.process.instance.WorkItem;
-import org.drools.runtime.Environment;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
 import org.drools.time.impl.DefaultTimerJobInstance;
 import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.marshalling.Marshaller;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.Environment;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

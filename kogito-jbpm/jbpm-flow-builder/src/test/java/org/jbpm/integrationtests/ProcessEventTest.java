@@ -10,10 +10,10 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessEventTest extends JbpmTestCase {
     

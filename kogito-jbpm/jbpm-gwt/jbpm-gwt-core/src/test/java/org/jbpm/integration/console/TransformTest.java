@@ -1,21 +1,20 @@
 package org.jbpm.integration.console;
 
 import java.util.Collection;
-import java.util.List;
 
-import org.drools.runtime.process.NodeInstance;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.runtime.process.NodeInstance;
 
 public class TransformTest extends JbpmGwtCoreTestCase {
 
 	@Test
 	public void testProcessDefinition(){
-		org.drools.definition.process.Process process = CommandDelegate.getProcess("Minimal");
+		org.kie.definition.process.Process process = CommandDelegate.getProcess("Minimal");
 		ProcessDefinitionRef processDefinitionRef = Transform.processDefinition(process);
 		assertEquals(processDefinitionRef.getId(),process.getId());
 		assertEquals(processDefinitionRef.getPackageName(),process.getPackageName());

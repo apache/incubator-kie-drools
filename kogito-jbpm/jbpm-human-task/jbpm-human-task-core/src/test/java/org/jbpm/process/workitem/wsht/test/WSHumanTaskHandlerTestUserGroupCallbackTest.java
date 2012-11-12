@@ -19,7 +19,6 @@ package org.jbpm.process.workitem.wsht.test;
 import static org.jbpm.task.service.test.impl.TestServerUtil.startAsyncServer;
 
 import org.jbpm.process.workitem.wsht.WSHumanTaskHandlerBaseUserGroupCallbackTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.test.impl.AsyncTestHTWorkItemHandler;
 

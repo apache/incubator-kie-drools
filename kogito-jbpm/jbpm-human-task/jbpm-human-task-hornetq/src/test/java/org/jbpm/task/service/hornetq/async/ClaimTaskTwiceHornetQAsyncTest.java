@@ -17,8 +17,8 @@
 package org.jbpm.task.service.hornetq.async;
 
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.ClaimTaskTwiceTest;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;

@@ -17,10 +17,10 @@ package org.jbpm.task.service.test.impl;
 
 import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
 
-import org.drools.runtime.KnowledgeRuntime;
 import org.jbpm.process.workitem.wsht.AsyncGenericHTWorkItemHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
+import org.kie.runtime.KnowledgeRuntime;
 /**
  *
  * This class provides the default configurations for a test WorkItem Handler

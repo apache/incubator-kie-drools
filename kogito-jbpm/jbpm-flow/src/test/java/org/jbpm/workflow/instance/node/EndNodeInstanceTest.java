@@ -19,19 +19,17 @@ package org.jbpm.workflow.instance.node;
 
 import junit.framework.TestCase;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class EndNodeInstanceTest extends TestCase {
 	

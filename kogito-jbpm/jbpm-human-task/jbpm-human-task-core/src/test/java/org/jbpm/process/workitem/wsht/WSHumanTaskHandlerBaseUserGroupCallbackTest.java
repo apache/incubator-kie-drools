@@ -16,14 +16,11 @@
 
 package org.jbpm.process.workitem.wsht;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTestNoUserGroupSetup;
@@ -38,6 +35,8 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
 

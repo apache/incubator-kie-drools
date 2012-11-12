@@ -19,12 +19,12 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.definition.process.Node;
 import org.drools.process.core.datatype.DataType;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.definition.process.Node;
 
 /**
  * A for each node.

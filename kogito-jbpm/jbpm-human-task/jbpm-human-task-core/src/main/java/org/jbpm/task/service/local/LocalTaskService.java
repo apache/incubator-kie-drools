@@ -15,10 +15,7 @@
  */
 package org.jbpm.task.service.local;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.drools.runtime.Environment;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
@@ -38,6 +35,7 @@ import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.runtime.Environment;
 
 /**
  *

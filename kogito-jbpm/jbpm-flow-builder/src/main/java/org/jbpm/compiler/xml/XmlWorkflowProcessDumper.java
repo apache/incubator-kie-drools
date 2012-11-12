@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.xml.XmlDumper;
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.xml.Handler;
@@ -23,6 +20,9 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.WorkflowProcess;
 
 public class XmlWorkflowProcessDumper {
     

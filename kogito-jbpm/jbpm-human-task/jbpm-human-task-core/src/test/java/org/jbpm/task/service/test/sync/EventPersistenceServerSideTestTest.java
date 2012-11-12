@@ -15,7 +15,8 @@
  */
 package org.jbpm.task.service.test.sync;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.*;
+import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
+import static org.jbpm.task.service.test.impl.TestServerUtil.startServer;
 
 import java.io.StringReader;
 import java.util.Date;
@@ -40,9 +41,7 @@ import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 public class EventPersistenceServerSideTestTest extends BaseTest {
     protected TaskService client;

@@ -15,7 +15,7 @@
  */
 package org.jbpm.integration.console.session;
 
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * Manager interface for maintaining <code>StatefulKnowledgeSession</code> that includes:
