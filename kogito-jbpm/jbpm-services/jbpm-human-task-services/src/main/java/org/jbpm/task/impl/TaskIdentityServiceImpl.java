@@ -49,11 +49,11 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     }
 
     public List<User> getUsers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return em.createQuery("from User").getResultList();
     }
 
     public List<Group> getGroups() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return em.createQuery("from Group").getResultList();
     }
 
     public User getUserById(String userId) {
