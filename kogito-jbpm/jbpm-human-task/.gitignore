@@ -17,3 +17,4 @@ lib-jdbc/
 
 # modules that don't exist here anymore
 jbpm-human-task-services/
+/*.db
