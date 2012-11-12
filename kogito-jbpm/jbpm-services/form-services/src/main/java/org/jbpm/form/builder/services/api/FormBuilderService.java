@@ -21,10 +21,6 @@ import java.util.Map;
 import org.jbpm.form.builder.services.model.FormItemRepresentation;
 import org.jbpm.form.builder.services.model.FormRepresentation;
 import org.jbpm.form.builder.services.model.Settings;
-import org.jbpm.form.builder.services.tasks.TaskRef;
-
-
-
 
 /**
  * Client's interface with the REST API server.
@@ -168,13 +164,6 @@ public interface FormBuilderService {
     
     void getCurrentRoles(RolesResponseHandler handler) throws FormBuilderServiceException;
     
-    /**
-     * Returns the form representation that basically describes a task
-     * @param task a task to be described
-     * @return a form representation for that task
-     */
-    FormRepresentation toBasicForm(TaskRef task);
-
     /**
      * @return URL for uploading files to guvnor
      */

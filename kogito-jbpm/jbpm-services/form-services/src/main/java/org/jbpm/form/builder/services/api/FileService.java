@@ -23,11 +23,11 @@ import java.util.List;
  */
 public interface FileService {
 
-    String storeFile(String packageName, String fileName, byte[] content) throws FileException;
+    String storeFile(String fileName, byte[] content) throws FileException;
 
-    void deleteFile(String packageName, String fileName) throws FileException;
+    void deleteFile(String fileName) throws FileException;
 
-    List<String> loadFilesByType(String packageName, String fileType) throws FileException;
+    List<String> loadFilesByType(String fileType) throws FileException;
 
-    byte[] loadFile(String packageName, String fileName) throws FileException;
+    byte[] loadFile(String fileName) throws FileException;
 }

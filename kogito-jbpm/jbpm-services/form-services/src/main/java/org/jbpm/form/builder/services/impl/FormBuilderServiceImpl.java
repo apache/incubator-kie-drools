@@ -28,7 +28,6 @@ import org.jbpm.form.builder.services.model.FormItemRepresentation;
 import org.jbpm.form.builder.services.model.FormRepresentation;
 import org.jbpm.form.builder.services.model.Settings;
 import org.jbpm.form.builder.services.model.forms.FormEncodingException;
-import org.jbpm.form.builder.services.tasks.TaskRef;
 
 /**
  *
@@ -118,10 +117,6 @@ public class FormBuilderServiceImpl implements FormBuilderService{
     }
 
     public void getCurrentRoles(RolesResponseHandler handler) throws FormBuilderServiceException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public FormRepresentation toBasicForm(TaskRef task) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

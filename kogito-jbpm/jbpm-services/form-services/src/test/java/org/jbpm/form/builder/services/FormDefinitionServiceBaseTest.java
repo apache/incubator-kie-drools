@@ -40,19 +40,19 @@ import org.junit.Test;
 public abstract class FormDefinitionServiceBaseTest{
     @Inject
     private FSFormDefinitionService service;
-    private String baseUrl = "/tmp";
+    private String baseUrl = "/tmp/formDefinitionServiceBaseTestFolder";
     private String fileSeparator = System.getProperty("file.separator");
     
     @Before
     public void setUp() throws Exception {
         FormEncodingFactory.register(FormEncodingServerFactory.getEncoder(), FormEncodingServerFactory.getDecoder());
-        FileUtils.deleteDirectory(new File(baseUrl+fileSeparator+"somePackage"));
+        FileUtils.deleteDirectory(new File(baseUrl));
         service.setBaseUrl(baseUrl);
         ((FSFileService)service.getFileService()).setBaseUrl(baseUrl);
     }
     @After
     public void tearDown() throws Exception {
-        FileUtils.deleteDirectory(new File(baseUrl+fileSeparator+"somePackage"));
+        FileUtils.deleteDirectory(new File(baseUrl));
     }
     
     //test happy path for insert for GuvnorFormDefinitionService.saveForm(...)
@@ -63,11 +63,11 @@ public abstract class FormDefinitionServiceBaseTest{
         FormRepresentation form = MockFormHelper.createMockForm("form1", "oneParam");
         
         
-        String formId = service.saveForm("somePackage", form);
+        String formId = service.saveForm(form);
         
         assertEquals(formId, form.getName());
         
-        String formUrl = baseUrl+fileSeparator+"somePackage"+fileSeparator+"form1"+"AutoForm.formdef";
+        String formUrl = baseUrl+fileSeparator+"form1"+"AutoForm.formdef";
         assertTrue(new File(formUrl).exists());
         
         FileUtils.deleteQuietly(new File(formUrl));
@@ -84,9 +84,9 @@ public abstract class FormDefinitionServiceBaseTest{
         FormItemRepresentation item = MockFormHelper.createMockForm("form1", "oneParam").getFormItems().iterator().next();
         
         
-        String itemId = service.saveFormItem("somePackage", "item1", item);
+        String itemId = service.saveFormItem("item1", item);
         
-        String itemUrl = baseUrl + fileSeparator + "somePackage" + fileSeparator + "formItemDefinition_item1.json";
+        String itemUrl = baseUrl + fileSeparator + "formItemDefinition_item1.json";
         
         assertTrue(new File(itemUrl).exists());
         
@@ -100,11 +100,11 @@ public abstract class FormDefinitionServiceBaseTest{
         FormRepresentation form = MockFormHelper.createMockForm("form1", "oneParam");
        
         
-        String formId = service.saveForm("somePackage", form);
+        String formId = service.saveForm(form);
         
-        String formUrl = baseUrl + fileSeparator + "somePackage" + fileSeparator + "form1AutoForm" +".formdef";
+        String formUrl = baseUrl + fileSeparator + "form1AutoForm" +".formdef";
   
-        FormRepresentation form1 = service.getForm("somePackage", "form1AutoForm");
+        FormRepresentation form1 = service.getForm("form1AutoForm");
         
         assertNotNull(form1);
         
@@ -118,13 +118,13 @@ public abstract class FormDefinitionServiceBaseTest{
         
 
         FormRepresentation form = MockFormHelper.createMockForm("myForm", "myParam");
-        String formId = service.saveForm("somePackage", form);
+        String formId = service.saveForm(form);
         
-        String formUrl = baseUrl + fileSeparator + "somePackage" + fileSeparator + "myFormAutoForm" +".formdef";
+        String formUrl = baseUrl + fileSeparator + "myFormAutoForm" +".formdef";
    
         assertTrue(new File(formUrl).exists());
         
-        FormRepresentation form2 = service.getForm("somePackage", formId);
+        FormRepresentation form2 = service.getForm(formId);
         
         assertNotNull(form2);
         
@@ -134,12 +134,12 @@ public abstract class FormDefinitionServiceBaseTest{
     public void testGetFormsOK() throws Exception {
         
         FormRepresentation form1 = MockFormHelper.createMockForm("form1", "oneParam"); // this add to the name AutoForm
-        service.saveForm("somePackage", form1);
+        service.saveForm(form1);
         FormRepresentation form2 = MockFormHelper.createMockForm("form2", "anotherParam");// this add to the name AutoForm
-        service.saveForm("somePackage", form2);
+        service.saveForm(form2);
         
        
-        List<FormRepresentation> forms = service.getForms("somePackage");
+        List<FormRepresentation> forms = service.getForms();
         assertEquals(2, forms.size());
         boolean form1ok = false;
         boolean form2ok = false;
@@ -158,15 +158,13 @@ public abstract class FormDefinitionServiceBaseTest{
     public void testDeleteFormOK() throws Exception {
         
         FormRepresentation form1 = MockFormHelper.createMockForm("form1", "oneParam");
-        String formUrl = service.saveForm("somePackage", form1);
+        String formUrl = service.saveForm(form1);
         System.out.println("Form Url = "+formUrl);
         
-        String deleteUrl = baseUrl + fileSeparator + "somePackage" + fileSeparator 
-                + formUrl + ".formdef";
+        String deleteUrl = baseUrl + fileSeparator + formUrl + ".formdef";
         assertTrue(new File(deleteUrl).exists());
         
-        //service.deleteForm("somePackage", "form1"+"AutoForm"); you can do it in this way or
-        service.deleteForm(deleteUrl);
+        service.deleteForm("form1"+"AutoForm");
         
         assertFalse(new File(deleteUrl).exists());
         
@@ -179,13 +177,13 @@ public abstract class FormDefinitionServiceBaseTest{
         FormItemRepresentation item = MockFormHelper.createMockForm("form1", "oneParam").getFormItems().iterator().next();
         
         
-        String itemId = service.saveFormItem("somePackage", "item1", item);
+        String itemId = service.saveFormItem("item1", item);
         
-        String itemUrl = baseUrl + fileSeparator + "somePackage" + fileSeparator + "formItemDefinition_"+itemId +".json";
+        String itemUrl = baseUrl + fileSeparator + "formItemDefinition_"+itemId +".json";
         
         assertTrue(new File(itemUrl).exists());
         
-        service.deleteFormItem("somePackage", "formItemDefinition_"+itemId);
+        service.deleteFormItem("formItemDefinition_"+itemId);
         
         assertFalse(new File(itemUrl).exists());
         

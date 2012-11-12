@@ -29,6 +29,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>form-services</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <type>jar</type>

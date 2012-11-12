@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 
 import org.apache.commons.io.FileUtils;
-import org.jbpm.form.builder.services.api.FileService;
 import org.jbpm.form.builder.services.impl.fs.FSFileService;
 import org.junit.After;
 import org.junit.Before;
@@ -30,27 +29,26 @@ import static org.junit.Assert.*;
 
 public abstract class FileServiceBaseTest {
 
-    private String fileSeparator = System.getProperty("file.separator");
-    private String baseUrl = "/tmp";
+    private String baseUrl = "/tmp/fileServiceBaseTestFolder";
     @Inject
     private FSFileService service;
 
     @Before
     public void setUp() throws Exception {
-        FileUtils.deleteDirectory(new File(baseUrl + fileSeparator + "somePackage"));
+        FileUtils.deleteDirectory(new File(baseUrl));
         service.setBaseUrl(baseUrl);
     }
 
     @After
     public void tearDown() throws Exception {
-        FileUtils.deleteDirectory(new File(baseUrl + fileSeparator + "somePackage"));
+        FileUtils.deleteDirectory(new File(baseUrl));
     }
 
     @Test
     public void testStoreFileOK() throws Exception {
 
 
-        String url = service.storeFile("somePackage", "fileName.txt", "This is the file content".getBytes());
+        String url = service.storeFile("fileName.txt", "This is the file content".getBytes());
         String readFileToString = FileUtils.readFileToString(new File(url));
         assertEquals("This is the file content", readFileToString);
 
@@ -62,9 +60,9 @@ public abstract class FileServiceBaseTest {
     public void testDeleteFileOK() throws Exception {
 
 
-        String url = service.storeFile("somePackage", "fileName.txt", "This is the file content".getBytes());
+        String url = service.storeFile("fileName.txt", "This is the file content".getBytes());
 
-        service.deleteFile(url);
+        service.deleteFileByURL(url);
 
         assertFalse(new File(url).exists());
 
@@ -76,10 +74,10 @@ public abstract class FileServiceBaseTest {
     public void testLoadFilesByTypeOK() throws Exception {
 
 
-        String url = service.storeFile("somePackage", "fileName1.txt", "This is the file content 1".getBytes());
-        String url2 = service.storeFile("somePackage", "fileName2.txt", "This is the file content 2".getBytes());
+        String url = service.storeFile("fileName1.txt", "This is the file content 1".getBytes());
+        String url2 = service.storeFile("fileName2.txt", "This is the file content 2".getBytes());
 
-        List<String> files = service.loadFilesByType("somePackage", "txt");
+        List<String> files = service.loadFilesByType("txt");
 
         assertEquals(2, files.size());
         boolean urlOk = false;
@@ -94,9 +92,9 @@ public abstract class FileServiceBaseTest {
         assertTrue(urlOk);
         assertTrue(url2Ok);
 
-        service.deleteFile(url);
+        service.deleteFileByURL(url);
 
-        service.deleteFile(url2);
+        service.deleteFileByURL(url2);
 
     }
 
@@ -115,14 +113,14 @@ public abstract class FileServiceBaseTest {
     public void testLoadFileOK() throws Exception {
 
 
-        String url = service.storeFile("somePackage", "someFile.txt", "This is the file content".getBytes());
+        String url = service.storeFile("someFile.txt", "This is the file content".getBytes());
 
-        byte[] retval = service.loadFile("somePackage", "someFile.txt");
+        byte[] retval = service.loadFile("someFile.txt");
 
         assertEquals("This is the file content", new String(retval));
 
 
-        service.deleteFile(url);
+        service.deleteFileByURL(url);
 
 
     }

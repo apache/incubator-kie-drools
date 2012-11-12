@@ -42,8 +42,8 @@ public class FSFileService implements FileService {
 
     
     
-    public String storeFile(String packageName, String fileName, byte[] content) throws FileException {
-        String url = baseUrl + fileSeparator + packageName + fileSeparator + fileName;
+    public String storeFile(String fileName, byte[] content) throws FileException {
+        String url = baseUrl + fileSeparator + fileName;
         File file = new File(url);
         try {
             FileUtils.writeByteArrayToFile(file, content);
@@ -54,18 +54,18 @@ public class FSFileService implements FileService {
 
     }
 
-    public void deleteFile(String packageName, String fileName) throws FileException {
-        File file = new File(baseUrl + fileSeparator + packageName + fileSeparator + fileName);
+    public void deleteFile(String fileName) throws FileException {
+        File file = new File(baseUrl + fileSeparator + fileName);
         FileUtils.deleteQuietly(file);
     }
 
-    public void deleteFile(String url) throws FileException {
+    public void deleteFileByURL(String url) throws FileException {
         File file = new File(url);
         FileUtils.deleteQuietly(file);
     }
 
-    public List<String> loadFilesByType(String packageName, String fileType) throws FileException {
-        File baseDir = new File(baseUrl + fileSeparator + packageName + fileSeparator);
+    public List<String> loadFilesByType(String fileType) throws FileException {
+        File baseDir = new File(baseUrl + fileSeparator);
         Collection<File> listFiles = FileUtils.listFiles(baseDir, new String[]{fileType}, true);
         List<String> files = new ArrayList<String>();
         for (File file : listFiles) {
@@ -74,8 +74,8 @@ public class FSFileService implements FileService {
         return files;
     }
 
-    public byte[] loadFile(String packageName, String fileName) throws FileException {
-        File file = new File(baseUrl + fileSeparator + packageName + fileSeparator + fileName);
+    public byte[] loadFile(String fileName) throws FileException {
+        File file = new File(baseUrl + fileSeparator + fileName);
         try {
             return FileUtils.readFileToByteArray(file);
         } catch (IOException ex) {

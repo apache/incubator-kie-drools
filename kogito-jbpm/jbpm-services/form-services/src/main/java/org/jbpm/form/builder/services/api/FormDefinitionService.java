@@ -20,29 +20,23 @@ import java.util.Map;
 
 import org.jbpm.form.builder.services.model.FormItemRepresentation;
 import org.jbpm.form.builder.services.model.FormRepresentation;
-import org.jbpm.form.builder.services.tasks.TaskRef;
-
-
 
 public interface FormDefinitionService {
 
-    List<FormRepresentation> getForms(String pkgName) throws FormServiceException;
-    Map<String, FormItemRepresentation> getFormItems(String pkgName) throws FormServiceException;
+    List<FormRepresentation> getForms() throws FormServiceException;
+    Map<String, FormItemRepresentation> getFormItems() throws FormServiceException;
 
-    String /*formId*/ saveForm(String pkgName, FormRepresentation form) throws FormServiceException;
-    String /*formItemId*/ saveFormItem(String pkgName, String formItemName, FormItemRepresentation formItem) throws FormServiceException;
+    String /*formId*/ saveForm(FormRepresentation form) throws FormServiceException;
+    String /*formItemId*/ saveFormItem(String formItemName, FormItemRepresentation formItem) throws FormServiceException;
     
-    void deleteForm(String pkgName, String formId) throws FormServiceException;
-    void deleteFormItem(String pkgName, String formItemId) throws FormServiceException;
+    void deleteForm(String formId) throws FormServiceException;
+    void deleteFormItem(String formItemId) throws FormServiceException;
     
-    FormRepresentation getForm(String pkgName, String formId) throws FormServiceException;
-    FormRepresentation getFormByUUID(String packageName, String uuid) throws FormServiceException;
-    FormItemRepresentation getFormItem(String pkgName, String formItemId) throws FormServiceException;
+    FormRepresentation getForm(String formId) throws FormServiceException;
+    FormRepresentation getFormByUUID(String uuid) throws FormServiceException;
+    FormItemRepresentation getFormItem(String formItemId) throws FormServiceException;
 
-    FormRepresentation getAssociatedForm(String pkgName, TaskRef task) throws FormServiceException;
-    FormRepresentation createFormFromTask(TaskRef task) throws FormServiceException;
-    
-    void saveTemplate(String packageName, String templateName, String content) throws FormServiceException;
+    void saveTemplate(String templateName, String content) throws FormServiceException;
     
     // TODO see where to put method renderTemplate(template t, Map<String, Object> inputs): html
 }

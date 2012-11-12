@@ -31,7 +31,6 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.droolsjbpm.services.impl.model.VariableStateDesc;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 
@@ -47,7 +46,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     @Inject
     private BPMN2DataServiceSemanticModule module;
     private BPMN2ProcessProvider provider;
-
+    
     @Inject
     private ProcessDescRepoHelper repo;
     
@@ -202,5 +201,4 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         
         return repo.getProcess();
     }
-   
 }

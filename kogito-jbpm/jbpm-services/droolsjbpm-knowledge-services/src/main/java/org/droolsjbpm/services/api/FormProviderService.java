@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc 
+ * Copyright 2012 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.form.builder.services.api;
+package org.droolsjbpm.services.api;
 
-public class TaskServiceException extends Exception {
+import java.util.Map;
 
-    private static final long serialVersionUID = 5114462867591294337L;
+import org.jbpm.form.builder.services.model.FormRepresentation;
+import org.jbpm.task.TaskDef;
 
-    public TaskServiceException() {
-        super();
-    }
-
-    public TaskServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public TaskServiceException(String message) {
-        super(message);
-    }
-
-    public TaskServiceException(Throwable cause) {
-        super(cause);
-    }
+/**
+ *
+ * @author salaboy
+ */
+public interface FormProviderService {
+    String getFormDisplay(long taskId);
+    FormRepresentation getAssociatedForm(String bpmn2, String taskName);
+    FormRepresentation createFormFromTask(Map<String, String> inputs, Map<String, String> outputs, TaskDef task);
 }

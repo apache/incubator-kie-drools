@@ -34,7 +34,6 @@ import org.jbpm.form.builder.services.model.FormRepresentation;
 import org.jbpm.form.builder.services.model.forms.FormEncodingFactory;
 import org.jbpm.form.builder.services.model.forms.FormRepresentationDecoder;
 import org.jbpm.form.builder.services.model.forms.FormRepresentationEncoder;
-import org.jbpm.form.builder.services.tasks.TaskRef;
 
 /**
  *
@@ -48,30 +47,30 @@ public class FSFormDefinitionService extends BaseFormDefinitionService implement
     private FileService fileService;
     
 
-    public List<FormRepresentation> getForms(String pkgName) throws FormServiceException {
+    public List<FormRepresentation> getForms() throws FormServiceException {
         List<FormRepresentation> forms = new ArrayList<FormRepresentation>();
         List<String> loadFilesByType;
         try {
-            loadFilesByType = fileService.loadFilesByType(pkgName, "formdef");
+            loadFilesByType = fileService.loadFilesByType("formdef");
         } catch (FileException ex) {
             throw new FormServiceException(ex.getMessage(), ex);
         }
         for (String assetId : loadFilesByType) {
             if (isFormName(assetId)) {
-                FormRepresentation form = getForm(pkgName, assetId.replace(".formdef", "").replace(baseUrl + fileSeparator + pkgName, ""));
+                FormRepresentation form = getForm(assetId.replace(".formdef", "").replace(baseUrl, ""));
                 forms.add(form);
             }
         }
         return forms;
     }
 
-    public Map<String, FormItemRepresentation> getFormItems(String pkgName) throws FormServiceException {
+    public Map<String, FormItemRepresentation> getFormItems() throws FormServiceException {
         try {
             Map<String, FormItemRepresentation> items = new HashMap<String, FormItemRepresentation>();
-            List<String> loadFilesByType = fileService.loadFilesByType(pkgName, "json");
+            List<String> loadFilesByType = fileService.loadFilesByType("json");
             for (String assetId : loadFilesByType) {
                 if (isItemName(assetId)) {
-                    FormItemRepresentation item = getFormItem(pkgName, assetId.replace(".json", ""));
+                    FormItemRepresentation item = getFormItem(assetId.replace(".json", ""));
                     items.put(assetId, item);
                 }
             }
@@ -81,8 +80,8 @@ public class FSFormDefinitionService extends BaseFormDefinitionService implement
         }
     }
 
-    public String saveForm(String pkgName, FormRepresentation form) throws FormServiceException {
-        String finalUrl = baseUrl + fileSeparator + pkgName + fileSeparator + form.getName() + ".formdef";
+    public String saveForm(FormRepresentation form) throws FormServiceException {
+        String finalUrl = baseUrl + fileSeparator + form.getName() + ".formdef";
         FormRepresentationEncoder encoder = FormEncodingFactory.getEncoder();
         try {
             String encoded = encoder.encode(form);
@@ -95,10 +94,10 @@ public class FSFormDefinitionService extends BaseFormDefinitionService implement
         return form.getName();
     }
 
-    public String saveFormItem(String pkgName, String formItemName, FormItemRepresentation formItem) throws FormServiceException {
+    public String saveFormItem(String formItemName, FormItemRepresentation formItem) throws FormServiceException {
         StringBuilder builder = new StringBuilder();
         updateItemName(formItemName, builder);
-        String finalUrl = baseUrl + fileSeparator + pkgName + fileSeparator + builder.toString() + ".json";
+        String finalUrl = baseUrl + fileSeparator + builder.toString() + ".json";
 
         FormRepresentationEncoder encoder = FormEncodingFactory.getEncoder();
         try {
@@ -110,33 +109,31 @@ public class FSFormDefinitionService extends BaseFormDefinitionService implement
         return formItemName;
     }
 
-    public void deleteForm(String pkgName, String formId) throws FormServiceException {
-        String deleteUrl = baseUrl + fileSeparator + pkgName + fileSeparator
-                + formId + ".formdef";
+    public void deleteForm(String formId) throws FormServiceException {
+        String deleteUrl = baseUrl + fileSeparator + formId + ".formdef";
         FileUtils.deleteQuietly(new File(deleteUrl));
     }
 
-    public void deleteForm(String formUrl) throws FormServiceException {
+    public void deleteFormByURL(String formUrl) throws FormServiceException {
         
         FileUtils.deleteQuietly(new File(formUrl));
     }
 
-    public void deleteFormItem(String pkgName, String formItemId) throws FormServiceException {
+    public void deleteFormItem(String formItemId) throws FormServiceException {
         if (formItemId != null && !"".equals(formItemId)) {
-            String deleteUrl = baseUrl + fileSeparator + pkgName + fileSeparator
-                    + formItemId + ".json";
+            String deleteUrl = baseUrl + fileSeparator + formItemId + ".json";
             FileUtils.deleteQuietly(new File(deleteUrl));
         }
 
     }
-    public void deleteFormItem(String itemUrl) throws FormServiceException {
+    public void deleteFormItemByURL(String itemUrl) throws FormServiceException {
             FileUtils.deleteQuietly(new File(itemUrl));
 
     }
 
-    public FormRepresentation getForm(String pkgName, String formId) throws FormServiceException {
+    public FormRepresentation getForm(String formId) throws FormServiceException {
         FormRepresentationDecoder decoder = FormEncodingFactory.getDecoder();
-        File file = new File(baseUrl + fileSeparator + pkgName + fileSeparator + formId + ".formdef");
+        File file = new File(baseUrl + fileSeparator + formId + ".formdef");
         String json;
         try {
             json = FileUtils.readFileToString(file);
@@ -146,15 +143,15 @@ public class FSFormDefinitionService extends BaseFormDefinitionService implement
         }
     }
 
-    public FormRepresentation getFormByUUID(String packageName, String uuid) throws FormServiceException {
+    public FormRepresentation getFormByUUID(String uuid) throws FormServiceException {
         throw new UnsupportedOperationException("Not supported in FS implementation.");
     }
 
-    public FormItemRepresentation getFormItem(String pkgName, String formItemId) throws FormServiceException {
+    public FormItemRepresentation getFormItem(String formItemId) throws FormServiceException {
         if (formItemId != null && !"".equals(formItemId)) {
             try {
                 FormRepresentationDecoder decoder = FormEncodingFactory.getDecoder();
-                String getUrl = baseUrl + fileSeparator + pkgName + "." + formItemId + ".json";
+                String getUrl = baseUrl + fileSeparator + formItemId + ".json";
                 String json = FileUtils.readFileToString(new File(getUrl));
                 return decoder.decodeItem(json);
             } catch (Exception ex) {
@@ -164,19 +161,7 @@ public class FSFormDefinitionService extends BaseFormDefinitionService implement
         return null;
     }
 
-    public FormRepresentation getAssociatedForm(String pkgName, TaskRef task) throws FormServiceException {
-        List<FormRepresentation> forms = getForms(pkgName);
-        FormRepresentation retval = null;
-        for (FormRepresentation form : forms) {
-            if (form.getTaskId() != null && form.getTaskId().equals(task.getTaskId())) {
-                retval = form;
-                break;
-            }
-        }
-        return retval;
-    }
-
-    public void saveTemplate(String packageName, String templateName, String content) throws FormServiceException {
+    public void saveTemplate(String templateName, String content) throws FormServiceException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -128,11 +128,11 @@
             <artifactId>jbpm-human-task-services</artifactId>
         </dependency>
         
-        <dependency>
+        <!-- dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>droolsjbpm-knowledge-services</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>freemarker</groupId>
             <artifactId>freemarker</artifactId>
