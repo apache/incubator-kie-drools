@@ -19,7 +19,7 @@ package org.drools.simulation;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.command.Command;
+import org.kie.command.Command;
 
 public interface SimulationStep {
 

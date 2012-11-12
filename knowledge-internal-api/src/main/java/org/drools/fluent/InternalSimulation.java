@@ -16,9 +16,9 @@
 
 package org.drools.fluent;
 
-import org.drools.command.Command;
 import org.drools.fluent.CommandScript;
 import org.drools.simulation.Simulation;
+import org.kie.command.Command;
 
 public interface InternalSimulation extends Simulation, CommandScript {
 
