@@ -8,13 +8,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.drools.KnowledgeBase;
 import org.drools.cdi.KBase;
 import org.drools.cdi.KSession;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
 
 @RunWith(CDITestRunner.class)
 public class AppTest {

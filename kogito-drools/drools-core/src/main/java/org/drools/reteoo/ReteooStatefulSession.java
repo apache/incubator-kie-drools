@@ -39,15 +39,15 @@ import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.runtime.Environment;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;
 import org.drools.spi.RuleBaseUpdateListenerFactory;
+import org.kie.marshalling.Marshaller;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.Environment;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ReteooStatefulSession extends ReteooWorkingMemory
     implements

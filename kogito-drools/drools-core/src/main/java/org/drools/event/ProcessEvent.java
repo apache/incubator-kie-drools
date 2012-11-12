@@ -19,8 +19,8 @@ package org.drools.event;
 import java.util.EventObject;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.ProcessInstance;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessEvent extends EventObject {
 

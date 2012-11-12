@@ -369,7 +369,7 @@ public class NamedEntryPoint
         }        
     }
 
-    public void update(final org.drools.runtime.rule.FactHandle factHandle,
+    public void update(final org.kie.runtime.rule.FactHandle factHandle,
                        final Object object) throws FactException {
         InternalFactHandle handle = (InternalFactHandle) factHandle;
         update( handle,
@@ -379,7 +379,7 @@ public class NamedEntryPoint
                 null );
     }
     
-    public void update(final org.drools.runtime.rule.FactHandle factHandle,
+    public void update(final org.kie.runtime.rule.FactHandle factHandle,
                        final Object object,
                        final long mask,
                        final Activation activation) throws FactException {
@@ -521,7 +521,7 @@ public class NamedEntryPoint
         return handle;
     }
 
-    public void retract(final org.drools.runtime.rule.FactHandle handle) throws FactException {
+    public void retract(final org.kie.runtime.rule.FactHandle handle) throws FactException {
         retract( (org.drools.FactHandle) handle,
                  null,
                  null );
@@ -722,19 +722,19 @@ public class NamedEntryPoint
         return this.objectStore.getHandleForObjectIdentity( object );
     }
 
-    public Object getObject(org.drools.runtime.rule.FactHandle factHandle) {
+    public Object getObject(org.kie.runtime.rule.FactHandle factHandle) {
         return this.objectStore.getObjectForHandle(factHandle);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(org.kie.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
@@ -748,7 +748,7 @@ public class NamedEntryPoint
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Object> getObjects(org.drools.runtime.ObjectFilter filter) {
+    public Collection<Object> getObjects(org.kie.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.OBJECT );

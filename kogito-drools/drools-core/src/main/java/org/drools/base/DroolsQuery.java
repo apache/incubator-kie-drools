@@ -21,7 +21,7 @@ import java.util.Arrays;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.rule.Query;
-import org.drools.runtime.rule.Variable;
+import org.kie.runtime.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String                      name;

@@ -44,7 +44,6 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
@@ -65,6 +64,7 @@ import org.drools.time.impl.DurationTimer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.event.rule.ActivationCancelledCause;
 
 import static org.junit.Assert.*;
 
@@ -232,8 +232,8 @@ public class AgendaTest extends DroolsTestCase {
                 
                 item.setActivationUnMatchListener( new ActivationUnMatchListener() {
                     
-                    public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
-                                        org.drools.runtime.rule.Activation activation) {
+                    public void unMatch(org.kie.runtime.rule.WorkingMemory wm,
+                                        org.kie.runtime.rule.Activation activation) {
                         cheese.setPrice( oldPrice );
                     }
                 } );

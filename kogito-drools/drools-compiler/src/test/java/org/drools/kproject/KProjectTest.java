@@ -7,8 +7,6 @@ import org.drools.kproject.memory.MemoryFile;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.drools.kproject.memory.MemorytURLStreamHandler;
 import org.drools.rule.JavaDialectRuntimeData;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.Weld;
@@ -17,6 +15,8 @@ import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Test;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
@@ -92,11 +92,11 @@ public class KProjectTest extends AbstractKnowledgeTest {
                 System.out.println( url );
             }
 
-            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar1" );
+            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.kie.cdi.test.KProjectTestClassjar1" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar2" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.kie.cdi.test.KProjectTestClassjar2" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar3" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.kie.cdi.test.KProjectTestClassjar3" );
             assertNotNull( cls );
 
             Weld weldContainer = new Weld();

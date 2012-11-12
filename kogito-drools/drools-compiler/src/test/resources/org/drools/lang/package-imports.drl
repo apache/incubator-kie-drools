@@ -1,7 +1,7 @@
 // Example DRL with only a package decl
 //
 
-package org.drools.lang;
+package org.kie.lang;
 
 import java.util.List;
 import java.util.ArrayList;

@@ -1,20 +1,20 @@
-package org.drools.games.adventures
+package org.kie.games.adventures
 
-import org.drools.games.adventures.Room;
-import org.drools.games.adventures.Thing;
+import org.kie.games.adventures.Room;
+import org.kie.games.adventures.Thing;
 
-import org.drools.games.adventures.Request;
-import org.drools.games.adventures.Response;
-import org.drools.games.adventures.SessionCharacter
+import org.kie.games.adventures.Request;
+import org.kie.games.adventures.Response;
+import org.kie.games.adventures.SessionCharacter
 
-import org.drools.games.adventures.MoveCommand
-import org.drools.games.adventures.Command
-import org.drools.games.adventures.PickupCommand
-import org.drools.games.adventures.DropCommand
-import org.drools.games.adventures.LookCommand
-import org.drools.games.adventures.SetSessionCharacterCommand
+import org.kie.games.adventures.MoveCommand
+import org.kie.games.adventures.Command
+import org.kie.games.adventures.PickupCommand
+import org.kie.games.adventures.DropCommand
+import org.kie.games.adventures.LookCommand
+import org.kie.games.adventures.SetSessionCharacterCommand
 
-global org.drools.games.adventures.Counter counter
+global org.kie.games.adventures.Counter counter
 
 dialect "mvel"
 

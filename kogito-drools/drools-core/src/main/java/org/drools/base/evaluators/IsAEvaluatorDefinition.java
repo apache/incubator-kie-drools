@@ -21,10 +21,10 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.factmodel.traits.*;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
-import org.drools.runtime.ObjectFilter;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.kie.runtime.ObjectFilter;
 
 import java.io.IOException;
 import java.io.ObjectInput;

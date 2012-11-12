@@ -19,8 +19,6 @@ package org.drools.xml.changeset;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.UrlResource;
@@ -28,6 +26,8 @@ import org.drools.io.internal.InternalResource;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

@@ -16,14 +16,13 @@
 
 package org.drools.verifier.redundancy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 import org.drools.verifier.TestBaseOld;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -31,6 +30,10 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 public class WarningsTest extends TestBaseOld {
 

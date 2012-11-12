@@ -20,10 +20,10 @@ import java.util.Iterator;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.RuleFlowGroup;
+import org.kie.event.rule.ActivationCancelledCause;
 
 public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener> {
 

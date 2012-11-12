@@ -7,24 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.StatelessKnowledgeSession;
 
 public class FireAllRulesCommandTest {
     @Test
     public void oneRuleFiredTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -47,7 +47,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void fiveRulesFiredTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -74,7 +74,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void zeroRulesFiredTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -97,7 +97,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void oneRuleFiredWithDefinedMaxTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -122,7 +122,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void infiniteLoopTerminatesAtMaxTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";

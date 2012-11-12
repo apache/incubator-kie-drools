@@ -1,14 +1,26 @@
 package org.drools.verifier.visitor;
 
+import java.util.List;
+
 import org.drools.base.evaluators.Operator;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlExprParser;
-import org.drools.lang.descr.*;
-import org.drools.verifier.components.*;
+import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.RelationalExprDescr;
+import org.drools.verifier.components.Field;
+import org.drools.verifier.components.FieldVariable;
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.OperatorDescrType;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternEval;
+import org.drools.verifier.components.Variable;
+import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;
-
-import java.util.List;
+import org.kie.builder.conf.LanguageLevelOption;
 
 public class ExprConstraintDescrVisitor {
 

@@ -29,14 +29,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.definition.KnowledgePackage;
+
 import static org.junit.Assert.*;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.InternalRuleBase;
-import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 
@@ -675,7 +676,7 @@ public class RuleAgentTest {
         Properties props = ag.loadFromProperties( "/basic-authentication-sample-agent-config.properties" );
         assertEquals( "30",
                       props.getProperty( RuleAgent.POLL_INTERVAL ) );
-        assertEquals( "http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST",
+        assertEquals( "http://localhost:8080/guvnor-webapp/org.kie.guvnor.Guvnor/package/defaultPackage/LATEST",
                 props.getProperty( RuleAgent.URLS ) );
         assertEquals( "d:/drools",
                       props.getProperty( RuleAgent.LOCAL_URL_CACHE ) );

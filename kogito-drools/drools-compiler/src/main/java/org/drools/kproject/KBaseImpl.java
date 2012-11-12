@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
 
 public class KBaseImpl
         implements
@@ -57,14 +57,14 @@ public class KBaseImpl
     }    
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getKSessions()
+     * @see org.kie.kproject.KBase#getKSessions()
      */
     public Map<String, KSession> getKSessions() {
         return Collections.unmodifiableMap( kSessions );
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setKSessions(java.util.Map)
+     * @see org.kie.kproject.KBase#setKSessions(java.util.Map)
      */
     private void setKSessions(Map<String, KSession> kSessions) {
         if ( listener != null ) {
@@ -78,7 +78,7 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#addKSession(org.drools.kproject.KSessionImpl)
+     * @see org.kie.kproject.KBase#addKSession(org.kie.kproject.KSessionImpl)
      */
     public KSession newKSession(String namespace,
                                 String name) {
@@ -92,7 +92,7 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#removeKSession(org.drools.kproject.KSessionImpl)
+     * @see org.kie.kproject.KBase#removeKSession(org.kie.kproject.KSessionImpl)
      */
     public KBase removeKSession(String qName) {
         Map<String, KSession> newMap = new HashMap<String, KSession>();
@@ -112,14 +112,14 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getListener()
+     * @see org.kie.kproject.KBase#getListener()
      */
     public PropertyChangeListener getListener() {
         return listener;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setListener(java.beans.PropertyChangeListener)
+     * @see org.kie.kproject.KBase#setListener(java.beans.PropertyChangeListener)
      */
     public KBase setListener(PropertyChangeListener listener) {
         this.listener = listener;
@@ -131,14 +131,14 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getNamespace()
+     * @see org.kie.kproject.KBase#getNamespace()
      */
     public String getNamespace() {
         return namespace;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setNamespace(java.lang.String)
+     * @see org.kie.kproject.KBase#setNamespace(java.lang.String)
      */
     public KBase setNamespace(String namespace) {
         if ( listener != null ) {
@@ -149,14 +149,14 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getName()
+     * @see org.kie.kproject.KBase#getName()
      */
     public String getName() {
         return name;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setName(java.lang.String)
+     * @see org.kie.kproject.KBase#setName(java.lang.String)
      */
     public KBase setName(String name) {
         if ( listener != null ) {
@@ -167,7 +167,7 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getQName()
+     * @see org.kie.kproject.KBase#getQName()
      */
     public String getQName() {
         return this.namespace + "." + this.name;
@@ -188,14 +188,14 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getFiles()
+     * @see org.kie.kproject.KBase#getFiles()
      */
     public List<String> getFiles() {
         return files;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setFiles(java.util.List)
+     * @see org.kie.kproject.KBase#setFiles(java.util.List)
      */
     public KBase setFiles(List<String> files) {
         if ( listener != null ) {
@@ -206,14 +206,14 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getEqualsBehavior()
+     * @see org.kie.kproject.KBase#getEqualsBehavior()
      */
     public AssertBehaviorOption getEqualsBehavior() {
         return equalsBehavior;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setEqualsBehavior(org.drools.conf.AssertBehaviorOption)
+     * @see org.kie.kproject.KBase#setEqualsBehavior(org.kie.conf.AssertBehaviorOption)
      */
     public KBase setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
         if ( listener != null ) {
@@ -224,14 +224,14 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getEventProcessingMode()
+     * @see org.kie.kproject.KBase#getEventProcessingMode()
      */
     public EventProcessingOption getEventProcessingMode() {
         return eventProcessingMode;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setEventProcessingMode(org.drools.conf.EventProcessingOption)
+     * @see org.kie.kproject.KBase#setEventProcessingMode(org.kie.conf.EventProcessingOption)
      */
     public KBase setEventProcessingMode(EventProcessingOption eventProcessingMode) {
         if ( listener != null ) {
@@ -242,14 +242,14 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#getAnnotations()
+     * @see org.kie.kproject.KBase#getAnnotations()
      */
     public List<String> getAnnotations() {
         return annotations;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#setAnnotations(java.util.List)
+     * @see org.kie.kproject.KBase#setAnnotations(java.util.List)
      */
     public KBase setAnnotations(List<String> annotations) {
         if ( listener != null ) {
@@ -260,7 +260,7 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KBase#toString()
+     * @see org.kie.kproject.KBase#toString()
      */
     @Override
     public String toString() {

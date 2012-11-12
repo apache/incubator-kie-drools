@@ -20,7 +20,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.drools.SystemEventListener;
+import org.kie.SystemEventListener;
 
 public class PrintStreamSystemEventListener
     implements

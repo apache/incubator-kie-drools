@@ -14,7 +14,7 @@ public class FactPopulatorTest {
 
     @Test
     public void testMVELPopulate() throws Exception {
-        Object q = MVEL.eval("new org.drools.testframework.DumbFact()");
+        Object q = MVEL.eval("new org.kie.testframework.DumbFact()");
 
         Map m = new HashMap();
         m.put("obj", q);

@@ -26,9 +26,6 @@ import java.util.Map.Entry;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
-import org.drools.command.Setter;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
@@ -46,14 +43,17 @@ import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.common.DefaultFactHandle;
 import org.drools.rule.Declaration;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.spi.ObjectType;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.command.Setter;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.QueryResultsRow;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
@@ -816,7 +816,7 @@ public static class BatchExecutionResultConverter extends AbstractCollectionConv
           writer.addAttribute( "identifier",
                                identifier );
           Object value = result.getValue( identifier );
-          if ( value instanceof org.drools.runtime.rule.QueryResults ) {
+          if ( value instanceof org.kie.runtime.rule.QueryResults ) {
               String name = mapper().serializedClass(FlatQueryResults.class);
               ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, FlatQueryResults.class);
               context.convertAnother(value);

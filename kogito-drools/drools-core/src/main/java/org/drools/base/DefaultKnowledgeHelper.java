@@ -52,19 +52,19 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.runtime.Channel;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.NodeInstanceContainer;
-import org.drools.runtime.process.ProcessContext;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkflowProcessInstance;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.kie.runtime.Channel;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.NodeInstanceContainer;
+import org.kie.runtime.process.ProcessContext;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class DefaultKnowledgeHelper
     implements
@@ -139,7 +139,7 @@ public class DefaultKnowledgeHelper
         return previousJustified;
     }
     
-    public void blockActivation(org.drools.runtime.rule.Activation act) {
+    public void blockActivation(org.kie.runtime.rule.Activation act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
@@ -172,7 +172,7 @@ public class DefaultKnowledgeHelper
         }
     }
     
-    public void unblockAllActivations(org.drools.runtime.rule.Activation act) {
+    public void unblockAllActivations(org.kie.runtime.rule.Activation act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
         
@@ -288,7 +288,7 @@ public class DefaultKnowledgeHelper
         }        
     }
     
-    public void cancelActivation(org.drools.runtime.rule.Activation act) {
+    public void cancelActivation(org.kie.runtime.rule.Activation act) {
         AgendaItem match = ( AgendaItem ) act;
         match.cancel();
         if ( match.isActive() ) {
@@ -556,8 +556,8 @@ public class DefaultKnowledgeHelper
             this.fh = fh;
         }
 
-        public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
-                            org.drools.runtime.rule.Activation activation) {
+        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,
+                            org.kie.runtime.rule.Activation activation) {
             wm.retract( fh );
             if ( next != null ) {
                 next.unMatch( wm, activation );

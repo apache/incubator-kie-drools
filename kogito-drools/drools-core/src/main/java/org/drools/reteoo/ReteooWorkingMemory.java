@@ -64,14 +64,14 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.runtime.Environment;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.LiveQueryImpl;
 import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
+import org.kie.runtime.Environment;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.ViewChangedEventListener;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -1128,7 +1128,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         return this;
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         List list = new ArrayList();
         
         for ( Iterator it = iterateFactHandles(); it.hasNext(); ) {
@@ -1139,7 +1139,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         return list;
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 

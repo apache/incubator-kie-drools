@@ -18,11 +18,11 @@ package org.drools.agent.impl;
 
 import java.util.Properties;
 
-import org.drools.KnowledgeBase;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.KnowledgeAgentProvider;
-import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.kie.KnowledgeBase;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.agent.KnowledgeAgentProvider;
+import org.kie.builder.KnowledgeBuilderConfiguration;
 
 public class KnowledgeAgentProviderImpl implements KnowledgeAgentProvider {
     

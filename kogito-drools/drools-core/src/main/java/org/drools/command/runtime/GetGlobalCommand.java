@@ -25,8 +25,8 @@ import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetGlobalCommand

@@ -1,13 +1,14 @@
 package org.drools;
 
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessor() throws Exception {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(type == \"gorgonzola\", price == 10) )\n" +
                 "then\n" +
@@ -26,7 +27,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessorWithBinding() throws Exception {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "global StringBuilder sb\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(price == 10, $type : type) )\n" +
@@ -51,7 +52,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testDoubleNestedAccessor() throws Exception {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(price == 10, type.(length == 10) ) )\n" +
                 "then\n" +
@@ -70,7 +71,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessorWithInlineCast() throws Exception {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", address#LongAddress.(country == \"uk\", suburb == \"suburb\") )\n" +
                 "then\n" +

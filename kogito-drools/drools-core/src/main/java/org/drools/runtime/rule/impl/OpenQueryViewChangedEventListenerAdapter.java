@@ -23,8 +23,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.spi.PropagationContext;
+import org.kie.runtime.rule.ViewChangedEventListener;
 
 public class OpenQueryViewChangedEventListenerAdapter
     implements

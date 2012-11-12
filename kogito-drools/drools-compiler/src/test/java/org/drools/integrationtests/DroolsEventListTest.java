@@ -4,16 +4,16 @@ import java.util.Comparator;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.Row;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.Row;
 
 import ca.odell.glazedlists.SortedList;
 
@@ -22,8 +22,8 @@ public class DroolsEventListTest extends CommonTestMethodBase {
     @Test
     public void testOpenQuery() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Cheese \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Cheese \n";
         str += "query cheeses(String $type1, String $type2) \n";
         str += "    stilton : Cheese(type == $type1, $price : price) \n";
         str += "    cheddar : Cheese(type == $type2, price == stilton.price) \n";
@@ -54,12 +54,12 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         Cheese cheddar3 = new Cheese( "cheddar",
                                       3 );
 
-        org.drools.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
-        org.drools.runtime.rule.FactHandle s2Fh = ksession.insert( stilton2 );
-        org.drools.runtime.rule.FactHandle s3Fh = ksession.insert( stilton3 );
-        org.drools.runtime.rule.FactHandle c1Fh = ksession.insert( cheddar1 );
-        org.drools.runtime.rule.FactHandle c2Fh = ksession.insert( cheddar2 );
-        org.drools.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
+        org.kie.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
+        org.kie.runtime.rule.FactHandle s2Fh = ksession.insert( stilton2 );
+        org.kie.runtime.rule.FactHandle s3Fh = ksession.insert( stilton3 );
+        org.kie.runtime.rule.FactHandle c1Fh = ksession.insert( cheddar1 );
+        org.kie.runtime.rule.FactHandle c2Fh = ksession.insert( cheddar2 );
+        org.kie.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
                       
         DroolsEventList list = new DroolsEventList();
         // Open the LiveQuery

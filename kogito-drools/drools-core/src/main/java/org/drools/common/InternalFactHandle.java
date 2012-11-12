@@ -19,7 +19,7 @@ package org.drools.common;
 import org.drools.FactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public interface InternalFactHandle
     extends

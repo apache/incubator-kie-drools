@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.builder.ResourceType;
-import org.drools.builder.ResourceConfiguration;
 import org.drools.io.internal.InternalResource;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
 
 public abstract class BaseResource
     implements

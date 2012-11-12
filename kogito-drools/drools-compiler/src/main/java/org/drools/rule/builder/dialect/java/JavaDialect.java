@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.*;
 
 import org.drools.base.TypeResolver;
-import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompilerFactory;
@@ -26,7 +25,6 @@ import org.drools.compiler.PackageBuilder.RuleErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.SrcErrorHandler;
 import org.drools.core.util.StringUtils;
-import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -79,6 +77,8 @@ import org.drools.rule.builder.dialect.asm.*;
 import org.drools.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
+import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.io.Resource;
 
 import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
 

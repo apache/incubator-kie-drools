@@ -20,8 +20,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
+import org.kie.runtime.Calendars;
 
 public class CronTrigger
     implements
@@ -355,7 +355,7 @@ public class CronTrigger
             boolean included = true;
             for ( String calName : this.calendarNames ) {
                 // all calendars must not block, as soon as one blocks break, so we can check next time slot
-                org.drools.time.Calendar cal = this.calendars.get( calName );
+                org.kie.time.Calendar cal = this.calendars.get( calName );
                 if ( cal != null && !cal.isTimeIncluded( this.nextFireTime.getTime() ) ) {
                     included = false;
                     break;

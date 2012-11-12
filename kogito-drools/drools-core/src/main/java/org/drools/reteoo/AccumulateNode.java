@@ -810,7 +810,7 @@ public class AccumulateNode extends BetaNode {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#hashCode()
+     * @see org.kie.reteoo.BaseNode#hashCode()
      */
     public int hashCode() {
         return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^ ArrayUtils.hashCode( this.resultConstraints );

@@ -3,12 +3,12 @@ package org.drools.lang;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DroolsParserException;
-import org.drools.io.Resource;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.descr.PackageDescr;
+import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.io.Resource;
 
 import java.util.LinkedList;
 import java.util.List;

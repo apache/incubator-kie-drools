@@ -21,8 +21,8 @@ import java.util.Collection;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.event.rule.WorkingMemoryEventListener;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class GetWorkingMemoryEventListenersCommand
     implements

@@ -1,26 +1,26 @@
-package org.drools.games.wumpus.view
+package org.kie.games.wumpus.view
 
-import org.drools.games.wumpus.Reset
-import org.drools.games.wumpus.Play
-import org.drools.games.wumpus.Init
-import org.drools.games.wumpus.Wumpus
-import org.drools.games.wumpus.Gold
-import org.drools.games.wumpus.Hero
-import org.drools.games.wumpus.Score
-import org.drools.games.wumpus.WumpusDeath
-import org.drools.games.wumpus.PitDeath
-import org.drools.games.wumpus.GoldWin
+import org.kie.games.wumpus.Reset
+import org.kie.games.wumpus.Play
+import org.kie.games.wumpus.Init
+import org.kie.games.wumpus.Wumpus
+import org.kie.games.wumpus.Gold
+import org.kie.games.wumpus.Hero
+import org.kie.games.wumpus.Score
+import org.kie.games.wumpus.WumpusDeath
+import org.kie.games.wumpus.PitDeath
+import org.kie.games.wumpus.GoldWin
 
 
-import org.drools.runtime.StatefulKnowledgeSession
-import org.drools.logger.KnowledgeRuntimeLogger
-import org.drools.logger.KnowledgeRuntimeLoggerFactory
+import org.kie.runtime.StatefulKnowledgeSession
+import org.kie.logger.KnowledgeRuntimeLogger
+import org.kie.logger.KnowledgeRuntimeLoggerFactory
 
 import javax.swing.JOptionPane
 
 import java.util.ArrayList
 
-global org.drools.games.wumpus.WumpusWorldConfiguration wumpusWorldConfiguration;
+global org.kie.games.wumpus.WumpusWorldConfiguration wumpusWorldConfiguration;
 
 dialect "mvel"
 

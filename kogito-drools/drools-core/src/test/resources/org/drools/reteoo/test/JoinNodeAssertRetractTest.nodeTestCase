@@ -2,15 +2,15 @@ TestCase "Join Node assert/retract test case"
 
 Setup
     ObjectTypeNode:
-        otnLeft1, org.drools.Person;
+        otnLeft1, org.kie.Person;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.drools.Person;
+        otnRight1, org.kie.Person;
     ObjectTypeNode:
-        otnRight2, org.drools.Person;
+        otnRight2, org.kie.Person;
     Binding:
-         p1, 0, org.drools.Person, age;
+         p1, 0, org.kie.Person, age;
     JoinNode:
         join1, lian0, otnRight1;
         age, !=, p1;
@@ -18,9 +18,9 @@ Setup
         join2, join1, otnRight2;
         age, !=, p1;
     Facts:
-        new org.drools.Person('darth', 35), new org.drools.Person('bobba', 36),
-        new org.drools.Person('yoda', 37), new org.drools.Person('luke', 38),
-        new org.drools.Person('dave', 33), new org.drools.Person('bob', 32);
+        new org.kie.Person('darth', 35), new org.kie.Person('bobba', 36),
+        new org.kie.Person('yoda', 37), new org.kie.Person('luke', 38),
+        new org.kie.Person('dave', 33), new org.kie.Person('bob', 32);
 
 Test "Assert/retract test"	         
     /**

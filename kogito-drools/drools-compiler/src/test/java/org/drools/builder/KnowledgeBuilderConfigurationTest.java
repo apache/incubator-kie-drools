@@ -20,16 +20,18 @@ import org.drools.base.accumulators.MaxAccumulateFunction;
 import org.drools.base.evaluators.AfterEvaluatorDefinition;
 import org.drools.base.evaluators.BeforeEvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition;
-import org.drools.builder.conf.AccumulateFunctionOption;
-import org.drools.builder.conf.DefaultDialectOption;
-import org.drools.builder.conf.DefaultPackageNameOption;
-import org.drools.builder.conf.DumpDirOption;
-import org.drools.builder.conf.EvaluatorOption;
-import org.drools.builder.conf.LanguageLevelOption;
-import org.drools.builder.conf.ProcessStringEscapesOption;
-import org.drools.runtime.rule.AccumulateFunction;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.conf.AccumulateFunctionOption;
+import org.kie.builder.conf.DefaultDialectOption;
+import org.kie.builder.conf.DefaultPackageNameOption;
+import org.kie.builder.conf.DumpDirOption;
+import org.kie.builder.conf.EvaluatorOption;
+import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.builder.conf.ProcessStringEscapesOption;
+import org.kie.runtime.rule.AccumulateFunction;
 
 import java.io.File;
 import java.io.IOException;
@@ -303,16 +305,16 @@ public class KnowledgeBuilderConfigurationTest {
 
         // setting the default dialect using the string based setProperty() method
         config.setProperty( DefaultPackageNameOption.PROPERTY_NAME,
-                            "org.drools" );
+                            "org.kie" );
         
         // checking the type safe getOption() method
-        assertEquals( DefaultPackageNameOption.get( "org.drools" ),
+        assertEquals( DefaultPackageNameOption.get( "org.kie" ),
                       config.getOption( DefaultPackageNameOption.class ) );
         // checking string conversion
-        assertEquals( "org.drools",
+        assertEquals( "org.kie",
                       config.getOption( DefaultPackageNameOption.class ).getPackageName() );
         // checking the string based getProperty() method
-        assertEquals( "org.drools",
+        assertEquals( "org.kie",
                       config.getProperty( DefaultPackageNameOption.PROPERTY_NAME ) );
     }
     

@@ -11,22 +11,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.mortbay.jetty.Server;
@@ -34,9 +22,24 @@ import org.mortbay.jetty.handler.ResourceHandler;
 
 import org.junit.After;
 import org.junit.Before;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
+import org.kie.KnowledgeBase;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeResourceProcessedEvent;
+import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
+import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
 
 public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
 
@@ -316,13 +319,13 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createHeader(String packageName, String[] customImports) {
         StringBuilder header = new StringBuilder();
         if ( StringUtils.isEmpty( packageName ) ) {
-            header.append( "package org.drools.test\n" );
+            header.append( "package org.kie.test\n" );
         } else {
             header.append( "package " );
             header.append( packageName );
             header.append( "\n" );
         }
-        header.append( "import org.drools.Person;\n" );
+        header.append( "import org.kie.Person;\n" );
         if (customImports != null){
             for (String customImport : customImports) {
                 header.append( "import " );
@@ -429,8 +432,8 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createCommonDSLRRule(String[] ruleNames) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("package org.drools.test\n");
-        sb.append("import org.drools.Person\n\n");
+        sb.append("package org.kie.test\n");
+        sb.append("import org.kie.Person\n\n");
         sb.append("global java.util.List list\n\n");
 
         for (String ruleName : ruleNames ) {
@@ -465,8 +468,8 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createCommonFunction(String functionName, String valueToAdd) {
       StringBuilder sb = new StringBuilder();
 
-      sb.append("package org.drools.test\n");
-      sb.append("import org.drools.Person\n\n");
+      sb.append("package org.kie.test\n");
+      sb.append("import org.kie.Person\n\n");
       sb.append("global java.util.List list\n\n");
 
       sb.append("function void  ");
@@ -483,7 +486,7 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createCommonDeclaration(String typeName, String[] annotations, String[] fields) {
       StringBuilder sb = new StringBuilder();
 
-      sb.append("package org.drools.test\n");
+      sb.append("package org.kie.test\n");
       sb.append("global java.util.List list\n\n");
 
       sb.append("declare  ");
@@ -513,7 +516,7 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
 
     public String createCommonQuery(String name, String[] patterns){
         StringBuilder sb = new StringBuilder();
-        sb.append(this.createHeader("org.drools.test"));
+        sb.append(this.createHeader("org.kie.test"));
         sb.append("\n");
         sb.append("query \"");
         sb.append(name);

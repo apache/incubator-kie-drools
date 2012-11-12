@@ -1,21 +1,21 @@
-package org.drools.test
+package org.kie.test
 
-import org.drools.I18nPerson
+import org.kie.I18nPerson
 
 global java.util.List list
 
-rule "Use garçon property"
+rule "Use garï¿½on property"
     salience 10
     when
-        p : I18nPerson( garçon != null )
+        p : I18nPerson( garï¿½on != null )
     then
-        list.add( "garçon" );
+        list.add( "garï¿½on" );
 end
 
-// rule "Use élève property"
+// rule "Use ï¿½lï¿½ve property"
 //     salience 10
 //     when
-//         p : I18nPerson( élève != null )
+//         p : I18nPerson( ï¿½lï¿½ve != null )
 //     then
-//         list.add( "élève" );
+//         list.add( "ï¿½lï¿½ve" );
 // end

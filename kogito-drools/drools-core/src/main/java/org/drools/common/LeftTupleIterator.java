@@ -1,6 +1,5 @@
 package org.drools.common;
 
-import org.drools.KnowledgeBase;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
@@ -28,8 +27,9 @@ import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Activation;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class LeftTupleIterator
     implements

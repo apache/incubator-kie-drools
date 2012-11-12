@@ -35,7 +35,7 @@ public class ForallDescr extends BaseDescr
     }
 
     /* (non-Javadoc)
-     * @see org.drools.lang.descr.ConditionalElementDescr#addDescr(org.drools.lang.descr.BaseDescr)
+     * @see org.kie.lang.descr.ConditionalElementDescr#addDescr(org.kie.lang.descr.BaseDescr)
      */
     public void addDescr(final BaseDescr baseDescr) {
         // cast to make sure we are adding a pattern descriptor
@@ -48,7 +48,7 @@ public class ForallDescr extends BaseDescr
     }
 
     /* (non-Javadoc)
-     * @see org.drools.lang.descr.ConditionalElementDescr#getDescrs()
+     * @see org.kie.lang.descr.ConditionalElementDescr#getDescrs()
      */
     public List<BaseDescr> getDescrs() {
         return this.patterns;

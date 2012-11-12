@@ -78,7 +78,7 @@ public class FactTemplateObjectType
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.drools.spi.ObjectType
+    // org.kie.spi.ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**

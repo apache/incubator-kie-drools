@@ -16,9 +16,9 @@
 
 package org.drools.factmodel.traits;
 
-import org.drools.definition.type.FactField;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.kie.definition.type.FactField;
 
 import java.io.Serializable;
 import java.util.HashMap;

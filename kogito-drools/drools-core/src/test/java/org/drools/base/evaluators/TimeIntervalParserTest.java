@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public class TimeIntervalParserTest {
 
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse() {
@@ -36,7 +36,7 @@ public class TimeIntervalParserTest {
     }
 
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse2() {
@@ -48,7 +48,7 @@ public class TimeIntervalParserTest {
     }
 
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse3() {
@@ -63,7 +63,7 @@ public class TimeIntervalParserTest {
     }
 
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse4() {
@@ -78,7 +78,7 @@ public class TimeIntervalParserTest {
     }
 
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse5() {
@@ -89,7 +89,7 @@ public class TimeIntervalParserTest {
     }
     
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse6() {
@@ -100,7 +100,7 @@ public class TimeIntervalParserTest {
     }
     
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse7() {
@@ -111,7 +111,7 @@ public class TimeIntervalParserTest {
     }
     
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse8() {
@@ -126,7 +126,7 @@ public class TimeIntervalParserTest {
     }
 
     /**
-     * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
+     * Test method for {@link org.kie.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
     @Test
     public void testParse9() {

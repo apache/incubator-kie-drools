@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class DroolsSoftKeywordsTest {
 
     /**
-     * Test method for {@link org.drools.lang.DroolsSoftKeywords#isOperator(java.lang.String, boolean)}.
+     * Test method for {@link org.kie.lang.DroolsSoftKeywords#isOperator(java.lang.String, boolean)}.
      */
     @Test
     public void testIsOperator() {

@@ -1,41 +1,33 @@
 package org.drools.games.wumpus.view;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.drools.games.wumpus.Cell;
 import org.drools.games.wumpus.ClimbCommand;
-import org.drools.games.wumpus.Gold;
 import org.drools.games.wumpus.GrabCommand;
-import org.drools.games.wumpus.Hero;
 import org.drools.games.wumpus.Move;
 import org.drools.games.wumpus.MoveCommand;
-import org.drools.games.wumpus.Pit;
 import org.drools.games.wumpus.Reset;
 import org.drools.games.wumpus.Score;
 import org.drools.games.wumpus.ShootCommand;
-import org.drools.games.wumpus.Wumpus;
 import org.drools.games.wumpus.WumpusWorldConfiguration;
-import org.drools.runtime.Channel;
-import org.drools.runtime.rule.FactHandle;
-import javax.swing.JScrollPane;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import org.kie.runtime.Channel;
+import org.kie.runtime.rule.FactHandle;
 
 public class GameUI {
 

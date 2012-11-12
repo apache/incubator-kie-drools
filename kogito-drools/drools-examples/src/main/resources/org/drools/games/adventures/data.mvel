@@ -1,9 +1,9 @@
-import org.drools.games.adventures.Thing;
-import org.drools.games.adventures.Character;
-import org.drools.games.adventures.Item;
-import org.drools.games.adventures.Room;
-import org.drools.games.adventures.Door;
-import org.drools.games.adventures.Location;
+import org.kie.games.adventures.Thing;
+import org.kie.games.adventures.Character;
+import org.kie.games.adventures.Item;
+import org.kie.games.adventures.Room;
+import org.kie.games.adventures.Door;
+import org.kie.games.adventures.Location;
 import java.util.HashMap;
 
 rooms = [ 

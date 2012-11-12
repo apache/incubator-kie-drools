@@ -1,15 +1,15 @@
 package org.drools.compiler;
 
-import org.drools.builder.CompositeKnowledgeBuilder;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.io.Resource;
 import org.drools.io.impl.BaseResource;
 import org.drools.lang.descr.CompositePackageDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.kie.builder.CompositeKnowledgeBuilder;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 import java.util.ArrayList;
 import java.util.Collection;

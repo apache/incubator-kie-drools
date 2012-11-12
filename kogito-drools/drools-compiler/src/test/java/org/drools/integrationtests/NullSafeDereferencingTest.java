@@ -2,16 +2,16 @@ package org.drools.integrationtests;
 
 import org.drools.Address;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
 import org.drools.Person;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
     @Test
     public void testNullSafeBinding() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 when\n" +
                 "   Person( $streetName : address!.street ) \n" +
                 "then\n" +
@@ -36,7 +36,7 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
     @Test
     public void testNullSafeNullComparison() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 when\n" +
                 "   Person( address!.street == null ) \n" +
                 "then\n" +
@@ -61,7 +61,7 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
     @Test
     public void testDoubleNullSafe() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.kie.*;\n" +
                 "rule R1 when\n" +
                 "   Person( address!.street!.length > 15 ) \n" +
                 "then\n" +

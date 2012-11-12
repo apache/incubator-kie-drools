@@ -7,16 +7,17 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.definition.KnowledgePackage;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
@@ -364,7 +365,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
     public void testEvalCondition() throws Exception{
 
         String rule1 = "";
-        rule1 += "package org.drools\n";
+        rule1 += "package org.kie\n";
         rule1 += "global Integer salesChannelId;\n";
         rule1 += "global Boolean includeFinishing;\n";
         rule1 += "global java.util.List list;\n";
@@ -435,7 +436,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
     public void testEvalConditionOnBinaryPackages() throws Exception{
 
         String rule1 = "";
-        rule1 += "package org.drools\n";
+        rule1 += "package org.kie\n";
         rule1 += "global Integer salesChannelId;\n";
         rule1 += "global Boolean includeFinishing;\n";
         rule1 += "global java.util.List list;\n";
@@ -536,7 +537,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
-        org.drools.rule.Rule rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.drools.test", "rule1");
+        org.drools.rule.Rule rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.kie.test", "rule1");
 
         assertNotNull(rule);
         asserter.assertRuleAttribute(attribute1, rule);
@@ -546,7 +547,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         scan( kagent );
         
-        rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.drools.test", "rule1");
+        rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.kie.test", "rule1");
         assertNotNull(rule);
         asserter.assertRuleAttribute(attribute2, rule);
 

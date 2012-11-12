@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.lang.descr.ImportDescr;
+import org.kie.builder.KnowledgeBuilderResult;
 
 /**
  * A Registry of DialectConfigurations. It is also responsible for issueing actions to all registered

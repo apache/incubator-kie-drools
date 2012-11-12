@@ -238,7 +238,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
 
                     if ( ClassUtils.isWindows() || ClassUtils.isOSX() ) {
-                        // check it really is a class, this issue is due to windows case sensitivity issues for the class org.drools.Process and path org/droosl/process
+                        // check it really is a class, this issue is due to windows case sensitivity issues for the class org.kie.Process and path org/droosl/process
                         try {
                             pClassLoader.loadClass( pClazzName );
                         } catch ( ClassNotFoundException e ) {
@@ -302,7 +302,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
                     if (is != null) {
                         if (ClassUtils.isWindows() || ClassUtils.isOSX()) {
-                            // check it really is a class, this issue is due to windows case sensitivity issues for the class org.drools.Process and path org/droosl/process
+                            // check it really is a class, this issue is due to windows case sensitivity issues for the class org.kie.Process and path org/droosl/process
 
                             try {
                                 Class cls = pClassLoader.loadClass(pClazzName);

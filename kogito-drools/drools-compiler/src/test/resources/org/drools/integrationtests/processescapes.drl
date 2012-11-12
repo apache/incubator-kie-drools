@@ -1,7 +1,7 @@
-package org.drools.integrationtests
+package org.kie.integrationtests
 
-import org.drools.BinTask;
-import org.drools.Bin;
+import org.kie.BinTask;
+import org.kie.Bin;
 
 global java.util.List list;
 

@@ -1,12 +1,12 @@
 package org.drools.reteoo;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.common.BaseNode;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.util.Collection;
 

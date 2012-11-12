@@ -8,7 +8,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.base.mvel.MVELDebugHandler;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -40,6 +39,7 @@ import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
@@ -261,7 +261,7 @@ public class MVELConsequenceBuilderTest {
             assertFalse( parser.getErrors().toString(),
                                 parser.hasErrors() );
 
-            final Package pkg = new Package( "org.drools" );
+            final Package pkg = new Package( "org.kie" );
 
             final RuleDescr ruleDescr = pkgDescr.getRules().get( 0 );
 
@@ -342,8 +342,8 @@ public class MVELConsequenceBuilderTest {
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
         builder = new MVELConsequenceBuilder();
 
-        Package pkg = new Package( "org.drools" );
-        pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );
+        Package pkg = new Package( "org.kie" );
+        pkg.addImport( new ImportDeclaration( "org.kie.Cheese" ) );
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         PackageBuilder pkgBuilder = new PackageBuilder( pkg,

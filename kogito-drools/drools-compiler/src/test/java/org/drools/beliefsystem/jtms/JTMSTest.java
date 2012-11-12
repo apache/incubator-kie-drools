@@ -10,23 +10,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.BeliefSystemType;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.SessionConfiguration;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.EqualityKey;
 import org.drools.common.NamedEntryPoint;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 public class JTMSTest {
     protected StatefulKnowledgeSession getSessionFromString( String drlString) {
@@ -69,11 +69,11 @@ public class JTMSTest {
     
     @Test
     public void testPosNegNonConflictingInsertions() {
-        String s = "package org.drools.beliefsystem.jtms;\n" + 
+        String s = "package org.kie.beliefsystem.jtms;\n" + 
         		"\n" + 
-        		"import org.drools.event.rule.ActivationUnMatchListener;\n" +
+        		"import org.kie.event.rule.ActivationUnMatchListener;\n" +
         		"import java.util.List \n" +
-        		"import org.drools.common.AgendaItem;" +
+        		"import org.kie.common.AgendaItem;" +
         		"global java.util.List list;\n" + 
         		"\n" + 
         		"rule \"go1\"\n" + 
@@ -100,8 +100,8 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getActivation();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" + 
                 "        \n" + 
-                "        public void unMatch(org.drools.runtime.rule.WorkingMemory wm,\n" + 
-                "                            org.drools.runtime.rule.Activation activation) {\n" + 
+                "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,\n" + 
+                "                            org.kie.runtime.rule.Activation activation) {\n" + 
                 "            l.remove( s );\n" + 
                 "        }\n" + 
                 "    } );" + 
@@ -116,8 +116,8 @@ public class JTMSTest {
         		"    AgendaItem item = ( AgendaItem ) kcontext.getActivation(); \n" +
         		"    item.setActivationUnMatchListener( new ActivationUnMatchListener() { \n" + 
         		"        \n" + 
-        		"        public void unMatch(org.drools.runtime.rule.WorkingMemory wm, \n" + 
-        		"                            org.drools.runtime.rule.Activation activation) { \n" + 
+        		"        public void unMatch(org.kie.runtime.rule.WorkingMemory wm, \n" + 
+        		"                            org.kie.runtime.rule.Activation activation) { \n" + 
         		"            l.remove( s ); \n" + 
         		"        }\n" + 
         		"    } );" + 
@@ -159,12 +159,12 @@ public class JTMSTest {
     
     @Test
     public void testChangeInPositivePrime() {
-        String s = "package org.drools.beliefsystem.jtms;\n" + 
+        String s = "package org.kie.beliefsystem.jtms;\n" + 
                 "\n" + 
-                "import org.drools.event.rule.ActivationUnMatchListener;\n" +
+                "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.common.AgendaItem;" +
-                "import org.drools.Person;" +
+                "import org.kie.common.AgendaItem;" +
+                "import org.kie.Person;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1\"\n" + 
@@ -251,12 +251,12 @@ public class JTMSTest {
     
     @Test
     public void testChangeInNegativePrime() {
-        String s = "package org.drools.beliefsystem.jtms;\n" + 
+        String s = "package org.kie.beliefsystem.jtms;\n" + 
                 "\n" + 
-                "import org.drools.event.rule.ActivationUnMatchListener;\n" +
+                "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.common.AgendaItem;" +
-                "import org.drools.Person;" +
+                "import org.kie.common.AgendaItem;" +
+                "import org.kie.Person;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1\"\n" + 
@@ -353,11 +353,11 @@ public class JTMSTest {
     
     @Test
     public void testRetractHandleWhenOnlyNeg() {
-        String s = "package org.drools.beliefsystem.jtms;\n" + 
+        String s = "package org.kie.beliefsystem.jtms;\n" + 
                 "\n" + 
-                "import org.drools.event.rule.ActivationUnMatchListener;\n" +
+                "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.common.AgendaItem;" +
+                "import org.kie.common.AgendaItem;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1_1\"\n" + 
@@ -389,8 +389,8 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getActivation(); \n" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() { \n" + 
                 "        \n" + 
-                "        public void unMatch(org.drools.runtime.rule.WorkingMemory wm, \n" + 
-                "                            org.drools.runtime.rule.Activation activation) { \n" + 
+                "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm, \n" + 
+                "                            org.kie.runtime.rule.Activation activation) { \n" + 
                 "            l.remove( s ); \n" + 
                 "        }\n" + 
                 "    } );" + 

@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.definition.KnowledgeDefinition;
-import org.drools.io.Resource;
+import org.kie.definition.KnowledgeDefinition;
+import org.kie.io.Resource;
 
 public class Function implements  KnowledgeDefinition, Dialectable, Externalizable {
     private String name;

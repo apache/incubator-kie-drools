@@ -16,10 +16,10 @@
 
 package org.drools.lang;
 
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.dsl.DefaultExpander;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

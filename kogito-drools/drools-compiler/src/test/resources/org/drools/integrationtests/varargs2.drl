@@ -1,6 +1,6 @@
-package org.drools.test
+package org.kie.test
 
-import org.drools.integrationtests.VarargsTest.MySet;
+import org.kie.integrationtests.VarargsTest.MySet;
 
 rule "showSet"
 salience -1000

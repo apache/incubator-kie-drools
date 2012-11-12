@@ -33,36 +33,16 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.drools.ChangeSet;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
-import org.drools.SystemEventListener;
-import org.drools.SystemEventListenerFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.ResourceDiffProducer;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
-import org.drools.concurrent.ExecutorProviderFactory;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.definition.KnowledgeDefinition;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.process.Process;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.KnowledgeAgentEventSupport;
-import org.drools.event.io.ResourceChangeListener;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
-import org.drools.io.ResourcedObject;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
@@ -73,13 +53,33 @@ import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.util.CompositeClassLoader;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlChangeSetReader;
+import org.kie.ChangeSet;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.SystemEventListener;
+import org.kie.SystemEventListenerFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.concurrent.ExecutorProviderFactory;
+import org.kie.definition.KnowledgeDefinition;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.process.Process;
+import org.kie.event.io.ResourceChangeListener;
+import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourcedObject;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.util.CompositeClassLoader;
 
 /**
  * Drools Implementation of the KnowledgeAgent interface. Implements itself as a
@@ -495,8 +495,8 @@ public class KnowledgeAgentImpl
     }
 
     /**
-     * Same as {@link #buildResourceMapping(org.drools.rule.Package, org.drools.io.Resource, boolean)
-     *  buildResourceMapping(org.drools.rule.Package, org.drools.io.Resource, false)}.
+     * Same as {@link #buildResourceMapping(org.kie.rule.Package, org.kie.io.Resource, boolean)
+     *  buildResourceMapping(org.kie.rule.Package, org.kie.io.Resource, false)}.
      * If <code>resource</code> is null, this method does nothing.
      * @param pkg
      * @param resource
@@ -706,12 +706,12 @@ public class KnowledgeAgentImpl
     }
 
     /**
-     * Same as {@link #createPackageFromResource(org.drools.io.Resource, org.drools.builder.KnowledgeBuilder)
-     * createPackageFromResource(org.drools.io.Resource, null)}
+     * Same as {@link #createPackageFromResource(org.kie.io.Resource, org.kie.builder.KnowledgeBuilder)
+     * createPackageFromResource(org.kie.io.Resource, null)}
      *
      * @param resource
      * @return
-     * @see #createPackageFromResource(org.drools.io.Resource, org.drools.builder.KnowledgeBuilder)
+     * @see #createPackageFromResource(org.kie.io.Resource, org.kie.builder.KnowledgeBuilder)
      */
     private Collection<KnowledgePackage> createPackageFromResource(Resource resource) {
         return this.createPackageFromResource( resource,
@@ -835,7 +835,7 @@ public class KnowledgeAgentImpl
         //puts all the resources as added in the changeSet.
         changeSetState.addedResources.clear();
         for ( Resource resource : this.registeredResources.getAllResources() ) {
-            // Ignore the HACKs created by org.drools.agent.impl.KnowledgeAgentImpl.autoBuildResourceMapping()
+            // Ignore the HACKs created by org.kie.agent.impl.KnowledgeAgentImpl.autoBuildResourceMapping()
             if ( !(resource instanceof ReaderResource)
                  || ((ReaderResource) resource).getReader() != null ) {
                 changeSetState.addedResources.add( resource );
@@ -855,21 +855,21 @@ public class KnowledgeAgentImpl
      * <ol>
      * <li>
      * Each element of {@link ChangeSetState#removedResourceMappings} is removed
-     * from {@link #kbase} using {@link #removeKnowledgeDefinitionFromBase(org.drools.definition.KnowledgeDefinition) }.
+     * from {@link #kbase} using {@link #removeKnowledgeDefinitionFromBase(org.kie.definition.KnowledgeDefinition) }.
      * </li>
      * <li>
      * Each element of {@link ChangeSetState#modifiedResourceMappings} is compiled
-     * using {@link #createPackageFromResource(org.drools.io.Resource) } and
+     * using {@link #createPackageFromResource(org.kie.io.Resource) } and
      * diffed against the previous version of the resource. The diff dictates
      * wich definitions should be removed and what should be updated. The
      * ones that should be removed are deleted using
-     * {@link #removeKnowledgeDefinitionFromBase(org.drools.definition.KnowledgeDefinition) },
+     * {@link #removeKnowledgeDefinitionFromBase(org.kie.definition.KnowledgeDefinition) },
      * the ones that should be update/added are put into
      * {@link ChangeSetState#createdPackages} of <code>changeSetState</code>.
      * </li>
      * <li>
      * Each element of {@link ChangeSetState#addedResources} is compiled
-     * using {@link #createPackageFromResource(org.drools.io.Resource) }
+     * using {@link #createPackageFromResource(org.kie.io.Resource) }
      * and added to {@link ChangeSetState#createdPackages} of
      * <code>changeSetState</code>.
      * </li>
@@ -879,7 +879,7 @@ public class KnowledgeAgentImpl
      * added as elements of {@link ChangeSetState#createdPackages}, these two lists
      * are emtpied.
      * The <code>changeSetState</code> is then passed to
-     * {@link #addResourcesToKnowledgeBase(org.drools.agent.impl.KnowledgeAgentImpl.ChangeSetState) }
+     * {@link #addResourcesToKnowledgeBase(org.kie.agent.impl.KnowledgeAgentImpl.ChangeSetState) }
      * in order to process {@link ChangeSetState#createdPackages}.
      * @param changeSetState the ChangeSetState
      */
@@ -1080,14 +1080,14 @@ public class KnowledgeAgentImpl
      * <ul>
      * <li>
      * The elments of {@link ChangeSetState#addedResources} are compiled using
-     * {@link #createPackageFromResource(org.drools.io.Resource, org.drools.builder.KnowledgeBuilder)}
+     * {@link #createPackageFromResource(org.kie.io.Resource, org.kie.builder.KnowledgeBuilder)}
      * and added to {@link ChangeSetState#createdPackages}. The same kbuilder
      * is used for all the elements.
      * </li>
      * <li>
      * The elments of {@link ChangeSetState#createdPackages} are added to
      * {@link #kbase}. Each package is mapped to the original resource
-     * using {@link #buildResourceMapping(org.drools.rule.Package, org.drools.io.Resource)}.
+     * using {@link #buildResourceMapping(org.kie.rule.Package, org.kie.io.Resource)}.
      * </li>
      * </ul>
      *
@@ -1123,7 +1123,7 @@ public class KnowledgeAgentImpl
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.agent.KnowledgeAgent#getName()
+     * @see org.kie.agent.KnowledgeAgent#getName()
      */
     public String getName() {
         return this.name;

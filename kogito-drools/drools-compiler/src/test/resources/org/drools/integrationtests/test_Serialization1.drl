@@ -5,7 +5,7 @@ global java.util.List list;
 rule "Hello World 1"
     salience 10
     when
-        $m : org.drools.Message(list contains "hello",
+        $m : org.kie.Message(list contains "hello",
                     text:message == "hola",
                     number in (1, 2, 3, 4, 50, 0),
                     birthday > "10-Jul-1974",

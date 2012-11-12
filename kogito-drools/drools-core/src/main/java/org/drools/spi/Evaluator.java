@@ -22,15 +22,15 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
-import org.drools.runtime.rule.Operator;
 import org.drools.time.Interval;
+import org.kie.runtime.rule.Operator;
 
 /**
  * A public interface to be implemented by all evaluators
  */
 public interface Evaluator
     extends
-    Serializable, org.drools.runtime.rule.Evaluator {
+    Serializable, org.kie.runtime.rule.Evaluator {
 
     /**
      * Returns the type of the values this evaluator operates upon.

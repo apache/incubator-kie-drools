@@ -26,8 +26,8 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class RetractCommand

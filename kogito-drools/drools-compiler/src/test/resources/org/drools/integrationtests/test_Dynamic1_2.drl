@@ -1,6 +1,6 @@
-package org.drools.test;
+package org.kie.test;
 
-import org.drools.Address; 
+import org.kie.Address; 
 
 global java.util.List results;
 

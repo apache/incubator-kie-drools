@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.drools.command.BatchExecutionCommand;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -42,7 +41,8 @@ import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
-import org.drools.runtime.ExecutionResults;
+import org.kie.command.BatchExecutionCommand;
+import org.kie.runtime.ExecutionResults;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 

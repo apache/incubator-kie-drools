@@ -1,8 +1,8 @@
 package com.sample 
 
 import import java.util.List
-import org.drools.Cheese
-import org.drools.Cheesery
+import org.kie.Cheese
+import org.kie.Cheesery
 
 global Cheesery cheesery
 global List list

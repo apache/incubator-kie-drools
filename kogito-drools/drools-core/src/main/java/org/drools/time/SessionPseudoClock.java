@@ -18,6 +18,8 @@ package org.drools.time;
 
 import java.util.concurrent.TimeUnit;
 
+import org.kie.time.SessionClock;
+
 
 /**
  * A clock interface for the implementation of pseudo clocks,

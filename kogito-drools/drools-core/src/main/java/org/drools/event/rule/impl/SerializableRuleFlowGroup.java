@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.runtime.rule.AgendaGroup;
-import org.drools.runtime.rule.RuleFlowGroup;
+import org.kie.runtime.rule.AgendaGroup;
+import org.kie.runtime.rule.RuleFlowGroup;
 
 public class SerializableRuleFlowGroup implements RuleFlowGroup, Externalizable {
     

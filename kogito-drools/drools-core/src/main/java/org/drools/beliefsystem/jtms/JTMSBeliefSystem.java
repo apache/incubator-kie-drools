@@ -13,9 +13,9 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class JTMSBeliefSystem
         implements

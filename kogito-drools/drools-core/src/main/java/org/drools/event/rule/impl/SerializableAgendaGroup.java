@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.runtime.rule.AgendaGroup;
+import org.kie.runtime.rule.AgendaGroup;
 
 public class SerializableAgendaGroup implements AgendaGroup, Externalizable {
     

@@ -17,8 +17,6 @@ import org.drools.FactA;
 import org.drools.FactHandle;
 import org.drools.Father;
 import org.drools.Foo;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.Neighbor;
 import org.drools.Person;
@@ -28,11 +26,6 @@ import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.TotalHolder;
 import org.drools.WorkingMemory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.command.runtime.process.CreateProcessInstanceCommand;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultAgenda;
@@ -43,23 +36,30 @@ import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.RuleNetworkEvaluatorActivation;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.compiler.PackageBuilder;
-import org.drools.definition.KnowledgePackage;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.RuleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
@@ -127,7 +127,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     public void testSalienceExpressionWithOr() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         
-        String text = "package org.drools.test\n"
+        String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
                       + "import " + Foo.class.getCanonicalName() + "\n"
@@ -184,7 +184,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testSalienceMinInteger() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        String text = "package org.drools.test\n"
+        String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "rule a\n"
                       + "when\n"
@@ -222,7 +222,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     public void testEnabledExpressionWithOr() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         
-        String text = "package org.drools.test\n"
+        String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
                       + "import " + Foo.class.getCanonicalName() + "\n"
@@ -371,7 +371,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testLockOnActiveForMain() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "global java.util.List list \n";
         str += "rule rule1 \n";
         str += "    lock-on-active true \n";
@@ -409,7 +409,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testLockOnActiveForMainWithHalt() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "global java.util.List list \n";
         str += "rule rule1 \n";
         str += "    lock-on-active true \n";
@@ -738,10 +738,10 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Ignore("FIXME for Planner")
     public void testUnMatchListenerForChainedPlanningEntities() {
         String str =""+
-                "package org.drools.test;\n" +
+                "package org.kie.test;\n" +
                 "\n" +
-                "import org.drools.Father;\n" +
-                "import org.drools.TotalHolder;\n" +
+                "import org.kie.Father;\n" +
+                "import org.kie.TotalHolder;\n" +
                 "\n" +
                 "global TotalHolder totalHolder;\n" +
                 "\n" +
@@ -753,9 +753,9 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 "    System.out.println(\"match \" + totalHolder.getTotal());\n" +
                 "    final TotalHolder finalTotalHolder = totalHolder;\n" +
                 "    final int finalWf = $wf;\n" +
-                "     org.drools.common.AgendaItem agendaItem = (org.drools.common.AgendaItem) kcontext.getActivation();" +
-                "     agendaItem.setActivationUnMatchListener(new org.drools.event.rule.ActivationUnMatchListener() {" +
-                "            public void unMatch(org.drools.runtime.rule.WorkingMemory workingMemory, org.drools.runtime.rule.Activation activation) {" +
+                "     org.kie.common.AgendaItem agendaItem = (org.kie.common.AgendaItem) kcontext.getActivation();" +
+                "     agendaItem.setActivationUnMatchListener(new org.kie.event.rule.ActivationUnMatchListener() {" +
+                "            public void unMatch(org.kie.runtime.rule.WorkingMemory workingMemory, org.kie.runtime.rule.Activation activation) {" +
                 "                finalTotalHolder.subtract(finalWf);" +
                 "                System.out.println(\"unmatch \" + finalTotalHolder.getTotal());\n" +
                 "            }" +
@@ -775,8 +775,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         Father homer = new Father("homer", null, 20);
         Father bart = new Father("bart", null, 3);
 
-        org.drools.runtime.rule.FactHandle abrahamHandle = kSession.insert(abraham);
-        org.drools.runtime.rule.FactHandle bartHandle = kSession.insert(bart);
+        org.kie.runtime.rule.FactHandle abrahamHandle = kSession.insert(abraham);
+        org.kie.runtime.rule.FactHandle bartHandle = kSession.insert(bart);
         kSession.fireAllRules();
         assertEquals(0, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
 
@@ -795,7 +795,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         kSession.fireAllRules();
         assertEquals(100, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
 
-        org.drools.runtime.rule.FactHandle homerHandle = kSession.insert(homer);
+        org.kie.runtime.rule.FactHandle homerHandle = kSession.insert(homer);
         homer.setFather(abraham);
         kSession.update(homerHandle, homer);
         bart.setFather(homer);
@@ -1095,8 +1095,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     public void testNullPointerOnModifyWithLockOnActive() {
         // JBRULES-3234
 
-        String str = "package org.drools.test \n"
-                     + "import org.drools.Person; \n"
+        String str = "package org.kie.test \n"
+                     + "import org.kie.Person; \n"
                      + "rule 'Rule 1' agenda-group 'g1' lock-on-active	when \n"
                      + "		$p : Person( age != 35 ) \n"
                      + "	then \n"

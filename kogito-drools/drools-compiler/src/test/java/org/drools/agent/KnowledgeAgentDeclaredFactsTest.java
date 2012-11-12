@@ -17,21 +17,22 @@
 package org.drools.agent;
 
 import junit.framework.Assert;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.agent.conf.NewInstanceOption;
-import org.drools.agent.conf.ScanDirectoriesOption;
-import org.drools.agent.conf.ScanResourcesOption;
-import org.drools.builder.ResourceType;
-import org.drools.definition.type.FactType;
-import org.drools.event.knowledgeagent.*;
-import org.drools.io.Resource;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.FileSystemResource;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.*;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.conf.NewInstanceOption;
+import org.kie.agent.conf.ScanDirectoriesOption;
+import org.kie.agent.conf.ScanResourcesOption;
+import org.kie.builder.ResourceType;
+import org.kie.definition.type.FactType;
+import org.kie.event.knowledgeagent.*;
+import org.kie.io.Resource;
+import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

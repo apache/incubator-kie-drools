@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.test 
+package org.kie.test 
 
 import com.sample.DroolsTest.Message;
 

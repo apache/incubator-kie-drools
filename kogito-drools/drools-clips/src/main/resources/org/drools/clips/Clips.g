@@ -1,9 +1,9 @@
 grammar Clips;
 
 @parser::header {
-    package org.drools.clips;
+    package org.kie.clips;
 
-    import org.drools.clips.*;
+    import org.kie.clips.*;
     
     import java.util.List;
     import java.util.ArrayList;
@@ -12,8 +12,8 @@ grammar Clips;
     import java.util.Set;
     import java.util.HashSet;
     import java.util.StringTokenizer;
-    import org.drools.lang.descr.*;
-    import org.drools.lang.Location;
+    import org.kie.lang.descr.*;
+    import org.kie.lang.Location;
 }
 
 @parser::members {
@@ -207,7 +207,7 @@ grammar Clips;
 }
 
 @lexer::header {
-    package org.drools.clips;
+    package org.kie.clips;
 }
 
 /*

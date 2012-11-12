@@ -19,21 +19,6 @@ package org.drools.compiler;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.ResultSeverity;
-import org.drools.builder.conf.AccumulateFunctionOption;
-import org.drools.builder.conf.ClassLoaderCacheOption;
-import org.drools.builder.conf.DefaultDialectOption;
-import org.drools.builder.conf.DefaultPackageNameOption;
-import org.drools.builder.conf.DumpDirOption;
-import org.drools.builder.conf.EvaluatorOption;
-import org.drools.builder.conf.KBuilderSeverityOption;
-import org.drools.builder.conf.KnowledgeBuilderOption;
-import org.drools.builder.conf.LanguageLevelOption;
-import org.drools.builder.conf.MultiValueKnowledgeBuilderOption;
-import org.drools.builder.conf.ProcessStringEscapesOption;
-import org.drools.builder.conf.PropertySpecificOption;
-import org.drools.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.drools.compiler.xml.RulesSemanticModule;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
@@ -41,16 +26,31 @@ import org.drools.core.util.StringUtils;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.rule.Package;
 import org.drools.rule.builder.DroolsCompilerComponentFactory;
-import org.drools.runtime.rule.AccumulateFunction;
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
-import org.drools.util.CompositeClassLoader;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
 import org.drools.xml.WrapperSemanticModule;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.ResultSeverity;
+import org.kie.builder.conf.AccumulateFunctionOption;
+import org.kie.builder.conf.ClassLoaderCacheOption;
+import org.kie.builder.conf.DefaultDialectOption;
+import org.kie.builder.conf.DefaultPackageNameOption;
+import org.kie.builder.conf.DumpDirOption;
+import org.kie.builder.conf.EvaluatorOption;
+import org.kie.builder.conf.KBuilderSeverityOption;
+import org.kie.builder.conf.KnowledgeBuilderOption;
+import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.builder.conf.MultiValueKnowledgeBuilderOption;
+import org.kie.builder.conf.ProcessStringEscapesOption;
+import org.kie.builder.conf.PropertySpecificOption;
+import org.kie.builder.conf.SingleValueKnowledgeBuilderOption;
+import org.kie.runtime.rule.AccumulateFunction;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 
 import java.io.File;
 import java.net.URL;
@@ -77,11 +77,11 @@ import java.util.Set;
  *
  * default dialect is java.
  * Available preconfigured Accumulate functions are:
- * drools.accumulate.function.average = org.drools.base.accumulators.AverageAccumulateFunction
- * drools.accumulate.function.max = org.drools.base.accumulators.MaxAccumulateFunction
- * drools.accumulate.function.min = org.drools.base.accumulators.MinAccumulateFunction
- * drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction
- * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction
+ * drools.accumulate.function.average = org.kie.base.accumulators.AverageAccumulateFunction
+ * drools.accumulate.function.max = org.kie.base.accumulators.MaxAccumulateFunction
+ * drools.accumulate.function.min = org.kie.base.accumulators.MinAccumulateFunction
+ * drools.accumulate.function.count = org.kie.base.accumulators.CountAccumulateFunction
+ * drools.accumulate.function.sum = org.kie.base.accumulators.SumAccumulateFunction
  * 
  * drools.parser.processStringEscapes = true|false
  * 

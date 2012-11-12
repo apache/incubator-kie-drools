@@ -20,16 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.FactHandle;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.common.InternalFactHandle;
-import org.drools.io.Resource;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.command.Command;
+import org.kie.io.Resource;
 
 public class GetVariableCommand
     implements

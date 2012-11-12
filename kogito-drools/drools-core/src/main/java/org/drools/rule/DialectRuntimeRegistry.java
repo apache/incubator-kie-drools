@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.util.CompositeClassLoader;
+import org.kie.util.CompositeClassLoader;
 
 public class DialectRuntimeRegistry
     implements

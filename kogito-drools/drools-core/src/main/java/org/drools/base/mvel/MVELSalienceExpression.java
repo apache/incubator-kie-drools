@@ -24,15 +24,15 @@ import java.io.Serializable;
 
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.definition.rule.Rule;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.runtime.rule.Activation;
 import org.drools.WorkingMemory;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
+import org.kie.definition.rule.Rule;
+import org.kie.runtime.rule.Activation;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 

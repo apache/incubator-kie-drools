@@ -26,10 +26,10 @@ import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.runtime.Channel;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.rule.RuleContext;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.Channel;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.rule.RuleContext;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses

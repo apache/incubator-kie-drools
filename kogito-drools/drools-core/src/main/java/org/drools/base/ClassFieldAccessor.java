@@ -210,7 +210,7 @@ public class ClassFieldAccessor
 
     /**
      * @return
-     * @see org.drools.base.ClassFieldReader#isGlobal()
+     * @see org.kie.base.ClassFieldReader#isGlobal()
      */
     public boolean isGlobal() {
         return reader.isGlobal();
@@ -218,7 +218,7 @@ public class ClassFieldAccessor
 
     /**
      * @return
-     * @see org.drools.base.ClassFieldWriter#getFieldType()
+     * @see org.kie.base.ClassFieldWriter#getFieldType()
      */
     public Class< ? > getFieldType() {
         return writer.getFieldType();
@@ -226,7 +226,7 @@ public class ClassFieldAccessor
 
     /**
      * @return
-     * @see org.drools.base.ClassFieldWriter#getNativeWriteMethod()
+     * @see org.kie.base.ClassFieldWriter#getNativeWriteMethod()
      */
     public Method getNativeWriteMethod() {
         return writer.getNativeWriteMethod();
@@ -235,7 +235,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setBooleanValue(java.lang.Object, boolean)
+     * @see org.kie.base.ClassFieldWriter#setBooleanValue(java.lang.Object, boolean)
      */
     public void setBooleanValue(Object bean,
                                 boolean value) {
@@ -246,7 +246,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setByteValue(java.lang.Object, byte)
+     * @see org.kie.base.ClassFieldWriter#setByteValue(java.lang.Object, byte)
      */
     public void setByteValue(Object bean,
                              byte value) {
@@ -257,7 +257,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setCharValue(java.lang.Object, char)
+     * @see org.kie.base.ClassFieldWriter#setCharValue(java.lang.Object, char)
      */
     public void setCharValue(Object bean,
                              char value) {
@@ -268,7 +268,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setDoubleValue(java.lang.Object, double)
+     * @see org.kie.base.ClassFieldWriter#setDoubleValue(java.lang.Object, double)
      */
     public void setDoubleValue(Object bean,
                                double value) {
@@ -279,7 +279,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setFloatValue(java.lang.Object, float)
+     * @see org.kie.base.ClassFieldWriter#setFloatValue(java.lang.Object, float)
      */
     public void setFloatValue(Object bean,
                               float value) {
@@ -290,7 +290,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setIntValue(java.lang.Object, int)
+     * @see org.kie.base.ClassFieldWriter#setIntValue(java.lang.Object, int)
      */
     public void setIntValue(Object bean,
                             int value) {
@@ -301,7 +301,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setLongValue(java.lang.Object, long)
+     * @see org.kie.base.ClassFieldWriter#setLongValue(java.lang.Object, long)
      */
     public void setLongValue(Object bean,
                              long value) {
@@ -312,7 +312,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setShortValue(java.lang.Object, short)
+     * @see org.kie.base.ClassFieldWriter#setShortValue(java.lang.Object, short)
      */
     public void setShortValue(Object bean,
                               short value) {
@@ -323,7 +323,7 @@ public class ClassFieldAccessor
     /**
      * @param bean
      * @param value
-     * @see org.drools.base.ClassFieldWriter#setValue(java.lang.Object, java.lang.Object)
+     * @see org.kie.base.ClassFieldWriter#setValue(java.lang.Object, java.lang.Object)
      */
     public void setValue(Object bean,
                          Object value) {

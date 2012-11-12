@@ -53,8 +53,6 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.process.instance.WorkItem;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
@@ -77,7 +75,6 @@ import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingLengthWindow.SlidingLengthWindowContext;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.SlidingTimeWindow.SlidingTimeWindowContext;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -91,6 +88,9 @@ import org.drools.time.impl.IntervalTrigger;
 import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.time.impl.TimerJobInstance;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class OutputMarshaller {
 
@@ -279,9 +279,9 @@ public class OutputMarshaller {
 //        ObjectHashMap assertMap = context.wm.getTruthMaintenanceSystem().getAssertMap();
 //
 //        EqualityKey[] keys = new EqualityKey[assertMap.size()];
-//        org.drools.core.util.Iterator it = assertMap.iterator();
+//        org.kie.core.util.Iterator it = assertMap.iterator();
 //        int i = 0;
-//        for ( org.drools.core.util.ObjectHashMap.ObjectEntry entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next() ) {
+//        for ( org.kie.core.util.ObjectHashMap.ObjectEntry entry = (org.kie.core.util.ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (org.kie.core.util.ObjectHashMap.ObjectEntry) it.next() ) {
 //            EqualityKey key = (EqualityKey) entry.getKey();
 //            keys[i++] = key;
 //        }

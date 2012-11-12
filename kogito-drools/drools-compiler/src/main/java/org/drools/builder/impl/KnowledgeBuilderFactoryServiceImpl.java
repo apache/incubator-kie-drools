@@ -2,19 +2,19 @@ package org.drools.builder.impl;
 
 import java.util.Properties;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.JaxbConfiguration;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeBuilderFactoryService;
-import org.drools.builder.KnowledgeContainer;
 import org.drools.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.impl.KnowledgeBaseImpl;
+import org.kie.KnowledgeBase;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.JaxbConfiguration;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.KnowledgeBuilderFactoryService;
+import org.kie.builder.KnowledgeContainer;
 
 import com.sun.tools.xjc.Options;
 

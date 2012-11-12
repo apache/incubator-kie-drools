@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.definition.rule.Rule;
+import org.kie.definition.rule.Rule;
 
 /**
  * This context class is used during rule removal to ensure

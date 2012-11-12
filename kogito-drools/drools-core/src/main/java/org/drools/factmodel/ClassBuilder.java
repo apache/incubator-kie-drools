@@ -16,7 +16,7 @@
 
 package org.drools.factmodel;
 
-import org.drools.Service;
+import org.kie.Service;
 import org.mvel2.asm.Opcodes;
 
 import java.beans.IntrospectionException;

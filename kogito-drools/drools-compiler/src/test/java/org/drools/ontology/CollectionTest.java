@@ -7,9 +7,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.KnowledgeRuntime;
 import org.junit.Ignore;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.FactHandle;
 
 @Ignore
 public class CollectionTest {

@@ -16,8 +16,6 @@
 
 package org.drools.compiler;
 
-import org.drools.builder.conf.LanguageLevelOption;
-import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.InputStreamResource;
 import org.drools.io.impl.ReaderResource;
@@ -29,6 +27,8 @@ import org.drools.lang.ExpanderException;
 import org.drools.lang.Location;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
+import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -24,7 +24,7 @@ import org.drools.spi.AgendaFilter;
  */
 public class RuleNameEqualsAgendaFilter
     implements
-    AgendaFilter, org.drools.runtime.rule.AgendaFilter {
+    AgendaFilter, org.kie.runtime.rule.AgendaFilter {
     private final String  name;
 
     private final boolean accept;
@@ -48,7 +48,7 @@ public class RuleNameEqualsAgendaFilter
         }
     }
 
-    public boolean accept( org.drools.runtime.rule.Activation activation ) {
+    public boolean accept( org.kie.runtime.rule.Activation activation ) {
         if ( activation.getRule().getName().equals( this.name ) ) {
             return this.accept;
         } else {

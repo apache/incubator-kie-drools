@@ -30,7 +30,7 @@ public class EntryPointBuilder
     ReteooComponentBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.builder.ReteooComponentBuilder#build(org.drools.reteoo.builder.BuildContext, org.drools.reteoo.builder.BuildUtils, org.drools.rule.RuleConditionElement)
+     * @see org.kie.reteoo.builder.ReteooComponentBuilder#build(org.kie.reteoo.builder.BuildContext, org.kie.reteoo.builder.BuildUtils, org.kie.rule.RuleConditionElement)
      */
     public void build(BuildContext context,
                       BuildUtils utils,
@@ -50,7 +50,7 @@ public class EntryPointBuilder
      }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.builder.ReteooComponentBuilder#requiresLeftActivation(org.drools.reteoo.builder.BuildUtils, org.drools.rule.RuleConditionElement)
+     * @see org.kie.reteoo.builder.ReteooComponentBuilder#requiresLeftActivation(org.kie.reteoo.builder.BuildUtils, org.kie.rule.RuleConditionElement)
      */
     public boolean requiresLeftActivation(BuildUtils utils,
                                           RuleConditionElement rce) {

@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.Activation;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.Activation;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testSingleLian() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 when\n" +
                      "    $s : String( this != 'xx' )\n" +
@@ -67,7 +67,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testLianPlusEvaln() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 when\n" +
                      "    $s : String( this != 'xx' )\n" +
@@ -121,7 +121,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         // Rule 1 and 2 are shared
         // Rule 3 shares the LIANode with 1 and 2    
         // Rule 4 Shares the eval with 3
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule0 when\n" +
                      "    $s : String( this != 'xx' )\n" +
@@ -208,7 +208,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         // Rule 1 and 2 are shared
         // Rule 3 shares the LIANode with 1 and 2    
         // Rule 4 Shares the eval with 3
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule0 salience ( Integer.parseInt('1'+$s) ) when\n" +
                      "    $s : String( this != 'xx' )\n" +
@@ -275,7 +275,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testSingleJoinNode() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 when\n" +
                      "    $s1 : String( )\n" +
@@ -321,7 +321,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testSingleJoinNodePlusEvaln() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 when\n" +
                      "    $s1 : String( )\n" +
@@ -368,7 +368,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testSingleJoinNodePlusEvalnWithSharing() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 when\n" +
                      "    $s1 : String( )\n" +
@@ -443,7 +443,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testSingleJoinNodePlusEvalnWithSharingWithMixedDormantAndActive() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1  salience ( Integer.parseInt( '1'+$s1+'0'+$s2 ) ) when\n" +
                      "    $s1 : String( )\n" +
@@ -503,7 +503,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testNotSharingWithMixedDormantAndActive() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 salience 10 when\n" +
                      "    not String( this == '1' )\n" +
@@ -560,7 +560,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testExistsSharingWithMixedDormantAndActive() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 salience 100 when\n" +
                      "    exists String( this == '1' )\n" +
@@ -618,7 +618,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testFromnSharingWithMixedDormantAndActive() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "global java.util.List list \n" +
                      "\n" +
                      "rule rule1 salience ( Integer.parseInt( $s1+'1' ) )  when\n" +
@@ -673,7 +673,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testAccnSharingWithMixedDormantAndActive() {
-        String str = "package org.drools.test \n" +
+        String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 when\n" +
                      "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +

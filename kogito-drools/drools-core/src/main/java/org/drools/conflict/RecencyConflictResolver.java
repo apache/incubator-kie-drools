@@ -25,7 +25,7 @@ import org.drools.spi.ConflictResolver;
  * rules to resolve conflict.
  * 
  * @see #getInstance
- * @see org.drools.spi.Tuple#getMostRecentFactTimeStamp
+ * @see org.kie.spi.Tuple#getMostRecentFactTimeStamp
  */
 public class RecencyConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------

@@ -53,35 +53,35 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalD
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.LogicalDependency#getJustifierEntry()
+     * @see org.kie.common.LogicalDependency#getJustifierEntry()
      */
     public LinkedListEntry<LogicalDependency> getJustifierEntry() {
         return this.justifierEntry;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.LogicalDependency#getJustified()
+     * @see org.kie.common.LogicalDependency#getJustified()
      */
     public Object getJustified() {
         return this.justified;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.LogicalDependency#getJustifier()
+     * @see org.kie.common.LogicalDependency#getJustifier()
      */
     public Activation getJustifier() {
         return this.justifier;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.LogicalDependency#getValue()
+     * @see org.kie.common.LogicalDependency#getValue()
      */
     public Object getObject() {
         return this.object;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.LogicalDependency#getValue()
+     * @see org.kie.common.LogicalDependency#getValue()
      */
     public Object getValue() {
         return this.value;

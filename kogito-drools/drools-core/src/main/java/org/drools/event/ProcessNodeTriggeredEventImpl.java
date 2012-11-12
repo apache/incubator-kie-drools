@@ -16,9 +16,9 @@
 
 package org.drools.event;
 
-import org.drools.event.process.ProcessNodeTriggeredEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.NodeInstance;
+import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.NodeInstance;
 
 public class ProcessNodeTriggeredEventImpl extends ProcessEvent implements ProcessNodeTriggeredEvent {
 

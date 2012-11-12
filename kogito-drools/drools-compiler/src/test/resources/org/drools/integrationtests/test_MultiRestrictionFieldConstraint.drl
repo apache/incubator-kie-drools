@@ -1,6 +1,6 @@
-package org.drools
+package org.kie
 
-import org.drools.Person;
+import org.kie.Person;
 
 global java.util.List list1;
 global java.util.List list2;

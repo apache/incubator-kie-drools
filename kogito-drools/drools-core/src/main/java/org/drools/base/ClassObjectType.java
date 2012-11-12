@@ -26,9 +26,9 @@ import org.drools.InitialFact;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.AgendaItem;
 import org.drools.reteoo.InitialFactImpl;
-import org.drools.runtime.rule.Activation;
 import org.drools.spi.ClassWireable;
 import org.drools.spi.ObjectType;
+import org.kie.runtime.rule.Activation;
 
 /**
  * Java class semantics <code>ObjectType</code>.
@@ -101,7 +101,7 @@ public class ClassObjectType
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.clsName = in.readUTF();
-        if ( clsName.equals( "org.drools.InitialFact" ) || clsName.equals( "org.drools.base.DroolsQuery" ) ) {
+        if ( clsName.equals( "org.kie.InitialFact" ) || clsName.equals( "org.kie.base.DroolsQuery" ) ) {
             // we handle this one especially as it never gets written to the packagestore for rewiring
             try {
                 setClassType( getClass().getClassLoader().loadClass( clsName ) );
@@ -138,7 +138,7 @@ public class ClassObjectType
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.drools.spi.ObjectType
+    // org.kie.spi.ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     //    /**

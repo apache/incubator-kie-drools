@@ -20,23 +20,24 @@ package org.drools.event;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.drools.definition.KnowledgeDefinition;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
 import java.util.Iterator;
-import org.drools.ChangeSet;
-import org.drools.KnowledgeBase;
-import org.drools.agent.KnowledgeAgent.ResourceStatus;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
+
+import org.kie.ChangeSet;
+import org.kie.KnowledgeBase;
+import org.kie.agent.KnowledgeAgent.ResourceStatus;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgeDefinition;
+import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeResourceProcessedEvent;
+import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
+import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
+import org.kie.io.Resource;
 
 public class KnowledgeAgentEventSupport extends AbstractEventSupport<KnowledgeAgentEventListener> {
 

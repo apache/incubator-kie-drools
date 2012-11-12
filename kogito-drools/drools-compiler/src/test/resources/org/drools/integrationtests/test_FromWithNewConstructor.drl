@@ -1,8 +1,8 @@
-package org.drools;
+package org.kie;
 
-import org.drools.Query;
-import org.drools.Results;
-import org.drools.Storage;
+import org.kie.Query;
+import org.kie.Results;
+import org.kie.Storage;
 
 rule "Verify_1"
     when

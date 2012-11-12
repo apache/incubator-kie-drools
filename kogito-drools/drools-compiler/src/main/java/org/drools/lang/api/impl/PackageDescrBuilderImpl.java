@@ -1,6 +1,5 @@
 package org.drools.lang.api.impl;
 
-import org.drools.io.Resource;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
@@ -14,6 +13,7 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.kie.io.Resource;
 
 /**
  * A builder implementation for PackageDescrs using a fluent API.

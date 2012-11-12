@@ -25,18 +25,18 @@ import org.drools.reteoo.builder.BuildContext;
  *     Config:
  *         drools.lrUnlinkingEnabled, true;
  *     ObjectTypeNode:
- *         otnLeft1, org.drools.Person;
+ *         otnLeft1, org.kie.Person;
  *     LeftInputAdapterNode:
  *         lian0, otnLeft1;
  *     ObjectTypeNode:
- *         otnRight1, org.drools.Person;
+ *         otnRight1, org.kie.Person;
  *     Binding:
- *          p1, 0, org.drools.Person, age;
+ *          p1, 0, org.kie.Person, age;
  *     JoinNode:
  *         join1, lian0, otnRight1;
  *         age, !=, p1;
  *     Facts:
- *         new org.drools.Person('darth', 35), new org.drools.Person('bobba', 36),
+ *         new org.kie.Person('darth', 35), new org.kie.Person('bobba', 36),
  *</pre>
  * 
  */

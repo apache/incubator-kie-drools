@@ -32,10 +32,10 @@ import javax.persistence.Transient;
 
 import junit.framework.Assert;
 
-import org.drools.KnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
+import org.kie.KnowledgeBase;
 
 @Entity
 @SequenceGenerator(name="marshalledDataIdSeq", sequenceName="MARSHALLEDDATA_ID_SEQ")

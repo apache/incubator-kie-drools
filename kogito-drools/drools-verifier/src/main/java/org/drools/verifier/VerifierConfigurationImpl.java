@@ -19,8 +19,8 @@ package org.drools.verifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 public class VerifierConfigurationImpl
     implements

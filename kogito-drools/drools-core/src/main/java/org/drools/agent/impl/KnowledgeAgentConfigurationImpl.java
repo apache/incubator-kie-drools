@@ -18,17 +18,17 @@ package org.drools.agent.impl;
 
 import java.util.Properties;
 
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.conf.MonitorChangesetEventsOption;
-import org.drools.agent.conf.NewInstanceOption;
-import org.drools.agent.conf.ScanDirectoriesOption;
-import org.drools.agent.conf.ScanResourcesOption;
-import org.drools.agent.conf.UseKnowledgeBaseClassloaderOption;
-import org.drools.agent.conf.ValidationTimeoutOption;
 import org.drools.core.util.StringUtils;
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
-import org.drools.util.CompositeClassLoader;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.agent.conf.MonitorChangesetEventsOption;
+import org.kie.agent.conf.NewInstanceOption;
+import org.kie.agent.conf.ScanDirectoriesOption;
+import org.kie.agent.conf.ScanResourcesOption;
+import org.kie.agent.conf.UseKnowledgeBaseClassloaderOption;
+import org.kie.agent.conf.ValidationTimeoutOption;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 
 /**
  * drools.agent.scanResources = <true|false>

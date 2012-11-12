@@ -16,10 +16,6 @@
 
 package org.drools.command.builder;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.command.Context;
 import org.drools.command.ResolvingKnowledgeCommandContext;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
@@ -27,6 +23,10 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.StringUtils;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
 
 public class NewKnowledgeBuilderCommand
     implements

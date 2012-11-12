@@ -33,7 +33,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.Variable;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
@@ -41,6 +40,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.runtime.rule.Variable;
 
 import static org.junit.Assert.*;
 

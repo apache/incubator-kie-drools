@@ -4,7 +4,7 @@ priorClaims
 policyType
 discount
 
-package org.drools.examples.decisiontable;
+package org.kie.examples.decisiontable;
 
 template "discounts"
 age

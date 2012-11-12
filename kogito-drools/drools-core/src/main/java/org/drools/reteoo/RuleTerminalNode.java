@@ -45,7 +45,6 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.common.UpdateContext;
-import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
@@ -54,6 +53,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.time.impl.ExpressionIntervalTimer;
+import org.kie.event.rule.ActivationCancelledCause;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -66,7 +66,7 @@ import java.util.Map;
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
  * matched <code>Rule</code>.
  *
- * @see org.drools.rule.Rule
+ * @see org.kie.rule.Rule
  */
 public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFactory {
     // ------------------------------------------------------------

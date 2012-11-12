@@ -290,7 +290,7 @@ public class SchedulerTest extends DroolsTestCase {
     //        final Rule rule = new Rule( "test-rule" );
     //
     //        // add consequence
-    //        rule.setConsequence( new org.drools.spi.Consequence() {
+    //        rule.setConsequence( new org.kie.spi.Consequence() {
     //            public void invoke(Activation activation,
     //                               WorkingMemory workingMemory) throws ConsequenceException {
     //                throw new ConsequenceException( "not enough cheese",

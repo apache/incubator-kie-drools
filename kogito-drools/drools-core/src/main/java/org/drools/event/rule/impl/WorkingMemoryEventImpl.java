@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.event.rule.WorkingMemoryEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.PropagationContext;
+import org.kie.event.rule.WorkingMemoryEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.PropagationContext;
 
 public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizable {
     private KnowledgeRuntime kruntime;

@@ -8,7 +8,6 @@ import java.util.List;
 import org.drools.Cat;
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalRuleBase;
@@ -18,8 +17,9 @@ import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class AlphaNetworkModifyTest extends CommonTestMethodBase {
     

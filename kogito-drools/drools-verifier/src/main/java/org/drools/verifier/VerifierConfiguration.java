@@ -18,9 +18,9 @@ package org.drools.verifier;
 
 import java.util.Map;
 
-import org.drools.PropertiesConfiguration;
-import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
+import org.kie.PropertiesConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 public interface VerifierConfiguration
     extends

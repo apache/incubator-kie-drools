@@ -31,16 +31,16 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.Calendars;
-import org.drools.runtime.Channel;
-import org.drools.runtime.ExitPoint;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.time.TimerService;
 import org.drools.type.DateFormats;
+import org.kie.runtime.Calendars;
+import org.kie.runtime.Channel;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public interface InternalWorkingMemory
     extends

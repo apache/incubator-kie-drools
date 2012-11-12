@@ -1,12 +1,12 @@
 package org.drools.command.impl;
 
-import org.drools.command.Command;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.process.StartProcessInstanceCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.kie.command.Command;
 
 public class FireAllRulesInterceptor extends AbstractInterceptor {
 

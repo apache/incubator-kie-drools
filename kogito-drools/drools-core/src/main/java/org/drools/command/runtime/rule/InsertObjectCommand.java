@@ -31,9 +31,9 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectCommand

@@ -127,7 +127,7 @@ public class SlidingLengthWindow
     /**
      * @inheritDoc
      *
-     * @see org.drools.rule.Behavior#retractRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
+     * @see org.kie.rule.Behavior#retractRightTuple(java.lang.Object, org.kie.reteoo.RightTuple, org.kie.common.InternalWorkingMemory)
      */
     public void retractFact(final WindowMemory memory,
                             final Object context,

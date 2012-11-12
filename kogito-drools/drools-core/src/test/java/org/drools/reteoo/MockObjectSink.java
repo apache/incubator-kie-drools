@@ -26,9 +26,9 @@ import java.util.Map;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.definition.rule.Rule;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
+import org.kie.definition.rule.Rule;
 
 public class MockObjectSink
     implements

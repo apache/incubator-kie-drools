@@ -21,9 +21,9 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.builder.ResourceType;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.io.Resource;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 public interface InternalResource extends Resource {
     void setResourceType(ResourceType resourceType);

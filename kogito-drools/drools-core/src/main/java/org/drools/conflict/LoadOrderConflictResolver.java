@@ -24,7 +24,7 @@ import org.drools.spi.ConflictResolver;
  * conflict.
  * 
  * @see #getInstance
- * @see org.drools.rule.Rule#getLoadOrder
+ * @see org.kie.rule.Rule#getLoadOrder
  * 
  *
  * @version $Id: LoadOrderConflictResolver.java,v 1.1 2004/06/25 01:55:16

@@ -43,7 +43,7 @@ package org.drools.jsr94.rules;
 import javax.rules.Handle;
 
 import org.drools.common.EventFactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * The Drools implementation of the <code>Handle</code> interface which provides

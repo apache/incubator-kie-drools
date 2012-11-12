@@ -185,12 +185,12 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
-            <Export-Package>!org.drools.visualize,org.drools.reteoo.*, org.drools.*</Export-Package>
+            <Bundle-SymbolicName>org.kie.core</Bundle-SymbolicName>
+            <Require-Bundle>org.kie.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
+            <Import-Package>!org.kie.*, *,org.osgi.util.tracker</Import-Package>
+            <Export-Package>!org.kie.visualize,org.kie.reteoo.*, org.kie.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
+            <Bundle-Activator>org.kie.osgi.core.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
@@ -198,7 +198,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <excludePackageNames>org.drools.asm*,org.drools.objenesis.*,org.drools.commons.jci.*</excludePackageNames>
+          <excludePackageNames>org.kie.asm*,org.kie.objenesis.*,org.kie.commons.jci.*</excludePackageNames>
         </configuration>
       </plugin>
     </plugins>

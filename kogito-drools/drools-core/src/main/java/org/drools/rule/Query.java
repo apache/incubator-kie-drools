@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class Query extends Rule implements org.drools.definition.rule.Query {
+public class Query extends Rule implements org.kie.definition.rule.Query {
 
     private static final long serialVersionUID = 510l;
 

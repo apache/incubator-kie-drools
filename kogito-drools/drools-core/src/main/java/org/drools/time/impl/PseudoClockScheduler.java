@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.drools.SystemEventListenerFactory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.time.AcceptsTimerJobFactoryManager;
@@ -38,6 +37,7 @@ import org.drools.time.JobHandle;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
+import org.kie.SystemEventListenerFactory;
 
 /**
  * A PseudoClockScheduler is a scheduler based on a user controlled clock 
@@ -98,7 +98,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      * 
-     * @see org.drools.temporal.SessionClock#getCurrentTime()
+     * @see org.kie.temporal.SessionClock#getCurrentTime()
      */
     public long getCurrentTime() {
         return this.timer.get();
@@ -107,7 +107,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      *
-     * @see org.drools.time.TimerService#scheduleJob(org.drools.time.Job, org.drools.time.JobContext, org.drools.time.Trigger)
+     * @see org.kie.time.TimerService#scheduleJob(org.kie.time.Job, org.kie.time.JobContext, org.kie.time.Trigger)
      */
     public JobHandle scheduleJob(Job job,
                                  JobContext ctx,
@@ -141,7 +141,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      *
-     * @see org.drools.time.TimerService#removeJob(org.drools.time.JobHandle)
+     * @see org.kie.time.TimerService#removeJob(org.kie.time.JobHandle)
      */
     public boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel( true );

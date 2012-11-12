@@ -16,11 +16,11 @@
 
 package org.drools.marshalling.impl;
 
-import org.drools.KnowledgeBase;
-import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.MarshallerProvider;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.kie.KnowledgeBase;
+import org.kie.marshalling.Marshaller;
+import org.kie.marshalling.MarshallerProvider;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
 
 public class MarshallerProviderImpl implements MarshallerProvider {
 

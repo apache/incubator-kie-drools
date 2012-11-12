@@ -16,7 +16,7 @@
 
 package org.drools.definitions.rule.impl;
 
-import org.drools.definition.rule.Global;
+import org.kie.definition.rule.Global;
 
 import java.io.Externalizable;
 import java.io.IOException;

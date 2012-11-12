@@ -22,8 +22,8 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalAgenda;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.AgendaImpl;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ClearRuleFlowGroupCommand implements GenericCommand<Object> {
 

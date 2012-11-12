@@ -17,12 +17,12 @@
 package org.drools.factmodel.traits;
 
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.definition.type.FactField;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
+import org.kie.definition.type.FactField;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;

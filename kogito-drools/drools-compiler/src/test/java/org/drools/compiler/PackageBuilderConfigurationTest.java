@@ -13,10 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.base.TypeResolver;
-import org.drools.builder.KnowledgeBuilderResult;
-import org.drools.builder.ResultSeverity;
-import org.drools.builder.conf.KBuilderSeverityOption;
-import org.drools.io.Resource;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -47,10 +43,14 @@ import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.util.ChainedProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.builder.ResultSeverity;
+import org.kie.builder.conf.KBuilderSeverityOption;
+import org.kie.io.Resource;
+import org.kie.util.ChainedProperties;
 
 public class PackageBuilderConfigurationTest {
 

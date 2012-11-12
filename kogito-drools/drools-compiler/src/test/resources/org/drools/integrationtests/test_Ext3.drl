@@ -1,6 +1,6 @@
-package org.drools.compiler.anothertest;
+package org.kie.compiler.anothertest;
 
-import org.drools.compiler.test.Person;
+import org.kie.compiler.test.Person;
 
 declare ABean
     field : String

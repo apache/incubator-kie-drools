@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.drools.base.ClassFieldAccessor;
 import org.drools.core.util.StringUtils;
-import org.drools.definition.type.FactField;
 import org.drools.factmodel.traits.Alias;
+import org.kie.definition.type.FactField;
 import org.mvel2.MVEL;
 
 /**

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
 
 public interface KBase {
 

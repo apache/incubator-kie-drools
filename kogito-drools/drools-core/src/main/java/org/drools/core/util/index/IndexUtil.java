@@ -1,7 +1,6 @@
 package org.drools.core.util.index;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.conf.IndexPrecedenceOption;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTupleMemory;
@@ -12,6 +11,7 @@ import org.drools.rule.IndexableConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
+import org.kie.conf.IndexPrecedenceOption;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -18,11 +18,12 @@ package org.drools.conf;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.conf.ClockTypeOption;
+
 import static org.junit.Assert.*;
 
-import org.drools.KnowledgeBaseFactory;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.conf.ClockTypeOption;
 
 public class KnowledgeSessionConfigurationTest {
 

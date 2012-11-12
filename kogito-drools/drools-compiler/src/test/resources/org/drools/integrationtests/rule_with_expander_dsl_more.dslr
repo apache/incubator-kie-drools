@@ -1,8 +1,8 @@
 package test
 
 // must be in the following order.
-import org.drools.Person
-import org.drools.Cheese
+import org.kie.Person
+import org.kie.Cheese
 
 // refer to test_expander.dsl
 expander test_expander.dsl

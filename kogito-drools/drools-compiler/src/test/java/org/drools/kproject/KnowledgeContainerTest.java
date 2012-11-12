@@ -1,15 +1,15 @@
 package org.drools.kproject;
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeContainer;
 import org.drools.builder.impl.KnowledgeContainerImpl;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
 import org.junit.Test;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.KnowledgeContainer;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
     }
 
     private String createDRL(String ruleName) {
-        return "package org.drools.test\n" +
+        return "package org.kie.test\n" +
                 "global java.util.List list\n" +
                 "rule " + ruleName + "\n" +
                 "when\n" +

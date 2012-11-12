@@ -193,7 +193,7 @@ public class AgendaItem
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.spi.Activation#getActivationNumber()
+     * @see org.kie.spi.Activation#getActivationNumber()
      */
     public long getActivationNumber() {
         return this.activationNumber;

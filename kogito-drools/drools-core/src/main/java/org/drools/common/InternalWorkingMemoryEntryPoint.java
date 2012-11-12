@@ -24,8 +24,8 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 
 
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint {
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
@@ -33,7 +33,7 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
     public void retract(final FactHandle factHandle,
                         final Rule rule,
                         final Activation activation) throws FactException;
-    public void update(org.drools.runtime.rule.FactHandle handle,
+    public void update(org.kie.runtime.rule.FactHandle handle,
                        Object object,
                        long mask,
                        Activation activation) throws FactException;

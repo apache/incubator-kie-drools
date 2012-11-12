@@ -65,14 +65,14 @@ public class CollectAccumulator
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#createContext()
+     * @see org.kie.spi.Accumulator#createContext()
      */
     public Serializable createContext() {
         return new CollectContext();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#init(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public void init(Object workingMemoryContext,
                      Object context,
@@ -83,7 +83,7 @@ public class CollectAccumulator
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#accumulate(java.lang.Object, org.drools.spi.Tuple, org.drools.common.InternalFactHandle, org.drools.rule.Declaration[], org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public void accumulate(Object workingMemoryContext,
                            Object context,
@@ -108,7 +108,7 @@ public class CollectAccumulator
     }
 
     /* (non-Javadoc)
-     * @see org.drools.spi.Accumulator#getResult(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     * @see org.kie.spi.Accumulator#getResult(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public Object getResult(Object workingMemoryContext,
                             Object context,

@@ -18,7 +18,7 @@ package org.drools.event;
 
 import java.util.EventObject;
 
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 
 public class AfterProcessAddedEvent extends EventObject {
 

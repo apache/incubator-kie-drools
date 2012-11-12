@@ -10,13 +10,13 @@ import java.io.StringReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import static org.junit.Assert.*;
 
@@ -168,9 +168,9 @@ public class LargeRuleBase {
     }
 
     public static String getHeader() {
-        return "package org.drools.test; \n " + "import org.drools.Person; \n "
-                + "import org.drools.Cheese; \n "
-                + "import org.drools.Cheesery; \n "
+        return "package org.kie.test; \n " + "import org.kie.Person; \n "
+                + "import org.kie.Cheese; \n "
+                + "import org.kie.Cheesery; \n "
                 + " import java.util.List \n "
                 + " global List list \n dialect 'mvel'\n  ";
     }

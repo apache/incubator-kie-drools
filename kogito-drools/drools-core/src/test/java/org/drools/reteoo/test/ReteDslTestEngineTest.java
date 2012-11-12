@@ -243,7 +243,7 @@ public class ReteDslTestEngineTest {
                       steps[step].getCommands().get( 0 )[0] );
         assertEquals( "0",
                       steps[step].getCommands().get( 0 )[1] );
-        assertEquals( "org.drools.Person",
+        assertEquals( "org.kie.Person",
                       steps[step].getCommands().get( 0 )[2] );
         assertEquals( "likes",
                       steps[step].getCommands().get( 0 )[3] );
@@ -258,9 +258,9 @@ public class ReteDslTestEngineTest {
                       steps[step].getCommands().size() );
         assertEquals( 6,
                       steps[step].getCommands().get( 0 ).length );
-        assertEquals( "org.drools.Person('darth', 35, \"brie\")",
+        assertEquals( "org.kie.Person('darth', 35, \"brie\")",
                       steps[step].getCommands().get( 0 )[0] );
-        assertEquals( "org.drools.Cheese('brie', 12)",
+        assertEquals( "org.kie.Cheese('brie', 12)",
                       steps[step].getCommands().get( 0 )[3] );
     }
 
@@ -412,7 +412,7 @@ public class ReteDslTestEngineTest {
     public void testWithStep() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "Facts:\n";
-        str += "    1, 2, new org.drools.Person('darth', 35),\n";
+        str += "    1, 2, new org.kie.Person('darth', 35),\n";
         str += "    'good bye', new java.util.ArrayList();\n";
         str += "With:\n";
         str += "    h2, age = 36, city = 'la',\n";
@@ -690,15 +690,15 @@ public class ReteDslTestEngineTest {
     public void testBetaNodeModifyOperations() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn1, org.drools.Person;\n";
+        str += "    otn1, org.kie.Person;\n";
         str += "LeftInputAdapterNode:\n";
         str += "    lian0, otn1;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn2, org.drools.Person;\n";
+        str += "    otn2, org.kie.Person;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn3, org.drools.Person;\n";
+        str += "    otn3, org.kie.Person;\n";
         str += "Binding:\n";
-        str += "     p1, 0, org.drools.Person, age;\n";
+        str += "     p1, 0, org.kie.Person, age;\n";
         str += "JoinNode:\n";
         str += "    join1, lian0, otn2;\n";
         str += "    age, ==, p1;\n";
@@ -706,9 +706,9 @@ public class ReteDslTestEngineTest {
         str += "    join2, join1, otn3;\n";
         str += "    age, ==, p1;\n";
         str += "Facts:\n";
-        str += "    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),\n";
-        str += "    new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),\n";
-        str += "    new org.drools.Person('dave', 36);\n";
+        str += "    new org.kie.Person('darth', 35), new org.kie.Person('bobba', 35),\n";
+        str += "    new org.kie.Person('yoda', 35), new org.kie.Person('luke', 35),\n";
+        str += "    new org.kie.Person('dave', 36);\n";
         str += "assert:\n";
         str += "    otn1, [h1, h3, h4];\n";
         str += "    otn2, [h0, h2];\n";
@@ -762,20 +762,20 @@ public class ReteDslTestEngineTest {
     public void testNotNodeStep() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn0, org.drools.Person;\n";
+        str += "    otn0, org.kie.Person;\n";
         str += "LeftInputAdapterNode:\n";
         str += "    lian0, otn0;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn1, org.drools.Person;\n";
+        str += "    otn1, org.kie.Person;\n";
         str += "Binding:\n";
-        str += "     p1, 0, org.drools.Person, age;\n";
+        str += "     p1, 0, org.kie.Person, age;\n";
         str += "NotNode:\n";
         str += "    not0, lian0, otn1;\n";
         str += "    age, !=, p1;\n";
         str += "LeftTupleSink:\n";
         str += "    sink, not0;\n";
         str += "Facts:\n";
-        str += "    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35);\n";
+        str += "    new org.kie.Person('darth', 35), new org.kie.Person('bobba', 35);\n";
         str += "assert:\n";
         str += "    otn0, [h0];\n";
         str += "    otn1, [h1];\n";

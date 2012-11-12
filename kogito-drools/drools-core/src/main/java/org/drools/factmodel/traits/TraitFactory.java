@@ -16,7 +16,6 @@
 
 package org.drools.factmodel.traits;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorStore;
@@ -32,6 +31,7 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
+import org.kie.KnowledgeBase;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
@@ -54,7 +54,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     public final static String SUFFIX = "_Trait__Extension";
 
-    private static final String pack = "org.drools.factmodel.traits.";
+    private static final String pack = "org.kie.factmodel.traits.";
 
     private Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
 

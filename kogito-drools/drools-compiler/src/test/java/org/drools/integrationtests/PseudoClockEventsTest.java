@@ -26,21 +26,21 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.StockTick;
 import org.drools.StockTickInterface;
 import org.drools.compiler.DroolsParserException;
-import org.drools.conf.EventProcessingOption;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.conf.EventProcessingOption;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.time.SessionClock;
 
 /**
  * Tests related to the pseudo session clock
@@ -48,7 +48,7 @@ import org.junit.Test;
 public class PseudoClockEventsTest extends CommonTestMethodBase {
 
 	int evalFirePseudoClockStockCount = 15;
-	private static final String evalFirePseudoClockDeclaration = "package org.drools\n" +
+	private static final String evalFirePseudoClockDeclaration = "package org.kie\n" +
 			"\n" +
 			"declare StockTick\n" +
 			"    @role( event )\n" +

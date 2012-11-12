@@ -16,20 +16,13 @@
 
 package org.drools.verifier.builder;
 
-import java.io.Reader;
-import java.io.StringReader;
-
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
-import org.drools.compiler.BusinessRuleProvider;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageBuilderErrors;
-import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.dsl.DefaultExpander;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 /**
  * Wraps the PackageBuilder for Verifier.

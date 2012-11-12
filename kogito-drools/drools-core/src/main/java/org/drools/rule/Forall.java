@@ -69,7 +69,7 @@ public class Forall extends ConditionalElement {
         out.writeBoolean( emptyBetaConstraints );
     }
     /* (non-Javadoc)
-     * @see org.drools.rule.ConditionalElement#clone()
+     * @see org.kie.rule.ConditionalElement#clone()
      */
     public Forall clone() {
         return new Forall( this.basePattern,

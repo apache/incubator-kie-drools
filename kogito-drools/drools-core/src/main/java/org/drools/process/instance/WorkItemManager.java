@@ -18,7 +18,7 @@ package org.drools.process.instance;
 
 import java.util.Set;
 
-public interface WorkItemManager extends org.drools.runtime.process.WorkItemManager {
+public interface WorkItemManager extends org.kie.runtime.process.WorkItemManager {
 
     void internalExecuteWorkItem(WorkItem workItem);
 

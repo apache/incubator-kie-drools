@@ -1,4 +1,4 @@
-package org.drools.examples.sudoku
+package org.kie.examples.sudoku
 
 agenda-group "validate"
 

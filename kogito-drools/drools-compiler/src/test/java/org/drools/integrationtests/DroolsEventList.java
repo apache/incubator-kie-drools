@@ -7,8 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.runtime.rule.Row;
-import org.drools.runtime.rule.ViewChangedEventListener;
+import org.kie.runtime.rule.Row;
+import org.kie.runtime.rule.ViewChangedEventListener;
 
 import ca.odell.glazedlists.AbstractEventList;
 

@@ -15,9 +15,9 @@
 */
 package org.drools.compiler;
 
-import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.Function;
+import org.kie.builder.KnowledgeBuilderConfiguration;
 
 
 

@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.ObjectType;
@@ -37,6 +35,8 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.

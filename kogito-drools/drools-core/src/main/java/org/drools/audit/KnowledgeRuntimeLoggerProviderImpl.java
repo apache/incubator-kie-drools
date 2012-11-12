@@ -16,9 +16,9 @@
 
 package org.drools.audit;
 
-import org.drools.event.KnowledgeRuntimeEventManager;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactoryService;
+import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.logger.KnowledgeRuntimeLogger;
+import org.kie.logger.KnowledgeRuntimeLoggerFactoryService;
 
 public class KnowledgeRuntimeLoggerProviderImpl
     implements

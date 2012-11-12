@@ -21,11 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.command.BatchExecutionCommand;
-import org.drools.command.Command;
-import org.drools.command.CommandFactoryService;
 import org.drools.command.NewKnowledgeBuilderConfigurationCommand;
-import org.drools.command.Setter;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
@@ -45,9 +41,13 @@ import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.rule.FactHandle;
+import org.kie.command.BatchExecutionCommand;
+import org.kie.command.Command;
+import org.kie.command.CommandFactoryService;
+import org.kie.command.Setter;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.rule.FactHandle;
 
 public class CommandFactoryServiceImpl implements CommandFactoryService {
 

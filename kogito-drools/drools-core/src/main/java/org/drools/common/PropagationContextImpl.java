@@ -209,13 +209,13 @@ public class PropagationContextImpl
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.reteoo.PropagationContext#getRuleOrigin()
+     * @see org.kie.reteoo.PropagationContext#getRuleOrigin()
      */
     public Rule getRuleOrigin() {
         return this.rule;
     }
 
-    public org.drools.definition.rule.Rule getRule() {
+    public org.kie.definition.rule.Rule getRule() {
         return this.rule;
     }
 
@@ -238,7 +238,7 @@ public class PropagationContextImpl
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.reteoo.PropagationContext#getType()
+     * @see org.kie.reteoo.PropagationContext#getType()
      */
     public int getType() {
         return this.type;

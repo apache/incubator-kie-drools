@@ -16,6 +16,9 @@
 
 package org.drools.verifier.incoherence;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,14 +27,13 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Test;
 
 public class IncoherentPatternsTest extends TestBaseOld {
 

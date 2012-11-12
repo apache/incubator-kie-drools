@@ -49,8 +49,8 @@ import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.spi.Constraint;
 import org.drools.spi.Wireable;
-import org.drools.util.CompositeClassLoader;
-import org.drools.util.FastClassLoader;
+import org.kie.util.CompositeClassLoader;
+import org.kie.util.FastClassLoader;
 
 public class JavaDialectRuntimeData
                                    implements

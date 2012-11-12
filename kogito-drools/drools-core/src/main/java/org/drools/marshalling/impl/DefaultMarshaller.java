@@ -22,8 +22,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.common.InternalRuleBase;
@@ -34,19 +32,21 @@ import org.drools.concurrent.ExecutorService;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.MarshallingConfiguration;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalResolver;
-import org.drools.time.SessionClock;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.marshalling.Marshaller;
+import org.kie.marshalling.MarshallingConfiguration;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.time.SessionClock;
 
 public class DefaultMarshaller
         implements
@@ -77,7 +77,7 @@ public class DefaultMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.drools.marshalling.Marshaller#read(java.io.InputStream, org.drools.common.InternalRuleBase, int, org.drools.concurrent.ExecutorService)
+     * @see org.kie.marshalling.Marshaller#read(java.io.InputStream, org.kie.common.InternalRuleBase, int, org.kie.concurrent.ExecutorService)
      */
     public StatefulKnowledgeSession unmarshall(final InputStream stream,
                                                KnowledgeSessionConfiguration config,
@@ -142,7 +142,7 @@ public class DefaultMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.drools.marshalling.Marshaller#write(java.io.OutputStream, org.drools.common.InternalRuleBase, org.drools.StatefulSession)
+     * @see org.kie.marshalling.Marshaller#write(java.io.OutputStream, org.kie.common.InternalRuleBase, org.kie.StatefulSession)
      */
     public void marshall(final OutputStream stream,
                          final StatefulKnowledgeSession ksession,

@@ -16,8 +16,8 @@
 
 package org.drools.command;
 
-import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.command.impl.GenericCommand;
+import org.kie.builder.KnowledgeBuilderFactory;
 
 /**
  *

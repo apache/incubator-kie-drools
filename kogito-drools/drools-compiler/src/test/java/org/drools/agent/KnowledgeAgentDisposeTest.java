@@ -3,12 +3,13 @@ package org.drools.agent;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.SystemEventListener;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.SystemEventListener;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 

@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 
 import org.drools.Agenda;
 import org.drools.common.InternalAgenda;
-import org.drools.runtime.rule.AgendaGroup;
-import org.drools.runtime.rule.RuleFlowGroup;
+import org.kie.runtime.rule.AgendaGroup;
+import org.kie.runtime.rule.RuleFlowGroup;
 
 public class RuleFlowGroupImpl implements RuleFlowGroup, Externalizable {
     

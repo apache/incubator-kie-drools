@@ -16,6 +16,9 @@
 
 package org.drools.verifier;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -27,8 +30,6 @@ import java.util.Set;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
@@ -36,12 +37,9 @@ import org.drools.rule.Package;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.visitor.PackageDescrVisitor;
-
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.conf.LanguageLevelOption;
 
 abstract public class TestBaseOld {
 

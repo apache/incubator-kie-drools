@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.drools.common.ActivationNode;
 
-public interface RuleFlowGroup extends org.drools.runtime.rule.RuleFlowGroup, Iterable<ActivationNode> {
+public interface RuleFlowGroup extends org.kie.runtime.rule.RuleFlowGroup, Iterable<ActivationNode> {
 
     String getName();
 

@@ -16,7 +16,7 @@
 
 package org.drools;
 
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 
 /**
  * Indicates an error integrating a <code>Process</code> or <code>Package</code>

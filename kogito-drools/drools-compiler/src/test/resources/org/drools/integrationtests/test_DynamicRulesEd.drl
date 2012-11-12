@@ -1,6 +1,6 @@
 package ed;
 
-import org.drools.Person;
+import org.kie.Person;
 
 global java.util.List results;
 

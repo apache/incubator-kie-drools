@@ -1,4 +1,4 @@
-package org.drools
+package org.kie
 
 query "2 persons with the same status"
         p : Person($status : status, $age : age)

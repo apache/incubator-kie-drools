@@ -1,6 +1,6 @@
-package org.drools.test;
+package org.kie.test;
 
-import org.drools.Cheese;
+import org.kie.Cheese;
 
 function boolean throwException(Object object) {
     throw new RuntimeException( "this should throw an exception" );

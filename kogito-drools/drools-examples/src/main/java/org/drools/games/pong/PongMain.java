@@ -1,22 +1,18 @@
 package org.drools.games.pong;
 
-import static org.drools.builder.ResourceType.DRL;
-import static org.drools.io.ResourceFactory.newClassPathResource;
-
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.conf.EventProcessingOption;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.BeforeActivationFiredEvent;
-import org.drools.event.rule.DefaultAgendaEventListener;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.ConsequenceException;
+import static org.kie.builder.ResourceType.DRL;
+import static org.kie.io.ResourceFactory.newClassPathResource;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class PongMain {
 

@@ -15,9 +15,9 @@
  */
 package org.drools.compiler;
 
-import org.drools.builder.KnowledgeBuilderResult;
-import org.drools.builder.ResultSeverity;
-import org.drools.io.Resource;
+import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.builder.ResultSeverity;
+import org.kie.io.Resource;
 
 /**
  * A base abstract class for all Knowledge Builder results

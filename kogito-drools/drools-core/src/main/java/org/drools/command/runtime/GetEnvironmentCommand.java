@@ -20,8 +20,8 @@ import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.Environment;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.Environment;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class GetEnvironmentCommand
     implements

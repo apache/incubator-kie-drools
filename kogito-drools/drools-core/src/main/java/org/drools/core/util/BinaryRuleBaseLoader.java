@@ -108,7 +108,7 @@ public class BinaryRuleBaseLoader {
                     addPackage( pkg );
                 }
             } else {
-                throw new IllegalArgumentException( "Can only add instances of org.drools.rule.Package to a rulebase instance." );
+                throw new IllegalArgumentException( "Can only add instances of org.kie.rule.Package to a rulebase instance." );
             }
 
         } catch ( IOException e ) {

@@ -3,9 +3,6 @@ package org.drools.integrationtests;
 import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -16,28 +13,31 @@ import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.mvel.MVELDebugHandler;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.type.DateFormatsImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 
@@ -101,7 +101,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testIncrementOperator() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "global java.util.List list \n";
         str += "rule rule1 \n";
         str += "    dialect \"mvel\" \n";
@@ -140,7 +140,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testEvalWithBigDecimal() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "import java.math.BigDecimal; \n";
         str += "global java.util.List list \n";
         str += "rule rule1 \n";
@@ -246,8 +246,8 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testArrays() throws Exception {
         String text = "package test_mvel;\n";
-        text += "import org.drools.integrationtests.TestObject;\n";
-        text += "import function org.drools.integrationtests.TestObject.array;\n";;
+        text += "import org.kie.integrationtests.TestObject;\n";
+        text += "import function org.kie.integrationtests.TestObject.array;\n";;
         text += "no-loop true\n";
         text += "dialect \"mvel\"\n";
         text += "rule \"1\"\n";
@@ -284,7 +284,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testPackageImports() throws Exception {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.kie \n";
         str += "dialect \"mvel\"\n";
         str += "import org.acme.healthcare.* \n";
         str += "import org.acme.insurance.* \n";
@@ -717,7 +717,7 @@ public class MVELTest extends CommonTestMethodBase {
     public void testNestedEnumFromJar() {
         String str = ""+
            "package org.test \n" +
-           "import org.drools.examples.eventing.EventRequest \n" +
+           "import org.kie.examples.eventing.EventRequest \n" +
            "global java.util.List list \n" +
            "rule 'zaa'\n  " +
            "when \n  " +
@@ -861,8 +861,8 @@ public class MVELTest extends CommonTestMethodBase {
         String [] operators = {"," ,"=" , "|=", "*"};
         //test various in consequence
         String strBegin = "" +
-            "package org.drools \n" +
-            "import org.drools.Cheese \n" +
+            "package org.kie \n" +
+            "import org.kie.Cheese \n" +
             "dialect \"mvel\"\n" +
             "rule rule1 \n" +
             "when \n" +

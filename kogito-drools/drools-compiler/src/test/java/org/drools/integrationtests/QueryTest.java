@@ -15,8 +15,6 @@ import org.drools.DomainObject;
 import org.drools.FactHandle;
 import org.drools.InsertedObject;
 import org.drools.Interval;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
@@ -26,11 +24,6 @@ import org.drools.Worker;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -39,23 +32,30 @@ import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.Package;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.QueryListenerOption;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.QueryResultsRow;
-import org.drools.runtime.rule.Row;
-import org.drools.runtime.rule.Variable;
-import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ObjectType;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.QueryListenerOption;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.QueryResultsRow;
+import org.kie.runtime.rule.Row;
+import org.kie.runtime.rule.Variable;
+import org.kie.runtime.rule.ViewChangedEventListener;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -103,12 +103,12 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        assertNotNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
+        assertNotNull( ruleBase.getPackage( "org.kie.test" ).getRule( "simple query" ) );
 
-        ruleBase.removeQuery( "org.drools.test",
+        ruleBase.removeQuery( "org.kie.test",
                               "simple query" );
 
-        assertNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
+        assertNull( ruleBase.getPackage( "org.kie.test" ).getRule( "simple query" ) );
 
         results = session.getQueryResults( "simple query" );
         assertEquals( 0,
@@ -157,7 +157,7 @@ public class QueryTest extends CommonTestMethodBase {
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
 
-        final org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "assertedobjquery" );
+        final org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "assertedobjquery" );
         assertEquals( 1,
                       results.size() );
         assertEquals( new InsertedObject( "value1" ),
@@ -225,7 +225,7 @@ public class QueryTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
 
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "assertedobjquery",
+        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "assertedobjquery",
                                                                                  new String[]{"value1"} );
         assertEquals( 1,
                       results.size() );
@@ -243,21 +243,21 @@ public class QueryTest extends CommonTestMethodBase {
                       results.size() );
 
         assertEquals( new InsertedObject( "value2" ),
-                      ((org.drools.runtime.rule.QueryResultsRow) results.iterator().next()).get( "assertedobj" ) );
+                      ((org.kie.runtime.rule.QueryResultsRow) results.iterator().next()).get( "assertedobj" ) );
 
         results = ksession.getQueryResults( "assertedobjquery2",
                                             new String[]{"value3", "value2"} );
         assertEquals( 1,
                       results.size() );
         assertEquals( new InsertedObject( "value2" ),
-                      ((org.drools.runtime.rule.QueryResultsRow) results.iterator().next()).get( "assertedobj" ) );
+                      ((org.kie.runtime.rule.QueryResultsRow) results.iterator().next()).get( "assertedobj" ) );
     }
 
     @Test
     public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Cheese \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Cheese \n";
         str += "query cheeses \n";
         str += "    stilton : Cheese(type == 'stilton') \n";
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
@@ -313,13 +313,13 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( cheddar2 );
         ksession.insert( cheddar3 );
 
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "cheeses" );
+        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "cheeses" );
         assertEquals( 3,
                       results.size() );
         assertEquals( 2,
                       results.getIdentifiers().length );
         Set newSet = new HashSet();
-        for ( org.drools.runtime.rule.QueryResultsRow result : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow result : results ) {
             list = new ArrayList();
             list.add( result.get( "stilton" ) );
             list.add( result.get( "cheddar" ) );
@@ -334,7 +334,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 2,
                       flatResults.getIdentifiers().length );
         newSet = new HashSet();
-        for ( org.drools.runtime.rule.QueryResultsRow result : flatResults ) {
+        for ( org.kie.runtime.rule.QueryResultsRow result : flatResults ) {
             list = new ArrayList();
             list.add( result.get( "stilton" ) );
             list.add( result.get( "cheddar" ) );
@@ -511,7 +511,7 @@ public class QueryTest extends CommonTestMethodBase {
         Worker worker = new Worker();
         worker.setId( workerId );
 
-        org.drools.runtime.rule.FactHandle handle = ksession.insert( worker );
+        org.kie.runtime.rule.FactHandle handle = ksession.insert( worker );
         ksession.fireAllRules();
 
         assertNotNull( handle );
@@ -564,8 +564,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnification() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Person \n";
         str += "query peeps( String $name, String $likes, int $age ) \n";
         str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
@@ -602,12 +602,12 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p3 );
         ksession.insert( p4 );
 
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 4,
                           results.size() );
         List names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 4,
@@ -622,7 +622,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 3,
                           results.size() );
         names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 3,
@@ -636,7 +636,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 1,
@@ -648,7 +648,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 2,
                           results.size() );
         names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 2,
@@ -661,7 +661,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 1,
@@ -672,8 +672,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnificationOnPatterns() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Person \n";
         str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
         str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
@@ -710,12 +710,12 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p3 );
         ksession.insert( p4 );
 
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v, Variable.v} );
         assertEquals( 4,
                           results.size() );
         List names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 4,
@@ -730,7 +730,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 1,
@@ -741,8 +741,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
@@ -774,12 +774,12 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p1 );
         ksession.insert( p2 );
 
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 2,
                           results.size() );
         List names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertTrue( names.contains( "yoda" ) );
@@ -790,7 +790,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
         names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertTrue( names.contains( "darth" ) );
@@ -799,8 +799,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testOpenQuery() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Cheese \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Cheese \n";
         str += "query cheeses(String $type1, String $type2) \n";
         str += "    stilton : Cheese(type == $type1, $sprice : price) \n";
         str += "    cheddar : Cheese(type == $type2, $cprice : price == stilton.price) \n";
@@ -833,12 +833,12 @@ public class QueryTest extends CommonTestMethodBase {
         Cheese cheddar3 = new Cheese( "cheddar",
                                       3 );
 
-        org.drools.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
+        org.kie.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
         ksession.insert( stilton2 );
         ksession.insert( stilton3 );
         ksession.insert( cheddar1 );
         ksession.insert( cheddar2 );
-        org.drools.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
+        org.kie.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
 
         final List<Object[]> updated = new ArrayList<Object[]>();
         final List<Object[]> removed = new ArrayList<Object[]>();
@@ -1010,7 +1010,7 @@ public class QueryTest extends CommonTestMethodBase {
 
     public void runQueryListenerTest( QueryListenerOption option ) {
         String str = "";
-        str += "package org.drools\n";
+        str += "package org.kie\n";
         str += "query cheeses(String $type) \n";
         str += "    $cheese : Cheese(type == $type) \n";
         str += "end\n";
@@ -1039,7 +1039,7 @@ public class QueryTest extends CommonTestMethodBase {
         // query the session
         List<Cheese> cheeses;
         for ( int i = 0; i < 100; i++ ) {
-            org.drools.runtime.rule.QueryResults queryResults = ksession.getQueryResults( "cheeses",
+            org.kie.runtime.rule.QueryResults queryResults = ksession.getQueryResults( "cheeses",
                                                                                           new Object[]{"stilton"} );
             cheeses = new ArrayList<Cheese>();
             for ( QueryResultsRow row : queryResults ) {
@@ -1056,7 +1056,7 @@ public class QueryTest extends CommonTestMethodBase {
     public void testQueryWithEval() {
         // [Regression in 5.2.0.M2]: NPE during rule evaluation on MVELPredicateExpression.evaluate(MVELPredicateExpression.java:82)
 
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                      "query queryWithEval \n" +
                      "    $do: DomainObject()\n" +
                      "    not DomainObject( id == $do.id, eval(interval.isAfter($do.getInterval())))\n" +
@@ -1076,7 +1076,7 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( do1 );
         ksession.insert( do2 );
 
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "queryWithEval" );
+        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "queryWithEval" );
         assertEquals( 1,
                       results.size() );
         assertEquals( do2,

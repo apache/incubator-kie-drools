@@ -17,21 +17,21 @@
 package org.drools.persistence.session;
 
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.factmodel.traits.TraitableBean;
-import org.drools.io.ResourceFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +64,7 @@ public class JpaPersistenceTraitTest {
 
     @Test
     public void testTraitsWithJPA() {
-        String str = "package org.drools.trait.test; \n" +
+        String str = "package org.kie.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean \n" +
@@ -154,9 +154,9 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals(2, core.getDynamicProperties().size());
-        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
-        assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
-        assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );
+        assertNotNull( core.getTrait( "org.kie.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.kie.trait.test.Mask" ) );
+        assertNotNull( core.getTrait( "org.kie.trait.test.Cloak" ) );
 
     }
 
@@ -166,7 +166,7 @@ public class JpaPersistenceTraitTest {
 
     @Test
     public void testMapBasedTraitsWithJPA() {
-        String str = "package org.drools.trait.test; \n" +
+        String str = "package org.kie.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean2 \n" +
@@ -257,9 +257,9 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 2, core.getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
-        assertNotNull( core.getTrait( "org.drools.trait.test.Mask2" ) );
-        assertNotNull( core.getTrait( "org.drools.trait.test.Cloak2" ) );
+        assertNotNull( core.getTrait( "org.kie.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.kie.trait.test.Mask2" ) );
+        assertNotNull( core.getTrait( "org.kie.trait.test.Cloak2" ) );
 
     }
 
@@ -267,7 +267,7 @@ public class JpaPersistenceTraitTest {
 
     @Test
     public void testTraitsLegacyWrapperWithJPA() {
-        String str = "package org.drools.trait.test; \n" +
+        String str = "package org.kie.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +                "" +
                 "declare TBean \n" +
@@ -340,8 +340,8 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 1, core.getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
-        assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
+        assertNotNull( core.getTrait( "org.kie.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.kie.trait.test.Mask" ) );
 
     }
 }

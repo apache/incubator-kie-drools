@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.event.rule.ObjectUpdatedEvent;
+import org.kie.event.rule.ObjectUpdatedEvent;
 
 public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements ObjectUpdatedEvent {
     private FactHandle  factHandle;

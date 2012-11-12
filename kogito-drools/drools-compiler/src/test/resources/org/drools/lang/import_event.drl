@@ -1,6 +1,6 @@
-package org.drools;
+package org.kie;
 
-import event org.drools.StockTick;
+import event org.kie.StockTick;
 
 rule "Check event"
 when

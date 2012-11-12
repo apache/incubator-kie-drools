@@ -6,6 +6,8 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.definition.rule.Rule;
+
 import static org.junit.Assert.*;
 
 import org.drools.Person;
@@ -19,7 +21,6 @@ import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
-import org.drools.definition.rule.Rule;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTupleImpl;

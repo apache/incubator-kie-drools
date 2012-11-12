@@ -96,7 +96,7 @@ public class ConsequenceGenerator {
                         // notPattern indexes field declarations
                         
                         // declarations[i].getValue((InternalWorkingMemory)workingMemory, fact[i].getObject());
-                        mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
+                        mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
                         push(i); // i
                         mv.visitInsn(AALOAD); // declarations[i]
                         mv.visitVarInsn(ALOAD, 2); // WorkingMemory

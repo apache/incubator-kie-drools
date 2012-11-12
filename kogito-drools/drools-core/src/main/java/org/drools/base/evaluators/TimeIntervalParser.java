@@ -29,7 +29,7 @@ public class TimeIntervalParser
     /**
      * @inheritDoc
      * 
-     * @see org.drools.base.evaluators.EvaluatorParametersParser#parse(java.lang.String)
+     * @see org.kie.base.evaluators.EvaluatorParametersParser#parse(java.lang.String)
      */
     public Long[] parse(String paramText) {
         if ( paramText == null || paramText.trim().length() == 0 ) {

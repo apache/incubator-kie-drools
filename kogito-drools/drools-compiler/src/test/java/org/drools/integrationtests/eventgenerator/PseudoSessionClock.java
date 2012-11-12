@@ -11,7 +11,7 @@ public class PseudoSessionClock
          }
 
          /* (non-Javadoc)
-          * @see org.drools.temporal.SessionClock#getCurrentTime()
+          * @see org.kie.temporal.SessionClock#getCurrentTime()
           */
          public long getCurrentTime() {
              return this.timer;

@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.KnowledgeBase;
 import org.drools.core.util.Iterator;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class TerminalNodeIterator
     implements

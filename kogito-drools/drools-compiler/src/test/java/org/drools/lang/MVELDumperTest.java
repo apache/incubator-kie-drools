@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.MVELDumper.MVELDumperContext;
 import org.drools.lang.descr.AtomicExprDescr;
@@ -14,6 +13,7 @@ import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 public class MVELDumperTest {
 
@@ -127,7 +127,7 @@ public class MVELDumperTest {
     @Test @Ignore
     public void testDumpWithDateAttr() throws Exception {
         String input = "son.birthDate == \"01-jan-2000\"";
-        String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )";
+        String expected = "son.birthDate == org.kie.util.DateUtils.parseDate( \"01-jan-2000\" )";
 
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );

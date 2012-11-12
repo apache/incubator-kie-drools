@@ -16,9 +16,9 @@
 
 package org.drools.event.rule.impl;
 
-import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.RuleFlowGroup;
+import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.RuleFlowGroup;
 
 public class RuleFlowGroupDeactivatedEventImpl extends RuleFlowGroupEventImpl  implements RuleFlowGroupDeactivatedEvent {
 

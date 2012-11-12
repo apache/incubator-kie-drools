@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ClockType;
-import org.drools.runtime.conf.ClockTypeOption;
+import org.kie.runtime.conf.ClockTypeOption;
 
 public class KSessionImpl
         implements
@@ -41,14 +41,14 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#getListener()
+     * @see org.kie.kproject.KSession#getListener()
      */
     public PropertyChangeListener getListener() {
         return listener;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#setListener(java.beans.PropertyChangeListener)
+     * @see org.kie.kproject.KSession#setListener(java.beans.PropertyChangeListener)
      */
     public KSession setListener(PropertyChangeListener listener) {
         this.listener = listener;
@@ -56,14 +56,14 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#getNamespace()
+     * @see org.kie.kproject.KSession#getNamespace()
      */
     public String getNamespace() {
         return namespace;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#setNamespace(java.lang.String)
+     * @see org.kie.kproject.KSession#setNamespace(java.lang.String)
      */
     public KSession setNamespace(String namespace) {
         if ( listener != null ) {
@@ -74,14 +74,14 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#getName()
+     * @see org.kie.kproject.KSession#getName()
      */
     public String getName() {
         return name;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#setName(java.lang.String)
+     * @see org.kie.kproject.KSession#setName(java.lang.String)
      */
     public KSession setName(String name) {
         if ( listener != null ) {
@@ -92,21 +92,21 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#getQName()
+     * @see org.kie.kproject.KSession#getQName()
      */
     public String getQName() {
         return this.namespace + "." + this.name;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#getType()
+     * @see org.kie.kproject.KSession#getType()
      */
     public String getType() {
         return type;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#setType(java.lang.String)
+     * @see org.kie.kproject.KSession#setType(java.lang.String)
      */
     public KSession setType(String type) {
         if ( listener != null ) {
@@ -117,14 +117,14 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#getClockType()
+     * @see org.kie.kproject.KSession#getClockType()
      */
     public ClockTypeOption getClockType() {
         return clockType;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#setClockType(org.drools.runtime.conf.ClockTypeOption)
+     * @see org.kie.kproject.KSession#setClockType(org.kie.runtime.conf.ClockTypeOption)
      */
     public KSession setClockType(ClockTypeOption clockType) {
         if ( listener != null ) {
@@ -135,14 +135,14 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#getAnnotations()
+     * @see org.kie.kproject.KSession#getAnnotations()
      */
     public List<String> getAnnotations() {
         return annotations;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.kproject.KSession#setAnnotations(java.util.List)
+     * @see org.kie.kproject.KSession#setAnnotations(java.util.List)
      */
     public KSession setAnnotations(List<String> annotations) {
         if ( listener != null ) {

@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class FunctionsTest extends CommonTestMethodBase {
 
@@ -114,7 +114,7 @@ public class FunctionsTest extends CommonTestMethodBase {
 
     @Test
     public void testJBRULES3117() {
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                      "function boolean isOutOfRange( Object value, int lower ) { return true; }\n" + 
                      "function boolean isNotContainedInt( Object value, int[] values ) { return true; }\n" +
                      "rule R1\n" +

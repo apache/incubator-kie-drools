@@ -1,23 +1,23 @@
 package org.drools.rule.builder.dialect.java;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Constraint;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +110,7 @@ public class JavaDialectBinaryEqualityTest{
     public KnowledgePackage getKnowledgePackage1() {
       
         String str = "";
-        str += "package org.drools\n";
+        str += "package org.kie\n";
         str += "global java.util.List list\n";
         str += "rule rule1 dialect\"java\" \n";
         str += "when\n";
@@ -138,13 +138,13 @@ public class JavaDialectBinaryEqualityTest{
         
         assertEquals( new Person( "darth", 34 ), list.get( 0 ) );
         
-        return kbase.getKnowledgePackage( "org.drools" );
+        return kbase.getKnowledgePackage( "org.kie" );
     }
     
     public KnowledgePackage getKnowledgePackage2() {
         
         String str = "";
-        str += "package org.drools\n";
+        str += "package org.kie\n";
         str += "global java.util.List list\n";
         str += "rule rule1 dialect\"java\" \n";
         str += "when\n";
@@ -173,6 +173,6 @@ public class JavaDialectBinaryEqualityTest{
         
         assertEquals( new Person( "darth", 36 ), list.get( 0 ) );
         
-        return kbase.getKnowledgePackage( "org.drools" );
+        return kbase.getKnowledgePackage( "org.kie" );
     }
 }

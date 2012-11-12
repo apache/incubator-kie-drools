@@ -7,21 +7,21 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
-import org.drools.definition.type.Position;
 import org.drools.integrationtests.MVELTest.DMap;
 import org.drools.integrationtests.MVELTest.Triangle;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.TypeDeclaration.Format;
 import org.drools.rule.TypeDeclaration.Role;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.type.Position;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 
 public class TypeDeclarationMergingTest {

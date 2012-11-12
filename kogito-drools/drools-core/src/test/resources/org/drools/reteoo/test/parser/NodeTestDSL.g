@@ -19,7 +19,7 @@ tokens {
 }
 
 @parser::header {
-    package org.drools.reteoo.test.parser;
+    package org.kie.reteoo.test.parser;
 
     import java.util.Map;
     import java.util.HashMap;
@@ -27,7 +27,7 @@ tokens {
 }
 
 @lexer::header {
-    package org.drools.reteoo.test.parser;
+    package org.kie.reteoo.test.parser;
 }
 
 

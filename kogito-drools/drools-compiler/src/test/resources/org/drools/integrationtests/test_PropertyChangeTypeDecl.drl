@@ -1,6 +1,6 @@
-package org.drools.test;
+package org.kie.test;
 
-import org.drools.State;
+import org.kie.State;
 
 global java.util.List list
 

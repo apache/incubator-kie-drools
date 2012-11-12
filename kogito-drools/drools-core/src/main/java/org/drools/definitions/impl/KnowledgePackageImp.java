@@ -27,16 +27,16 @@ import java.util.List;
 import java.util.Map;
 
 
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.process.Process;
-import org.drools.definition.rule.Global;
-import org.drools.definition.rule.Query;
-import org.drools.definition.rule.Rule;
-import org.drools.definition.type.FactType;
 import org.drools.definitions.rule.impl.GlobalImpl;
 import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.process.Process;
+import org.kie.definition.rule.Global;
+import org.kie.definition.rule.Query;
+import org.kie.definition.rule.Rule;
+import org.kie.definition.type.FactType;
 
 public class KnowledgePackageImp
     implements
@@ -69,7 +69,7 @@ public class KnowledgePackageImp
      * Delegate method to retrieve a Rule by its name.
      * @param name the rule's name
      * @return
-     * @see org.drools.rule.Package#getRule(java.lang.String)
+     * @see org.kie.rule.Package#getRule(java.lang.String)
      */
     public Rule getRule(String name) {
         return this.pkg.getRule(name);
@@ -79,7 +79,7 @@ public class KnowledgePackageImp
      * Delegate method to remove a Rule by its name.
      * @param rule the rule to be removed
      * @return
-     * @see org.drools.rule.Package#removeRule(org.drools.rule.Rule) 
+     * @see org.kie.rule.Package#removeRule(org.kie.rule.Rule) 
      */
     public void removeRule(org.drools.rule.Rule rule) {
         pkg.removeRule(rule);
@@ -89,7 +89,7 @@ public class KnowledgePackageImp
      * Delegate method to retrieve a Function by its name.
      * @param name the function's name
      * @return
-     * @see org.drools.rule.Package#getFunctions()
+     * @see org.kie.rule.Package#getFunctions()
      */
     public Function getFunction(String name) {
         return this.pkg.getFunctions().containsKey(name) ? this.pkg.getFunctions().get(name) : null;
@@ -99,7 +99,7 @@ public class KnowledgePackageImp
      * Delegate method to retrieve a Rule by its name.
      * @param functionName the function's name
      * @return
-     * @see org.drools.rule.Package#removeFunction(java.lang.String) 
+     * @see org.kie.rule.Package#removeFunction(java.lang.String) 
      */
     public void removeFunction(String functionName) {
         pkg.removeFunction(functionName);
@@ -108,9 +108,9 @@ public class KnowledgePackageImp
     
 
     public Collection<Process> getProcesses() {
-        Collection<org.drools.definition.process.Process> processes = pkg.getRuleFlows().values();
+        Collection<org.kie.definition.process.Process> processes = pkg.getRuleFlows().values();
         List<Process> list = new ArrayList<Process>( processes.size() );
-        for ( org.drools.definition.process.Process process : processes ) {
+        for ( org.kie.definition.process.Process process : processes ) {
             list.add( process );
         }
         return Collections.unmodifiableCollection( list );

@@ -24,7 +24,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.definition.rule.Rule;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
@@ -32,6 +31,7 @@ import org.drools.spi.PropagationContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.definition.rule.Rule;
 
 import static org.junit.Assert.*;
 

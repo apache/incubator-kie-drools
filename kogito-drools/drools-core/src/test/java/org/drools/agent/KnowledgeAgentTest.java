@@ -7,25 +7,28 @@ import java.io.StringReader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.KnowledgeBase;
-import org.drools.SystemEventListenerFactory;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
-import org.drools.definition.process.Process;
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.Ignore;
+import org.kie.KnowledgeBase;
+import org.kie.SystemEventListenerFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.definition.process.Process;
+import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetAppliedEvent;
+import org.kie.event.knowledgeagent.BeforeChangeSetProcessedEvent;
+import org.kie.event.knowledgeagent.BeforeResourceProcessedEvent;
+import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
+import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
+import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.io.ResourceFactory;
 
 @Ignore
 public class KnowledgeAgentTest {

@@ -15,15 +15,15 @@
  */
 
 //created on: 24.9.2007
-package org.drools.verifier.rangeChecks.cleanUp
+package org.kie.verifier.rangeChecks.cleanUp
 
-import org.drools.base.evaluators.Operator;
+import org.kie.base.evaluators.Operator;
 
-import org.drools.verifier.components.*;  
-import org.drools.verifier.report.components.Gap;  
-import org.drools.verifier.report.components.MissingNumberPattern;
+import org.kie.verifier.components.*;  
+import org.kie.verifier.report.components.Gap;  
+import org.kie.verifier.report.components.MissingNumberPattern;
 
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.data.VerifierReport;
 
 //declare any global variables here
 global VerifierReport result;
@@ -34,20 +34,20 @@ global VerifierReport result;
 // Type: None
 // Dependencies: Needs at least one of the following packages or rules to fire.
 //
-//         package org.drools.verifier.rangeChecks.patterns;
+//         package org.kie.verifier.rangeChecks.patterns;
 //            rule "Range check for number patterns"
 //            rule "Range check for number patterns, !="
-//        package org.drools.verifier.rangeChecks.integers
+//        package org.kie.verifier.rangeChecks.integers
 //            rule "Range check for integers, if smaller than or equal is missing"
 //            rule "Range check for integers, if greater than or equal is missing"
 //            rule "Range check for integers, equal and greater than"
 //            rule "Range check for integers, equal and smaller than"
-//        package org.drools.verifier.rangeChecks.doubles
+//        package org.kie.verifier.rangeChecks.doubles
 //            rule "Range check for doubles, if smaller than or equal is missing"
 //            rule "Range check for doubles, if greater than or equal is missing"
 //            rule "Range check for doubles, equal and greater than"
 //            rule "Range check for doubles, equal and smaller than"
-//        package org.drools.verifier.rangeChecks.dates
+//        package org.kie.verifier.rangeChecks.dates
 //            rule "Range check for dates, if smaller than or equal is missing"
 //            rule "Range check for dates, if greater than or equal is missing"
 //            rule "Range check for dates, equal and greater than"
@@ -89,7 +89,7 @@ end
 // Type: None
 // Dependencies: Needs at least one of the following packages or rules to fire.
 //
-//        package org.drools.verifier.rangeChecks.integers
+//        package org.kie.verifier.rangeChecks.integers
 //            rule "Range check for integers, if smaller than or equal is missing"
 //            rule "Range check for integers, if greater than or equal is missing"
 //            rule "Range check for integers, equal and greater than"
@@ -143,7 +143,7 @@ end
 // Type: None
 // Dependencies: Needs at least one of the following packages or rules to fire.
 //
-//        package org.drools.verifier.rangeChecks.integers
+//        package org.kie.verifier.rangeChecks.integers
 //            rule "Range check for integers, if smaller than or equal is missing"
 //            rule "Range check for integers, if greater than or equal is missing"
 //            rule "Range check for integers, equal and greater than"
@@ -196,7 +196,7 @@ end
 // Type: None
 // Dependencies: Needs at least one of the following packages or rules to fire.
 //
-//        package org.drools.verifier.rangeChecks.doubles
+//        package org.kie.verifier.rangeChecks.doubles
 //            rule "Range check for doubles, if smaller than or equal is missing"
 //            rule "Range check for doubles, if greater than or equal is missing"
 //            rule "Range check for doubles, equal and greater than"
@@ -249,7 +249,7 @@ end
 // Type: None
 // Dependencies: Needs at least one of the following packages or rules to fire.
 //
-//        package org.drools.verifier.rangeChecks.doubles
+//        package org.kie.verifier.rangeChecks.doubles
 //            rule "Range check for doubles, if smaller than or equal is missing"
 //            rule "Range check for doubles, if greater than or equal is missing"
 //            rule "Range check for doubles, equal and greater than"
@@ -302,7 +302,7 @@ end
 // Type: None
 // Dependencies: Needs at least one of the following packages or rules to fire.
 //
-//        package org.drools.verifier.rangeChecks.dates
+//        package org.kie.verifier.rangeChecks.dates
 //            rule "Range check for dates, if smaller than or equal is missing"
 //            rule "Range check for dates, if greater than or equal is missing"
 //            rule "Range check for dates, equal and greater than"
@@ -356,7 +356,7 @@ end
 // Type: None
 // Dependencies: Needs at least one of the following packages or rules to fire.
 //
-//        package org.drools.verifier.rangeChecks.dates
+//        package org.kie.verifier.rangeChecks.dates
 //            rule "Range check for dates, if smaller than or equal is missing"
 //            rule "Range check for dates, if greater than or equal is missing"
 //            rule "Range check for dates, equal and greater than"

@@ -7,7 +7,6 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.lang.DRL5Expressions;
 import org.drools.lang.DRL5Lexer;
 import org.drools.lang.DRL5Parser;
@@ -18,6 +17,7 @@ import org.drools.lang.DRLExpressions;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.ParserHelper;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import java.io.InputStream;
 import java.io.Reader;

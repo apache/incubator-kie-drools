@@ -1,21 +1,21 @@
 package org.drools.kproject;
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.KBaseUnit;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeContainer;
 import org.drools.builder.impl.KnowledgeContainerImpl;
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.FileManager;
-import org.drools.definition.type.FactType;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KBaseUnit;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.KnowledgeContainer;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.definition.type.FactType;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,19 +80,19 @@ public class KJarTest {
     }
 
     private void createKJar() throws IOException {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.kie.test\n" +
                 "rule R1 when\n" +
                 "   $fieldA : FactA( $fieldB : fieldB )\n" +
                 "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
                 "then\n" +
                 "end";
 
-        String declarationA = "package org.drools.test\n" +
+        String declarationA = "package org.kie.test\n" +
                 "declare FactA\n" +
                 "    fieldB: FactB\n" +
                 "end\n";
 
-        String declarationB = "package org.drools.test\n" +
+        String declarationB = "package org.kie.test\n" +
                 "declare FactB\n" +
                 "    fieldA: FactA\n" +
                 "end\n";
@@ -133,9 +133,9 @@ public class KJarTest {
     }
 
     private void useKSession(KnowledgeBase kbase, StatefulKnowledgeSession ksession) throws InstantiationException, IllegalAccessException {
-        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        FactType aType = kbase.getFactType( "org.kie.test", "FactA" );
         Object a = aType.newInstance();
-        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        FactType bType = kbase.getFactType( "org.kie.test", "FactB" );
         Object b = bType.newInstance();
         aType.set( a, "fieldB", b );
         bType.set( b, "fieldA", a );

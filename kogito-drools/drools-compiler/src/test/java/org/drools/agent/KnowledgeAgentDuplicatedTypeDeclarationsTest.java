@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeAgentTest {
 
@@ -216,7 +217,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
     @Test
     public void testLaterDeclarationAsEvent() throws Exception {
         //create a basic drl file with a type declaration
-        String drl1 = "package org.drools.test1; \n" +
+        String drl1 = "package org.kie.test1; \n" +
                 "\n" +
                 "declare Bean \n" +
                 "  id : String \n" +
@@ -255,10 +256,10 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
 
 
         //create a second drl also containing a declaration of ClassA
-        String drl2 = "package org.drools.test2;\n" +
+        String drl2 = "package org.kie.test2;\n" +
                 "\n" +
-//                "import org.drools.test1.Bean;\n" +
-                "import org.drools.Person;\n" +
+//                "import org.kie.test1.Bean;\n" +
+                "import org.kie.Person;\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -322,7 +323,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
     @Test
     public void testLaterRedeclarationAsEvent() throws Exception {
         //create a basic drl file with a type declaration
-        String drl1 = "package org.drools.test1; \n" +
+        String drl1 = "package org.kie.test1; \n" +
                 "\n" +
                 "declare Bean \n" +
                 "  id : String \n" +
@@ -361,9 +362,9 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
 
 
         //create a second drl also containing a declaration of ClassA
-        String drl2 = "package org.drools.test2;\n" +
+        String drl2 = "package org.kie.test2;\n" +
                 "\n" +
-                "import org.drools.test1.Bean;\n" +
+                "import org.kie.test1.Bean;\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +

@@ -16,10 +16,10 @@
 
 package org.drools.event.rule.impl;
 
-import org.drools.event.rule.ActivationCancelledCause;
-import org.drools.event.rule.ActivationCancelledEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.Activation;
+import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.ActivationCancelledEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.Activation;
 
 
 public class ActivationCancelledEventImpl extends ActivationEventImpl implements ActivationCancelledEvent {

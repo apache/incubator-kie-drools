@@ -22,9 +22,9 @@ import org.drools.reteoo.Sink;
 import org.drools.rule.ContextEntry;
 
 /**
- * This handler is used as a base class for all {@link org.drools.reteoo.compiled.NetworkHandler}s used for
+ * This handler is used as a base class for all {@link org.kie.reteoo.compiled.NetworkHandler}s used for
  * generating a compiled network. It provides methods to return the variable type and names used for storing
- * refernces to different {@link org.drools.common.NetworkNode}s and variable names for {@link ClassFieldReader}s.
+ * refernces to different {@link org.kie.common.NetworkNode}s and variable names for {@link ClassFieldReader}s.
  */
 abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
     protected static final String NEWLINE = "\n";
@@ -69,7 +69,7 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
      * nodeId.
      *
      * @param clazz  class whose simple name is lowercased and user as the prefix of the variable name
-     * @param nodeId id of {@link org.drools.common.NetworkNode}
+     * @param nodeId id of {@link org.kie.common.NetworkNode}
      * @return variable name
      * @see Class#getSimpleName()
      */

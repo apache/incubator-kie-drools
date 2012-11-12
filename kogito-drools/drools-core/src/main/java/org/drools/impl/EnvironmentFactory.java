@@ -16,11 +16,11 @@
 
 package org.drools.impl;
 
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 
 public class EnvironmentFactory {
 

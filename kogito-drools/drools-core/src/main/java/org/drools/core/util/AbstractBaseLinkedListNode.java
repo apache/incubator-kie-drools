@@ -53,28 +53,28 @@ public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LinkedListNode#getNext()
+     * @see org.kie.reteoo.LinkedListNode#getNext()
      */
     public T getNext() {
         return this.next;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LinkedListNode#setNext(org.drools.reteoo.LinkedListNode)
+     * @see org.kie.reteoo.LinkedListNode#setNext(org.kie.reteoo.LinkedListNode)
      */
     public void setNext(final T next) {
         this.next = next;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LinkedListNode#getPrevious()
+     * @see org.kie.reteoo.LinkedListNode#getPrevious()
      */
     public T getPrevious() {
         return this.previous;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LinkedListNode#setPrevious(org.drools.reteoo.LinkedListNode)
+     * @see org.kie.reteoo.LinkedListNode#setPrevious(org.kie.reteoo.LinkedListNode)
      */
     public void setPrevious(final T previous) {
         this.previous = previous;

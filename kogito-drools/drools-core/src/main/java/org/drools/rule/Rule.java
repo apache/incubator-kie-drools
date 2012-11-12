@@ -19,7 +19,6 @@ package org.drools.rule;
 import org.drools.WorkingMemory;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
-import org.drools.io.Resource;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
@@ -30,6 +29,7 @@ import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 import org.drools.spi.Wireable;
 import org.drools.time.impl.Timer;
+import org.kie.io.Resource;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class Rule
     Externalizable,
     Wireable,
     Dialectable,
-    org.drools.definition.rule.Rule {
+    org.kie.definition.rule.Rule {
     private static final long        serialVersionUID = 510l;
 
     public static final String DEFAULT_CONSEQUENCE_NAME = "default";

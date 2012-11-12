@@ -466,28 +466,28 @@ public class ReturnValueRestriction
         }
 
         /* (non-Javadoc)
-         * @see org.drools.rule.ReturnValueContextEntry#getFieldExtractor()
+         * @see org.kie.rule.ReturnValueContextEntry#getFieldExtractor()
          */
         public ReadAccessor getFieldExtractor() {
             return this.fieldExtractor;
         }
 
         /* (non-Javadoc)
-         * @see org.drools.rule.ReturnValueContextEntry#getTuple()
+         * @see org.kie.rule.ReturnValueContextEntry#getTuple()
          */
         public LeftTuple getTuple() {
             return this.leftTuple;
         }
 
         /* (non-Javadoc)
-         * @see org.drools.rule.ReturnValueContextEntry#getObject()
+         * @see org.kie.rule.ReturnValueContextEntry#getObject()
          */
         public InternalFactHandle getHandle() {
             return this.handle;
         }
 
         /* (non-Javadoc)
-         * @see org.drools.rule.ReturnValueContextEntry#getRequiredDeclarations()
+         * @see org.kie.rule.ReturnValueContextEntry#getRequiredDeclarations()
          */
         public Declaration[] getPreviousDeclarations() {
             return this.previousDeclarations;
@@ -498,7 +498,7 @@ public class ReturnValueRestriction
         }
 
         /* (non-Javadoc)
-         * @see org.drools.rule.ReturnValueContextEntry#getWorkingMemory()
+         * @see org.kie.rule.ReturnValueContextEntry#getWorkingMemory()
          */
         public InternalWorkingMemory getWorkingMemory() {
             return this.workingMemory;

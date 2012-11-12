@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Primitives;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 public class ArrayContainsTest extends CommonTestMethodBase {
 
     @Test
     public void testEqualsOnIntArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
         str += "global java.util.List list;\n";
         str += "rule \"contains in array\"\n";
         str += "     salience 10\n";
@@ -52,7 +52,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsBooleanArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Boolean bGlobal;\n";
@@ -109,7 +109,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsBooleanArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Boolean bGlobal;\n";
@@ -167,7 +167,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsByteArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Byte bGlobal;\n";
@@ -224,7 +224,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsByteArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Byte bGlobal;\n";
@@ -281,7 +281,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsShortArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Short sGlobal;\n";
@@ -338,7 +338,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsShortArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Short sGlobal;\n";
@@ -395,7 +395,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsCharArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Character cGlobal;\n";
@@ -452,7 +452,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsCharArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Character cGlobal;\n";
@@ -509,7 +509,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsIntArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Integer iGlobal;\n";
@@ -567,7 +567,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsIntArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Integer iGlobal;\n";
@@ -625,7 +625,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsLongArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Long lGlobal;\n";
@@ -683,7 +683,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsLongArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Long lGlobal;\n";
@@ -741,7 +741,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsFloatArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Float fGlobal;\n";
@@ -799,7 +799,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsFloatArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Float fGlobal;\n";
@@ -858,7 +858,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testContainsDoubleArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Double dGlobal;\n";
@@ -917,7 +917,7 @@ public class ArrayContainsTest extends CommonTestMethodBase {
     @Test
     public void testNotContainsDoubleArray() throws Exception {
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.kie;\n";
 
         str += "global java.util.List list;\n";
         str += "global Double dGlobal;\n";

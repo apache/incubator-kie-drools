@@ -12,7 +12,7 @@ import org.drools.rule.*;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.Tuple;
-import org.drools.util.CompositeClassLoader;
+import org.kie.util.CompositeClassLoader;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
@@ -178,7 +178,7 @@ public final class GeneratorHelper {
             mv.visitJumpInsn(IFNULL, l1);
             mv.visitVarInsn(ALOAD, 1);
             instanceOf(CompiledInvoker.class);
-            mv.visitJumpInsn(IFNE, l2); // if (!(object instanceof  org.drools.spi.CompiledInvoker))
+            mv.visitJumpInsn(IFNE, l2); // if (!(object instanceof  org.kie.spi.CompiledInvoker))
             mv.visitLabel(l1);
             mv.visitInsn(ICONST_0); // return false
             mv.visitInsn(IRETURN);

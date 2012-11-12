@@ -17,27 +17,37 @@
 package org.drools.event.rule;
 
 import org.drools.Cheese;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.InternalFactHandle;
-import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Consequence;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.ActivationCancelledEvent;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.AgendaGroupPoppedEvent;
+import org.kie.event.rule.AgendaGroupPushedEvent;
+import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -63,7 +73,7 @@ public class AgendaEventSupportTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one rule to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final Package pkg = new Package( "org.kie.test" );
         final Rule rule = new Rule( "test1" );
         rule.setAgendaGroup( "test group" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );

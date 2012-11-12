@@ -20,7 +20,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
@@ -69,6 +68,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.WindowDeclarationDescr;
 import org.drools.rule.TypeDeclaration;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

@@ -7,24 +7,24 @@ options {
 }
   
 @header {
-    package org.drools.lang;
+    package org.kie.lang;
 
     import java.util.LinkedList;
-    import org.drools.compiler.DroolsParserException;
-    import org.drools.lang.ParserHelper;
-    import org.drools.lang.DroolsParserExceptionFactory;
-    import org.drools.lang.Location;
-    import org.drools.CheckedDroolsException;
+    import org.kie.compiler.DroolsParserException;
+    import org.kie.lang.ParserHelper;
+    import org.kie.lang.DroolsParserExceptionFactory;
+    import org.kie.lang.Location;
+    import org.kie.CheckedDroolsException;
 
-    import org.drools.lang.api.AnnotatedDescrBuilder;
+    import org.kie.lang.api.AnnotatedDescrBuilder;
 
-    import org.drools.lang.descr.AtomicExprDescr;
-    import org.drools.lang.descr.AnnotatedBaseDescr;
-    import org.drools.lang.descr.AnnotationDescr;
-    import org.drools.lang.descr.BaseDescr;
-    import org.drools.lang.descr.ConstraintConnectiveDescr;
-    import org.drools.lang.descr.RelationalExprDescr;
-    import org.drools.lang.descr.BindingDescr;
+    import org.kie.lang.descr.AtomicExprDescr;
+    import org.kie.lang.descr.AnnotatedBaseDescr;
+    import org.kie.lang.descr.AnnotationDescr;
+    import org.kie.lang.descr.BaseDescr;
+    import org.kie.lang.descr.ConstraintConnectiveDescr;
+    import org.kie.lang.descr.RelationalExprDescr;
+    import org.kie.lang.descr.BindingDescr;
 
 }
 

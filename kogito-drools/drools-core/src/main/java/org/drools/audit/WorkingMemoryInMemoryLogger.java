@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.audit.event.LogEvent;
-import org.drools.event.KnowledgeRuntimeEventManager;
+import org.kie.event.KnowledgeRuntimeEventManager;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -82,7 +82,7 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
     }
 
     /**
-     * @see org.drools.audit.WorkingMemoryLogger
+     * @see org.kie.audit.WorkingMemoryLogger
      */
     public void logEventCreated(final LogEvent logEvent) {
         this.events.add( logEvent );

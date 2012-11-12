@@ -20,8 +20,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.Row;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.Row;
 
 public class RowAdapter implements Row {
 

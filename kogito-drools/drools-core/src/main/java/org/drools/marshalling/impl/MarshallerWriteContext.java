@@ -29,16 +29,16 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Scheduler.ActivationTimerJobContext;
 import org.drools.common.Scheduler.ActivationTimerOutputMarshaller;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerOutputMarshaller;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerOutputMarshaller;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
     public final MarshallerWriteContext                                            stream;

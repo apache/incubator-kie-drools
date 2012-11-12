@@ -1,6 +1,6 @@
-package org.drools.test;
+package org.kie.test;
 
-impot org.drools.Cheese;
+impot org.kie.Cheese;
 
 
 rulex "eval rule test"

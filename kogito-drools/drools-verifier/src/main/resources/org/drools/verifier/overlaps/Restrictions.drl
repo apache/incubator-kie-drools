@@ -15,21 +15,21 @@
  */
 
 //created on: 2.2.2008
-package org.drools.verifier.overlaps
+package org.kie.verifier.overlaps
 
 //list any import classes here.
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.data.VerifierReport;
 
-import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.NumberRestriction;
+import org.kie.verifier.components.LiteralRestriction;
+import org.kie.verifier.components.NumberRestriction;
 
-import org.drools.verifier.report.components.Subsumption;
-import org.drools.verifier.report.components.Severity;
-import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.report.components.Overlap;
+import org.kie.verifier.report.components.Subsumption;
+import org.kie.verifier.report.components.Severity;
+import org.kie.verifier.report.components.MessageType;
+import org.kie.verifier.report.components.Overlap;
 
 //declare any global variables here
 global VerifierReport result;
@@ -40,7 +40,7 @@ global VerifierReport result;
 //
 // Dependencies: Needs at least one rule.
 //
-//        package org.drools.verifier.subsumption.patterns
+//        package org.kie.verifier.subsumption.patterns
 //            rule "Find subsumptant restrictions, greater than"
 //            rule "Find subsumptant restrictions, less than"
 //

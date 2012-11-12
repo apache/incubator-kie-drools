@@ -28,7 +28,6 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
-import org.drools.definition.process.Process;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooBuilder;
@@ -37,7 +36,8 @@ import org.drools.rule.Package;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
-import org.drools.util.CompositeClassLoader;
+import org.kie.definition.process.Process;
+import org.kie.util.CompositeClassLoader;
 
 public interface InternalRuleBase
     extends

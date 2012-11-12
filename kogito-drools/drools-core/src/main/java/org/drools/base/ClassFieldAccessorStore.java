@@ -30,7 +30,6 @@ import java.util.Set;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.AccessorKey.AccessorType;
 import org.drools.base.extractors.MVELClassFieldReader;
-import org.drools.definition.type.FactField;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.Acceptor;
 import org.drools.spi.AcceptsClassObjectType;
@@ -38,6 +37,7 @@ import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.AcceptsWriteAccessor;
 import org.drools.spi.ClassWireable;
 import org.drools.spi.InternalReadAccessor;
+import org.kie.definition.type.FactField;
 
 public class ClassFieldAccessorStore
     implements

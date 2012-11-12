@@ -10,46 +10,47 @@ import java.util.Properties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.conf.Option;
+import org.kie.conf.SequentialOption;
+import org.kie.event.rule.ActivationCancelledEvent;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.AgendaGroupPoppedEvent;
+import org.kie.event.rule.AgendaGroupPushedEvent;
+import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.event.rule.DefaultAgendaEventListener;
+import org.kie.event.rule.ObjectInsertedEvent;
+import org.kie.event.rule.ObjectRetractedEvent;
+import org.kie.event.rule.ObjectUpdatedEvent;
+import org.kie.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.rule.WorkingMemory;
+
 import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.conf.Option;
-import org.drools.conf.SequentialOption;
-import org.drools.event.rule.ActivationCancelledEvent;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.AgendaGroupPoppedEvent;
-import org.drools.event.rule.AgendaGroupPushedEvent;
-import org.drools.event.rule.BeforeActivationFiredEvent;
-import org.drools.event.rule.DefaultAgendaEventListener;
-import org.drools.event.rule.ObjectInsertedEvent;
-import org.drools.event.rule.ObjectRetractedEvent;
-import org.drools.event.rule.ObjectUpdatedEvent;
-import org.drools.event.rule.RuleFlowGroupActivatedEvent;
-import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.integrationtests.DynamicRulesTest;
 import org.drools.integrationtests.SerializationHelper;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.rule.WorkingMemory;
 
 public class SequentialTest extends CommonTestMethodBase {
     //  FIXME lots of XXX tests here, need to find out why.
@@ -130,7 +131,7 @@ public class SequentialTest extends CommonTestMethodBase {
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
         str += "package org.test\n";
-        str +="import org.drools.Message\n";
+        str +="import org.kie.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";
         str +="    Message( )\n";
@@ -161,7 +162,7 @@ public class SequentialTest extends CommonTestMethodBase {
     public void testEvents() throws Exception {
         String str = "";
         str += "package org.test\n";
-        str +="import org.drools.Message\n";
+        str +="import org.kie.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";
         str +="    Message( )\n";
@@ -389,7 +390,7 @@ public class SequentialTest extends CommonTestMethodBase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.shadowProxyExcludes",
-                                "org.drools.*" );
+                                "org.kie.*" );
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
         conf.setSequential( sequentialMode );

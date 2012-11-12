@@ -27,7 +27,7 @@ import org.junit.Test;
 public class BetaNodeTest {
 
     /**
-     * Test method for {@link org.drools.reteoo.BetaNode#equals(java.lang.Object)}.
+     * Test method for {@link org.kie.reteoo.BetaNode#equals(java.lang.Object)}.
      */
     @Test
     public void testEqualsObject() {

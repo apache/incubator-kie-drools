@@ -8,14 +8,14 @@ import org.drools.common.EndOperationListener;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.event.process.ProcessEventManager;
-import org.drools.runtime.Channel;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.ViewChangedEventListener;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.AgendaFilter;
+import org.kie.event.process.ProcessEventManager;
+import org.kie.runtime.Channel;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * This is an interface for ReteooWorkingMemory implementations

@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.event.rule.ActivationCancelledEvent;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.ActivationEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.Activation;
+import org.kie.event.rule.ActivationCancelledEvent;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.ActivationEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.Activation;
 
 
 public class ActivationEventImpl implements ActivationEvent, Externalizable {

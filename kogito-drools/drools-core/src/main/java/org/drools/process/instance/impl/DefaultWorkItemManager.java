@@ -31,8 +31,8 @@ import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemHandler;
 
 public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 

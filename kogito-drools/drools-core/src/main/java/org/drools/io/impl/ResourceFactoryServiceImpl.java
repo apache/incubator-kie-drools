@@ -21,11 +21,11 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.drools.definition.KnowledgeDescr;
-import org.drools.io.Resource;
-import org.drools.io.ResourceChangeNotifier;
-import org.drools.io.ResourceChangeScanner;
-import org.drools.io.ResourceFactoryService;
+import org.kie.definition.KnowledgeDescr;
+import org.kie.io.Resource;
+import org.kie.io.ResourceChangeNotifier;
+import org.kie.io.ResourceChangeScanner;
+import org.kie.io.ResourceFactoryService;
 
 public class ResourceFactoryServiceImpl
     implements

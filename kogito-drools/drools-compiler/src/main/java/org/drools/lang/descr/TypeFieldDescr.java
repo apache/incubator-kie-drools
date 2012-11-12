@@ -16,9 +16,9 @@
 
 package org.drools.lang.descr;
 
-import org.drools.definition.type.FactField;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.rule.TypeDeclaration;
+import org.kie.definition.type.FactField;
 
 import java.io.IOException;
 import java.io.ObjectInput;

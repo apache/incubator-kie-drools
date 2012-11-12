@@ -22,9 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.SessionConfiguration;
-import org.drools.agent.KnowledgeAgent;
 import org.drools.base.MapGlobalResolver;
-import org.drools.command.Command;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
@@ -35,24 +33,26 @@ import org.drools.common.InternalRuleBase;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.ProcessEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
 import org.drools.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.Environment;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.Globals;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.rule.AgendaFilter;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.command.Command;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.runtime.Environment;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.Globals;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.rule.AgendaFilter;
 
 public class StatelessKnowledgeSessionImpl
     implements

@@ -28,7 +28,6 @@ import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -39,6 +38,7 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import static org.junit.Assert.*;
 

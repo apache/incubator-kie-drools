@@ -45,8 +45,6 @@ import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
-import org.drools.definition.process.Process;
-import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.factmodel.traits.TripleStoreRegistry;
@@ -62,8 +60,10 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.WindowDeclaration;
 import org.drools.spi.FactHandleFactory;
-import org.drools.util.ClassLoaderUtil;
-import org.drools.util.CompositeClassLoader;
+import org.kie.definition.process.Process;
+import org.kie.definition.type.FactType;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 
 import static org.drools.core.util.BitMaskUtil.isSet;
 
@@ -631,8 +631,8 @@ abstract public class AbstractRuleBase
 
                 // add the flows to the RuleBase
                 if ( newPkg.getRuleFlows() != null ) {
-                    final Map<String, org.drools.definition.process.Process> flows = newPkg.getRuleFlows();
-                    for ( org.drools.definition.process.Process process : flows.values() ) {
+                    final Map<String, org.kie.definition.process.Process> flows = newPkg.getRuleFlows();
+                    for ( org.kie.definition.process.Process process : flows.values() ) {
                         // XXX: we could take the lock inside addProcess() out, but OTOH: this is what the VM is supposed to do ...
                         addProcess( process );
                     }
@@ -1108,7 +1108,7 @@ abstract public class AbstractRuleBase
      * Handle rule removal.
      *
      * This method is intended for sub-classes, and called after the
-     * {@link RuleBaseEventListener#beforeRuleRemoved(org.drools.event.BeforeRuleRemovedEvent) before-rule-removed}
+     * {@link RuleBaseEventListener#beforeRuleRemoved(org.kie.event.BeforeRuleRemovedEvent) before-rule-removed}
      * event is fired, and before the rule is physically removed from the package.
      *
      * This method is called with the rulebase lock held.
@@ -1147,7 +1147,7 @@ abstract public class AbstractRuleBase
      * Handle function removal.
      *
      * This method is intended for sub-classes, and called after the
-     * {@link RuleBaseEventListener#beforeFunctionRemoved(org.drools.event.BeforeFunctionRemovedEvent) before-function-removed}
+     * {@link RuleBaseEventListener#beforeFunctionRemoved(org.kie.event.BeforeFunctionRemovedEvent) before-function-removed}
      * event is fired, and before the function is physically removed from the package.
      *
      * This method is called with the rulebase lock held.

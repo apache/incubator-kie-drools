@@ -16,17 +16,19 @@
 
 package org.drools.verifier;
 
-import org.drools.builder.ResourceType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.drools.io.impl.ClassPathResource;
-import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.kie.builder.ResourceType;
 
 public class RangeCheckTest {
 

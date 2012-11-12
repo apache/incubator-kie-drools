@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.util.CompositeClassLoader;
+import org.kie.util.CompositeClassLoader;
 
 public class ClassTypeResolver
     implements
@@ -82,10 +82,10 @@ public class ClassTypeResolver
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.semantics.base.Importer#getImports( Class clazz )
+     * @see org.kie.semantics.base.Importer#getImports( Class clazz )
      */
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.TypeResolver#getImports()
+     * @see org.kie.semantics.java.TypeResolver#getImports()
      */
     public Set<String> getImports() {
         return this.imports;
@@ -94,10 +94,10 @@ public class ClassTypeResolver
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.semantics.base.Importer#addImports(org.drools.spi.ImportEntry)
+     * @see org.kie.semantics.base.Importer#addImports(org.kie.spi.ImportEntry)
      */
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.TypeResolver#addImport(java.lang.String)
+     * @see org.kie.semantics.java.TypeResolver#addImport(java.lang.String)
      */
     public void addImport( final String importEntry ) {
         if ( this.imports == Collections.EMPTY_SET ) {
@@ -113,11 +113,11 @@ public class ClassTypeResolver
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.semantics.base.Importer#importClass(java.lang.ClassLoader,
+     * @see org.kie.semantics.base.Importer#importClass(java.lang.ClassLoader,
      *      java.lang.String)
      */
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.TypeResolver#resolveType(java.lang.String)
+     * @see org.kie.semantics.java.TypeResolver#resolveType(java.lang.String)
      */
     public Class< ? > resolveType( String className ) throws ClassNotFoundException {
         Class< ? > clazz = null;
@@ -317,7 +317,7 @@ public class ClassTypeResolver
 
     /*
      * (non-Javadoc)
-     * @see org.drools.base.TypeResolver#getFullTypeName(java.lang.String)
+     * @see org.kie.base.TypeResolver#getFullTypeName(java.lang.String)
      */
     public String getFullTypeName( String shortName ) throws ClassNotFoundException {
 

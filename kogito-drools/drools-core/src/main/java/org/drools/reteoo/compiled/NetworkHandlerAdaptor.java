@@ -23,15 +23,15 @@ import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
 
 /**
- * An abstract adapter class for receiving network node events from the {@link org.drools.reteoo.compiled.ObjectTypeNodeParser}.
+ * An abstract adapter class for receiving network node events from the {@link org.kie.reteoo.compiled.ObjectTypeNodeParser}.
  * The methods in this class are empty. This class exists as convenience for creating handler objects.
  * <P>
  * Extend this class to create a <code>NetworkHandler</code> and override the methods for the nodes of interest.
  * (If you implement the {@link NetworkHandler} interface, you have to define all of the methods in it. This
  * abstract class defines null methods for them all, so you can only have to define methods for events you care about.)
  * <P>
- * @see org.drools.reteoo.compiled.NetworkHandler
- * @see org.drools.reteoo.compiled.ObjectTypeNodeParser
+ * @see org.kie.reteoo.compiled.NetworkHandler
+ * @see org.kie.reteoo.compiled.ObjectTypeNodeParser
  */
 public class NetworkHandlerAdaptor implements NetworkHandler {
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {

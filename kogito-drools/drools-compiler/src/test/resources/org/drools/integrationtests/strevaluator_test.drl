@@ -1,6 +1,6 @@
-package org.drools.test
+package org.kie.test
 
-import org.drools.RoutingMessage;
+import org.kie.RoutingMessage;
 import java.util.List;
 
 global List list;

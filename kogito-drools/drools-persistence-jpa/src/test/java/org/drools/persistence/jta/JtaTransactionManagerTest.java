@@ -17,8 +17,8 @@ package org.drools.persistence.jta;
 
 import static junit.framework.Assert.assertTrue;
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.drools.runtime.EnvironmentName.*;
 import static org.junit.Assert.fail;
+import static org.kie.runtime.EnvironmentName.*;
 
 import java.util.HashMap;
 
@@ -29,25 +29,25 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.transaction.UserTransaction;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public class JtaTransactionManagerTest {
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;
 
-    private static String simpleRule = "package org.drools.test\n"
+    private static String simpleRule = "package org.kie.test\n"
             + "global java.util.List list\n" 
             + "rule rule1\n" 
             + "when\n"

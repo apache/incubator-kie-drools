@@ -1,6 +1,6 @@
 package org.drools.compiler;
 
-import org.drools.Service;
+import org.kie.Service;
 
 public interface BPMN2ProcessProvider extends Service {
 

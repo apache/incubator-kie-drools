@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.examples.petstore
+package org.kie.examples.petstore
 
-import org.drools.WorkingMemory
-import org.drools.examples.petstore.PetStoreExample.Order
-import org.drools.examples.petstore.PetStoreExample.Purchase
-import org.drools.examples.petstore.PetStoreExample.Product
+import org.kie.WorkingMemory
+import org.kie.examples.petstore.PetStoreExample.Order
+import org.kie.examples.petstore.PetStoreExample.Purchase
+import org.kie.examples.petstore.PetStoreExample.Product
 import java.util.ArrayList
 import javax.swing.JOptionPane;
  

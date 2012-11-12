@@ -19,7 +19,7 @@ package org.drools.runtime.rule.impl;
 import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.LiveQuery;
 
 public class LiveQueryImpl
     implements

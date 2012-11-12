@@ -18,8 +18,6 @@ import java.util.Set;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -28,22 +26,24 @@ import org.drools.StatelessSessionResult;
 import org.drools.base.CopyIdentifiersGlobalExporter;
 import org.drools.base.MapGlobalResolver;
 import org.drools.base.ReferenceOriginalGlobalExporter;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.compiler.PackageBuilder;
-import org.drools.definition.KnowledgePackage;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.spi.GlobalResolver;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.StatelessKnowledgeSession;
 
 public class StatelessSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
@@ -94,8 +94,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
     @Test
     public void testInsertObject() throws Exception {
         String str = "";
-        str += "package org.drools \n";
-        str += "import org.drools.Cheese \n";
+        str += "package org.kie \n";
+        str += "import org.kie.Cheese \n";
         str += "rule rule1 \n";
         str += "  when \n";
         str += "    $c : Cheese() \n";
@@ -119,8 +119,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
     @Test
     public void testSetGlobal() throws Exception {
         String str = "";
-        str += "package org.drools \n";
-        str += "import org.drools.Cheese \n";
+        str += "package org.kie \n";
+        str += "import org.kie.Cheese \n";
         str += "global java.util.List list1 \n";
         str += "global java.util.List list2 \n";
         str += "global java.util.List list3 \n";
@@ -173,8 +173,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
     @Test
     public void testQuery() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Cheese \n";
+        str += "package org.kie.test  \n";
+        str += "import org.kie.Cheese \n";
         str += "query cheeses \n";
         str += "    stilton : Cheese(type == 'stilton') \n";
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
@@ -228,11 +228,11 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         
         ExecutionResults batchResult = (ExecutionResults) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
-        org.drools.runtime.rule.QueryResults results = ( org.drools.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
+        org.kie.runtime.rule.QueryResults results = ( org.kie.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
         assertEquals( 3, results.size() );
         assertEquals( 2, results.getIdentifiers().length );
         Set newSet = new HashSet();
-        for ( org.drools.runtime.rule.QueryResultsRow result : results ) {
+        for ( org.kie.runtime.rule.QueryResultsRow result : results ) {
             list = new ArrayList();
             list.add( result.get( "stilton" ) );
             list.add( result.get( "cheddar" ));

@@ -17,18 +17,18 @@
 package org.drools.definitions;
 
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.rule.Query;
-import org.drools.definition.type.FactField;
-import org.drools.definition.type.FactType;
 import org.drools.definitions.rule.impl.GlobalImpl;
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.rule.Query;
+import org.kie.definition.type.FactField;
+import org.kie.definition.type.FactType;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +36,7 @@ public class KnowledgePackageMetaDataTest {
 
 
     private String drl ="" +
-            "package org.drools.test.definitions \n" +
+            "package org.kie.test.definitions \n" +
             "import java.util.List; \n" +
             "\n" +
             "global Integer N; \n" +
@@ -83,7 +83,7 @@ public class KnowledgePackageMetaDataTest {
 
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
-        KnowledgePackage pack = kBase.getKnowledgePackage( "org.drools.test.definitions" );
+        KnowledgePackage pack = kBase.getKnowledgePackage( "org.kie.test.definitions" );
 
         assertNotNull( pack );
 
@@ -101,10 +101,10 @@ public class KnowledgePackageMetaDataTest {
         FactType type;
         for ( int j = 0; j < 2; j++ ) {
             type = pack.getFactTypes().iterator().next();
-            if ( type.getName().equals( "org.drools.test.definitions.Person" ) ) {
+            if ( type.getName().equals( "org.kie.test.definitions.Person" ) ) {
                 assertEquals( 2, type.getFields().size() );
-            } else if (type.getName().equals( "org.drools.test.definitions.Foo" ) ) {
-                assertEquals( "org.drools.test.definitions.Person", type.getSuperClass() );
+            } else if (type.getName().equals( "org.kie.test.definitions.Foo" ) ) {
+                assertEquals( "org.kie.test.definitions.Person", type.getSuperClass() );
 
                 FactField fld = type.getField( "bar" );
                 assertEquals( 3, fld.getIndex() );

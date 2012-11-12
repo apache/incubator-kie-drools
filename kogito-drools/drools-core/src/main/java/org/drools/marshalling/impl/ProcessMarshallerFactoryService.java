@@ -16,7 +16,7 @@
 
 package org.drools.marshalling.impl;
 
-import org.drools.Service;
+import org.kie.Service;
 
 /**
  * ProcessRuntimeFactoryService is used by the AbstractWorkingMemory to "provide" it's concrete implementation.

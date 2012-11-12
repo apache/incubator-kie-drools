@@ -16,8 +16,8 @@
 
 package org.drools.runtime.process;
 
-import org.drools.Service;
 import org.drools.common.AbstractWorkingMemory;
+import org.kie.Service;
 
 /**
  * ProcessRuntimeFactoryService is used by the AbstractWorkingMemory to "provide" it's concrete implementation.

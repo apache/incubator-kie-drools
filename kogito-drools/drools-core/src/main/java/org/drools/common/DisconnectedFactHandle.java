@@ -11,8 +11,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DisconnectedFactHandle

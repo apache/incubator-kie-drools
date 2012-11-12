@@ -16,18 +16,18 @@ package org.drools.factmodel.traits;
  * limitations under the License.
  */
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.base.DefaultKnowledgeHelper;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
-import org.drools.definition.type.FactType;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
 import org.junit.*;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.type.FactType;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
 
 import java.util.Date;
 import java.util.Map;

@@ -32,14 +32,14 @@ public class GenerateKBaseProjectFiles {
                 "import java.io.InputStream;\n" +
                 "import javax.enterprise.inject.Produces;\n" +
                 "import javax.inject.Named;\n" +
-                "import org.drools.KnowledgeBase;\n" +
-                "import org.drools.KnowledgeBaseConfiguration;\n" +
-                "import org.drools.KnowledgeBaseFactory;\n" +
-                "import org.drools.builder.CompositeKnowledgeBuilder;\n" +
-                "import org.drools.builder.KnowledgeBuilder;\n" +
-                "import org.drools.builder.KnowledgeBuilderFactory;\n" +
-                "import org.drools.builder.ResourceType;\n" +
-                "import org.drools.io.ResourceFactory;\n" +
+                "import org.kie.KnowledgeBase;\n" +
+                "import org.kie.KnowledgeBaseConfiguration;\n" +
+                "import org.kie.KnowledgeBaseFactory;\n" +
+                "import org.kie.builder.CompositeKnowledgeBuilder;\n" +
+                "import org.kie.builder.KnowledgeBuilder;\n" +
+                "import org.kie.builder.KnowledgeBuilderFactory;\n" +
+                "import org.kie.builder.ResourceType;\n" +
+                "import org.kie.io.ResourceFactory;\n" +
                 "public class " + kbase.getName() + "Producer extends "+ KBaseBuilder.class.getName() + " {\n" +
                 "    @Produces \n" +
                 "    @" + kbase.getName() + "\n" +

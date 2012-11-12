@@ -21,8 +21,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.TypeDeclaration;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.FactHandleFactory;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * A factory for creating <code>Handle</code>s.

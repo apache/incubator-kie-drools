@@ -19,9 +19,9 @@ package org.drools.time.impl;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
-import org.drools.runtime.Calendars;
 import org.drools.spi.Activation;
 import org.drools.time.Trigger;
+import org.kie.runtime.Calendars;
 
 public interface Timer extends Serializable {
 

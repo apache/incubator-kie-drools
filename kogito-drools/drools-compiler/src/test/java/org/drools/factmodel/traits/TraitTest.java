@@ -30,34 +30,34 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.ObjectTypeConfigurationRegistry;
-import org.drools.definition.type.FactType;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.runtime.ClassObjectFilter;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.definition.type.FactType;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.ClassObjectFilter;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.*;
@@ -1486,7 +1486,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     protected void manyTraits( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
-                "import org.drools.Message;" +
+                "import org.kie.Message;" +
                 "" +
                 "global java.util.List list; \n" +
                 "" +
@@ -1595,8 +1595,8 @@ public class TraitTest extends CommonTestMethodBase {
     // BZ #748752
     public void traitsInBatchExecution( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.jboss.qa.brms.traits\n" +
-                "import org.drools.Person;\n" +
-                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.kie.Person;\n" +
+                "import org.kie.factmodel.traits.Traitable;\n" +
                 "" +
                 "global java.util.List list;" +
                 "" +
@@ -1682,7 +1682,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     public void manyTraitsStateless( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
-                "import org.drools.Message;" +
+                "import org.kie.Message;" +
                 "" +
                 "global java.util.List list; \n" +
                 "" +
@@ -1752,9 +1752,9 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     public void aliasing( TraitFactory.VirtualPropertyMode mode ) {
-        String drl = "package org.drools.traits\n" +
-                "import org.drools.factmodel.traits.Traitable;\n" +
-                "import org.drools.factmodel.traits.Alias;\n" +
+        String drl = "package org.kie.traits\n" +
+                "import org.kie.factmodel.traits.Traitable;\n" +
+                "import org.kie.factmodel.traits.Alias;\n" +
                 "" +
                 "global java.util.List list;" +
                 "" +
@@ -1839,9 +1839,9 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     public void traitLogicalRemoval( TraitFactory.VirtualPropertyMode mode ) {
-        String drl = "package org.drools.trait.test;\n" +
+        String drl = "package org.kie.trait.test;\n" +
                 "\n" +
-                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.kie.factmodel.traits.Traitable;\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1929,8 +1929,8 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTMSConsistencyWithNonTraitableBeans() {
 
-        String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
+        String s1 = "package org.kie.test;\n" +
+                "import org.kie.Person; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +

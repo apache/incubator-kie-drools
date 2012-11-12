@@ -1,6 +1,6 @@
 package org.drools.games.pong;
 
-import org.drools.definition.type.Position;
+import org.kie.definition.type.Position;
 
 public class KeyPressed {
     

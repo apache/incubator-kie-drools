@@ -27,8 +27,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.runtime.ExecutionResults;
 import org.drools.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.runtime.ExecutionResults;
 
 @XmlRootElement(name="execution-results")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -45,7 +45,7 @@ public class ExecutionResultImpl implements ExecutionResults, Serializable {
     HashMap<String, Object> facts = new HashMap<String, Object>();
     
     /* (non-Javadoc)
-     * @see org.drools.batchexecution.BatchExecutionResult#getIdentifiers()
+     * @see org.kie.batchexecution.BatchExecutionResult#getIdentifiers()
      */
     public Collection<String> getIdentifiers() {
         return this.results.keySet();
@@ -60,7 +60,7 @@ public class ExecutionResultImpl implements ExecutionResults, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.batchexecution.BatchExecutionResult#getResults()
+     * @see org.kie.batchexecution.BatchExecutionResult#getResults()
      */
     public Map<String, Object> getResults() {
         return this.results;

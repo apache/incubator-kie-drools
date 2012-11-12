@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.event.rule.ObjectRetractedEvent;
+import org.kie.event.rule.ObjectRetractedEvent;
 
 public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements ObjectRetractedEvent {
     private FactHandle factHandle;

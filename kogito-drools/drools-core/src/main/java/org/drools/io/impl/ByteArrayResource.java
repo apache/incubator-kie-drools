@@ -30,10 +30,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.builder.ResourceType;
 import org.drools.core.util.StringUtils;
-import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
 public class ByteArrayResource extends BaseResource
     implements

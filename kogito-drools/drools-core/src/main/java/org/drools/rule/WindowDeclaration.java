@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.definition.KnowledgeDefinition;
+import org.kie.definition.KnowledgeDefinition;
 
 /**
  * The window declaration defines a window that can be used by patterns

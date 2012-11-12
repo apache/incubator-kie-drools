@@ -46,7 +46,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.add(LinkedListNode)'
+     * Test method for 'org.kie.util.LinkedList.add(LinkedListNode)'
      */
     @Test
     public void testAdd() {
@@ -95,7 +95,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.remove(LinkedListNode)'
+     * Test method for 'org.kie.util.LinkedList.remove(LinkedListNode)'
      */
     @Test
     public void testRemove() {
@@ -138,7 +138,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.getFirst()'
+     * Test method for 'org.kie.util.LinkedList.getFirst()'
      */
     @Test
     public void testGetFirst() {
@@ -159,7 +159,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.getLast()'
+     * Test method for 'org.kie.util.LinkedList.getLast()'
      */
     @Test
     public void testGetLast() {
@@ -180,7 +180,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.removeFirst()'
+     * Test method for 'org.kie.util.LinkedList.removeFirst()'
      */
     @Test
     public void testRemoveFirst() {
@@ -205,7 +205,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.removeLast()'
+     * Test method for 'org.kie.util.LinkedList.removeLast()'
      */
     @Test
     public void testRemoveLast() {
@@ -230,7 +230,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.isEmpty()'
+     * Test method for 'org.kie.util.LinkedList.isEmpty()'
      */
     @Test
     public void testIsEmpty() {
@@ -242,7 +242,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.clear()'
+     * Test method for 'org.kie.util.LinkedList.clear()'
      */
     @Test
     public void testClear() {
@@ -260,7 +260,7 @@ public class LinkedListTest {
     }
 
     /*
-     * Test method for 'org.drools.util.LinkedList.size()'
+     * Test method for 'org.kie.util.LinkedList.size()'
      */
     @Test
     public void testSize() {

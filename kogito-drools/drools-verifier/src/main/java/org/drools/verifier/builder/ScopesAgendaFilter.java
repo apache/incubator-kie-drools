@@ -20,9 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.AgendaFilter;
-import org.mvel2.MVEL;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.AgendaFilter;
 
 public class ScopesAgendaFilter
     implements

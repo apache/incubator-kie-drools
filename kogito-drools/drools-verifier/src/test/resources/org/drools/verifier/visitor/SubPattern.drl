@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.verifier.misc;
+package org.kie.verifier.misc;
 
         
 import com.sample.DroolsTest.Message;

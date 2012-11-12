@@ -24,7 +24,7 @@ import org.drools.spi.ConflictResolver;
  * resolve conflict.
  * 
  * @see #getInstance
- * @see org.drools.rule.Rule#getConditionSize
+ * @see org.kie.rule.Rule#getConditionSize
  * 
  *
  * @version $Id: ComplexityConflictResolver.java,v 1.9 2004/11/13 01:43:07 simon

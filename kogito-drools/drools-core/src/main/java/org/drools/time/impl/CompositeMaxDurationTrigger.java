@@ -18,8 +18,8 @@ package org.drools.time.impl;
 
 import java.util.Date;
 
-import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
+import org.kie.runtime.Calendars;
 
 public class CompositeMaxDurationTrigger
     implements

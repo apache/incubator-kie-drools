@@ -46,29 +46,29 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.event.process.ProcessEventListener;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.Calendars;
-import org.drools.runtime.Channel;
-import org.drools.runtime.Environment;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItemManager;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.ViewChangedEventListener;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
-import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.type.DateFormats;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.runtime.Calendars;
+import org.kie.runtime.Channel;
+import org.kie.runtime.Environment;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.time.SessionClock;
 
 @SuppressWarnings( "deprecation" )
 public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface {
@@ -314,7 +314,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Object getObject( org.drools.runtime.rule.FactHandle handle ) {
+    public Object getObject( org.kie.runtime.rule.FactHandle handle ) {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -442,11 +442,11 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void retract( org.drools.runtime.rule.FactHandle handle ) throws FactException {
+    public void retract( org.kie.runtime.rule.FactHandle handle ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void update( org.drools.runtime.rule.FactHandle handle, Object object ) throws FactException {
+    public void update( org.kie.runtime.rule.FactHandle handle, Object object ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -466,11 +466,11 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles( ObjectFilter filter ) {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles( ObjectFilter filter ) {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -478,7 +478,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void update( org.drools.runtime.rule.FactHandle handle, Object object, long mask, Activation activation ) throws FactException {
+    public void update( org.kie.runtime.rule.FactHandle handle, Object object, long mask, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 

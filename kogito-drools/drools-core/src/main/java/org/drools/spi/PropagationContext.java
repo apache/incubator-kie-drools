@@ -33,7 +33,7 @@ import org.drools.rule.Rule;
 public interface PropagationContext
     extends
     Externalizable,
-    org.drools.runtime.rule.PropagationContext {
+    org.kie.runtime.rule.PropagationContext {
 
     Rule getRuleOrigin();
     

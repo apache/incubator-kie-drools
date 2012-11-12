@@ -1,4 +1,4 @@
-package org.drools
+package org.kie
 
 rule "Supply cheese for for every person when there already exists someone of the same status and they are older"
     when

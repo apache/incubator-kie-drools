@@ -38,7 +38,6 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListNode;
-import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooComponentFactory;
@@ -48,7 +47,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.process.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -61,6 +59,8 @@ import org.drools.spi.RuleFlowGroup;
 import org.drools.time.impl.DefaultJobHandle;
 import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.Timer;
+import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.runtime.process.ProcessInstance;
 
 /**
  * Rule-firing Agenda.
@@ -115,7 +115,7 @@ public class DefaultAgenda
 
     private ConsequenceExceptionHandler                         legacyConsequenceExceptionHandler;
 
-    private org.drools.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
+    private org.kie.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
 
     protected volatile AtomicBoolean                            halt             = new AtomicBoolean( false );
 
@@ -184,7 +184,7 @@ public class DefaultAgenda
         if ( object instanceof ConsequenceExceptionHandler ) {
             this.legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) object;
         } else {
-            this.consequenceExceptionHandler = (org.drools.runtime.rule.ConsequenceExceptionHandler) object;
+            this.consequenceExceptionHandler = (org.kie.runtime.rule.ConsequenceExceptionHandler) object;
         }
         
         this.declarativeAgenda =  rb.getConfiguration().isDeclarativeAgenda();
@@ -272,7 +272,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getWorkingMemory()
+     * @see org.kie.common.AgendaI#getWorkingMemory()
      */
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
@@ -764,7 +764,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#setFocus(org.drools.spi.AgendaGroup)
+     * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
      */
     public boolean setFocus(final AgendaGroup agendaGroup) {
         // Set the focus to the agendaGroup if it doesn't already have the focus
@@ -786,7 +786,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#setFocus(java.lang.String)
+     * @see org.kie.common.AgendaI#setFocus(java.lang.String)
      */
     public void setFocus(final String name) {
         setFocus( null, name );
@@ -802,7 +802,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getFocus()
+     * @see org.kie.common.AgendaI#getFocus()
      */
     public AgendaGroup getFocus() {
         return this.focusStack.getLast();
@@ -811,7 +811,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getNextFocus()
+     * @see org.kie.common.AgendaI#getNextFocus()
      */
     public AgendaGroup getNextFocus() {
         InternalAgendaGroup agendaGroup;
@@ -848,7 +848,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#setCurrentAgendaGroup(org.drools.spi.AgendaGroup)
+     * @see org.kie.common.AgendaI#setCurrentAgendaGroup(org.kie.spi.AgendaGroup)
      */
     public void setCurrentAgendaGroup(final InternalAgendaGroup agendaGroup) {
         this.currentModule = agendaGroup;
@@ -857,7 +857,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getCurrentAgendaGroup()
+     * @see org.kie.common.AgendaI#getCurrentAgendaGroup()
      */
     public AgendaGroup getCurrentAgendaGroup() {
         return this.currentModule;
@@ -866,7 +866,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getAgendaGroup(java.lang.String)
+     * @see org.kie.common.AgendaI#getAgendaGroup(java.lang.String)
      */
     public AgendaGroup getAgendaGroup(final String name) {
         return getAgendaGroup(name, workingMemory == null ? null : ((InternalRuleBase)workingMemory.getRuleBase()));
@@ -889,7 +889,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getAgendaGroups()
+     * @see org.kie.common.AgendaI#getAgendaGroups()
      */
     public AgendaGroup[] getAgendaGroups() {
         return (AgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
@@ -910,7 +910,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getStack()
+     * @see org.kie.common.AgendaI#getStack()
      */
     public AgendaGroup[] getStack() {
         return this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
@@ -937,7 +937,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getActivationGroup(java.lang.String)
+     * @see org.kie.common.AgendaI#getActivationGroup(java.lang.String)
      */
     public ActivationGroup getActivationGroup(final String name) {
         ActivationGroupImpl activationGroup = (ActivationGroupImpl) this.activationGroups.get( name );
@@ -977,7 +977,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#focusStackSize()
+     * @see org.kie.common.AgendaI#focusStackSize()
      */
     public int focusStackSize() {
         int size = 0;
@@ -990,7 +990,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#agendaSize()
+     * @see org.kie.common.AgendaI#agendaSize()
      */
     public int agendaSize() {
         int size = 0;
@@ -1003,13 +1003,13 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getActivations()
+     * @see org.kie.common.AgendaI#getActivations()
      */
     public Activation[] getActivations() {
         final List<Activation> list = new ArrayList<Activation>();
         for ( final java.util.Iterator<InternalAgendaGroup> it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
             final AgendaGroup group = it.next();
-            for ( org.drools.runtime.rule.Activation activation : group.getActivations() ) {
+            for ( org.kie.runtime.rule.Activation activation : group.getActivations() ) {
                 list.add((Activation) activation);
             }
         }
@@ -1019,7 +1019,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#getScheduledActivations()
+     * @see org.kie.common.AgendaI#getScheduledActivations()
      */
     public Activation[] getScheduledActivations() {
         Activation[] scheduledActivations = new Activation[this.scheduledActivations.size()];
@@ -1058,7 +1058,7 @@ public class DefaultAgenda
                 // preserve lazy items.
                 ((InternalAgendaGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
-                for ( org.drools.runtime.rule.Activation a : group.getActivations() ) {
+                for ( org.kie.runtime.rule.Activation a : group.getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
                         lazyItems.add( (RuleNetworkEvaluatorActivation) a );
                     }
@@ -1081,7 +1081,7 @@ public class DefaultAgenda
                 // preserve lazy items
                 ((InternalRuleFlowGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
-                for ( org.drools.runtime.rule.Activation a : ((InternalRuleFlowGroup) group).getActivations() ) {
+                for ( org.kie.runtime.rule.Activation a : ((InternalRuleFlowGroup) group).getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
                         lazyItems.add( (RuleNetworkEvaluatorActivation) a );
                     }
@@ -1108,7 +1108,7 @@ public class DefaultAgenda
     }
 
     /** (non-Javadoc)
-     * @see org.drools.common.AgendaI#clearAgenda()
+     * @see org.kie.common.AgendaI#clearAgenda()
      */
     public void clearAndCancel() {
         // Cancel all items and fire a Cancelled event for each Activation
@@ -1146,7 +1146,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#clearAgendaGroup(java.lang.String)
+     * @see org.kie.common.AgendaI#clearAgendaGroup(java.lang.String)
      */
     public void clearAndCancelAgendaGroup(final String name) {
         final AgendaGroup agendaGroup = this.agendaGroups.get( name );
@@ -1158,7 +1158,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#clearAgendaGroup(org.drools.common.AgendaGroupImpl)
+     * @see org.kie.common.AgendaI#clearAgendaGroup(org.kie.common.AgendaGroupImpl)
      */
     public void clearAndCancelAgendaGroup(final AgendaGroup agendaGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
@@ -1211,7 +1211,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#clearActivationGroup(java.lang.String)
+     * @see org.kie.common.AgendaI#clearActivationGroup(java.lang.String)
      */
     public void clearAndCancelActivationGroup(final String name) {
         final ActivationGroup activationGroup = this.activationGroups.get( name );
@@ -1223,7 +1223,7 @@ public class DefaultAgenda
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.common.AgendaI#clearActivationGroup(org.drools.spi.ActivationGroup)
+     * @see org.kie.common.AgendaI#clearActivationGroup(org.kie.spi.ActivationGroup)
      */
     public void clearAndCancelActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;

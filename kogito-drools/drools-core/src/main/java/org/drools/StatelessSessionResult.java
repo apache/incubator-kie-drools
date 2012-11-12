@@ -42,7 +42,7 @@ public interface StatelessSessionResult {
      * @return
      *             java.util.Iterators.
      */
-    Iterator iterateObjects(org.drools.runtime.ObjectFilter filter);
+    Iterator iterateObjects(org.kie.runtime.ObjectFilter filter);
     
     /**
      * Retrieve the QueryResults of the specified query.

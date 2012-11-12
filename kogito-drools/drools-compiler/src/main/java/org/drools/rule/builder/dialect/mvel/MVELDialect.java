@@ -3,7 +3,6 @@ package org.drools.rule.builder.dialect.mvel;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
@@ -13,8 +12,6 @@ import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.StringUtils;
-import org.drools.definition.rule.Rule;
-import org.drools.io.Resource;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -62,6 +59,9 @@ import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.WindowReferenceBuilder;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.spi.KnowledgeHelper;
+import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.definition.rule.Rule;
+import org.kie.io.Resource;
 import org.mvel2.MVEL;
 
 import java.io.Externalizable;
@@ -302,7 +302,7 @@ public class MVELDialect
 
     public void init(RuleDescr ruleDescr) {
         // MVEL:test null to Fix failing test on
-        // org.drools.rule.builder.dialect.
+        // org.kie.rule.builder.dialect.
         // mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
 
         // @todo: why is this here, MVEL doesn't compile anything? mdp

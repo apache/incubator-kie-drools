@@ -47,7 +47,7 @@ import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Rule;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class SessionInspector {
 

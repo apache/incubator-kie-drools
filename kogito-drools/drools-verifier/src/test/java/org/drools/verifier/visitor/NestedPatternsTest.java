@@ -16,15 +16,15 @@
 
 package org.drools.verifier.visitor;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.Restriction;
@@ -32,12 +32,8 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.kie.builder.conf.LanguageLevelOption;
 
 public class NestedPatternsTest {
 

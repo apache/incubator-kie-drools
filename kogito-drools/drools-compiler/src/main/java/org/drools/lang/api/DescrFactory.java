@@ -16,8 +16,8 @@
 
 package org.drools.lang.api;
 
-import org.drools.io.Resource;
 import org.drools.lang.api.impl.PackageDescrBuilderImpl;
+import org.kie.io.Resource;
 
 /**
  * A factory API for the *Descr classes 

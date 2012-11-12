@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.factmodel;
+package org.kie.factmodel;
 
 
 import org.mvel2.MVEL;

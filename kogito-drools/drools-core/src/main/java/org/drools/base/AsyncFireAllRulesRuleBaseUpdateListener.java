@@ -18,8 +18,8 @@ package org.drools.base;
 
 import org.drools.StatefulSession;
 import org.drools.event.DefaultRuleBaseEventListener;
-import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 import org.drools.spi.RuleBaseUpdateListener;
+import org.kie.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 
 public class AsyncFireAllRulesRuleBaseUpdateListener extends DefaultRuleBaseEventListener 
 implements RuleBaseUpdateListener {

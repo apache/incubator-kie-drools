@@ -7,8 +7,8 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
 
 public class PackageBuilderErrors extends ArrayList<KnowledgeBuilderError>
     implements

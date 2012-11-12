@@ -30,13 +30,13 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.runtime.Channel;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
+import org.kie.runtime.Channel;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class SequentialKnowledgeHelper
     implements
@@ -276,15 +276,15 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
-    public void blockActivation(org.drools.runtime.rule.Activation match) {
+    public void blockActivation(org.kie.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
     }
 
-    public void unblockAllActivations(org.drools.runtime.rule.Activation match) {
+    public void unblockAllActivations(org.kie.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
     }
 
-    public void cancelActivation(org.drools.runtime.rule.Activation match) {
+    public void cancelActivation(org.kie.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
     }
 }

@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.common.InternalAgenda;
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.AgendaGroup;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.AgendaGroup;
 
 public class AgendaGroupImpl implements AgendaGroup, Externalizable {
     

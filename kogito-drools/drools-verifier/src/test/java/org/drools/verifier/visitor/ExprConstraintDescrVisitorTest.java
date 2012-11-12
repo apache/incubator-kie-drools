@@ -1,15 +1,23 @@
 package org.drools.verifier.visitor;
 
-import org.drools.base.evaluators.Operator;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.verifier.TestBase;
-import org.drools.verifier.components.*;
-import org.drools.verifier.data.VerifierComponent;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import org.drools.base.evaluators.Operator;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.verifier.TestBase;
+import org.drools.verifier.components.Eval;
+import org.drools.verifier.components.Field;
+import org.drools.verifier.components.NumberRestriction;
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.StringRestriction;
+import org.drools.verifier.components.VariableRestriction;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.data.VerifierComponent;
+import org.junit.Test;
 
 public class ExprConstraintDescrVisitorTest extends TestBase {
 

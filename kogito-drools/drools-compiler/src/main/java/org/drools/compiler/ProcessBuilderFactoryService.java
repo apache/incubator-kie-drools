@@ -16,7 +16,7 @@
 
 package org.drools.compiler;
 
-import org.drools.Service;
+import org.kie.Service;
 
 /**
  * ProcessBuilderFactoryService is used by the PackageBuilder to "provide" it's concrete implementation.

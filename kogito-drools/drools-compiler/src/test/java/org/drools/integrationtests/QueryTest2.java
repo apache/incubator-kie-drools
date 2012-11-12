@@ -1,16 +1,16 @@
 package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 
 public class QueryTest2 extends CommonTestMethodBase {
@@ -18,7 +18,7 @@ public class QueryTest2 extends CommonTestMethodBase {
     @Test
     public void testEvalRewrite() throws Exception {
         String str = "" +
-        "package org.drools;\n" +
+        "package org.kie;\n" +
         "global java.util.List results;\n" +
         "rule \"eval rewrite\"\n" +
         "    when\n" +

@@ -1,12 +1,12 @@
-package org.drools.games.wumpus.view
+package org.kie.games.wumpus.view
 
-import org.drools.games.wumpus.Cell
-import org.drools.games.wumpus.Direction
-import org.drools.games.wumpus.Hero
-import org.drools.games.wumpus.Gold
-import org.drools.games.wumpus.Pit
-import org.drools.games.wumpus.Wumpus
-import org.drools.games.wumpus.Thing
+import org.kie.games.wumpus.Cell
+import org.kie.games.wumpus.Direction
+import org.kie.games.wumpus.Hero
+import org.kie.games.wumpus.Gold
+import org.kie.games.wumpus.Pit
+import org.kie.games.wumpus.Wumpus
+import org.kie.games.wumpus.Thing
 
 import java.awt.image.BufferedImage
 import java.awt.Color;

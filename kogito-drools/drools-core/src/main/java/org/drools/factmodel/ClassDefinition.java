@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 
-import org.drools.definition.type.FactField;
-import org.drools.definition.type.FactType;
+import org.kie.definition.type.FactField;
+import org.kie.definition.type.FactType;
 
 /**
  * Declares a class to be dynamically created

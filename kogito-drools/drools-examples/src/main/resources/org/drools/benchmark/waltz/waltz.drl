@@ -17,11 +17,11 @@
 //created on: 25/03/2006
 package benchmarks.waltz
 
-import org.drools.benchmark.waltz.Stage
-import org.drools.benchmark.waltz.Line
-import org.drools.benchmark.waltz.Edge
-import org.drools.benchmark.waltz.Junction
-import org.drools.benchmark.waltz.WaltzUtil
+import org.kie.benchmark.waltz.Stage
+import org.kie.benchmark.waltz.Line
+import org.kie.benchmark.waltz.Edge
+import org.kie.benchmark.waltz.Junction
+import org.kie.benchmark.waltz.WaltzUtil
 
 global Long time
 

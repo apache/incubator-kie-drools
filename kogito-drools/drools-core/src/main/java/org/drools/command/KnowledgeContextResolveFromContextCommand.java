@@ -16,13 +16,14 @@
 
 package org.drools.command;
 
-import org.drools.KnowledgeBase;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.builder.KnowledgeBuilder;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.command.Command;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeContextResolveFromContextCommand
     implements

@@ -1,7 +1,7 @@
-package org.drools.test;
+package org.kie.test;
 
-import org.drools.Person
-import org.drools.CheeseEqual;
+import org.kie.Person
+import org.kie.CheeseEqual;
 
 rule "assert"
     when

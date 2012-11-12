@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.FactHandle;
-import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.common.InternalFactHandle;
+import org.kie.command.Command;
 
 public class SetVariableCommandFromCommand
     implements

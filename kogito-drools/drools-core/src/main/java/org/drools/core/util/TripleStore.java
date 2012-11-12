@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.runtime.rule.Variable;
+import org.kie.runtime.rule.Variable;
 
 
 public class TripleStore extends AbstractHashTable {

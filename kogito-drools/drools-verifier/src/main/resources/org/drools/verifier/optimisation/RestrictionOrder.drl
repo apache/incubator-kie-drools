@@ -15,28 +15,28 @@
  */
 
 //created on: 25.10.2007
-package org.drools.verifier.optimisation.drl
+package org.kie.verifier.optimisation.drl
 
 //list any import classes here.
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
+import org.kie.base.evaluators.Operator;
+import org.kie.base.evaluators.MatchesEvaluatorsDefinition;
 
-import org.drools.verifier.components.SubPattern;
-import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.components.PatternOperatorDescr;
-import org.drools.verifier.components.Eval;
-import org.drools.verifier.data.VerifierComponent;
-import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.RuleComponent;
-import org.drools.verifier.report.components.VerifierMessage;
-import org.drools.verifier.report.components.Severity;
-import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.components.SubPattern;
+import org.kie.verifier.components.Restriction;
+import org.kie.verifier.components.Pattern;
+import org.kie.verifier.components.VerifierRule;
+import org.kie.verifier.components.PatternOperatorDescr;
+import org.kie.verifier.components.Eval;
+import org.kie.verifier.data.VerifierComponent;
+import org.kie.verifier.components.VerifierComponentType;
+import org.kie.verifier.components.RuleComponent;
+import org.kie.verifier.report.components.VerifierMessage;
+import org.kie.verifier.report.components.Severity;
+import org.kie.verifier.report.components.MessageType;
+import org.kie.verifier.data.VerifierReport;
 
 import java.util.Map;
 import java.util.HashMap;

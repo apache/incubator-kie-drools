@@ -33,7 +33,7 @@ import org.drools.compiler.BoundIdentifiers;
 public class JavaExprAnalyzerTest {
 
     /**
-     * Test method for {@link org.drools.rule.builder.dialect.java.JavaExprAnalyzer#analyzeBlock(java.lang.String, java.util.Set[])}.
+     * Test method for {@link org.kie.rule.builder.dialect.java.JavaExprAnalyzer#analyzeBlock(java.lang.String, java.util.Set[])}.
      */
     @Test
     public void testAnalyzeBlock() {

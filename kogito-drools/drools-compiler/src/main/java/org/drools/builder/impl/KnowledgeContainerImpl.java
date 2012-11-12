@@ -1,15 +1,15 @@
 package org.drools.builder.impl;
 
-import org.drools.KBaseUnit;
-import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeContainer;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KProject;
 import org.drools.kproject.KSession;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.kie.KBaseUnit;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeContainer;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

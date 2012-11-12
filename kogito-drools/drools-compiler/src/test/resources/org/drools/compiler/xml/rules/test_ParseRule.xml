@@ -5,7 +5,7 @@
    xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
 
    <import name="java.util.HashMap" />
-   <import name="org.drools.*" />
+   <import name="org.kie.*" />
 
    <global identifier="x" type="com.sample.X" />
    <global identifier="yada" type="com.sample.Yada" />
@@ -140,7 +140,7 @@
                      identifier="a4" />
                   <qualified-identifier-restriction
                      evaluator="==">
-                     org.drools.Bar.BAR_ENUM_VALUE
+                     org.kie.Bar.BAR_ENUM_VALUE
                   </qualified-identifier-restriction>
                </or-restriction-connective>
             </field-constraint>

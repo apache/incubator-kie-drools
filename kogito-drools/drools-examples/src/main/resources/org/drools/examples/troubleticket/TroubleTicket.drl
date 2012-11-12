@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.examples.troubleticket
+package org.kie.examples.troubleticket
 
-import org.drools.examples.troubleticket.Customer;
-import org.drools.examples.troubleticket.Ticket;
+import org.kie.examples.troubleticket.Customer;
+import org.kie.examples.troubleticket.Ticket;
 
 rule "New Ticket"
     salience 10

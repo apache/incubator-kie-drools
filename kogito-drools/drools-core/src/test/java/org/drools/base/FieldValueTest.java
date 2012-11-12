@@ -40,7 +40,7 @@ public class FieldValueTest {
     }
 
     /*
-     * Test method for 'org.drools.base.FieldValue.hashCode()'
+     * Test method for 'org.kie.base.FieldValue.hashCode()'
      */
     @Test
     public void testHashCode() {
@@ -58,7 +58,7 @@ public class FieldValueTest {
     }
 
     /*
-     * Test method for 'org.drools.base.FieldValue.equals(Object)'
+     * Test method for 'org.kie.base.FieldValue.equals(Object)'
      */
     @Test
     public void testEqualsObject() {

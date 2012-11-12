@@ -3,7 +3,7 @@ package org.drools.kproject;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import org.drools.runtime.conf.ClockTypeOption;
+import org.kie.runtime.conf.ClockTypeOption;
 
 public interface KSession {
 

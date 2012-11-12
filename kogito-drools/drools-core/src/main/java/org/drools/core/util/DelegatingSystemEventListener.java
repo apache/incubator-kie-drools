@@ -16,7 +16,7 @@
 
 package org.drools.core.util;
 
-import org.drools.SystemEventListener;
+import org.kie.SystemEventListener;
 
 public class DelegatingSystemEventListener
         implements

@@ -1,8 +1,8 @@
 package org.drools.builder.impl;
 
-import org.drools.KBaseUnit;
-import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.kproject.KBase;
+import org.kie.KBaseUnit;
+import org.kie.builder.KnowledgeBuilderConfiguration;
 
 import java.util.Map;
 

@@ -26,10 +26,10 @@ import java.util.concurrent.locks.Lock;
 import org.drools.core.util.JavaIteratorAdapter;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.AbstractHashTable.HashTableIterator;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.rule.FactHandle;
 
 public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /** Object-to-handle mapping. */
@@ -73,14 +73,14 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#size()
+     * @see org.kie.common.ObjectStore#size()
      */
     public int size() {
         return this.assertMap.size();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#isEmpty()
+     * @see org.kie.common.ObjectStore#isEmpty()
      */
     public boolean isEmpty() {
         return this.assertMap.size() == 0;
@@ -92,7 +92,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#getObjectForHandle(org.drools.common.InternalFactHandle)
+     * @see org.kie.common.ObjectStore#getObjectForHandle(org.kie.common.InternalFactHandle)
      */
     public Object getObjectForHandle(FactHandle handle) {
         try {
@@ -113,7 +113,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#getHandleForObject(java.lang.Object)
+     * @see org.kie.common.ObjectStore#getHandleForObject(java.lang.Object)
      */
     public InternalFactHandle getHandleForObject(Object object){
         if ( object == null ) {
@@ -128,14 +128,14 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#getHandleForObject(java.lang.Object)
+     * @see org.kie.common.ObjectStore#getHandleForObject(java.lang.Object)
      */
     public InternalFactHandle getHandleForObjectIdentity(Object object) {
         return (InternalFactHandle) this.identityMap.get( object );
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#updateHandle(org.drools.common.InternalFactHandle, java.lang.Object)
+     * @see org.kie.common.ObjectStore#updateHandle(org.kie.common.InternalFactHandle, java.lang.Object)
      */
     public void updateHandle(InternalFactHandle handle, Object object){
         this.assertMap.remove( handle );
@@ -154,7 +154,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#addHandle(org.drools.common.InternalFactHandle, java.lang.Object)
+     * @see org.kie.common.ObjectStore#addHandle(org.kie.common.InternalFactHandle, java.lang.Object)
      */
     public void addHandle(InternalFactHandle handle, Object object) {
         this.assertMap.put( handle,
@@ -168,7 +168,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#removeHandle(org.drools.common.InternalFactHandle)
+     * @see org.kie.common.ObjectStore#removeHandle(org.kie.common.InternalFactHandle)
      */
     public void removeHandle(final FactHandle handle) {
         this.assertMap.remove( handle );
@@ -178,7 +178,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#iterateObjects()
+     * @see org.kie.common.ObjectStore#iterateObjects()
      */
     public Iterator iterateObjects() {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
@@ -188,9 +188,9 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#iterateObjects(org.drools.ObjectFilter)
+     * @see org.kie.common.ObjectStore#iterateObjects(org.kie.ObjectFilter)
      */
-    public Iterator iterateObjects(org.drools.runtime.ObjectFilter filter) {
+    public Iterator iterateObjects(org.kie.runtime.ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
         return new JavaIteratorAdapter( iterator,
@@ -199,7 +199,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#iterateFactHandles()
+     * @see org.kie.common.ObjectStore#iterateFactHandles()
      */
     public Iterator iterateFactHandles() {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
@@ -209,9 +209,9 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.ObjectStore#iterateFactHandles(org.drools.ObjectFilter)
+     * @see org.kie.common.ObjectStore#iterateFactHandles(org.kie.ObjectFilter)
      */
-    public Iterator iterateFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public Iterator iterateFactHandles(org.kie.runtime.ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
         return new JavaIteratorAdapter( iterator,

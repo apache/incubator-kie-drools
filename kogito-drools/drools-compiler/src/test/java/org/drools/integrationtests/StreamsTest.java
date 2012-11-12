@@ -32,38 +32,38 @@ import java.util.concurrent.TimeUnit;
 import org.drools.Cheese;
 import org.drools.ClockType;
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StockTick;
 import org.drools.StockTickInterface;
 import org.drools.base.ClassObjectType;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
-import org.drools.conf.EventProcessingOption;
-import org.drools.definition.type.FactType;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.io.ResourceFactory;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ObjectType;
-import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.conf.EventProcessingOption;
+import org.kie.definition.type.FactType;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.time.SessionClock;
 import org.mockito.ArgumentCaptor;
 
 /**
@@ -311,7 +311,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyOnEntryPointFacts() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.kie\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +
@@ -341,7 +341,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        org.drools.event.rule.AgendaEventListener ael = mock(org.drools.event.rule.AgendaEventListener.class);
+        org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
         WorkingMemoryEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint("ep1");
@@ -364,10 +364,10 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(3,
                      rulesFired);
 
-        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
         verify(ael,
                times(3)).afterActivationFired(captor.capture());
-        List<org.drools.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat(aafe.get(0).getActivation().getRule().getName(),
                           is("R1"));
@@ -427,7 +427,7 @@ public class StreamsTest extends CommonTestMethodBase {
         ksession.insert(st2);
 
         verify(wml,
-               times(2)).objectInserted(any(org.drools.event.rule.ObjectInsertedEvent.class));
+               times(2)).objectInserted(any(org.kie.event.rule.ObjectInsertedEvent.class));
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
         assertThat(ksession.getObjects(),
@@ -476,7 +476,7 @@ public class StreamsTest extends CommonTestMethodBase {
         ksession.insert(st2);
 
         verify(wml,
-               times(2)).objectInserted(any(org.drools.event.rule.ObjectInsertedEvent.class));
+               times(2)).objectInserted(any(org.kie.event.rule.ObjectInsertedEvent.class));
         verify(ael,
                times(2)).activationCreated(any(ActivationCreatedEvent.class));
         assertThat(ksession.getObjects().size(),
@@ -500,8 +500,8 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testEventExpirationValue() throws Exception {
-        String drl1 = "package org.drools.pkg1\n" +
-                      "import org.drools.StockTick\n" +
+        String drl1 = "package org.kie.pkg1\n" +
+                      "import org.kie.StockTick\n" +
                       "declare StockTick\n" +
                       "    @role(event)\n" +
                       "end\n" +
@@ -510,8 +510,8 @@ public class StreamsTest extends CommonTestMethodBase {
                       "    StockTick()\n" +
                       "then\n" +
                       "end\n";
-        String drl2 = "package org.drools.pkg2\n" +
-                      "import org.drools.StockTick\n" +
+        String drl2 = "package org.kie.pkg2\n" +
+                      "import org.kie.StockTick\n" +
                       "declare StockTick\n" +
                       "    @role(event)\n" +
                       "end\n" +
@@ -564,7 +564,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
 
     public void testWindowDeclaration() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.kie\n" +
                      "declare StockTick\n" +
                      "    @role(event)\n" +
                      "end\n" +
@@ -601,7 +601,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
         verify(ael,
                times(1)).afterActivationFired(captor.capture());
 
@@ -615,7 +615,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testWindowDeclaration2() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.kie\n" +
                      "declare Double\n" + 
                      "    @role(event)\n" + 
                      "end\n" + 
@@ -647,7 +647,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
         verify(ael,
                times(1)).afterActivationFired(captor.capture());
 
@@ -658,7 +658,7 @@ public class StreamsTest extends CommonTestMethodBase {
     
     @Test
     public void testMultipleWindows() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.kie\n" +
                      "declare StockTick\n" + 
                      "    @role(event)\n" + 
                      "end\n" + 
@@ -684,7 +684,7 @@ public class StreamsTest extends CommonTestMethodBase {
         
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
         verify(ael,
                times(1)).afterActivationFired(captor.capture());
 
@@ -697,7 +697,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testWindowWithEntryPointCompilationError() {
-        String str = "import org.drools.Cheese;\n" +
+        String str = "import org.kie.Cheese;\n" +
                 "declare window X\n" +
                 "   Cheese( type == \"gorgonzola\" ) over window:time(1m) from entry-point Z\n" +
                 "end\n" +
@@ -719,7 +719,7 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
-        String str = "package org.drools.test\n" +
+        String str = "package org.kie.test\n" +
                 "declare Event\n" +
                 "   @role(event)\n" +
                 "   name : String\n" +
@@ -761,7 +761,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType eventType = kbase.getFactType("org.drools.test", "Event");
+        FactType eventType = kbase.getFactType("org.kie.test", "Event");
 
         Object event = eventType.newInstance();
         eventType.set(event, "name", "myName");

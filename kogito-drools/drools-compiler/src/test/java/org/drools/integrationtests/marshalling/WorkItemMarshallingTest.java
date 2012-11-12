@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.drools.integrationtests.marshalling.util.OldOutputMarshallerMethods;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -20,6 +18,8 @@ import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.junit.Test;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
 
 public class WorkItemMarshallingTest {
 

@@ -1,7 +1,7 @@
-package org.drools.test
+package org.kie.test
 
-import org.drools.Primitives 
-import org.drools.TestEnum 
+import org.kie.Primitives 
+import org.kie.TestEnum 
 
 rule "enum serialization with isolated classloader"
     when

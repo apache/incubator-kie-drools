@@ -16,17 +16,16 @@
 
 package org.drools.verifier;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.jar.JarInputStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -36,6 +35,8 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Test;
+import org.kie.builder.ResourceType;
 
 public class VerifierTest {
 

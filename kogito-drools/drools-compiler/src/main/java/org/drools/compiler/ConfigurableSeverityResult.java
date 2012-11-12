@@ -15,10 +15,10 @@
 */
 package org.drools.compiler;
 
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.ResultSeverity;
-import org.drools.builder.conf.KBuilderSeverityOption;
-import org.drools.io.Resource;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.ResultSeverity;
+import org.kie.builder.conf.KBuilderSeverityOption;
+import org.kie.io.Resource;
 
 
 /**
@@ -33,7 +33,7 @@ public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderRes
     
     private ResultSeverity severity;
     /* (non-Javadoc)
-     * @see org.drools.compiler.DroolsProblem#getProblemType()
+     * @see org.kie.compiler.DroolsProblem#getProblemType()
      */
     @Override
     public ResultSeverity getSeverity() {

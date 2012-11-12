@@ -35,7 +35,6 @@ import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
-import org.drools.definition.type.FactField;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -78,11 +77,12 @@ import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
 import org.drools.spi.Constraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ClassLoaderUtil;
-import org.drools.util.CompositeClassLoader;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.definition.type.FactField;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -809,8 +809,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage(packageDescr2);
         builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
         
-        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
-        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.kie\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.kie\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
         assertTrue(builder.hasWarnings());
         assertTrue(builder.hasErrors());
         
@@ -834,8 +834,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage(packageDescr2);
         builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
         
-        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
-        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.kie\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.kie\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
         assertTrue(builder.hasWarnings());
         assertTrue(builder.hasErrors());
         
@@ -848,8 +848,8 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testWarnOnFunctionReplacement() throws DroolsParserException, IOException {
         System.setProperty( "drools.kbuilder.severity." + DuplicateFunction.KEY, "WARNING");
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
-        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.kie\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.kie\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
         assertTrue(builder.hasWarnings());
         
     }
@@ -1014,12 +1014,12 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     @Test
     public void testTypeDeclaration() throws Exception {
-        PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        PackageDescr pkgDescr = new PackageDescr( "org.kie" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
         typeDescr.addAnnotation( TypeDeclaration.Role.ID,
                                     "event" );
         typeDescr.addAnnotation( TypeDeclaration.ATTR_CLASS,
-                                    "org.drools.StockTick" );
+                                    "org.kie.StockTick" );
         pkgDescr.addTypeDeclaration( typeDescr );
 
         PackageBuilder builder = new PackageBuilder();
@@ -1087,9 +1087,9 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testPackageMerge() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         try {
-            builder.addPackage( new PackageDescr( "org.drools" ) );
+            builder.addPackage( new PackageDescr( "org.kie" ) );
 
-            builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+            builder.addPackageFromDrl( new StringReader( "package org.kie\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
         } catch ( RuntimeException e ) {
             fail( "Should not raise any exception: " + e.getMessage() );
         }
@@ -1240,12 +1240,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         cfg.setAllowMultipleNamespaces( false );
         PackageBuilder bldr = new PackageBuilder( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Cheese" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.kie.Cheese" ) );
         assertFalse( bldr.hasErrors() );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.kie.Person" ) );
         assertFalse( bldr.hasErrors() );
         // following package will not be added because configuration is set for single namespace builders
-        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.kie.Person" ) );
         assertFalse( bldr.hasErrors() );
 
         assertEquals( 1,
@@ -1255,12 +1255,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertEquals( true,
                       cfg.isAllowMultipleNamespaces() );
         bldr = new PackageBuilder( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Cheese" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.kie.Cheese" ) );
         assertFalse( bldr.hasErrors() );
         // following import will be added to the default package name
-        bldr.addPackageFromDrl( new StringReader( "import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "import org.kie.Person" ) );
         assertFalse( bldr.hasErrors() );
-        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.kie.Person" ) );
         assertFalse( bldr.hasErrors() );
 
         assertEquals( 3,

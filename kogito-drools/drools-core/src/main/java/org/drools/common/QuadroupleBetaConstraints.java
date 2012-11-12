@@ -44,7 +44,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
+     * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
@@ -60,7 +60,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
+     * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final InternalWorkingMemory workingMemory,
@@ -90,7 +90,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
+     * @see org.kie.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
                                        final InternalFactHandle handle) {
@@ -101,7 +101,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
+     * @see org.kie.common.BetaNodeConstraints#isAllowedCachedRight(org.kie.reteoo.ReteTuple)
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final LeftTuple tuple) {

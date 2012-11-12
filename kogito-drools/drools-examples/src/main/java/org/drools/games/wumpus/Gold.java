@@ -1,6 +1,6 @@
 package org.drools.games.wumpus;
 
-import org.drools.definition.type.PropertyReactive;
+import org.kie.definition.type.PropertyReactive;
 
 
 @PropertyReactive

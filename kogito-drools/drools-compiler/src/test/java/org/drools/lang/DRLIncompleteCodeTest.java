@@ -2,13 +2,13 @@ package org.drools.lang;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import java.util.LinkedList;
 

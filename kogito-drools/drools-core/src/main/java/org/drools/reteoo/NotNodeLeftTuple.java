@@ -85,7 +85,7 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#unlinkFromLeftParent()
+     * @see org.kie.reteoo.LeftTuple#unlinkFromLeftParent()
      */
     public void unlinkFromLeftParent() {
         super.unlinkFromLeftParent();
@@ -93,7 +93,7 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#unlinkFromRightParent()
+     * @see org.kie.reteoo.LeftTuple#unlinkFromRightParent()
      */
     public void unlinkFromRightParent() {
         super.unlinkFromRightParent();
@@ -101,84 +101,84 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getMemory()
+     * @see org.kie.reteoo.LeftTuple#getMemory()
      */
     public LeftTupleList getMemory() {
         return this.memory;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
+     * @see org.kie.reteoo.LeftTuple#setMemory(org.kie.core.util.index.LeftTupleList)
      */
     public void setMemory(LeftTupleList memory) {
         this.memory = memory;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getPrevious()
+     * @see org.kie.reteoo.LeftTuple#getPrevious()
      */
     public Entry getPrevious() {
         return previous;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setPrevious(org.drools.core.util.Entry)
+     * @see org.kie.reteoo.LeftTuple#setPrevious(org.kie.core.util.Entry)
      */
     public void setPrevious(Entry previous) {
         this.previous = previous;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setNext(org.drools.core.util.Entry)
+     * @see org.kie.reteoo.LeftTuple#setNext(org.kie.core.util.Entry)
      */
     public void setNext(final Entry next) {
         this.next = next;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getNext()
+     * @see org.kie.reteoo.LeftTuple#getNext()
      */
     public Entry getNext() {
         return this.next;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setBlocker(org.drools.reteoo.RightTuple)
+     * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
      */
     public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getBlocker()
+     * @see org.kie.reteoo.LeftTuple#getBlocker()
      */
     public RightTuple getBlocker() {
         return this.blocker;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getBlockedPrevious()
+     * @see org.kie.reteoo.LeftTuple#getBlockedPrevious()
      */
     public LeftTuple getBlockedPrevious() {
         return this.blockedPrevious;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setBlockedPrevious(org.drools.reteoo.LeftTuple)
+     * @see org.kie.reteoo.LeftTuple#setBlockedPrevious(org.kie.reteoo.LeftTuple)
      */
     public void setBlockedPrevious(LeftTuple blockerPrevious) {
         this.blockedPrevious = blockerPrevious;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getBlockedNext()
+     * @see org.kie.reteoo.LeftTuple#getBlockedNext()
      */
     public LeftTuple getBlockedNext() {
         return this.blockedNext;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setBlockedNext(org.drools.reteoo.LeftTuple)
+     * @see org.kie.reteoo.LeftTuple#setBlockedNext(org.kie.reteoo.LeftTuple)
      */
     public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;

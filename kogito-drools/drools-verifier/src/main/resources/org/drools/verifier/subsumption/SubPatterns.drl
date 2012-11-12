@@ -15,18 +15,18 @@
  */
 
 //created on: 8.1.2008
-package org.drools.verifier.subsumption.patterns
+package org.kie.verifier.subsumption.patterns
 
-import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternComponent;
-import org.drools.verifier.components.SubPattern;
-import org.drools.verifier.components.SubRule;
-import org.drools.verifier.components.Source;
-import org.drools.verifier.report.components.Redundancy;
-import org.drools.verifier.report.components.Subsumption;
+import org.kie.verifier.components.Restriction;
+import org.kie.verifier.components.Pattern;
+import org.kie.verifier.components.PatternComponent;
+import org.kie.verifier.components.SubPattern;
+import org.kie.verifier.components.SubRule;
+import org.kie.verifier.components.Source;
+import org.kie.verifier.report.components.Redundancy;
+import org.kie.verifier.report.components.Subsumption;
 
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.data.VerifierReport;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ global VerifierReport result
 //
 // Dependencies: Needs at least one rule.
 //
-//        package org.drools.verifier.redundancy.patterns
+//        package org.kie.verifier.redundancy.patterns
 //            rule "Find redundant Patterns with restrictions"
 //            rule "Find redundant Patterns without restrictions"
 //
@@ -104,7 +104,7 @@ end
 //
 // Dependencies: Needs at least one rule.
 //
-//        package org.drools.verifier.redundancy.patterns
+//        package org.kie.verifier.redundancy.patterns
 //            rule "Find redundant Patterns with restrictions"
 //            rule "Find redundant Patterns without restrictions"
 //

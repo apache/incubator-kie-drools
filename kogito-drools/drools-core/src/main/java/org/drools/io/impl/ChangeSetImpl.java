@@ -19,8 +19,8 @@ package org.drools.io.impl;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.ChangeSet;
-import org.drools.io.Resource;
+import org.kie.ChangeSet;
+import org.kie.io.Resource;
 
 public class ChangeSetImpl implements ChangeSet {
     private Collection<Resource> resourcesRemoved = Collections.<Resource>emptyList();

@@ -6,7 +6,6 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
-import org.drools.definition.type.FactField;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -37,6 +36,7 @@ import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.ClassWireable;
 import org.drools.spi.KnowledgeHelper;
+import org.kie.definition.type.FactField;
 import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
@@ -93,7 +93,7 @@ public final class DialectUtil {
             counter++;
             final String actualName = fileName + "_" + counter + "." + ext;
 
-            //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
+            //MVEL:test null to Fix failing test on org.kie.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
             if (!src.isAvailable(actualName)) break;
         }
         // we have duplicate file names so append counter
@@ -574,7 +574,7 @@ public final class DialectUtil {
         }
 
         if ( declr == null || declr.isInternalFact() ) {
-           consequence.append( "org.drools.FactHandle " );
+           consequence.append( "org.kie.FactHandle " );
            consequence.append( obj );
            consequence.append( "__Handle2__ = drools.getFactHandle(" );
            consequence.append( obj );

@@ -47,7 +47,7 @@ public class ReteTesterHelper {
     private final ClassTypeResolver typeResolver;
 
     public ReteTesterHelper() {
-        this.pkg = new Package( "org.drools.examples.manners" );
+        this.pkg = new Package( "org.kie.examples.manners" );
         this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         this.store = this.pkg.getClassFieldAccessorStore();
         this.store.setEagerWire( true );

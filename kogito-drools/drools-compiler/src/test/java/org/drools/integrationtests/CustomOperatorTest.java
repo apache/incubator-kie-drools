@@ -1,14 +1,10 @@
 package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.Operator;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.conf.EvaluatorOption;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
@@ -16,6 +12,10 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.conf.EvaluatorOption;
 
 import java.io.IOException;
 import java.io.ObjectInput;

@@ -21,7 +21,7 @@ import javax.rules.ObjectFilter;
 /**
  * Adaptor class, that makes JSR94 ObjectFilters work from a delegating Drools ObjectFilter
  */
-public class ObjectFilterAdapter implements org.drools.runtime.ObjectFilter {
+public class ObjectFilterAdapter implements org.kie.runtime.ObjectFilter {
     private ObjectFilter filter;
     
     public ObjectFilterAdapter(ObjectFilter filter) {

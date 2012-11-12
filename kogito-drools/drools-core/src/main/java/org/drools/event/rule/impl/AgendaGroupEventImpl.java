@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.event.rule.AgendaGroupEvent;
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.AgendaGroup;
+import org.kie.event.rule.AgendaGroupEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.AgendaGroup;
 
 public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
     private AgendaGroup agendaGroup;

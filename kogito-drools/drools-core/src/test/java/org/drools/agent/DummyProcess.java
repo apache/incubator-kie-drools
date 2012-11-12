@@ -3,10 +3,10 @@ package org.drools.agent;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.drools.definition.process.Node;
-import org.drools.definition.process.WorkflowProcess;
-import org.drools.io.Resource;
-import org.drools.io.ResourcedObject;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.WorkflowProcess;
+import org.kie.io.Resource;
+import org.kie.io.ResourcedObject;
 
 public class DummyProcess implements WorkflowProcess, Serializable, ResourcedObject {
 

@@ -7,19 +7,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.base.mvel.MVELDebugHandler;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.logger.KnowledgeRuntimeLogger;
+import org.kie.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.mvel2.MVELRuntime;
 import org.mvel2.debug.Debugger;
 import org.mvel2.debug.Frame;
@@ -62,7 +62,7 @@ public class HelloWorldTest extends CommonTestMethodBase {
                 return 0;
             }
         });
-        String source = "org.drools.integrationtests.Rule_Hello_World";
+        String source = "org.kie.integrationtests.Rule_Hello_World";
         MVELRuntime.registerBreakpoint(source, 1);
         // load up the knowledge base
         KnowledgeBase kbase = readKnowledgeBase();

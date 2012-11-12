@@ -20,13 +20,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.ClassObjectFilter;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.definition.KnowledgePackage;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.verifier.components.*;
+import org.drools.verifier.components.EntryPoint;
+import org.drools.verifier.components.Field;
+import org.drools.verifier.components.Import;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.Variable;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierRule;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 class VerifierDataKnowledgeSession
     implements

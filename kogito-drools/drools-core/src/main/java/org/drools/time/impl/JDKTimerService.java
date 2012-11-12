@@ -30,9 +30,9 @@ import org.drools.time.InternalSchedulerService;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
-import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
+import org.kie.time.SessionClock;
 
 /**
  * A default Scheduler implementation that uses the

@@ -10,9 +10,6 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Date;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -23,12 +20,9 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.NamedEntryPoint;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.conf.EventProcessingOption;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.integrationtests.marshalling.util.OldOutputMarshallerMethods;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -40,11 +34,17 @@ import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.conf.EventProcessingOption;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class FactHandleMarshallingTest {
 

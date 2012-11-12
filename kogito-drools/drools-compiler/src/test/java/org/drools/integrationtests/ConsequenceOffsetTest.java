@@ -1,11 +1,11 @@
 package org.drools.integrationtests;
 
-import org.drools.builder.conf.LanguageLevelOption;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import java.io.InputStreamReader;
 import java.io.Reader;

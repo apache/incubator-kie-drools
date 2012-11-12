@@ -24,7 +24,7 @@ import org.drools.spi.AgendaFilter;
  */
 public class RuleNameStartsWithAgendaFilter
     implements
-    AgendaFilter, org.drools.runtime.rule.AgendaFilter {
+    AgendaFilter, org.kie.runtime.rule.AgendaFilter {
     private final String  prefix;
 
     private final boolean accept;
@@ -48,7 +48,7 @@ public class RuleNameStartsWithAgendaFilter
         }
     }
 
-    public boolean accept( org.drools.runtime.rule.Activation activation ) {
+    public boolean accept( org.kie.runtime.rule.Activation activation ) {
         if ( activation.getRule().getName().startsWith( this.prefix ) ) {
             return this.accept;
         } else {

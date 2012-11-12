@@ -1,18 +1,18 @@
 package org.drools.integrationtests;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.QueryResults;
 
 import static org.junit.Assert.*;
 
@@ -26,10 +26,10 @@ public class Query2Test {
     @Before
     public void setUp() throws Exception {
         String text = "";
-        text += "package org.drools.integrationtests\n";
-        text += "import org.drools.integrationtests.Query2Test.Bar\n";
-        text += "import org.drools.integrationtests.Query2Test.Foo\n";
-        text += "import org.drools.integrationtests.Query2Test.Foo2\n";
+        text += "package org.kie.integrationtests\n";
+        text += "import org.kie.integrationtests.Query2Test.Bar\n";
+        text += "import org.kie.integrationtests.Query2Test.Foo\n";
+        text += "import org.kie.integrationtests.Query2Test.Foo2\n";
         text += "query \"testDifferent\"\n";
         text += "    foo : Foo();\n";
         text += "    bar : Bar(id == foo.id)\n";

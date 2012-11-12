@@ -34,7 +34,7 @@ public class TripleImpl implements Triple {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.util.Triple#getInstance()
+     * @see org.kie.core.util.Triple#getInstance()
      */
     public Object getInstance() {
         return instance;
@@ -45,7 +45,7 @@ public class TripleImpl implements Triple {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.util.Triple#getProperty()
+     * @see org.kie.core.util.Triple#getProperty()
      */
     public Object getProperty() {
         return property;
@@ -56,7 +56,7 @@ public class TripleImpl implements Triple {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.util.Triple#getValue()
+     * @see org.kie.core.util.Triple#getValue()
      */
     public Object getValue() {
         return value;

@@ -11,13 +11,13 @@ import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.time.SessionClock;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.time.SessionClock;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object

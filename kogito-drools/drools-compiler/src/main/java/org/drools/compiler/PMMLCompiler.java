@@ -16,7 +16,7 @@
 
 package org.drools.compiler;
 
-import org.drools.Service;
+import org.kie.Service;
 
 import java.io.InputStream;
 import java.util.Map;

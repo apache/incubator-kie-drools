@@ -1,9 +1,10 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import org.drools.builder.conf.LanguageLevelOption;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
+
 import static org.junit.Assert.*;
 
 import org.drools.base.mvel.MVELConsequence;

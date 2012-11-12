@@ -17,8 +17,8 @@
 package org.drools.marshalling.impl;
 
 import org.drools.core.util.StringUtils;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
 
 public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStrategyStore {
     private ObjectMarshallingStrategy[] strategiesList;
@@ -29,14 +29,14 @@ public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStra
    
     // Old marshalling algorithm methods
     /* (non-Javadoc)
-     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategy(int)
+     * @see org.kie.marshalling.impl.ObjectMarshallingStrategyStore#getStrategy(int)
      */
     public ObjectMarshallingStrategy getStrategy(int index) {
         return this.strategiesList[ index ];
     }
 
     /* (non-Javadoc)
-     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategy(java.lang.Object)
+     * @see org.kie.marshalling.impl.ObjectMarshallingStrategyStore#getStrategy(java.lang.Object)
      */
     public int getStrategy(Object object) {
         for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {
@@ -49,7 +49,7 @@ public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStra
     
     // New marshalling algorithm methods
     /* (non-Javadoc)
-     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategyObject(java.lang.String)
+     * @see org.kie.marshalling.impl.ObjectMarshallingStrategyStore#getStrategyObject(java.lang.String)
      */
     public ObjectMarshallingStrategy getStrategyObject(String strategyClassName) {
         if( StringUtils.isEmpty(strategyClassName) ) { 
@@ -65,7 +65,7 @@ public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStra
     }
     
     /* (non-Javadoc)
-     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategyObject(java.lang.Object)
+     * @see org.kie.marshalling.impl.ObjectMarshallingStrategyStore#getStrategyObject(java.lang.Object)
      */
     public ObjectMarshallingStrategy getStrategyObject(Object object) {
         for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {

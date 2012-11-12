@@ -1,6 +1,6 @@
 package org.drools.test;
 
-import org.drools.definition.type.Position;
+import org.kie.definition.type.Position;
 
 public class Man extends Person {
     

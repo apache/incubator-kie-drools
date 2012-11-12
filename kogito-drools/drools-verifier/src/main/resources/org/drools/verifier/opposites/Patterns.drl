@@ -15,15 +15,15 @@
  */
 
 //created on: 2.6.2008
-package org.drools.verifier.opposites
+package org.kie.verifier.opposites
 
 //list any import classes here.
-import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.SubPattern;
+import org.kie.verifier.components.Restriction;
+import org.kie.verifier.components.SubPattern;
 
-import org.drools.verifier.report.components.Opposites;
+import org.kie.verifier.report.components.Opposites;
 
-import org.drools.verifier.data.VerifierReport;
+import org.kie.verifier.data.VerifierReport;
 
 //declare any global variables here
 global VerifierReport result;
@@ -35,7 +35,7 @@ global VerifierReport result;
 // Dependencies:
 //
 //    Needs at least one of the following packages or rules to fire:
-//         package org.drools.verifier.opposites;
+//         package org.kie.verifier.opposites;
 //            rule "Opposite LiteralRestrictions"
 //            rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
 //            rule "Opposite LiteralRestrictions with ranges, greater - less or equal"

@@ -37,7 +37,7 @@ import java.io.Serializable;
 public interface Activation
     extends
     Serializable,
-    org.drools.runtime.rule.Activation {
+    org.kie.runtime.rule.Activation {
     
     /**
      * 

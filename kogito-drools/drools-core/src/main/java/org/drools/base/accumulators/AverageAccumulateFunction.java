@@ -54,14 +54,14 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#createContext()
+     * @see org.kie.base.accumulators.AccumulateFunction#createContext()
      */
     public Serializable createContext() {
         return new AverageData();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#init(java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
     public void init(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
@@ -70,7 +70,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
      */
     public void accumulate(Serializable context,
                            Object value) {
@@ -80,7 +80,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
     public void reverse(Serializable context,
                         Object value) throws Exception {
@@ -90,7 +90,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
     public Object getResult(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
@@ -98,7 +98,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#supportsReverse()
+     * @see org.kie.base.accumulators.AccumulateFunction#supportsReverse()
      */
     public boolean supportsReverse() {
         return true;

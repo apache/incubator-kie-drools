@@ -1,6 +1,6 @@
-package org.drools.test;
+package org.kie.test;
 
-import org.drools.Cheese;
+import org.kie.Cheese;
 
 rule "like cheddar"
     when

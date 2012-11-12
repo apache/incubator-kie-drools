@@ -15,9 +15,9 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.runtime.EnvironmentName.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
+import static org.kie.runtime.EnvironmentName.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,23 +27,23 @@ import java.util.Random;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
-import org.drools.io.ResourceFactory;
 import org.drools.persistence.PersistenceContextManager;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
 
 public class ReloadSessionTest {
 
@@ -51,7 +51,7 @@ public class ReloadSessionTest {
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;
 
-    private static String simpleRule = "package org.drools.test\n"
+    private static String simpleRule = "package org.kie.test\n"
             + "global java.util.List list\n" 
             + "rule rule1\n" 
             + "when\n"

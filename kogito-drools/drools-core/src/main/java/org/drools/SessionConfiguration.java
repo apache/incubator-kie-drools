@@ -20,23 +20,24 @@ import org.drools.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.process.instance.WorkItemManagerFactory;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.conf.BeliefSystemTypeOption;
-import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.runtime.conf.KeepReferenceOption;
-import org.drools.runtime.conf.KnowledgeSessionOption;
-import org.drools.runtime.conf.MultiValueKnowledgeSessionOption;
-import org.drools.runtime.conf.QueryListenerOption;
-import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
-import org.drools.runtime.conf.TimerJobFactoryOption;
-import org.drools.runtime.conf.WorkItemHandlerOption;
-import org.drools.runtime.process.WorkItemHandler;
 import org.drools.time.TimerService;
 import org.drools.time.impl.TimerJobFactoryManager;
-import org.drools.util.ChainedProperties;
-import org.drools.util.ClassLoaderUtil;
-import org.drools.util.CompositeClassLoader;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.conf.BeliefSystemTypeOption;
+import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.runtime.conf.KeepReferenceOption;
+import org.kie.runtime.conf.KnowledgeSessionOption;
+import org.kie.runtime.conf.MultiValueKnowledgeSessionOption;
+import org.kie.runtime.conf.QueryListenerOption;
+import org.kie.runtime.conf.SingleValueKnowledgeSessionOption;
+import org.kie.runtime.conf.TimerJobFactoryOption;
+import org.kie.runtime.conf.WorkItemHandlerOption;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 import org.mvel2.MVEL;
 
 import java.io.Externalizable;
@@ -359,7 +360,7 @@ public class SessionConfiguration
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
         String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
-                                                               "org.drools.process.instance.impl.DefaultWorkItemManagerFactory" );
+                                                               "org.kie.process.instance.impl.DefaultWorkItemManagerFactory" );
         Class<WorkItemManagerFactory> clazz = null;
         try {
             clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );
@@ -431,7 +432,7 @@ public class SessionConfiguration
     public TimerService newTimerService() {
         String className = this.chainedProperties.getProperty(
                                                                "drools.timerService",
-                                                               "org.drools.time.impl.JDKTimerService" );
+                                                               "org.kie.time.impl.JDKTimerService" );
         if ( className == null ) {
             return null;
         }

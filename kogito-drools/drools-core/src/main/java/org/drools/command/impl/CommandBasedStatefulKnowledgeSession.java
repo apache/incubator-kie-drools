@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.KnowledgeBase;
-import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.ExecuteCommand;
 import org.drools.command.GetSessionClockCommand;
@@ -74,34 +72,36 @@ import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.UpdateCommand;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaFilterWrapper;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.Calendars;
-import org.drools.runtime.Channel;
-import org.drools.runtime.Environment;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.Globals;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.rule.ActivationGroup;
-import org.drools.runtime.rule.Agenda;
-import org.drools.runtime.rule.AgendaFilter;
-import org.drools.runtime.rule.AgendaGroup;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.RuleFlowGroup;
-import org.drools.runtime.rule.ViewChangedEventListener;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.drools.time.SessionClock;
+import org.kie.KnowledgeBase;
+import org.kie.command.Command;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.runtime.Calendars;
+import org.kie.runtime.Channel;
+import org.kie.runtime.Environment;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.Globals;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.rule.ActivationGroup;
+import org.kie.runtime.rule.Agenda;
+import org.kie.runtime.rule.AgendaFilter;
+import org.kie.runtime.rule.AgendaGroup;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.RuleFlowGroup;
+import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.time.SessionClock;
 
 public class CommandBasedStatefulKnowledgeSession
     implements
@@ -367,12 +367,12 @@ public class CommandBasedStatefulKnowledgeSession
         return this.commandService.execute( new GetFactHandleCommand( object ) );
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand() );
 
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand( filter ) );
     }
 

@@ -29,17 +29,17 @@ import org.drools.reteoo.ObjectTypeNode;
 public interface NetworkHandler {
 
     /**
-     * Receive notification of the beginning of an {@link org.drools.reteoo.ObjectTypeNode}
+     * Receive notification of the beginning of an {@link org.kie.reteoo.ObjectTypeNode}
      *
      * <p>The Network parser will invoke this method only once, before any other event callback.</p>
      *
      * @param objectTypeNode the object type node
-     * @see #endObjectTypeNode(org.drools.reteoo.ObjectTypeNode)
+     * @see #endObjectTypeNode(org.kie.reteoo.ObjectTypeNode)
      */
     void startObjectTypeNode(ObjectTypeNode objectTypeNode);
 
     /**
-     * Receive notification of the a non-hashed {@link org.drools.reteoo.AlphaNode}.
+     * Receive notification of the a non-hashed {@link org.kie.reteoo.AlphaNode}.
      *
      * <p>The Parser will invoke this method at the beginning of every non-hashed Alpha in the Network;
      * there will be a corresponding endNonHashedAlphaNode() event for every startNonHashedAlphaNode() event.
@@ -52,10 +52,10 @@ public interface NetworkHandler {
     void startNonHashedAlphaNode(AlphaNode alphaNode);
 
     /**
-     * Receive notification of the end of a non-hashed {@link org.drools.reteoo.AlphaNode}.
+     * Receive notification of the end of a non-hashed {@link org.kie.reteoo.AlphaNode}.
      *
      * <p>The parser will invoke this method at the end of every alpha in the network; there will be a corresponding
-     * {@link #startNonHashedAlphaNode(org.drools.reteoo.AlphaNode)} event for every endNonHashedAlphaNode event.</p>
+     * {@link #startNonHashedAlphaNode(org.kie.reteoo.AlphaNode)} event for every endNonHashedAlphaNode event.</p>
      *
      * @param alphaNode non-hashed AlphaNode
      */
@@ -70,7 +70,7 @@ public interface NetworkHandler {
     void endLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode);
 
     /**
-     * Receive notification of the a group of hashed {@link org.drools.reteoo.AlphaNode}s.
+     * Receive notification of the a group of hashed {@link org.kie.reteoo.AlphaNode}s.
      *
      * <p>The Parser will invoke this method at the beginning of every groups of hashed Alphas in the Network;
      * there will be a corresponding {@link #endHashedAlphaNodes} event for every startHashedAlphaNodes() event.

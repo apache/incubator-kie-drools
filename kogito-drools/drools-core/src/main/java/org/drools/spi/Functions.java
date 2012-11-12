@@ -19,7 +19,7 @@ package org.drools.spi;
 /**
  * Function <code>Rule</code>.
  * 
- * @see org.drools.rule.Package
+ * @see org.kie.rule.Package
  */
 public interface Functions {
     String getText();

@@ -25,10 +25,8 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.drools.FactException;
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
-import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
@@ -55,9 +53,6 @@ import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.event.rule.impl.ActivationCancelledEventImpl;
 import org.drools.event.rule.impl.ActivationCreatedEventImpl;
 import org.drools.event.rule.impl.AfterActivationFiredEventImpl;
@@ -75,30 +70,35 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.Calendars;
-import org.drools.runtime.Channel;
-import org.drools.runtime.Environment;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.Globals;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItemManager;
-import org.drools.runtime.rule.Agenda;
-import org.drools.runtime.rule.AgendaFilter;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.ViewChangedEventListener;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.spi.Activation;
-import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
+import org.kie.KnowledgeBase;
+import org.kie.command.Command;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.runtime.Calendars;
+import org.kie.runtime.Channel;
+import org.kie.runtime.Environment;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.Globals;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.rule.Agenda;
+import org.kie.runtime.rule.AgendaFilter;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.LiveQuery;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.time.SessionClock;
 
 public class StatefulKnowledgeSessionImpl
         implements
@@ -141,7 +141,7 @@ public class StatefulKnowledgeSessionImpl
         return session.getWorkingMemoryEntryPoint( name );
     }
 
-    public Collection< ? extends org.drools.runtime.rule.WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection< ? extends org.kie.runtime.rule.WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
         return session.getWorkingMemoryEntryPoints();
     }
 
@@ -379,13 +379,13 @@ public class StatefulKnowledgeSessionImpl
     //        return new FutureAdapter( this.session.asyncFireAllRules() );
     //    }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(org.kie.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
@@ -397,7 +397,7 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection<Object> getObjects(org.drools.runtime.ObjectFilter filter) {
+    public Collection<Object> getObjects(org.kie.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
@@ -464,13 +464,13 @@ public class StatefulKnowledgeSessionImpl
 
     public static class ObjectStoreWrapper extends AbstractImmutableCollection {
         public ObjectStore                     store;
-        public org.drools.runtime.ObjectFilter filter;
+        public org.kie.runtime.ObjectFilter filter;
         public int                             type;           // 0 == object, 1 == facthandle
         public static final int                OBJECT      = 0;
         public static final int                FACT_HANDLE = 1;
 
         public ObjectStoreWrapper(ObjectStore store,
-                                  org.drools.runtime.ObjectFilter filter,
+                                  org.kie.runtime.ObjectFilter filter,
                                   int type) {
             this.store = store;
             this.filter = filter;
