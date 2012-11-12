@@ -33,12 +33,13 @@
         <maven.jdbc.password>sasa</maven.jdbc.password>
         <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
         <maven.jdbc.schema/>
-    
+        <uberfire.version>0.2.0-SNAPSHOT</uberfire.version>
     </properties>
     <modules>
         <module>jbpm-human-task-services</module>
         <module>jbpm-human-task-workitems</module>
         <module>droolsjbpm-knowledge-services</module>
+        <module>form-services</module>
     
     </modules>
 
@@ -90,13 +91,10 @@
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
-           
         </dependency>
-
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
-           
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
