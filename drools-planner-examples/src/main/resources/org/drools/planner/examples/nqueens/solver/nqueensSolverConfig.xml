@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
+  <solutionClass>org.kie.planner.examples.nqueens.domain.NQueens</solutionClass>
+  <planningEntityClass>org.kie.planner.examples.nqueens.domain.Queen</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
-    <!--<simpleScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>-->
-    <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <!--<simpleScoreCalculatorClass>org.kie.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.kie.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <incrementalScoreCalculatorClass>org.kie.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>-->
     <!--<scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensCompensationActionExperimentScoreRules.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
@@ -29,7 +29,7 @@
     </changeMoveSelector>
     <!-- changeMoveSelector is the generic form of RowChangeMoveFactory: -->
     <!--<moveListFactory>-->
-      <!--<moveListFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>-->
+      <!--<moveListFactoryClass>org.kie.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>-->
     <!--</moveListFactory>-->
     <acceptor>
       <planningEntityTabuSize>5</planningEntityTabuSize>

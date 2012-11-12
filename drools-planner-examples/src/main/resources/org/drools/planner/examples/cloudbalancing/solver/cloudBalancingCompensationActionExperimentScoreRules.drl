@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.cloudbalancing.solver;
+package org.kie.planner.examples.cloudbalancing.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
-import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
+import org.kie.planner.examples.cloudbalancing.domain.CloudBalance;
+import org.kie.planner.examples.cloudbalancing.domain.CloudComputer;
+import org.kie.planner.examples.cloudbalancing.domain.CloudProcess;
 
 global HardAndSoftScoreHolder scoreHolder;
 

@@ -4,15 +4,15 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.kie.planner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
       <inputSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
     <solver>
-      <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
+      <solutionClass>org.kie.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+      <planningEntityClass>org.kie.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
@@ -25,12 +25,12 @@
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>STEP</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.traindesign.solver;
+package org.kie.planner.examples.traindesign.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
-import org.drools.planner.core.score.constraint.ConstraintType;
+import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.kie.planner.core.score.constraint.IntConstraintOccurrence;
+import org.kie.planner.core.score.constraint.ConstraintType;
 
-import org.drools.planner.examples.traindesign.domain.CarBlock;
-import org.drools.planner.examples.traindesign.domain.CarBlockDesignation;
-import org.drools.planner.examples.traindesign.domain.CrewSegment;
-import org.drools.planner.examples.traindesign.domain.RailArc;
-import org.drools.planner.examples.traindesign.domain.RailNode;
-import org.drools.planner.examples.traindesign.domain.TrainDesign;
-import org.drools.planner.examples.traindesign.domain.TrainDesignParametrization;
-import org.drools.planner.examples.traindesign.domain.solver.RailPath;
-import org.drools.planner.examples.traindesign.domain.solver.RailNodeShortestPath;
+import org.kie.planner.examples.traindesign.domain.CarBlock;
+import org.kie.planner.examples.traindesign.domain.CarBlockDesignation;
+import org.kie.planner.examples.traindesign.domain.CrewSegment;
+import org.kie.planner.examples.traindesign.domain.RailArc;
+import org.kie.planner.examples.traindesign.domain.RailNode;
+import org.kie.planner.examples.traindesign.domain.TrainDesign;
+import org.kie.planner.examples.traindesign.domain.TrainDesignParametrization;
+import org.kie.planner.examples.traindesign.domain.solver.RailPath;
+import org.kie.planner.examples.traindesign.domain.solver.RailNodeShortestPath;
 
 global HardAndSoftScoreHolder scoreHolder;
 

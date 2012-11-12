@@ -4,7 +4,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools.planner</groupId>
+    <groupId>org.kie.planner</groupId>
     <artifactId>drools-planner</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
@@ -22,15 +22,15 @@
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools.planner</groupId>
+      <groupId>org.kie.planner</groupId>
       <artifactId>drools-planner-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
+      <groupId>org.kie.planner</groupId>
       <artifactId>drools-planner-benchmark</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
+      <groupId>org.kie.planner</groupId>
       <artifactId>drools-planner-examples</artifactId>
     </dependency>
     <!-- External dependencies -->

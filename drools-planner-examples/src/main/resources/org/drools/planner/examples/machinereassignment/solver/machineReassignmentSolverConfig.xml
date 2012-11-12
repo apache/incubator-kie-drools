@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+  <solutionClass>org.kie.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+  <planningEntityClass>org.kie.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
-    <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <incrementalScoreCalculatorClass>org.kie.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
       <!--<scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>-->
@@ -22,7 +22,7 @@
     <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
   <!--</constructionHeuristic>-->
   <customSolverPhase>
-    <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+    <customSolverPhaseCommandClass>org.kie.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
     <unionMoveSelector>

@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.kie.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set1.xml</inputSolutionFile>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>
@@ -20,8 +20,8 @@
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
-      <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
+      <solutionClass>org.kie.planner.examples.examination.domain.Examination</solutionClass>
+      <planningEntityClass>org.kie.planner.examples.examination.domain.Exam</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
@@ -41,21 +41,21 @@
     <name>2000_entityTabu10_random</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.kie.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -71,24 +71,24 @@
     <name>2000_entityTabu10_shuffled</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.kie.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -104,19 +104,19 @@
     <name>2000_entityTabu10_random_union</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.kie.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
           <cacheType>PHASE</cacheType>
           <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -132,20 +132,20 @@
     <name>2000_entityTabu10_shuffled_union</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.kie.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
           <cacheType>PHASE</cacheType>
           <selectionOrder>SHUFFLED</selectionOrder>
           <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
-            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>

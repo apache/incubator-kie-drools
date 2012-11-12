@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
+  <solutionClass>org.kie.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
+  <planningEntityClass>org.kie.planner.examples.pas.domain.BedDesignation</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -20,7 +20,7 @@
   </termination>
   <customSolverPhase>
     <!-- TODO use BEST_FIT_DECREASING instead (saves up to 10 minutes), but deal with the extra scoreDRL problem -->
-    <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
+    <customSolverPhaseCommandClass>org.kie.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
     <!--<unionMoveSelector>-->
@@ -28,7 +28,7 @@
       <!--<swapMoveSelector/>-->
     <!--</unionMoveSelector>-->
     <moveListFactory>
-      <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+      <moveListFactoryClass>org.kie.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
     </moveListFactory>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>

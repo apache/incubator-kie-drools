@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.nqueens.solver;
+package org.kie.planner.examples.nqueens.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.simple.SimpleScoreHolder;
+import org.kie.planner.core.score.buildin.simple.SimpleScoreHolder;
 
-import org.drools.planner.examples.nqueens.domain.Queen;
+import org.kie.planner.examples.nqueens.domain.Queen;
 
 global SimpleScoreHolder scoreHolder;
 

@@ -1,4 +1,4 @@
-<org.drools.planner.examples.nqueens.domain.NQueens id="1">
+<org.kie.planner.examples.nqueens.domain.NQueens id="1">
   <id>0</id>
   <n>4</n>
   <columnList id="2">
@@ -38,21 +38,21 @@
     </Row>
   </rowList>
   <queenList id="12">
-    <org.drools.planner.examples.nqueens.domain.Queen id="13">
+    <org.kie.planner.examples.nqueens.domain.Queen id="13">
       <id>0</id>
       <column reference="3"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="14">
+    </org.kie.planner.examples.nqueens.domain.Queen>
+    <org.kie.planner.examples.nqueens.domain.Queen id="14">
       <id>1</id>
       <column reference="4"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="15">
+    </org.kie.planner.examples.nqueens.domain.Queen>
+    <org.kie.planner.examples.nqueens.domain.Queen id="15">
       <id>2</id>
       <column reference="5"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="16">
+    </org.kie.planner.examples.nqueens.domain.Queen>
+    <org.kie.planner.examples.nqueens.domain.Queen id="16">
       <id>3</id>
       <column reference="6"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
+    </org.kie.planner.examples.nqueens.domain.Queen>
   </queenList>
-</org.drools.planner.examples.nqueens.domain.NQueens>
+</org.kie.planner.examples.nqueens.domain.NQueens>

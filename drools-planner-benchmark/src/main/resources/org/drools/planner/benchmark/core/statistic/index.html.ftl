@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="benchmarkReport" type="org.drools.planner.benchmark.core.statistic.BenchmarkReport" -->
+<#-- @ftlvariable name="benchmarkReport" type="org.kie.planner.benchmark.core.statistic.BenchmarkReport" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

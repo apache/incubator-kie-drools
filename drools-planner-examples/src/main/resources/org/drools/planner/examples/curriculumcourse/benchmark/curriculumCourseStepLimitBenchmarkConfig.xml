@@ -4,13 +4,13 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.kie.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>
-      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+      <solutionClass>org.kie.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+      <planningEntityClass>org.kie.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
@@ -28,17 +28,17 @@
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.kie.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>

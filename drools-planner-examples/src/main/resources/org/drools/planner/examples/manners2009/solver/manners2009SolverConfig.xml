@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.drools.planner.examples.manners2009.domain.Manners2009</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.manners2009.domain.SeatDesignation</planningEntityClass>
+  <solutionClass>org.kie.planner.examples.manners2009.domain.Manners2009</solutionClass>
+  <planningEntityClass>org.kie.planner.examples.manners2009.domain.SeatDesignation</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
@@ -15,13 +15,13 @@
     <scoreAttained>0</scoreAttained>
   </termination>
   <customSolverPhase>
-    <customSolverPhaseCommandClass>org.drools.planner.examples.manners2009.solver.solution.initializer.Manners2009SolutionInitializer</customSolverPhaseCommandClass>
+    <customSolverPhaseCommandClass>org.kie.planner.examples.manners2009.solver.solution.initializer.Manners2009SolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
     <swapMoveSelector>
       <cacheType>PHASE</cacheType>
       <selectionOrder>SHUFFLED</selectionOrder>
-      <moveFilterClass>org.drools.planner.examples.manners2009.solver.move.DifferentGenderSwapMoveFilter</moveFilterClass>
+      <moveFilterClass>org.kie.planner.examples.manners2009.solver.move.DifferentGenderSwapMoveFilter</moveFilterClass>
     </swapMoveSelector>
     <acceptor>
       <planningEntityTabuSize>7</planningEntityTabuSize>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
+  <solutionClass>org.kie.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+  <planningEntityClass>org.kie.planner.examples.travelingtournament.domain.Match</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -15,7 +15,7 @@
     <moveListFactory>
       <cacheType>PHASE</cacheType>
       <selectionOrder>SHUFFLED</selectionOrder>
-      <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveListFactoryClass>
+      <moveListFactoryClass>org.kie.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveListFactoryClass>
     </moveListFactory>
     <acceptor>
       <solutionTabuSize>1500</solutionTabuSize>

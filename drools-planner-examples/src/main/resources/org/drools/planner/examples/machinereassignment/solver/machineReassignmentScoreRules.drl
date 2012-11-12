@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.machinereassignment.solver;
+package org.kie.planner.examples.machinereassignment.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreHolder;
-import org.drools.planner.core.score.constraint.LongConstraintOccurrence;
-import org.drools.planner.core.score.constraint.ConstraintType;
+import org.kie.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreHolder;
+import org.kie.planner.core.score.constraint.LongConstraintOccurrence;
+import org.kie.planner.core.score.constraint.ConstraintType;
 
-import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
-import org.drools.planner.examples.machinereassignment.domain.MrBalancePenalty;
-import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
-import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
-import org.drools.planner.examples.machinereassignment.domain.MrLocation;
-import org.drools.planner.examples.machinereassignment.domain.MrMachine;
-import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
-import org.drools.planner.examples.machinereassignment.domain.MrProcess;
-import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
-import org.drools.planner.examples.machinereassignment.domain.MrResource;
-import org.drools.planner.examples.machinereassignment.domain.MrService;
-import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineTransientUsage;
-import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
-import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
-import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
+import org.kie.planner.examples.machinereassignment.domain.MachineReassignment;
+import org.kie.planner.examples.machinereassignment.domain.MrBalancePenalty;
+import org.kie.planner.examples.machinereassignment.domain.MrMachineCapacity;
+import org.kie.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
+import org.kie.planner.examples.machinereassignment.domain.MrLocation;
+import org.kie.planner.examples.machinereassignment.domain.MrMachine;
+import org.kie.planner.examples.machinereassignment.domain.MrNeighborhood;
+import org.kie.planner.examples.machinereassignment.domain.MrProcess;
+import org.kie.planner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.kie.planner.examples.machinereassignment.domain.MrResource;
+import org.kie.planner.examples.machinereassignment.domain.MrService;
+import org.kie.planner.examples.machinereassignment.domain.solver.MrMachineTransientUsage;
+import org.kie.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
+import org.kie.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
+import org.kie.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
 global HardAndSoftLongScoreHolder scoreHolder;
 

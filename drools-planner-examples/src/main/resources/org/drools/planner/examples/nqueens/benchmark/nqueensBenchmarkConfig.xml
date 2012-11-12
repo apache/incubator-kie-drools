@@ -6,15 +6,15 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.kie.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
       <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
+      <solutionClass>org.kie.planner.examples.nqueens.domain.NQueens</solutionClass>
+      <planningEntityClass>org.kie.planner.examples.nqueens.domain.Queen</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>

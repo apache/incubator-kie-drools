@@ -1,4 +1,4 @@
-<%@ page import="org.drools.planner.webexamples.vehiclerouting.VrpWebAction" %>
+<%@ page import="org.kie.planner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
   new VrpWebAction().setup(session);
 %>

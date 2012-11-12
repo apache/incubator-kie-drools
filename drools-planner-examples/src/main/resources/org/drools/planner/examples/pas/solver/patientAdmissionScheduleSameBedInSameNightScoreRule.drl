@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.pas.solver;
+package org.kie.planner.examples.pas.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
-import org.drools.planner.core.score.constraint.ConstraintType;
+import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.kie.planner.core.score.constraint.IntConstraintOccurrence;
+import org.kie.planner.core.score.constraint.ConstraintType;
 
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.Bed;
-import org.drools.planner.examples.pas.domain.BedDesignation;
-import org.drools.planner.examples.pas.domain.Department;
-import org.drools.planner.examples.pas.domain.DepartmentSpecialism;
-import org.drools.planner.examples.pas.domain.Equipment;
-import org.drools.planner.examples.pas.domain.Gender;
-import org.drools.planner.examples.pas.domain.GenderLimitation;
-import org.drools.planner.examples.pas.domain.Night;
-import org.drools.planner.examples.pas.domain.Patient;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.pas.domain.PreferredPatientEquipment;
-import org.drools.planner.examples.pas.domain.RequiredPatientEquipment;
-import org.drools.planner.examples.pas.domain.Room;
-import org.drools.planner.examples.pas.domain.RoomEquipment;
-import org.drools.planner.examples.pas.domain.RoomSpecialism;
-import org.drools.planner.examples.pas.domain.Specialism;
-import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
-import org.drools.planner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
+import org.kie.planner.examples.pas.domain.AdmissionPart;
+import org.kie.planner.examples.pas.domain.Bed;
+import org.kie.planner.examples.pas.domain.BedDesignation;
+import org.kie.planner.examples.pas.domain.Department;
+import org.kie.planner.examples.pas.domain.DepartmentSpecialism;
+import org.kie.planner.examples.pas.domain.Equipment;
+import org.kie.planner.examples.pas.domain.Gender;
+import org.kie.planner.examples.pas.domain.GenderLimitation;
+import org.kie.planner.examples.pas.domain.Night;
+import org.kie.planner.examples.pas.domain.Patient;
+import org.kie.planner.examples.pas.domain.PatientAdmissionSchedule;
+import org.kie.planner.examples.pas.domain.PreferredPatientEquipment;
+import org.kie.planner.examples.pas.domain.RequiredPatientEquipment;
+import org.kie.planner.examples.pas.domain.Room;
+import org.kie.planner.examples.pas.domain.RoomEquipment;
+import org.kie.planner.examples.pas.domain.RoomSpecialism;
+import org.kie.planner.examples.pas.domain.Specialism;
+import org.kie.planner.examples.pas.domain.solver.AdmissionPartConflict;
+import org.kie.planner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
 
 // Two patients in the same bed for a number of nights.
 rule "sameBedInSameNight"

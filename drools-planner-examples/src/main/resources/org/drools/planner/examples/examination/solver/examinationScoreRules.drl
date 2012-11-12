@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.examination.solver;
+package org.kie.planner.examples.examination.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
-import org.drools.planner.core.score.constraint.ConstraintType;
+import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.kie.planner.core.score.constraint.IntConstraintOccurrence;
+import org.kie.planner.core.score.constraint.ConstraintType;
 
-import org.drools.planner.examples.examination.domain.Exam;
-import org.drools.planner.examples.examination.domain.Examination;
-import org.drools.planner.examples.examination.domain.InstitutionParametrization;
-import org.drools.planner.examples.examination.domain.Period;
-import org.drools.planner.examples.examination.domain.PeriodPenalty;
-import org.drools.planner.examples.examination.domain.PeriodPenaltyType;
-import org.drools.planner.examples.examination.domain.Room;
-import org.drools.planner.examples.examination.domain.RoomPenalty;
-import org.drools.planner.examples.examination.domain.RoomPenaltyType;
-import org.drools.planner.examples.examination.domain.Student;
-import org.drools.planner.examples.examination.domain.Topic;
-import org.drools.planner.examples.examination.domain.solver.TopicConflict;
+import org.kie.planner.examples.examination.domain.Exam;
+import org.kie.planner.examples.examination.domain.Examination;
+import org.kie.planner.examples.examination.domain.InstitutionParametrization;
+import org.kie.planner.examples.examination.domain.Period;
+import org.kie.planner.examples.examination.domain.PeriodPenalty;
+import org.kie.planner.examples.examination.domain.PeriodPenaltyType;
+import org.kie.planner.examples.examination.domain.Room;
+import org.kie.planner.examples.examination.domain.RoomPenalty;
+import org.kie.planner.examples.examination.domain.RoomPenaltyType;
+import org.kie.planner.examples.examination.domain.Student;
+import org.kie.planner.examples.examination.domain.Topic;
+import org.kie.planner.examples.examination.domain.solver.TopicConflict;
 
 global HardAndSoftScoreHolder scoreHolder;
 

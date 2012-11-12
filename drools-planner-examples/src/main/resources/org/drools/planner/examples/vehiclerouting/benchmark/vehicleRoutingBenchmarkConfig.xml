@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.kie.planner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k5.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k6.xml</inputSolutionFile>
@@ -42,8 +42,8 @@
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
-      <solutionClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+      <solutionClass>org.kie.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+      <planningEntityClass>org.kie.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

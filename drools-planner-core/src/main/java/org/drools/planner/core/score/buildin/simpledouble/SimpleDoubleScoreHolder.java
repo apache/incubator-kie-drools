@@ -20,9 +20,9 @@ import org.drools.common.AgendaItem;
 import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
-import org.drools.runtime.rule.Activation;
-import org.drools.runtime.rule.RuleContext;
-import org.drools.runtime.rule.WorkingMemory;
+import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.RuleContext;
+import org.kie.runtime.rule.WorkingMemory;
 
 public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
 

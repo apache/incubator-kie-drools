@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
+  <solutionClass>org.kie.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+  <planningEntityClass>org.kie.planner.examples.travelingtournament.domain.Match</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -17,12 +17,12 @@
       <moveListFactory>
         <cacheType>PHASE</cacheType>
         <selectionOrder>SHUFFLED</selectionOrder>
-        <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+        <moveListFactoryClass>org.kie.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
       <moveListFactory>
         <cacheType>STEP</cacheType>
         <selectionOrder>SHUFFLED</selectionOrder>
-        <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+        <moveListFactoryClass>org.kie.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
       </moveListFactory>
     </unionMoveSelector>
     <acceptor>

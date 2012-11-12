@@ -5,15 +5,15 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.kie.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens256.xml</inputSolutionFile>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
+      <solutionClass>org.kie.planner.examples.nqueens.domain.NQueens</solutionClass>
+      <planningEntityClass>org.kie.planner.examples.nqueens.domain.Queen</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
       </scoreDirectorFactory>
@@ -41,7 +41,7 @@
     <name>TS with Simple Java</name>
     <solver>
       <scoreDirectorFactory>
-        <simpleScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>
+        <simpleScoreCalculatorClass>org.kie.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -49,7 +49,7 @@
     <name>TS with Basic Incremental Java</name>
     <solver>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.kie.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -57,7 +57,7 @@
     <name>TS with Advanced Incremental Java</name>
     <solver>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.kie.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.drools.planner.examples.traindesign.domain.TrainDesign</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.traindesign.domain.CarBlockDesignation</planningEntityClass>
+  <solutionClass>org.kie.planner.examples.traindesign.domain.TrainDesign</solutionClass>
+  <planningEntityClass>org.kie.planner.examples.traindesign.domain.CarBlockDesignation</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
