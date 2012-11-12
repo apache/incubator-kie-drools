@@ -1,6 +1,6 @@
 package org.drools.command;
 
-import org.drools.runtime.ExecutionResults;
+import org.kie.runtime.ExecutionResults;
 
 public interface ShadowWorld extends World {
     //public ShadowContext createContext(String identifier);

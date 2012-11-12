@@ -41,10 +41,10 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Bundle-SymbolicName>org.drools.internalapi;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.api;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
-            <Export-Package>!org.drools.cdi.*,org.drools.*</Export-Package>
+            <Bundle-SymbolicName>org.kie.internalapi;singleton:=true</Bundle-SymbolicName>
+            <Require-Bundle>org.kie.api;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
+            <Import-Package>!org.kie.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
+            <Export-Package>!org.kie.cdi.*,org.kie.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>

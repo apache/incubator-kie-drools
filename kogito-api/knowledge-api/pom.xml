@@ -45,7 +45,7 @@
             <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.osgi.api.Activator</Bundle-Activator>
+            <Bundle-Activator>org.kie.osgi.api.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
@@ -53,31 +53,31 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <excludePackageNames>org.drools.util*</excludePackageNames>
+          <excludePackageNames>org.kie.util*</excludePackageNames>
           <groups>
             <group>
               <title>Knowledge Base API</title>
-              <packages>org.drools</packages>
+              <packages>org.kie</packages>
             </group>
             <group>
               <title>Builder API</title>
-              <packages>org.drools.builder</packages>
+              <packages>org.kie.builder</packages>
             </group>
             <group>
               <title>Definition API</title>
-              <packages>org.drools.definition*</packages>
+              <packages>org.kie.definition*</packages>
             </group>
             <group>
               <title>Event API</title>
-              <packages>org.drools.event*</packages>
+              <packages>org.kie.event*</packages>
             </group>
             <group>
               <title>Runtime API</title>
-              <packages>org.drools.runtime*</packages>
+              <packages>org.kie.runtime*</packages>
             </group>
             <group>
               <title>Time API</title>
-              <packages>org.drools.time*</packages>
+              <packages>org.kie.time*</packages>
             </group>
           </groups>
           <!--
