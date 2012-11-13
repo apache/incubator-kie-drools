@@ -15,15 +15,15 @@
  */
 
 //created on: 02/11/2006
-package org.kie.benchmark.waltzdb
+package org.drools.benchmark.waltzdb
 
-import org.kie.benchmark.waltzdb.Stage;
-import org.kie.benchmark.waltzdb.Line;
-import org.kie.benchmark.waltzdb.Edge;
-import org.kie.benchmark.waltzdb.EdgeLabel;
-import org.kie.benchmark.waltzdb.Junction;
-import org.kie.benchmark.waltzdb.Label;
-import org.kie.benchmark.waltzdb.Illegal;
+import org.drools.benchmark.waltzdb.Stage;
+import org.drools.benchmark.waltzdb.Line;
+import org.drools.benchmark.waltzdb.Edge;
+import org.drools.benchmark.waltzdb.EdgeLabel;
+import org.drools.benchmark.waltzdb.Junction;
+import org.drools.benchmark.waltzdb.Label;
+import org.drools.benchmark.waltzdb.Illegal;
 /*
 // Reverse the edges
 //(p reverse_edges

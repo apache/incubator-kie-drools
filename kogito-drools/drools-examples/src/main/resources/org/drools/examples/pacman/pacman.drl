@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.examples.pacman
+package org.drools.examples.pacman
 
 /**
  * By increasing the tick we slow down the time to the next move.

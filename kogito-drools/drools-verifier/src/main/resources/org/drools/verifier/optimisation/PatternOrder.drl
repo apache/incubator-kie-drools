@@ -15,25 +15,25 @@
  */
 
 //created on: 27.10.2007
-package org.kie.verifier.optimisation
+package org.drools.verifier.optimisation
 
 //list any import classes here.
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.kie.verifier.components.Pattern;
-import org.kie.verifier.components.VerifierRule;
-import org.kie.verifier.components.PatternOperatorDescr;
-import org.kie.verifier.components.Eval;
-import org.kie.verifier.components.SubRule;
-import org.kie.verifier.components.SubPattern;
-import org.kie.verifier.components.RuleComponent;
-import org.kie.verifier.data.VerifierComponent;
-import org.kie.verifier.components.VerifierComponentType;
-import org.kie.verifier.report.components.VerifierMessage;
-import org.kie.verifier.report.components.Severity;
-import org.kie.verifier.report.components.MessageType;
-import org.kie.verifier.data.VerifierReport;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.PatternOperatorDescr;
+import org.drools.verifier.components.Eval;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.RuleComponent;
+import org.drools.verifier.data.VerifierComponent;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
+import org.drools.verifier.data.VerifierReport;
 
 import java.util.Map;
 import java.util.HashMap;

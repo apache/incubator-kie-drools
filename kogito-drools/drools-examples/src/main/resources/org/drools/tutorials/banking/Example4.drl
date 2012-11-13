@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.tutorials.banking
+package org.drools.tutorials.banking
 
 
 rule "Rule 01"   

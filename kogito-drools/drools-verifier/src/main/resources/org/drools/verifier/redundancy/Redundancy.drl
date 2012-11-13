@@ -15,7 +15,7 @@
  */
 
 //created on: 16.11.2009
-package org.kie.verifier.redundancy
+package org.drools.verifier.redundancy
 
 //list any import classes here.
 //global VerifierReport result;
@@ -23,10 +23,10 @@ package org.kie.verifier.redundancy
 
 
 //declare any global variables here
-//import org.kie.verifier.data.VerifierReport;
-import org.kie.verifier.report.components.Redundancy;
-import org.kie.verifier.report.components.Subsumption;
-import org.kie.verifier.data.VerifierReport;
+//import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.Subsumption;
+import org.drools.verifier.data.VerifierReport;
 
 global VerifierReport result;
 
@@ -36,7 +36,7 @@ global VerifierReport result;
 // Dependencies:
 //
 //    Needs at least the following package:
-//        package org.kie.verifier.sumbumption
+//        package org.drools.verifier.sumbumption
 //
 rule "Find redundancy"
     when

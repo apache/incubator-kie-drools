@@ -52,8 +52,8 @@ public abstract class MapPersistenceTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
                 .newKnowledgeBuilder();
 
-        String rule = "package org.kie.persistence.map.impl\n";
-        rule += "import org.kie.persistence.map.impl.Buddy;\n";
+        String rule = "package org.drools.persistence.map.impl\n";
+        rule += "import org.drools.persistence.map.impl.Buddy;\n";
         rule += "rule \"echo2\" \n";
         rule += "dialect \"mvel\"\n";
         rule += "when\n";

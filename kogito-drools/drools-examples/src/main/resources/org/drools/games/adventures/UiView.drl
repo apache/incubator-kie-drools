@@ -1,7 +1,7 @@
-package org.kie.games.adventures
+package org.drools.games.adventures
 
-import org.kie.games.adventures.Room;
-import org.kie.games.adventures.Thing;
+import org.drools.games.adventures.Room;
+import org.drools.games.adventures.Thing;
 
 dialect "mvel"
 

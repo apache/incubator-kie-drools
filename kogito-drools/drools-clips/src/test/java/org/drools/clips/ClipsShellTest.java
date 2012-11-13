@@ -134,7 +134,7 @@ public class ClipsShellTest {
                       new String( baos.toByteArray() ) );
     }
 
-    // @FIXME - org.mvel.CompileException: unable to resolve property: unable to resolve method: org.kie.clips.Shell.max(java.lang.Integer, java.lang.Integer) [arglength=2]
+    // @FIXME - org.mvel.CompileException: unable to resolve property: unable to resolve method: org.drools.clips.Shell.max(java.lang.Integer, java.lang.Integer) [arglength=2]
     @Test
     @Ignore
     public void testDeffunction() {
@@ -168,7 +168,7 @@ public class ClipsShellTest {
 
     @Test
     public void testDynamicImportAndNew() {
-        String t = "(import org.kie.*) (bind ?p (new Person mark cheddar) ) (printout t ?p)";
+        String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (printout t ?p)";
         this.shell.eval( t );
         assertEquals( "[Person name='mark']",
                       new String( this.baos.toByteArray() ) );
@@ -176,7 +176,7 @@ public class ClipsShellTest {
 
     @Test
     public void testSet() {
-        String t = "(import org.kie.*) (bind ?p (new Person mark cheddar) ) (set ?p name bob) (printout t ?p)";
+        String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (set ?p name bob) (printout t ?p)";
         this.shell.eval( t );
         assertEquals( "[Person name='bob']",
                       new String( this.baos.toByteArray() ) );
@@ -184,7 +184,7 @@ public class ClipsShellTest {
 
     @Test
     public void testGet() {
-        String t = "(import org.kie.*) (bind ?p (new Person mark cheddar) )(printout t (get ?p name))";
+        String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) )(printout t (get ?p name))";
         this.shell.eval( t );
         assertEquals( "mark",
                       new String( this.baos.toByteArray() ) );
@@ -192,7 +192,7 @@ public class ClipsShellTest {
 
     @Test
     public void testExplicitCall() {
-        String t = "(import org.kie.*) (bind ?p (new Person mark cheddar) ) (call ?p setFields bob stilton 35)  (printout t (call ?p toLongString))";
+        String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (call ?p setFields bob stilton 35)  (printout t (call ?p toLongString))";
         this.shell.eval( t );
         assertEquals( "[Person name='bob' likes='stilton' age='35']",
                       new String( this.baos.toByteArray() ) );
@@ -200,7 +200,7 @@ public class ClipsShellTest {
 
     @Test
     public void testImplicitCall() {
-        String t = "(import org.kie.*) (bind ?p (new Person mark cheddar) ) (?p setFields bob stilton 35)  (printout t (call ?p toLongString))";
+        String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (?p setFields bob stilton 35)  (printout t (call ?p toLongString))";
         this.shell.eval( t );
         assertEquals( "[Person name='bob' likes='stilton' age='35']",
                       new String( this.baos.toByteArray() ) );
@@ -327,7 +327,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testSimpleLHSRule() {
-        this.shell.eval( "(import org.kie.*)" );
+        this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name))" );
         this.shell.eval( "(assert (Person (name mark) ) )" );
         this.shell.eval( "(run)" );
@@ -341,7 +341,7 @@ public class ClipsShellTest {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
 
-        this.shell.eval( "(import org.kie.*)" );
+        this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule (Person (age ?age) ) => (printout t hello) (printout t \" \" (max 3 ?age) ) )" );
         this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
         this.shell.eval( "(run)" );
@@ -352,7 +352,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testTwoSimpleRulesWithModify() {
-        this.shell.eval( "(import org.kie.*)" );
+        this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )" );
         this.shell.eval( "(defrule testRule2 (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))" );
         this.shell.eval( "(assert (Person (name mark) ) )" );
@@ -364,7 +364,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testBlockEval() {
-        String text = "(import org.kie.*)";
+        String text = "(import org.drools.*)";
         text += "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )";
         text += "(defrule testRule2 (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))";
         text += "(assert (Person (name mark) ) )";

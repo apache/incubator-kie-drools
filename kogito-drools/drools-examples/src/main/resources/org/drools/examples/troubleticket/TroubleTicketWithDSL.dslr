@@ -1,4 +1,4 @@
-package org.kie.examples.troubleticket
+package org.drools.examples.troubleticket
 expander ticketing.dsl
 
 
@@ -58,5 +58,5 @@ function void sendEscalationEmail( Customer customer, Ticket ticket ) {
 }
 
 #hey, the imports can appear anywhere !
-import org.kie.examples.troubleticket.Customer;
-import org.kie.examples.troubleticket.Ticket;
+import org.drools.examples.troubleticket.Customer;
+import org.drools.examples.troubleticket.Ticket;

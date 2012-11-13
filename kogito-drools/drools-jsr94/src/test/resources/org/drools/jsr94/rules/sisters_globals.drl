@@ -16,7 +16,7 @@
 
 package SistersRules;
  
-import org.kie.jsr94.rules.Person;
+import org.drools.jsr94.rules.Person;
 
 global java.util.Vector vector
 

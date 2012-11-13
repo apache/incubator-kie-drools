@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.examples.golfing;
+package org.drools.examples.golfing;
 
 dialect "mvel"
 
-import org.kie.examples.golfing.GolfingExample.Golfer;
+import org.drools.examples.golfing.GolfingExample.Golfer;
 
 rule "find solution"
     when

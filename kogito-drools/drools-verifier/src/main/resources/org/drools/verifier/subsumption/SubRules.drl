@@ -15,18 +15,18 @@
  */
 
 //created on: 1.12.2009
-package org.kie.verifier.subsumption.patterns
+package org.drools.verifier.subsumption.patterns
 
-import org.kie.verifier.components.Restriction;
-import org.kie.verifier.components.Pattern;
-import org.kie.verifier.components.PatternComponent;
-import org.kie.verifier.components.SubPattern;
-import org.kie.verifier.components.SubRule;
-import org.kie.verifier.components.Consequence;
-import org.kie.verifier.report.components.Redundancy;
-import org.kie.verifier.report.components.Subsumption;
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternComponent;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.Consequence;
+import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.Subsumption;
 
-import org.kie.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReport;
 
 import java.util.ArrayList
 

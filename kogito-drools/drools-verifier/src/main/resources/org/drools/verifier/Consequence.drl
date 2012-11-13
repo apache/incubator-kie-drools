@@ -15,15 +15,15 @@
  */
 
 //created on: 18.10.2007
-package org.kie.verifier.consequence
+package org.drools.verifier.consequence
 
 //list any import classes here.
-import org.kie.verifier.components.VerifierRule;
-import org.kie.verifier.components.TextConsequence;
-import org.kie.verifier.report.components.VerifierMessage;
-import org.kie.verifier.data.VerifierReport;
-import org.kie.verifier.report.components.Severity;
-import org.kie.verifier.report.components.MessageType;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.TextConsequence;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
 
 import java.util.Map;
 import java.util.HashMap;

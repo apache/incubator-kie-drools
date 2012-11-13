@@ -8,9 +8,9 @@
     <persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <jta-data-source>jdbc/testDS1</jta-data-source>        
-      <class>org.kie.persistence.info.SessionInfo</class>
-      <class>org.kie.persistence.info.WorkItemInfo</class>
-      <class>org.kie.persistence.jta.TransactionTestObject</class>
+      <class>org.drools.persistence.info.SessionInfo</class>
+      <class>org.drools.persistence.info.WorkItemInfo</class>
+      <class>org.drools.persistence.jta.TransactionTestObject</class>
       <properties>
         <property name="hibernate.max_fetch_depth" value="3"/>
         <property name="hibernate.hbm2ddl.auto" value="update" />

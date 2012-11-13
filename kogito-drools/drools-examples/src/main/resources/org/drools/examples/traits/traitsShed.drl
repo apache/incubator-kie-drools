@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.examples.traits
+package org.drools.examples.traits
 
-import org.kie.examples.traits.Scholar;
-import org.kie.factmodel.traits.Thing;
+import org.drools.examples.traits.Scholar;
+import org.drools.factmodel.traits.Thing;
 
 
 declare Person

@@ -1,4 +1,4 @@
-package org.kie.games.wumpus
+package org.drools.games.wumpus
 
 global java.util.Random randomInteger;
 

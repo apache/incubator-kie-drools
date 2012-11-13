@@ -6,7 +6,7 @@ policyType
 base
 reason
 
-package org.kie.examples.decisiontable;
+package org.drools.examples.decisiontable;
 
 template "Pricing bracket"
 age

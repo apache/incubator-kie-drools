@@ -15,7 +15,7 @@
  */
 
 //created on: 18.10.2007
-package org.kie.verifier.consequence
+package org.drools.verifier.consequence
 
 //list any import classes here.
 

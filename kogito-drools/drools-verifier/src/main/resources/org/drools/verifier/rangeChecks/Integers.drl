@@ -15,15 +15,15 @@
  */
 
 //created on: 7.6.2007
-package org.kie.verifier.rangeChecks.integers;
+package org.drools.verifier.rangeChecks.integers;
 
 //list any import classes here.
-import org.kie.base.evaluators.Operator;
+import org.drools.base.evaluators.Operator;
 
-import org.kie.verifier.components.*;
-import org.kie.verifier.report.components.Gap;
+import org.drools.verifier.components.*;
+import org.drools.verifier.report.components.Gap;
 
-import org.kie.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReport;
 
 global VerifierReport result;
 
