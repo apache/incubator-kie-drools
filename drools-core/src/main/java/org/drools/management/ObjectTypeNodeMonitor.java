@@ -31,42 +31,42 @@ public class ObjectTypeNodeMonitor implements ObjectTypeNodeMonitorMBean  {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.management.ObjectTypeNodeMonitorMbean#getId()
+     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getId()
      */
     public int getId() {
         return node.getId();
     }
     
     /* (non-Javadoc)
-     * @see org.kie.management.ObjectTypeNodeMonitorMbean#getEntryPoint()
+     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getEntryPoint()
      */
     public String getEntryPoint() {
         return node.getEntryPoint().toString();
     }
     
     /* (non-Javadoc)
-     * @see org.kie.management.ObjectTypeNodeMonitorMbean#getObjectType()
+     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getObjectType()
      */
     public String getObjectType() {
         return node.getObjectType().toString();
     }
     
     /* (non-Javadoc)
-     * @see org.kie.management.ObjectTypeNodeMonitorMbean#getPartitionId()
+     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getPartitionId()
      */
     public String getPartitionId() {
         return node.getPartitionId().toString();
     }
     
     /* (non-Javadoc)
-     * @see org.kie.management.ObjectTypeNodeMonitorMbean#isEvent()
+     * @see org.drools.management.ObjectTypeNodeMonitorMbean#isEvent()
      */
     public boolean isEvent() {
         return node.getObjectType().isEvent();
     }
     
     /* (non-Javadoc)
-     * @see org.kie.management.ObjectTypeNodeMonitorMbean#getExpirationOffset()
+     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getExpirationOffset()
      */
     public long getExpirationOffset() {
         return node.getExpirationOffset();
