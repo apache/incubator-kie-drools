@@ -128,6 +128,29 @@ public class FormProviderServiceImpl implements FormProviderService {
 
 
     }
+    
+    public String getProcessFormDisplay(String bpmn2) {
+        ProcessDesc desc = bpmn2Service.getProcessDesc(bpmn2);
+	String processName = desc.getId();
+        Map<String, String> processData = bpmn2Service.getProcessData(bpmn2);
+
+
+        
+
+
+        InputStream template = getClass().getResourceAsStream("/ftl/"+processName+".ftl");
+        
+
+        // merge template with process variables
+        Map<String, Object> renderContext = new HashMap<String, Object>();
+        
+        renderContext.put("processData", processData);
+        
+
+        return render(processName, template, renderContext);
+
+
+    }
 
 
     public String render(String name, InputStream src, Map<String, Object> renderContext) {

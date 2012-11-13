@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.jbpm.task.Attachment;
+import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
@@ -243,6 +244,15 @@ public interface TaskServiceEntryPoint {
     List<TaskSummary> getTasksAssignedByGroup(String groupId, String language); 
     
     List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language); 
+    
+    public long addComment(long taskId, Comment comment);
+
+    public void deleteComment(long taskId, long commentId);
+
+    public List<Comment> getAllCommentsByTaskId(long taskId);
+
+    public Comment getCommentById(long commentId);
+    
     
     //Listeners
     

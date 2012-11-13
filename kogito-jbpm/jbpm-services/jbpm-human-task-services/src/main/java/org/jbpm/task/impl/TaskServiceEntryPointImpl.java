@@ -12,6 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Attachment;
+import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
@@ -25,9 +26,9 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.api.TaskAttachmentService;
+import org.jbpm.task.api.TaskCommentService;
 import org.jbpm.task.api.TaskContentService;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskEventsService;
@@ -61,6 +62,9 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     private TaskEventsService taskEventsService;
     @Inject
     private TaskContentService taskContentService;
+    @Inject
+    private TaskCommentService taskCommentService;
+    
     @Inject
     private TaskAttachmentService taskAttachmentService;
     
@@ -517,6 +521,23 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language) {
         return taskQueryService.getTasksAssignedByGroups(groupIds, language);
     }
+
+    public long addComment(long taskId, Comment comment) {
+        return taskCommentService.addComment(taskId, comment);
+    }
+
+    public void deleteComment(long taskId, long commentId) {
+        taskCommentService.deleteComment(taskId, commentId);
+    }
+
+    public List<Comment> getAllCommentsByTaskId(long taskId) {
+        return taskCommentService.getAllCommentsByTaskId(taskId);
+    }
+
+    public Comment getCommentById(long commentId) {
+        return taskCommentService.getCommentById(commentId);
+    }
+    
     
     
     
