@@ -1096,7 +1096,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         // JBRULES-3234
 
         String str = "package org.kie.test \n"
-                     + "import org.kie.Person; \n"
+                     + "import org.drools.Person; \n"
                      + "rule 'Rule 1' agenda-group 'g1' lock-on-active	when \n"
                      + "		$p : Person( age != 35 ) \n"
                      + "	then \n"

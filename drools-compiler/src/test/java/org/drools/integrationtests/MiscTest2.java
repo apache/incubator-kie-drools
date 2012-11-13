@@ -69,7 +69,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // JBRULES-3604
         String str = "package inheritance\n" +
                 "\n" +
-                "import org.kie.Address\n" +
+                "import org.drools.Address\n" +
                 "\n" +
                 "rule \"Parent\"\n" +
                 "    enabled false\n" +
@@ -264,7 +264,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testReuseAgendaAfterException() throws Exception {
         // JBRULES-3677
 
-        String str = "import org.kie.Person;\n" +
+        String str = "import org.drools.Person;\n" +
                 "global java.util.List results;" +
                 "rule R1\n" +
                 "ruleflow-group \"test\"\n" +

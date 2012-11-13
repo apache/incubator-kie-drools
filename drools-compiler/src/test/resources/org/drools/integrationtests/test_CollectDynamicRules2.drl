@@ -1,4 +1,4 @@
-package org.kie
+package org.drools
 
 import java.util.ArrayList;
 

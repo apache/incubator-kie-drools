@@ -8,7 +8,7 @@ public class InlineCastTest extends CommonTestMethodBase {
 
     @Test
     public void testInlineCast() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", address#LongAddress.country == \"uk\" )\n" +
                 "then\n" +
@@ -34,7 +34,7 @@ public class InlineCastTest extends CommonTestMethodBase {
 
     @Test
     public void testInlineCastWithBinding() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", $country : address#LongAddress.country == \"uk\" )\n" +
                 "then\n" +
@@ -60,7 +60,7 @@ public class InlineCastTest extends CommonTestMethodBase {
 
     @Test
     public void testInlineCastOnlyBinding() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", $country : address#LongAddress.country )\n" +
                 "then\n" +
@@ -86,7 +86,7 @@ public class InlineCastTest extends CommonTestMethodBase {
 
     @Test
     public void testInlineCastWithFQN() throws Exception {
-        String str = "import org.kie.Person;\n" +
+        String str = "import org.drools.Person;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", address#org.drools.LongAddress.country == \"uk\" )\n" +
                 "then\n" +
@@ -105,7 +105,7 @@ public class InlineCastTest extends CommonTestMethodBase {
 
     @Test
     public void testInlineCastOnRightOperand() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   $person : Person( )\n" +
                 "   String( this == $person.address#LongAddress.country )\n" +
@@ -126,7 +126,7 @@ public class InlineCastTest extends CommonTestMethodBase {
 
     @Test
     public void testInlineCastOnRightOperandWithFQN() throws Exception {
-        String str = "import org.kie.Person;\n" +
+        String str = "import org.drools.Person;\n" +
                 "rule R1 when\n" +
                 "   $person : Person( )\n" +
                 "   String( this == $person.address#org.drools.LongAddress.country )\n" +
@@ -147,7 +147,7 @@ public class InlineCastTest extends CommonTestMethodBase {
 
     @Test
     public void testInferredCast() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", address instanceof LongAddress, address.country == \"uk\" )\n" +
                 "then\n" +

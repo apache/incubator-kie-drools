@@ -1,8 +1,8 @@
-package org.kie.test;
+package org.drools.test;
 
-import org.kie.Alarm;
-import org.kie.EmergencyTeam;
-import org.kie.Sensor;
+import org.drools.Alarm;
+import org.drools.EmergencyTeam;
+import org.drools.Sensor;
 
 global java.util.List events;
 

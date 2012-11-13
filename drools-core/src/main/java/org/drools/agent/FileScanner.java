@@ -116,7 +116,7 @@ public class FileScanner extends PackageProvider {
         // compiler.
         if ( pkgFile.getName().endsWith( ".drl" ) ) {
             try {
-                FileLoader fl = (FileLoader) Class.forName( "org.kie.compiler.SourcePackageProvider" ).newInstance();
+                FileLoader fl = (FileLoader) Class.forName( "org.drools.compiler.SourcePackageProvider" ).newInstance();
                 return fl.loadPackage( pkgFile );
             } catch ( Exception e ) {
                 this.listener.exception( e );
@@ -127,7 +127,7 @@ public class FileScanner extends PackageProvider {
             // decision tables.
         } else if ( pkgFile.getName().endsWith( ".xls" ) ) {
             try {
-                FileLoader fl = (FileLoader) Class.forName( "org.kie.decisiontable.SourcePackageProvider" ).newInstance();
+                FileLoader fl = (FileLoader) Class.forName( "org.drools.decisiontable.SourcePackageProvider" ).newInstance();
                 return fl.loadPackage( pkgFile );
             } catch ( Exception e ) {
                 this.listener.exception( e );

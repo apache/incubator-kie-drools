@@ -2,8 +2,8 @@ package nesting;
 
 //dialect "mvel"
 
-import org.kie.Person
-import org.kie.Address
+import org.drools.Person
+import org.drools.Address
 
 
 

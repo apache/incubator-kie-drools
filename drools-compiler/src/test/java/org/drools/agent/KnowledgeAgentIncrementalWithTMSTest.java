@@ -141,7 +141,7 @@ public class KnowledgeAgentIncrementalWithTMSTest extends BaseKnowledgeAgentTest
     private void createRuleResource() {
         String ruleString = "package com.sample\n" +
                 " \n" +
-                "import org.kie.Message;\n" +
+                "import org.drools.Message;\n" +
                 " \n" +
                 "rule \"Hello World\"\n" +
                 "    when\n" +

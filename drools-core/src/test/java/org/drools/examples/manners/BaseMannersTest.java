@@ -105,7 +105,7 @@ public abstract class BaseMannersTest {
         //shadow = ShadowProxyFactory.getProxy( Chosen.class );
         this.chosenType = new ClassObjectType( Chosen.class );
 
-        this.pkg = new Package( "org.kie.examples.manners" );
+        this.pkg = new Package( "org.drools.examples.manners" );
         this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store = this.pkg.getClassFieldAccessorStore();
         store.setEagerWire( true );

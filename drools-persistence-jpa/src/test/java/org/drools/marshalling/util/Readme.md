@@ -129,7 +129,7 @@ and also [here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c6
             ds1.getDriverProperties().put( "URL",
                                            "jdbc:h2:mem:mydb" );
             ds1.init();
-            emf = Persistence.createEntityManagerFactory( "org.kie.persistence.jpa" );
+            emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
         }
     
         @After

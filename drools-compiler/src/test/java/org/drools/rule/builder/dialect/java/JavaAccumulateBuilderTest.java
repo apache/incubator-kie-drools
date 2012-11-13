@@ -37,7 +37,7 @@ public class JavaAccumulateBuilderTest {
         AccumulateDescr accumDescr = new AccumulateDescr();
         
         BindingDescr price = new BindingDescr( "$price", "price" );
-        PatternDescr cheeseDescr = new PatternDescr( "org.kie.Cheese" );
+        PatternDescr cheeseDescr = new PatternDescr( "org.drools.Cheese" );
         cheeseDescr.addConstraint( price );
         accumDescr.setInputPattern( cheeseDescr );
         
@@ -45,11 +45,11 @@ public class JavaAccumulateBuilderTest {
         accumDescr.setActionCode( "x += $price;" );
         accumDescr.setResultCode( "new Integer( x )" );
         
-        //org.kie.rule.Package pkg = new org.kie.rule.Package( "org.kie" );
+        //org.drools.rule.Package pkg = new org.kie.rule.Package( "org.kie" );
         final PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( new PackageDescr( "org.kie" ) );
+        pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( "org.kie" );
+        PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( "org.drools" );
         Package pkg = pkgReg.getPackage();
         DialectCompiletimeRegistry dialectRegistry = pkgReg.getDialectCompiletimeRegistry();
         Dialect dialect = dialectRegistry.getDialect( "java" );

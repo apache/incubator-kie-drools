@@ -1233,7 +1233,7 @@ public class CepEspTest extends CommonTestMethodBase {
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
-        final Rule rule = (Rule) kbase.getRule( "org.kie", "Delaying Not" );
+        final Rule rule = (Rule) kbase.getRule( "org.drools", "Delaying Not" );
         assertEquals( 10000,
                       ((DurationTimer) rule.getTimer()).getDuration() );
 
@@ -1292,7 +1292,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testDelayingNot2() throws Exception {
-        String str = "package org.kie\n" +
+        String str = "package org.drools\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1318,7 +1318,7 @@ public class CepEspTest extends CommonTestMethodBase {
     
     @Test
     public void testDelayingNotWithPreEpochClock() throws Exception {
-        String str = "package org.kie\n" +
+        String str = "package org.drools\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1693,7 +1693,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testPseudoSchedulerRemoveJobTest() {
-        String str = "import org.kie.integrationtests.CepEspTest.A\n";
+        String str = "import org.drools.integrationtests.CepEspTest.A\n";
         str += "declare A\n";
         str += "    @role( event )\n";
         str += "end\n";
@@ -2164,8 +2164,8 @@ public class CepEspTest extends CommonTestMethodBase {
                                          InstantiationException,
                                          IllegalAccessException,
                                          InterruptedException {
-        String str = "package org.kie.cloud\n" +
-                     "import org.kie.*\n" +
+        String str = "package org.drools.cloud\n" +
+                     "import org.drools.*\n" +
                      "declare Event\n" +
                      "        @role ( event )\n" +
                      "        name : String\n" +
@@ -2201,7 +2201,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 0,
                       rulesFired );
 
-        org.kie.definition.type.FactType event = kbase.getFactType( "org.kie.cloud",
+        org.kie.definition.type.FactType event = kbase.getFactType( "org.drools.cloud",
                                                                        "Event" );
         Object e1 = event.newInstance();
         event.set( e1,
@@ -2227,7 +2227,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSalienceWithEventsPseudoClock() throws IOException,
                                                    ClassNotFoundException {
-        String str = "package org.kie\n" +
+        String str = "package org.drools\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +
@@ -2310,7 +2310,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSalienceWithEventsRealtimeClock() throws IOException,
                                                      ClassNotFoundException, InterruptedException {
-        String str = "package org.kie\n" +
+        String str = "package org.drools\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +

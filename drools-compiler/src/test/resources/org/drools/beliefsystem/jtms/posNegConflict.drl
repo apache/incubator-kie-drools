@@ -1,4 +1,4 @@
-package org.kie.beliefsystem.defeasible;
+package org.drools.beliefsystem.defeasible;
 
 global java.util.List list;
 

@@ -1,4 +1,4 @@
-package org.kie;
+package org.drools;
 
 rule "Logical insert order 1"
     salience 10

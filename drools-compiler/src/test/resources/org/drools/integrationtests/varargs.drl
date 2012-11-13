@@ -1,7 +1,7 @@
-package org.kie.test
+package org.drools.test
 
-import org.kie.integrationtests.VarargsTest.B;
-import org.kie.integrationtests.VarargsTest.Invoker;
+import org.drools.integrationtests.VarargsTest.B;
+import org.drools.integrationtests.VarargsTest.Invoker;
 
 global Invoker invoker;
 

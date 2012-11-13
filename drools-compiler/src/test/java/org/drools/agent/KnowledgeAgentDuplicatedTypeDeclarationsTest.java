@@ -259,7 +259,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
         String drl2 = "package org.kie.test2;\n" +
                 "\n" +
 //                "import org.kie.test1.Bean;\n" +
-                "import org.kie.Person;\n" +
+                "import org.drools.Person;\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +

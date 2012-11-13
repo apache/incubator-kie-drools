@@ -11,7 +11,7 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
     @Test
     public void testNullSafeBinding() {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( $streetName : address!.street ) \n" +
                 "then\n" +
@@ -36,7 +36,7 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
     @Test
     public void testNullSafeNullComparison() {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( address!.street == null ) \n" +
                 "then\n" +
@@ -61,7 +61,7 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
     @Test
     public void testDoubleNullSafe() {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( address!.street!.length > 15 ) \n" +
                 "then\n" +

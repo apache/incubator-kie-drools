@@ -1,5 +1,5 @@
 
-import org.kie.Person
+import org.drools.Person
 
 rule simple_rule 
   when

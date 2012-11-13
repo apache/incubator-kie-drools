@@ -2,17 +2,17 @@ TestCase "Exists Node unification test case"
 
 Setup
     ObjectTypeNode:
-        otnLeft1, org.kie.base.DroolsQuery;
+        otnLeft1, org.drools.base.DroolsQuery;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.kie.Person;
+        otnRight1, org.drools.Person;
     ObjectTypeNode:
-        otnRight2, org.kie.Cheese;
+        otnRight2, org.drools.Cheese;
     Binding:
-         v, 0, org.kie.base.DroolsQuery, [0], java.lang.String;
-         $age, 0, org.kie.base.DroolsQuery, [1], java.lang.Integer;
-         p1, 1, org.kie.Person, age;
+         v, 0, org.drools.base.DroolsQuery, [0], java.lang.String;
+         $age, 0, org.drools.base.DroolsQuery, [1], java.lang.Integer;
+         p1, 1, org.drools.Person, age;
     ExistsNode:
         exists1, lian0, otnRight1;
         name, :=,v;
@@ -21,9 +21,9 @@ Setup
         join2, exists1, otnRight2;
         type, :=, v;
     Facts:
-        new org.kie.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v, 35], null, true), 
-        new org.kie.Person('bobba', 36),
-        new org.kie.Person('yoda', 35);       
+        new org.drools.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v, 35], null, true),
+        new org.drools.Person('bobba', 36),
+        new org.drools.Person('yoda', 35);
 
 Test "assert right then left then add right block"
     /**

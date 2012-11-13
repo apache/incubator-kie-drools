@@ -80,19 +80,19 @@ public class KJarTest {
     }
 
     private void createKJar() throws IOException {
-        String rule = "package org.kie.test\n" +
+        String rule = "package org.drools.test\n" +
                 "rule R1 when\n" +
                 "   $fieldA : FactA( $fieldB : fieldB )\n" +
                 "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
                 "then\n" +
                 "end";
 
-        String declarationA = "package org.kie.test\n" +
+        String declarationA = "package org.drools.test\n" +
                 "declare FactA\n" +
                 "    fieldB: FactB\n" +
                 "end\n";
 
-        String declarationB = "package org.kie.test\n" +
+        String declarationB = "package org.drools.test\n" +
                 "declare FactB\n" +
                 "    fieldA: FactA\n" +
                 "end\n";
@@ -133,9 +133,9 @@ public class KJarTest {
     }
 
     private void useKSession(KnowledgeBase kbase, StatefulKnowledgeSession ksession) throws InstantiationException, IllegalAccessException {
-        FactType aType = kbase.getFactType( "org.kie.test", "FactA" );
+        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
         Object a = aType.newInstance();
-        FactType bType = kbase.getFactType( "org.kie.test", "FactB" );
+        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
         Object b = bType.newInstance();
         aType.set( a, "fieldB", b );
         bType.set( b, "fieldA", a );

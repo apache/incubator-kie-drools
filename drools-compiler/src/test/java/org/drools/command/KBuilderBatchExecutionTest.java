@@ -119,10 +119,10 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         int NUM_FACTS = 5;
         
         String ruleString 
-        = "package org.kie.integrationtests;\n"
+        = "package org.drools.integrationtests;\n"
         + "import " + KBuilderBatchExecutionTest.class.getCanonicalName() + ";\n"
-        + "import org.kie.integrationtests.DroolsTest.Foo;\n"
-        + "import org.kie.integrationtests.DroolsTest.Bar;\n"
+        + "import org.drools.integrationtests.DroolsTest.Foo;\n"
+        + "import org.drools.integrationtests.DroolsTest.Bar;\n"
         + "rule test\n"
         + "when\n"
         + "      Foo($p : id, id < " + Integer.toString( NUM_FACTS ) + ")\n"

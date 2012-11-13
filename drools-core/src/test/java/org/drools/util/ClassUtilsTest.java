@@ -28,21 +28,21 @@ public class ClassUtilsTest {
     @Test
     public void testCanonicalNameSimpleClass() {
         String name = ClassUtils.canonicalName( ClassUtilsTest.class );
-        assertEquals( "org.kie.util.ClassUtilsTest",
+        assertEquals( "org.drools.util.ClassUtilsTest",
                       name );
     }
 
     @Test
     public void testCanonicalNameInnerClass() {
         String name = ClassUtils.canonicalName( A.class );
-        assertEquals( "org.kie.util.ClassUtilsTest.A",
+        assertEquals( "org.drools.util.ClassUtilsTest.A",
                       name );
     }
     
     @Test
     public void testCanonicalNameInnerInnerClass() {
         String name = ClassUtils.canonicalName( A.B.class );
-        assertEquals( "org.kie.util.ClassUtilsTest.A.B",
+        assertEquals( "org.drools.util.ClassUtilsTest.A.B",
                       name );
     }
     
@@ -63,7 +63,7 @@ public class ClassUtilsTest {
     @Test
     public void testCanonicalNameMultiIndexArrayInnerClass() {
         String name = ClassUtils.canonicalName( A.B[][][].class );
-        assertEquals( "org.kie.util.ClassUtilsTest.A.B[][][]",
+        assertEquals( "org.drools.util.ClassUtilsTest.A.B[][][]",
                       name );
     }
     

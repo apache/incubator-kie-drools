@@ -1,7 +1,7 @@
 package Some_other_business_rules;
 //generated from Decision Table
-import org.kie.Cheese;
-import org.kie.Person;
+import org.drools.Cheese;
+import org.drools.Person;
 global java.util.List list;
 //From row number: 17
 rule "Cheese fans_17"

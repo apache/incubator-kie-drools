@@ -2,15 +2,15 @@ TestCase "Join Node modify test case"
 
 Setup
     ObjectTypeNode:
-        otnLeft1, org.kie.Person;
+        otnLeft1, org.drools.Person;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.kie.Person;
+        otnRight1, org.drools.Person;
     ObjectTypeNode:
-        otnRight2, org.kie.Person;
+        otnRight2, org.drools.Person;
     Binding:
-         p1, 0, org.kie.Person, age;
+         p1, 0, org.drools.Person, age;
     JoinNode:
         join1, lian0, otnRight1;
         age, ==, p1;
@@ -18,9 +18,9 @@ Setup
         join2, join1, otnRight2;
         age, ==, p1;
     Facts:
-        new org.kie.Person('darth', 34), new org.kie.Person('bobba', 34),
-        new org.kie.Person('yoda', 34), new org.kie.Person('luke', 34),
-        new org.kie.Person('dave', 34), new org.kie.Person('bob', 34);
+        new org.drools.Person('darth', 34), new org.drools.Person('bobba', 34),
+        new org.drools.Person('yoda', 34), new org.drools.Person('luke', 34),
+        new org.drools.Person('dave', 34), new org.drools.Person('bob', 34);
 
 Test "Node Index Test"
     /**

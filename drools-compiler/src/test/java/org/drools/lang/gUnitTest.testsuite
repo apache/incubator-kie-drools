@@ -263,7 +263,7 @@ end))
 
 	<<package org.kie.test;
  
-import org.kie.Cheese;
+import org.drools.Cheese;
  
 rule "simple rule"
     when
@@ -588,7 +588,7 @@ end))
  */
 	<<package org.kie.test;
 
-import org.kie.Cheese;
+import org.drools.Cheese;
 
 rule "like cheddar"
     when
@@ -604,8 +604,8 @@ end))
  */
 	<<package org.kie.test;
 
-import org.kie.Cheese;
-import org.kie.Person;
+import org.drools.Cheese;
+import org.drools.Person;
 
 rule "Who likes Stilton"
     when
@@ -621,7 +621,7 @@ end))
  * test Or Nesting
  */
 	<<
-import org.kie.Person
+import org.drools.Person
 
 rule simple_rule 
   when
@@ -637,7 +637,7 @@ end))
  * test And Or Rules
  */
 	<<
-import org.kie.Person
+import org.drools.Person
 
 rule simple_rule 
   when
@@ -653,7 +653,7 @@ end))
  * test Or With Binding
  */
 	<<
-import org.kie.Person
+import org.drools.Person
 
 rule simple_rule 
   when
@@ -778,7 +778,7 @@ end))
  */
 	<<package org.kie.test;
 
-import org.kie.Cheese;
+import org.drools.Cheese;
 
 global java.util.List list;
 global java.lang.Integer five;
@@ -798,7 +798,7 @@ end))
  */
 	<<package org.kie.test;
 
-import org.kie.Cheese;
+import org.drools.Cheese;
 
 global java.lang.String foo
 global java.lang.Integer bar;

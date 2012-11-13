@@ -34,7 +34,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     protected boolean     debug  = false;
 
     public DefaultBeanClassBuilder() {
-        this( "true".equalsIgnoreCase( System.getProperty( "org.kie.classbuilder.debug" ) ) );
+        this( "true".equalsIgnoreCase( System.getProperty( "org.drools.classbuilder.debug" ) ) );
     }
 
     public DefaultBeanClassBuilder(final boolean debug) {

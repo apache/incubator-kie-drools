@@ -83,7 +83,7 @@ public class TestMarshallingUtilsTest {
     @Test
     @Ignore
     public void testUnmarshallingSpecificMarshalledData() {
-        String testMethodAndSnapNum = "org.kie.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
+        String testMethodAndSnapNum = "org.drools.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
         // =
         // "org.kie.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
         HashMap<String, Object> testContext = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);

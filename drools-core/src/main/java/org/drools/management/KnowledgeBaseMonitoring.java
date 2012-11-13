@@ -68,7 +68,7 @@ public class KnowledgeBaseMonitoring
     private static final String OP_STOP_INTERNAL_MBEANS = "stopInternalMBeans";
     private static final String OP_START_INTERNAL_MBEANS = "startInternalMBeans";
 
-    private static final String  KBASE_PREFIX    = "org.kie.kbases";
+    private static final String  KBASE_PREFIX    = "org.drools.kbases";
 
     // ************************************************************************************************
     // MBean attributes

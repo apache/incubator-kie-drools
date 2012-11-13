@@ -40,7 +40,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testRTNodeEmptyLHS() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "rule r1\n" +
                         "when\n" +
                         "then\n" +
@@ -60,7 +60,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testRTNodeNoConstraintsNoPropertySpecific() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
                       "when\n" +
@@ -82,7 +82,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testRTNodeWithConstraintsNoPropertySpecific() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
                       "when\n" +
@@ -109,7 +109,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testBetaNodeNoConstraintsNoPropertySpecific() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
@@ -132,7 +132,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testBetaNodeWithConstraintsNoPropertySpecific() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
@@ -159,7 +159,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testInitialFactBetaNodeWithRightInputAdapter() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
@@ -184,7 +184,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testPersonFactBetaNodeWithRightInputAdapter() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
@@ -210,7 +210,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
     @Test
     public void testSharedAlphanodeWithBetaNodeConstraintsNoPropertySpecific() {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
@@ -260,7 +260,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     
 
     private KnowledgeBase getKnowledgeBase(String... rules) {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "global java.util.List list;\n" +
                 "declare A\n" +
                 "    @propertyReactive\n" +
@@ -419,7 +419,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(  calculatePositiveMask(list("a", "i"), sp), rtNode2.getInferredMask() );
         
         // test rule removal        
-        kbase.removeRule( "org.kie", "r0" );
+        kbase.removeRule( "org.drools", "r0" );
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
         assertEquals( calculatePositiveMask(list("a", "i"), sp), alphaNode1.getInferredMask() );
 
@@ -432,7 +432,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
         
-        kbase.removeRule( "org.kie", "r1" );
+        kbase.removeRule( "org.drools", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
@@ -491,7 +491,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(  calculateNegativeMask(list("!i"), sp), rtNode2.getNegativeMask() );
 
         // test rule removal        
-        kbase.removeRule( "org.kie", "r0" );
+        kbase.removeRule( "org.drools", "r0" );
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
         assertEquals( calculatePositiveMask(list("a", "i", "s"), sp), alphaNode1.getInferredMask() );
 
@@ -505,7 +505,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
         
-        kbase.removeRule( "org.kie", "r1" );
+        kbase.removeRule( "org.drools", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
@@ -689,7 +689,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( calculateNegativeMask(list("!i"), sp), betaNode2.getLeftNegativeMask() );
 
         // test rule removal        
-        kbase.removeRule( "org.kie", "r0" );
+        kbase.removeRule( "org.drools", "r0" );
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
         assertEquals( calculatePositiveMask(list("a", "i", "b"), sp), alphaNode1.getInferredMask() );
 
@@ -706,7 +706,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
         
-        kbase.removeRule( "org.kie", "r1" );
+        kbase.removeRule( "org.drools", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
@@ -773,7 +773,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( 0L, betaNode2.getLeftNegativeMask() );
 
         // test rule removal        
-        kbase.removeRule( "org.kie", "r0" );
+        kbase.removeRule( "org.drools", "r0" );
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
         assertEquals( calculatePositiveMask(list("a", "i", "b", "s"), sp), alphaNode1.getInferredMask() );
 
@@ -791,7 +791,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
         
-        kbase.removeRule( "org.kie", "r1" );
+        kbase.removeRule( "org.drools", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
@@ -876,7 +876,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
-        kbase.removeRule( "org.kie", "r0" );
+        kbase.removeRule( "org.drools", "r0" );
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -920,7 +920,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
-        kbase.removeRule( "org.kie", "r1" );
+        kbase.removeRule( "org.drools", "r1" );
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -970,7 +970,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
-        kbase.removeRule( "org.kie", "r2" );
+        kbase.removeRule( "org.drools", "r2" );
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -1010,7 +1010,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testPropertySpecificSimplified() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
                 "    s : String\n" +
@@ -1037,12 +1037,12 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factTypeA = kbase.getFactType( "org.kie", "A" );
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "s", "y" );
         ksession.insert( factA );
 
-        FactType factTypeB = kbase.getFactType( "org.kie", "B" );
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         factTypeB.set( factB, "on", false );
         factTypeB.set( factB, "s", "x" );
@@ -1058,7 +1058,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testWatchNothing() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
                 "    s : String\n" +
@@ -1085,12 +1085,12 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factTypeA = kbase.getFactType( "org.kie", "A" );
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "s", "y" );
         ksession.insert(factA);
 
-        FactType factTypeB = kbase.getFactType( "org.kie", "B" );
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         factTypeB.set( factB, "on", false );
         factTypeB.set( factB, "s", "x" );
@@ -1106,7 +1106,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testWrongPropertyNameInWatchAnnotation() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
                 "    s : String\n" +
@@ -1137,7 +1137,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testDuplicatePropertyNamesInWatchAnnotation() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
                 "    s : String\n" +
@@ -1168,7 +1168,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testWrongUasgeOfWatchAnnotationOnNonPropertySpecificClass() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
                 "    s : String\n" +
@@ -1198,8 +1198,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testPropertySpecificJavaBean() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.C\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.C\n" +
                 "declare A\n" +
                 "    s : String\n" +
                 "end\n" +
@@ -1220,7 +1220,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factTypeA = kbase.getFactType( "org.kie", "A" );
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "s", "y" );
         ksession.insert( factA );
@@ -1240,8 +1240,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testPropertySpecificOnAlphaNode() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.C\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.C\n" +
                 "rule R1\n" +
                 "when\n" +
                 "    $c : C(s == \"test\")\n" +
@@ -1265,8 +1265,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testPropertySpecificWithUpdate() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.C\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.C\n" +
                 "rule R1\n" +
                 "when\n" +
                 "    $c : C(s == \"test\")\n" +
@@ -1291,8 +1291,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(expected=RuntimeException.class)
     public void testInfiniteLoop() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.C\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.C\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
                 "rule R1\n" +
                 "when\n" +
@@ -1323,7 +1323,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(expected=RuntimeException.class)
     public void testClassReactive() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
                 "declare B\n" +
                 "    @classReactive\n" +
@@ -1346,7 +1346,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         AtomicInteger counter = new AtomicInteger(0);
         ksession.setGlobal( "counter", counter );
 
-        FactType factTypeB = kbase.getFactType( "org.kie", "B" );
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         factTypeB.set( factB, "s", "test" );
         factTypeB.set( factB, "on", false );
@@ -1363,7 +1363,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testSharedWatchAnnotation() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "declare A\n" +
                 "    @propertyReactive\n" +
                 "    a : int\n" +
@@ -1393,7 +1393,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factTypeA = kbase.getFactType( "org.kie", "A" );
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "a", 0 );
         factTypeA.set( factA, "b", 0 );
@@ -1401,7 +1401,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         factTypeA.set( factA, "s", "start" );
         ksession.insert( factA );
 
-        FactType factTypeB = kbase.getFactType( "org.kie", "B" );
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         factTypeB.set( factB, "i", 1 );
         factTypeB.set( factB, "s", "start" );
@@ -1441,9 +1441,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testBetaNodePropagation() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Hero\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.MoveCommand\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Hero\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.MoveCommand\n" +
                 "rule \"Move\" when\n" +
                 "   $mc : MoveCommand( move == 1 )" +
                 "   $h  : Hero( canMove == true )" +
@@ -1477,7 +1477,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testPropSpecOnPatternWithThis() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "declare A\n" +
                 "    @propertyReactive\n" +
                 "    i : int\n" +
@@ -1497,12 +1497,12 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factTypeA = kbase.getFactType( "org.kie", "A" );
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "i", 1 );
         ksession.insert(factA);
 
-        FactType factTypeB = kbase.getFactType( "org.kie", "B" );
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         factTypeB.set( factB, "a", factA );
         ksession.insert( factB );
@@ -1513,7 +1513,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testPropSpecOnBetaNode() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "declare A\n" +
                 "    @propertyReactive\n" +
                 "    i : int\n" +
@@ -1534,8 +1534,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType typeA = kbase.getFactType( "org.kie", "A" );
-        FactType typeB = kbase.getFactType( "org.kie", "B" );
+        FactType typeA = kbase.getFactType( "org.drools", "A" );
+        FactType typeB = kbase.getFactType( "org.drools", "B" );
 
         Object a1 = typeA.newInstance();
         typeA.set( a1, "i", 1 );
@@ -1556,7 +1556,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testConfig() throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "declare A\n" +
                 "    i : int\n" +
                 "    j : int\n" +
@@ -1573,7 +1573,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( config, rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType typeA = kbase.getFactType( "org.kie", "A" );
+        FactType typeA = kbase.getFactType( "org.drools", "A" );
         Object a = typeA.newInstance();
         typeA.set( a, "i", 1 );
         ksession.insert( a );
@@ -1584,11 +1584,11 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testEmptyBetaConstraint() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Hero\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Cell\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Init\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.CompositeImageName\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Hero\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Init\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.CompositeImageName\n" +
                 "declare CompositeImageName\n" +
                 "   @propertyReactive\n" +
                 "end\n" +
@@ -1634,8 +1634,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testNoConstraint() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Cell\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +
                 "rule R1 when\n" +
                 "   $c : Cell()\n" +
                 "then\n" +
@@ -1653,8 +1653,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testNodeSharing() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Cell\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +
                 "rule R1 when\n" +
                 "   $c : Cell()\n" +
                 "then\n" +
@@ -1818,9 +1818,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testNoConstraint2() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Order\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.OrderItem\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.OrderItem\n" +
                 "rule R1 when\n" +
                 "   $o : Order()\n" +
                 "   $i : OrderItem( orderId == $o.id, quantity > 2 )\n" +
@@ -1848,8 +1848,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testEval() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Order\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
                 "rule R1 when\n" +
                 "   $o : Order()\n" +
                 "   eval($o.getId().equals(\"1\"))" +
@@ -1870,9 +1870,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testFrom() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Order\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.OrderItem\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.OrderItem\n" +
                 "rule R1 when\n" +
                 "   $o : Order()\n" +
                 "   $i : OrderItem( $price : price, quantity > 1 ) from $o.items\n" +
@@ -1904,9 +1904,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test(timeout = 5000)
     public void testAccumulate() throws Exception {
-        String rule = "package org.kie\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.Order\n" +
-                "import org.kie.integrationtests.PropertySpecificTest.OrderItem\n" +
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.OrderItem\n" +
                 "rule R1 when\n" +
                 "   $o : Order()\n" +
                 "   $i : Number( doubleValue > 5 ) from accumulate( OrderItem( orderId == $o.id, $value : value ),\n" +
@@ -2081,7 +2081,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( calculatePositiveMask(list("c"), sp), betaNodeC2.getLeftDeclaredMask() );
         assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNodeC2.getLeftInferredMask() );
 
-        kbase.removeRule( "org.kie", "r0" );
+        kbase.removeRule( "org.drools", "r0" );
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
         assertEquals( calculatePositiveMask(list("a", "c"), sp), alphaNode.getInferredMask());
 
@@ -2128,7 +2128,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( Long.MAX_VALUE, betaNodeA2.getLeftDeclaredMask() );
         assertEquals( Long.MAX_VALUE, betaNodeA2.getLeftInferredMask() );
 
-        kbase.removeRule( "org.kie", "r0" );
+        kbase.removeRule( "org.drools", "r0" );
         assertEquals(1, betaNodeC.getSinkPropagator().getSinks().length);
     }
 
@@ -2176,7 +2176,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( Long.MAX_VALUE, betaNodeD.getLeftDeclaredMask() );
         assertEquals( Long.MAX_VALUE, betaNodeD.getLeftInferredMask() );
 
-        kbase.removeRule( "org.kie", "r1" );
+        kbase.removeRule( "org.drools", "r1" );
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
         assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode.getInferredMask());
     }
@@ -2192,7 +2192,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }
 
     private void testBetaWith2RTNSinksExec(boolean addInfiniteLoopWatch) throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
                 "declare A\n" +
                 "   @propertyReactive\n" +
@@ -2235,16 +2235,16 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         AtomicInteger counter = new AtomicInteger(0);
         ksession.setGlobal( "counter", counter );
 
-        FactType factTypeA = kbase.getFactType( "org.kie", "A" );
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "x", 0 );
         ksession.insert(factA);
 
-        FactType factTypeB = kbase.getFactType( "org.kie", "B" );
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         ksession.insert(factB);
 
-        FactType factTypeC = kbase.getFactType( "org.kie", "C" );
+        FactType factTypeC = kbase.getFactType( "org.drools", "C" );
         Object factC = factTypeC.newInstance();
         factTypeC.set( factC, "y", 0 );
         ksession.insert(factC);
@@ -2268,7 +2268,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }
 
     private void testBetaWith2BetaSinksExec(boolean addInfiniteLoopWatch) throws Exception {
-        String rule = "package org.kie\n" +
+        String rule = "package org.drools\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
                 "declare A\n" +
                 "   @propertyReactive\n" +
@@ -2314,21 +2314,21 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         AtomicInteger counter = new AtomicInteger(0);
         ksession.setGlobal( "counter", counter );
 
-        FactType factTypeA = kbase.getFactType( "org.kie", "A" );
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "x", 0 );
         ksession.insert(factA);
 
-        FactType factTypeB = kbase.getFactType( "org.kie", "B" );
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         ksession.insert(factB);
 
-        FactType factTypeC = kbase.getFactType( "org.kie", "C" );
+        FactType factTypeC = kbase.getFactType( "org.drools", "C" );
         Object factC = factTypeC.newInstance();
         factTypeC.set( factC, "y", 0 );
         ksession.insert(factC);
 
-        FactType factTypeD = kbase.getFactType( "org.kie", "D" );
+        FactType factTypeD = kbase.getFactType( "org.drools", "D" );
         Object factD = factTypeD.newInstance();
         ksession.insert(factD);
 
@@ -2343,7 +2343,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testDisablePropSpecWith64OrMoreFieldsAndRaiseWarning() {
         StringBuilder drl = new StringBuilder();
-        drl.append("package org.kie\n")
+        drl.append("package org.drools\n")
                 .append("declare A\n")
                 .append("@propertyReactive\n");
         for (int i = 0; i < 65; i++) {

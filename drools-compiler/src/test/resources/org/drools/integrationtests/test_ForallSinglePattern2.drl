@@ -1,4 +1,4 @@
-package org.kie
+package org.drools
 
 rule "forall single pattern"
     when

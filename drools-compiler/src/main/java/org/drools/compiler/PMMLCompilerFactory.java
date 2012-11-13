@@ -37,7 +37,7 @@ public class PMMLCompilerFactory {
     }
 
     private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( PMMLCompiler.class,  "org.kie.pmml_4_0.PMML4Compiler" );
+        ServiceRegistryImpl.getInstance().addDefault( PMMLCompiler.class,  "org.drools.pmml_4_0.PMML4Compiler" );
         setProvider(ServiceRegistryImpl.getInstance().get(PMMLCompiler.class));
     }
 }

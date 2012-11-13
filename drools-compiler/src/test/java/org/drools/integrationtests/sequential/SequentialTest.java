@@ -131,7 +131,7 @@ public class SequentialTest extends CommonTestMethodBase {
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
         str += "package org.test\n";
-        str +="import org.kie.Message\n";
+        str +="import org.drools.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";
         str +="    Message( )\n";
@@ -162,7 +162,7 @@ public class SequentialTest extends CommonTestMethodBase {
     public void testEvents() throws Exception {
         String str = "";
         str += "package org.test\n";
-        str +="import org.kie.Message\n";
+        str +="import org.drools.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";
         str +="    Message( )\n";
@@ -390,7 +390,7 @@ public class SequentialTest extends CommonTestMethodBase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.shadowProxyExcludes",
-                                "org.kie.*" );
+                                "org.drools.*" );
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
         conf.setSequential( sequentialMode );

@@ -1,9 +1,9 @@
-package org.kie.test;
+package org.drools.test;
 
-import function org.kie.StaticMethods.*;
-import function org.kie.StaticMethods2.getString3;
+import function org.drools.StaticMethods.*;
+import function org.drools.StaticMethods2.getString3;
 
-import org.kie.Cheese;
+import org.drools.Cheese;
 
 global java.util.List list;
 

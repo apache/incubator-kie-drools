@@ -1,6 +1,6 @@
 package evalmodify;
 
-import org.kie.Cell
+import org.drools.Cell
 import java.lang.Integer
 
 rule "test eval"

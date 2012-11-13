@@ -57,7 +57,7 @@ public class PersistenceUtil {
     private static boolean TEST_MARSHALLING = true;
     
     // Persistence and data source constants
-    public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.kie.persistence.jpa";
+    public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa";
     public static final String JBPM_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
         
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";

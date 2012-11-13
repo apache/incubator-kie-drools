@@ -202,12 +202,12 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         verify( ael, times( 15 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
         verify( ael, never() ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
-        kbase.removeRule( "org.kie.test",
+        kbase.removeRule( "org.drools.test",
                           "Who likes Stilton" );
 
         verify( ael, times( 3 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
-        kbase.removeRule( "org.kie.test",
+        kbase.removeRule( "org.drools.test",
                           "like cheese" );
 
         verify( ael, times( 7 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
@@ -218,7 +218,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         verify( ael, times( 16 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
 
-        kbase.removeKnowledgePackage( "org.kie.test" );
+        kbase.removeKnowledgePackage( "org.drools.test" );
         verify( ael, times( 16 ) ).activationCancelled( any( ActivationCancelledEvent.class ) );
 
         kbase = SerializationHelper.serializeObject( kbase );
@@ -239,17 +239,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 5,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.kie.test",
+        kbase.removeRule( "org.drools.test",
                           "Who likes Stilton" );
         assertEquals( 4,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.kie.test",
+        kbase.removeRule( "org.drools.test",
                           "like cheese" );
         assertEquals( 3,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeKnowledgePackage( "org.kie.test" );
+        kbase.removeKnowledgePackage( "org.drools.test" );
         assertEquals( 0,
                       kbase.getKnowledgePackages().size() );
     }
@@ -280,7 +280,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         // Check a function can be removed from a package.
         // Once removed any efforts to use it should throw an Exception
-        kbase.removeFunction( "org.kie.test",
+        kbase.removeFunction( "org.drools.test",
                               "addFive" );
 
         final Cheese cheddar = new Cheese( "cheddar",
@@ -426,7 +426,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
-            Class cheeseClass = loader1.loadClass( "org.kie.Cheese" );
+            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
 
             PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader1 );
             PackageBuilder builder = new PackageBuilder( conf );
@@ -446,7 +446,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates second class loader and use it to load fact classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
-            cheeseClass = loader2.loadClass( "org.kie.Cheese" );
+            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
 
             conf = new PackageBuilderConfiguration( loader2 );
             builder = new PackageBuilder( conf );
@@ -476,7 +476,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader1 );
-            Class cheeseClass = loader1.loadClass( "org.kie.Cheese" );
+            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
 
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -493,7 +493,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader2 );
-            cheeseClass = loader2.loadClass( "org.kie.Cheese" );
+            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
 
             builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -580,7 +580,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 0,
                       results.size() );
 
-        kbase.removeKnowledgePackage( "org.kie" );
+        kbase.removeKnowledgePackage( "org.drools" );
 
         ksession.retract( ksession.getFactHandle( b ) );
 
@@ -728,12 +728,12 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 11,
                       getInternalAgenda( session ).getActivations().length );
 
-        kbase.removeRule( "org.kie",
+        kbase.removeRule( "org.drools",
                           "Apply Discount on all books" );
         assertEquals( 10,
                       getInternalAgenda( session ).getActivations().length );
 
-        kbase.removeRule( "org.kie",
+        kbase.removeRule( "org.drools",
                           "like book" );
 
         final OrderItem item5 = new OrderItem( order,
@@ -749,7 +749,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 10,
                       getInternalAgenda( session ).getActivations().length );
 
-        kbase.removeKnowledgePackage( "org.kie" );
+        kbase.removeKnowledgePackage( "org.drools" );
 
         assertEquals( 0,
                       getInternalAgenda( session ).getActivations().length );
@@ -766,17 +766,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 4,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.kie",
+        kbase.removeRule( "org.drools",
                 "Apply Discount on all books" );
         assertEquals( 3,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.kie",
+        kbase.removeRule( "org.drools",
                 "like book" );
         assertEquals( 2,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeKnowledgePackage( "org.kie" );
+        kbase.removeKnowledgePackage( "org.drools" );
         assertEquals( 0,
                       kbase.getKnowledgePackages().size() );
     }
@@ -987,8 +987,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader1.loadClass( "org.kie.Primitives" );
-            //loader1.loadClass( "org.kie.TestEnum" );
+            //loader1.loadClass( "org.drools.Primitives" );
+            //loader1.loadClass( "org.drools.TestEnum" );
 
             // create a builder with the given classloader
             KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
@@ -1011,8 +1011,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader2.loadClass( "org.kie.Primitives" );
-            //loader2.loadClass( "org.kie.TestEnum" );
+            //loader2.loadClass( "org.drools.Primitives" );
+            //loader2.loadClass( "org.drools.TestEnum" );
 
             // set context classloader and use it
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
@@ -1065,7 +1065,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         verify( alistener,
                 times( 1 ) ).activationCreated( any( org.kie.event.rule.ActivationCreatedEvent.class ) );
 
-        kbase.removeKnowledgePackage( "org.kie" );
+        kbase.removeKnowledgePackage( "org.drools" );
 
         assertEquals( 0,
                       kbase.getKnowledgePackages().size() );

@@ -1,6 +1,6 @@
-package org.kie.newtest;
+package org.drools.newtest;
 
-import org.kie.Person; 
+import org.drools.Person;
 
 global java.util.List results
 

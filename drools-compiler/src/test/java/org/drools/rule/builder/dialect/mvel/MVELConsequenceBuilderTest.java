@@ -261,7 +261,7 @@ public class MVELConsequenceBuilderTest {
             assertFalse( parser.getErrors().toString(),
                                 parser.hasErrors() );
 
-            final Package pkg = new Package( "org.kie" );
+            final Package pkg = new Package( "org.drools" );
 
             final RuleDescr ruleDescr = pkgDescr.getRules().get( 0 );
 
@@ -342,8 +342,8 @@ public class MVELConsequenceBuilderTest {
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
         builder = new MVELConsequenceBuilder();
 
-        Package pkg = new Package( "org.kie" );
-        pkg.addImport( new ImportDeclaration( "org.kie.Cheese" ) );
+        Package pkg = new Package( "org.drools" );
+        pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         PackageBuilder pkgBuilder = new PackageBuilder( pkg,

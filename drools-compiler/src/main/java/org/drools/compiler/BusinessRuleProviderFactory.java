@@ -42,7 +42,7 @@ public class BusinessRuleProviderFactory {
 
     private void loadProvider() throws CheckedDroolsException {
         ServiceRegistryImpl.getInstance().addDefault( BusinessRuleProvider.class,
-                                                      "org.kie.ide.common.BusinessRuleProviderDefaultImpl" );
+                                                      "org.drools.ide.common.BusinessRuleProviderDefaultImpl" );
         setBusinessRuleProvider( ServiceRegistryImpl.getInstance().get( BusinessRuleProvider.class ) );
     }
 

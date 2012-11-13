@@ -280,14 +280,14 @@ public class SingleSessionCommandService
         } else {
             if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
                 try {
-                    Class< ? > cls = Class.forName( "org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager" );
+                    Class< ? > cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
                     Constructor< ? > con = cls.getConstructors()[0];
                     this.txm = (TransactionManager) con.newInstance( tm );
                     logger.debug( "Instantiating  DroolsSpringTransactionManager" );
 
                     //                    if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
                     // configure spring for JPA and local transactions
-                    cls = Class.forName( "org.kie.container.spring.beans.persistence.DroolsSpringJpaManager" );
+                    cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
                     con = cls.getConstructors()[0];
                     this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
                     //                    } else {

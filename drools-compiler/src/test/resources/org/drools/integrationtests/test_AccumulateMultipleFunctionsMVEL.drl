@@ -1,4 +1,4 @@
-package org.kie
+package org.drools
 
 rule "Constraints everywhere" 
     dialect "mvel"

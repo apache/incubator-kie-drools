@@ -27,18 +27,18 @@ tokens {
 }
 
 @lexer::header {
-    package org.kie.lang.dsl;
+    package org.drools.lang.dsl;
     import java.util.List;
     import java.util.ArrayList;
-    import org.kie.compiler.ParserError;
+    import org.drools.compiler.ParserError;
 }
 
 @parser::header {
-    package org.kie.lang.dsl;
+    package org.drools.lang.dsl;
     import java.util.List;
     import java.util.ArrayList;
     import java.util.regex.Pattern;
-    import org.kie.compiler.ParserError;
+    import org.drools.compiler.ParserError;
 }
 
 @lexer::members {

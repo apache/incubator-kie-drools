@@ -1,7 +1,7 @@
-package org.kie.examples;
+package org.drools.examples;
 
-import org.kie.Person;
-import org.kie.Cheese;
+import org.drools.Person;
+import org.drools.Cheese;
 
 global java.util.List list;
 

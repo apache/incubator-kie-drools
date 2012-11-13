@@ -2902,7 +2902,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertEquals( "org.kie",
+        assertEquals( "org.drools",
                       pkg.getName() );
         assertEquals( 1,
                       pkg.getGlobals().size() );
@@ -2927,7 +2927,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "eval_parsing.drl" );
 
-        assertEquals( "org.kie",
+        assertEquals( "org.drools",
                       pkg.getName() );
         assertEquals( 1,
                       pkg.getRules().size() );
@@ -3349,7 +3349,7 @@ public class RuleParserTest extends TestCase {
                       descr.getAnnotationNames().size() );
         assertEquals( "event",
                           descr.getAnnotation( "role" ).getValue() );
-        assertEquals( "org.kie.events.Call",
+        assertEquals( "org.drools.events.Call",
                           descr.getAnnotation( "class" ).getValue() );
         assertEquals( "duration",
                           descr.getAnnotation( "duration" ).getValue() );
@@ -4040,7 +4040,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testEntryPointDeclaration() throws Exception {
-        final String text = "package org.kie\n" +
+        final String text = "package org.drools\n" +
                             "declare entry-point eventStream\n" +
                             "    @source(\"jndi://queues/events\")\n" +
                             "    @foo( true )\n" +
@@ -4048,7 +4048,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  text );
 
-        assertEquals( "org.kie",
+        assertEquals( "org.drools",
                       pkg.getName() );
         assertEquals( 1,
                       pkg.getEntryPointDeclarations().size() );
@@ -4067,7 +4067,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testWindowDeclaration() throws Exception {
-        final String text = "package org.kie\n" +
+        final String text = "package org.drools\n" +
                             "declare window Ticks\n" +
                             "    @doc(\"last 10 stock ticks\")\n" +
                             "    $s : StockTick( source == \"NYSE\" )\n" +
@@ -4077,7 +4077,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  text );
 
-        assertEquals( "org.kie",
+        assertEquals( "org.drools",
                       pkg.getName() );
         assertEquals( 1,
                       pkg.getWindowDeclarations().size() );
@@ -4117,7 +4117,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testWindowUsage() throws Exception {
-        final String text = "package org.kie\n" +
+        final String text = "package org.drools\n" +
                             "rule X\n" +
                             "when\n" +
                             "    StockTick() from window Y\n" +
@@ -4126,7 +4126,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  text );
 
-        assertEquals( "org.kie",
+        assertEquals( "org.drools",
                       pkg.getName() );
         assertEquals( 1,
                       pkg.getRules().size() );

@@ -1,8 +1,8 @@
-package org.kie
+package org.drools
 
 import java.util.ArrayList;
 
-global org.kie.Cheesery cheesery;
+global org.drools.Cheesery cheesery;
 global java.util.List results;
 
 rule MyRule

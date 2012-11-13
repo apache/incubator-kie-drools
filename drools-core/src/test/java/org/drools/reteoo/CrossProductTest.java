@@ -90,7 +90,7 @@ public class CrossProductTest {
             }
         } );
 
-        this.pkg = new Package( "org.kie" );
+        this.pkg = new Package( "org.drools" );
         this.pkg.addRule( rule );
     }
 

@@ -1,15 +1,15 @@
 @code{
-import org.kie.lang.descr.AndDescr;
-import org.kie.lang.descr.OrDescr;
-import org.kie.lang.descr.NotDescr;
-import org.kie.lang.descr.ExistsDescr;
-import org.kie.lang.descr.PatternDescr;
-import org.kie.lang.descr.FromDescr;
-import org.kie.lang.descr.EntryPointDescr;
-import org.kie.lang.descr.AccumulateDescr;
-import org.kie.lang.descr.CollectDescr;
-import org.kie.lang.descr.EvalDescr;
-import org.kie.lang.descr.ForallDescr;
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.FromDescr;
+import org.drools.lang.descr.EntryPointDescr;
+import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ForallDescr;
 }
 
 @comment{

@@ -1,6 +1,6 @@
 package salience_test;
 
-import org.kie.Person
+import org.drools.Person
 
 global java.util.List list;
 

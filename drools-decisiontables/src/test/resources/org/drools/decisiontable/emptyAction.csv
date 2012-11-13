@@ -1,4 +1,4 @@
-"RuleSet","org.kie.decisiontable",
+"RuleSet","org.drools.decisiontable",
 ,,
 "RuleTable emptyActionTest",,
 "NAME","CONDITION","ACTION"

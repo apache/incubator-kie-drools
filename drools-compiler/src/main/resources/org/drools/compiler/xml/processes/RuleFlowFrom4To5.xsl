@@ -5,10 +5,10 @@
   <!-- Converts a drools version 4 non-graphical ruleflow file (i.e. .rfm file) to version5 .rf file-->
   <!-- How to get the first node so the the implementing class need not be mentioned here.-->
   <xsl:variable name="type">RuleFlow</xsl:variable>
-  <xsl:variable name="name"><xsl:value-of select="./org.kie.ruleflow.core.impl.RuleFlowProcessImpl/name"/></xsl:variable>
-  <xsl:variable name="id"><xsl:value-of select="./org.kie.ruleflow.core.impl.RuleFlowProcessImpl/id"/></xsl:variable>
-  <xsl:variable name="packageName"><xsl:value-of select="./org.kie.ruleflow.core.impl.RuleFlowProcessImpl/packageName"/></xsl:variable>
-  <xsl:variable name="version"><xsl:value-of select="./org.kie.ruleflow.core.impl.RuleFlowProcessImpl/version"/></xsl:variable>
+  <xsl:variable name="name"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/name"/></xsl:variable>
+  <xsl:variable name="id"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/id"/></xsl:variable>
+  <xsl:variable name="packageName"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/packageName"/></xsl:variable>
+  <xsl:variable name="version"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/version"/></xsl:variable>
   <xsl:param name="generateTypes">false</xsl:param>
   <xsl:param name="generateImports">false</xsl:param>
   <xsl:param name="generateIncludes">false</xsl:param>
@@ -65,7 +65,7 @@
   <xsl:template name="processNodes">
     <xsl:for-each select="//nodes/entry[1]/child::node()">
       <xsl:choose>
-        <xsl:when test="(starts-with(name(.), 'org.kie.ruleflow'))">
+        <xsl:when test="(starts-with(name(.), 'org.drools.ruleflow'))">
           <xsl:call-template name="printNodes"><xsl:with-param name="className"><xsl:value-of select = "name(.)"/></xsl:with-param></xsl:call-template>
         </xsl:when>
       </xsl:choose>
@@ -80,28 +80,28 @@
   <xsl:template name="printNodes">
     <xsl:param name="className"/>
     <xsl:choose>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.RuleSetNodeImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.RuleSetNodeImpl'">
         <xsl:call-template name="RenderRuleSetNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.ActionNodeImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.ActionNodeImpl'">
         <xsl:call-template name="RenderActionNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.SplitImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.SplitImpl'">
         <xsl:call-template name="RenderSplitNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.JoinImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.JoinImpl'">
         <xsl:call-template name="RenderJoinNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.SubFlowNodeImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.SubFlowNodeImpl'">
         <xsl:call-template name="RenderSubflowNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.StartNodeImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.StartNodeImpl'">
         <xsl:call-template name="RenderStartNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.EndNodeImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.EndNodeImpl'">
         <xsl:call-template name="RenderEndNode"/>
       </xsl:when>
-      <xsl:when test="$className = 'org.kie.ruleflow.core.impl.MilestoneNodeImpl'">
+      <xsl:when test="$className = 'org.drools.ruleflow.core.impl.MilestoneNodeImpl'">
         <xsl:call-template name="RenderMilestoneNode"/>
       </xsl:when>
     </xsl:choose>
@@ -115,7 +115,7 @@
       <xsl:choose>
         <xsl:when test="./type != '1'">
           <xsl:element name="constraints">
-            <xsl:for-each select="constraints/entry/org.kie.ruleflow.core.impl.ConstraintImpl">
+            <xsl:for-each select="constraints/entry/org.drools.ruleflow.core.impl.ConstraintImpl">
               <xsl:call-template name="RenderConstraintNode"></xsl:call-template>
             </xsl:for-each>
           </xsl:element>
@@ -128,14 +128,14 @@
     <xsl:element name="constraint">
       <xsl:attribute name="toNodeId">
         <xsl:choose>
-          <xsl:when test="../org.kie.ruleflow.core.impl.ConnectionImpl[@id != '']">
-            <xsl:for-each select = "../org.kie.ruleflow.core.impl.ConnectionImpl/to">
+          <xsl:when test="../org.drools.ruleflow.core.impl.ConnectionImpl[@id != '']">
+            <xsl:for-each select = "../org.drools.ruleflow.core.impl.ConnectionImpl/to">
               <xsl:call-template name="printReferenceOrId"/>
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:variable name="constraintReference"><xsl:value-of select="../org.kie.ruleflow.core.impl.ConnectionImpl/@reference"/></xsl:variable>
-            <xsl:for-each select = "//org.kie.ruleflow.core.impl.ConnectionImpl[@id = $constraintReference]/to">
+            <xsl:variable name="constraintReference"><xsl:value-of select="../org.drools.ruleflow.core.impl.ConnectionImpl/@reference"/></xsl:variable>
+            <xsl:for-each select = "//org.drools.ruleflow.core.impl.ConnectionImpl[@id = $constraintReference]/to">
               <xsl:call-template name="printReferenceOrId"/>
             </xsl:for-each>
           </xsl:otherwise>

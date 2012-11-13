@@ -2,16 +2,16 @@ TestCase "Join Node unification test case"
 
 Setup
     ObjectTypeNode:
-        otnLeft1, org.kie.base.DroolsQuery;
+        otnLeft1, org.drools.base.DroolsQuery;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.kie.Person;
+        otnRight1, org.drools.Person;
     ObjectTypeNode:
-        otnRight2, org.kie.Person;                        
+        otnRight2, org.drools.Person;
     Binding:
-         v, 0, org.kie.base.DroolsQuery, [0], java.lang.Integer;
-         p1, 1, org.kie.Person, age;
+         v, 0, org.drools.base.DroolsQuery, [0], java.lang.Integer;
+         p1, 1, org.drools.Person, age;
     JoinNode:
         join1, lian0, otnRight1;
         name, :=,v;
@@ -19,8 +19,8 @@ Setup
         join2, join1, otnRight2;
         age, !=, p1;        
     Facts:
-        new org.kie.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v], null, true), 
-        new org.kie.Person('bobba', 36);
+        new org.drools.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v], null, true),
+        new org.drools.Person('bobba', 36);
 
 Test "Assert right then left"
     /**

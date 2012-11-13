@@ -101,7 +101,7 @@ public class ClassObjectType
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.clsName = in.readUTF();
-        if ( clsName.equals( "org.kie.InitialFact" ) || clsName.equals( "org.kie.base.DroolsQuery" ) ) {
+        if ( clsName.equals( "org.drools.InitialFact" ) || clsName.equals( "org.drools.base.DroolsQuery" ) ) {
             // we handle this one especially as it never gets written to the packagestore for rewiring
             try {
                 setClassType( getClass().getClassLoader().loadClass( clsName ) );

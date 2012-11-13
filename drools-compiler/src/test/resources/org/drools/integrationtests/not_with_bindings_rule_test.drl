@@ -1,9 +1,9 @@
-package org.kie.test;
+package org.drools.test;
 
-import org.kie.Cheese;
+import org.drools.Cheese;
 
 //this was missing Person
-import org.kie.Person;
+import org.drools.Person;
 
 global java.util.List list;
 

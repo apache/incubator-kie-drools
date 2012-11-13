@@ -41,7 +41,6 @@ import org.drools.management.KnowledgeSessionMonitoring.AgendaStats.AgendaStatsD
 import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessInstanceStatsData;
 import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessStatsData;
 import org.kie.event.process.ProcessCompletedEvent;
-import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
@@ -53,7 +52,7 @@ import org.kie.management.KnowledgeSessionMonitoringMBean;
  */
 public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBean {
 
-    private static final String KSESSION_PREFIX = "org.kie.kbases";
+    private static final String KSESSION_PREFIX = "org.drools.kbases";
     
     private static final long NANO_TO_MILLISEC = 1000000;
     
@@ -358,7 +357,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         return result;
     }
     
-    public static class ProcessStats implements ProcessEventListener {
+    public static class ProcessStats implements org.kie.event.process.ProcessEventListener {
         
         private GlobalProcessStatsData consolidated = new GlobalProcessStatsData();
         private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<String, ProcessStatsData>();

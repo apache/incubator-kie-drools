@@ -43,8 +43,8 @@ public class MBeansMonitoringTest {
                                  MBeanException,
                                  ReflectionException,
                                  NullPointerException {
-        String drl = "package org.kie.test\n" +
-        		     "import org.kie.StockTick\n" +
+        String drl = "package org.drools.test\n" +
+        		     "import org.drools.StockTick\n" +
                      "declare StockTick\n" +
                      "    @role(event)\n" +
                      "    @expires(10s)\n" +
@@ -63,10 +63,10 @@ public class MBeansMonitoringTest {
                                                  conf );
 
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-        ObjectName kbOn = new ObjectName("org.kie.kbases:type=monitoredKbase");
+        ObjectName kbOn = new ObjectName("org.drools.kbases:type=monitoredKbase");
         mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
         
-        Object expOffset = mbserver.getAttribute( new ObjectName( "org.kie.kbases:type=monitoredKbase,group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.kie.StockTick"), "ExpirationOffset" );
+        Object expOffset = mbserver.getAttribute( new ObjectName( "org.drools.kbases:type=monitoredKbase,group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.StockTick"), "ExpirationOffset" );
         Assert.assertEquals( 10001, ((Number)expOffset).longValue() );
     }
 

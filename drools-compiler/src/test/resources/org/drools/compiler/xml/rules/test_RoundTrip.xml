@@ -8,11 +8,11 @@
 
  <global identifier="m" type="HashMap" />
  <global identifier="s" type="HashSet" />
- <global identifier="p" type="org.kie.Person" />
+ <global identifier="p" type="org.drools.Person" />
 
- <importfunction name="org.kie.xml.DumperTest.testStaticMethod1" />
- <importfunction name="org.kie.xml.DumperTest.testStaticMethod2" />
- <importfunction name="org.kie.xml.DumperTest.testStaticMethod3" />
+ <importfunction name="org.drools.xml.DumperTest.testStaticMethod1" />
+ <importfunction name="org.drools.xml.DumperTest.testStaticMethod2" />
+ <importfunction name="org.drools.xml.DumperTest.testStaticMethod3" />
 
 
 

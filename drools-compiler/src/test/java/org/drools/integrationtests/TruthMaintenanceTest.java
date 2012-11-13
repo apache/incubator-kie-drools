@@ -146,9 +146,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         KnowledgePackage test = null, test2 = null;
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.kie.test" )) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.kie.test2" )) {
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -165,9 +165,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                           test.getRules().iterator().next().getName() );
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.kie.test" )) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.kie.test2" )) {
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -210,9 +210,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.kie.test" )) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.kie.test2" )) {
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -225,9 +225,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
-            if( kpkg.getName().equals( "org.kie.test" )) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
                 test = kpkg;
-            } else if( kpkg.getName().equals( "org.kie.test2" )) {
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
                 test2 = kpkg;
             }
         }
@@ -1052,7 +1052,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test
     public void testTMSwithQueries() {
         String str =""+
-                "package org.kie.test;\n" +
+                "package org.drools.test;\n" +
                 "\n" +
                 "global java.util.List list; \n" +
                 "\n" +
@@ -1112,10 +1112,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         // facts must be updated, before changing other facts, as they act as HEAD in buckets.
         // leaving test here as @ignore here for future reference.
         String str =""+
-                "package org.kie.test;\n" +
+                "package org.drools.test;\n" +
                 "\n" +
-                "import org.kie.Father;\n" +
-                "import org.kie.YoungestFather;\n" +
+                "import org.drools.Father;\n" +
+                "import org.drools.YoungestFather;\n" +
                 "\n" +
                 "rule \"findMarriedCouple\"\n" +
                 "when\n" +
@@ -1168,7 +1168,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test
     public void testTMSAdditionalValueArgument() {
         String str =""+
-                "package org.kie.test;\n" +
+                "package org.drools.test;\n" +
                 "\n" +
                 "global String key \n" + 
                 "\n" +

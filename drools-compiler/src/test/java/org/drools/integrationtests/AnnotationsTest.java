@@ -86,10 +86,10 @@ public class AnnotationsTest {
     @Test
     public void annotationTest() {
 
-        String drl = "package org.kie.test;\n " +
+        String drl = "package org.drools.test;\n " +
                      "" +
                      "import org.kie.definition.type.Position; \n " +
-                     "import org.kie.integrationtests.AnnotationsTest.Annot; \n" +
+                     "import org.drools.integrationtests.AnnotationsTest.Annot; \n" +
                      "" +
                      "declare AnnotatedBean \n" +
                      " @Deprecated \n" +
@@ -99,7 +99,7 @@ public class AnnotationsTest {
                      "         ,strProp=\"hello world\" " +
                      "         ,enumProp=AnnPropEnum.THREE " +
                      "         ,dblArrProp={1.0,2.0} " +
-                     "         ,typeArrProp={String.class, org.kie.integrationtests.AnnotationsTest.class} " +
+                     "         ,typeArrProp={String.class, org.drools.integrationtests.AnnotationsTest.class} " +
                      "         ,strArrProp={\"x1\",\"x2\"} " +
                      "         ,enumArrProp={AnnPropEnum.ONE, AnnPropEnum.THREE} " +
                      "         ) \n " +
@@ -127,7 +127,7 @@ public class AnnotationsTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        Class clazz = kbase.getFactType( "org.kie.test",
+        Class clazz = kbase.getFactType( "org.drools.test",
                                          "AnnotatedBean" ).getFactClass();
         assertNotNull( clazz );
         try {
@@ -169,7 +169,7 @@ public class AnnotationsTest {
         assertArrayEquals( new AnnPropEnum[]{AnnPropEnum.ONE, AnnPropEnum.THREE},
                            ann.enumArrProp() );
 
-        Class clazz2 = kbase.getFactType( "org.kie.test",
+        Class clazz2 = kbase.getFactType( "org.drools.test",
                                           "SecondBean" ).getFactClass();
         assertNotNull( clazz2 );
         Annotation[] anns2 = clazz2.getAnnotations();
@@ -207,7 +207,7 @@ public class AnnotationsTest {
     @Test
     public void annotationErrorTest() {
 
-        String drl = "package org.kie.test;\n " +
+        String drl = "package org.drools.test;\n " +
                      "" +
                      "declare MissingAnnotationBean \n" +
                      " @IgnoreMissingAnnotation1 \n" +
@@ -221,9 +221,9 @@ public class AnnotationsTest {
         assertEquals( 0,
                       kbuilder.getErrors().size() );
 
-        String drl2 = "package org.kie.test;\n " +
+        String drl2 = "package org.drools.test;\n " +
                       "" +
-                      "import org.kie.integrationtests.AnnotationsTest.Annot; \n" +
+                      "import org.drools.integrationtests.AnnotationsTest.Annot; \n" +
                       "" +
                       "" +
                       "declare MissingAnnotationBean \n" +
@@ -242,7 +242,7 @@ public class AnnotationsTest {
 
     @Test
     public void testRuleAnnotation() {
-        String drl = "package org.kie\n" +
+        String drl = "package org.drools\n" +
                      "rule X\n" +
                      "    @author(\"John Doe\")\n" +
                      "    @output(Hello World!)\n" + // backward compatibility
@@ -260,7 +260,7 @@ public class AnnotationsTest {
                                                  drl,
                                                  conf );
 
-        Rule rule = kbase.getRule( "org.kie",
+        Rule rule = kbase.getRule( "org.drools",
                                    "X" );
 
         Assert.assertEquals( "John Doe",
@@ -276,7 +276,7 @@ public class AnnotationsTest {
 
     @Test
     public void testRuleAnnotation2() {
-        String drl = "package org.kie\n" +
+        String drl = "package org.drools\n" +
                      "rule X\n" +
                      "    @alt(\" \\\"<- these are supposed to be the only quotes ->\\\" \")\n" +
                      "when\n"+
@@ -291,7 +291,7 @@ public class AnnotationsTest {
                                                  drl,
                                                  conf );
 
-        Rule rule = kbase.getRule( "org.kie",
+        Rule rule = kbase.getRule( "org.drools",
                                    "X" );
 
         Assert.assertEquals( " \"<- these are supposed to be the only quotes ->\" ",

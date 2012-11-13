@@ -427,7 +427,7 @@ public class ReteTest extends DroolsTestCase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.shadowProxyExcludes",
-                                "org.kie.Cheese" );
+                                "org.drools.Cheese" );
         RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
         buildContext = new BuildContext( ruleBase,

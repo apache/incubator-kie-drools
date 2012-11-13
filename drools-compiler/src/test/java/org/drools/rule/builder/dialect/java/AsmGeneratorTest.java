@@ -64,7 +64,7 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
     public void testAllGeneratedConstructs() {
         String s = 
             "package org.kie.test\n" +
-            "import org.kie.Person\n" +
+            "import org.drools.Person\n" +
             "global java.util.List list\n" +
             "rule r1 when\n" +
             "    s1 : String( this == 's1' )\n" +
@@ -112,8 +112,8 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
     public void testOr() {
         String s = 
             "package org.kie.test\n" +
-            "import org.kie.Person\n" +
-            "import org.kie.Cheese\n" +
+            "import org.drools.Person\n" +
+            "import org.drools.Cheese\n" +
             "global java.util.List list\n" +
             "rule r1 when\n" +
             "    s1 : String( this == 's1' )\n" +

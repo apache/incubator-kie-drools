@@ -2,12 +2,12 @@ package org.test;
 
 
 // Entity is an empty traitable, based solely on a property map.
-import org.kie.factmodel.traits.Entity;
+import org.drools.factmodel.traits.Entity;
 
 
-import org.kie.factmodel.traits.IStudent;
-import org.kie.factmodel.traits.IPerson;
-import org.kie.factmodel.traits.IRole;
+import org.drools.factmodel.traits.IStudent;
+import org.drools.factmodel.traits.IPerson;
+import org.drools.factmodel.traits.IRole;
 
 
 global java.util.List list;

@@ -1,6 +1,6 @@
-package org.kie;
+package org.drools;
 
-import org.kie.OuterClass.InnerClass;
+import org.drools.OuterClass.InnerClass;
 
 global java.util.List results;
 

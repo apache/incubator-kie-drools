@@ -47,7 +47,7 @@ public class MVELAccumulateBuilderTest {
                                                                mvelDialect );
 
         final AccumulateDescr accDescr = new AccumulateDescr();
-        final PatternDescr inputPattern = new PatternDescr( "org.kie.Cheese",
+        final PatternDescr inputPattern = new PatternDescr( "org.drools.Cheese",
                                                             "$cheese" );
         accDescr.setInputPattern( inputPattern );
         accDescr.setInitCode( "total = 0;" );

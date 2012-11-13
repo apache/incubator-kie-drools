@@ -118,8 +118,8 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     @Test
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
         String str = "";
-        str += "package org.kie.test\n";
-        str += "import org.kie.Alarm\n";
+        str += "package org.drools.test\n";
+        str += "import org.drools.Alarm\n";
         str += "global java.util.List list;";
         str += "rule \"COMPTEUR\"\n";
         str += "  timer 50\n";
@@ -1042,7 +1042,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     @Test
     public void testTimerRemoval() {
         try {
-            String str = "package org.kie.test\n" +
+            String str = "package org.drools.test\n" +
                     "import " + TimeUnit.class.getName() + "\n" +
             		"global java.util.List list \n" +
             		"global " + CountDownLatch.class.getName() + " latch\n" + 
@@ -1080,7 +1080,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             
             ksession.fireAllRules();           
             Thread.sleep(200); // this makes sure it actually enters a rule
-            kbase.removeRule("org.kie.test", "TimerRule");
+            kbase.removeRule("org.drools.test", "TimerRule");
             latch.countDown();
             Thread.sleep(100); // allow the last rule, if we were in the middle of one to actually fire, before clearing
             list.clear();

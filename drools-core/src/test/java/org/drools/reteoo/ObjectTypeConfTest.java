@@ -26,10 +26,10 @@ public class ObjectTypeConfTest {
 
     @Test
     public void testGetPackageName() {
-        assertEquals("org.kie.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), null));
+        assertEquals("org.drools.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), null));
         Package thispkg = this.getClass().getPackage();
         assertNotNull(thispkg);
-        assertEquals("org.kie.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), thispkg));
+        assertEquals("org.drools.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), thispkg));
     }
 
 }

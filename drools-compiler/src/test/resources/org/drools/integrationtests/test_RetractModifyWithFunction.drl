@@ -1,4 +1,4 @@
-package org.kie;
+package org.drools;
  
 function Cheese getMin(Cheese c1, Cheese c2) {
  if (c1.getPrice() < c2.getPrice()) return c1;

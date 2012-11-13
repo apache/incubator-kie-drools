@@ -63,7 +63,7 @@ public class AccumulateTemplateTest {
                  className );
 
         map.put( "package",
-                 "org.kie" );
+                 "org.drools" );
 
         map.put( "ruleClassName",
                  "Rule0" );
@@ -150,7 +150,7 @@ public class AccumulateTemplateTest {
                  className );
 
         map.put( "package",
-                 "org.kie" );
+                 "org.drools" );
 
         map.put( "ruleClassName",
                  "Rule0" );
@@ -236,7 +236,7 @@ public class AccumulateTemplateTest {
                  className );
 
         map.put( "package",
-                 "org.kie" );
+                 "org.drools" );
 
         map.put( "ruleClassName",
                  "Rule0" );

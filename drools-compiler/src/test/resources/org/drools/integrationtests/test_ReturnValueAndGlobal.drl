@@ -1,4 +1,4 @@
-package org.kie;
+package org.drools;
 
 global java.lang.String cheeseType;
 global java.util.List   matchingList;

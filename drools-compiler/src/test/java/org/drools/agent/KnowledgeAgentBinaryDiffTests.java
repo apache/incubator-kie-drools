@@ -537,7 +537,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
-        org.drools.rule.Rule rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.kie.test", "rule1");
+        org.drools.rule.Rule rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.drools.test", "rule1");
 
         assertNotNull(rule);
         asserter.assertRuleAttribute(attribute1, rule);
@@ -547,7 +547,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         scan( kagent );
         
-        rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.kie.test", "rule1");
+        rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.drools.test", "rule1");
         assertNotNull(rule);
         asserter.assertRuleAttribute(attribute2, rule);
 

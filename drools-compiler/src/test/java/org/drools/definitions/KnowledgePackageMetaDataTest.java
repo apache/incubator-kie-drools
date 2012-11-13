@@ -36,7 +36,7 @@ public class KnowledgePackageMetaDataTest {
 
 
     private String drl ="" +
-            "package org.kie.test.definitions \n" +
+            "package org.drools.test.definitions \n" +
             "import java.util.List; \n" +
             "\n" +
             "global Integer N; \n" +
@@ -83,7 +83,7 @@ public class KnowledgePackageMetaDataTest {
 
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
-        KnowledgePackage pack = kBase.getKnowledgePackage( "org.kie.test.definitions" );
+        KnowledgePackage pack = kBase.getKnowledgePackage( "org.drools.test.definitions" );
 
         assertNotNull( pack );
 
@@ -101,10 +101,10 @@ public class KnowledgePackageMetaDataTest {
         FactType type;
         for ( int j = 0; j < 2; j++ ) {
             type = pack.getFactTypes().iterator().next();
-            if ( type.getName().equals( "org.kie.test.definitions.Person" ) ) {
+            if ( type.getName().equals( "org.drools.test.definitions.Person" ) ) {
                 assertEquals( 2, type.getFields().size() );
-            } else if (type.getName().equals( "org.kie.test.definitions.Foo" ) ) {
-                assertEquals( "org.kie.test.definitions.Person", type.getSuperClass() );
+            } else if (type.getName().equals( "org.drools.test.definitions.Foo" ) ) {
+                assertEquals( "org.drools.test.definitions.Person", type.getSuperClass() );
 
                 FactField fld = type.getField( "bar" );
                 assertEquals( 3, fld.getIndex() );

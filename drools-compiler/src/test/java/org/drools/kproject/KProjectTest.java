@@ -92,11 +92,11 @@ public class KProjectTest extends AbstractKnowledgeTest {
                 System.out.println( url );
             }
 
-            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.kie.cdi.test.KProjectTestClassjar1" );
+            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar1" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.kie.cdi.test.KProjectTestClassjar2" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar2" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.kie.cdi.test.KProjectTestClassjar3" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar3" );
             assertNotNull( cls );
 
             Weld weldContainer = new Weld();

@@ -1,6 +1,6 @@
-package org.kie.test;
+package org.drools.test;
 
-import org.kie.Sensor;
+import org.drools.Sensor;
 
 rule "assertAllTemperatures"
     when

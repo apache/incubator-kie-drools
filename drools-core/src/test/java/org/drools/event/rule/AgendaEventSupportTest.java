@@ -73,7 +73,7 @@ public class AgendaEventSupportTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one rule to test the events
-        final Package pkg = new Package( "org.kie.test" );
+        final Package pkg = new Package( "org.drools.test" );
         final Rule rule = new Rule( "test1" );
         rule.setAgendaGroup( "test group" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );

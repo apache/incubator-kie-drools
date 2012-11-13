@@ -1,6 +1,6 @@
-package org.kie.test
+package org.drools.test
 
-import org.kie.I18nPerson
+import org.drools.I18nPerson
 
 global java.util.List list
 

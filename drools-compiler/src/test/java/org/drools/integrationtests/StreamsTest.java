@@ -311,7 +311,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyOnEntryPointFacts() throws Exception {
-        String str = "package org.kie\n" +
+        String str = "package org.drools\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +
@@ -500,8 +500,8 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testEventExpirationValue() throws Exception {
-        String drl1 = "package org.kie.pkg1\n" +
-                      "import org.kie.StockTick\n" +
+        String drl1 = "package org.drools.pkg1\n" +
+                      "import org.drools.StockTick\n" +
                       "declare StockTick\n" +
                       "    @role(event)\n" +
                       "end\n" +
@@ -510,8 +510,8 @@ public class StreamsTest extends CommonTestMethodBase {
                       "    StockTick()\n" +
                       "then\n" +
                       "end\n";
-        String drl2 = "package org.kie.pkg2\n" +
-                      "import org.kie.StockTick\n" +
+        String drl2 = "package org.drools.pkg2\n" +
+                      "import org.drools.StockTick\n" +
                       "declare StockTick\n" +
                       "    @role(event)\n" +
                       "end\n" +
@@ -564,7 +564,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
 
     public void testWindowDeclaration() throws Exception {
-        String drl = "package org.kie\n" +
+        String drl = "package org.drools\n" +
                      "declare StockTick\n" +
                      "    @role(event)\n" +
                      "end\n" +
@@ -615,7 +615,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testWindowDeclaration2() throws Exception {
-        String drl = "package org.kie\n" +
+        String drl = "package org.drools\n" +
                      "declare Double\n" + 
                      "    @role(event)\n" + 
                      "end\n" + 
@@ -658,7 +658,7 @@ public class StreamsTest extends CommonTestMethodBase {
     
     @Test
     public void testMultipleWindows() throws Exception {
-        String drl = "package org.kie\n" +
+        String drl = "package org.drools\n" +
                      "declare StockTick\n" + 
                      "    @role(event)\n" + 
                      "end\n" + 
@@ -697,7 +697,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testWindowWithEntryPointCompilationError() {
-        String str = "import org.kie.Cheese;\n" +
+        String str = "import org.drools.Cheese;\n" +
                 "declare window X\n" +
                 "   Cheese( type == \"gorgonzola\" ) over window:time(1m) from entry-point Z\n" +
                 "end\n" +
@@ -719,7 +719,7 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
-        String str = "package org.kie.test\n" +
+        String str = "package org.drools.test\n" +
                 "declare Event\n" +
                 "   @role(event)\n" +
                 "   name : String\n" +
@@ -761,7 +761,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType eventType = kbase.getFactType("org.kie.test", "Event");
+        FactType eventType = kbase.getFactType("org.drools.test", "Event");
 
         Object event = eventType.newInstance();
         eventType.set(event, "name", "myName");

@@ -2,8 +2,8 @@ package org.drools;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeContainer;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.KnowledgeContainer;
 
 import java.io.File;
 

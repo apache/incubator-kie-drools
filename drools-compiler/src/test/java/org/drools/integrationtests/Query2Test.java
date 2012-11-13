@@ -26,10 +26,10 @@ public class Query2Test {
     @Before
     public void setUp() throws Exception {
         String text = "";
-        text += "package org.kie.integrationtests\n";
-        text += "import org.kie.integrationtests.Query2Test.Bar\n";
-        text += "import org.kie.integrationtests.Query2Test.Foo\n";
-        text += "import org.kie.integrationtests.Query2Test.Foo2\n";
+        text += "package org.drools.integrationtests\n";
+        text += "import org.drools.integrationtests.Query2Test.Bar\n";
+        text += "import org.drools.integrationtests.Query2Test.Foo\n";
+        text += "import org.drools.integrationtests.Query2Test.Foo2\n";
         text += "query \"testDifferent\"\n";
         text += "    foo : Foo();\n";
         text += "    bar : Bar(id == foo.id)\n";

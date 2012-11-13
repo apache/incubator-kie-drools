@@ -6,11 +6,11 @@ import java.utilArrayList;
 
 global HashMap m;
 global HashSet s;
-global org.kie.Person p;
+global org.drools.Person p;
 
-import function org.kie.xml.DumperTest.testStaticMethod1;
-import function org.kie.xml.DumperTest.testStaticMethod2;
-import function org.kie.xml.DumperTest.testStaticMethod3;
+import function org.drools.xml.DumperTest.testStaticMethod1;
+import function org.drools.xml.DumperTest.testStaticMethod2;
+import function org.drools.xml.DumperTest.testStaticMethod3;
 
 dialect "java"
 salience 0

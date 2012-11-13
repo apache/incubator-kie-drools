@@ -1,6 +1,6 @@
 ,
-"RuleSet","org.kie.decisiontable"
-"Import","org.kie.decisiontable.Person"
+"RuleSet","org.drools.decisiontable"
+"Import","org.drools.decisiontable.Person"
 "Notes",
 ,
 "RuleTable Age change",

@@ -6,7 +6,7 @@ options {
 }
 
 @treeparser::header {
-    package org.kie.lang.dsl;
+    package org.drools.lang.dsl;
 
     import java.util.Map;
     import java.util.HashMap;

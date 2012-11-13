@@ -1,11 +1,11 @@
 //created on: 25/03/2006
 package org.benchmarks.waltz
 
-import org.kie.integrationtests.waltz.Stage
-import org.kie.integrationtests.waltz.Line
-import org.kie.integrationtests.waltz.Edge
-import org.kie.integrationtests.waltz.Junction
-import org.kie.integrationtests.waltz.WaltzUtil
+import org.drools.integrationtests.waltz.Stage
+import org.drools.integrationtests.waltz.Line
+import org.drools.integrationtests.waltz.Edge
+import org.drools.integrationtests.waltz.Junction
+import org.drools.integrationtests.waltz.WaltzUtil
 
 global java.io.PrintStream sysout;
 

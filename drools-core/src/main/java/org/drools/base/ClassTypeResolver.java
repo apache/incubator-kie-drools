@@ -317,7 +317,7 @@ public class ClassTypeResolver
 
     /*
      * (non-Javadoc)
-     * @see org.kie.base.TypeResolver#getFullTypeName(java.lang.String)
+     * @see org.drools.base.TypeResolver#getFullTypeName(java.lang.String)
      */
     public String getFullTypeName( String shortName ) throws ClassNotFoundException {
 
