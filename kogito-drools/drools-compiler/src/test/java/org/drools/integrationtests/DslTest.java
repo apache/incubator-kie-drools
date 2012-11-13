@@ -223,7 +223,7 @@ public class DslTest extends CommonTestMethodBase {
                 + "[when]-aged less than {age}=age < {age}\n"
                 + "[then]Log {message}=list.add({message});";
 
-        String drl = "import org.kie.Person;\n"
+        String drl = "import org.drools.Person;\n"
                 + "global java.util.List list\n"
                 + "rule R1\n"
                 + "when\n"
@@ -244,7 +244,7 @@ public class DslTest extends CommonTestMethodBase {
                 + "[when]-aged less than {age}=age < {age}\n"
                 + "[then]Log person name=list.add($p.getName());";
 
-        String drl = "import org.kie.Person;\n"
+        String drl = "import org.drools.Person;\n"
                 + "global java.util.List list\n"
                 + "rule R1\n"
                 + "when\n"
@@ -266,7 +266,7 @@ public class DslTest extends CommonTestMethodBase {
                 + "[when]-aged less than {age}=age < {age}\n"
                 + "[then]Log {message}=list.add({message});";
 
-        String drl = "import org.kie.Person;\n"
+        String drl = "import org.drools.Person;\n"
                 + "global java.util.List list\n"
                 + "rule R1\n"
                 + "when\n"

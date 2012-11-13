@@ -160,7 +160,7 @@ public class ClipsShellTest {
 
     @Test
     public void testDirectImportAndNew() {
-        String t = "(import org.kie.Person) (bind ?p (new Person mark cheddar) ) (printout t ?p)";
+        String t = "(import org.drools.Person) (bind ?p (new Person mark cheddar) ) (printout t ?p)";
         this.shell.eval( t );
         assertEquals( "[Person name='mark']",
                       new String( this.baos.toByteArray() ) );
@@ -209,7 +209,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testRuleCreation() {
-        this.shell.eval( "(import org.kie.Person)" );
+        this.shell.eval( "(import org.drools.Person)" );
 
         this.shell.eval( "(defrule yyy  => (printout t yy \" \" (eq 1 1) ) ) )" );
         Package pkg = shell.getStatefulSession().getRuleBase().getPackage( "MAIN" );
@@ -227,7 +227,7 @@ public class ClipsShellTest {
         assertEquals( 2,
                       pkg.getRules().length );
 
-        assertTrue( pkg.getImports().containsKey( "org.kie.Person" ) );
+        assertTrue( pkg.getImports().containsKey( "org.drools.Person" ) );
 
         WorkingMemory wm = shell.getStatefulSession();
         wm.insert( new Person( "bob",
@@ -377,7 +377,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testPredicate() {
-        this.shell.eval( "(import org.kie.Person)" );
+        this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (name ?name) (age ?age&:(> ?age 30)) ) => (printout t hello) (printout t \" \" ?name) )" );
         this.shell.eval( "(assert (Person (name mark) (age 27) ) )" );
         this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
@@ -389,7 +389,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testReturnValue() {
-        this.shell.eval( "(import org.kie.Person)" );
+        this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age) ) (Person (name ?name) (age =(- ?age 3)) ) => (printout t hello) (printout t \" \" ?name) )" );
         this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
         this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
@@ -401,7 +401,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testTest() {
-        this.shell.eval( "(import org.kie.Person)" );
+        this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age1) ) (Person (name ?name) (age ?age2) ) (test(eq ?age1 (+ ?age2 3) )) => (printout t hello) )" );
         this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
         this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
@@ -418,7 +418,7 @@ public class ClipsShellTest {
     @Test
     @Ignore
     public void testMixed() {
-        this.shell.eval( "(import org.kie.Cheese)" );
+        this.shell.eval( "(import org.drools.Cheese)" );
         String str ="";
         str += "(deftemplate Person ";
         str += "  (slot name ";

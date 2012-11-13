@@ -39,7 +39,7 @@ public class JavaDialectTest {
         // Tests evals are generated and executed with Java dialect
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.kie.Person\n";
+        drl += "import org.drools.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";
@@ -90,7 +90,7 @@ public class JavaDialectTest {
         
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.kie.Person\n";
+        drl += "import org.drools.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";

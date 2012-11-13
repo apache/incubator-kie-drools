@@ -134,7 +134,7 @@ public class RuleBaseEventSupportTest {
             }
         } );
 
-        pkg = new Package( "org.kie.test1" );
+        pkg = new Package( "org.drools.test1" );
         pkg.addRule( rule1 );
         pkg.addRule( rule2 );
 
@@ -201,7 +201,7 @@ public class RuleBaseEventSupportTest {
         assertEquals( 0,
                       listener2.getAfterRuleRemoved() );
 
-        this.ruleBase.removePackage( "org.kie.test1" );
+        this.ruleBase.removePackage( "org.drools.test1" );
 
         assertEquals( 1,
                       listener1.getBeforePackageRemoved() );

@@ -1,8 +1,8 @@
-package org.kie.reteoo;
+package org.drools.reteoo;
 
-import org.kie.Message
-import org.kie.Cheese
-import org.kie.Person
+import org.drools.Message
+import org.drools.Cheese
+import org.drools.Person
  
 rule "Hello World 1"
     when

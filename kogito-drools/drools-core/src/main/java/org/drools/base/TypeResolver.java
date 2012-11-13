@@ -27,8 +27,8 @@ public interface TypeResolver {
 
     /**
      * This will return the fully qualified type name (including the namespace).
-     * Eg, if it was a pojo org.kie.Cheese, then if you passed in "Cheese" you should get back
-     * "org.kie.Cheese"
+     * Eg, if it was a pojo org.drools.Cheese, then if you passed in "Cheese" you should get back
+     * "org.drools.Cheese"
      */
     public String getFullTypeName(String shortName) throws ClassNotFoundException;
 

@@ -1,8 +1,8 @@
 package org.test;
  
  
-import org.kie.factmodel.traits.Thing;
-import org.kie.factmodel.traits.Entity;
+import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.Entity;
 import java.util.*;
 
 

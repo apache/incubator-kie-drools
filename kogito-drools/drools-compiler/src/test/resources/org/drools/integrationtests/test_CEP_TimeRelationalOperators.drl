@@ -1,6 +1,6 @@
-package org.kie;
+package org.drools;
 
-import org.kie.StockTick;
+import org.drools.StockTick;
 
 global java.util.List results_coincides;
 global java.util.List results_after;

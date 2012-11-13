@@ -18,7 +18,7 @@ public class PositionalTest extends CommonTestMethodBase {
     public void testPositional() {
 
         String drl =
-                "import org.kie.test.Man;\n" +
+                "import org.drools.test.Man;\n" +
                 "\n" +
                 "global java.util.List list;" +
                 "\n" +

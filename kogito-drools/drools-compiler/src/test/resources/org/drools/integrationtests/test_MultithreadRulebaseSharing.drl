@@ -1,4 +1,4 @@
-package org.kie;
+package org.drools;
 
 rule "test multi-thread rulebase sharing"
 when

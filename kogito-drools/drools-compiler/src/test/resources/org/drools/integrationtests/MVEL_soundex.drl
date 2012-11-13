@@ -2,7 +2,7 @@ package MVELTest
 
 dialect "mvel"
 
-import org.kie.Cheese
+import org.drools.Cheese
 
 
 rule "Hello World"

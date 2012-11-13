@@ -93,7 +93,7 @@ public final class DialectUtil {
             counter++;
             final String actualName = fileName + "_" + counter + "." + ext;
 
-            //MVEL:test null to Fix failing test on org.kie.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
+            //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
             if (!src.isAvailable(actualName)) break;
         }
         // we have duplicate file names so append counter
@@ -574,7 +574,7 @@ public final class DialectUtil {
         }
 
         if ( declr == null || declr.isInternalFact() ) {
-           consequence.append( "org.kie.FactHandle " );
+           consequence.append( "org.drools.FactHandle " );
            consequence.append( obj );
            consequence.append( "__Handle2__ = drools.getFactHandle(" );
            consequence.append( obj );

@@ -1,18 +1,18 @@
 TestCase "Accumulate Node unification test case"
 
-import org.kie.Cheese;
-import org.kie.Person;
+import org.drools.Cheese;
+import org.drools.Person;
 
 Setup
     ObjectTypeNode:
-        otnLeft0, org.kie.base.DroolsQuery;
+        otnLeft0, org.drools.base.DroolsQuery;
     LeftInputAdapterNode:
         lian0, otnLeft0;        
     ObjectTypeNode:
-        otnRight1, org.kie.Person;
+        otnRight1, org.drools.Person;
     Binding:
-        v, 0, org.kie.base.DroolsQuery, [0], java.lang.String;
-        $age, 0, org.kie.base.DroolsQuery, [1], java.lang.Integer;    
+        v, 0, org.drools.base.DroolsQuery, [0], java.lang.String;
+        $age, 0, org.drools.base.DroolsQuery, [1], java.lang.Integer;
         $likes, 1, Person, likes;
         $price, 2, Cheese, price;        
     JoinNode:
@@ -26,7 +26,7 @@ Setup
     LeftTupleSink:
         sink, acc;
     Facts:
-        new org.kie.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v, 40], null, true),    
+        new org.drools.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v, 40], null, true),
         new Person('darth', 35, "brie"),     // h1
         new Person('bobba', 36, 'stilton'),  // h2
         new Cheese('brie', 10),              // h3

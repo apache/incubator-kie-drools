@@ -82,7 +82,7 @@ scope VarDecl {
 }
  
 @parser::header {
-    package org.kie.rule.builder.dialect.java.parser;
+    package org.drools.rule.builder.dialect.java.parser;
     import java.util.Iterator;
     import java.util.Queue;
     import java.util.LinkedList;   
@@ -251,7 +251,7 @@ scope VarDecl {
 } 
 
 @lexer::header {
-    package org.kie.rule.builder.dialect.java.parser;
+    package org.drools.rule.builder.dialect.java.parser;
 }
 
 @lexer::members {

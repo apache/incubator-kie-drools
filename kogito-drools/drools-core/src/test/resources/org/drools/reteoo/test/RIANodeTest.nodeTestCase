@@ -1,7 +1,7 @@
 TestCase "Right Input Adapter Node test case"
 
-import org.kie.Cheese;
-import org.kie.Person;
+import org.drools.Cheese;
+import org.drools.Person;
 
 Setup
     RightInputAdapterNode:

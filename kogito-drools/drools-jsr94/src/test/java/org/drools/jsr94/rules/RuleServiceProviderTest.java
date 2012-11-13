@@ -75,7 +75,7 @@ public class RuleServiceProviderTest {
      */
     @Test
     public void testRuleRuntime() throws Exception {
-        Class.forName("org.kie.jsr94.rules.RuleServiceProviderImpl");
+        Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
         RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");
         
         final RuleRuntime ruleRuntime = ruleServiceProvider.getRuleRuntime();
@@ -90,7 +90,7 @@ public class RuleServiceProviderTest {
      */
     @Test
     public void testRuleAdministrator() throws Exception {
-        Class.forName("org.kie.jsr94.rules.RuleServiceProviderImpl");
+        Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
         RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");
         
         final RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();

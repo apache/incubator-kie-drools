@@ -327,10 +327,10 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     @Test
     public void testDeletePackageUrl() throws Exception {
         String rule1 = this.createDefaultRule( "rule1",
-                                               "org.kie.test1" );
+                                               "org.drools.test1" );
 
         String rule2 = this.createDefaultRule( "rule2",
-                                               "org.kie.test2" );
+                                               "org.drools.test2" );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ),
@@ -346,9 +346,9 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
             map.put( pkg.getName(),
                      pkg );
         }
-        writePackage( (KnowledgePackage) map.get( "org.kie.test1" ),
+        writePackage( (KnowledgePackage) map.get( "org.drools.test1" ),
                       fileManager.newFile( "pkg1.pkg" ) );
-        writePackage( (KnowledgePackage) map.get( "org.kie.test2" ),
+        writePackage( (KnowledgePackage) map.get( "org.drools.test2" ),
                       fileManager.newFile( "pkg2.pkg" ) );
 
         String xml = "";
@@ -728,9 +728,9 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        Rule r1 = (Rule) kagent.getKnowledgeBase().getRule( "org.kie.test", "rule1" );
+        Rule r1 = (Rule) kagent.getKnowledgeBase().getRule( "org.drools.test", "rule1" );
         assertEquals( ((UrlResource) r1.getResource()).getURL().toString(), "http://localhost:" + getPort() + "/pkg1.pkg" );
-        Rule r2 = (Rule) kagent.getKnowledgeBase().getRule( "org.kie.test", "rule2" );
+        Rule r2 = (Rule) kagent.getKnowledgeBase().getRule( "org.drools.test", "rule2" );
         assertEquals( ((UrlResource) r2.getResource()).getURL().toString(), "http://localhost:" + getPort() + "/pkg1.pkg" );
         Map<Resource, Set<KnowledgeDefinition>> defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
         assertTrue( defMap.containsKey( r1.getResource() ) );
@@ -740,7 +740,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         assertTrue( defs.contains( r2 ) );
         assertEquals( 2, defs.size() );
 
-        String rule3 = this.createDefaultRule( "rule3", "org.kie.test3" );
+        String rule3 = this.createDefaultRule( "rule3", "org.drools.test3" );
 
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( rule3.getBytes() ),
@@ -753,9 +753,9 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         assertNotSame( kbase, kagent.getKnowledgeBase() );
         kbase = kagent.getKnowledgeBase();
 
-        assertNull( kbase.getKnowledgePackage( "org.kie.test" ) );
-        assertEquals( 1, kbase.getKnowledgePackage( "org.kie.test3" ).getRules().size() );
-        Rule r3 = (Rule) kbase.getRule( "org.kie.test3", "rule3" );
+        assertNull( kbase.getKnowledgePackage( "org.drools.test" ) );
+        assertEquals( 1, kbase.getKnowledgePackage( "org.drools.test3" ).getRules().size() );
+        Rule r3 = (Rule) kbase.getRule( "org.drools.test3", "rule3" );
         assertEquals( ((UrlResource) r3.getResource()).getURL().toString(), "http://localhost:" + getPort() + "/pkg1.pkg" );
         defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
         assertTrue( defMap.containsKey( r3.getResource() ) );
@@ -765,7 +765,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         assertFalse( defs.contains( r2 ) );
         assertEquals( 1, defs.size() );
 
-        String rule4 = this.createDefaultRule( "rule4", "org.kie.test4" );
+        String rule4 = this.createDefaultRule( "rule4", "org.drools.test4" );
         ChangeSetImpl cs = new ChangeSetImpl();
         ByteArrayResource res = new ByteArrayResource( rule4.getBytes() );
         res.setResourceType( ResourceType.DRL );
@@ -775,9 +775,9 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         assertNotSame( kbase, kagent.getKnowledgeBase() );
         kbase = kagent.getKnowledgeBase();
 
-        assertEquals( 1, kbase.getKnowledgePackage( "org.kie.test3" ).getRules().size() );
-        assertEquals( 1, kbase.getKnowledgePackage( "org.kie.test4" ).getRules().size() );
-        Rule r4 = (Rule) kbase.getRule( "org.kie.test4", "rule4" );
+        assertEquals( 1, kbase.getKnowledgePackage( "org.drools.test3" ).getRules().size() );
+        assertEquals( 1, kbase.getKnowledgePackage( "org.drools.test4" ).getRules().size() );
+        Rule r4 = (Rule) kbase.getRule( "org.drools.test4", "rule4" );
         assertSame( r4.getResource(), res );
         defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
         assertEquals( 2, defMap.size() );
@@ -903,7 +903,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     public void testTypeDeclarationAndSlidingWindow() throws DroolsParserException,
                                                      IOException {
         String drl = "package test.cep\n" +
-                     "import org.kie.StockTick\n" +
+                     "import org.drools.StockTick\n" +
                      "declare StockTick\n" +
                      "        @role(event)\n" +
                      "end\n" +
@@ -933,7 +933,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         KnowledgePackage pack = kagent.getKnowledgeBase().getKnowledgePackage( "test.cep" );
         assertNotNull( pack );
         assertEquals( 1, pack.getRules().size() );
-        KnowledgePackage pack2 = kagent.getKnowledgeBase().getKnowledgePackage( "org.kie" );
+        KnowledgePackage pack2 = kagent.getKnowledgeBase().getKnowledgePackage( "org.drools" );
         assertNotNull( pack2 );
         assertEquals( 0, pack2.getRules().size() );
 
@@ -957,16 +957,16 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     @Test
     public void testMultipleResourcesAndPackagesIncremental() {
 
-        String s1 = "package org.kie.test.pack1;\n" +
+        String s1 = "package org.drools.test.pack1;\n" +
                 "\n" +
                 "declare Event\n" +
                 "@role(event)" +
                 "  id    : int\n" +
                 "end\n";
 
-        String s2 = "package org.kie.test.pack2;\n" +
+        String s2 = "package org.drools.test.pack2;\n" +
                 "\n" +
-                "import org.kie.test.pack1.Event;\n" +
+                "import org.drools.test.pack1.Event;\n" +
                 "\n" +
                 "declare Event end\n" +
                 "\n" +
@@ -1007,7 +1007,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         cs.setResourcesAdded( Arrays.<Resource> asList( bres ) );
         kagent.applyChangeSet( cs );
 
-        KnowledgePackage pack = kagent.getKnowledgeBase().getKnowledgePackage( "org.kie.test.pack1" );
+        KnowledgePackage pack = kagent.getKnowledgeBase().getKnowledgePackage( "org.drools.test.pack1" );
         assertNotNull( pack );
         assertEquals( 0, pack.getRules().size() );
         assertEquals( 1, pack.getFactTypes().size() );
@@ -1019,12 +1019,12 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         cs2.setResourcesAdded( Arrays.<Resource> asList( bres2 ) );
         kagent.applyChangeSet( cs2 );
 
-        pack = kagent.getKnowledgeBase().getKnowledgePackage( "org.kie.test.pack1" );
+        pack = kagent.getKnowledgeBase().getKnowledgePackage( "org.drools.test.pack1" );
         assertNotNull( pack );
         assertEquals( 0, pack.getRules().size() );
         assertEquals( 1, pack.getFactTypes().size() );
 
-        KnowledgePackage pack2 = kagent.getKnowledgeBase().getKnowledgePackage( "org.kie.test.pack2" );
+        KnowledgePackage pack2 = kagent.getKnowledgeBase().getKnowledgePackage( "org.drools.test.pack2" );
         assertNotNull( pack2 );
         assertEquals( 3, pack2.getRules().size() );
         assertEquals( 1, pack2.getFactTypes().size() );
@@ -1040,7 +1040,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     public void testEquivalentRedeclarations() {
         // JBRULES-3597
 
-        String s1 = "package org.kie.test.pack1;\n" +
+        String s1 = "package org.drools.test.pack1;\n" +
                 "\n" +
                 "declare Event\n" +
                 "@role(event)" +
@@ -1054,7 +1054,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
                 "end\n";
 
 
-        String s2 = "package org.kie.test.pack1;\n" +
+        String s2 = "package org.drools.test.pack1;\n" +
                 "\n" +
                 "declare Event\n" +
                 "@role(event)" +

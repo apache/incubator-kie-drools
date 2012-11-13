@@ -1,7 +1,7 @@
-package org.kie.test;
+package org.drools.test;
 
-import  org.kie.DomainObject
-import  org.kie.DomainObjectHolder;
+import  org.drools.DomainObject
+import  org.drools.DomainObjectHolder;
 
 global java.util.List list
 

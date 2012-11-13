@@ -84,7 +84,7 @@ public abstract class AbstractFactHandleFactory
                                                      final WorkingMemoryEntryPoint wmEntryPoint);
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#increaseFactHandleRecency(org.kie.FactHandle)
+     * @see org.kie.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
      */
     public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
         factHandle.setRecency( this.counter.incrementAndGet() );

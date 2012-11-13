@@ -1,6 +1,6 @@
 package fred;
 
-import org.kie.Person;
+import org.drools.Person;
 
 global java.util.List results;
 

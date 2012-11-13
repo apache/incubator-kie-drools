@@ -843,9 +843,9 @@ public class AccumulateTest extends CommonTestMethodBase {
         // JBRULES-3482
         // once this compils, update it to actually assert on correct outputs.
         
-        String rule = "package org.kie.test;\n" +
-                      "import org.kie.Cheese;\n" +
-                      "import org.kie.Person;\n" +
+        String rule = "package org.drools.test;\n" +
+                      "import org.drools.Cheese;\n" +
+                      "import org.drools.Person;\n" +
                         
                       "rule \"Class cast causer\"\n" +
                       "    when\n" +
@@ -1726,8 +1726,8 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test
     public void testAccumulateMinMax() throws Exception {
-        String drl = "package org.kie.test \n" +
-                     "import org.kie.Cheese \n" +
+        String drl = "package org.drools.test \n" +
+                     "import org.drools.Cheese \n" +
                      "global java.util.List results \n " +
                      "rule minMax \n" +
                      "when \n" +
@@ -1773,7 +1773,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     
     @Test
     public void testAccumulateCE() throws Exception {
-        String drl = "package org.kie\n" +
+        String drl = "package org.drools\n" +
         		     "global java.util.List results\n" +
         		     "rule \"ocount\"\n" + 
         		     "when\n" + 
@@ -1822,7 +1822,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateAndRetract() {
 
-        String drl = "package org.kie;\n" +
+        String drl = "package org.drools;\n" +
                 "\n" +
                 "import java.util.ArrayList;\n" +
                 "\n" +
@@ -1924,8 +1924,8 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test
     public void testAccumulateWithBoundExpression() {
-        String drl = "package org.kie;\n" +
-                "import org.kie.integrationtests.AccumulateTest.MyObj;\n" +
+        String drl = "package org.drools;\n" +
+                "import org.drools.integrationtests.AccumulateTest.MyObj;\n" +
                 "global java.util.List results\n" +
                 "rule init\n" +
                 "   when\n" +
@@ -1960,8 +1960,8 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test(timeout = 5000)
     public void testInfiniteLoopAddingPkgAfterSession() throws Exception {
         // JBRULES-3488
-        String rule = "package org.kie.test;\n" +
-        "import org.kie.integrationtests.AccumulateTest.Triple;\n" +
+        String rule = "package org.drools.test;\n" +
+        "import org.drools.integrationtests.AccumulateTest.Triple;\n" +
         "rule \"accumulate 2 times\"\n" +
         "when\n" +
         "  $LIST : java.util.List( )" +
@@ -2175,7 +2175,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         // JBRULES-3538
         String str =
                 "import java.util.*;\n" +
-                "import org.kie.integrationtests.AccumulateTest.MyPerson;\n" +
+                "import org.drools.integrationtests.AccumulateTest.MyPerson;\n" +
                 "dialect \"mvel\"\n" +
                 "\n" +
                 "rule \"Test\"\n" +

@@ -157,7 +157,7 @@ public class KnowledgeBaseEventSupportTest {
             }
         } );
 
-        pkg = new KnowledgePackageImp( new Package( "org.kie.test1" ) );
+        pkg = new KnowledgePackageImp( new Package( "org.drools.test1" ) );
         pkg.pkg.addRule( rule1 );
         pkg.pkg.addRule( rule2 );
     }
@@ -227,7 +227,7 @@ public class KnowledgeBaseEventSupportTest {
         assertEquals( 0,
                       listener2.getAfterRuleRemoved() );
 
-        this.kbase.removeKnowledgePackage( "org.kie.test1" );
+        this.kbase.removeKnowledgePackage( "org.drools.test1" );
 
         assertEquals( 1,
                       listener1.getBeforeKnowledgePackageRemoved() );

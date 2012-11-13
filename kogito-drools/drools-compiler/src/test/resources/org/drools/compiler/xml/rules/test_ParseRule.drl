@@ -1,7 +1,7 @@
 package com.sample 
 
 import java.util.HashMap
-import org.kie.*
+import org.drools.*
 
 global com.sample.X x
 global com.sample.Yada yada
@@ -28,7 +28,7 @@ when
     foo3 : Bar( a == 3 || == 4, a3 == "hello", a4 == null )  or
     foo4 : Bar( a4 : a, a != 4 && != 5 )   or
     foo5 : Bar( b == (a4 + 1) || > a4 || == 
-                     org.kie.Bar.BAR_ENUM_VALUE
+                     org.drools.Bar.BAR_ENUM_VALUE
                    )  or
     foo6 : Bar( a4 : a, b == 6 )  or
     foo7 : Bar( a4 : a, b4 : b )  or

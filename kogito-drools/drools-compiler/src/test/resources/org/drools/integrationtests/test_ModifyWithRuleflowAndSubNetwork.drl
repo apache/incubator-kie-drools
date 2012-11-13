@@ -1,6 +1,6 @@
-package org.kie
+package org.drools
 
-import org.kie.Order.OrderStatus
+import org.drools.Order.OrderStatus
 
 rule "insert OrderStatus"
     ruleflow-group "process"

@@ -1,7 +1,7 @@
-package org.kie.compiler;
+package org.drools.compiler;
 
-import org.kie.Cheese;
-import org.kie.Person;
+import org.drools.Cheese;
+import org.drools.Person;
 
 rule "three patterns with constraints 1"
   when

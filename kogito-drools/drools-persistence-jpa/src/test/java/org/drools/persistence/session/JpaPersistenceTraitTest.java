@@ -64,7 +64,7 @@ public class JpaPersistenceTraitTest {
 
     @Test
     public void testTraitsWithJPA() {
-        String str = "package org.kie.trait.test; \n" +
+        String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean \n" +
@@ -154,9 +154,9 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals(2, core.getDynamicProperties().size());
-        assertNotNull( core.getTrait( "org.kie.factmodel.traits.Thing" ) );
-        assertNotNull( core.getTrait( "org.kie.trait.test.Mask" ) );
-        assertNotNull( core.getTrait( "org.kie.trait.test.Cloak" ) );
+        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
+        assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );
 
     }
 
@@ -166,7 +166,7 @@ public class JpaPersistenceTraitTest {
 
     @Test
     public void testMapBasedTraitsWithJPA() {
-        String str = "package org.kie.trait.test; \n" +
+        String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean2 \n" +
@@ -257,9 +257,9 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 2, core.getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.kie.factmodel.traits.Thing" ) );
-        assertNotNull( core.getTrait( "org.kie.trait.test.Mask2" ) );
-        assertNotNull( core.getTrait( "org.kie.trait.test.Cloak2" ) );
+        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.drools.trait.test.Mask2" ) );
+        assertNotNull( core.getTrait( "org.drools.trait.test.Cloak2" ) );
 
     }
 
@@ -267,7 +267,7 @@ public class JpaPersistenceTraitTest {
 
     @Test
     public void testTraitsLegacyWrapperWithJPA() {
-        String str = "package org.kie.trait.test; \n" +
+        String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +                "" +
                 "declare TBean \n" +
@@ -340,8 +340,8 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 1, core.getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.kie.factmodel.traits.Thing" ) );
-        assertNotNull( core.getTrait( "org.kie.trait.test.Mask" ) );
+        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
 
     }
 }

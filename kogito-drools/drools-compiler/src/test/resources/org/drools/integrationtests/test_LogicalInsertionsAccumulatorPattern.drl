@@ -1,11 +1,11 @@
-package org.kie.test;
+package org.drools.test;
 
 import java.lang.Integer;
 import java.lang.Float;
 import java.lang.Double;
 import java.lang.Short;
 import java.lang.String;
-import org.kie.CheeseEqual;
+import org.drools.CheeseEqual;
 
 global java.lang.String ga;
 global java.lang.String gb;

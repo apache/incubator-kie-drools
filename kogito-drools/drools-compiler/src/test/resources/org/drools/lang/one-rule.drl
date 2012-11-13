@@ -3,7 +3,7 @@
 
 // yes, you can use silly java comments
 
-package org.kie.lang; 
+package org.drools.lang;
 
 // semi colons are optional, we're line-centric
 

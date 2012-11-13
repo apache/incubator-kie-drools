@@ -62,7 +62,7 @@ public class HelloWorldTest extends CommonTestMethodBase {
                 return 0;
             }
         });
-        String source = "org.kie.integrationtests.Rule_Hello_World";
+        String source = "org.drools.integrationtests.Rule_Hello_World";
         MVELRuntime.registerBreakpoint(source, 1);
         // load up the knowledge base
         KnowledgeBase kbase = readKnowledgeBase();

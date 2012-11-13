@@ -168,9 +168,9 @@ public class LargeRuleBase {
     }
 
     public static String getHeader() {
-        return "package org.kie.test; \n " + "import org.kie.Person; \n "
-                + "import org.kie.Cheese; \n "
-                + "import org.kie.Cheesery; \n "
+        return "package org.kie.test; \n " + "import org.drools.Person; \n "
+                + "import org.drools.Cheese; \n "
+                + "import org.drools.Cheesery; \n "
                 + " import java.util.List \n "
                 + " global List list \n dialect 'mvel'\n  ";
     }

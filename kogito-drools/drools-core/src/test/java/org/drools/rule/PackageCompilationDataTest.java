@@ -65,7 +65,7 @@ public class PackageCompilationDataTest {
         
         ReteooRuleBase rb = new ReteooRuleBase( "xxx" );
         
-        Package pkg = new Package( "org.kie" );
+        Package pkg = new Package( "org.drools" );
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.onAdd( pkg.getDialectRuntimeRegistry(), rb.getRootClassLoader()  );
@@ -88,7 +88,7 @@ public class PackageCompilationDataTest {
         pcData.onAdd( pkg.getDialectRuntimeRegistry(), rb.getRootClassLoader() );
         pcData.onBeforeExecute();
         
-        Class cls = ((InternalRuleBase)rb).getRootClassLoader().loadClass( "org.kie.rule.PackageCompilationDataTest$TestEvalExpression" );
+        Class cls = ((InternalRuleBase)rb).getRootClassLoader().loadClass( "org.drools.rule.PackageCompilationDataTest$TestEvalExpression" );
         
         final CodeSource codeSource = invoker.getEvalExpression().getClass().getProtectionDomain().getCodeSource();
         assertNotNull(codeSource.getLocation());

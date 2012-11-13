@@ -836,7 +836,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         assertTrue( list.contains( "rule4" ) );
         list.clear();
 
-        String str = createHeader( "org.kie.test" ) +
+        String str = createHeader( "org.drools.test" ) +
                      createVersionedRule( false,
                                           null,
                                           new String[]{"rule1"},
@@ -928,7 +928,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         } catch (Exception e) {
             
         }
-        KnowledgePackage knowledgePackage = kbase.getKnowledgePackage( "org.kie.test" );
+        KnowledgePackage knowledgePackage = kbase.getKnowledgePackage( "org.drools.test" );
 
         //the resource didn't compile because function1 doesn't exist
         assertNull( knowledgePackage );
@@ -1014,7 +1014,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
                 fail( "Knowledge shouldn't fail to compile" );
             }
     
-            KnowledgePackage knowledgePackage = kbase.getKnowledgePackage("org.kie.test");
+            KnowledgePackage knowledgePackage = kbase.getKnowledgePackage("org.drools.test");
     
             assertNotNull(knowledgePackage);
     
@@ -1365,9 +1365,9 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
            StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
 
-           org.drools.rule.Rule r1 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.kie.test","rule1");
+           org.drools.rule.Rule r1 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test","rule1");
                assertEquals(((UrlResource) r1.getResource()).getURL().toString(),"http://localhost:"+getPort()+"/pkg1.pkg");
-           org.drools.rule.Rule r2 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.kie.test","rule2");
+           org.drools.rule.Rule r2 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test","rule2");
                assertEquals(((UrlResource) r2.getResource()).getURL().toString(),"http://localhost:"+getPort()+"/pkg1.pkg");
            Map<Resource, Set<KnowledgeDefinition>> defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
                assertTrue(defMap.containsKey(r1.getResource()));
@@ -1378,7 +1378,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
                    assertEquals(2,defs.size());
 
 
-           String rule3 = this.createDefaultRule( "rule3", "org.kie.test3" );
+           String rule3 = this.createDefaultRule( "rule3", "org.drools.test3" );
 
                    kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
                    kbuilder.add( ResourceFactory.newByteArrayResource( rule3.getBytes() ),
@@ -1389,9 +1389,9 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
                    scan( kagent );
 
 
-           assertEquals(0,ksession.getKnowledgeBase().getKnowledgePackage("org.kie.test").getRules().size());
-           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.kie.test3").getRules().size());
-           org.drools.rule.Rule r3 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.kie.test3","rule3");
+           assertEquals(0,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test").getRules().size());
+           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test3").getRules().size());
+           org.drools.rule.Rule r3 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test3","rule3");
                assertEquals(((UrlResource) r3.getResource()).getURL().toString(),"http://localhost:"+getPort()+"/pkg1.pkg");
                defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
                        assertTrue(defMap.containsKey(r3.getResource()));
@@ -1403,7 +1403,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
 
 
-           String rule4 = this.createDefaultRule( "rule4", "org.kie.test4" );
+           String rule4 = this.createDefaultRule( "rule4", "org.drools.test4" );
            ChangeSetImpl cs = new ChangeSetImpl();
                ByteArrayResource res = new ByteArrayResource( rule4.getBytes( ));
                    res.setResourceType(ResourceType.DRL);
@@ -1411,9 +1411,9 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
                kagent.applyChangeSet(cs);
 
 
-           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.kie.test3").getRules().size());
-           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.kie.test4").getRules().size());
-           org.drools.rule.Rule r4 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.kie.test4","rule4");
+           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test3").getRules().size());
+           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test4").getRules().size());
+           org.drools.rule.Rule r4 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test4","rule4");
                        defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
                        assertEquals(2,defMap.size());
                                assertTrue(defMap.containsKey(r4.getResource()));

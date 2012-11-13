@@ -71,7 +71,7 @@ public class TimerAndCalendarTest {
                            TimeUnit.MILLISECONDS );
 
         // build timer rule, if the rule is fired, the list size will increase every 500ms
-        String timerRule = "package org.kie.test\n" +
+        String timerRule = "package org.drools.test\n" +
                            "global java.util.List list \n" +
                            "rule TimerRule \n" +
                            "   timer (int:1000 500) \n" +
@@ -150,7 +150,7 @@ public class TimerAndCalendarTest {
                            TimeUnit.MILLISECONDS );
 
         // build timer rule, if the rule is fired, the list size will increase every 300ms
-        String timerRule = "package org.kie.test\n" +
+        String timerRule = "package org.drools.test\n" +
                            "global java.util.List list \n" +
                            "rule TimerRule \n" +
                            "   timer (cron: * * * * * ?) \n" +
@@ -210,7 +210,7 @@ public class TimerAndCalendarTest {
 
     @Test
     public void testEventExpires() throws Exception {
-        String timerRule = "package org.kie.test\n" +
+        String timerRule = "package org.drools.test\n" +
                            "declare TestEvent \n" +
                            "    @role( event )\n" +
                            "    @expires( 10s )\n" +
@@ -230,7 +230,7 @@ public class TimerAndCalendarTest {
         kbase.addKnowledgePackages( kpackages );
         StatefulKnowledgeSession ksession = createSession( kbase );
 
-        FactType type = kbase.getFactType( "org.kie.test",
+        FactType type = kbase.getFactType( "org.drools.test",
                                            "TestEvent" );
         Assert.assertNotNull( "could not get type",
                               type );

@@ -460,16 +460,16 @@ public class RuleBaseConfiguration
                                                                                                           "identity" ) ) );
 
         setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
-                                                                "org.kie.concurrent.DefaultExecutorService" ) );
+                                                                "org.drools.concurrent.DefaultExecutorService" ) );
 
         setConsequenceExceptionHandler( this.chainedProperties.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME,
-                                                                            "org.kie.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
+                                                                            "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
 
         setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
                                                                       "" ) );
 
         setConflictResolver( determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
-                                                        "org.kie.conflict.DepthConflictResolver" ) ) );
+                                                        "org.drools.conflict.DepthConflictResolver" ) ) );
 
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );

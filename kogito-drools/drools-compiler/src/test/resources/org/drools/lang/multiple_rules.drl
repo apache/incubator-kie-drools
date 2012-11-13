@@ -1,6 +1,6 @@
-package org.kie.test;
+package org.drools.test;
 
-import org.kie.integrationtests.Cheese;
+import org.drools.integrationtests.Cheese;
 
 rule "Like Stilton"
     when

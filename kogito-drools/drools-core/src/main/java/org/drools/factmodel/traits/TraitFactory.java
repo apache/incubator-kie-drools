@@ -54,7 +54,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     public final static String SUFFIX = "_Trait__Extension";
 
-    private static final String pack = "org.kie.factmodel.traits.";
+    private static final String pack = "org.drools.factmodel.traits.";
 
     private Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
 

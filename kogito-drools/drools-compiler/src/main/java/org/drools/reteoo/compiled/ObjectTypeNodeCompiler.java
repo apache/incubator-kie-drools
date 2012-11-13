@@ -15,7 +15,7 @@ import java.util.Collection;
  */
 public class ObjectTypeNodeCompiler {
     private static final String NEWLINE = "\n";
-    private static final String PACKAGE_NAME = "org.kie.reteoo.compiled";
+    private static final String PACKAGE_NAME = "org.drools.reteoo.compiled";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replaceAll("\\.", "/");
     /**
      * This field hold the fully qualified class name that the {@link org.kie.reteoo.ObjectTypeNode} is representing.

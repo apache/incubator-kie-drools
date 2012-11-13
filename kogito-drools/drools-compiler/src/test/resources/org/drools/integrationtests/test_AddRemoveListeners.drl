@@ -1,4 +1,4 @@
-package org.kie
+package org.drools
 
 import org.kie.event.rule.WorkingMemoryEventListener
 

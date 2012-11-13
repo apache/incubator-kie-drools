@@ -71,7 +71,7 @@ public class TypeDeclarationTest {
         Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
 
         //Get the Fact Type for org.kie.EventA
-        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.kie.EventA");
+        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.EventA");
         Assert.assertNotNull(factType);
 
         //'name' field must still be there
@@ -83,7 +83,7 @@ public class TypeDeclarationTest {
         Assert.assertNotNull(field);
 
         //New Annotations must be there too
-        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.kie.EventA");
+        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.drools.EventA");
 
         assertEquals(TypeDeclaration.Role.EVENT, typeDeclaration.getRole());
         assertEquals("duration", typeDeclaration.getDurationAttribute());
@@ -92,15 +92,15 @@ public class TypeDeclarationTest {
 
     public void testNoAnnotationUpdateIfError(){
         String str1 = "";
-        str1 += "package org.kie \n" +
-        		"declare org.kie.EventA \n" +
+        str1 += "package org.drools \n" +
+        		"declare org.drools.EventA \n" +
         		"    name : String \n" +
         		"    duration : Long \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str2 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    @Role (event) \n" +
         		"    @duration (duration) \n" +
         		"    anotherField : String \n" +
@@ -125,8 +125,8 @@ public class TypeDeclarationTest {
         //just 1 package was created
         Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
 
-        //Get the Fact Type for org.kie.EventA
-        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.kie.EventA");
+        //Get the Fact Type for org.drools.EventA
+        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.EventA");
         Assert.assertNotNull(factType);
 
         //'name' field must still be there
@@ -138,7 +138,7 @@ public class TypeDeclarationTest {
         Assert.assertNotNull(field);
 
         //@Role annotations shouldn't have any effect
-        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.kie.EventA");
+        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.drools.EventA");
 
         assertEquals(TypeDeclaration.Role.FACT, typeDeclaration.getRole());
         assertNull(typeDeclaration.getDurationAttribute());
@@ -153,8 +153,8 @@ public class TypeDeclarationTest {
     public void testDuplicatedTypeDeclarationWith2FieldsInSameResource() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str1 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    lastName : String \n" +
         		"end \n";
@@ -182,8 +182,8 @@ public class TypeDeclarationTest {
     public void testDuplicatedTypeDeclarationInDifferentResources() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str1 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"end \n";
 
@@ -212,15 +212,15 @@ public class TypeDeclarationTest {
     public void testClashingTypeDeclarationInDifferentResources() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str1 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str2 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : String \n" +
         		"end \n";
@@ -252,15 +252,15 @@ public class TypeDeclarationTest {
     public void testNotSoHarmlessTypeReDeclaration() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str1 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str2 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"end \n";
 
@@ -285,8 +285,8 @@ public class TypeDeclarationTest {
         //just 1 package was created
         Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
 
-        //Get the Fact Type for org.kie.ClassA
-        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.kie.ClassA");
+        //Get the Fact Type for org.drools.ClassA
+        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.ClassA");
         Assert.assertNotNull(factType);
 
         //'age' field must still be there
@@ -308,15 +308,15 @@ public class TypeDeclarationTest {
     public void testTypeReDeclarationWithExtraField() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str1 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str2 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    lastName : String \n" +
         		"end \n";
@@ -347,15 +347,15 @@ public class TypeDeclarationTest {
     public void testTypeReDeclarationWithExtraField2() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str1 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.kie \n" +
-        		"declare org.kie.ClassA \n" +
+        str2 += "package org.drools \n" +
+        		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    lastName : String \n" +
         		"end \n";
@@ -379,7 +379,7 @@ public class TypeDeclarationTest {
     @Test
     public void testDuplicateDeclaration() {
         String str = "";
-        str += "package org.kie \n" +
+        str += "package org.drools \n" +
                 "declare Bean \n" +
                 "    name : String \n" +
                 "end \n" +

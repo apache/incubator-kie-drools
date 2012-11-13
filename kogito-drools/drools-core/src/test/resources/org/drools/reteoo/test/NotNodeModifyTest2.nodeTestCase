@@ -1,7 +1,7 @@
 TestCase "Not Node modify"
 
-import org.kie.Person;
-import org.kie.Cheese;
+import org.drools.Person;
+import org.drools.Cheese;
 
 Setup
     NotNode:

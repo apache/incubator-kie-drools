@@ -360,7 +360,7 @@ public class SessionConfiguration
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
         String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
-                                                               "org.kie.process.instance.impl.DefaultWorkItemManagerFactory" );
+                                                               "org.drools.process.instance.impl.DefaultWorkItemManagerFactory" );
         Class<WorkItemManagerFactory> clazz = null;
         try {
             clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );
@@ -432,7 +432,7 @@ public class SessionConfiguration
     public TimerService newTimerService() {
         String className = this.chainedProperties.getProperty(
                                                                "drools.timerService",
-                                                               "org.kie.time.impl.JDKTimerService" );
+                                                               "org.drools.time.impl.JDKTimerService" );
         if ( className == null ) {
             return null;
         }

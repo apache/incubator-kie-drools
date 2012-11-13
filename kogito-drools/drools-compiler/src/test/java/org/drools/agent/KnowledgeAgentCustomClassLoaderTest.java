@@ -60,9 +60,9 @@ public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest 
      */
     private void testKagentWithCustomClassLoader(boolean newInstance, boolean useKBaseClassLoaderForCompiling) throws Exception {
 
-        //A simple rule using a class (org.kie.agent.test.KnowledgeAgentInstance)
+        //A simple rule using a class (org.drools.agent.test.KnowledgeAgentInstance)
         //that is not present in the classloader.
-        String rule = this.createCustomRule(true, "org.kie.test", new String[]{"org.kie.agent.test.KnowledgeAgentInstance"}, new String[]{"rule1"}, null, "   KnowledgeAgentInstance($id: instanceId)\n","  list.add(\"Instance number \"+$id);\n");
+        String rule = this.createCustomRule(true, "org.drools.test", new String[]{"org.drools.agent.test.KnowledgeAgentInstance"}, new String[]{"rule1"}, null, "   KnowledgeAgentInstance($id: instanceId)\n","  list.add(\"Instance number \"+$id);\n");
         this.fileManager.write("rule1.drl", rule);
 
         //The change set to process the created resource
@@ -133,7 +133,7 @@ public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest 
         ksession.setGlobal("list", list);
 
         //Create a new KnowledgeAgentInstance and set its instanceId = 2
-        Class<?> modelClass = ucl.loadClass("org.kie.agent.test.KnowledgeAgentInstance");
+        Class<?> modelClass = ucl.loadClass("org.drools.agent.test.KnowledgeAgentInstance");
         Object modelInstance = modelClass.newInstance();
         modelClass.getMethod("setInstanceId", int.class).invoke(modelInstance, 2);
 

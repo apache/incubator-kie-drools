@@ -1,4 +1,4 @@
-package org.kie;
+package org.drools;
 
 rule "testing OR CE"
 when

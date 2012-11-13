@@ -305,16 +305,16 @@ public class KnowledgeBuilderConfigurationTest {
 
         // setting the default dialect using the string based setProperty() method
         config.setProperty( DefaultPackageNameOption.PROPERTY_NAME,
-                            "org.kie" );
+                            "org.drools" );
         
         // checking the type safe getOption() method
-        assertEquals( DefaultPackageNameOption.get( "org.kie" ),
+        assertEquals( DefaultPackageNameOption.get( "org.drools" ),
                       config.getOption( DefaultPackageNameOption.class ) );
         // checking string conversion
-        assertEquals( "org.kie",
+        assertEquals( "org.drools",
                       config.getOption( DefaultPackageNameOption.class ).getPackageName() );
         // checking the string based getProperty() method
-        assertEquals( "org.kie",
+        assertEquals( "org.drools",
                       config.getProperty( DefaultPackageNameOption.PROPERTY_NAME ) );
     }
     

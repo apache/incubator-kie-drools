@@ -24,7 +24,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void oneRuleFiredTest() {
         String str = "";
-        str += "package org.kie \n";
+        str += "package org.drools \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -47,7 +47,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void fiveRulesFiredTest() {
         String str = "";
-        str += "package org.kie \n";
+        str += "package org.drools \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -74,7 +74,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void zeroRulesFiredTest() {
         String str = "";
-        str += "package org.kie \n";
+        str += "package org.drools \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -97,7 +97,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void oneRuleFiredWithDefinedMaxTest() {
         String str = "";
-        str += "package org.kie \n";
+        str += "package org.drools \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -122,7 +122,7 @@ public class FireAllRulesCommandTest {
     @Test
     public void infiniteLoopTerminatesAtMaxTest() {
         String str = "";
-        str += "package org.kie \n";
+        str += "package org.drools \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";

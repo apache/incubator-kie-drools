@@ -103,12 +103,12 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        assertNotNull( ruleBase.getPackage( "org.kie.test" ).getRule( "simple query" ) );
+        assertNotNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
 
-        ruleBase.removeQuery( "org.kie.test",
+        ruleBase.removeQuery( "org.drools.test",
                               "simple query" );
 
-        assertNull( ruleBase.getPackage( "org.kie.test" ).getRule( "simple query" ) );
+        assertNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
 
         results = session.getQueryResults( "simple query" );
         assertEquals( 0,
@@ -256,8 +256,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
         String str = "";
-        str += "package org.kie.test  \n";
-        str += "import org.kie.Cheese \n";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Cheese \n";
         str += "query cheeses \n";
         str += "    stilton : Cheese(type == 'stilton') \n";
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
@@ -564,8 +564,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnification() throws Exception {
         String str = "";
-        str += "package org.kie.test  \n";
-        str += "import org.kie.Person \n";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Person \n";
         str += "query peeps( String $name, String $likes, int $age ) \n";
         str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
@@ -672,8 +672,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnificationOnPatterns() throws Exception {
         String str = "";
-        str += "package org.kie.test  \n";
-        str += "import org.kie.Person \n";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Person \n";
         str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
         str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
@@ -741,8 +741,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
         String str = "";
-        str += "package org.kie.test  \n";
-        str += "import org.kie.Person \n";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
@@ -799,8 +799,8 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testOpenQuery() throws Exception {
         String str = "";
-        str += "package org.kie.test  \n";
-        str += "import org.kie.Cheese \n";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Cheese \n";
         str += "query cheeses(String $type1, String $type2) \n";
         str += "    stilton : Cheese(type == $type1, $sprice : price) \n";
         str += "    cheddar : Cheese(type == $type2, $cprice : price == stilton.price) \n";
@@ -1010,7 +1010,7 @@ public class QueryTest extends CommonTestMethodBase {
 
     public void runQueryListenerTest( QueryListenerOption option ) {
         String str = "";
-        str += "package org.kie\n";
+        str += "package org.drools\n";
         str += "query cheeses(String $type) \n";
         str += "    $cheese : Cheese(type == $type) \n";
         str += "end\n";
@@ -1056,7 +1056,7 @@ public class QueryTest extends CommonTestMethodBase {
     public void testQueryWithEval() {
         // [Regression in 5.2.0.M2]: NPE during rule evaluation on MVELPredicateExpression.evaluate(MVELPredicateExpression.java:82)
 
-        String str = "package org.kie\n" +
+        String str = "package org.drools\n" +
                      "query queryWithEval \n" +
                      "    $do: DomainObject()\n" +
                      "    not DomainObject( id == $do.id, eval(interval.isAfter($do.getInterval())))\n" +

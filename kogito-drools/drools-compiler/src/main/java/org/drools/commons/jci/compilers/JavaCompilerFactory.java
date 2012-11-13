@@ -61,7 +61,7 @@ public final class JavaCompilerFactory {
         
         final String className;
         if (pHint.indexOf('.') < 0) {
-            className = "org.kie.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
+            className = "org.drools.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
         } else {
             className = pHint;
         }

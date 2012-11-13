@@ -8,11 +8,11 @@ Setup
         col, left, right, java.util.ArrayList;
         source, type, ==, l1;
     Binding:
-        l1, 0, org.kie.Person, likes;
+        l1, 0, org.drools.Person, likes;
     Facts:
-        org.kie.Person('darth', 35, "brie"), org.kie.Person('bobba', 36, 'stilton'),
-        org.kie.Cheese('brie', 10), org.kie.Cheese('brie', 12),
-        org.kie.Cheese('stilton', 15), org.kie.Cheese('muzzarella', 12);
+        org.drools.Person('darth', 35, "brie"), org.drools.Person('bobba', 36, 'stilton'),
+        org.drools.Cheese('brie', 10), org.drools.Cheese('brie', 12),
+        org.drools.Cheese('stilton', 15), org.drools.Cheese('muzzarella', 12);
 
 TearDown
  

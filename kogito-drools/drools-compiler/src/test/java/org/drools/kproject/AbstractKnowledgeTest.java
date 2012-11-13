@@ -165,7 +165,7 @@ public class AbstractKnowledgeTest {
     public String generateKProjectTestClass(KProject kproject,
                                             String namespace) {
 
-        return "package org.kie.cdi.test;\n" +
+        return "package org.drools.cdi.test;\n" +
                 "import javax.inject.Named;\n" +
                 "import javax.inject.Inject;\n" +
                 "import javax.inject.Inject;\n" +
@@ -179,7 +179,7 @@ public class AbstractKnowledgeTest {
                 "import " + KPTest.class.getName() + ";\n" +
 
                 "@KPTest(\"" + namespace + "\") \n" +
-                "public class KProjectTestClass" + namespace + " implements org.kie.kproject.KProjectTestClass {\n" +
+                "public class KProjectTestClass" + namespace + " implements org.drools.kproject.KProjectTestClass {\n" +
                 "    private @Inject @KBase(\"" + namespace + ".test1.KBase1\")  " +
                 "    KnowledgeBase kBase1; \n" +
                 "    public KnowledgeBase getKBase1() {\n" +

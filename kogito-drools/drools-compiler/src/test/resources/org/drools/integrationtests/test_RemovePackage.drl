@@ -1,7 +1,7 @@
-package org.kie;
+package org.drools;
 
-import org.kie.Precondition;
-import org.kie.InsertedObject;
+import org.drools.Precondition;
+import org.drools.InsertedObject;
 
 rule rule1
     salience 10

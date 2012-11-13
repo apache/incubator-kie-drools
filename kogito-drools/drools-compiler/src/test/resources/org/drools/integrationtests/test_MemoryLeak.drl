@@ -1,4 +1,4 @@
-package org.kie
+package org.drools
 
 declare PersonName
    name : String @key

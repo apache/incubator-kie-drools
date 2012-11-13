@@ -32,7 +32,7 @@ public class DrlPackageDataTest {
     public void testHandleDrl() throws ParseException {
 
         String drl = "";
-        drl += "package org.kie.test\n";
+        drl += "package org.drools.test\n";
         drl += "global java.util.List list\n";
         drl += "rule rule1\n";
         drl += "when\n";
@@ -47,7 +47,7 @@ public class DrlPackageDataTest {
 
         DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( drl );
 
-        assertEquals( "org.kie.test",
+        assertEquals( "org.drools.test",
                       s.getName() );
         assertEquals( 2,
                       s.getRules().size() );
@@ -72,7 +72,7 @@ public class DrlPackageDataTest {
 
         assertNotNull( s );
 
-        assertEquals( "org.kie.test",
+        assertEquals( "org.drools.test",
                       s.getName() );
         assertEquals( 5,
                       s.getRules().size() );
@@ -111,7 +111,7 @@ public class DrlPackageDataTest {
         drl += "# important information\n";
         drl += "# about this package\n";
         drl += "# it contains some rules\n";
-        drl += "package org.kie.test\n";
+        drl += "package org.drools.test\n";
         drl += "global java.util.List list\n";
         drl += "rule rule1\n";
         drl += "	when\n";
@@ -126,7 +126,7 @@ public class DrlPackageDataTest {
 
         DrlPackageParser data = DrlPackageParser.findPackageDataFromDrl( drl );
 
-        assertEquals( "org.kie.test",
+        assertEquals( "org.drools.test",
                       data.getName() );
         assertEquals( 2,
                       data.getRules().size() );

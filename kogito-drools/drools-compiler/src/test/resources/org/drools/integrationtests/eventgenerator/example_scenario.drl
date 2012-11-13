@@ -1,8 +1,8 @@
 package test;
 
 import java.lang.*;
-import org.kie.integrationtests.eventgenerator.*;
-import org.kie.integrationtests.eventgenerator.example.*;
+import org.drools.integrationtests.eventgenerator.*;
+import org.drools.integrationtests.eventgenerator.example.*;
 
 
 rule "Rule 1: check for expiry of sliding window (and reset window)"

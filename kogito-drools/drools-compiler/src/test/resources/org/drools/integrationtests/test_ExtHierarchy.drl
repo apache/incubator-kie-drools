@@ -1,4 +1,4 @@
-package org.kie.compiler;
+package org.drools.compiler;
 
 import java.util.LinkedList;
 

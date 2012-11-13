@@ -1,10 +1,10 @@
 //created on: 27-Jun-2007
-package org.kie.test
+package org.drools.test
 
 //list any import classes here.
-import org.kie.Cheese;
-import org.kie.Person;
-import org.kie.Cheesery;
+import org.drools.Cheese;
+import org.drools.Person;
+import org.drools.Cheesery;
 
 global java.util.List list;
 

@@ -219,12 +219,12 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.kie.*",
+        assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List functionImport = packageDescr.getFunctionImports();
 
-        assertEquals( "org.kie.function",
+        assertEquals( "org.drools.function",
                       ((FunctionImportDescr) functionImport.get( 0 )).getTarget() );
     }
 
@@ -242,7 +242,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.kie.*",
+        assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();
@@ -274,7 +274,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.kie.*",
+        assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();
@@ -334,7 +334,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.List",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.kie.Person",
+        assertEquals( "org.drools.Person",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
@@ -429,7 +429,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.kie.*",
+        assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();
@@ -486,7 +486,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.kie.*",
+        assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();

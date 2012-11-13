@@ -53,7 +53,7 @@ public class UnicodeInXLSTest {
         ksession.execute(CommandFactory.newBatchExecution(commands));
 
         // people with age greater than 18 should be added to list of adults
-        assertNotNull(kbase.getRule("org.kie.decisiontable", "přidej k dospělým"));
+        assertNotNull(kbase.getRule("org.drools.decisiontable", "přidej k dospělým"));
         assertEquals(dospělí.size(), 1);
         assertEquals(dospělí.iterator().next().getJméno(), "Řehoř");
 

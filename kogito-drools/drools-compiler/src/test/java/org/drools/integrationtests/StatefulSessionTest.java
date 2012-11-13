@@ -64,7 +64,7 @@ public class StatefulSessionTest extends CommonTestMethodBase {
     public void testInsertObject() throws Exception {
         String str = "";
         str += "package org.kie \n";
-        str += "import org.kie.Cheese \n";
+        str += "import org.drools.Cheese \n";
         str += "rule rule1 \n";
         str += "  when \n";
         str += "    $c : Cheese() \n";

@@ -1,4 +1,4 @@
-package org.kie;
+package org.drools;
 
 rule test_rule extends rule1
     when

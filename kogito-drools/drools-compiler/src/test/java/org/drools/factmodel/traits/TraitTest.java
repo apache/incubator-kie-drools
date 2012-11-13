@@ -1486,7 +1486,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     protected void manyTraits( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
-                "import org.kie.Message;" +
+                "import org.drools.Message;" +
                 "" +
                 "global java.util.List list; \n" +
                 "" +
@@ -1595,8 +1595,8 @@ public class TraitTest extends CommonTestMethodBase {
     // BZ #748752
     public void traitsInBatchExecution( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.jboss.qa.brms.traits\n" +
-                "import org.kie.Person;\n" +
-                "import org.kie.factmodel.traits.Traitable;\n" +
+                "import org.drools.Person;\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
                 "" +
                 "global java.util.List list;" +
                 "" +
@@ -1682,7 +1682,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     public void manyTraitsStateless( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
-                "import org.kie.Message;" +
+                "import org.drools.Message;" +
                 "" +
                 "global java.util.List list; \n" +
                 "" +
@@ -1752,9 +1752,9 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     public void aliasing( TraitFactory.VirtualPropertyMode mode ) {
-        String drl = "package org.kie.traits\n" +
-                "import org.kie.factmodel.traits.Traitable;\n" +
-                "import org.kie.factmodel.traits.Alias;\n" +
+        String drl = "package org.drools.traits\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.drools.factmodel.traits.Alias;\n" +
                 "" +
                 "global java.util.List list;" +
                 "" +
@@ -1839,9 +1839,9 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     public void traitLogicalRemoval( TraitFactory.VirtualPropertyMode mode ) {
-        String drl = "package org.kie.trait.test;\n" +
+        String drl = "package org.drools.trait.test;\n" +
                 "\n" +
-                "import org.kie.factmodel.traits.Traitable;\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1929,8 +1929,8 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTMSConsistencyWithNonTraitableBeans() {
 
-        String s1 = "package org.kie.test;\n" +
-                "import org.kie.Person; \n" +
+        String s1 = "package org.drools.test;\n" +
+                "import org.drools.Person; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +

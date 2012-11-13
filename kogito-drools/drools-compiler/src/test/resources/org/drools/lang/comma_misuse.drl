@@ -1,4 +1,4 @@
-package org.kie;
+package org.drools;
 
 rule "Avoid NPE on wrong syntax"
 when

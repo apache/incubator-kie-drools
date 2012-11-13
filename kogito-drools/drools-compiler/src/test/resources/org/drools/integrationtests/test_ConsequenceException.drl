@@ -1,6 +1,6 @@
-package org.kie.test;
+package org.drools.test;
 
-import org.kie.Cheese;
+import org.drools.Cheese;
 
 rule "Throw Consequence Exception"
     when

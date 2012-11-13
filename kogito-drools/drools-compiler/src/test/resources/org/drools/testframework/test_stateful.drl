@@ -1,6 +1,6 @@
 package foo.bar
 
-import org.kie.Cheese
+import org.drools.Cheese
 
 
 rule "rule1"

@@ -319,13 +319,13 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createHeader(String packageName, String[] customImports) {
         StringBuilder header = new StringBuilder();
         if ( StringUtils.isEmpty( packageName ) ) {
-            header.append( "package org.kie.test\n" );
+            header.append( "package org.drools.test\n" );
         } else {
             header.append( "package " );
             header.append( packageName );
             header.append( "\n" );
         }
-        header.append( "import org.kie.Person;\n" );
+        header.append( "import org.drools.Person;\n" );
         if (customImports != null){
             for (String customImport : customImports) {
                 header.append( "import " );
@@ -432,8 +432,8 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createCommonDSLRRule(String[] ruleNames) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("package org.kie.test\n");
-        sb.append("import org.kie.Person\n\n");
+        sb.append("package org.drools.test\n");
+        sb.append("import org.drools.Person\n\n");
         sb.append("global java.util.List list\n\n");
 
         for (String ruleName : ruleNames ) {
@@ -468,8 +468,8 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createCommonFunction(String functionName, String valueToAdd) {
       StringBuilder sb = new StringBuilder();
 
-      sb.append("package org.kie.test\n");
-      sb.append("import org.kie.Person\n\n");
+      sb.append("package org.drools.test\n");
+      sb.append("import org.drools.Person\n\n");
       sb.append("global java.util.List list\n\n");
 
       sb.append("function void  ");
@@ -486,7 +486,7 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
     public String createCommonDeclaration(String typeName, String[] annotations, String[] fields) {
       StringBuilder sb = new StringBuilder();
 
-      sb.append("package org.kie.test\n");
+      sb.append("package org.drools.test\n");
       sb.append("global java.util.List list\n\n");
 
       sb.append("declare  ");
@@ -516,7 +516,7 @@ public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
 
     public String createCommonQuery(String name, String[] patterns){
         StringBuilder sb = new StringBuilder();
-        sb.append(this.createHeader("org.kie.test"));
+        sb.append(this.createHeader("org.drools.test"));
         sb.append("\n");
         sb.append("query \"");
         sb.append(name);

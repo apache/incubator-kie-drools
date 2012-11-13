@@ -1,7 +1,7 @@
-package org.kie.test2;
+package org.drools.test2;
 
-import org.kie.Person;
-import org.kie.Cheese;
+import org.drools.Person;
+import org.drools.Cheese;
 
 rule "rule2"
     when

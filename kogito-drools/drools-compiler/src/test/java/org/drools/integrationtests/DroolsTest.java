@@ -42,10 +42,10 @@ public class DroolsTest {
 
     @Test
     public void test1() throws Exception {
-        String str = "package org.kie.integrationtests;\n";
-        str += "import org.kie.integrationtests.DroolsTest;\n";
-        str += "import org.kie.integrationtests.DroolsTest.Foo;\n";
-        str += "import org.kie.integrationtests.DroolsTest.Bar;\n";
+        String str = "package org.drools.integrationtests;\n";
+        str += "import org.drools.integrationtests.DroolsTest;\n";
+        str += "import org.drools.integrationtests.DroolsTest.Foo;\n";
+        str += "import org.drools.integrationtests.DroolsTest.Bar;\n";
         str += "rule test\n";
         str += "when\n";
         str += "      Foo($p : id, id < " + Integer.toString( NUM_FACTS ) + ")\n";

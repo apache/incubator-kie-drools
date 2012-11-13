@@ -1,6 +1,6 @@
-package org.kie.package1
+package org.drools.package1
 
-import org.kie.Cheese
+import org.drools.Cheese
 
 global java.util.List results;
 

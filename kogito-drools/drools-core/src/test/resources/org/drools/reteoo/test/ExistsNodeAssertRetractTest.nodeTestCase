@@ -2,15 +2,15 @@ TestCase "Exists node assert/retract test case"
 
 Setup
     ObjectTypeNode:
-        otnLeft1, org.kie.Person;
+        otnLeft1, org.drools.Person;
     LeftInputAdapterNode:
         lian1, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.kie.Person;
+        otnRight1, org.drools.Person;
     ObjectTypeNode:
-        otnRight2, org.kie.Person;
+        otnRight2, org.drools.Person;
     Binding:
-         p1, 0, org.kie.Person, age;
+         p1, 0, org.drools.Person, age;
     ExistsNode:
         exists1, lian1, otnRight1;
         age, !=, p1;
@@ -18,10 +18,10 @@ Setup
         join2, exists1, otnRight2;
         age, !=, p1;
     Facts:
-        new org.kie.Person('darth', 35), new org.kie.Person('bobba', 35),
-        new org.kie.Person('yoda', 35), new org.kie.Person('luke', 35),
-        new org.kie.Person('dave', 35), new org.kie.Person('bob', 36),
-        new org.kie.Person('obi', 36), new org.kie.Person('han', 37);
+        new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),
+        new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),
+        new org.drools.Person('dave', 35), new org.drools.Person('bob', 36),
+        new org.drools.Person('obi', 36), new org.drools.Person('han', 37);
 
 Test "Exists node assert/retract test"	    
     /**

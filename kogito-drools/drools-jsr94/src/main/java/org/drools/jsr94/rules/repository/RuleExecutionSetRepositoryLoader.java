@@ -63,7 +63,7 @@ public abstract class RuleExecutionSetRepositoryLoader
         ClassLoader cL = Thread.currentThread().getContextClassLoader();
 
         // Use the Services API (as detailed in the JAR specification), if available, to determine the classname.
-        String propertyName = "org.kie.jsr94.rules.repository.RuleExecutionSetRepository";
+        String propertyName = "org.drools.jsr94.rules.repository.RuleExecutionSetRepository";
         String fileName = "META-INF/services/" + propertyName;
         InputStream in = cL.getResourceAsStream(fileName);
 

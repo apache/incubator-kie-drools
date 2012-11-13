@@ -172,7 +172,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     public void testExtendsLegacy() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtLegacy.drl",0);
 
-        FactType leg = ksession.getKnowledgeBase().getFactType("org.kie","BetterLegacy");
+        FactType leg = ksession.getKnowledgeBase().getFactType("org.drools","BetterLegacy");
         assertNotNull(leg);
 
         Object b = leg.newInstance();
@@ -195,12 +195,12 @@ public class ExtendsTest extends CommonTestMethodBase {
      public void testExtendsAcrossFiles() throws Exception {
         StatefulKnowledgeSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
 
-        FactType person = ksession.getKnowledgeBase().getFactType("org.kie.compiler.test","Person");
+        FactType person = ksession.getKnowledgeBase().getFactType("org.drools.compiler.test","Person");
             assertNotNull(person);
-        FactType student = ksession.getKnowledgeBase().getFactType("org.kie.compiler.test","Student");
+        FactType student = ksession.getKnowledgeBase().getFactType("org.drools.compiler.test","Student");
             assertNotNull(student);
 
-        FactType worker = ksession.getKnowledgeBase().getFactType("org.kie.compiler.anothertest","Worker");
+        FactType worker = ksession.getKnowledgeBase().getFactType("org.drools.compiler.anothertest","Worker");
             assertNotNull(worker);
 
         FactType ltss = ksession.getKnowledgeBase().getFactType("defaultpkg","SubLTStudent");
@@ -222,7 +222,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
      public void testFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
-        FactType test = ksession.getKnowledgeBase().getFactType("org.kie.compiler", "MyBean3");
+        FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler", "MyBean3");
 
         Object x = test.newInstance();
         assertNotNull(x);
@@ -251,7 +251,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     public void testBoxedFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
-        FactType test = ksession.getKnowledgeBase().getFactType("org.kie.compiler","MyBoxBean");
+        FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxBean");
 
         Object x = test.newInstance();
         assertNotNull(x);
@@ -275,7 +275,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     public void testExpressionFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
-        FactType test = ksession.getKnowledgeBase().getFactType("org.kie.compiler","MyBoxExpressionBean");
+        FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
 
         Object x = test.newInstance();
         assertNotNull(x);
@@ -296,7 +296,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
-        FactType test2 = ksession.getKnowledgeBase().getFactType("org.kie.compiler","MySimpleExpressionBean");
+        FactType test2 = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MySimpleExpressionBean");
 
         x = test2.newInstance();
         assertNotNull(x);
@@ -415,7 +415,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testExtendFromOtherPackage() throws Exception {
 
-        String s1 = "package org.kie.test.pack1;\n" +
+        String s1 = "package org.drools.test.pack1;\n" +
                 "\n" +
                 "declare Base\n" +
                 "  id    : int\n" +
@@ -425,10 +425,10 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  field : int\n" +
                 "end\n";
 
-        String s2 = "package org.kie.test.pack2;\n" +
+        String s2 = "package org.drools.test.pack2;\n" +
                 "\n" +
-                "import org.kie.test.pack1.Base;\n" +
-                "import org.kie.test.pack1.Sub;\n" +
+                "import org.drools.test.pack1.Base;\n" +
+                "import org.drools.test.pack1.Sub;\n" +
                 "\n" +
                 "declare Sub end\n" +
                 "\n" +
@@ -488,7 +488,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testInheritAnnotationsInOtherPackage() throws Exception {
 
-        String s1 = "package org.kie.test.pack1;\n" +
+        String s1 = "package org.drools.test.pack1;\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "declare Event\n" +
@@ -505,9 +505,9 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "end";
 
 
-        String s2 = "package org.kie.test.pack2;\n" +
+        String s2 = "package org.drools.test.pack2;\n" +
                 "\n" +
-                "import org.kie.test.pack1.Event;\n" +
+                "import org.drools.test.pack1.Event;\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "declare Event end\n" +
@@ -593,7 +593,7 @@ public class ExtendsTest extends CommonTestMethodBase {
         // car is a java class with attributes
         // brand (default ferrari)
         // expensive (default true)
-        String s1 = "package org.kie;\n" +
+        String s1 = "package org.drools;\n" +
                 "global java.util.List list;\n" +
                 "declare Car end\n" +
                 "\n" +

@@ -999,7 +999,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                            results );
 
         // CASE 1: remove rule
-        ruleBase.removeRule( "org.kie.test",
+        ruleBase.removeRule( "org.drools.test",
                              "like stilton" );
 
         InternalFactHandle stilton3 = (InternalFactHandle) session.insert( new Cheese( "stilton",
@@ -1031,7 +1031,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                            results );
 
         // CASE 2: remove pkg
-        ruleBase.removePackage( "org.kie.test" );
+        ruleBase.removePackage( "org.drools.test" );
 
         InternalFactHandle stilton4 = (InternalFactHandle) session.insert( new Cheese( "stilton",
                                                                                        20 ) );
@@ -1429,7 +1429,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testSinglePattern() throws Exception {
         String rule = "package org.test;\n";
-        rule += "import org.kie.Person\n";
+        rule += "import org.drools.Person\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "when\n";
@@ -1476,8 +1476,8 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testSingleRuleSingleJoinNodePattern() throws Exception {
         String rule = "package org.test;\n";
-        rule += "import org.kie.Person\n";
-        rule += "import org.kie.Cheese\n";
+        rule += "import org.drools.Person\n";
+        rule += "import org.drools.Cheese\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "when\n";
@@ -1570,8 +1570,8 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testMultiRuleMultiJoinNodePatternsWithHalt() throws Exception {
         String rule1 = "package org.test;\n";
-        rule1 += "import org.kie.Person\n";
-        rule1 += "import org.kie.Cheese\n";
+        rule1 += "import org.drools.Person\n";
+        rule1 += "import org.drools.Cheese\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule \"Rule 1\"\n";
         rule1 += "when\n";
@@ -1582,9 +1582,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule1 += "end";
 
         String rule2 = "package org.test;\n";
-        rule2 += "import org.kie.Person\n";
-        rule2 += "import org.kie.Cheese\n";
-        rule2 += "import org.kie.Cell\n";
+        rule2 += "import org.drools.Person\n";
+        rule2 += "import org.drools.Cheese\n";
+        rule2 += "import org.drools.Cell\n";
         rule2 += "global java.util.List list\n";
         rule2 += "rule \"Rule 2\"\n";
         rule2 += "when\n";
@@ -1596,10 +1596,10 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "end";
 
         String rule3 = "package org.test;\n";
-        rule3 += "import org.kie.FactA\n";
-        rule3 += "import org.kie.FactB\n";
-        rule3 += "import org.kie.FactC\n";
-        rule3 += "import org.kie.Person\n";
+        rule3 += "import org.drools.FactA\n";
+        rule3 += "import org.drools.FactB\n";
+        rule3 += "import org.drools.FactC\n";
+        rule3 += "import org.drools.Person\n";
         rule3 += "global java.util.List list\n";
         rule3 += "rule \"Rule 3\"\n";
         rule3 += "when\n";
@@ -1706,10 +1706,10 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testNot() throws Exception {
-        String header = "package org.kie.test;\n";
+        String header = "package org.drools.test;\n";
         header += "import java.util.List;\n";
-        header += "import org.kie.Person\n";
-        header += "import org.kie.Cheese\n";
+        header += "import org.drools.Person\n";
+        header += "import org.drools.Cheese\n";
         header += "global java.util.List list;\n";
 
         String rule1 = "rule \"not rule test\"\n";
@@ -1837,10 +1837,10 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testExists() throws Exception {
-        String header = "package org.kie.test;\n";
+        String header = "package org.drools.test;\n";
         header += "import java.util.List;\n";
-        header += "import org.kie.Person\n";
-        header += "import org.kie.Cheese\n";
+        header += "import org.drools.Person\n";
+        header += "import org.drools.Cheese\n";
         header += "global java.util.List list;\n";
 
         String rule1 = "rule \"not rule test\"\n";
@@ -1979,10 +1979,10 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testTruthMaintenance() throws Exception {
-        String header = "package org.kie.test;\n";
+        String header = "package org.drools.test;\n";
         header += "import java.util.List;\n";
-        header += "import org.kie.Person\n";
-        header += "import org.kie.Cheese\n";
+        header += "import org.drools.Person\n";
+        header += "import org.drools.Cheese\n";
         header += "global Cheese cheese;\n";
         header += "global Person person;\n";
         header += "global java.util.List list;\n";
@@ -2054,7 +2054,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testActivationGroups() throws Exception {
         String rule1 = "package org.test;\n";
-        rule1 += "import org.kie.Cheese\n";
+        rule1 += "import org.drools.Cheese\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule \"Rule 1\"\n";
         rule1 += "    activation-group \"activation-group-1\"\n";
@@ -2066,7 +2066,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule1 += "end";
 
         String rule2 = "package org.test;\n";
-        rule2 += "import org.kie.Cheese\n";
+        rule2 += "import org.drools.Cheese\n";
         rule2 += "global java.util.List list\n";
         rule2 += "rule \"Rule 2\"\n";
         rule2 += "    salience 10\n";
@@ -2079,7 +2079,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "end";
 
         String rule3 = "package org.test;\n";
-        rule3 += "import org.kie.Cheese\n";
+        rule3 += "import org.drools.Cheese\n";
         rule3 += "global java.util.List list\n";
         rule3 += "rule \"Rule 3\"\n";
         rule3 += "    activation-group \"activation-group-1\"\n";
@@ -2091,7 +2091,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule3 += "end";
 
         String rule4 = "package org.test;\n";
-        rule4 += "import org.kie.Cheese\n";
+        rule4 += "import org.drools.Cheese\n";
         rule4 += "global java.util.List list\n";
         rule4 += "rule \"Rule 4\"\n";
         rule4 += "    activation-group \"activation-group-2\"\n";
@@ -2141,7 +2141,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testAgendaGroups() throws Exception {
         String rule1 = "package org.test;\n";
-        rule1 += "import org.kie.Cheese\n";
+        rule1 += "import org.drools.Cheese\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule \"Rule 1\"\n";
         rule1 += "    agenda-group \"agenda-group-1\"\n";
@@ -2153,7 +2153,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule1 += "end";
 
         String rule2 = "package org.test;\n";
-        rule2 += "import org.kie.Cheese\n";
+        rule2 += "import org.drools.Cheese\n";
         rule2 += "global java.util.List list\n";
         rule2 += "rule \"Rule 2\"\n";
         rule2 += "    salience 10\n";
@@ -2166,7 +2166,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "end";
 
         String rule3 = "package org.test;\n";
-        rule3 += "import org.kie.Cheese\n";
+        rule3 += "import org.drools.Cheese\n";
         rule3 += "global java.util.List list\n";
         rule3 += "rule \"Rule 3\"\n";
         rule3 += "    salience 10\n";
@@ -2180,7 +2180,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule3 += "end";
 
         String rule4 = "package org.test;\n";
-        rule4 += "import org.kie.Cheese\n";
+        rule4 += "import org.drools.Cheese\n";
         rule4 += "global java.util.List list\n";
         rule4 += "rule \"Rule 4\"\n";
         rule4 += "    agenda-group \"agenda-group-2\"\n";
@@ -2238,7 +2238,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testRuleFlowGroups() throws Exception {
         String rule1 = "package org.test;\n";
-        rule1 += "import org.kie.Cheese\n";
+        rule1 += "import org.drools.Cheese\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule \"Rule 1\"\n";
         rule1 += "    ruleflow-group \"ruleflow-group-1\"\n";
@@ -2250,7 +2250,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule1 += "end";
 
         String rule2 = "package org.test;\n";
-        rule2 += "import org.kie.Cheese\n";
+        rule2 += "import org.drools.Cheese\n";
         rule2 += "global java.util.List list\n";
         rule2 += "rule \"Rule 2\"\n";
         rule2 += "    salience 10\n";
@@ -2263,7 +2263,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "end";
 
         String rule3 = "package org.test;\n";
-        rule3 += "import org.kie.Cheese\n";
+        rule3 += "import org.drools.Cheese\n";
         rule3 += "global java.util.List list\n";
         rule3 += "rule \"Rule 3\"\n";
         rule3 += "    salience 10\n";
@@ -2277,7 +2277,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule3 += "end";
 
         String rule4 = "package org.test;\n";
-        rule4 += "import org.kie.Cheese\n";
+        rule4 += "import org.drools.Cheese\n";
         rule4 += "global java.util.List list\n";
         rule4 += "rule \"Rule 4\"\n";
         rule4 += "    ruleflow-group \"ruleflow-group-2\"\n";
@@ -2335,8 +2335,8 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testAccumulate() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        Reader source = new StringReader( "package org.kie\n" + 
-                "import org.kie.Message\n" + 
+        Reader source = new StringReader( "package org.drools\n" +
+                "import org.drools.Message\n" +
                 "global java.util.List results\n" + 
                 "rule MyRule\n" + 
                 "  when\n" +
@@ -2379,7 +2379,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testAccumulate2() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        Reader source = new StringReader( "package org.kie\n" + "\n" + "import org.kie.Message\n" + "\n" + "rule MyRule\n" + "  when\n" + "    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" + "  then\n"
+        Reader source = new StringReader( "package org.drools\n" + "\n" + "import org.drools.Message\n" + "\n" + "rule MyRule\n" + "  when\n" + "    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" + "  then\n"
                                           + "    System.out.println(\"Found messages\");\n" + "end" );
         builder.addPackageFromDrl( source );
         Package pkg = builder.getPackage();

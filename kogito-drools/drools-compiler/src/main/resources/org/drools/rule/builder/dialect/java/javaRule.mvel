@@ -1,8 +1,8 @@
 @declare{"returnValueMethod"}
-public static org.kie.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+public static org.drools.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
-    return org.kie.base.FieldFactory.getInstance().getFieldValue( @{text} );
+    return org.drools.base.FieldFactory.getInstance().getFieldValue( @{text} );
 }
 @end{}
 
@@ -42,9 +42,9 @@ public static class @{className} implements java.io.Serializable {
         @{initCode}
     }
     
-    public void accumulate(org.kie.WorkingMemory workingMemory,
-                           org.kie.common.InternalFactHandle handle,
-                           org.kie.rule.Declaration[] innerDeclarations, 
+    public void accumulate(org.drools.WorkingMemory workingMemory,
+                           org.drools.common.InternalFactHandle handle,
+                           org.drools.rule.Declaration[] innerDeclarations, 
                            Object object @if{declarations != empty}, @end{}
                            @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
@@ -60,8 +60,8 @@ public static class @{className} implements java.io.Serializable {
         @{actionCode}
     }
     
-    public void reverse(org.kie.WorkingMemory workingMemory,
-                           org.kie.common.InternalFactHandle handle,
+    public void reverse(org.drools.WorkingMemory workingMemory,
+                           org.drools.common.InternalFactHandle handle,
                            Object object@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                            ) throws Exception {
@@ -100,21 +100,21 @@ public static class @{className} implements java.io.Serializable {
 @end{}
 
 @declare{"consequenceMethod"}
-public static void @{methodName}(org.kie.spi.KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.kie.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.kie.runtime.rule.RuleContext kcontext = drools;
+public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.kie.runtime.rule.RuleContext kcontext = drools;
     @{text}
 }
 @end{}
 
 @declare{"actionMethod"}
-public static void @{methodName}(org.kie.spi.KnowledgeHelper drools@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","}, org.kie.spi.ProcessContext context ) throws Exception {
-    org.kie.runtime.process.ProcessContext kcontext = context;
+public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","}, org.drools.spi.ProcessContext context ) throws Exception {
+    org.drools.runtime.process.ProcessContext kcontext = context;
     @{text}
 }
 @end{}
 
 @declare{"returnValueEvaluatorMethod"}
-public static Object @{methodName}(org.kie.spi.ProcessContext context@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
-    org.kie.runtime.process.ProcessContext kcontext = context;
+public static Object @{methodName}(org.drools.spi.ProcessContext context@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
+    org.drools.runtime.process.ProcessContext kcontext = context;
     @{text}
 }
 @end{}

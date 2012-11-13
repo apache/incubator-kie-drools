@@ -1,6 +1,6 @@
 package test;
 
-import org.kie.integrationtests.eventgenerator.*;
+import org.drools.integrationtests.eventgenerator.*;
 
 query "all inserted events"
     Event()

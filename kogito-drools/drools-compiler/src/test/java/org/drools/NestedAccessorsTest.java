@@ -8,7 +8,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessor() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(type == \"gorgonzola\", price == 10) )\n" +
                 "then\n" +
@@ -27,7 +27,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessorWithBinding() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "global StringBuilder sb\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(price == 10, $type : type) )\n" +
@@ -52,7 +52,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testDoubleNestedAccessor() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(price == 10, type.(length == 10) ) )\n" +
                 "then\n" +
@@ -71,7 +71,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessorWithInlineCast() throws Exception {
-        String str = "import org.kie.*;\n" +
+        String str = "import org.drools.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", address#LongAddress.(country == \"uk\", suburb == \"suburb\") )\n" +
                 "then\n" +

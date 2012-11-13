@@ -1,7 +1,7 @@
-package org.kie.test;
+package org.drools.test;
 
-import org.kie.Address;
-import org.kie.Person;
+import org.drools.Address;
+import org.drools.Person;
 import java.util.ArrayList;
 
 dialect "mvel"

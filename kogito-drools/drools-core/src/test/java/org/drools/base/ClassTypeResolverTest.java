@@ -97,17 +97,17 @@ public class ClassTypeResolverTest {
             // success
         }
         assertEquals( Cheese.class,
-                      resolver.resolveType( "org.kie.Cheese" ) );
+                      resolver.resolveType( "org.drools.Cheese" ) );
     }
 
     @Test
     public void testResolveObjectFromImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.Cheese" );
-        resolver.addImport( "org.kie.FirstClass" );
-        resolver.addImport( "org.kie.FirstClass.AlternativeKey" );
-        resolver.addImport( "org.kie.SecondClass" );
-        resolver.addImport( "org.kie.SecondClass.AlternativeKey" );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.FirstClass" );
+        resolver.addImport( "org.drools.FirstClass.AlternativeKey" );
+        resolver.addImport( "org.drools.SecondClass" );
+        resolver.addImport( "org.drools.SecondClass.AlternativeKey" );
 
         assertEquals( String.class,
                       resolver.resolveType( "String" ) );
@@ -116,22 +116,22 @@ public class ClassTypeResolverTest {
         assertEquals( Cheese.class,
                       resolver.resolveType( "Cheese" ) );
         assertEquals( Cheese.class,
-                      resolver.resolveType( "org.kie.Cheese" ) );
+                      resolver.resolveType( "org.drools.Cheese" ) );
         assertEquals( FirstClass.class,
-                      resolver.resolveType( "org.kie.FirstClass" ) );
+                      resolver.resolveType( "org.drools.FirstClass" ) );
         assertEquals( FirstClass.AlternativeKey.class,
-                      resolver.resolveType( "org.kie.FirstClass.AlternativeKey" ) );
+                      resolver.resolveType( "org.drools.FirstClass.AlternativeKey" ) );
 
         assertEquals( SecondClass.class,
-                      resolver.resolveType( "org.kie.SecondClass" ) );
+                      resolver.resolveType( "org.drools.SecondClass" ) );
         assertEquals( SecondClass.AlternativeKey.class,
-                      resolver.resolveType( "org.kie.SecondClass.AlternativeKey" ) );
+                      resolver.resolveType( "org.drools.SecondClass.AlternativeKey" ) );
     }
 
     @Test
     public void testResolveObjectFromImportNested() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.FirstClass" );
+        resolver.addImport( "org.drools.FirstClass" );
 
         assertEquals( FirstClass.AlternativeKey.class,
                       resolver.resolveType( "FirstClass.AlternativeKey" ) );
@@ -141,11 +141,11 @@ public class ClassTypeResolverTest {
     public void testResolveFullTypeName() throws Exception {
 
         final TypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.Cheese" );
-        resolver.addImport( "org.kie.FirstClass" );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.FirstClass" );
 
-        assertEquals("org.kie.Cheese", resolver.getFullTypeName("Cheese"));
-        assertEquals("org.kie.FirstClass", resolver.getFullTypeName("FirstClass"));
+        assertEquals("org.drools.Cheese", resolver.getFullTypeName("Cheese"));
+        assertEquals("org.drools.FirstClass", resolver.getFullTypeName("FirstClass"));
 
 
 
@@ -154,7 +154,7 @@ public class ClassTypeResolverTest {
     @Test
     public void testResolveObjectFromImportMultipleClassesDifferentPackages() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.Cheese" );
+        resolver.addImport( "org.drools.Cheese" );
         assertEquals( String.class,
                       resolver.resolveType( "String" ) );
         assertEquals( String.class,
@@ -162,7 +162,7 @@ public class ClassTypeResolverTest {
         assertEquals( Cheese.class,
                       resolver.resolveType( "Cheese" ) );
         assertEquals( Cheese.class,
-                      resolver.resolveType( "org.kie.Cheese" ) );
+                      resolver.resolveType( "org.drools.Cheese" ) );
     }
 
     @Test
@@ -180,13 +180,13 @@ public class ClassTypeResolverTest {
             // success
         }
         assertEquals( Cheese[].class,
-                      resolver.resolveType( "org.kie.Cheese[]" ) );
+                      resolver.resolveType( "org.drools.Cheese[]" ) );
     }
 
     @Test
     public void testResolveArrayOfObjectsFromImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.Cheese" );
+        resolver.addImport( "org.drools.Cheese" );
         assertEquals( String[].class,
                       resolver.resolveType( "String[]" ) );
         assertEquals( String[].class,
@@ -194,7 +194,7 @@ public class ClassTypeResolverTest {
         assertEquals( Cheese[].class,
                       resolver.resolveType( "Cheese[]" ) );
         assertEquals( Cheese[].class,
-                      resolver.resolveType( "org.kie.Cheese[]" ) );
+                      resolver.resolveType( "org.drools.Cheese[]" ) );
     }
 
     @Test
@@ -212,13 +212,13 @@ public class ClassTypeResolverTest {
             // success
         }
         assertEquals( Cheese[][].class,
-                      resolver.resolveType( "org.kie.Cheese[][]" ) );
+                      resolver.resolveType( "org.drools.Cheese[][]" ) );
     }
 
     @Test
     public void testResolveMultidimensionnalArrayOfObjectsFromImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.Cheese" );
+        resolver.addImport( "org.drools.Cheese" );
         assertEquals( String[][].class,
                       resolver.resolveType( "String[][]" ) );
         assertEquals( String[][].class,
@@ -226,7 +226,7 @@ public class ClassTypeResolverTest {
         assertEquals( Cheese[][].class,
                       resolver.resolveType( "Cheese[][]" ) );
         assertEquals( Cheese[][].class,
-                      resolver.resolveType( "org.kie.Cheese[][]" ) );
+                      resolver.resolveType( "org.drools.Cheese[][]" ) );
     }
     
     @Test
@@ -246,17 +246,17 @@ public class ClassTypeResolverTest {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         
         // single nesting
-        resolver.addImport( "org.kie.Person.Nested1" );
+        resolver.addImport( "org.drools.Person.Nested1" );
         assertEquals( org.drools.Person.Nested1.class,
                       resolver.resolveType( "Nested1" ) );
         
         // double nesting
-        resolver.addImport( "org.kie.Person.Nested1.Nested2" );
+        resolver.addImport( "org.drools.Person.Nested1.Nested2" );
         assertEquals( org.drools.Person.Nested1.Nested2.class,
                       resolver.resolveType( "Nested2" ) );
         
         // triple nesting
-        resolver.addImport( "org.kie.Person.Nested1.Nested2.Nested3" );
+        resolver.addImport( "org.drools.Person.Nested1.Nested2.Nested3" );
         assertEquals( org.drools.Person.Nested1.Nested2.Nested3.class,
                       resolver.resolveType( "Nested3" ) );
         

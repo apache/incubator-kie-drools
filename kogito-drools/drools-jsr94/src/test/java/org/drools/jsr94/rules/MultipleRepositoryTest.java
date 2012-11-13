@@ -79,7 +79,7 @@ public class MultipleRepositoryTest {
     public RuleServiceProvider getServiceProvider(final String url,
                                                   final String ruleset) throws Exception {
         // create the provider
-        final Class clazz = this.getClass().getClassLoader().loadClass( "org.kie.jsr94.rules.RuleServiceProviderImpl" );
+        final Class clazz = this.getClass().getClassLoader().loadClass( "org.drools.jsr94.rules.RuleServiceProviderImpl" );
         RuleServiceProviderManager.registerRuleServiceProvider( url,
                                                                 clazz );
         final RuleServiceProvider serviceProvider = RuleServiceProviderManager.getRuleServiceProvider( url );

@@ -246,8 +246,8 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testArrays() throws Exception {
         String text = "package test_mvel;\n";
-        text += "import org.kie.integrationtests.TestObject;\n";
-        text += "import function org.kie.integrationtests.TestObject.array;\n";;
+        text += "import org.drools.integrationtests.TestObject;\n";
+        text += "import function org.drools.integrationtests.TestObject.array;\n";;
         text += "no-loop true\n";
         text += "dialect \"mvel\"\n";
         text += "rule \"1\"\n";
@@ -862,7 +862,7 @@ public class MVELTest extends CommonTestMethodBase {
         //test various in consequence
         String strBegin = "" +
             "package org.kie \n" +
-            "import org.kie.Cheese \n" +
+            "import org.drools.Cheese \n" +
             "dialect \"mvel\"\n" +
             "rule rule1 \n" +
             "when \n" +
