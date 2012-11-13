@@ -18,12 +18,12 @@ package org.jbpm.task.wih;
 import java.util.Date;
 
 import org.jbpm.task.utils.OnErrorAction;
-import org.drools.runtime.KnowledgeRuntime;
+import org.kie.runtime.KnowledgeRuntime;
 import org.jbpm.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;

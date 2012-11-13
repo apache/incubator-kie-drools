@@ -7,10 +7,10 @@
   <header>
     <variables>
       <variable name="var1" >
-        <type name="org.kie.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
       </variable>
       <variable name="var2" >
-        <type name="org.kie.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       </variable>
     </variables>
   </header>

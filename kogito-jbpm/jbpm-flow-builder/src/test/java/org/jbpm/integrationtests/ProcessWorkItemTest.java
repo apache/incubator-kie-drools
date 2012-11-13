@@ -36,17 +36,17 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"UserName\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>John Doe</value>\n" +
     		"      </variable>\n" +
      		"      <variable name=\"Person\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"org.kie.Person\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.kie.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"Number\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -56,25 +56,25 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "    <workItem id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>#{UserName}</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Content\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>#{Person.name}</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Attachment\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <mapping type=\"in\" from=\"MyObject\" to=\"Attachment\" />" +
@@ -149,17 +149,17 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"UserName\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>John Doe</value>\n" +
     		"      </variable>\n" +
      		"      <variable name=\"Person\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"Number\" >\n" +
-    		"        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -169,25 +169,25 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "    <workItem id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>#{UserName}</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Content\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>#{Person.name}</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Attachment\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <mapping type=\"in\" from=\"MyObject\" to=\"Attachment\" />" +

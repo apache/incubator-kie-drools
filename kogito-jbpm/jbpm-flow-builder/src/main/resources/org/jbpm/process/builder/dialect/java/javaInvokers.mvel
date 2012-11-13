@@ -1,7 +1,7 @@
 @declare{"actionInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.jbpm.process.instance.impl.Action, org.kie.spi.CompiledInvoker
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.Action, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
@@ -30,7 +30,7 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Actio
 @declare{"returnValueEvaluatorInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.jbpm.process.instance.impl.ReturnValueEvaluator, org.kie.spi.CompiledInvoker
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 

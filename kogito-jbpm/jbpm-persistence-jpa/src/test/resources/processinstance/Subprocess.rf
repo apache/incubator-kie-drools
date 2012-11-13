@@ -7,11 +7,11 @@
   <header>
     <variables>
       <variable name="var" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value></value>
       </variable>
       <variable name="type" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value></value>
       </variable>
     </variables>

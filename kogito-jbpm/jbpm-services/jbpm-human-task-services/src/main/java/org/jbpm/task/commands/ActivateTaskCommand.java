@@ -16,7 +16,7 @@
 package org.jbpm.task.commands;
 
 import javax.enterprise.util.AnnotationLiteral;
-import org.drools.command.Context;
+import org.kie.command.Context;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;

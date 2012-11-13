@@ -21,11 +21,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.drools.definition.process.Process;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.definition.process.Process;
+import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;

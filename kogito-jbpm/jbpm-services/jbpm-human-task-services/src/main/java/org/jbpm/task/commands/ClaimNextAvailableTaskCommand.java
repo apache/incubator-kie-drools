@@ -16,7 +16,7 @@
 package org.jbpm.task.commands;
 
 import java.util.List;
-import org.drools.command.Context;
+import org.kie.command.Context;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.query.TaskSummary;
 

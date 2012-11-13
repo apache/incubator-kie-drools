@@ -17,7 +17,7 @@ package org.jbpm.task.commands;
 
 import org.jbpm.task.annotations.CommandBased;
 import javax.inject.Inject;
-import org.drools.command.Context;
+import org.kie.command.Context;
 import org.jboss.seam.transaction.Transactional;
 
 import org.jbpm.task.api.TaskCommandExecutor;

@@ -149,10 +149,10 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"x\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"y\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +
@@ -370,7 +370,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"x\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +

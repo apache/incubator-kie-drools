@@ -16,7 +16,7 @@
 package org.droolsjbpm.services.impl.helpers;
 
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 /**
  *
  * @author salaboy

@@ -22,7 +22,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import org.drools.runtime.KnowledgeRuntime;
+import org.kie.runtime.KnowledgeRuntime;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;

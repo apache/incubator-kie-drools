@@ -7,10 +7,10 @@
   <header>
     <variables>
       <variable name="files" >
-        <type name="org.kie.process.core.datatype.impl.type.UndefinedDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.UndefinedDataType" />
       </variable>
       <variable name="content" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
       </variable>
     </variables>
   </header>
@@ -19,11 +19,11 @@
     <workItem id="4" name="Finder" x="128" y="16" width="80" height="40" >
       <work name="Finder" >
         <parameter name="Path" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>/some/directory</value>
         </parameter>
         <parameter name="Regex" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>.*txt</value>
         </parameter>
       </work>
@@ -32,7 +32,7 @@
     <workItem id="8" name="Exec" x="559" y="16" width="80" height="40" >
       <work name="Exec" >
         <parameter name="Command" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>cp /some/directory/texts.tar /some/directory/newtexts.tar</value>
         </parameter>
       </work>
@@ -40,11 +40,11 @@
     <workItem id="6" name="Archive" x="462" y="16" width="80" height="40" >
       <work name="Archive" >
         <parameter name="Archive" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>/some/directory/texts.tar</value>
         </parameter>
         <parameter name="Files" >
-          <type name="org.kie.process.core.datatype.impl.type.ListDataType" className="null" />
+          <type name="org.drools.process.core.datatype.impl.type.ListDataType" className="null" />
         </parameter>
       </work>
       <mapping type="in" from="files" to="Files" />
@@ -54,19 +54,19 @@
     <workItem id="7" name="Email" x="560" y="77" width="80" height="40" >
       <work name="Email" >
         <parameter name="To" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>you@mail.com</value>
         </parameter>
         <parameter name="Body" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>An archive has been created for you !</value>
         </parameter>
         <parameter name="Subject" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Archive</value>
         </parameter>
         <parameter name="From" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>me@mail.com</value>
         </parameter>
       </work>
@@ -76,7 +76,7 @@
     <workItem id="4" name="Log" x="86" y="87" width="80" height="40" >
       <work name="Log" >
         <parameter name="Message" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Found file #{file} with content "#{content}"</value>
         </parameter>
       </work>
@@ -84,11 +84,11 @@
     <workItem id="7" name="Transform" x="18" y="29" width="99" height="40" >
       <work name="Transform" >
         <parameter name="OutputType" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>java.lang.String</value>
         </parameter>
         <parameter name="InputObject" >
-          <type name="org.kie.process.core.datatype.impl.type.ObjectDataType" className="null" />
+          <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="null" />
         </parameter>
       </work>
       <mapping type="in" from="file" to="InputObject" />

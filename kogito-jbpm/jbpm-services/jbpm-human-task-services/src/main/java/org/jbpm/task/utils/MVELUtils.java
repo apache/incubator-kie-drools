@@ -20,7 +20,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import org.drools.command.Command;
+import org.kie.command.Command;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AllowedToDelegate;
 import org.jbpm.task.Attachment;

@@ -80,7 +80,7 @@ public class ProcessMilestoneTest extends JbpmTestCase {
             "    </imports>\n" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +

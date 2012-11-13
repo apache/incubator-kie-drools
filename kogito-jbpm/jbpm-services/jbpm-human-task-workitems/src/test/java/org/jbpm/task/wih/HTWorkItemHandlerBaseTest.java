@@ -21,8 +21,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;

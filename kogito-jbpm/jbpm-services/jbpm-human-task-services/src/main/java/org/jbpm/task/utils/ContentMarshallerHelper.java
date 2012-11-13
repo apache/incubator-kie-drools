@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.marshalling.impl.*;
 import org.drools.marshalling.impl.ProtobufMessages.Header;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;

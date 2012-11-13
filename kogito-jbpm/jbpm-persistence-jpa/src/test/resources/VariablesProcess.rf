@@ -7,7 +7,7 @@
   <header>
     <variables>
       <variable name="name" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value>xxx</value>
       </variable>
     </variables>
@@ -29,7 +29,7 @@
     <composite id="5" name="CompositeNode" >
       <variables>
         <variable name="text" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </variable>
       </variables>
       <nodes>
@@ -39,7 +39,7 @@
         <workItem id="2" name="Log" x="130" y="46" width="80" height="40" >
           <work name="MyWork" >
             <parameter name="Message" >
-              <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+              <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
             </parameter>
           </work>
           <mapping type="in" from="text" to="text" />

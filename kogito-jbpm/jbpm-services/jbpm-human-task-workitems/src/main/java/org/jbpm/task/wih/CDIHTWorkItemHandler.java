@@ -25,8 +25,8 @@ import org.jbpm.task.Task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemManager;
 
 import org.jbpm.task.ContentData;
 import org.jbpm.task.annotations.External;

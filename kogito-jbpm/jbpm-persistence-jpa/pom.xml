@@ -20,7 +20,7 @@
       <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.drools</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
     </dependency>
     <dependency>

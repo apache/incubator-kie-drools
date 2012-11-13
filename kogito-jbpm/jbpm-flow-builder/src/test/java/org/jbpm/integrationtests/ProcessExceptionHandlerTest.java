@@ -71,11 +71,11 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>SomeValue</value>\n" +
             "      </variable>\n" +
             "      <variable name=\"faultVar\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"    <exceptionHandlers>\n" +
@@ -169,11 +169,11 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "    <composite id=\"2\" name=\"Composite\" >\n" +
             "      <variables>\n" +
             "        <variable name=\"SomeVar\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>SomeValue</value>\n" +
             "        </variable>\n" +
             "        <variable name=\"FaultVariable\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </variable>\n" +
             "      </variables>\n" +
     		"      <exceptionHandlers>\n" +
@@ -251,11 +251,11 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "    <composite id=\"2\" name=\"Composite\" >\n" +
             "      <variables>\n" +
             "        <variable name=\"SomeVar\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>SomeValue</value>\n" +
             "        </variable>\n" +
             "        <variable name=\"FaultVariable\" >\n" +
-            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </variable>\n" +
             "      </variables>\n" +
     		"      <exceptionHandlers>\n" +

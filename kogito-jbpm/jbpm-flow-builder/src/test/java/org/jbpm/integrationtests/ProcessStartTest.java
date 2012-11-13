@@ -36,10 +36,10 @@ public class ProcessStartTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"SomeOtherVar\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +
@@ -108,10 +108,10 @@ public class ProcessStartTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"SomeOtherVar\" >\n" +
-            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +

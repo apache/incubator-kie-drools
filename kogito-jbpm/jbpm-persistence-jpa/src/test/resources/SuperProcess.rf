@@ -11,27 +11,27 @@
     <humanTask id="6" name="Task1" x="240" y="16" width="80" height="40" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>admin</value>
         </parameter>
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>You need to do task 1 !</value>
         </parameter>
         <parameter name="Content" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value></value>
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>0</value>
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>false</value>
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Task1</value>
         </parameter>
       </work>

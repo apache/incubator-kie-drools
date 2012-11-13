@@ -13,24 +13,24 @@
     </imports>
     <variables>
       <variable name="x" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value></value>
       </variable>
       <variable name="y" >
-        <type name="org.kie.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
       </variable>
       <variable name="z" >
-        <type name="org.kie.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       </variable>
       <variable name="a" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value></value>
       </variable>
       <variable name="b" >
-        <type name="org.kie.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
       </variable>
       <variable name="c" >
-        <type name="org.kie.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       </variable>
     </variables>
   </header>
@@ -41,22 +41,22 @@
     <humanTask id="4" name="Human Task" x="208" y="16" width="93" height="48" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Content" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
@@ -79,22 +79,22 @@ kcontext.setVariable("c", new MyVariableSerializable("This is a new test Seriali
     <humanTask id="7" name="Human Task" x="445" y="20" width="80" height="40" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Content" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
@@ -115,22 +115,22 @@ kcontext.setVariable("c", new MyVariableSerializable("This is a changed test Ser
     <humanTask id="9" name="Human Task" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Content" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>

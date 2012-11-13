@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.NodeInstanceContainer;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exclusive.ExclusiveGroup;
@@ -39,10 +43,6 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.NodeInstanceContainer;
 
 /**
  * Default implementation of a RuleFlow node instance.

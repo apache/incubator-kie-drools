@@ -17,7 +17,7 @@ package org.droolsjbpm.services.api;
 
 import java.util.Collection;
 import java.util.Map;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  *

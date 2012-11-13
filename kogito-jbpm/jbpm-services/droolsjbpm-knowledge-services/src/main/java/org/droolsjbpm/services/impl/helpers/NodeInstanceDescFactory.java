@@ -15,7 +15,7 @@
  */
 package org.droolsjbpm.services.impl.helpers;
 
-import org.drools.runtime.process.NodeInstance;
+import org.kie.runtime.process.NodeInstance;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 
 /**
