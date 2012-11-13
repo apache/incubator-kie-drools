@@ -27,9 +27,11 @@ import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
+import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.RuntimeOperationsException;
+import javax.management.StandardMBean;
 import javax.management.openmbean.ArrayType;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.CompositeDataSupport;
@@ -51,7 +53,10 @@ import org.drools.base.ClassObjectType;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.Package;
+import org.kie.management.KBaseConfigurationMonitorMBean;
+import org.kie.management.ObjectTypeNodeMonitorMBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation for the KnowledgeBaseMBean
@@ -59,6 +64,8 @@ import org.drools.rule.Package;
 public class KnowledgeBaseMonitoring
     implements
     DynamicMBean {
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBaseMonitoring.class);
 
     private static final String ATTR_PACKAGES = "Packages";
     private static final String ATTR_GLOBALS = "Globals";
@@ -184,7 +191,7 @@ public class KnowledgeBaseMonitoring
     }
 
     /* (non-Javadoc)
-     * @see org.kie.management.KnowledgeBaseMBean#getGlobals()
+     * @see org.drools.management.KnowledgeBaseMBean#getGlobals()
      */
     @SuppressWarnings("unchecked")
     public TabularData getGlobals() throws OpenDataException {
@@ -200,21 +207,21 @@ public class KnowledgeBaseMonitoring
     }
 
     /* (non-Javadoc)
-     * @see org.kie.management.KnowledgeBaseMBean#getId()
+     * @see org.drools.management.KnowledgeBaseMBean#getId()
      */
     public String getId() {
         return kbase.getId();
     }
 
     /* (non-Javadoc)
-     * @see org.kie.management.KnowledgeBaseMBean#getPackages()
+     * @see org.drools.management.KnowledgeBaseMBean#getPackages()
      */
     public String[] getPackages() {
         return kbase.getPackagesMap().keySet().toArray( new String[0] );
     }
 
     /* (non-Javadoc)
-     * @see org.kie.management.KnowledgeBaseMBean#getSessionCount()
+     * @see org.drools.management.KnowledgeBaseMBean#getSessionCount()
      */
     public long getSessionCount() {
         return kbase.getWorkingMemoryCounter();
@@ -224,17 +231,27 @@ public class KnowledgeBaseMonitoring
         for ( EntryPointNode epn : kbase.getRete().getEntryPointNodes().values() ) {
             for ( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
                 ObjectTypeNodeMonitor otnm = new ObjectTypeNodeMonitor( otn );
-                ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType=" + ((ClassObjectType) otn.getObjectType()).getClassName() );
-                DroolsManagementAgent.getInstance().registerMBean( kbase,
-                                                                   otnm,
-                                                                   name );
+                try {
+                    final StandardMBean adapter = new StandardMBean(otnm, ObjectTypeNodeMonitorMBean.class);
+                    ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType=" + ((ClassObjectType) otn.getObjectType()).getClassName() );
+                    DroolsManagementAgent.getInstance().registerMBean( kbase,
+                                                                       adapter,
+                                                                       name );
+                } catch ( NotCompliantMBeanException e ) {
+                    logger.error( "Unable to register ObjectTypeNodeMonitor mbean for OTN "+otn.getObjectType()+" into the platform MBean Server", e);
+                }
             }
         }
-        KBaseConfigurationMonitor kbcm = new KBaseConfigurationMonitor( kbase.getConfiguration() );
-        ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=Configuration" );
-        DroolsManagementAgent.getInstance().registerMBean( kbase,
-                                                           kbcm,
-                                                           name );
+        final KBaseConfigurationMonitor kbcm = new KBaseConfigurationMonitor( kbase.getConfiguration() );
+        try {
+            final StandardMBean adapter = new StandardMBean(kbcm, KBaseConfigurationMonitorMBean.class);
+            ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=Configuration" );
+            DroolsManagementAgent.getInstance().registerMBean( kbase,
+                                                               adapter,
+                                                               name );
+        } catch ( NotCompliantMBeanException e ) {
+            logger.error( "Unable to register KBaseConfigurationMonitor mbean into the platform MBean Server", e);
+        }
     }
 
     public void stopInternalMBeans() {

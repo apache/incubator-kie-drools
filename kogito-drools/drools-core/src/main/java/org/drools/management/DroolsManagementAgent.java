@@ -24,11 +24,12 @@ import java.util.Map;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import javax.management.StandardMBean;
 
-import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.kie.management.DroolsManagementAgentMBean;
+import org.kie.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,8 @@ public class DroolsManagementAgent
                 MBeanServer mbs = getMBeanServer();
                 ObjectName mbName = createObjectName( MBEAN_NAME );
                 if ( !mbs.isRegistered( mbName ) ) {
-                    mbs.registerMBean( INSTANCE,
+                    final StandardMBean adapter = new StandardMBean(INSTANCE, DroolsManagementAgentMBean.class);
+                    mbs.registerMBean( adapter,
                                        mbName );
                 }
             } catch ( Exception e ) {
@@ -76,14 +78,14 @@ public class DroolsManagementAgent
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.monitoring.DroolsManagementAgentMBean#getRulebaseCount()
+     * @see org.drools.reteoo.monitoring.DroolsManagementAgentMBean#getRulebaseCount()
      */
     public synchronized long getKnowledgeBaseCount() {
         return kbases;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.monitoring.DroolsManagementAgentMBean#getSessionCount()
+     * @see org.drools.reteoo.monitoring.DroolsManagementAgentMBean#getSessionCount()
      */
     public synchronized long getSessionCount() {
         return ksessions;
