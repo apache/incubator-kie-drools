@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.fluent.test;
+package org.kie.fluent;
 
-public interface ReflectiveMatcher {
+public interface FluentRoot {
+
+    <P> VariableContext<P> getVariableContext();
+
 }

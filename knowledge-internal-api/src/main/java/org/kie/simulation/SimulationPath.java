@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.kie.simulation;
 
-public interface FluentRoot {
+import java.util.List;
 
-    <P> VariableContext<P> getVariableContext();
+public interface SimulationPath {
+
+    String getName();
+    
+    List<SimulationStep> getSteps();
 
 }

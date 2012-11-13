@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.kie.fluent.test;
 
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
-import org.kie.io.Resource;
+import java.util.Map;
 
-public interface FluentKnowledgeBuilder<T> {
-    
-    T add(Resource resource,
-          ResourceType type);
+import org.kie.command.Context;
 
-    T add(Resource resource,
-          ResourceType type,
-          ResourceConfiguration configuration);
+public interface ReflectiveMatcherAssert {
+
+    void eval(Context context);
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.command;
+package org.kie.fluent;
 
-public interface Context {
-    
-    World getContextManager();
-    
-    String getName();
-    
-    Object get(String identifier);
+import org.kie.command.Command;
+import org.kie.fluent.CommandScript;
+import org.kie.simulation.Simulation;
 
-    void set(String identifier,
-             Object value);
+public interface InternalSimulation extends Simulation, CommandScript {
 
-    void remove(String identifier);
+    void addCommand(Command cmd);
+
+    void newInternalStep(long distance);
+
 }

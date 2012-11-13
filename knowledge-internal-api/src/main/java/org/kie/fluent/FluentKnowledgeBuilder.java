@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.simulation;
+package org.kie.fluent;
 
-import java.util.Collection;
-import java.util.List;
+import org.kie.builder.ResourceConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.Resource;
 
-import org.kie.command.Command;
+public interface FluentKnowledgeBuilder<T> {
+    
+    T add(Resource resource,
+          ResourceType type);
 
-public interface SimulationStep {
-
-    long getDistanceMillis();
-
-    List<Command> getCommands();
+    T add(Resource resource,
+          ResourceType type,
+          ResourceConfiguration configuration);
 
 }

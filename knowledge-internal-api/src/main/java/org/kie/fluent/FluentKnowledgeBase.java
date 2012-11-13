@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.simulation;
+package org.kie.fluent;
 
-import java.util.List;
-
-public interface SimulationPath {
-
-    String getName();
+public interface FluentKnowledgeBase<T> {
     
-    List<SimulationStep> getSteps();
-
+    T addKnowledgePackages();
+    
 }

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.simulation;
+package org.kie.simulation;
 
-import java.util.Map;
+import java.util.Collection;
+import java.util.List;
 
-public interface Simulation {
+import org.kie.command.Command;
 
-    Map<String, SimulationPath> getPaths();
+public interface SimulationStep {
+
+    long getDistanceMillis();
+
+    List<Command> getCommands();
 
 }
