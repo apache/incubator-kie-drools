@@ -149,10 +149,10 @@ public class JPAKnowledgeService {
     private static void loadProvider() {
         try {
             // we didn't find anything in properties so lets try and us reflection
-            Class<KnowledgeStoreService> cls = (Class<KnowledgeStoreService>) Class.forName( "org.kie.persistence.jpa.KnowledgeStoreServiceImpl" );
+            Class<KnowledgeStoreService> cls = (Class<KnowledgeStoreService>) Class.forName( "org.drools.persistence.jpa.KnowledgeStoreServiceImpl" );
             setJPAKnowledgeServiceProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new RuntimeException( "Provider org.kie.persistence.jpa.KnowledgeStoreServiceImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.persistence.jpa.KnowledgeStoreServiceImpl could not be set.",
                                         e );
         }
     }

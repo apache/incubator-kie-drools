@@ -171,20 +171,20 @@ public class ServiceRegistryImpl
 
     private void init() {
         addDefault( KnowledgeBuilderFactoryService.class,
-                    "org.kie.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
+                    "org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
 
         addDefault( KnowledgeBaseFactoryService.class,
-                    "org.kie.impl.KnowledgeBaseFactoryServiceImpl" );
+                    "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );
 
         addDefault( ResourceFactoryService.class,
-                    "org.kie.io.impl.ResourceFactoryServiceImpl" );
+                    "org.drools.io.impl.ResourceFactoryServiceImpl" );
         
         addDefault(  SystemEventListenerService.class,
-                     "org.kie.impl.SystemEventListenerServiceImpl" );
+                     "org.drools.impl.SystemEventListenerServiceImpl" );
         addDefault(  MarshallerProvider.class,
-                     "org.kie.marshalling.impl.MarshallerProviderImpl");
+                     "org.drools.marshalling.impl.MarshallerProviderImpl");
         addDefault(  ExecutorProvider.class,
-                     "org.kie.concurrent.ExecutorProviderImpl");
+                     "org.drools.concurrent.ExecutorProviderImpl");
 //        addDefault( SystemE.class,
 //        "org.kie.io.impl.ResourceFactoryServiceImpl" );
     }

@@ -120,7 +120,7 @@ public class KnowledgeAgentFactory {
      * {@link #PROVIDER_CLASS_NAME_PROPERTY_NAME}  to point to a diverse implementation of
      * "org.kie.agent.KnowledgeAgentProvider"
      */
-    private static String providerClassName = "org.kie.agent.impl.KnowledgeAgentProviderImpl";
+    private static String providerClassName = "org.drools.agent.impl.KnowledgeAgentProviderImpl";
 
     private static KnowledgeAgentProvider provider;
 
