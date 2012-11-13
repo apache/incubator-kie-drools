@@ -25,7 +25,7 @@ option java_outer_classname = "JBPMMessages";
 //   fresh tag numbers (i.e. tag numbers that were never used in
 //   this protocol buffer, not even by deleted fields).
 
-extend org.kie.marshalling.ProcessData {
+extend org.drools.marshalling.ProcessData {
     repeated ProcessInstance process_instance = 10;
     repeated WorkItem work_item = 11;
     optional int64 timer_id = 13;
@@ -141,7 +141,7 @@ message Variable {
     optional bytes value = 3;
 }
 
-extend org.kie.marshalling.Timers.Timer {
+extend org.drools.marshalling.Timers.Timer {
     optional ProcessTimer proc_timer = 100;
 }
 
@@ -156,7 +156,7 @@ message WorkItem {
 
 message ProcessTimer {
     optional TimerInstance timer = 1;
-    optional org.kie.marshalling.Trigger trigger = 2;
+    optional org.drools.marshalling.Trigger trigger = 2;
 
     message TimerInstance {
         optional int64 id = 1;
