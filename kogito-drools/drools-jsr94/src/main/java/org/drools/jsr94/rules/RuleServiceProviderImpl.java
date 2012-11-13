@@ -117,7 +117,7 @@ public class RuleServiceProviderImpl extends RuleServiceProvider implements java
      * @return
      */
     protected RuleExecutionSetRepository createRuleExecutionSetRepository() {
-        String defaultFactoryName = "org.drools.jsr94.rules.repository.DefaultRuleExecutionSetRepository";
+        String defaultFactoryName = "org.kie.jsr94.rules.repository.DefaultRuleExecutionSetRepository";
         return RuleExecutionSetRepositoryLoader.loadRuleExecutionSetRepository(defaultFactoryName);
     }
 }

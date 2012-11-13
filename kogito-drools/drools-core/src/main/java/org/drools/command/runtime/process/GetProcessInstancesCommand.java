@@ -19,9 +19,9 @@ package org.drools.command.runtime.process;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 

@@ -16,6 +16,7 @@
 
 package org.drools.command;
 
+import org.kie.command.Context;
 import org.kie.runtime.CommandExecutor;
 
 public interface CommandService extends CommandExecutor {

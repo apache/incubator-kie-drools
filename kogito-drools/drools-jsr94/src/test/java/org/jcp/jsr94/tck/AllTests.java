@@ -125,7 +125,7 @@ public class AllTests extends TestSuite {
         conf += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         conf += "<tck-configuration>\n";
         conf += "<test-factory>org.jcp.jsr94.tck.util.TestFactory</test-factory>\n";
-        conf += "<rule-service-provider>org.drools.jsr94.rules.RuleServiceProviderImpl</rule-service-provider>\n";
+        conf += "<rule-service-provider>org.kie.jsr94.rules.RuleServiceProviderImpl</rule-service-provider>\n";
         conf += "<rule-service-provider-jar-url>file://" + jarFile.getAbsolutePath() + "</rule-service-provider-jar-url>\n";
 
         URL url = AllTests.class.getResource( "AllTests.class" );

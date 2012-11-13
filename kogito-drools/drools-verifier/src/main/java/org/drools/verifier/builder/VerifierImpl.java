@@ -77,7 +77,7 @@ public class VerifierImpl
     /*
      * (non-Javadoc)
      * 
-     * @seeorg.drools.verifier.Verifier#addPackageDescr(org.drools.lang.descr.
+     * @seeorg.drools.verifier.Verifier#addPackageDescr(org.kie.lang.descr.
      * PackageDescr)
      */
     public void addPackageDescr(PackageDescr descr) {
@@ -100,7 +100,7 @@ public class VerifierImpl
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.verifier.Verifier#reloadAnalysisKnowledgeBase()
+     * @see org.kie.verifier.Verifier#reloadAnalysisKnowledgeBase()
      */
     public synchronized void reloadVerifierKnowledgeBase() throws Exception {
         updateRuleBase();
@@ -109,7 +109,7 @@ public class VerifierImpl
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.verifier.Verifier#fireAnalysis()
+     * @see org.kie.verifier.Verifier#fireAnalysis()
      */
     public boolean fireAnalysis() {
         return analyse( new ScopesAgendaFilter( true,
@@ -182,7 +182,7 @@ public class VerifierImpl
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.verifier.Verifier#dispose()
+     * @see org.kie.verifier.Verifier#dispose()
      */
     public void dispose() {
         if ( ksession != null ) {

@@ -106,7 +106,7 @@ public class RuleExecutionSetProviderImpl
      * Drools-specific Abstract Syntax Tree (AST) representation and
      * Drools-specific properties.
      * <p/>
-     * This method accepts a <code>org.drools.RuleBase</code> object as its
+     * This method accepts a <code>org.kie.RuleBase</code> object as its
      * vendor-specific AST representation.
      *
      * @param ruleExecutionSetAst the Drools representation of a
@@ -127,7 +127,7 @@ public class RuleExecutionSetProviderImpl
             return localRuleExecutionSetProvider.createRuleExecutionSet( ruleExecutionSetAst,
                                                                          properties );
         } else {
-            throw new IllegalArgumentException( "Serializable object must be " + "an instance of org.drools.rule.RuleSet.  It was " + ruleExecutionSetAst.getClass().getName() );
+            throw new IllegalArgumentException( "Serializable object must be " + "an instance of org.kie.rule.RuleSet.  It was " + ruleExecutionSetAst.getClass().getName() );
         }
     }
 

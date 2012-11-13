@@ -19,10 +19,10 @@ package org.drools.command.runtime;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 @XmlAccessorType(XmlAccessType.NONE)

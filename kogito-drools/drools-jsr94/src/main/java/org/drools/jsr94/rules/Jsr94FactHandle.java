@@ -72,7 +72,7 @@ public class Jsr94FactHandle extends DefaultFactHandle
      *        (more recently created <code>Handle</code>s have greater values
      *         than <code>Handle</code>s created further in the past)
      *
-     * @see org.drools.conflict.RecencyConflictResolver
+     * @see org.kie.conflict.RecencyConflictResolver
      */
     Jsr94FactHandle(final long id,
                     final Object object,

@@ -1,11 +1,12 @@
 package org.drools.world.impl;
 
-import org.drools.command.Context;
-import org.drools.command.ShadowWorld;
-import org.drools.command.World;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.command.Context;
+import org.kie.command.ShadowWorld;
+import org.kie.command.World;
+
 import static org.junit.Assert.*;
 
 public class ShadowContextTest {

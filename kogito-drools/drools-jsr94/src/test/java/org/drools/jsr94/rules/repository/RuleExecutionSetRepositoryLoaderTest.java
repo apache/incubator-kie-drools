@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 public class RuleExecutionSetRepositoryLoaderTest {
 
     /**
-     * Test method for {@link org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryLoader#loadRuleExecutionSetRepository(java.lang.String)}.
+     * Test method for {@link org.kie.jsr94.rules.repository.RuleExecutionSetRepositoryLoader#loadRuleExecutionSetRepository(java.lang.String)}.
      *
      * @throws Exception
      */

@@ -16,12 +16,12 @@
 
 package org.drools.command.runtime.rule;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalAgenda;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.rule.impl.AgendaImpl;
+import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ClearAgendaCommand implements GenericCommand<Object> {

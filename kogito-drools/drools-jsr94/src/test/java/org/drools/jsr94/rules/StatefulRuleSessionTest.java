@@ -99,7 +99,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
 
     @Test
     public void testJsr94FactHandleFactoryAvailable() throws ClassNotFoundException {
-        this.getClass().getClassLoader().loadClass( "org.drools.jsr94.rules.Jsr94FactHandleFactory" );
+        this.getClass().getClassLoader().loadClass( "org.kie.jsr94.rules.Jsr94FactHandleFactory" );
     }
 
     /**

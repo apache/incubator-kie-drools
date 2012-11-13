@@ -124,14 +124,14 @@ implements RuleSheetListener {
     }
 
     /* (non-Javadoc)
-    * @see org.drools.decisiontable.parser.RuleSheetListener#getProperties()
+    * @see org.kie.decisiontable.parser.RuleSheetListener#getProperties()
     */
     public CaseInsensitiveMap getProperties() {
         return this._propertiesListener.getProperties();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.decisiontable.parser.RuleSheetListener#getRuleSet()
+     * @see org.kie.decisiontable.parser.RuleSheetListener#getRuleSet()
      */
     public Package getRuleSet() {
         if ( this._ruleList.isEmpty() ) {

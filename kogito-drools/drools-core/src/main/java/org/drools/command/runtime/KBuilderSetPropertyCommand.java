@@ -16,9 +16,9 @@
 
 package org.drools.command.runtime;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.command.Context;
 
 /**
  *

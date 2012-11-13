@@ -64,7 +64,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.reteoo.FactHandleFactory#newInstance()
+     * @see org.kie.reteoo.FactHandleFactory#newInstance()
      */
     public FactHandleFactory newInstance() {
         return new Jsr94FactHandleFactory();

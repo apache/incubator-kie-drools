@@ -24,6 +24,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Command;
+import org.kie.command.Context;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;

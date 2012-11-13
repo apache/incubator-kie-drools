@@ -19,8 +19,8 @@ package org.drools.fluent.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
+import org.kie.command.Context;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 

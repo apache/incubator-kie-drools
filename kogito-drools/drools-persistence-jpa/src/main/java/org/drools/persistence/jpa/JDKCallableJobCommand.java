@@ -1,7 +1,7 @@
 package org.drools.persistence.jpa;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
+import org.kie.command.Context;
 
 public class JDKCallableJobCommand
     implements

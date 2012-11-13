@@ -16,11 +16,11 @@
 
 package org.drools.fluent.impl;
 
-import org.drools.fluent.InternalSimulation;
-import org.drools.fluent.test.ReflectiveMatcherAssert;
 import org.hamcrest.Matcher;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.fluent.InternalSimulation;
+import org.kie.fluent.test.ReflectiveMatcherAssert;
 
 import static org.junit.Assert.assertThat;
 

@@ -43,7 +43,7 @@ public class DefaultRuleExecutionSetRepository
     }
 
     /* (non-Javadoc)
-     * @see org.drools.jsr94.rules.admin.RuleExecutionSetRepository#getRegistrations()
+     * @see org.kie.jsr94.rules.admin.RuleExecutionSetRepository#getRegistrations()
      */
     public List getRegistrations()
     throws RuleExecutionSetRepositoryException {
@@ -53,7 +53,7 @@ public class DefaultRuleExecutionSetRepository
     }
 
     /* (non-Javadoc)
-     * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#getRuleExecutionSet(java.lang.String, java.util.Map)
+     * @see org.kie.jsr94.rules.repository.RuleExecutionSetRepository#getRuleExecutionSet(java.lang.String, java.util.Map)
      */
     public RuleExecutionSet getRuleExecutionSet(
             String bindUri,
@@ -63,7 +63,7 @@ public class DefaultRuleExecutionSetRepository
     }
 
     /* (non-Javadoc)
-     * @see org.drools.jsr94.rules.admin.RuleExecutionSetRepository#registerRuleExecutionSet(java.lang.String, javax.rules.admin.RuleExecutionSet, java.util.Map)
+     * @see org.kie.jsr94.rules.admin.RuleExecutionSetRepository#registerRuleExecutionSet(java.lang.String, javax.rules.admin.RuleExecutionSet, java.util.Map)
      */
     public void registerRuleExecutionSet(
             String bindUri,
@@ -83,7 +83,7 @@ public class DefaultRuleExecutionSetRepository
     }
 
     /* (non-Javadoc)
-     * @see org.drools.jsr94.rules.admin.RuleExecutionSetRepository#unregisterRuleExecutionSet(java.lang.String, java.util.Map)
+     * @see org.kie.jsr94.rules.admin.RuleExecutionSetRepository#unregisterRuleExecutionSet(java.lang.String, java.util.Map)
      */
     public void unregisterRuleExecutionSet(
             String bindUri,

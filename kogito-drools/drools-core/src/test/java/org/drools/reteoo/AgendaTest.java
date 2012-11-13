@@ -44,7 +44,6 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
@@ -65,6 +64,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.ActivationUnMatchListener;
 
 import static org.junit.Assert.*;
 

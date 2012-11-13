@@ -36,7 +36,7 @@ public class StandaloneDocBuilder {
         drl += "# important information\n";
         drl += "# about this package\n";
         drl += "# it contains some rules\n";
-        drl += "package org.drools.test\n";
+        drl += "package org.kie.test\n";
         drl += "global java.util.List list\n";
         drl += "# Really important information about this rule \n";
         drl += "# Another line because one was not enough \n";

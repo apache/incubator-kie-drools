@@ -204,7 +204,7 @@ public class LocalRuleExecutionSetProviderImpl
             return this.createRuleExecutionSet( pkg,
                                                 properties );
         }
-        throw new RuleExecutionSetCreateException( " Incoming AST object must be an org.drools.rule.Package.  Was " + ruleExecutionSetAst.getClass() );
+        throw new RuleExecutionSetCreateException( " Incoming AST object must be an org.kie.rule.Package.  Was " + ruleExecutionSetAst.getClass() );
     }
 
     /**
@@ -212,7 +212,7 @@ public class LocalRuleExecutionSetProviderImpl
      * <code>RuleSet</code> and Drools-specific properties.
      *
      * @param pkg
-     *            a Drools <code>org.drools.rule.Package</code> representation
+     *            a Drools <code>org.kie.rule.Package</code> representation
      *            of a rule execution set.
      * @param properties
      *            additional properties used to create the RuleExecutionSet

@@ -3,6 +3,7 @@ package org.drools.cdi;
 import javax.inject.Inject;
 
 import org.kie.KnowledgeBase;
+import org.kie.cdi.KBase;
 
 
 public class TestClassImpl implements TestClass {
