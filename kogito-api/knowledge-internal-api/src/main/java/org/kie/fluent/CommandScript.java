@@ -1,4 +1,4 @@
-package org.drools.fluent;
+package org.kie.fluent;
 
 import org.kie.command.Command;
 

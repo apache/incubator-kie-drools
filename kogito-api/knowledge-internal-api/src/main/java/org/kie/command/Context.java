@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.kie.command;
 
-public interface FluentKnowledgeBase<T> {
+public interface Context {
     
-    T addKnowledgePackages();
+    World getContextManager();
     
+    String getName();
+    
+    Object get(String identifier);
+
+    void set(String identifier,
+             Object value);
+
+    void remove(String identifier);
 }

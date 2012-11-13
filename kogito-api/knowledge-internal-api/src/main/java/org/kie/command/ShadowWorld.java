@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.kie.command;
 
 import org.kie.runtime.ExecutionResults;
 

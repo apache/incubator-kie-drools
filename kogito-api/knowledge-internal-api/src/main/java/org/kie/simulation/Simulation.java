@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.kie.simulation;
 
-public interface VariableContext<P> {
-    
-    P get(String name);
-    
-    <T> T get(String name, Class<T> type);
+import java.util.Map;
+
+public interface Simulation {
+
+    Map<String, SimulationPath> getPaths();
 
 }

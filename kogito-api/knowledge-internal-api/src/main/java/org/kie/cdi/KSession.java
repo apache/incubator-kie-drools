@@ -1,4 +1,4 @@
-package org.drools.cdi;
+package org.kie.cdi;
 
 import java.lang.String;import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

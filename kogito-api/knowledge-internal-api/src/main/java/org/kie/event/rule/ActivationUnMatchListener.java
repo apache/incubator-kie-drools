@@ -1,4 +1,4 @@
-package org.drools.event.rule;
+package org.kie.event.rule;
 
 import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.WorkingMemory;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.kie.command;
 
-import org.drools.fluent.CommandScript;
-import org.drools.simulation.Simulation;
-import org.kie.command.Command;
 
-public interface InternalSimulation extends Simulation, CommandScript {
-
-    void addCommand(Command cmd);
-
-    void newInternalStep(long distance);
-
+public interface World extends Context {
+    public static final String        ROOT             = "ROOT";
+    
+    //public Context createContext(String identifier);   
+    
+    public Context getContext(String identifier);   
 }
