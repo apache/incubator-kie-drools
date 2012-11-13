@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.examples.fibonacci
+package org.drools.examples.fibonacci
 
-import org.kie.examples.fibonacci.FibonacciExample.Fibonacci;
+import org.drools.examples.fibonacci.FibonacciExample.Fibonacci;
 
 dialect "mvel"
 

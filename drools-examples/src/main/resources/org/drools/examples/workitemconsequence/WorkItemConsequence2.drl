@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.examples.workitemconsequence
+package org.drools.examples.workitemconsequence
 
-import org.kie.examples.workitemconsequence.WorkItemConsequenceExample2.Greeting;
+import org.drools.examples.workitemconsequence.WorkItemConsequenceExample2.Greeting;
 
 dialect "mvel"
 
@@ -24,8 +24,8 @@ rule "Call Work Item"
     when
         $g : Greeting( $name : name, response == null )
     then
-        org.kie.process.instance.WorkItemManager wiManager = (org.kie.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
-        org.kie.process.instance.impl.WorkItemImpl wiGreeting = new org.kie.process.instance.impl.WorkItemImpl();
+        org.drools.process.instance.WorkItemManager wiManager = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
+        org.drools.process.instance.impl.WorkItemImpl wiGreeting = new org.drools.process.instance.impl.WorkItemImpl();
         wiGreeting.setName( "GreetingWorkItemHandler" );
         wiGreeting.getParameters().put( "name", $name );
         wiManager.internalExecuteWorkItem( wiGreeting );

@@ -1,14 +1,14 @@
-package org.kie.games.pong
+package org.drools.games.pong
 
-import org.kie.games.pong.Ball
-import org.kie.games.pong.Bat
-import org.kie.games.pong.Player
-import org.kie.games.pong.PlayerId
-import org.kie.games.pong.PongGame
-import org.kie.games.pong.PointWin
-import org.kie.games.pong.KeyPressed
-import org.kie.games.pong.Collision
-import org.kie.games.pong.CollisionType
+import org.drools.games.pong.Ball
+import org.drools.games.pong.Bat
+import org.drools.games.pong.Player
+import org.drools.games.pong.PlayerId
+import org.drools.games.pong.PongGame
+import org.drools.games.pong.PointWin
+import org.drools.games.pong.KeyPressed
+import org.drools.games.pong.Collision
+import org.drools.games.pong.CollisionType
 
 import java.lang.Math
 

@@ -1,4 +1,4 @@
-package org.kie.examples.traits
+package org.drools.examples.traits
 
 import java.util.List
 

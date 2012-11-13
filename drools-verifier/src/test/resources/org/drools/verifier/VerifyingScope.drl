@@ -15,17 +15,17 @@
  */
 
 //created on: 18.12.2009
-package org.kie.verifier
+package org.drools.verifier
 
 import java.util.ArrayList;
 
-import org.kie.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReport;
 
-import org.kie.verifier.components.VerifierRule;
+import org.drools.verifier.components.VerifierRule;
 
-import org.kie.verifier.report.components.Severity;
-import org.kie.verifier.report.components.VerifierMessage;
-import org.kie.verifier.report.components.MessageType;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.MessageType;
 
 import java.util.HashMap;
 

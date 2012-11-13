@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.verifier
+package org.drools.verifier
 
 //list any import classes here.
-import org.kie.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReport;
 
 //declare any global variables here
 global VerifierReport result;

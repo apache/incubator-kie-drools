@@ -1,10 +1,10 @@
-package org.kie.games.adventures
+package org.drools.games.adventures
 
-import org.kie.games.adventures.Request;
-import org.kie.games.adventures.Response;
-import org.kie.games.adventures.SessionCharacter
+import org.drools.games.adventures.Request;
+import org.drools.games.adventures.Response;
+import org.drools.games.adventures.SessionCharacter
 
-global org.kie.games.adventures.Counter counter
+global org.drools.games.adventures.Counter counter
 
 dialect "mvel"
 

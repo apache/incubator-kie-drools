@@ -15,7 +15,7 @@
  */
 
 //created on: 12.10.2007
-package org.kie.verifier.redundancy
+package org.drools.verifier.redundancy
 
 //list any import classes here.
 global VerifierReport result;
@@ -26,14 +26,14 @@ global VerifierReport result;
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.kie.verifier.components.SubPattern;
-import org.kie.verifier.components.SubRule;
-import org.kie.verifier.data.VerifierReport;
-import org.kie.verifier.report.components.Redundancy;
-import org.kie.verifier.report.components.VerifierMessage;
-import org.kie.verifier.report.components.Cause;
-import org.kie.verifier.report.components.Severity;
-import org.kie.verifier.report.components.MessageType;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.Cause;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ import java.util.HashMap;
 // Dependencies:
 //
 //    Needs at least one rule from following rules:
-//        package org.kie.verifier.redundancy.restrictions
+//        package org.drools.verifier.redundancy.restrictions
 //            rule "Find redundant VariableRestriction"
 //            rule "Find redundant LiteralRestriction"
 //
@@ -75,7 +75,7 @@ end
 //
 // Dependencies:
 //
-//        package org.kie.verifier.redundancy.possibilities
+//        package org.drools.verifier.redundancy.possibilities
 //            rule "Find pattern possibility redundancy"
 //
 rule "Find redundant pattern possibilities from rule possibilities"

@@ -1,17 +1,17 @@
-package org.kie.games.wumpus.view
+package org.drools.games.wumpus.view
 
-import org.kie.games.wumpus.Cell
-import org.kie.games.wumpus.Direction
-import org.kie.games.wumpus.Hero
-import org.kie.games.wumpus.Gold
-import org.kie.games.wumpus.Pit
-import org.kie.games.wumpus.Wumpus
-import org.kie.games.wumpus.Thing
-import org.kie.games.wumpus.FeelBreeze
-import org.kie.games.wumpus.SeeGlitter
-import org.kie.games.wumpus.FeelBump
-import org.kie.games.wumpus.SmellStench
-import org.kie.games.wumpus.HearScream
+import org.drools.games.wumpus.Cell
+import org.drools.games.wumpus.Direction
+import org.drools.games.wumpus.Hero
+import org.drools.games.wumpus.Gold
+import org.drools.games.wumpus.Pit
+import org.drools.games.wumpus.Wumpus
+import org.drools.games.wumpus.Thing
+import org.drools.games.wumpus.FeelBreeze
+import org.drools.games.wumpus.SeeGlitter
+import org.drools.games.wumpus.FeelBump
+import org.drools.games.wumpus.SmellStench
+import org.drools.games.wumpus.HearScream
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage

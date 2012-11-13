@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.examples.state
+package org.drools.examples.state
  
-import org.kie.examples.state.State;
+import org.drools.examples.state.State;
  
 rule Bootstrap
     when

@@ -1,10 +1,10 @@
-package org.kie.games.adventures
+package org.drools.games.adventures
 
 import java.util.List
 
-import org.kie.games.adventures.Character
-import org.kie.games.adventures.Room
-import org.kie.games.adventures.Location
+import org.drools.games.adventures.Character
+import org.drools.games.adventures.Room
+import org.drools.games.adventures.Location
 
 query connect( Room $x, Room $y ) 
     Door($id, $x, $y;)

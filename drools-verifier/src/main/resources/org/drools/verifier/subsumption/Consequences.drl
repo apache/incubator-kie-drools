@@ -15,12 +15,12 @@
  */
 
 //created on: 1.12.2009
-package org.kie.verifier.subsumption.patterns
+package org.drools.verifier.subsumption.patterns
 
 
-import org.kie.verifier.components.TextConsequence;
-import org.kie.verifier.report.components.Subsumption;
-import org.kie.verifier.data.VerifierReport;
+import org.drools.verifier.components.TextConsequence;
+import org.drools.verifier.report.components.Subsumption;
+import org.drools.verifier.data.VerifierReport;
 
 global VerifierReport result;
 

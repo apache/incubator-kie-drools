@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.examples.workitemconsequence
+package org.drools.examples.workitemconsequence
 
-import org.kie.examples.workitemconsequence.WorkItemConsequenceExample1.PersonLocation;
-import org.kie.examples.workitemconsequence.WorkItemConsequenceExample1.Email;
+import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1.PersonLocation;
+import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1.Email;
 
 dialect "mvel"
 
@@ -43,8 +43,8 @@ rule "Email alerts"
     when
         Email( $emailAddress : emailAddress, $message : message ) 
     then
-        org.kie.process.instance.WorkItemManager wiManager = (org.kie.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
-        org.kie.process.instance.impl.WorkItemImpl wiEmail = new org.kie.process.instance.impl.WorkItemImpl();
+        org.drools.process.instance.WorkItemManager wiManager = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
+        org.drools.process.instance.impl.WorkItemImpl wiEmail = new org.drools.process.instance.impl.WorkItemImpl();
         wiEmail.setName( "EmailWorkItemHandler" );
         wiEmail.getParameters().put( "emailAddress", $emailAddress );
         wiEmail.getParameters().put( "message", $message );

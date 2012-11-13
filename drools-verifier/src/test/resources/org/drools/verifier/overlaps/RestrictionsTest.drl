@@ -15,7 +15,7 @@
  */
 
 //created on: 25-Feb-2010
-package org.kie.verifier.overlaps
+package org.drools.verifier.overlaps
 
 //list any import classes here.
 

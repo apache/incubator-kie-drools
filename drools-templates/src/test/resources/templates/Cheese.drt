@@ -3,7 +3,7 @@ age
 type
 log
 
-package org.kie.template.jdbc;
+package org.drools.template.jdbc;
 
 global java.util.List list;
 

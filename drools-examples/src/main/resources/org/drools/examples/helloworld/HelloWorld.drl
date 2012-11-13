@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.examples.helloworld
+package org.drools.examples.helloworld
  
-import org.kie.examples.helloworld.HelloWorldExample.Message;
+import org.drools.examples.helloworld.HelloWorldExample.Message;
 
 global java.util.List list
  

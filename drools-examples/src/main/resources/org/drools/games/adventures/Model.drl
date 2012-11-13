@@ -1,4 +1,4 @@
-package org.kie.games.adventures
+package org.drools.games.adventures
 
 dialect "mvel"
 
