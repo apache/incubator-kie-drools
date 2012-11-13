@@ -3,9 +3,9 @@ package org.drools.grid;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.command.Context;
-import org.drools.command.World;
 import org.drools.command.impl.ContextImpl;
+import org.kie.command.Context;
+import org.kie.command.World;
 
 public class ContextManagerImpl
     implements

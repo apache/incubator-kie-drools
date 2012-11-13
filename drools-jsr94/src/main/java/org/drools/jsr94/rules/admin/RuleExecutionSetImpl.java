@@ -87,7 +87,7 @@ public class RuleExecutionSetImpl
      * Instances of this class should be obtained from the
      * <code>LocalRuleExecutionSetProviderImpl</code>. Each
      * <code>RuleExecutionSetImpl</code> corresponds with an
-     * <code>org.drools.Package</code> object.
+     * <code>org.kie.Package</code> object.
      *
      * @param package The <code>Package</code> to associate with this
      *        <code>RuleExecutionSet</code>.

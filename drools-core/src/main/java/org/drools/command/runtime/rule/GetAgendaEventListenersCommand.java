@@ -18,10 +18,10 @@ package org.drools.command.runtime.rule;
 
 import java.util.Collection;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.kie.command.Context;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.runtime.StatefulKnowledgeSession;

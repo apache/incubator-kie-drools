@@ -20,7 +20,6 @@ import org.drools.FactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.Queueable;
-import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
@@ -30,6 +29,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
+import org.kie.event.rule.ActivationUnMatchListener;
 
 import java.io.Externalizable;
 import java.io.IOException;

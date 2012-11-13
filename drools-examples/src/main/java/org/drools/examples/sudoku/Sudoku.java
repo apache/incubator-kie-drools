@@ -62,7 +62,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
     
     /*
      * (non-Javadoc)
-     * @see org.drools.examples.sudoku.swing.SudokuGridModel#getCellValue(int, int)
+     * @see org.kie.examples.sudoku.swing.SudokuGridModel#getCellValue(int, int)
      */
     public String getCellValue(int iRow, int iCol) {
         if (cells == null) return " ";
@@ -182,7 +182,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
     
     /*
      * (non-Javadoc)
-     * @see org.drools.examples.sudoku.swing.SudokuGridModel#solve()
+     * @see org.kie.examples.sudoku.swing.SudokuGridModel#solve()
      */
     public void solve() {
         if (this.isSolved()) return;
@@ -199,7 +199,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
     
     /*
      * (non-Javadoc)
-     * @see org.drools.examples.sudoku.swing.SudokuGridModel#step()
+     * @see org.kie.examples.sudoku.swing.SudokuGridModel#step()
      */
     public void step() {
         if (this.isSolved()) return;
@@ -267,7 +267,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
 
     /*
      * (non-Javadoc)
-     * @see org.drools.examples.sudoku.swing.SudokuGridModel#setCellValues(java.lang.Integer[][])
+     * @see org.kie.examples.sudoku.swing.SudokuGridModel#setCellValues(java.lang.Integer[][])
      */
     public void setCellValues(Integer[][] cellValues) {
         if (session != null) {

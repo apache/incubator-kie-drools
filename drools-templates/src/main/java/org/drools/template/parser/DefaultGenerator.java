@@ -48,8 +48,8 @@ public class DefaultGenerator
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.decisiontable.parser.Generator#generate(java.lang.String,
-     *      org.drools.decisiontable.parser.Row)
+     * @see org.kie.decisiontable.parser.Generator#generate(java.lang.String,
+     *      org.kie.decisiontable.parser.Row)
      */
     public void generate(String templateName,
                          Row row) {
@@ -89,7 +89,7 @@ public class DefaultGenerator
     /*
      * (non-Javadoc)
      * 
-     * @see org.drools.decisiontable.parser.Generator#getDrl()
+     * @see org.kie.decisiontable.parser.Generator#getDrl()
      */
     public String getDrl() {
         StringBuffer sb = new StringBuffer();

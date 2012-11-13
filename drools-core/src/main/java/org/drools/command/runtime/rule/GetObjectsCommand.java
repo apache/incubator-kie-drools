@@ -25,13 +25,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.drools.command.Context;
 import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.kie.command.Context;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 

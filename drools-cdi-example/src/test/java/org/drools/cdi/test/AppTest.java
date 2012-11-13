@@ -8,11 +8,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.drools.cdi.KBase;
-import org.drools.cdi.KSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.KnowledgeBase;
+import org.kie.cdi.KBase;
+import org.kie.cdi.KSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 

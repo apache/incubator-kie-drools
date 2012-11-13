@@ -17,11 +17,11 @@
 package org.drools.command.runtime.process;
 
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
+import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class GetWorkItemCommand implements GenericCommand<WorkItem> {

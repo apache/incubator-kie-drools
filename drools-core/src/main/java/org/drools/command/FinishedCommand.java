@@ -16,7 +16,6 @@
 
 package org.drools.command;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -24,6 +23,7 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceConfiguration;
 import org.kie.builder.ResourceType;
 import org.kie.command.Command;
+import org.kie.command.Context;
 import org.kie.io.Resource;
 
 public class FinishedCommand

@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.drools.command.CommandService;
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.time.InternalSchedulerService;
 import org.drools.time.Job;
@@ -34,6 +33,7 @@ import org.drools.time.Trigger;
 import org.drools.time.impl.DefaultTimerJobInstance;
 import org.drools.time.impl.JDKTimerService;
 import org.drools.time.impl.TimerJobInstance;
+import org.kie.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

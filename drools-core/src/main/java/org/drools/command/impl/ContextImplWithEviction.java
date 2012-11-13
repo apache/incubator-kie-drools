@@ -21,8 +21,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.drools.command.Context;
-import org.drools.command.World;
+
+import org.kie.command.Context;
+import org.kie.command.World;
 
 public class ContextImplWithEviction extends ContextImpl{
 

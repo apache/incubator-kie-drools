@@ -30,15 +30,15 @@ import java.util.Properties;
 /**
  * Load the <code>RuleExecutionSetRepository</code> using the following algorithm.
  * 
- * 1. If a resource with the name of META-INF/services/org.drools.jsr94.rules.repository.RuleExecutionSetRepository exists,
+ * 1. If a resource with the name of META-INF/services/org.kie.jsr94.rules.repository.RuleExecutionSetRepository exists,
  * then its first line, if present, is used as the UTF-8 encoded name of the implementation class.
  * 
  * 2. If the drools.properties file exists in the classpath and it is readable by the 
  * java.util.Properties.load(InputStream) method and it contains an entry whose key is 
- * org.drools.jsr94.rules.repository.RuleExecutionSetRepository, then the value of that
+ * org.kie.jsr94.rules.repository.RuleExecutionSetRepository, then the value of that
  * entry is used as the name of the implementation class.
  * 
- * 3. If a system property with the name org.drools.jsr94.rules.repository.RuleExecutionSetRepository
+ * 3. If a system property with the name org.kie.jsr94.rules.repository.RuleExecutionSetRepository
  * is defined, then its value is used as the name of the implementation class.
  * 
  * 4. Finally, a default implementation class name, if provided, is used.
@@ -63,7 +63,7 @@ public abstract class RuleExecutionSetRepositoryLoader
         ClassLoader cL = Thread.currentThread().getContextClassLoader();
 
         // Use the Services API (as detailed in the JAR specification), if available, to determine the classname.
-        String propertyName = "org.drools.jsr94.rules.repository.RuleExecutionSetRepository";
+        String propertyName = "org.kie.jsr94.rules.repository.RuleExecutionSetRepository";
         String fileName = "META-INF/services/" + propertyName;
         InputStream in = cL.getResourceAsStream(fileName);
 

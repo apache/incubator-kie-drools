@@ -16,10 +16,10 @@
 
 package org.drools.command.runtime;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.kie.command.Context;
 import org.kie.runtime.Globals;
 import org.kie.runtime.StatefulKnowledgeSession;
 

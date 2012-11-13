@@ -2,9 +2,9 @@ package org.drools.cdi.test;
  
 import javax.inject.Inject;
 
-import org.drools.cdi.KBase;
-import org.drools.cdi.KSession;
 import org.kie.KnowledgeBase;
+import org.kie.cdi.KBase;
+import org.kie.cdi.KSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 

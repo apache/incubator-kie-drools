@@ -24,20 +24,20 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.command.Context;
-import org.drools.command.World;
 import org.drools.command.GetDefaultValue;
 import org.drools.command.NewStatefulKnowledgeSessionCommand;
 import org.drools.command.ResolvingKnowledgeCommandContext;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
-import org.drools.simulation.SimulationPath;
-import org.drools.simulation.Simulation;
-import org.drools.simulation.SimulationStep;
 import org.drools.time.SessionPseudoClock;
 import org.kie.command.Command;
+import org.kie.command.Context;
+import org.kie.command.World;
 import org.kie.runtime.CommandExecutor;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.simulation.Simulation;
+import org.kie.simulation.SimulationPath;
+import org.kie.simulation.SimulationStep;
 
 public class WorldImpl
         implements World, GetDefaultValue, CommandExecutor {

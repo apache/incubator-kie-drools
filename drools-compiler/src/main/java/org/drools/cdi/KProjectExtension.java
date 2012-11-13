@@ -40,6 +40,8 @@ import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
+import org.kie.cdi.KBase;
+import org.kie.cdi.KSession;
 import org.kie.io.ResourceFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;

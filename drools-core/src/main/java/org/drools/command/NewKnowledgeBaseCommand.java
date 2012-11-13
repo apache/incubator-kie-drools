@@ -16,11 +16,11 @@
 
 package org.drools.command;
 
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
+import org.kie.command.Context;
 
 public class NewKnowledgeBaseCommand
     implements

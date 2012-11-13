@@ -34,7 +34,7 @@ import org.drools.template.DataProviderCompiler;
  * objects have been retrieved from a database using some form of Object-Relational Mapper (such
  * as Hibernate or Toplink).
  *
- * An alternative is to use the ResultSetGenerator from the org.drools.templates.jdbc package, where you can use
+ * An alternative is to use the ResultSetGenerator from the org.kie.templates.jdbc package, where you can use
  * vanilla JDBC to generate rules from (you just select the table names as the field named from the template) - this means no ORM
  * is required. 
  * 

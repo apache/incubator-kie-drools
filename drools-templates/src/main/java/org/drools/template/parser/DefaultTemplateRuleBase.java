@@ -63,7 +63,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.decisiontable.parser.TemplateRuleBase#newWorkingMemory()
+     * @see org.kie.decisiontable.parser.TemplateRuleBase#newWorkingMemory()
      */
     public StatefulSession newStatefulSession() {
         return ruleBase.newStatefulSession();

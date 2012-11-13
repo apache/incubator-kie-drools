@@ -46,16 +46,16 @@ public class RuleImpl
     private final Map            properties       = new HashMap();
 
     /**
-     * The <code>org.drools.rule.Rule</code> that lies at the core of
+     * The <code>org.kie.rule.Rule</code> that lies at the core of
      * this <code>javax.rules.admin.Rule</code> object.
      */
     private org.drools.rule.Rule rule;
 
     /**
      * Creates a <code>RuleImpl</code> object by wrapping an
-     * <code>org.drools.rule.Rule</code> object.
+     * <code>org.kie.rule.Rule</code> object.
      *
-     * @param rule the <code>org.drools.rule.Rule</code> object to be wrapped.
+     * @param rule the <code>org.kie.rule.Rule</code> object to be wrapped.
      */
     RuleImpl(final org.drools.rule.Rule rule) {
         this.rule = rule;
@@ -64,11 +64,11 @@ public class RuleImpl
     }
 
     /**
-     * Returns the <code>org.drools.rule.Rule</code> that lies at the core of
+     * Returns the <code>org.kie.rule.Rule</code> that lies at the core of
      * this <code>javax.rules.admin.Rule</code> object. This method is package
      * private.
      *
-     * @return <code>org.drools.rule.Rule</code> at the core of this object.
+     * @return <code>org.kie.rule.Rule</code> at the core of this object.
      */
     org.drools.rule.Rule getRule() {
         return this.rule;

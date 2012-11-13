@@ -1,9 +1,9 @@
 package org.drools.world.impl;
 
-import org.drools.command.Context;
-import org.drools.command.ShadowContext;
-import org.drools.command.ShadowWorld;
 import org.drools.command.impl.ContextImpl;
+import org.kie.command.Context;
+import org.kie.command.ShadowContext;
+import org.kie.command.ShadowWorld;
 
 public class ShadowContextImpl extends ContextImpl implements ShadowContext {
     

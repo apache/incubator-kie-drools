@@ -174,8 +174,8 @@ public class AbstractKnowledgeTest {
                 "import " + KnowledgeBase.class.getName() + ";\n" +
                 "import " + StatefulKnowledgeSession.class.getName() + ";\n" +
                 "import " + StatelessKnowledgeSession.class.getName() + ";\n" +
-                "import " + org.drools.cdi.KBase.class.getName() + ";\n" +
-                "import " + org.drools.cdi.KSession.class.getName() + ";\n" +
+                "import " + org.kie.cdi.KBase.class.getName() + ";\n" +
+                "import " + org.kie.cdi.KSession.class.getName() + ";\n" +
                 "import " + KPTest.class.getName() + ";\n" +
 
                 "@KPTest(\"" + namespace + "\") \n" +

@@ -23,6 +23,7 @@ import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.command.Command;
+import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeContextResolveFromContextCommand

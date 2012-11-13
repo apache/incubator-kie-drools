@@ -148,7 +148,7 @@ public class GameEngine {
 
             MapVariableResolverFactory f = new MapVariableResolverFactory( map );
 
-            String baseStr = "import  org.drools.games.adventures.*;  import org.drools.games.adventures.commands.*;\n";
+            String baseStr = "import  org.kie.games.adventures.*;  import org.kie.games.adventures.commands.*;\n";
             FactHandle fh = ksession.insert( MVEL.eval( baseStr + "new EnterEvent( characters['hero'], rooms['first floor hallway'] )",
                                                         f ) );
             ksession.fireAllRules();
@@ -160,7 +160,7 @@ public class GameEngine {
     public void receiveMessage(UserSession session,
                                List cmd) {
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-        String baseStr = "import  org.drools.games.adventures.*;  import org.drools.games.adventures.commands.*;\n";
+        String baseStr = "import  org.kie.games.adventures.*;  import org.kie.games.adventures.commands.*;\n";
         try {
             Thread.currentThread().setContextClassLoader( classLoader );
             Map vars = new HashMap();

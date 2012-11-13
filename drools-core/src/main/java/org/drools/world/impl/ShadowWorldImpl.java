@@ -2,11 +2,11 @@ package org.drools.world.impl;
 
 import java.util.Map;
 
-import org.drools.command.Context;
-import org.drools.command.ShadowContext;
-import org.drools.command.ShadowWorld;
-import org.drools.command.World;
 import org.drools.command.impl.ContextImpl;
+import org.kie.command.Context;
+import org.kie.command.ShadowContext;
+import org.kie.command.ShadowWorld;
+import org.kie.command.World;
 
 public class ShadowWorldImpl implements ShadowWorld {
     private World                world;

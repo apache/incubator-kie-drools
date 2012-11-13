@@ -129,7 +129,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.decisiontable.parser.TemplateContainer#getTemplates()
+     * @see org.kie.decisiontable.parser.TemplateContainer#getTemplates()
      */
     public Map<String, RuleTemplate> getTemplates() {
         return templates;
@@ -143,7 +143,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.decisiontable.parser.TemplateContainer#getColumns()
+     * @see org.kie.decisiontable.parser.TemplateContainer#getColumns()
      */
     public Column[] getColumns() {
         return (Column[]) columns.toArray(new Column[columns.size()]);
@@ -152,7 +152,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
     /*
      * (non-Javadoc)
      *
-     * @see org.drools.decisiontable.parser.TemplateContainer#getHeader()
+     * @see org.kie.decisiontable.parser.TemplateContainer#getHeader()
      */
     public String getHeader() {
         return header;

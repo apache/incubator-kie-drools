@@ -39,12 +39,12 @@ public class ColumnReplaceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         
-        assertTrue(((Rule)kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).isLockOnActive());
+        assertTrue(((Rule)kbase.getRule("org.kie.decisiontable", "lockOnActiveRule")).isLockOnActive());
         // lock-on-active was not set on autoFocusRule, so it should be by default false
-        assertFalse(((Rule)kbase.getRule("org.drools.decisiontable", "autoFocusRule")).isLockOnActive());
+        assertFalse(((Rule)kbase.getRule("org.kie.decisiontable", "autoFocusRule")).isLockOnActive());
         
-        assertFalse(((Rule)kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).getAutoFocus());
+        assertFalse(((Rule)kbase.getRule("org.kie.decisiontable", "lockOnActiveRule")).getAutoFocus());
         // auto-focus was set to be true, so it should be true
-        assertTrue(((Rule)kbase.getRule("org.drools.decisiontable", "autoFocusRule")).getAutoFocus());
+        assertTrue(((Rule)kbase.getRule("org.kie.decisiontable", "autoFocusRule")).getAutoFocus());
 	}
 }

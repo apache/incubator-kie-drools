@@ -21,12 +21,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.drools.command.Context;
 import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.kie.command.Context;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
