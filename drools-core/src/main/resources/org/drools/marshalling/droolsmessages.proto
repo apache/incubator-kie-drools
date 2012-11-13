@@ -1,4 +1,4 @@
-package org.kie.marshalling;
+package org.drools.marshalling;
 
 option java_package = "org.drools.marshalling.impl";
 option java_outer_classname = "ProtobufMessages";

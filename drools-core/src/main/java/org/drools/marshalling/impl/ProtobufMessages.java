@@ -12,17 +12,17 @@ public final class ProtobufMessages {
       com.google.protobuf.GeneratedMessage.
           ExtendableMessageOrBuilder<Header> {
     
-    // optional .org.kie.marshalling.Version version = 1;
+    // optional .org.drools.marshalling.Version version = 1;
     boolean hasVersion();
     org.drools.marshalling.impl.ProtobufMessages.Version getVersion();
     org.drools.marshalling.impl.ProtobufMessages.VersionOrBuilder getVersionOrBuilder();
     
-    // optional .org.kie.marshalling.Signature signature = 4;
+    // optional .org.drools.marshalling.Signature signature = 4;
     boolean hasSignature();
     org.drools.marshalling.impl.ProtobufMessages.Signature getSignature();
     org.drools.marshalling.impl.ProtobufMessages.SignatureOrBuilder getSignatureOrBuilder();
     
-    // repeated .org.kie.marshalling.Header.StrategyIndex strategy = 9;
+    // repeated .org.drools.marshalling.Header.StrategyIndex strategy = 9;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex> 
         getStrategyList();
     org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex getStrategy(int index);
@@ -56,12 +56,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_fieldAccessorTable;
     }
     
     public interface StrategyIndexOrBuilder
@@ -99,12 +99,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_StrategyIndex_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_StrategyIndex_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_StrategyIndex_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_StrategyIndex_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -304,12 +304,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndexOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_StrategyIndex_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_StrategyIndex_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_StrategyIndex_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_StrategyIndex_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex.newBuilder()
@@ -545,7 +545,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Header.StrategyIndex)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Header.StrategyIndex)
       }
       
       static {
@@ -553,11 +553,11 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Header.StrategyIndex)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Header.StrategyIndex)
     }
     
     private int bitField0_;
-    // optional .org.kie.marshalling.Version version = 1;
+    // optional .org.drools.marshalling.Version version = 1;
     public static final int VERSION_FIELD_NUMBER = 1;
     private org.drools.marshalling.impl.ProtobufMessages.Version version_;
     public boolean hasVersion() {
@@ -570,7 +570,7 @@ public final class ProtobufMessages {
       return version_;
     }
     
-    // optional .org.kie.marshalling.Signature signature = 4;
+    // optional .org.drools.marshalling.Signature signature = 4;
     public static final int SIGNATURE_FIELD_NUMBER = 4;
     private org.drools.marshalling.impl.ProtobufMessages.Signature signature_;
     public boolean hasSignature() {
@@ -583,7 +583,7 @@ public final class ProtobufMessages {
       return signature_;
     }
     
-    // repeated .org.kie.marshalling.Header.StrategyIndex strategy = 9;
+    // repeated .org.drools.marshalling.Header.StrategyIndex strategy = 9;
     public static final int STRATEGY_FIELD_NUMBER = 9;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex> strategy_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex> getStrategyList() {
@@ -775,12 +775,12 @@ public final class ProtobufMessages {
           org.drools.marshalling.impl.ProtobufMessages.Header, Builder> implements org.drools.marshalling.impl.ProtobufMessages.HeaderOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Header_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Header_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Header.newBuilder()
@@ -1014,7 +1014,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // optional .org.kie.marshalling.Version version = 1;
+      // optional .org.drools.marshalling.Version version = 1;
       private org.drools.marshalling.impl.ProtobufMessages.Version version_ = org.drools.marshalling.impl.ProtobufMessages.Version.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Version, org.drools.marshalling.impl.ProtobufMessages.Version.Builder, org.drools.marshalling.impl.ProtobufMessages.VersionOrBuilder> versionBuilder_;
@@ -1104,7 +1104,7 @@ public final class ProtobufMessages {
         return versionBuilder_;
       }
       
-      // optional .org.kie.marshalling.Signature signature = 4;
+      // optional .org.drools.marshalling.Signature signature = 4;
       private org.drools.marshalling.impl.ProtobufMessages.Signature signature_ = org.drools.marshalling.impl.ProtobufMessages.Signature.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Signature, org.drools.marshalling.impl.ProtobufMessages.Signature.Builder, org.drools.marshalling.impl.ProtobufMessages.SignatureOrBuilder> signatureBuilder_;
@@ -1194,7 +1194,7 @@ public final class ProtobufMessages {
         return signatureBuilder_;
       }
       
-      // repeated .org.kie.marshalling.Header.StrategyIndex strategy = 9;
+      // repeated .org.drools.marshalling.Header.StrategyIndex strategy = 9;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex> strategy_ =
         java.util.Collections.emptyList();
       private void ensureStrategyIsMutable() {
@@ -1404,7 +1404,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Header)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Header)
     }
     
     static {
@@ -1412,7 +1412,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Header)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Header)
   }
   
   public interface VersionOrBuilder
@@ -1450,12 +1450,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Version_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Version_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Version_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Version_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -1633,12 +1633,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.VersionOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Version_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Version_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Version_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Version_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Version.newBuilder()
@@ -1856,7 +1856,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Version)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Version)
     }
     
     static {
@@ -1864,7 +1864,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Version)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Version)
   }
   
   public interface SignatureOrBuilder
@@ -1898,12 +1898,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Signature_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Signature_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Signature_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Signature_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -2085,12 +2085,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.SignatureOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Signature_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Signature_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Signature_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Signature_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Signature.newBuilder()
@@ -2291,7 +2291,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Signature)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Signature)
     }
     
     static {
@@ -2299,7 +2299,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Signature)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Signature)
   }
   
   public interface KnowledgeBaseOrBuilder extends
@@ -2334,12 +2334,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeBase_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeBase_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeBase_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeBase_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -2530,12 +2530,12 @@ public final class ProtobufMessages {
           org.drools.marshalling.impl.ProtobufMessages.KnowledgeBase, Builder> implements org.drools.marshalling.impl.ProtobufMessages.KnowledgeBaseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeBase_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeBase_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeBase_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeBase_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.KnowledgeBase.newBuilder()
@@ -2741,7 +2741,7 @@ public final class ProtobufMessages {
         onChanged();
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.KnowledgeBase)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.KnowledgeBase)
     }
     
     static {
@@ -2749,7 +2749,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.KnowledgeBase)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.KnowledgeBase)
   }
   
   public interface KnowledgeSessionOrBuilder extends
@@ -2764,17 +2764,17 @@ public final class ProtobufMessages {
     boolean hasTime();
     long getTime();
     
-    // optional .org.kie.marshalling.RuleData rule_data = 3;
+    // optional .org.drools.marshalling.RuleData rule_data = 3;
     boolean hasRuleData();
     org.drools.marshalling.impl.ProtobufMessages.RuleData getRuleData();
     org.drools.marshalling.impl.ProtobufMessages.RuleDataOrBuilder getRuleDataOrBuilder();
     
-    // optional .org.kie.marshalling.ProcessData process_data = 4;
+    // optional .org.drools.marshalling.ProcessData process_data = 4;
     boolean hasProcessData();
     org.drools.marshalling.impl.ProtobufMessages.ProcessData getProcessData();
     org.drools.marshalling.impl.ProtobufMessages.ProcessDataOrBuilder getProcessDataOrBuilder();
     
-    // optional .org.kie.marshalling.Timers timers = 5;
+    // optional .org.drools.marshalling.Timers timers = 5;
     boolean hasTimers();
     org.drools.marshalling.impl.ProtobufMessages.Timers getTimers();
     org.drools.marshalling.impl.ProtobufMessages.TimersOrBuilder getTimersOrBuilder();
@@ -2799,12 +2799,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeSession_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeSession_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeSession_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeSession_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -2828,7 +2828,7 @@ public final class ProtobufMessages {
       return time_;
     }
     
-    // optional .org.kie.marshalling.RuleData rule_data = 3;
+    // optional .org.drools.marshalling.RuleData rule_data = 3;
     public static final int RULE_DATA_FIELD_NUMBER = 3;
     private org.drools.marshalling.impl.ProtobufMessages.RuleData ruleData_;
     public boolean hasRuleData() {
@@ -2841,7 +2841,7 @@ public final class ProtobufMessages {
       return ruleData_;
     }
     
-    // optional .org.kie.marshalling.ProcessData process_data = 4;
+    // optional .org.drools.marshalling.ProcessData process_data = 4;
     public static final int PROCESS_DATA_FIELD_NUMBER = 4;
     private org.drools.marshalling.impl.ProtobufMessages.ProcessData processData_;
     public boolean hasProcessData() {
@@ -2854,7 +2854,7 @@ public final class ProtobufMessages {
       return processData_;
     }
     
-    // optional .org.kie.marshalling.Timers timers = 5;
+    // optional .org.drools.marshalling.Timers timers = 5;
     public static final int TIMERS_FIELD_NUMBER = 5;
     private org.drools.marshalling.impl.ProtobufMessages.Timers timers_;
     public boolean hasTimers() {
@@ -3048,12 +3048,12 @@ public final class ProtobufMessages {
           org.drools.marshalling.impl.ProtobufMessages.KnowledgeSession, Builder> implements org.drools.marshalling.impl.ProtobufMessages.KnowledgeSessionOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeSession_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeSession_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_KnowledgeSession_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_KnowledgeSession_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.KnowledgeSession.newBuilder()
@@ -3334,7 +3334,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // optional .org.kie.marshalling.RuleData rule_data = 3;
+      // optional .org.drools.marshalling.RuleData rule_data = 3;
       private org.drools.marshalling.impl.ProtobufMessages.RuleData ruleData_ = org.drools.marshalling.impl.ProtobufMessages.RuleData.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.RuleData, org.drools.marshalling.impl.ProtobufMessages.RuleData.Builder, org.drools.marshalling.impl.ProtobufMessages.RuleDataOrBuilder> ruleDataBuilder_;
@@ -3424,7 +3424,7 @@ public final class ProtobufMessages {
         return ruleDataBuilder_;
       }
       
-      // optional .org.kie.marshalling.ProcessData process_data = 4;
+      // optional .org.drools.marshalling.ProcessData process_data = 4;
       private org.drools.marshalling.impl.ProtobufMessages.ProcessData processData_ = org.drools.marshalling.impl.ProtobufMessages.ProcessData.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.ProcessData, org.drools.marshalling.impl.ProtobufMessages.ProcessData.Builder, org.drools.marshalling.impl.ProtobufMessages.ProcessDataOrBuilder> processDataBuilder_;
@@ -3514,7 +3514,7 @@ public final class ProtobufMessages {
         return processDataBuilder_;
       }
       
-      // optional .org.kie.marshalling.Timers timers = 5;
+      // optional .org.drools.marshalling.Timers timers = 5;
       private org.drools.marshalling.impl.ProtobufMessages.Timers timers_ = org.drools.marshalling.impl.ProtobufMessages.Timers.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Timers, org.drools.marshalling.impl.ProtobufMessages.Timers.Builder, org.drools.marshalling.impl.ProtobufMessages.TimersOrBuilder> timersBuilder_;
@@ -3604,7 +3604,7 @@ public final class ProtobufMessages {
         return timersBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.KnowledgeSession)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.KnowledgeSession)
     }
     
     static {
@@ -3612,7 +3612,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.KnowledgeSession)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.KnowledgeSession)
   }
   
   public interface RuleDataOrBuilder
@@ -3626,17 +3626,17 @@ public final class ProtobufMessages {
     boolean hasLastRecency();
     long getLastRecency();
     
-    // optional .org.kie.marshalling.FactHandle initial_fact = 6;
+    // optional .org.drools.marshalling.FactHandle initial_fact = 6;
     boolean hasInitialFact();
     org.drools.marshalling.impl.ProtobufMessages.FactHandle getInitialFact();
     org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder getInitialFactOrBuilder();
     
-    // optional .org.kie.marshalling.Agenda agenda = 8;
+    // optional .org.drools.marshalling.Agenda agenda = 8;
     boolean hasAgenda();
     org.drools.marshalling.impl.ProtobufMessages.Agenda getAgenda();
     org.drools.marshalling.impl.ProtobufMessages.AgendaOrBuilder getAgendaOrBuilder();
     
-    // repeated .org.kie.marshalling.NodeMemory node_memory = 9;
+    // repeated .org.drools.marshalling.NodeMemory node_memory = 9;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory> 
         getNodeMemoryList();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory getNodeMemory(int index);
@@ -3646,7 +3646,7 @@ public final class ProtobufMessages {
     org.drools.marshalling.impl.ProtobufMessages.NodeMemoryOrBuilder getNodeMemoryOrBuilder(
         int index);
     
-    // repeated .org.kie.marshalling.EntryPoint entry_point = 10;
+    // repeated .org.drools.marshalling.EntryPoint entry_point = 10;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.EntryPoint> 
         getEntryPointList();
     org.drools.marshalling.impl.ProtobufMessages.EntryPoint getEntryPoint(int index);
@@ -3656,7 +3656,7 @@ public final class ProtobufMessages {
     org.drools.marshalling.impl.ProtobufMessages.EntryPointOrBuilder getEntryPointOrBuilder(
         int index);
     
-    // optional .org.kie.marshalling.ActionQueue action_queue = 11;
+    // optional .org.drools.marshalling.ActionQueue action_queue = 11;
     boolean hasActionQueue();
     org.drools.marshalling.impl.ProtobufMessages.ActionQueue getActionQueue();
     org.drools.marshalling.impl.ProtobufMessages.ActionQueueOrBuilder getActionQueueOrBuilder();
@@ -3681,12 +3681,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_RuleData_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_RuleData_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_RuleData_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_RuleData_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -3710,7 +3710,7 @@ public final class ProtobufMessages {
       return lastRecency_;
     }
     
-    // optional .org.kie.marshalling.FactHandle initial_fact = 6;
+    // optional .org.drools.marshalling.FactHandle initial_fact = 6;
     public static final int INITIAL_FACT_FIELD_NUMBER = 6;
     private org.drools.marshalling.impl.ProtobufMessages.FactHandle initialFact_;
     public boolean hasInitialFact() {
@@ -3723,7 +3723,7 @@ public final class ProtobufMessages {
       return initialFact_;
     }
     
-    // optional .org.kie.marshalling.Agenda agenda = 8;
+    // optional .org.drools.marshalling.Agenda agenda = 8;
     public static final int AGENDA_FIELD_NUMBER = 8;
     private org.drools.marshalling.impl.ProtobufMessages.Agenda agenda_;
     public boolean hasAgenda() {
@@ -3736,7 +3736,7 @@ public final class ProtobufMessages {
       return agenda_;
     }
     
-    // repeated .org.kie.marshalling.NodeMemory node_memory = 9;
+    // repeated .org.drools.marshalling.NodeMemory node_memory = 9;
     public static final int NODE_MEMORY_FIELD_NUMBER = 9;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory> nodeMemory_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory> getNodeMemoryList() {
@@ -3757,7 +3757,7 @@ public final class ProtobufMessages {
       return nodeMemory_.get(index);
     }
     
-    // repeated .org.kie.marshalling.EntryPoint entry_point = 10;
+    // repeated .org.drools.marshalling.EntryPoint entry_point = 10;
     public static final int ENTRY_POINT_FIELD_NUMBER = 10;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.EntryPoint> entryPoint_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.EntryPoint> getEntryPointList() {
@@ -3778,7 +3778,7 @@ public final class ProtobufMessages {
       return entryPoint_.get(index);
     }
     
-    // optional .org.kie.marshalling.ActionQueue action_queue = 11;
+    // optional .org.drools.marshalling.ActionQueue action_queue = 11;
     public static final int ACTION_QUEUE_FIELD_NUMBER = 11;
     private org.drools.marshalling.impl.ProtobufMessages.ActionQueue actionQueue_;
     public boolean hasActionQueue() {
@@ -3967,12 +3967,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.RuleDataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_RuleData_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_RuleData_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_RuleData_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_RuleData_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.RuleData.newBuilder()
@@ -4332,7 +4332,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // optional .org.kie.marshalling.FactHandle initial_fact = 6;
+      // optional .org.drools.marshalling.FactHandle initial_fact = 6;
       private org.drools.marshalling.impl.ProtobufMessages.FactHandle initialFact_ = org.drools.marshalling.impl.ProtobufMessages.FactHandle.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.FactHandle, org.drools.marshalling.impl.ProtobufMessages.FactHandle.Builder, org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder> initialFactBuilder_;
@@ -4422,7 +4422,7 @@ public final class ProtobufMessages {
         return initialFactBuilder_;
       }
       
-      // optional .org.kie.marshalling.Agenda agenda = 8;
+      // optional .org.drools.marshalling.Agenda agenda = 8;
       private org.drools.marshalling.impl.ProtobufMessages.Agenda agenda_ = org.drools.marshalling.impl.ProtobufMessages.Agenda.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Agenda, org.drools.marshalling.impl.ProtobufMessages.Agenda.Builder, org.drools.marshalling.impl.ProtobufMessages.AgendaOrBuilder> agendaBuilder_;
@@ -4512,7 +4512,7 @@ public final class ProtobufMessages {
         return agendaBuilder_;
       }
       
-      // repeated .org.kie.marshalling.NodeMemory node_memory = 9;
+      // repeated .org.drools.marshalling.NodeMemory node_memory = 9;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory> nodeMemory_ =
         java.util.Collections.emptyList();
       private void ensureNodeMemoryIsMutable() {
@@ -4698,7 +4698,7 @@ public final class ProtobufMessages {
         return nodeMemoryBuilder_;
       }
       
-      // repeated .org.kie.marshalling.EntryPoint entry_point = 10;
+      // repeated .org.drools.marshalling.EntryPoint entry_point = 10;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.EntryPoint> entryPoint_ =
         java.util.Collections.emptyList();
       private void ensureEntryPointIsMutable() {
@@ -4884,7 +4884,7 @@ public final class ProtobufMessages {
         return entryPointBuilder_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue action_queue = 11;
+      // optional .org.drools.marshalling.ActionQueue action_queue = 11;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue actionQueue_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.ActionQueue, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueueOrBuilder> actionQueueBuilder_;
@@ -4974,7 +4974,7 @@ public final class ProtobufMessages {
         return actionQueueBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.RuleData)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.RuleData)
     }
     
     static {
@@ -4982,7 +4982,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.RuleData)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.RuleData)
   }
   
   public interface ProcessDataOrBuilder extends
@@ -5009,12 +5009,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ProcessData_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ProcessData_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ProcessData_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ProcessData_fieldAccessorTable;
     }
     
     private void initFields() {
@@ -5146,12 +5146,12 @@ public final class ProtobufMessages {
           org.drools.marshalling.impl.ProtobufMessages.ProcessData, Builder> implements org.drools.marshalling.impl.ProtobufMessages.ProcessDataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ProcessData_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ProcessData_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ProcessData_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ProcessData_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.ProcessData.newBuilder()
@@ -5265,7 +5265,7 @@ public final class ProtobufMessages {
       }
       
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ProcessData)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ProcessData)
     }
     
     static {
@@ -5273,7 +5273,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.ProcessData)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.ProcessData)
   }
   
   public interface AgendaOrBuilder
@@ -5287,7 +5287,7 @@ public final class ProtobufMessages {
     boolean hasActiveActivations();
     int getActiveActivations();
     
-    // repeated .org.kie.marshalling.Agenda.AgendaGroup agenda_group = 3;
+    // repeated .org.drools.marshalling.Agenda.AgendaGroup agenda_group = 3;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup> 
         getAgendaGroupList();
     org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup getAgendaGroup(int index);
@@ -5297,12 +5297,12 @@ public final class ProtobufMessages {
     org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroupOrBuilder getAgendaGroupOrBuilder(
         int index);
     
-    // optional .org.kie.marshalling.Agenda.FocusStack focus_stack = 4;
+    // optional .org.drools.marshalling.Agenda.FocusStack focus_stack = 4;
     boolean hasFocusStack();
     org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack getFocusStack();
     org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStackOrBuilder getFocusStackOrBuilder();
     
-    // repeated .org.kie.marshalling.Agenda.RuleFlowGroup rule_flow_group = 5;
+    // repeated .org.drools.marshalling.Agenda.RuleFlowGroup rule_flow_group = 5;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup> 
         getRuleFlowGroupList();
     org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup getRuleFlowGroup(int index);
@@ -5312,7 +5312,7 @@ public final class ProtobufMessages {
     org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder getRuleFlowGroupOrBuilder(
         int index);
     
-    // repeated .org.kie.marshalling.Activation activation = 6;
+    // repeated .org.drools.marshalling.Activation activation = 6;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> 
         getActivationList();
     org.drools.marshalling.impl.ProtobufMessages.Activation getActivation(int index);
@@ -5342,12 +5342,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_fieldAccessorTable;
     }
     
     public interface AgendaGroupOrBuilder
@@ -5381,12 +5381,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_AgendaGroup_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_AgendaGroup_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_AgendaGroup_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_AgendaGroup_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -5568,12 +5568,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroupOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_AgendaGroup_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_AgendaGroup_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_AgendaGroup_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_AgendaGroup_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.newBuilder()
@@ -5771,7 +5771,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Agenda.AgendaGroup)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Agenda.AgendaGroup)
       }
       
       static {
@@ -5779,7 +5779,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Agenda.AgendaGroup)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Agenda.AgendaGroup)
     }
     
     public interface FocusStackOrBuilder
@@ -5810,12 +5810,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_FocusStack_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_FocusStack_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_FocusStack_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_FocusStack_fieldAccessorTable;
       }
       
       // repeated string group_name = 1;
@@ -5965,12 +5965,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStackOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_FocusStack_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_FocusStack_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_FocusStack_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_FocusStack_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack.newBuilder()
@@ -6160,7 +6160,7 @@ public final class ProtobufMessages {
           onChanged();
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Agenda.FocusStack)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Agenda.FocusStack)
       }
       
       static {
@@ -6168,7 +6168,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Agenda.FocusStack)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Agenda.FocusStack)
     }
     
     public interface RuleFlowGroupOrBuilder
@@ -6186,7 +6186,7 @@ public final class ProtobufMessages {
       boolean hasIsAutoDeactivate();
       boolean getIsAutoDeactivate();
       
-      // repeated .org.kie.marshalling.Activation activation = 4;
+      // repeated .org.drools.marshalling.Activation activation = 4;
       java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> 
           getActivationList();
       org.drools.marshalling.impl.ProtobufMessages.Activation getActivation(int index);
@@ -6196,7 +6196,7 @@ public final class ProtobufMessages {
       org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder(
           int index);
       
-      // repeated .org.kie.marshalling.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;
+      // repeated .org.drools.marshalling.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;
       java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> 
           getNodeInstanceList();
       org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance getNodeInstance(int index);
@@ -6226,12 +6226,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable;
       }
       
       public interface NodeInstanceOrBuilder
@@ -6265,12 +6265,12 @@ public final class ProtobufMessages {
         
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable;
         }
         
         private int bitField0_;
@@ -6452,12 +6452,12 @@ public final class ProtobufMessages {
            implements org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
           }
           
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable;
           }
           
           // Construct using org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.newBuilder()
@@ -6655,7 +6655,7 @@ public final class ProtobufMessages {
             onChanged();
           }
           
-          // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Agenda.RuleFlowGroup.NodeInstance)
+          // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Agenda.RuleFlowGroup.NodeInstance)
         }
         
         static {
@@ -6663,7 +6663,7 @@ public final class ProtobufMessages {
           defaultInstance.initFields();
         }
         
-        // @@protoc_insertion_point(class_scope:org.kie.marshalling.Agenda.RuleFlowGroup.NodeInstance)
+        // @@protoc_insertion_point(class_scope:org.drools.marshalling.Agenda.RuleFlowGroup.NodeInstance)
       }
       
       private int bitField0_;
@@ -6719,7 +6719,7 @@ public final class ProtobufMessages {
         return isAutoDeactivate_;
       }
       
-      // repeated .org.kie.marshalling.Activation activation = 4;
+      // repeated .org.drools.marshalling.Activation activation = 4;
       public static final int ACTIVATION_FIELD_NUMBER = 4;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> activation_;
       public java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> getActivationList() {
@@ -6740,7 +6740,7 @@ public final class ProtobufMessages {
         return activation_.get(index);
       }
       
-      // repeated .org.kie.marshalling.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;
+      // repeated .org.drools.marshalling.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;
       public static final int NODE_INSTANCE_FIELD_NUMBER = 5;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> nodeInstance_;
       public java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> getNodeInstanceList() {
@@ -6921,12 +6921,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.newBuilder()
@@ -7255,7 +7255,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // repeated .org.kie.marshalling.Activation activation = 4;
+        // repeated .org.drools.marshalling.Activation activation = 4;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> activation_ =
           java.util.Collections.emptyList();
         private void ensureActivationIsMutable() {
@@ -7441,7 +7441,7 @@ public final class ProtobufMessages {
           return activationBuilder_;
         }
         
-        // repeated .org.kie.marshalling.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;
+        // repeated .org.drools.marshalling.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> nodeInstance_ =
           java.util.Collections.emptyList();
         private void ensureNodeInstanceIsMutable() {
@@ -7627,7 +7627,7 @@ public final class ProtobufMessages {
           return nodeInstanceBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Agenda.RuleFlowGroup)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Agenda.RuleFlowGroup)
       }
       
       static {
@@ -7635,7 +7635,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Agenda.RuleFlowGroup)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Agenda.RuleFlowGroup)
     }
     
     private int bitField0_;
@@ -7659,7 +7659,7 @@ public final class ProtobufMessages {
       return activeActivations_;
     }
     
-    // repeated .org.kie.marshalling.Agenda.AgendaGroup agenda_group = 3;
+    // repeated .org.drools.marshalling.Agenda.AgendaGroup agenda_group = 3;
     public static final int AGENDA_GROUP_FIELD_NUMBER = 3;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup> agendaGroup_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup> getAgendaGroupList() {
@@ -7680,7 +7680,7 @@ public final class ProtobufMessages {
       return agendaGroup_.get(index);
     }
     
-    // optional .org.kie.marshalling.Agenda.FocusStack focus_stack = 4;
+    // optional .org.drools.marshalling.Agenda.FocusStack focus_stack = 4;
     public static final int FOCUS_STACK_FIELD_NUMBER = 4;
     private org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack focusStack_;
     public boolean hasFocusStack() {
@@ -7693,7 +7693,7 @@ public final class ProtobufMessages {
       return focusStack_;
     }
     
-    // repeated .org.kie.marshalling.Agenda.RuleFlowGroup rule_flow_group = 5;
+    // repeated .org.drools.marshalling.Agenda.RuleFlowGroup rule_flow_group = 5;
     public static final int RULE_FLOW_GROUP_FIELD_NUMBER = 5;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup> ruleFlowGroup_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup> getRuleFlowGroupList() {
@@ -7714,7 +7714,7 @@ public final class ProtobufMessages {
       return ruleFlowGroup_.get(index);
     }
     
-    // repeated .org.kie.marshalling.Activation activation = 6;
+    // repeated .org.drools.marshalling.Activation activation = 6;
     public static final int ACTIVATION_FIELD_NUMBER = 6;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> activation_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> getActivationList() {
@@ -7903,12 +7903,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.AgendaOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Agenda_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Agenda_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Agenda.newBuilder()
@@ -8262,7 +8262,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // repeated .org.kie.marshalling.Agenda.AgendaGroup agenda_group = 3;
+      // repeated .org.drools.marshalling.Agenda.AgendaGroup agenda_group = 3;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup> agendaGroup_ =
         java.util.Collections.emptyList();
       private void ensureAgendaGroupIsMutable() {
@@ -8448,7 +8448,7 @@ public final class ProtobufMessages {
         return agendaGroupBuilder_;
       }
       
-      // optional .org.kie.marshalling.Agenda.FocusStack focus_stack = 4;
+      // optional .org.drools.marshalling.Agenda.FocusStack focus_stack = 4;
       private org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack focusStack_ = org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack, org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack.Builder, org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStackOrBuilder> focusStackBuilder_;
@@ -8538,7 +8538,7 @@ public final class ProtobufMessages {
         return focusStackBuilder_;
       }
       
-      // repeated .org.kie.marshalling.Agenda.RuleFlowGroup rule_flow_group = 5;
+      // repeated .org.drools.marshalling.Agenda.RuleFlowGroup rule_flow_group = 5;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup> ruleFlowGroup_ =
         java.util.Collections.emptyList();
       private void ensureRuleFlowGroupIsMutable() {
@@ -8724,7 +8724,7 @@ public final class ProtobufMessages {
         return ruleFlowGroupBuilder_;
       }
       
-      // repeated .org.kie.marshalling.Activation activation = 6;
+      // repeated .org.drools.marshalling.Activation activation = 6;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Activation> activation_ =
         java.util.Collections.emptyList();
       private void ensureActivationIsMutable() {
@@ -8910,7 +8910,7 @@ public final class ProtobufMessages {
         return activationBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Agenda)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Agenda)
     }
     
     static {
@@ -8918,7 +8918,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Agenda)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Agenda)
   }
   
   public interface NodeMemoryOrBuilder
@@ -8928,26 +8928,26 @@ public final class ProtobufMessages {
     boolean hasNodeId();
     int getNodeId();
     
-    // optional .org.kie.marshalling.NodeMemory.NodeType node_type = 2;
+    // optional .org.drools.marshalling.NodeMemory.NodeType node_type = 2;
     boolean hasNodeType();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.NodeType getNodeType();
     
-    // optional .org.kie.marshalling.NodeMemory.AccumulateNodeMemory accumulate = 3;
+    // optional .org.drools.marshalling.NodeMemory.AccumulateNodeMemory accumulate = 3;
     boolean hasAccumulate();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory getAccumulate();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder getAccumulateOrBuilder();
     
-    // optional .org.kie.marshalling.NodeMemory.RIANodeMemory ria = 4;
+    // optional .org.drools.marshalling.NodeMemory.RIANodeMemory ria = 4;
     boolean hasRia();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory getRia();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder getRiaOrBuilder();
     
-    // optional .org.kie.marshalling.NodeMemory.FromNodeMemory from = 5;
+    // optional .org.drools.marshalling.NodeMemory.FromNodeMemory from = 5;
     boolean hasFrom();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory getFrom();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder getFromOrBuilder();
     
-    // optional .org.kie.marshalling.NodeMemory.QueryElementNodeMemory query_element = 6;
+    // optional .org.drools.marshalling.NodeMemory.QueryElementNodeMemory query_element = 6;
     boolean hasQueryElement();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory getQueryElement();
     org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder getQueryElementOrBuilder();
@@ -8972,12 +8972,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_fieldAccessorTable;
     }
     
     public enum NodeType
@@ -9052,13 +9052,13 @@ public final class ProtobufMessages {
         this.value = value;
       }
       
-      // @@protoc_insertion_point(enum_scope:org.kie.marshalling.NodeMemory.NodeType)
+      // @@protoc_insertion_point(enum_scope:org.drools.marshalling.NodeMemory.NodeType)
     }
     
     public interface AccumulateNodeMemoryOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // repeated .org.kie.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;
       java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> 
           getContextList();
       org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext getContext(int index);
@@ -9088,23 +9088,23 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable;
       }
       
       public interface AccumulateContextOrBuilder
           extends com.google.protobuf.MessageOrBuilder {
         
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         boolean hasTuple();
         org.drools.marshalling.impl.ProtobufMessages.Tuple getTuple();
         org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
         
-        // optional .org.kie.marshalling.FactHandle result_handle = 2;
+        // optional .org.drools.marshalling.FactHandle result_handle = 2;
         boolean hasResultHandle();
         org.drools.marshalling.impl.ProtobufMessages.FactHandle getResultHandle();
         org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder getResultHandleOrBuilder();
@@ -9129,16 +9129,16 @@ public final class ProtobufMessages {
         
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable;
         }
         
         private int bitField0_;
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_;
         public boolean hasTuple() {
@@ -9151,7 +9151,7 @@ public final class ProtobufMessages {
           return tuple_;
         }
         
-        // optional .org.kie.marshalling.FactHandle result_handle = 2;
+        // optional .org.drools.marshalling.FactHandle result_handle = 2;
         public static final int RESULT_HANDLE_FIELD_NUMBER = 2;
         private org.drools.marshalling.impl.ProtobufMessages.FactHandle resultHandle_;
         public boolean hasResultHandle() {
@@ -9300,12 +9300,12 @@ public final class ProtobufMessages {
            implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
           }
           
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable;
           }
           
           // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.newBuilder()
@@ -9472,7 +9472,7 @@ public final class ProtobufMessages {
           
           private int bitField0_;
           
-          // optional .org.kie.marshalling.Tuple tuple = 1;
+          // optional .org.drools.marshalling.Tuple tuple = 1;
           private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_ = org.drools.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               org.drools.marshalling.impl.ProtobufMessages.Tuple, org.drools.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
@@ -9562,7 +9562,7 @@ public final class ProtobufMessages {
             return tupleBuilder_;
           }
           
-          // optional .org.kie.marshalling.FactHandle result_handle = 2;
+          // optional .org.drools.marshalling.FactHandle result_handle = 2;
           private org.drools.marshalling.impl.ProtobufMessages.FactHandle resultHandle_ = org.drools.marshalling.impl.ProtobufMessages.FactHandle.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               org.drools.marshalling.impl.ProtobufMessages.FactHandle, org.drools.marshalling.impl.ProtobufMessages.FactHandle.Builder, org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder> resultHandleBuilder_;
@@ -9652,7 +9652,7 @@ public final class ProtobufMessages {
             return resultHandleBuilder_;
           }
           
-          // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext)
+          // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext)
         }
         
         static {
@@ -9660,10 +9660,10 @@ public final class ProtobufMessages {
           defaultInstance.initFields();
         }
         
-        // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext)
+        // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext)
       }
       
-      // repeated .org.kie.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;
       public static final int CONTEXT_FIELD_NUMBER = 1;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> context_;
       public java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> getContextList() {
@@ -9812,12 +9812,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.newBuilder()
@@ -9976,7 +9976,7 @@ public final class ProtobufMessages {
         
         private int bitField0_;
         
-        // repeated .org.kie.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;
+        // repeated .org.drools.marshalling.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> context_ =
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
@@ -10162,7 +10162,7 @@ public final class ProtobufMessages {
           return contextBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.AccumulateNodeMemory)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.AccumulateNodeMemory)
       }
       
       static {
@@ -10170,13 +10170,13 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.AccumulateNodeMemory)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.AccumulateNodeMemory)
     }
     
     public interface RIANodeMemoryOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // repeated .org.kie.marshalling.NodeMemory.RIANodeMemory.RIAContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.RIANodeMemory.RIAContext context = 1;
       java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> 
           getContextList();
       org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext getContext(int index);
@@ -10206,23 +10206,23 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable;
       }
       
       public interface RIAContextOrBuilder
           extends com.google.protobuf.MessageOrBuilder {
         
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         boolean hasTuple();
         org.drools.marshalling.impl.ProtobufMessages.Tuple getTuple();
         org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
         
-        // optional .org.kie.marshalling.FactHandle result_handle = 2;
+        // optional .org.drools.marshalling.FactHandle result_handle = 2;
         boolean hasResultHandle();
         org.drools.marshalling.impl.ProtobufMessages.FactHandle getResultHandle();
         org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder getResultHandleOrBuilder();
@@ -10247,16 +10247,16 @@ public final class ProtobufMessages {
         
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable;
         }
         
         private int bitField0_;
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_;
         public boolean hasTuple() {
@@ -10269,7 +10269,7 @@ public final class ProtobufMessages {
           return tuple_;
         }
         
-        // optional .org.kie.marshalling.FactHandle result_handle = 2;
+        // optional .org.drools.marshalling.FactHandle result_handle = 2;
         public static final int RESULT_HANDLE_FIELD_NUMBER = 2;
         private org.drools.marshalling.impl.ProtobufMessages.FactHandle resultHandle_;
         public boolean hasResultHandle() {
@@ -10418,12 +10418,12 @@ public final class ProtobufMessages {
            implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
           }
           
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable;
           }
           
           // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.newBuilder()
@@ -10590,7 +10590,7 @@ public final class ProtobufMessages {
           
           private int bitField0_;
           
-          // optional .org.kie.marshalling.Tuple tuple = 1;
+          // optional .org.drools.marshalling.Tuple tuple = 1;
           private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_ = org.drools.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               org.drools.marshalling.impl.ProtobufMessages.Tuple, org.drools.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
@@ -10680,7 +10680,7 @@ public final class ProtobufMessages {
             return tupleBuilder_;
           }
           
-          // optional .org.kie.marshalling.FactHandle result_handle = 2;
+          // optional .org.drools.marshalling.FactHandle result_handle = 2;
           private org.drools.marshalling.impl.ProtobufMessages.FactHandle resultHandle_ = org.drools.marshalling.impl.ProtobufMessages.FactHandle.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               org.drools.marshalling.impl.ProtobufMessages.FactHandle, org.drools.marshalling.impl.ProtobufMessages.FactHandle.Builder, org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder> resultHandleBuilder_;
@@ -10770,7 +10770,7 @@ public final class ProtobufMessages {
             return resultHandleBuilder_;
           }
           
-          // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.RIANodeMemory.RIAContext)
+          // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.RIANodeMemory.RIAContext)
         }
         
         static {
@@ -10778,10 +10778,10 @@ public final class ProtobufMessages {
           defaultInstance.initFields();
         }
         
-        // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.RIANodeMemory.RIAContext)
+        // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.RIANodeMemory.RIAContext)
       }
       
-      // repeated .org.kie.marshalling.NodeMemory.RIANodeMemory.RIAContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.RIANodeMemory.RIAContext context = 1;
       public static final int CONTEXT_FIELD_NUMBER = 1;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> context_;
       public java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> getContextList() {
@@ -10930,12 +10930,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder()
@@ -11094,7 +11094,7 @@ public final class ProtobufMessages {
         
         private int bitField0_;
         
-        // repeated .org.kie.marshalling.NodeMemory.RIANodeMemory.RIAContext context = 1;
+        // repeated .org.drools.marshalling.NodeMemory.RIANodeMemory.RIAContext context = 1;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> context_ =
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
@@ -11280,7 +11280,7 @@ public final class ProtobufMessages {
           return contextBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.RIANodeMemory)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.RIANodeMemory)
       }
       
       static {
@@ -11288,13 +11288,13 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.RIANodeMemory)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.RIANodeMemory)
     }
     
     public interface FromNodeMemoryOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // repeated .org.kie.marshalling.NodeMemory.FromNodeMemory.FromContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.FromNodeMemory.FromContext context = 1;
       java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> 
           getContextList();
       org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext getContext(int index);
@@ -11324,23 +11324,23 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable;
       }
       
       public interface FromContextOrBuilder
           extends com.google.protobuf.MessageOrBuilder {
         
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         boolean hasTuple();
         org.drools.marshalling.impl.ProtobufMessages.Tuple getTuple();
         org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
         
-        // repeated .org.kie.marshalling.FactHandle handle = 2;
+        // repeated .org.drools.marshalling.FactHandle handle = 2;
         java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> 
             getHandleList();
         org.drools.marshalling.impl.ProtobufMessages.FactHandle getHandle(int index);
@@ -11370,16 +11370,16 @@ public final class ProtobufMessages {
         
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable;
         }
         
         private int bitField0_;
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_;
         public boolean hasTuple() {
@@ -11392,7 +11392,7 @@ public final class ProtobufMessages {
           return tuple_;
         }
         
-        // repeated .org.kie.marshalling.FactHandle handle = 2;
+        // repeated .org.drools.marshalling.FactHandle handle = 2;
         public static final int HANDLE_FIELD_NUMBER = 2;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> handle_;
         public java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> getHandleList() {
@@ -11549,12 +11549,12 @@ public final class ProtobufMessages {
            implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
           }
           
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable;
           }
           
           // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.newBuilder()
@@ -11742,7 +11742,7 @@ public final class ProtobufMessages {
           
           private int bitField0_;
           
-          // optional .org.kie.marshalling.Tuple tuple = 1;
+          // optional .org.drools.marshalling.Tuple tuple = 1;
           private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_ = org.drools.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               org.drools.marshalling.impl.ProtobufMessages.Tuple, org.drools.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
@@ -11832,7 +11832,7 @@ public final class ProtobufMessages {
             return tupleBuilder_;
           }
           
-          // repeated .org.kie.marshalling.FactHandle handle = 2;
+          // repeated .org.drools.marshalling.FactHandle handle = 2;
           private java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> handle_ =
             java.util.Collections.emptyList();
           private void ensureHandleIsMutable() {
@@ -12018,7 +12018,7 @@ public final class ProtobufMessages {
             return handleBuilder_;
           }
           
-          // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.FromNodeMemory.FromContext)
+          // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.FromNodeMemory.FromContext)
         }
         
         static {
@@ -12026,10 +12026,10 @@ public final class ProtobufMessages {
           defaultInstance.initFields();
         }
         
-        // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.FromNodeMemory.FromContext)
+        // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.FromNodeMemory.FromContext)
       }
       
-      // repeated .org.kie.marshalling.NodeMemory.FromNodeMemory.FromContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.FromNodeMemory.FromContext context = 1;
       public static final int CONTEXT_FIELD_NUMBER = 1;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> context_;
       public java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> getContextList() {
@@ -12178,12 +12178,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.newBuilder()
@@ -12342,7 +12342,7 @@ public final class ProtobufMessages {
         
         private int bitField0_;
         
-        // repeated .org.kie.marshalling.NodeMemory.FromNodeMemory.FromContext context = 1;
+        // repeated .org.drools.marshalling.NodeMemory.FromNodeMemory.FromContext context = 1;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> context_ =
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
@@ -12528,7 +12528,7 @@ public final class ProtobufMessages {
           return contextBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.FromNodeMemory)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.FromNodeMemory)
       }
       
       static {
@@ -12536,13 +12536,13 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.FromNodeMemory)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.FromNodeMemory)
     }
     
     public interface QueryElementNodeMemoryOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // repeated .org.kie.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;
       java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> 
           getContextList();
       org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext getContext(int index);
@@ -12572,28 +12572,28 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable;
       }
       
       public interface QueryContextOrBuilder
           extends com.google.protobuf.MessageOrBuilder {
         
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         boolean hasTuple();
         org.drools.marshalling.impl.ProtobufMessages.Tuple getTuple();
         org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
         
-        // optional .org.kie.marshalling.FactHandle handle = 2;
+        // optional .org.drools.marshalling.FactHandle handle = 2;
         boolean hasHandle();
         org.drools.marshalling.impl.ProtobufMessages.FactHandle getHandle();
         org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder();
         
-        // repeated .org.kie.marshalling.FactHandle result = 3;
+        // repeated .org.drools.marshalling.FactHandle result = 3;
         java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> 
             getResultList();
         org.drools.marshalling.impl.ProtobufMessages.FactHandle getResult(int index);
@@ -12623,16 +12623,16 @@ public final class ProtobufMessages {
         
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable;
         }
         
         private int bitField0_;
-        // optional .org.kie.marshalling.Tuple tuple = 1;
+        // optional .org.drools.marshalling.Tuple tuple = 1;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_;
         public boolean hasTuple() {
@@ -12645,7 +12645,7 @@ public final class ProtobufMessages {
           return tuple_;
         }
         
-        // optional .org.kie.marshalling.FactHandle handle = 2;
+        // optional .org.drools.marshalling.FactHandle handle = 2;
         public static final int HANDLE_FIELD_NUMBER = 2;
         private org.drools.marshalling.impl.ProtobufMessages.FactHandle handle_;
         public boolean hasHandle() {
@@ -12658,7 +12658,7 @@ public final class ProtobufMessages {
           return handle_;
         }
         
-        // repeated .org.kie.marshalling.FactHandle result = 3;
+        // repeated .org.drools.marshalling.FactHandle result = 3;
         public static final int RESULT_FIELD_NUMBER = 3;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> result_;
         public java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> getResultList() {
@@ -12823,12 +12823,12 @@ public final class ProtobufMessages {
            implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
           }
           
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable;
+            return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable;
           }
           
           // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.newBuilder()
@@ -13043,7 +13043,7 @@ public final class ProtobufMessages {
           
           private int bitField0_;
           
-          // optional .org.kie.marshalling.Tuple tuple = 1;
+          // optional .org.drools.marshalling.Tuple tuple = 1;
           private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_ = org.drools.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               org.drools.marshalling.impl.ProtobufMessages.Tuple, org.drools.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
@@ -13133,7 +13133,7 @@ public final class ProtobufMessages {
             return tupleBuilder_;
           }
           
-          // optional .org.kie.marshalling.FactHandle handle = 2;
+          // optional .org.drools.marshalling.FactHandle handle = 2;
           private org.drools.marshalling.impl.ProtobufMessages.FactHandle handle_ = org.drools.marshalling.impl.ProtobufMessages.FactHandle.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               org.drools.marshalling.impl.ProtobufMessages.FactHandle, org.drools.marshalling.impl.ProtobufMessages.FactHandle.Builder, org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder> handleBuilder_;
@@ -13223,7 +13223,7 @@ public final class ProtobufMessages {
             return handleBuilder_;
           }
           
-          // repeated .org.kie.marshalling.FactHandle result = 3;
+          // repeated .org.drools.marshalling.FactHandle result = 3;
           private java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> result_ =
             java.util.Collections.emptyList();
           private void ensureResultIsMutable() {
@@ -13409,7 +13409,7 @@ public final class ProtobufMessages {
             return resultBuilder_;
           }
           
-          // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext)
+          // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext)
         }
         
         static {
@@ -13417,10 +13417,10 @@ public final class ProtobufMessages {
           defaultInstance.initFields();
         }
         
-        // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext)
+        // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext)
       }
       
-      // repeated .org.kie.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;
+      // repeated .org.drools.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;
       public static final int CONTEXT_FIELD_NUMBER = 1;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> context_;
       public java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> getContextList() {
@@ -13569,12 +13569,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.newBuilder()
@@ -13733,7 +13733,7 @@ public final class ProtobufMessages {
         
         private int bitField0_;
         
-        // repeated .org.kie.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;
+        // repeated .org.drools.marshalling.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;
         private java.util.List<org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> context_ =
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
@@ -13919,7 +13919,7 @@ public final class ProtobufMessages {
           return contextBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory.QueryElementNodeMemory)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory.QueryElementNodeMemory)
       }
       
       static {
@@ -13927,7 +13927,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory.QueryElementNodeMemory)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory.QueryElementNodeMemory)
     }
     
     private int bitField0_;
@@ -13941,7 +13941,7 @@ public final class ProtobufMessages {
       return nodeId_;
     }
     
-    // optional .org.kie.marshalling.NodeMemory.NodeType node_type = 2;
+    // optional .org.drools.marshalling.NodeMemory.NodeType node_type = 2;
     public static final int NODE_TYPE_FIELD_NUMBER = 2;
     private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.NodeType nodeType_;
     public boolean hasNodeType() {
@@ -13951,7 +13951,7 @@ public final class ProtobufMessages {
       return nodeType_;
     }
     
-    // optional .org.kie.marshalling.NodeMemory.AccumulateNodeMemory accumulate = 3;
+    // optional .org.drools.marshalling.NodeMemory.AccumulateNodeMemory accumulate = 3;
     public static final int ACCUMULATE_FIELD_NUMBER = 3;
     private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory accumulate_;
     public boolean hasAccumulate() {
@@ -13964,7 +13964,7 @@ public final class ProtobufMessages {
       return accumulate_;
     }
     
-    // optional .org.kie.marshalling.NodeMemory.RIANodeMemory ria = 4;
+    // optional .org.drools.marshalling.NodeMemory.RIANodeMemory ria = 4;
     public static final int RIA_FIELD_NUMBER = 4;
     private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory ria_;
     public boolean hasRia() {
@@ -13977,7 +13977,7 @@ public final class ProtobufMessages {
       return ria_;
     }
     
-    // optional .org.kie.marshalling.NodeMemory.FromNodeMemory from = 5;
+    // optional .org.drools.marshalling.NodeMemory.FromNodeMemory from = 5;
     public static final int FROM_FIELD_NUMBER = 5;
     private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory from_;
     public boolean hasFrom() {
@@ -13990,7 +13990,7 @@ public final class ProtobufMessages {
       return from_;
     }
     
-    // optional .org.kie.marshalling.NodeMemory.QueryElementNodeMemory query_element = 6;
+    // optional .org.drools.marshalling.NodeMemory.QueryElementNodeMemory query_element = 6;
     public static final int QUERY_ELEMENT_FIELD_NUMBER = 6;
     private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory queryElement_;
     public boolean hasQueryElement() {
@@ -14171,12 +14171,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.NodeMemoryOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_NodeMemory_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_NodeMemory_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.NodeMemory.newBuilder()
@@ -14452,7 +14452,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // optional .org.kie.marshalling.NodeMemory.NodeType node_type = 2;
+      // optional .org.drools.marshalling.NodeMemory.NodeType node_type = 2;
       private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.NodeType nodeType_ = org.drools.marshalling.impl.ProtobufMessages.NodeMemory.NodeType.ACCUMULATE;
       public boolean hasNodeType() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -14476,7 +14476,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // optional .org.kie.marshalling.NodeMemory.AccumulateNodeMemory accumulate = 3;
+      // optional .org.drools.marshalling.NodeMemory.AccumulateNodeMemory accumulate = 3;
       private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory accumulate_ = org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder> accumulateBuilder_;
@@ -14566,7 +14566,7 @@ public final class ProtobufMessages {
         return accumulateBuilder_;
       }
       
-      // optional .org.kie.marshalling.NodeMemory.RIANodeMemory ria = 4;
+      // optional .org.drools.marshalling.NodeMemory.RIANodeMemory ria = 4;
       private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory ria_ = org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.Builder, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder> riaBuilder_;
@@ -14656,7 +14656,7 @@ public final class ProtobufMessages {
         return riaBuilder_;
       }
       
-      // optional .org.kie.marshalling.NodeMemory.FromNodeMemory from = 5;
+      // optional .org.drools.marshalling.NodeMemory.FromNodeMemory from = 5;
       private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory from_ = org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.Builder, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder> fromBuilder_;
@@ -14746,7 +14746,7 @@ public final class ProtobufMessages {
         return fromBuilder_;
       }
       
-      // optional .org.kie.marshalling.NodeMemory.QueryElementNodeMemory query_element = 6;
+      // optional .org.drools.marshalling.NodeMemory.QueryElementNodeMemory query_element = 6;
       private org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory queryElement_ = org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder, org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder> queryElementBuilder_;
@@ -14836,7 +14836,7 @@ public final class ProtobufMessages {
         return queryElementBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.NodeMemory)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.NodeMemory)
     }
     
     static {
@@ -14844,7 +14844,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.NodeMemory)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.NodeMemory)
   }
   
   public interface EntryPointOrBuilder
@@ -14854,7 +14854,7 @@ public final class ProtobufMessages {
     boolean hasEntryPointId();
     String getEntryPointId();
     
-    // repeated .org.kie.marshalling.FactHandle handle = 2;
+    // repeated .org.drools.marshalling.FactHandle handle = 2;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> 
         getHandleList();
     org.drools.marshalling.impl.ProtobufMessages.FactHandle getHandle(int index);
@@ -14864,7 +14864,7 @@ public final class ProtobufMessages {
     org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder(
         int index);
     
-    // optional .org.kie.marshalling.TruthMaintenanceSystem tms = 3;
+    // optional .org.drools.marshalling.TruthMaintenanceSystem tms = 3;
     boolean hasTms();
     org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem getTms();
     org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystemOrBuilder getTmsOrBuilder();
@@ -14889,12 +14889,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EntryPoint_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EntryPoint_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EntryPoint_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EntryPoint_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -14930,7 +14930,7 @@ public final class ProtobufMessages {
       }
     }
     
-    // repeated .org.kie.marshalling.FactHandle handle = 2;
+    // repeated .org.drools.marshalling.FactHandle handle = 2;
     public static final int HANDLE_FIELD_NUMBER = 2;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> handle_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> getHandleList() {
@@ -14951,7 +14951,7 @@ public final class ProtobufMessages {
       return handle_.get(index);
     }
     
-    // optional .org.kie.marshalling.TruthMaintenanceSystem tms = 3;
+    // optional .org.drools.marshalling.TruthMaintenanceSystem tms = 3;
     public static final int TMS_FIELD_NUMBER = 3;
     private org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem tms_;
     public boolean hasTms() {
@@ -15108,12 +15108,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.EntryPointOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EntryPoint_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EntryPoint_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EntryPoint_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EntryPoint_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.EntryPoint.newBuilder()
@@ -15351,7 +15351,7 @@ public final class ProtobufMessages {
         onChanged();
       }
       
-      // repeated .org.kie.marshalling.FactHandle handle = 2;
+      // repeated .org.drools.marshalling.FactHandle handle = 2;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.FactHandle> handle_ =
         java.util.Collections.emptyList();
       private void ensureHandleIsMutable() {
@@ -15537,7 +15537,7 @@ public final class ProtobufMessages {
         return handleBuilder_;
       }
       
-      // optional .org.kie.marshalling.TruthMaintenanceSystem tms = 3;
+      // optional .org.drools.marshalling.TruthMaintenanceSystem tms = 3;
       private org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem tms_ = org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem, org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem.Builder, org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystemOrBuilder> tmsBuilder_;
@@ -15627,7 +15627,7 @@ public final class ProtobufMessages {
         return tmsBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.EntryPoint)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.EntryPoint)
     }
     
     static {
@@ -15635,13 +15635,13 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.EntryPoint)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.EntryPoint)
   }
   
   public interface FactHandleOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional .org.kie.marshalling.FactHandle.HandleType type = 1;
+    // optional .org.drools.marshalling.FactHandle.HandleType type = 1;
     boolean hasType();
     org.drools.marshalling.impl.ProtobufMessages.FactHandle.HandleType getType();
     
@@ -15705,12 +15705,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_FactHandle_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_FactHandle_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_FactHandle_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_FactHandle_fieldAccessorTable;
     }
     
     public enum HandleType
@@ -15785,11 +15785,11 @@ public final class ProtobufMessages {
         this.value = value;
       }
       
-      // @@protoc_insertion_point(enum_scope:org.kie.marshalling.FactHandle.HandleType)
+      // @@protoc_insertion_point(enum_scope:org.drools.marshalling.FactHandle.HandleType)
     }
     
     private int bitField0_;
-    // optional .org.kie.marshalling.FactHandle.HandleType type = 1;
+    // optional .org.drools.marshalling.FactHandle.HandleType type = 1;
     public static final int TYPE_FIELD_NUMBER = 1;
     private org.drools.marshalling.impl.ProtobufMessages.FactHandle.HandleType type_;
     public boolean hasType() {
@@ -16129,12 +16129,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.FactHandleOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_FactHandle_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_FactHandle_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_FactHandle_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_FactHandle_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.FactHandle.newBuilder()
@@ -16407,7 +16407,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // optional .org.kie.marshalling.FactHandle.HandleType type = 1;
+      // optional .org.drools.marshalling.FactHandle.HandleType type = 1;
       private org.drools.marshalling.impl.ProtobufMessages.FactHandle.HandleType type_ = org.drools.marshalling.impl.ProtobufMessages.FactHandle.HandleType.INITIAL_FACT;
       public boolean hasType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
@@ -16659,7 +16659,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.FactHandle)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.FactHandle)
     }
     
     static {
@@ -16667,13 +16667,13 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.FactHandle)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.FactHandle)
   }
   
   public interface ActivationOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional .org.kie.marshalling.Tuple tuple = 2;
+    // optional .org.drools.marshalling.Tuple tuple = 2;
     boolean hasTuple();
     org.drools.marshalling.impl.ProtobufMessages.Tuple getTuple();
     org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
@@ -16727,16 +16727,16 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Activation_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Activation_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Activation_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Activation_fieldAccessorTable;
     }
     
     private int bitField0_;
-    // optional .org.kie.marshalling.Tuple tuple = 2;
+    // optional .org.drools.marshalling.Tuple tuple = 2;
     public static final int TUPLE_FIELD_NUMBER = 2;
     private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_;
     public boolean hasTuple() {
@@ -17078,12 +17078,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Activation_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Activation_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Activation_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Activation_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Activation.newBuilder()
@@ -17338,7 +17338,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // optional .org.kie.marshalling.Tuple tuple = 2;
+      // optional .org.drools.marshalling.Tuple tuple = 2;
       private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_ = org.drools.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Tuple, org.drools.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
@@ -17644,7 +17644,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Activation)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Activation)
     }
     
     static {
@@ -17652,7 +17652,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Activation)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Activation)
   }
   
   public interface TupleOrBuilder
@@ -17683,12 +17683,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Tuple_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Tuple_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Tuple_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Tuple_fieldAccessorTable;
     }
     
     // repeated int32 handle_id = 1;
@@ -17838,12 +17838,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Tuple_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Tuple_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Tuple_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Tuple_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Tuple.newBuilder()
@@ -18030,7 +18030,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Tuple)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Tuple)
     }
     
     static {
@@ -18038,13 +18038,13 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Tuple)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Tuple)
   }
   
   public interface TruthMaintenanceSystemOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // repeated .org.kie.marshalling.EqualityKey key = 1;
+    // repeated .org.drools.marshalling.EqualityKey key = 1;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.EqualityKey> 
         getKeyList();
     org.drools.marshalling.impl.ProtobufMessages.EqualityKey getKey(int index);
@@ -18074,15 +18074,15 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_TruthMaintenanceSystem_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_TruthMaintenanceSystem_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_TruthMaintenanceSystem_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_TruthMaintenanceSystem_fieldAccessorTable;
     }
     
-    // repeated .org.kie.marshalling.EqualityKey key = 1;
+    // repeated .org.drools.marshalling.EqualityKey key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.EqualityKey> key_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.EqualityKey> getKeyList() {
@@ -18231,12 +18231,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystemOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_TruthMaintenanceSystem_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_TruthMaintenanceSystem_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_TruthMaintenanceSystem_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_TruthMaintenanceSystem_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem.newBuilder()
@@ -18395,7 +18395,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // repeated .org.kie.marshalling.EqualityKey key = 1;
+      // repeated .org.drools.marshalling.EqualityKey key = 1;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.EqualityKey> key_ =
         java.util.Collections.emptyList();
       private void ensureKeyIsMutable() {
@@ -18581,7 +18581,7 @@ public final class ProtobufMessages {
         return keyBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.TruthMaintenanceSystem)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.TruthMaintenanceSystem)
     }
     
     static {
@@ -18589,7 +18589,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.TruthMaintenanceSystem)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.TruthMaintenanceSystem)
   }
   
   public interface EqualityKeyOrBuilder
@@ -18608,7 +18608,7 @@ public final class ProtobufMessages {
     int getOtherHandleCount();
     int getOtherHandle(int index);
     
-    // optional .org.kie.marshalling.BeliefSet beliefSet = 4;
+    // optional .org.drools.marshalling.BeliefSet beliefSet = 4;
     boolean hasBeliefSet();
     org.drools.marshalling.impl.ProtobufMessages.BeliefSet getBeliefSet();
     org.drools.marshalling.impl.ProtobufMessages.BeliefSetOrBuilder getBeliefSetOrBuilder();
@@ -18633,12 +18633,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EqualityKey_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EqualityKey_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EqualityKey_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EqualityKey_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -18676,7 +18676,7 @@ public final class ProtobufMessages {
       return otherHandle_.get(index);
     }
     
-    // optional .org.kie.marshalling.BeliefSet beliefSet = 4;
+    // optional .org.drools.marshalling.BeliefSet beliefSet = 4;
     public static final int BELIEFSET_FIELD_NUMBER = 4;
     private org.drools.marshalling.impl.ProtobufMessages.BeliefSet beliefSet_;
     public boolean hasBeliefSet() {
@@ -18846,12 +18846,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.EqualityKeyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EqualityKey_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EqualityKey_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_EqualityKey_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_EqualityKey_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.EqualityKey.newBuilder()
@@ -19137,7 +19137,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // optional .org.kie.marshalling.BeliefSet beliefSet = 4;
+      // optional .org.drools.marshalling.BeliefSet beliefSet = 4;
       private org.drools.marshalling.impl.ProtobufMessages.BeliefSet beliefSet_ = org.drools.marshalling.impl.ProtobufMessages.BeliefSet.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.BeliefSet, org.drools.marshalling.impl.ProtobufMessages.BeliefSet.Builder, org.drools.marshalling.impl.ProtobufMessages.BeliefSetOrBuilder> beliefSetBuilder_;
@@ -19227,7 +19227,7 @@ public final class ProtobufMessages {
         return beliefSetBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.EqualityKey)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.EqualityKey)
     }
     
     static {
@@ -19235,7 +19235,7 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.EqualityKey)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.EqualityKey)
   }
   
   public interface BeliefSetOrBuilder
@@ -19245,7 +19245,7 @@ public final class ProtobufMessages {
     boolean hasHandleId();
     int getHandleId();
     
-    // repeated .org.kie.marshalling.LogicalDependency logicalDependency = 2;
+    // repeated .org.drools.marshalling.LogicalDependency logicalDependency = 2;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.LogicalDependency> 
         getLogicalDependencyList();
     org.drools.marshalling.impl.ProtobufMessages.LogicalDependency getLogicalDependency(int index);
@@ -19275,12 +19275,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_BeliefSet_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_BeliefSet_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_BeliefSet_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_BeliefSet_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -19294,7 +19294,7 @@ public final class ProtobufMessages {
       return handleId_;
     }
     
-    // repeated .org.kie.marshalling.LogicalDependency logicalDependency = 2;
+    // repeated .org.drools.marshalling.LogicalDependency logicalDependency = 2;
     public static final int LOGICALDEPENDENCY_FIELD_NUMBER = 2;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.LogicalDependency> logicalDependency_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.LogicalDependency> getLogicalDependencyList() {
@@ -19451,12 +19451,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.BeliefSetOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_BeliefSet_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_BeliefSet_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_BeliefSet_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_BeliefSet_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.BeliefSet.newBuilder()
@@ -19652,7 +19652,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // repeated .org.kie.marshalling.LogicalDependency logicalDependency = 2;
+      // repeated .org.drools.marshalling.LogicalDependency logicalDependency = 2;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.LogicalDependency> logicalDependency_ =
         java.util.Collections.emptyList();
       private void ensureLogicalDependencyIsMutable() {
@@ -19838,7 +19838,7 @@ public final class ProtobufMessages {
         return logicalDependencyBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.BeliefSet)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.BeliefSet)
     }
     
     static {
@@ -19846,13 +19846,13 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.BeliefSet)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.BeliefSet)
   }
   
   public interface LogicalDependencyOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional .org.kie.marshalling.Activation activation = 2;
+    // optional .org.drools.marshalling.Activation activation = 2;
     boolean hasActivation();
     org.drools.marshalling.impl.ProtobufMessages.Activation getActivation();
     org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder();
@@ -19893,16 +19893,16 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_LogicalDependency_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_LogicalDependency_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_LogicalDependency_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_LogicalDependency_fieldAccessorTable;
     }
     
     private int bitField0_;
-    // optional .org.kie.marshalling.Activation activation = 2;
+    // optional .org.drools.marshalling.Activation activation = 2;
     public static final int ACTIVATION_FIELD_NUMBER = 2;
     private org.drools.marshalling.impl.ProtobufMessages.Activation activation_;
     public boolean hasActivation() {
@@ -20115,12 +20115,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.LogicalDependencyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_LogicalDependency_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_LogicalDependency_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_LogicalDependency_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_LogicalDependency_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.LogicalDependency.newBuilder()
@@ -20316,7 +20316,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // optional .org.kie.marshalling.Activation activation = 2;
+      // optional .org.drools.marshalling.Activation activation = 2;
       private org.drools.marshalling.impl.ProtobufMessages.Activation activation_ = org.drools.marshalling.impl.ProtobufMessages.Activation.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Activation, org.drools.marshalling.impl.ProtobufMessages.Activation.Builder, org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder> activationBuilder_;
@@ -20496,7 +20496,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.LogicalDependency)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.LogicalDependency)
     }
     
     static {
@@ -20504,13 +20504,13 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.LogicalDependency)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.LogicalDependency)
   }
   
   public interface ActionQueueOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // repeated .org.kie.marshalling.ActionQueue.Action action = 1;
+    // repeated .org.drools.marshalling.ActionQueue.Action action = 1;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action> 
         getActionList();
     org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action getAction(int index);
@@ -20540,12 +20540,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_fieldAccessorTable;
     }
     
     public enum ActionType
@@ -20632,52 +20632,52 @@ public final class ProtobufMessages {
         this.value = value;
       }
       
-      // @@protoc_insertion_point(enum_scope:org.kie.marshalling.ActionQueue.ActionType)
+      // @@protoc_insertion_point(enum_scope:org.drools.marshalling.ActionQueue.ActionType)
     }
     
     public interface ActionOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // optional .org.kie.marshalling.ActionQueue.ActionType type = 1;
+      // optional .org.drools.marshalling.ActionQueue.ActionType type = 1;
       boolean hasType();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ActionType getType();
       
-      // optional .org.kie.marshalling.ActionQueue.BehaviorExpire behavior_expire = 2;
+      // optional .org.drools.marshalling.ActionQueue.BehaviorExpire behavior_expire = 2;
       boolean hasBehaviorExpire();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire getBehaviorExpire();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpireOrBuilder getBehaviorExpireOrBuilder();
       
-      // optional .org.kie.marshalling.ActionQueue.DeactivateCallback deactivate_callback = 3;
+      // optional .org.drools.marshalling.ActionQueue.DeactivateCallback deactivate_callback = 3;
       boolean hasDeactivateCallback();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback getDeactivateCallback();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder getDeactivateCallbackOrBuilder();
       
-      // optional .org.kie.marshalling.ActionQueue.LogicalRetract logical_retract = 4;
+      // optional .org.drools.marshalling.ActionQueue.LogicalRetract logical_retract = 4;
       boolean hasLogicalRetract();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract getLogicalRetract();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder getLogicalRetractOrBuilder();
       
-      // optional .org.kie.marshalling.ActionQueue.Propagate propagate = 5;
+      // optional .org.drools.marshalling.ActionQueue.Propagate propagate = 5;
       boolean hasPropagate();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate getPropagate();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.PropagateOrBuilder getPropagateOrBuilder();
       
-      // optional .org.kie.marshalling.ActionQueue.Assert assert = 6;
+      // optional .org.drools.marshalling.ActionQueue.Assert assert = 6;
       boolean hasAssert();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert getAssert();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.AssertOrBuilder getAssertOrBuilder();
       
-      // optional .org.kie.marshalling.ActionQueue.Expire expire = 7;
+      // optional .org.drools.marshalling.ActionQueue.Expire expire = 7;
       boolean hasExpire();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire getExpire();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ExpireOrBuilder getExpireOrBuilder();
       
-      // optional .org.kie.marshalling.ActionQueue.Signal signal = 8;
+      // optional .org.drools.marshalling.ActionQueue.Signal signal = 8;
       boolean hasSignal();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal getSignal();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalOrBuilder getSignalOrBuilder();
       
-      // optional .org.kie.marshalling.ActionQueue.SignalProcessInstance signal_process_instance = 9;
+      // optional .org.drools.marshalling.ActionQueue.SignalProcessInstance signal_process_instance = 9;
       boolean hasSignalProcessInstance();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance getSignalProcessInstance();
       org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder getSignalProcessInstanceOrBuilder();
@@ -20702,16 +20702,16 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Action_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Action_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Action_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Action_fieldAccessorTable;
       }
       
       private int bitField0_;
-      // optional .org.kie.marshalling.ActionQueue.ActionType type = 1;
+      // optional .org.drools.marshalling.ActionQueue.ActionType type = 1;
       public static final int TYPE_FIELD_NUMBER = 1;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ActionType type_;
       public boolean hasType() {
@@ -20721,7 +20721,7 @@ public final class ProtobufMessages {
         return type_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.BehaviorExpire behavior_expire = 2;
+      // optional .org.drools.marshalling.ActionQueue.BehaviorExpire behavior_expire = 2;
       public static final int BEHAVIOR_EXPIRE_FIELD_NUMBER = 2;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire behaviorExpire_;
       public boolean hasBehaviorExpire() {
@@ -20734,7 +20734,7 @@ public final class ProtobufMessages {
         return behaviorExpire_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.DeactivateCallback deactivate_callback = 3;
+      // optional .org.drools.marshalling.ActionQueue.DeactivateCallback deactivate_callback = 3;
       public static final int DEACTIVATE_CALLBACK_FIELD_NUMBER = 3;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback deactivateCallback_;
       public boolean hasDeactivateCallback() {
@@ -20747,7 +20747,7 @@ public final class ProtobufMessages {
         return deactivateCallback_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.LogicalRetract logical_retract = 4;
+      // optional .org.drools.marshalling.ActionQueue.LogicalRetract logical_retract = 4;
       public static final int LOGICAL_RETRACT_FIELD_NUMBER = 4;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract logicalRetract_;
       public boolean hasLogicalRetract() {
@@ -20760,7 +20760,7 @@ public final class ProtobufMessages {
         return logicalRetract_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.Propagate propagate = 5;
+      // optional .org.drools.marshalling.ActionQueue.Propagate propagate = 5;
       public static final int PROPAGATE_FIELD_NUMBER = 5;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate propagate_;
       public boolean hasPropagate() {
@@ -20773,7 +20773,7 @@ public final class ProtobufMessages {
         return propagate_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.Assert assert = 6;
+      // optional .org.drools.marshalling.ActionQueue.Assert assert = 6;
       public static final int ASSERT_FIELD_NUMBER = 6;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert assert_;
       public boolean hasAssert() {
@@ -20786,7 +20786,7 @@ public final class ProtobufMessages {
         return assert_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.Expire expire = 7;
+      // optional .org.drools.marshalling.ActionQueue.Expire expire = 7;
       public static final int EXPIRE_FIELD_NUMBER = 7;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire expire_;
       public boolean hasExpire() {
@@ -20799,7 +20799,7 @@ public final class ProtobufMessages {
         return expire_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.Signal signal = 8;
+      // optional .org.drools.marshalling.ActionQueue.Signal signal = 8;
       public static final int SIGNAL_FIELD_NUMBER = 8;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal signal_;
       public boolean hasSignal() {
@@ -20812,7 +20812,7 @@ public final class ProtobufMessages {
         return signal_;
       }
       
-      // optional .org.kie.marshalling.ActionQueue.SignalProcessInstance signal_process_instance = 9;
+      // optional .org.drools.marshalling.ActionQueue.SignalProcessInstance signal_process_instance = 9;
       public static final int SIGNAL_PROCESS_INSTANCE_FIELD_NUMBER = 9;
       private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance signalProcessInstance_;
       public boolean hasSignalProcessInstance() {
@@ -21017,12 +21017,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ActionOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Action_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Action_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Action_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Action_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action.newBuilder()
@@ -21371,7 +21371,7 @@ public final class ProtobufMessages {
         
         private int bitField0_;
         
-        // optional .org.kie.marshalling.ActionQueue.ActionType type = 1;
+        // optional .org.drools.marshalling.ActionQueue.ActionType type = 1;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ActionType type_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ActionType.BEHAVIOR_EXPIRE;
         public boolean hasType() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
@@ -21395,7 +21395,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.BehaviorExpire behavior_expire = 2;
+        // optional .org.drools.marshalling.ActionQueue.BehaviorExpire behavior_expire = 2;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire behaviorExpire_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpireOrBuilder> behaviorExpireBuilder_;
@@ -21485,7 +21485,7 @@ public final class ProtobufMessages {
           return behaviorExpireBuilder_;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.DeactivateCallback deactivate_callback = 3;
+        // optional .org.drools.marshalling.ActionQueue.DeactivateCallback deactivate_callback = 3;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback deactivateCallback_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder> deactivateCallbackBuilder_;
@@ -21575,7 +21575,7 @@ public final class ProtobufMessages {
           return deactivateCallbackBuilder_;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.LogicalRetract logical_retract = 4;
+        // optional .org.drools.marshalling.ActionQueue.LogicalRetract logical_retract = 4;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract logicalRetract_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder> logicalRetractBuilder_;
@@ -21665,7 +21665,7 @@ public final class ProtobufMessages {
           return logicalRetractBuilder_;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.Propagate propagate = 5;
+        // optional .org.drools.marshalling.ActionQueue.Propagate propagate = 5;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate propagate_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.PropagateOrBuilder> propagateBuilder_;
@@ -21755,7 +21755,7 @@ public final class ProtobufMessages {
           return propagateBuilder_;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.Assert assert = 6;
+        // optional .org.drools.marshalling.ActionQueue.Assert assert = 6;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert assert_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.AssertOrBuilder> assertBuilder_;
@@ -21845,7 +21845,7 @@ public final class ProtobufMessages {
           return assertBuilder_;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.Expire expire = 7;
+        // optional .org.drools.marshalling.ActionQueue.Expire expire = 7;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire expire_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ExpireOrBuilder> expireBuilder_;
@@ -21935,7 +21935,7 @@ public final class ProtobufMessages {
           return expireBuilder_;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.Signal signal = 8;
+        // optional .org.drools.marshalling.ActionQueue.Signal signal = 8;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal signal_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalOrBuilder> signalBuilder_;
@@ -22025,7 +22025,7 @@ public final class ProtobufMessages {
           return signalBuilder_;
         }
         
-        // optional .org.kie.marshalling.ActionQueue.SignalProcessInstance signal_process_instance = 9;
+        // optional .org.drools.marshalling.ActionQueue.SignalProcessInstance signal_process_instance = 9;
         private org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance signalProcessInstance_ = org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance.Builder, org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder> signalProcessInstanceBuilder_;
@@ -22115,7 +22115,7 @@ public final class ProtobufMessages {
           return signalProcessInstanceBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.Action)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.Action)
       }
       
       static {
@@ -22123,7 +22123,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.Action)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.Action)
     }
     
     public interface BehaviorExpireOrBuilder
@@ -22153,12 +22153,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -22300,12 +22300,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpireOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire.newBuilder()
@@ -22453,7 +22453,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.BehaviorExpire)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.BehaviorExpire)
       }
       
       static {
@@ -22461,7 +22461,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.BehaviorExpire)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.BehaviorExpire)
     }
     
     public interface DeactivateCallbackOrBuilder
@@ -22491,12 +22491,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -22660,12 +22660,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback.newBuilder()
@@ -22828,7 +22828,7 @@ public final class ProtobufMessages {
           onChanged();
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.DeactivateCallback)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.DeactivateCallback)
       }
       
       static {
@@ -22836,7 +22836,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.DeactivateCallback)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.DeactivateCallback)
     }
     
     public interface LogicalRetractOrBuilder
@@ -22846,7 +22846,7 @@ public final class ProtobufMessages {
       boolean hasHandleId();
       int getHandleId();
       
-      // optional .org.kie.marshalling.Activation activation = 2;
+      // optional .org.drools.marshalling.Activation activation = 2;
       boolean hasActivation();
       org.drools.marshalling.impl.ProtobufMessages.Activation getActivation();
       org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder();
@@ -22879,12 +22879,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -22898,7 +22898,7 @@ public final class ProtobufMessages {
         return handleId_;
       }
       
-      // optional .org.kie.marshalling.Activation activation = 2;
+      // optional .org.drools.marshalling.Activation activation = 2;
       public static final int ACTIVATION_FIELD_NUMBER = 2;
       private org.drools.marshalling.impl.ProtobufMessages.Activation activation_;
       public boolean hasActivation() {
@@ -23083,12 +23083,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract.newBuilder()
@@ -23291,7 +23291,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // optional .org.kie.marshalling.Activation activation = 2;
+        // optional .org.drools.marshalling.Activation activation = 2;
         private org.drools.marshalling.impl.ProtobufMessages.Activation activation_ = org.drools.marshalling.impl.ProtobufMessages.Activation.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.Activation, org.drools.marshalling.impl.ProtobufMessages.Activation.Builder, org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder> activationBuilder_;
@@ -23423,7 +23423,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.LogicalRetract)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.LogicalRetract)
       }
       
       static {
@@ -23431,7 +23431,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.LogicalRetract)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.LogicalRetract)
     }
     
     public interface PropagateOrBuilder
@@ -23461,12 +23461,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Propagate_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Propagate_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Propagate_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Propagate_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -23608,12 +23608,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.PropagateOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Propagate_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Propagate_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Propagate_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Propagate_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate.newBuilder()
@@ -23761,7 +23761,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.Propagate)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.Propagate)
       }
       
       static {
@@ -23769,7 +23769,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.Propagate)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.Propagate)
     }
     
     public interface AssertOrBuilder
@@ -23795,7 +23795,7 @@ public final class ProtobufMessages {
       boolean hasOriginRuleName();
       String getOriginRuleName();
       
-      // optional .org.kie.marshalling.Tuple tuple = 6;
+      // optional .org.drools.marshalling.Tuple tuple = 6;
       boolean hasTuple();
       org.drools.marshalling.impl.ProtobufMessages.Tuple getTuple();
       org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
@@ -23820,12 +23820,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Assert_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Assert_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Assert_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Assert_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -23923,7 +23923,7 @@ public final class ProtobufMessages {
         }
       }
       
-      // optional .org.kie.marshalling.Tuple tuple = 6;
+      // optional .org.drools.marshalling.Tuple tuple = 6;
       public static final int TUPLE_FIELD_NUMBER = 6;
       private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_;
       public boolean hasTuple() {
@@ -24104,12 +24104,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.AssertOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Assert_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Assert_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Assert_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Assert_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert.newBuilder()
@@ -24454,7 +24454,7 @@ public final class ProtobufMessages {
           onChanged();
         }
         
-        // optional .org.kie.marshalling.Tuple tuple = 6;
+        // optional .org.drools.marshalling.Tuple tuple = 6;
         private org.drools.marshalling.impl.ProtobufMessages.Tuple tuple_ = org.drools.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.Tuple, org.drools.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.marshalling.impl.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
@@ -24544,7 +24544,7 @@ public final class ProtobufMessages {
           return tupleBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.Assert)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.Assert)
       }
       
       static {
@@ -24552,7 +24552,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.Assert)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.Assert)
     }
     
     public interface ExpireOrBuilder
@@ -24586,12 +24586,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Expire_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Expire_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Expire_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Expire_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -24751,12 +24751,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.ExpireOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Expire_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Expire_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Expire_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Expire_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire.newBuilder()
@@ -24939,7 +24939,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.Expire)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.Expire)
       }
       
       static {
@@ -24947,7 +24947,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.Expire)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.Expire)
     }
     
     public interface SignalOrBuilder
@@ -24981,12 +24981,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Signal_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Signal_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Signal_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Signal_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -25168,12 +25168,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Signal_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Signal_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_Signal_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_Signal_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal.newBuilder()
@@ -25374,7 +25374,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.Signal)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.Signal)
       }
       
       static {
@@ -25382,7 +25382,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.Signal)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.Signal)
     }
     
     public interface SignalProcessInstanceOrBuilder
@@ -25420,12 +25420,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -25625,12 +25625,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance.newBuilder()
@@ -25866,7 +25866,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue.SignalProcessInstance)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue.SignalProcessInstance)
       }
       
       static {
@@ -25874,10 +25874,10 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue.SignalProcessInstance)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue.SignalProcessInstance)
     }
     
-    // repeated .org.kie.marshalling.ActionQueue.Action action = 1;
+    // repeated .org.drools.marshalling.ActionQueue.Action action = 1;
     public static final int ACTION_FIELD_NUMBER = 1;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action> action_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action> getActionList() {
@@ -26026,12 +26026,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.ActionQueueOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_ActionQueue_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_ActionQueue_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.ActionQueue.newBuilder()
@@ -26190,7 +26190,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // repeated .org.kie.marshalling.ActionQueue.Action action = 1;
+      // repeated .org.drools.marshalling.ActionQueue.Action action = 1;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action> action_ =
         java.util.Collections.emptyList();
       private void ensureActionIsMutable() {
@@ -26376,7 +26376,7 @@ public final class ProtobufMessages {
         return actionBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.ActionQueue)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.ActionQueue)
     }
     
     static {
@@ -26384,13 +26384,13 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.ActionQueue)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.ActionQueue)
   }
   
   public interface TimersOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // repeated .org.kie.marshalling.Timers.Timer timer = 1;
+    // repeated .org.drools.marshalling.Timers.Timer timer = 1;
     java.util.List<org.drools.marshalling.impl.ProtobufMessages.Timers.Timer> 
         getTimerList();
     org.drools.marshalling.impl.ProtobufMessages.Timers.Timer getTimer(int index);
@@ -26420,12 +26420,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_fieldAccessorTable;
     }
     
     public enum TimerType
@@ -26500,28 +26500,28 @@ public final class ProtobufMessages {
         this.value = value;
       }
       
-      // @@protoc_insertion_point(enum_scope:org.kie.marshalling.Timers.TimerType)
+      // @@protoc_insertion_point(enum_scope:org.drools.marshalling.Timers.TimerType)
     }
     
     public interface TimerOrBuilder extends
         com.google.protobuf.GeneratedMessage.
             ExtendableMessageOrBuilder<Timer> {
       
-      // optional .org.kie.marshalling.Timers.TimerType type = 1;
+      // optional .org.drools.marshalling.Timers.TimerType type = 1;
       boolean hasType();
       org.drools.marshalling.impl.ProtobufMessages.Timers.TimerType getType();
       
-      // optional .org.kie.marshalling.Timers.ExpireTimer expire = 2;
+      // optional .org.drools.marshalling.Timers.ExpireTimer expire = 2;
       boolean hasExpire();
       org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer getExpire();
       org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimerOrBuilder getExpireOrBuilder();
       
-      // optional .org.kie.marshalling.Timers.ActivationTimer activation = 3;
+      // optional .org.drools.marshalling.Timers.ActivationTimer activation = 3;
       boolean hasActivation();
       org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer getActivation();
       org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimerOrBuilder getActivationOrBuilder();
       
-      // optional .org.kie.marshalling.Timers.BehaviorTimer behavior = 4;
+      // optional .org.drools.marshalling.Timers.BehaviorTimer behavior = 4;
       boolean hasBehavior();
       org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer getBehavior();
       org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimerOrBuilder getBehaviorOrBuilder();
@@ -26546,16 +26546,16 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_Timer_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_Timer_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_Timer_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_Timer_fieldAccessorTable;
       }
       
       private int bitField0_;
-      // optional .org.kie.marshalling.Timers.TimerType type = 1;
+      // optional .org.drools.marshalling.Timers.TimerType type = 1;
       public static final int TYPE_FIELD_NUMBER = 1;
       private org.drools.marshalling.impl.ProtobufMessages.Timers.TimerType type_;
       public boolean hasType() {
@@ -26565,7 +26565,7 @@ public final class ProtobufMessages {
         return type_;
       }
       
-      // optional .org.kie.marshalling.Timers.ExpireTimer expire = 2;
+      // optional .org.drools.marshalling.Timers.ExpireTimer expire = 2;
       public static final int EXPIRE_FIELD_NUMBER = 2;
       private org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer expire_;
       public boolean hasExpire() {
@@ -26578,7 +26578,7 @@ public final class ProtobufMessages {
         return expire_;
       }
       
-      // optional .org.kie.marshalling.Timers.ActivationTimer activation = 3;
+      // optional .org.drools.marshalling.Timers.ActivationTimer activation = 3;
       public static final int ACTIVATION_FIELD_NUMBER = 3;
       private org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer activation_;
       public boolean hasActivation() {
@@ -26591,7 +26591,7 @@ public final class ProtobufMessages {
         return activation_;
       }
       
-      // optional .org.kie.marshalling.Timers.BehaviorTimer behavior = 4;
+      // optional .org.drools.marshalling.Timers.BehaviorTimer behavior = 4;
       public static final int BEHAVIOR_FIELD_NUMBER = 4;
       private org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer behavior_;
       public boolean hasBehavior() {
@@ -26765,12 +26765,12 @@ public final class ProtobufMessages {
             org.drools.marshalling.impl.ProtobufMessages.Timers.Timer, Builder> implements org.drools.marshalling.impl.ProtobufMessages.Timers.TimerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_Timer_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_Timer_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_Timer_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_Timer_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Timers.Timer.newBuilder()
@@ -26989,7 +26989,7 @@ public final class ProtobufMessages {
         
         private int bitField0_;
         
-        // optional .org.kie.marshalling.Timers.TimerType type = 1;
+        // optional .org.drools.marshalling.Timers.TimerType type = 1;
         private org.drools.marshalling.impl.ProtobufMessages.Timers.TimerType type_ = org.drools.marshalling.impl.ProtobufMessages.Timers.TimerType.EXPIRE;
         public boolean hasType() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
@@ -27013,7 +27013,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // optional .org.kie.marshalling.Timers.ExpireTimer expire = 2;
+        // optional .org.drools.marshalling.Timers.ExpireTimer expire = 2;
         private org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer expire_ = org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer, org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer.Builder, org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimerOrBuilder> expireBuilder_;
@@ -27103,7 +27103,7 @@ public final class ProtobufMessages {
           return expireBuilder_;
         }
         
-        // optional .org.kie.marshalling.Timers.ActivationTimer activation = 3;
+        // optional .org.drools.marshalling.Timers.ActivationTimer activation = 3;
         private org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer activation_ = org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer, org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer.Builder, org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimerOrBuilder> activationBuilder_;
@@ -27193,7 +27193,7 @@ public final class ProtobufMessages {
           return activationBuilder_;
         }
         
-        // optional .org.kie.marshalling.Timers.BehaviorTimer behavior = 4;
+        // optional .org.drools.marshalling.Timers.BehaviorTimer behavior = 4;
         private org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer behavior_ = org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer, org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.Builder, org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimerOrBuilder> behaviorBuilder_;
@@ -27283,7 +27283,7 @@ public final class ProtobufMessages {
           return behaviorBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Timers.Timer)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Timers.Timer)
       }
       
       static {
@@ -27291,7 +27291,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Timers.Timer)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Timers.Timer)
     }
     
     public interface ExpireTimerOrBuilder
@@ -27333,12 +27333,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ExpireTimer_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ExpireTimer_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ExpireTimer_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ExpireTimer_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -27578,12 +27578,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ExpireTimer_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ExpireTimer_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ExpireTimer_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ExpireTimer_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer.newBuilder()
@@ -27866,7 +27866,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Timers.ExpireTimer)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Timers.ExpireTimer)
       }
       
       static {
@@ -27874,18 +27874,18 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Timers.ExpireTimer)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Timers.ExpireTimer)
     }
     
     public interface ActivationTimerOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // optional .org.kie.marshalling.Activation activation = 1;
+      // optional .org.drools.marshalling.Activation activation = 1;
       boolean hasActivation();
       org.drools.marshalling.impl.ProtobufMessages.Activation getActivation();
       org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder();
       
-      // optional .org.kie.marshalling.Trigger trigger = 2;
+      // optional .org.drools.marshalling.Trigger trigger = 2;
       boolean hasTrigger();
       org.drools.marshalling.impl.ProtobufMessages.Trigger getTrigger();
       org.drools.marshalling.impl.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder();
@@ -27910,16 +27910,16 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ActivationTimer_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ActivationTimer_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ActivationTimer_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ActivationTimer_fieldAccessorTable;
       }
       
       private int bitField0_;
-      // optional .org.kie.marshalling.Activation activation = 1;
+      // optional .org.drools.marshalling.Activation activation = 1;
       public static final int ACTIVATION_FIELD_NUMBER = 1;
       private org.drools.marshalling.impl.ProtobufMessages.Activation activation_;
       public boolean hasActivation() {
@@ -27932,7 +27932,7 @@ public final class ProtobufMessages {
         return activation_;
       }
       
-      // optional .org.kie.marshalling.Trigger trigger = 2;
+      // optional .org.drools.marshalling.Trigger trigger = 2;
       public static final int TRIGGER_FIELD_NUMBER = 2;
       private org.drools.marshalling.impl.ProtobufMessages.Trigger trigger_;
       public boolean hasTrigger() {
@@ -28081,12 +28081,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ActivationTimer_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ActivationTimer_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_ActivationTimer_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_ActivationTimer_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer.newBuilder()
@@ -28253,7 +28253,7 @@ public final class ProtobufMessages {
         
         private int bitField0_;
         
-        // optional .org.kie.marshalling.Activation activation = 1;
+        // optional .org.drools.marshalling.Activation activation = 1;
         private org.drools.marshalling.impl.ProtobufMessages.Activation activation_ = org.drools.marshalling.impl.ProtobufMessages.Activation.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.Activation, org.drools.marshalling.impl.ProtobufMessages.Activation.Builder, org.drools.marshalling.impl.ProtobufMessages.ActivationOrBuilder> activationBuilder_;
@@ -28343,7 +28343,7 @@ public final class ProtobufMessages {
           return activationBuilder_;
         }
         
-        // optional .org.kie.marshalling.Trigger trigger = 2;
+        // optional .org.drools.marshalling.Trigger trigger = 2;
         private org.drools.marshalling.impl.ProtobufMessages.Trigger trigger_ = org.drools.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.drools.marshalling.impl.ProtobufMessages.Trigger, org.drools.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.marshalling.impl.ProtobufMessages.TriggerOrBuilder> triggerBuilder_;
@@ -28433,7 +28433,7 @@ public final class ProtobufMessages {
           return triggerBuilder_;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Timers.ActivationTimer)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Timers.ActivationTimer)
       }
       
       static {
@@ -28441,7 +28441,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Timers.ActivationTimer)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Timers.ActivationTimer)
     }
     
     public interface BehaviorTimerOrBuilder
@@ -28479,12 +28479,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_BehaviorTimer_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_BehaviorTimer_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -28662,12 +28662,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_BehaviorTimer_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_BehaviorTimer_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.newBuilder()
@@ -28885,7 +28885,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Timers.BehaviorTimer)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Timers.BehaviorTimer)
       }
       
       static {
@@ -28893,10 +28893,10 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Timers.BehaviorTimer)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Timers.BehaviorTimer)
     }
     
-    // repeated .org.kie.marshalling.Timers.Timer timer = 1;
+    // repeated .org.drools.marshalling.Timers.Timer timer = 1;
     public static final int TIMER_FIELD_NUMBER = 1;
     private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Timers.Timer> timer_;
     public java.util.List<org.drools.marshalling.impl.ProtobufMessages.Timers.Timer> getTimerList() {
@@ -29051,12 +29051,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.TimersOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Timers_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Timers.newBuilder()
@@ -29221,7 +29221,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // repeated .org.kie.marshalling.Timers.Timer timer = 1;
+      // repeated .org.drools.marshalling.Timers.Timer timer = 1;
       private java.util.List<org.drools.marshalling.impl.ProtobufMessages.Timers.Timer> timer_ =
         java.util.Collections.emptyList();
       private void ensureTimerIsMutable() {
@@ -29407,7 +29407,7 @@ public final class ProtobufMessages {
         return timerBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Timers)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Timers)
     }
     
     static {
@@ -29415,27 +29415,27 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Timers)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Timers)
   }
   
   public interface TriggerOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional .org.kie.marshalling.Trigger.TriggerType type = 1;
+    // optional .org.drools.marshalling.Trigger.TriggerType type = 1;
     boolean hasType();
     org.drools.marshalling.impl.ProtobufMessages.Trigger.TriggerType getType();
     
-    // optional .org.kie.marshalling.Trigger.CronTrigger cron = 2;
+    // optional .org.drools.marshalling.Trigger.CronTrigger cron = 2;
     boolean hasCron();
     org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger getCron();
     org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTriggerOrBuilder getCronOrBuilder();
     
-    // optional .org.kie.marshalling.Trigger.IntervalTrigger interval = 3;
+    // optional .org.drools.marshalling.Trigger.IntervalTrigger interval = 3;
     boolean hasInterval();
     org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger getInterval();
     org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTriggerOrBuilder getIntervalOrBuilder();
     
-    // optional .org.kie.marshalling.Trigger.PointInTimeTrigger pit = 4;
+    // optional .org.drools.marshalling.Trigger.PointInTimeTrigger pit = 4;
     boolean hasPit();
     org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger getPit();
     org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder getPitOrBuilder();
@@ -29460,12 +29460,12 @@ public final class ProtobufMessages {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_descriptor;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_fieldAccessorTable;
+      return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_fieldAccessorTable;
     }
     
     public enum TriggerType
@@ -29537,7 +29537,7 @@ public final class ProtobufMessages {
         this.value = value;
       }
       
-      // @@protoc_insertion_point(enum_scope:org.kie.marshalling.Trigger.TriggerType)
+      // @@protoc_insertion_point(enum_scope:org.drools.marshalling.Trigger.TriggerType)
     }
     
     public interface CronTriggerOrBuilder
@@ -29592,12 +29592,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_CronTrigger_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_CronTrigger_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_CronTrigger_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_CronTrigger_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -29878,12 +29878,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTriggerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_CronTrigger_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_CronTrigger_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_CronTrigger_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_CronTrigger_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger.newBuilder()
@@ -30300,7 +30300,7 @@ public final class ProtobufMessages {
           onChanged();
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Trigger.CronTrigger)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Trigger.CronTrigger)
       }
       
       static {
@@ -30308,7 +30308,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Trigger.CronTrigger)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Trigger.CronTrigger)
     }
     
     public interface IntervalTriggerOrBuilder
@@ -30363,12 +30363,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_IntervalTrigger_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_IntervalTrigger_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_IntervalTrigger_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_IntervalTrigger_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -30627,12 +30627,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTriggerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_IntervalTrigger_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_IntervalTrigger_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_IntervalTrigger_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_IntervalTrigger_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger.newBuilder()
@@ -31034,7 +31034,7 @@ public final class ProtobufMessages {
           onChanged();
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Trigger.IntervalTrigger)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Trigger.IntervalTrigger)
       }
       
       static {
@@ -31042,7 +31042,7 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Trigger.IntervalTrigger)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Trigger.IntervalTrigger)
     }
     
     public interface PointInTimeTriggerOrBuilder
@@ -31072,12 +31072,12 @@ public final class ProtobufMessages {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -31219,12 +31219,12 @@ public final class ProtobufMessages {
          implements org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_descriptor;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable;
+          return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable;
         }
         
         // Construct using org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger.newBuilder()
@@ -31372,7 +31372,7 @@ public final class ProtobufMessages {
           return this;
         }
         
-        // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Trigger.PointInTimeTrigger)
+        // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Trigger.PointInTimeTrigger)
       }
       
       static {
@@ -31380,11 +31380,11 @@ public final class ProtobufMessages {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:org.kie.marshalling.Trigger.PointInTimeTrigger)
+      // @@protoc_insertion_point(class_scope:org.drools.marshalling.Trigger.PointInTimeTrigger)
     }
     
     private int bitField0_;
-    // optional .org.kie.marshalling.Trigger.TriggerType type = 1;
+    // optional .org.drools.marshalling.Trigger.TriggerType type = 1;
     public static final int TYPE_FIELD_NUMBER = 1;
     private org.drools.marshalling.impl.ProtobufMessages.Trigger.TriggerType type_;
     public boolean hasType() {
@@ -31394,7 +31394,7 @@ public final class ProtobufMessages {
       return type_;
     }
     
-    // optional .org.kie.marshalling.Trigger.CronTrigger cron = 2;
+    // optional .org.drools.marshalling.Trigger.CronTrigger cron = 2;
     public static final int CRON_FIELD_NUMBER = 2;
     private org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger cron_;
     public boolean hasCron() {
@@ -31407,7 +31407,7 @@ public final class ProtobufMessages {
       return cron_;
     }
     
-    // optional .org.kie.marshalling.Trigger.IntervalTrigger interval = 3;
+    // optional .org.drools.marshalling.Trigger.IntervalTrigger interval = 3;
     public static final int INTERVAL_FIELD_NUMBER = 3;
     private org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger interval_;
     public boolean hasInterval() {
@@ -31420,7 +31420,7 @@ public final class ProtobufMessages {
       return interval_;
     }
     
-    // optional .org.kie.marshalling.Trigger.PointInTimeTrigger pit = 4;
+    // optional .org.drools.marshalling.Trigger.PointInTimeTrigger pit = 4;
     public static final int PIT_FIELD_NUMBER = 4;
     private org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger pit_;
     public boolean hasPit() {
@@ -31585,12 +31585,12 @@ public final class ProtobufMessages {
        implements org.drools.marshalling.impl.ProtobufMessages.TriggerOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_descriptor;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_kie_marshalling_Trigger_fieldAccessorTable;
+        return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Trigger_fieldAccessorTable;
       }
       
       // Construct using org.drools.marshalling.impl.ProtobufMessages.Trigger.newBuilder()
@@ -31804,7 +31804,7 @@ public final class ProtobufMessages {
       
       private int bitField0_;
       
-      // optional .org.kie.marshalling.Trigger.TriggerType type = 1;
+      // optional .org.drools.marshalling.Trigger.TriggerType type = 1;
       private org.drools.marshalling.impl.ProtobufMessages.Trigger.TriggerType type_ = org.drools.marshalling.impl.ProtobufMessages.Trigger.TriggerType.CRON;
       public boolean hasType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
@@ -31828,7 +31828,7 @@ public final class ProtobufMessages {
         return this;
       }
       
-      // optional .org.kie.marshalling.Trigger.CronTrigger cron = 2;
+      // optional .org.drools.marshalling.Trigger.CronTrigger cron = 2;
       private org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger cron_ = org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger, org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger.Builder, org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTriggerOrBuilder> cronBuilder_;
@@ -31918,7 +31918,7 @@ public final class ProtobufMessages {
         return cronBuilder_;
       }
       
-      // optional .org.kie.marshalling.Trigger.IntervalTrigger interval = 3;
+      // optional .org.drools.marshalling.Trigger.IntervalTrigger interval = 3;
       private org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger interval_ = org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger, org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger.Builder, org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTriggerOrBuilder> intervalBuilder_;
@@ -32008,7 +32008,7 @@ public final class ProtobufMessages {
         return intervalBuilder_;
       }
       
-      // optional .org.kie.marshalling.Trigger.PointInTimeTrigger pit = 4;
+      // optional .org.drools.marshalling.Trigger.PointInTimeTrigger pit = 4;
       private org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger pit_ = org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger, org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger.Builder, org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder> pitBuilder_;
@@ -32098,7 +32098,7 @@ public final class ProtobufMessages {
         return pitBuilder_;
       }
       
-      // @@protoc_insertion_point(builder_scope:org.kie.marshalling.Trigger)
+      // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Trigger)
     }
     
     static {
@@ -32106,254 +32106,254 @@ public final class ProtobufMessages {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:org.kie.marshalling.Trigger)
+    // @@protoc_insertion_point(class_scope:org.drools.marshalling.Trigger)
   }
   
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Header_descriptor;
+    internal_static_org_drools_marshalling_Header_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Header_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Header_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Header_StrategyIndex_descriptor;
+    internal_static_org_drools_marshalling_Header_StrategyIndex_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Header_StrategyIndex_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Header_StrategyIndex_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Version_descriptor;
+    internal_static_org_drools_marshalling_Version_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Version_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Version_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Signature_descriptor;
+    internal_static_org_drools_marshalling_Signature_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Signature_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Signature_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_KnowledgeBase_descriptor;
+    internal_static_org_drools_marshalling_KnowledgeBase_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_KnowledgeBase_fieldAccessorTable;
+      internal_static_org_drools_marshalling_KnowledgeBase_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_KnowledgeSession_descriptor;
+    internal_static_org_drools_marshalling_KnowledgeSession_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_KnowledgeSession_fieldAccessorTable;
+      internal_static_org_drools_marshalling_KnowledgeSession_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_RuleData_descriptor;
+    internal_static_org_drools_marshalling_RuleData_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_RuleData_fieldAccessorTable;
+      internal_static_org_drools_marshalling_RuleData_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ProcessData_descriptor;
+    internal_static_org_drools_marshalling_ProcessData_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ProcessData_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ProcessData_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Agenda_descriptor;
+    internal_static_org_drools_marshalling_Agenda_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Agenda_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Agenda_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Agenda_AgendaGroup_descriptor;
+    internal_static_org_drools_marshalling_Agenda_AgendaGroup_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Agenda_AgendaGroup_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Agenda_AgendaGroup_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Agenda_FocusStack_descriptor;
+    internal_static_org_drools_marshalling_Agenda_FocusStack_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Agenda_FocusStack_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Agenda_FocusStack_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_descriptor;
+    internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
+    internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
+    internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable;
+      internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_EntryPoint_descriptor;
+    internal_static_org_drools_marshalling_EntryPoint_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_EntryPoint_fieldAccessorTable;
+      internal_static_org_drools_marshalling_EntryPoint_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_FactHandle_descriptor;
+    internal_static_org_drools_marshalling_FactHandle_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_FactHandle_fieldAccessorTable;
+      internal_static_org_drools_marshalling_FactHandle_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Activation_descriptor;
+    internal_static_org_drools_marshalling_Activation_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Activation_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Activation_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Tuple_descriptor;
+    internal_static_org_drools_marshalling_Tuple_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Tuple_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Tuple_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_TruthMaintenanceSystem_descriptor;
+    internal_static_org_drools_marshalling_TruthMaintenanceSystem_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_TruthMaintenanceSystem_fieldAccessorTable;
+      internal_static_org_drools_marshalling_TruthMaintenanceSystem_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_EqualityKey_descriptor;
+    internal_static_org_drools_marshalling_EqualityKey_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_EqualityKey_fieldAccessorTable;
+      internal_static_org_drools_marshalling_EqualityKey_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_BeliefSet_descriptor;
+    internal_static_org_drools_marshalling_BeliefSet_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_BeliefSet_fieldAccessorTable;
+      internal_static_org_drools_marshalling_BeliefSet_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_LogicalDependency_descriptor;
+    internal_static_org_drools_marshalling_LogicalDependency_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_LogicalDependency_fieldAccessorTable;
+      internal_static_org_drools_marshalling_LogicalDependency_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_Action_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_Action_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_Action_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_Action_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_Propagate_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_Propagate_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_Propagate_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_Propagate_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_Assert_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_Assert_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_Assert_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_Assert_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_Expire_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_Expire_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_Expire_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_Expire_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_Signal_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_Signal_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_Signal_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_Signal_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_descriptor;
+    internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable;
+      internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Timers_descriptor;
+    internal_static_org_drools_marshalling_Timers_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Timers_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Timers_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Timers_Timer_descriptor;
+    internal_static_org_drools_marshalling_Timers_Timer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Timers_Timer_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Timers_Timer_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Timers_ExpireTimer_descriptor;
+    internal_static_org_drools_marshalling_Timers_ExpireTimer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Timers_ExpireTimer_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Timers_ExpireTimer_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Timers_ActivationTimer_descriptor;
+    internal_static_org_drools_marshalling_Timers_ActivationTimer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Timers_ActivationTimer_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Timers_ActivationTimer_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Timers_BehaviorTimer_descriptor;
+    internal_static_org_drools_marshalling_Timers_BehaviorTimer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Trigger_descriptor;
+    internal_static_org_drools_marshalling_Trigger_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Trigger_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Trigger_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Trigger_CronTrigger_descriptor;
+    internal_static_org_drools_marshalling_Trigger_CronTrigger_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Trigger_CronTrigger_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Trigger_CronTrigger_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Trigger_IntervalTrigger_descriptor;
+    internal_static_org_drools_marshalling_Trigger_IntervalTrigger_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Trigger_IntervalTrigger_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Trigger_IntervalTrigger_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_descriptor;
+    internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable;
+      internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -32364,579 +32364,584 @@ public final class ProtobufMessages {
   static {
     java.lang.String[] descriptorData = {
       "\n+org/drools/marshalling/droolsmessages." +
-      "proto\022\023org.kie.marshalling\"\370\001\n\006Header\022-\n" +
-      "\007version\030\001 \001(\0132\034.org.kie.marshalling.Ver" +
-      "sion\0221\n\tsignature\030\004 \001(\0132\036.org.kie.marsha" +
-      "lling.Signature\022;\n\010strategy\030\t \003(\0132).org." +
-      "kie.marshalling.Header.StrategyIndex\022\017\n\007" +
-      "payload\030\n \001(\014\0327\n\rStrategyIndex\022\n\n\002id\030\001 \001" +
-      "(\005\022\014\n\004name\030\002 \001(\t\022\014\n\004data\030\003 \001(\014*\005\010d\020\310\001\"Q\n" +
-      "\007Version\022\025\n\rversion_major\030\001 \001(\005\022\025\n\rversi" +
-      "on_minor\030\002 \001(\005\022\030\n\020version_revision\030\003 \001(\005",
-      "\"1\n\tSignature\022\021\n\tkey_alias\030\001 \001(\t\022\021\n\tsign" +
-      "ature\030\002 \001(\014\"5\n\rKnowledgeBase\022\021\n\tsignatur" +
-      "e\030\001 \001(\014\022\n\n\002id\030\002 \001(\t*\005\010d\020\310\001\"\323\001\n\020Knowledge" +
-      "Session\022\023\n\013multithread\030\001 \001(\010\022\014\n\004time\030\002 \001" +
-      "(\003\0220\n\trule_data\030\003 \001(\0132\035.org.kie.marshall" +
-      "ing.RuleData\0226\n\014process_data\030\004 \001(\0132 .org" +
-      ".kie.marshalling.ProcessData\022+\n\006timers\030\005" +
-      " \001(\0132\033.org.kie.marshalling.Timers*\005\010d\020\310\001" +
-      "\"\271\002\n\010RuleData\022\017\n\007last_id\030\003 \001(\005\022\024\n\014last_r" +
-      "ecency\030\004 \001(\003\0225\n\014initial_fact\030\006 \001(\0132\037.org",
-      ".kie.marshalling.FactHandle\022+\n\006agenda\030\010 " +
-      "\001(\0132\033.org.kie.marshalling.Agenda\0224\n\013node" +
-      "_memory\030\t \003(\0132\037.org.kie.marshalling.Node" +
-      "Memory\0224\n\013entry_point\030\n \003(\0132\037.org.kie.ma" +
-      "rshalling.EntryPoint\0226\n\014action_queue\030\013 \001" +
-      "(\0132 .org.kie.marshalling.ActionQueue\"\024\n\013" +
-      "ProcessData*\005\010\n\020\310\001\"\242\005\n\006Agenda\022\033\n\023dormant" +
-      "_activations\030\001 \001(\005\022\032\n\022active_activations" +
-      "\030\002 \001(\005\022=\n\014agenda_group\030\003 \003(\0132\'.org.kie.m" +
-      "arshalling.Agenda.AgendaGroup\022;\n\013focus_s",
-      "tack\030\004 \001(\0132&.org.kie.marshalling.Agenda." +
-      "FocusStack\022B\n\017rule_flow_group\030\005 \003(\0132).or" +
-      "g.kie.marshalling.Agenda.RuleFlowGroup\0223" +
-      "\n\nactivation\030\006 \003(\0132\037.org.kie.marshalling" +
-      ".Activation\032.\n\013AgendaGroup\022\014\n\004name\030\001 \001(\t" +
-      "\022\021\n\tis_active\030\002 \001(\010\032 \n\nFocusStack\022\022\n\ngro" +
-      "up_name\030\001 \003(\t\032\227\002\n\rRuleFlowGroup\022\014\n\004name\030" +
-      "\001 \001(\t\022\021\n\tis_active\030\002 \001(\010\022\032\n\022is_auto_deac" +
-      "tivate\030\003 \001(\010\0223\n\nactivation\030\004 \003(\0132\037.org.k" +
-      "ie.marshalling.Activation\022M\n\rnode_instan",
-      "ce\030\005 \003(\01326.org.kie.marshalling.Agenda.Ru" +
-      "leFlowGroup.NodeInstance\032E\n\014NodeInstance" +
-      "\022\033\n\023process_instance_id\030\001 \001(\003\022\030\n\020node_in" +
-      "stance_id\030\002 \001(\t\"\301\n\n\nNodeMemory\022\017\n\007node_i" +
-      "d\030\001 \001(\005\022;\n\tnode_type\030\002 \001(\0162(.org.kie.mar" +
-      "shalling.NodeMemory.NodeType\022H\n\naccumula" +
-      "te\030\003 \001(\01324.org.kie.marshalling.NodeMemor" +
-      "y.AccumulateNodeMemory\022:\n\003ria\030\004 \001(\0132-.or" +
-      "g.kie.marshalling.NodeMemory.RIANodeMemo" +
-      "ry\022<\n\004from\030\005 \001(\0132..org.kie.marshalling.N",
-      "odeMemory.FromNodeMemory\022M\n\rquery_elemen" +
-      "t\030\006 \001(\01326.org.kie.marshalling.NodeMemory" +
-      ".QueryElementNodeMemory\032\347\001\n\024AccumulateNo" +
-      "deMemory\022W\n\007context\030\001 \003(\0132F.org.kie.mars" +
-      "halling.NodeMemory.AccumulateNodeMemory." +
-      "AccumulateContext\032v\n\021AccumulateContext\022)" +
-      "\n\005tuple\030\001 \001(\0132\032.org.kie.marshalling.Tupl" +
-      "e\0226\n\rresult_handle\030\002 \001(\0132\037.org.kie.marsh" +
-      "alling.FactHandle\032\313\001\n\rRIANodeMemory\022I\n\007c" +
-      "ontext\030\001 \003(\01328.org.kie.marshalling.NodeM",
-      "emory.RIANodeMemory.RIAContext\032o\n\nRIACon" +
-      "text\022)\n\005tuple\030\001 \001(\0132\032.org.kie.marshallin" +
-      "g.Tuple\0226\n\rresult_handle\030\002 \001(\0132\037.org.kie" +
-      ".marshalling.FactHandle\032\310\001\n\016FromNodeMemo" +
-      "ry\022K\n\007context\030\001 \003(\0132:.org.kie.marshallin" +
-      "g.NodeMemory.FromNodeMemory.FromContext\032" +
-      "i\n\013FromContext\022)\n\005tuple\030\001 \001(\0132\032.org.kie." +
-      "marshalling.Tuple\022/\n\006handle\030\002 \003(\0132\037.org." +
-      "kie.marshalling.FactHandle\032\214\002\n\026QueryElem" +
-      "entNodeMemory\022T\n\007context\030\001 \003(\0132C.org.kie",
-      ".marshalling.NodeMemory.QueryElementNode" +
-      "Memory.QueryContext\032\233\001\n\014QueryContext\022)\n\005" +
-      "tuple\030\001 \001(\0132\032.org.kie.marshalling.Tuple\022" +
-      "/\n\006handle\030\002 \001(\0132\037.org.kie.marshalling.Fa" +
-      "ctHandle\022/\n\006result\030\003 \003(\0132\037.org.kie.marsh" +
-      "alling.FactHandle\"@\n\010NodeType\022\016\n\nACCUMUL" +
-      "ATE\020\000\022\007\n\003RIA\020\001\022\010\n\004FROM\020\002\022\021\n\rQUERY_ELEMEN" +
-      "T\020\003\"\217\001\n\nEntryPoint\022\026\n\016entry_point_id\030\001 \001" +
-      "(\t\022/\n\006handle\030\002 \003(\0132\037.org.kie.marshalling" +
-      ".FactHandle\0228\n\003tms\030\003 \001(\0132+.org.kie.marsh",
-      "alling.TruthMaintenanceSystem\"\312\002\n\nFactHa" +
-      "ndle\0228\n\004type\030\001 \001(\0162*.org.kie.marshalling" +
-      ".FactHandle.HandleType\022\n\n\002id\030\002 \001(\005\022\017\n\007re" +
-      "cency\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\022\020\n\010durati" +
-      "on\030\005 \001(\003\022\022\n\nis_expired\030\006 \001(\010\022\031\n\021activati" +
-      "ons_count\030\007 \001(\003\022\026\n\016strategy_index\030\010 \001(\005\022" +
-      "\016\n\006object\030\t \001(\014\022\023\n\013entry_point\030\n \001(\t\022\024\n\014" +
-      "is_justified\030\013 \001(\010\">\n\nHandleType\022\020\n\014INIT" +
-      "IAL_FACT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022\t\n\005EVENT" +
-      "\020\004\"\321\001\n\nActivation\022)\n\005tuple\030\002 \001(\0132\032.org.k",
-      "ie.marshalling.Tuple\022\020\n\010salience\030\003 \001(\005\022\024" +
+      "proto\022\026org.drools.marshalling\"\201\002\n\006Header" +
+      "\0220\n\007version\030\001 \001(\0132\037.org.drools.marshalli" +
+      "ng.Version\0224\n\tsignature\030\004 \001(\0132!.org.droo" +
+      "ls.marshalling.Signature\022>\n\010strategy\030\t \003" +
+      "(\0132,.org.drools.marshalling.Header.Strat" +
+      "egyIndex\022\017\n\007payload\030\n \001(\014\0327\n\rStrategyInd" +
+      "ex\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\014\n\004data\030\003 \001" +
+      "(\014*\005\010d\020\310\001\"Q\n\007Version\022\025\n\rversion_major\030\001 " +
+      "\001(\005\022\025\n\rversion_minor\030\002 \001(\005\022\030\n\020version_re",
+      "vision\030\003 \001(\005\"1\n\tSignature\022\021\n\tkey_alias\030\001" +
+      " \001(\t\022\021\n\tsignature\030\002 \001(\014\"5\n\rKnowledgeBase" +
+      "\022\021\n\tsignature\030\001 \001(\014\022\n\n\002id\030\002 \001(\t*\005\010d\020\310\001\"\334" +
+      "\001\n\020KnowledgeSession\022\023\n\013multithread\030\001 \001(\010" +
+      "\022\014\n\004time\030\002 \001(\003\0223\n\trule_data\030\003 \001(\0132 .org." +
+      "drools.marshalling.RuleData\0229\n\014process_d" +
+      "ata\030\004 \001(\0132#.org.drools.marshalling.Proce" +
+      "ssData\022.\n\006timers\030\005 \001(\0132\036.org.drools.mars" +
+      "halling.Timers*\005\010d\020\310\001\"\310\002\n\010RuleData\022\017\n\007la" +
+      "st_id\030\003 \001(\005\022\024\n\014last_recency\030\004 \001(\003\0228\n\014ini",
+      "tial_fact\030\006 \001(\0132\".org.drools.marshalling" +
+      ".FactHandle\022.\n\006agenda\030\010 \001(\0132\036.org.drools" +
+      ".marshalling.Agenda\0227\n\013node_memory\030\t \003(\013" +
+      "2\".org.drools.marshalling.NodeMemory\0227\n\013" +
+      "entry_point\030\n \003(\0132\".org.drools.marshalli" +
+      "ng.EntryPoint\0229\n\014action_queue\030\013 \001(\0132#.or" +
+      "g.drools.marshalling.ActionQueue\"\024\n\013Proc" +
+      "essData*\005\010\n\020\310\001\"\264\005\n\006Agenda\022\033\n\023dormant_act" +
+      "ivations\030\001 \001(\005\022\032\n\022active_activations\030\002 \001" +
+      "(\005\022@\n\014agenda_group\030\003 \003(\0132*.org.drools.ma",
+      "rshalling.Agenda.AgendaGroup\022>\n\013focus_st" +
+      "ack\030\004 \001(\0132).org.drools.marshalling.Agend" +
+      "a.FocusStack\022E\n\017rule_flow_group\030\005 \003(\0132,." +
+      "org.drools.marshalling.Agenda.RuleFlowGr" +
+      "oup\0226\n\nactivation\030\006 \003(\0132\".org.drools.mar" +
+      "shalling.Activation\032.\n\013AgendaGroup\022\014\n\004na" +
+      "me\030\001 \001(\t\022\021\n\tis_active\030\002 \001(\010\032 \n\nFocusStac" +
+      "k\022\022\n\ngroup_name\030\001 \003(\t\032\235\002\n\rRuleFlowGroup\022" +
+      "\014\n\004name\030\001 \001(\t\022\021\n\tis_active\030\002 \001(\010\022\032\n\022is_a" +
+      "uto_deactivate\030\003 \001(\010\0226\n\nactivation\030\004 \003(\013",
+      "2\".org.drools.marshalling.Activation\022P\n\r" +
+      "node_instance\030\005 \003(\01329.org.drools.marshal" +
+      "ling.Agenda.RuleFlowGroup.NodeInstance\032E" +
+      "\n\014NodeInstance\022\033\n\023process_instance_id\030\001 " +
+      "\001(\003\022\030\n\020node_instance_id\030\002 \001(\t\"\367\n\n\nNodeMe" +
+      "mory\022\017\n\007node_id\030\001 \001(\005\022>\n\tnode_type\030\002 \001(\016" +
+      "2+.org.drools.marshalling.NodeMemory.Nod" +
+      "eType\022K\n\naccumulate\030\003 \001(\01327.org.drools.m" +
+      "arshalling.NodeMemory.AccumulateNodeMemo" +
+      "ry\022=\n\003ria\030\004 \001(\01320.org.drools.marshalling",
+      ".NodeMemory.RIANodeMemory\022?\n\004from\030\005 \001(\0132" +
+      "1.org.drools.marshalling.NodeMemory.From" +
+      "NodeMemory\022P\n\rquery_element\030\006 \001(\01329.org." +
+      "drools.marshalling.NodeMemory.QueryEleme" +
+      "ntNodeMemory\032\360\001\n\024AccumulateNodeMemory\022Z\n" +
+      "\007context\030\001 \003(\0132I.org.drools.marshalling." +
+      "NodeMemory.AccumulateNodeMemory.Accumula" +
+      "teContext\032|\n\021AccumulateContext\022,\n\005tuple\030" +
+      "\001 \001(\0132\035.org.drools.marshalling.Tuple\0229\n\r" +
+      "result_handle\030\002 \001(\0132\".org.drools.marshal",
+      "ling.FactHandle\032\324\001\n\rRIANodeMemory\022L\n\007con" +
+      "text\030\001 \003(\0132;.org.drools.marshalling.Node" +
+      "Memory.RIANodeMemory.RIAContext\032u\n\nRIACo" +
+      "ntext\022,\n\005tuple\030\001 \001(\0132\035.org.drools.marsha" +
+      "lling.Tuple\0229\n\rresult_handle\030\002 \001(\0132\".org" +
+      ".drools.marshalling.FactHandle\032\321\001\n\016FromN" +
+      "odeMemory\022N\n\007context\030\001 \003(\0132=.org.drools." +
+      "marshalling.NodeMemory.FromNodeMemory.Fr" +
+      "omContext\032o\n\013FromContext\022,\n\005tuple\030\001 \001(\0132" +
+      "\035.org.drools.marshalling.Tuple\0222\n\006handle",
+      "\030\002 \003(\0132\".org.drools.marshalling.FactHand" +
+      "le\032\230\002\n\026QueryElementNodeMemory\022W\n\007context" +
+      "\030\001 \003(\0132F.org.drools.marshalling.NodeMemo" +
+      "ry.QueryElementNodeMemory.QueryContext\032\244" +
+      "\001\n\014QueryContext\022,\n\005tuple\030\001 \001(\0132\035.org.dro" +
+      "ols.marshalling.Tuple\0222\n\006handle\030\002 \001(\0132\"." +
+      "org.drools.marshalling.FactHandle\0222\n\006res" +
+      "ult\030\003 \003(\0132\".org.drools.marshalling.FactH" +
+      "andle\"@\n\010NodeType\022\016\n\nACCUMULATE\020\000\022\007\n\003RIA" +
+      "\020\001\022\010\n\004FROM\020\002\022\021\n\rQUERY_ELEMENT\020\003\"\225\001\n\nEntr",
+      "yPoint\022\026\n\016entry_point_id\030\001 \001(\t\0222\n\006handle" +
+      "\030\002 \003(\0132\".org.drools.marshalling.FactHand" +
+      "le\022;\n\003tms\030\003 \001(\0132..org.drools.marshalling" +
+      ".TruthMaintenanceSystem\"\315\002\n\nFactHandle\022;" +
+      "\n\004type\030\001 \001(\0162-.org.drools.marshalling.Fa" +
+      "ctHandle.HandleType\022\n\n\002id\030\002 \001(\005\022\017\n\007recen" +
+      "cy\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\022\020\n\010duration\030" +
+      "\005 \001(\003\022\022\n\nis_expired\030\006 \001(\010\022\031\n\021activations" +
+      "_count\030\007 \001(\003\022\026\n\016strategy_index\030\010 \001(\005\022\016\n\006" +
+      "object\030\t \001(\014\022\023\n\013entry_point\030\n \001(\t\022\024\n\014is_",
+      "justified\030\013 \001(\010\">\n\nHandleType\022\020\n\014INITIAL" +
+      "_FACT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022\t\n\005EVENT\020\004\"" +
+      "\324\001\n\nActivation\022,\n\005tuple\030\002 \001(\0132\035.org.droo" +
+      "ls.marshalling.Tuple\022\020\n\010salience\030\003 \001(\005\022\024" +
       "\n\014package_name\030\004 \001(\t\022\021\n\trule_name\030\005 \001(\t\022" +
       "\030\n\020activation_group\030\007 \001(\t\022\024\n\014is_activate" +
       "d\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logical_de" +
       "pendency\030\n \003(\005\"\032\n\005Tuple\022\021\n\thandle_id\030\001 \003" +
-      "(\005\"G\n\026TruthMaintenanceSystem\022-\n\003key\030\001 \003(" +
-      "\0132 .org.kie.marshalling.EqualityKey\"y\n\013E" +
-      "qualityKey\022\016\n\006status\030\001 \001(\005\022\021\n\thandle_id\030" +
-      "\002 \001(\005\022\024\n\014other_handle\030\003 \003(\005\0221\n\tbeliefSet" +
-      "\030\004 \001(\0132\036.org.kie.marshalling.BeliefSet\"a",
-      "\n\tBeliefSet\022\021\n\thandle_id\030\001 \001(\005\022A\n\021logica" +
-      "lDependency\030\002 \003(\0132&.org.kie.marshalling." +
-      "LogicalDependency\"\244\001\n\021LogicalDependency\022" +
-      "3\n\nactivation\030\002 \001(\0132\037.org.kie.marshallin" +
-      "g.Activation\022\035\n\025object_strategy_index\030\010 " +
-      "\001(\005\022\016\n\006object\030\t \001(\014\022\034\n\024value_strategy_in" +
-      "dex\030\n \001(\005\022\r\n\005value\030\013 \001(\014\"\236\013\n\013ActionQueue" +
-      "\0227\n\006action\030\001 \003(\0132\'.org.kie.marshalling.A" +
-      "ctionQueue.Action\032\354\004\n\006Action\0229\n\004type\030\001 \001" +
-      "(\0162+.org.kie.marshalling.ActionQueue.Act",
-      "ionType\022H\n\017behavior_expire\030\002 \001(\0132/.org.k" +
-      "ie.marshalling.ActionQueue.BehaviorExpir" +
-      "e\022P\n\023deactivate_callback\030\003 \001(\01323.org.kie" +
-      ".marshalling.ActionQueue.DeactivateCallb" +
-      "ack\022H\n\017logical_retract\030\004 \001(\0132/.org.kie.m" +
-      "arshalling.ActionQueue.LogicalRetract\022=\n" +
-      "\tpropagate\030\005 \001(\0132*.org.kie.marshalling.A" +
-      "ctionQueue.Propagate\0227\n\006assert\030\006 \001(\0132\'.o" +
-      "rg.kie.marshalling.ActionQueue.Assert\0227\n" +
-      "\006expire\030\007 \001(\0132\'.org.kie.marshalling.Acti",
-      "onQueue.Expire\0227\n\006signal\030\010 \001(\0132\'.org.kie" +
-      ".marshalling.ActionQueue.Signal\022W\n\027signa" +
-      "l_process_instance\030\t \001(\01326.org.kie.marsh" +
-      "alling.ActionQueue.SignalProcessInstance" +
-      "\032!\n\016BehaviorExpire\022\017\n\007node_id\030\001 \001(\005\032,\n\022D" +
-      "eactivateCallback\022\026\n\016ruleflow_group\030\001 \001(" +
-      "\t\032\177\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001(\005\0223" +
-      "\n\nactivation\030\002 \001(\0132\037.org.kie.marshalling" +
-      ".Activation\022\025\n\rfully_retract\030\003 \001(\010\022\016\n\006up" +
-      "date\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007node_id\030\001 \001(\005",
-      "\032\254\001\n\006Assert\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016remove" +
-      "_logical\030\002 \001(\010\022\031\n\021update_equals_map\030\003 \001(" +
-      "\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030\n\020origin_rul" +
-      "e_name\030\005 \001(\t\022)\n\005tuple\030\006 \001(\0132\032.org.kie.ma" +
-      "rshalling.Tuple\032,\n\006Expire\022\021\n\thandle_id\030\001" +
-      " \001(\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Signal\022\014\n\004type\030" +
-      "\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025SignalProcessIns" +
-      "tance\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\022\033\n\023pr" +
-      "ocess_instance_id\030\003 \001(\003\"\237\001\n\nActionType\022\023" +
-      "\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIVATE_CALLBA",
-      "CK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tPROPAGATE\020\004" +
-      "\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027" +
-      "SIGNAL_PROCESS_INSTANCE\020\010\"\300\005\n\006Timers\0220\n\005" +
-      "timer\030\001 \003(\0132!.org.kie.marshalling.Timers" +
-      ".Timer\032\372\001\n\005Timer\0223\n\004type\030\001 \001(\0162%.org.kie" +
-      ".marshalling.Timers.TimerType\0227\n\006expire\030" +
-      "\002 \001(\0132\'.org.kie.marshalling.Timers.Expir" +
-      "eTimer\022?\n\nactivation\030\003 \001(\0132+.org.kie.mar" +
-      "shalling.Timers.ActivationTimer\022;\n\010behav" +
-      "ior\030\004 \001(\0132).org.kie.marshalling.Timers.B",
-      "ehaviorTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022\021\n\tha" +
-      "ndle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001(\t\022\022\n" +
-      "\nclass_name\030\003 \001(\t\022\033\n\023next_fire_timestamp" +
-      "\030\004 \001(\003\032u\n\017ActivationTimer\0223\n\nactivation\030" +
-      "\001 \001(\0132\037.org.kie.marshalling.Activation\022-" +
-      "\n\007trigger\030\002 \001(\0132\034.org.kie.marshalling.Tr" +
-      "igger\032a\n\rBehaviorTimer\022\032\n\022DEPRECATED_nod" +
-      "e_id\030\001 \001(\005\022!\n\031DEPRECATED_behavior_index\030" +
-      "\002 \001(\005\022\021\n\thandle_id\030\003 \001(\005\"B\n\tTimerType\022\n\n" +
-      "\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIOR\020\003\022",
-      "\013\n\007PROCESS\020\004\"\256\005\n\007Trigger\0226\n\004type\030\001 \001(\0162(" +
-      ".org.kie.marshalling.Trigger.TriggerType" +
-      "\0226\n\004cron\030\002 \001(\0132(.org.kie.marshalling.Tri" +
-      "gger.CronTrigger\022>\n\010interval\030\003 \001(\0132,.org" +
-      ".kie.marshalling.Trigger.IntervalTrigger" +
-      "\022<\n\003pit\030\004 \001(\0132/.org.kie.marshalling.Trig" +
-      "ger.PointInTimeTrigger\032\247\001\n\013CronTrigger\022\022" +
-      "\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014" +
-      "repeat_limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005" +
-      "\022\027\n\017cron_expression\030\005 \001(\t\022\026\n\016next_fire_t",
-      "ime\030\006 \001(\003\022\025\n\rcalendar_name\030\007 \003(\t\032\242\001\n\017Int" +
-      "ervalTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_" +
-      "time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repe" +
-      "at_count\030\004 \001(\005\022\026\n\016next_fire_time\030\006 \001(\003\022\016" +
-      "\n\006period\030\007 \001(\003\022\025\n\rcalendar_name\030\010 \003(\t\032,\n" +
-      "\022PointInTimeTrigger\022\026\n\016next_fire_time\030\001 " +
-      "\001(\003\"8\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n\010INTERVAL" +
-      "\020\001\022\021\n\rPOINT_IN_TIME\020\002B/\n\033org.drools.mars" +
-      "halling.implB\020ProtobufMessages"
+      "(\005\"J\n\026TruthMaintenanceSystem\0220\n\003key\030\001 \003(" +
+      "\0132#.org.drools.marshalling.EqualityKey\"|",
+      "\n\013EqualityKey\022\016\n\006status\030\001 \001(\005\022\021\n\thandle_" +
+      "id\030\002 \001(\005\022\024\n\014other_handle\030\003 \003(\005\0224\n\tbelief" +
+      "Set\030\004 \001(\0132!.org.drools.marshalling.Belie" +
+      "fSet\"d\n\tBeliefSet\022\021\n\thandle_id\030\001 \001(\005\022D\n\021" +
+      "logicalDependency\030\002 \003(\0132).org.drools.mar" +
+      "shalling.LogicalDependency\"\247\001\n\021LogicalDe" +
+      "pendency\0226\n\nactivation\030\002 \001(\0132\".org.drool" +
+      "s.marshalling.Activation\022\035\n\025object_strat" +
+      "egy_index\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022\034\n\024value" +
+      "_strategy_index\030\n \001(\005\022\r\n\005value\030\013 \001(\014\"\303\013\n",
+      "\013ActionQueue\022:\n\006action\030\001 \003(\0132*.org.drool" +
+      "s.marshalling.ActionQueue.Action\032\207\005\n\006Act" +
+      "ion\022<\n\004type\030\001 \001(\0162..org.drools.marshalli" +
+      "ng.ActionQueue.ActionType\022K\n\017behavior_ex" +
+      "pire\030\002 \001(\01322.org.drools.marshalling.Acti" +
+      "onQueue.BehaviorExpire\022S\n\023deactivate_cal" +
+      "lback\030\003 \001(\01326.org.drools.marshalling.Act" +
+      "ionQueue.DeactivateCallback\022K\n\017logical_r" +
+      "etract\030\004 \001(\01322.org.drools.marshalling.Ac" +
+      "tionQueue.LogicalRetract\022@\n\tpropagate\030\005 ",
+      "\001(\0132-.org.drools.marshalling.ActionQueue" +
+      ".Propagate\022:\n\006assert\030\006 \001(\0132*.org.drools." +
+      "marshalling.ActionQueue.Assert\022:\n\006expire" +
+      "\030\007 \001(\0132*.org.drools.marshalling.ActionQu" +
+      "eue.Expire\022:\n\006signal\030\010 \001(\0132*.org.drools." +
+      "marshalling.ActionQueue.Signal\022Z\n\027signal" +
+      "_process_instance\030\t \001(\01329.org.drools.mar" +
+      "shalling.ActionQueue.SignalProcessInstan" +
+      "ce\032!\n\016BehaviorExpire\022\017\n\007node_id\030\001 \001(\005\032,\n" +
+      "\022DeactivateCallback\022\026\n\016ruleflow_group\030\001 ",
+      "\001(\t\032\202\001\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001(" +
+      "\005\0226\n\nactivation\030\002 \001(\0132\".org.drools.marsh" +
+      "alling.Activation\022\025\n\rfully_retract\030\003 \001(\010" +
+      "\022\016\n\006update\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007node_id" +
+      "\030\001 \001(\005\032\257\001\n\006Assert\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016" +
+      "remove_logical\030\002 \001(\010\022\031\n\021update_equals_ma" +
+      "p\030\003 \001(\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030\n\020orig" +
+      "in_rule_name\030\005 \001(\t\022,\n\005tuple\030\006 \001(\0132\035.org." +
+      "drools.marshalling.Tuple\032,\n\006Expire\022\021\n\tha" +
+      "ndle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Signal",
+      "\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025SignalP" +
+      "rocessInstance\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 " +
+      "\001(\014\022\033\n\023process_instance_id\030\003 \001(\003\"\237\001\n\nAct" +
+      "ionType\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIVA" +
+      "TE_CALLBACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tPR" +
+      "OPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SIG" +
+      "NAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\325\005\n\006T" +
+      "imers\0223\n\005timer\030\001 \003(\0132$.org.drools.marsha" +
+      "lling.Timers.Timer\032\206\002\n\005Timer\0226\n\004type\030\001 \001" +
+      "(\0162(.org.drools.marshalling.Timers.Timer",
+      "Type\022:\n\006expire\030\002 \001(\0132*.org.drools.marsha" +
+      "lling.Timers.ExpireTimer\022B\n\nactivation\030\003" +
+      " \001(\0132..org.drools.marshalling.Timers.Act" +
+      "ivationTimer\022>\n\010behavior\030\004 \001(\0132,.org.dro" +
+      "ols.marshalling.Timers.BehaviorTimer*\005\010d" +
+      "\020\310\001\032i\n\013ExpireTimer\022\021\n\thandle_id\030\001 \001(\005\022\026\n" +
+      "\016entry_point_id\030\002 \001(\t\022\022\n\nclass_name\030\003 \001(" +
+      "\t\022\033\n\023next_fire_timestamp\030\004 \001(\003\032{\n\017Activa" +
+      "tionTimer\0226\n\nactivation\030\001 \001(\0132\".org.droo" +
+      "ls.marshalling.Activation\0220\n\007trigger\030\002 \001",
+      "(\0132\037.org.drools.marshalling.Trigger\032a\n\rB" +
+      "ehaviorTimer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005" +
+      "\022!\n\031DEPRECATED_behavior_index\030\002 \001(\005\022\021\n\th" +
+      "andle_id\030\003 \001(\005\"B\n\tTimerType\022\n\n\006EXPIRE\020\001\022" +
+      "\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS" +
+      "\020\004\"\272\005\n\007Trigger\0229\n\004type\030\001 \001(\0162+.org.drool" +
+      "s.marshalling.Trigger.TriggerType\0229\n\004cro" +
+      "n\030\002 \001(\0132+.org.drools.marshalling.Trigger" +
+      ".CronTrigger\022A\n\010interval\030\003 \001(\0132/.org.dro" +
+      "ols.marshalling.Trigger.IntervalTrigger\022",
+      "?\n\003pit\030\004 \001(\01322.org.drools.marshalling.Tr" +
+      "igger.PointInTimeTrigger\032\247\001\n\013CronTrigger" +
+      "\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024" +
+      "\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001" +
+      "(\005\022\027\n\017cron_expression\030\005 \001(\t\022\026\n\016next_fire" +
+      "_time\030\006 \001(\003\022\025\n\rcalendar_name\030\007 \003(\t\032\242\001\n\017I" +
+      "ntervalTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010en" +
+      "d_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014re" +
+      "peat_count\030\004 \001(\005\022\026\n\016next_fire_time\030\006 \001(\003" +
+      "\022\016\n\006period\030\007 \001(\003\022\025\n\rcalendar_name\030\010 \003(\t\032",
+      ",\n\022PointInTimeTrigger\022\026\n\016next_fire_time\030" +
+      "\001 \001(\003\"8\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n\010INTERV" +
+      "AL\020\001\022\021\n\rPOINT_IN_TIME\020\002B/\n\033org.drools.ma" +
+      "rshalling.implB\020ProtobufMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_org_kie_marshalling_Header_descriptor =
+          internal_static_org_drools_marshalling_Header_descriptor =
             getDescriptor().getMessageTypes().get(0);
-          internal_static_org_kie_marshalling_Header_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Header_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Header_descriptor,
+              internal_static_org_drools_marshalling_Header_descriptor,
               new java.lang.String[] { "Version", "Signature", "Strategy", "Payload", },
               org.drools.marshalling.impl.ProtobufMessages.Header.class,
               org.drools.marshalling.impl.ProtobufMessages.Header.Builder.class);
-          internal_static_org_kie_marshalling_Header_StrategyIndex_descriptor =
-            internal_static_org_kie_marshalling_Header_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_Header_StrategyIndex_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Header_StrategyIndex_descriptor =
+            internal_static_org_drools_marshalling_Header_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_Header_StrategyIndex_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Header_StrategyIndex_descriptor,
+              internal_static_org_drools_marshalling_Header_StrategyIndex_descriptor,
               new java.lang.String[] { "Id", "Name", "Data", },
               org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex.class,
               org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder.class);
-          internal_static_org_kie_marshalling_Version_descriptor =
+          internal_static_org_drools_marshalling_Version_descriptor =
             getDescriptor().getMessageTypes().get(1);
-          internal_static_org_kie_marshalling_Version_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Version_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Version_descriptor,
+              internal_static_org_drools_marshalling_Version_descriptor,
               new java.lang.String[] { "VersionMajor", "VersionMinor", "VersionRevision", },
               org.drools.marshalling.impl.ProtobufMessages.Version.class,
               org.drools.marshalling.impl.ProtobufMessages.Version.Builder.class);
-          internal_static_org_kie_marshalling_Signature_descriptor =
+          internal_static_org_drools_marshalling_Signature_descriptor =
             getDescriptor().getMessageTypes().get(2);
-          internal_static_org_kie_marshalling_Signature_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Signature_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Signature_descriptor,
+              internal_static_org_drools_marshalling_Signature_descriptor,
               new java.lang.String[] { "KeyAlias", "Signature", },
               org.drools.marshalling.impl.ProtobufMessages.Signature.class,
               org.drools.marshalling.impl.ProtobufMessages.Signature.Builder.class);
-          internal_static_org_kie_marshalling_KnowledgeBase_descriptor =
+          internal_static_org_drools_marshalling_KnowledgeBase_descriptor =
             getDescriptor().getMessageTypes().get(3);
-          internal_static_org_kie_marshalling_KnowledgeBase_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_KnowledgeBase_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_KnowledgeBase_descriptor,
+              internal_static_org_drools_marshalling_KnowledgeBase_descriptor,
               new java.lang.String[] { "Signature", "Id", },
               org.drools.marshalling.impl.ProtobufMessages.KnowledgeBase.class,
               org.drools.marshalling.impl.ProtobufMessages.KnowledgeBase.Builder.class);
-          internal_static_org_kie_marshalling_KnowledgeSession_descriptor =
+          internal_static_org_drools_marshalling_KnowledgeSession_descriptor =
             getDescriptor().getMessageTypes().get(4);
-          internal_static_org_kie_marshalling_KnowledgeSession_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_KnowledgeSession_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_KnowledgeSession_descriptor,
+              internal_static_org_drools_marshalling_KnowledgeSession_descriptor,
               new java.lang.String[] { "Multithread", "Time", "RuleData", "ProcessData", "Timers", },
               org.drools.marshalling.impl.ProtobufMessages.KnowledgeSession.class,
               org.drools.marshalling.impl.ProtobufMessages.KnowledgeSession.Builder.class);
-          internal_static_org_kie_marshalling_RuleData_descriptor =
+          internal_static_org_drools_marshalling_RuleData_descriptor =
             getDescriptor().getMessageTypes().get(5);
-          internal_static_org_kie_marshalling_RuleData_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_RuleData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_RuleData_descriptor,
+              internal_static_org_drools_marshalling_RuleData_descriptor,
               new java.lang.String[] { "LastId", "LastRecency", "InitialFact", "Agenda", "NodeMemory", "EntryPoint", "ActionQueue", },
               org.drools.marshalling.impl.ProtobufMessages.RuleData.class,
               org.drools.marshalling.impl.ProtobufMessages.RuleData.Builder.class);
-          internal_static_org_kie_marshalling_ProcessData_descriptor =
+          internal_static_org_drools_marshalling_ProcessData_descriptor =
             getDescriptor().getMessageTypes().get(6);
-          internal_static_org_kie_marshalling_ProcessData_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ProcessData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ProcessData_descriptor,
+              internal_static_org_drools_marshalling_ProcessData_descriptor,
               new java.lang.String[] { },
               org.drools.marshalling.impl.ProtobufMessages.ProcessData.class,
               org.drools.marshalling.impl.ProtobufMessages.ProcessData.Builder.class);
-          internal_static_org_kie_marshalling_Agenda_descriptor =
+          internal_static_org_drools_marshalling_Agenda_descriptor =
             getDescriptor().getMessageTypes().get(7);
-          internal_static_org_kie_marshalling_Agenda_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Agenda_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Agenda_descriptor,
+              internal_static_org_drools_marshalling_Agenda_descriptor,
               new java.lang.String[] { "DormantActivations", "ActiveActivations", "AgendaGroup", "FocusStack", "RuleFlowGroup", "Activation", },
               org.drools.marshalling.impl.ProtobufMessages.Agenda.class,
               org.drools.marshalling.impl.ProtobufMessages.Agenda.Builder.class);
-          internal_static_org_kie_marshalling_Agenda_AgendaGroup_descriptor =
-            internal_static_org_kie_marshalling_Agenda_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_Agenda_AgendaGroup_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Agenda_AgendaGroup_descriptor =
+            internal_static_org_drools_marshalling_Agenda_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_Agenda_AgendaGroup_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Agenda_AgendaGroup_descriptor,
+              internal_static_org_drools_marshalling_Agenda_AgendaGroup_descriptor,
               new java.lang.String[] { "Name", "IsActive", },
               org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.class,
               org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.Builder.class);
-          internal_static_org_kie_marshalling_Agenda_FocusStack_descriptor =
-            internal_static_org_kie_marshalling_Agenda_descriptor.getNestedTypes().get(1);
-          internal_static_org_kie_marshalling_Agenda_FocusStack_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Agenda_FocusStack_descriptor =
+            internal_static_org_drools_marshalling_Agenda_descriptor.getNestedTypes().get(1);
+          internal_static_org_drools_marshalling_Agenda_FocusStack_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Agenda_FocusStack_descriptor,
+              internal_static_org_drools_marshalling_Agenda_FocusStack_descriptor,
               new java.lang.String[] { "GroupName", },
               org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack.class,
               org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack.Builder.class);
-          internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_descriptor =
-            internal_static_org_kie_marshalling_Agenda_descriptor.getNestedTypes().get(2);
-          internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_descriptor =
+            internal_static_org_drools_marshalling_Agenda_descriptor.getNestedTypes().get(2);
+          internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_descriptor,
+              internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_descriptor,
               new java.lang.String[] { "Name", "IsActive", "IsAutoDeactivate", "Activation", "NodeInstance", },
               org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.class,
               org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.Builder.class);
-          internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor =
-            internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor =
+            internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor,
+              internal_static_org_drools_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor,
               new java.lang.String[] { "ProcessInstanceId", "NodeInstanceId", },
               org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.class,
               org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_descriptor =
+          internal_static_org_drools_marshalling_NodeMemory_descriptor =
             getDescriptor().getMessageTypes().get(8);
-          internal_static_org_kie_marshalling_NodeMemory_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_descriptor,
               new java.lang.String[] { "NodeId", "NodeType", "Accumulate", "Ria", "From", "QueryElement", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_descriptor,
               new java.lang.String[] { "Context", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor,
               new java.lang.String[] { "Tuple", "ResultHandle", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_descriptor.getNestedTypes().get(1);
-          internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_descriptor.getNestedTypes().get(1);
+          internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_descriptor,
               new java.lang.String[] { "Context", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor,
               new java.lang.String[] { "Tuple", "ResultHandle", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_descriptor.getNestedTypes().get(2);
-          internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_descriptor.getNestedTypes().get(2);
+          internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_descriptor,
               new java.lang.String[] { "Context", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor,
               new java.lang.String[] { "Tuple", "Handle", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_descriptor.getNestedTypes().get(3);
-          internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_descriptor.getNestedTypes().get(3);
+          internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_descriptor,
               new java.lang.String[] { "Context", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder.class);
-          internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor =
-            internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor =
+            internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor,
+              internal_static_org_drools_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor,
               new java.lang.String[] { "Tuple", "Handle", "Result", },
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.class,
               org.drools.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder.class);
-          internal_static_org_kie_marshalling_EntryPoint_descriptor =
+          internal_static_org_drools_marshalling_EntryPoint_descriptor =
             getDescriptor().getMessageTypes().get(9);
-          internal_static_org_kie_marshalling_EntryPoint_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_EntryPoint_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_EntryPoint_descriptor,
+              internal_static_org_drools_marshalling_EntryPoint_descriptor,
               new java.lang.String[] { "EntryPointId", "Handle", "Tms", },
               org.drools.marshalling.impl.ProtobufMessages.EntryPoint.class,
               org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder.class);
-          internal_static_org_kie_marshalling_FactHandle_descriptor =
+          internal_static_org_drools_marshalling_FactHandle_descriptor =
             getDescriptor().getMessageTypes().get(10);
-          internal_static_org_kie_marshalling_FactHandle_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_FactHandle_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_FactHandle_descriptor,
+              internal_static_org_drools_marshalling_FactHandle_descriptor,
               new java.lang.String[] { "Type", "Id", "Recency", "Timestamp", "Duration", "IsExpired", "ActivationsCount", "StrategyIndex", "Object", "EntryPoint", "IsJustified", },
               org.drools.marshalling.impl.ProtobufMessages.FactHandle.class,
               org.drools.marshalling.impl.ProtobufMessages.FactHandle.Builder.class);
-          internal_static_org_kie_marshalling_Activation_descriptor =
+          internal_static_org_drools_marshalling_Activation_descriptor =
             getDescriptor().getMessageTypes().get(11);
-          internal_static_org_kie_marshalling_Activation_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Activation_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Activation_descriptor,
+              internal_static_org_drools_marshalling_Activation_descriptor,
               new java.lang.String[] { "Tuple", "Salience", "PackageName", "RuleName", "ActivationGroup", "IsActivated", "HandleId", "LogicalDependency", },
               org.drools.marshalling.impl.ProtobufMessages.Activation.class,
               org.drools.marshalling.impl.ProtobufMessages.Activation.Builder.class);
-          internal_static_org_kie_marshalling_Tuple_descriptor =
+          internal_static_org_drools_marshalling_Tuple_descriptor =
             getDescriptor().getMessageTypes().get(12);
-          internal_static_org_kie_marshalling_Tuple_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Tuple_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Tuple_descriptor,
+              internal_static_org_drools_marshalling_Tuple_descriptor,
               new java.lang.String[] { "HandleId", },
               org.drools.marshalling.impl.ProtobufMessages.Tuple.class,
               org.drools.marshalling.impl.ProtobufMessages.Tuple.Builder.class);
-          internal_static_org_kie_marshalling_TruthMaintenanceSystem_descriptor =
+          internal_static_org_drools_marshalling_TruthMaintenanceSystem_descriptor =
             getDescriptor().getMessageTypes().get(13);
-          internal_static_org_kie_marshalling_TruthMaintenanceSystem_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_TruthMaintenanceSystem_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_TruthMaintenanceSystem_descriptor,
+              internal_static_org_drools_marshalling_TruthMaintenanceSystem_descriptor,
               new java.lang.String[] { "Key", },
               org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem.class,
               org.drools.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem.Builder.class);
-          internal_static_org_kie_marshalling_EqualityKey_descriptor =
+          internal_static_org_drools_marshalling_EqualityKey_descriptor =
             getDescriptor().getMessageTypes().get(14);
-          internal_static_org_kie_marshalling_EqualityKey_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_EqualityKey_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_EqualityKey_descriptor,
+              internal_static_org_drools_marshalling_EqualityKey_descriptor,
               new java.lang.String[] { "Status", "HandleId", "OtherHandle", "BeliefSet", },
               org.drools.marshalling.impl.ProtobufMessages.EqualityKey.class,
               org.drools.marshalling.impl.ProtobufMessages.EqualityKey.Builder.class);
-          internal_static_org_kie_marshalling_BeliefSet_descriptor =
+          internal_static_org_drools_marshalling_BeliefSet_descriptor =
             getDescriptor().getMessageTypes().get(15);
-          internal_static_org_kie_marshalling_BeliefSet_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_BeliefSet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_BeliefSet_descriptor,
+              internal_static_org_drools_marshalling_BeliefSet_descriptor,
               new java.lang.String[] { "HandleId", "LogicalDependency", },
               org.drools.marshalling.impl.ProtobufMessages.BeliefSet.class,
               org.drools.marshalling.impl.ProtobufMessages.BeliefSet.Builder.class);
-          internal_static_org_kie_marshalling_LogicalDependency_descriptor =
+          internal_static_org_drools_marshalling_LogicalDependency_descriptor =
             getDescriptor().getMessageTypes().get(16);
-          internal_static_org_kie_marshalling_LogicalDependency_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_LogicalDependency_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_LogicalDependency_descriptor,
+              internal_static_org_drools_marshalling_LogicalDependency_descriptor,
               new java.lang.String[] { "Activation", "ObjectStrategyIndex", "Object", "ValueStrategyIndex", "Value", },
               org.drools.marshalling.impl.ProtobufMessages.LogicalDependency.class,
               org.drools.marshalling.impl.ProtobufMessages.LogicalDependency.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_descriptor =
+          internal_static_org_drools_marshalling_ActionQueue_descriptor =
             getDescriptor().getMessageTypes().get(17);
-          internal_static_org_kie_marshalling_ActionQueue_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_descriptor,
               new java.lang.String[] { "Action", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_Action_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_ActionQueue_Action_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_Action_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_ActionQueue_Action_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_Action_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_Action_descriptor,
               new java.lang.String[] { "Type", "BehaviorExpire", "DeactivateCallback", "LogicalRetract", "Propagate", "Assert", "Expire", "Signal", "SignalProcessInstance", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(1);
-          internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(1);
+          internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_BehaviorExpire_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_BehaviorExpire_descriptor,
               new java.lang.String[] { "NodeId", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(2);
-          internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(2);
+          internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_DeactivateCallback_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_DeactivateCallback_descriptor,
               new java.lang.String[] { "RuleflowGroup", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(3);
-          internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(3);
+          internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_LogicalRetract_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_LogicalRetract_descriptor,
               new java.lang.String[] { "HandleId", "Activation", "FullyRetract", "Update", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_Propagate_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(4);
-          internal_static_org_kie_marshalling_ActionQueue_Propagate_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_Propagate_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(4);
+          internal_static_org_drools_marshalling_ActionQueue_Propagate_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_Propagate_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_Propagate_descriptor,
               new java.lang.String[] { "NodeId", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Propagate.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_Assert_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(5);
-          internal_static_org_kie_marshalling_ActionQueue_Assert_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_Assert_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(5);
+          internal_static_org_drools_marshalling_ActionQueue_Assert_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_Assert_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_Assert_descriptor,
               new java.lang.String[] { "HandleId", "RemoveLogical", "UpdateEqualsMap", "OriginPkgName", "OriginRuleName", "Tuple", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_Expire_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(6);
-          internal_static_org_kie_marshalling_ActionQueue_Expire_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_Expire_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(6);
+          internal_static_org_drools_marshalling_ActionQueue_Expire_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_Expire_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_Expire_descriptor,
               new java.lang.String[] { "HandleId", "NodeId", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Expire.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_Signal_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(7);
-          internal_static_org_kie_marshalling_ActionQueue_Signal_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_Signal_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(7);
+          internal_static_org_drools_marshalling_ActionQueue_Signal_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_Signal_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_Signal_descriptor,
               new java.lang.String[] { "Type", "Event", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Signal.Builder.class);
-          internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_descriptor =
-            internal_static_org_kie_marshalling_ActionQueue_descriptor.getNestedTypes().get(8);
-          internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_descriptor =
+            internal_static_org_drools_marshalling_ActionQueue_descriptor.getNestedTypes().get(8);
+          internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_ActionQueue_SignalProcessInstance_descriptor,
+              internal_static_org_drools_marshalling_ActionQueue_SignalProcessInstance_descriptor,
               new java.lang.String[] { "Type", "Event", "ProcessInstanceId", },
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance.class,
               org.drools.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance.Builder.class);
-          internal_static_org_kie_marshalling_Timers_descriptor =
+          internal_static_org_drools_marshalling_Timers_descriptor =
             getDescriptor().getMessageTypes().get(18);
-          internal_static_org_kie_marshalling_Timers_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Timers_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Timers_descriptor,
+              internal_static_org_drools_marshalling_Timers_descriptor,
               new java.lang.String[] { "Timer", },
               org.drools.marshalling.impl.ProtobufMessages.Timers.class,
               org.drools.marshalling.impl.ProtobufMessages.Timers.Builder.class);
-          internal_static_org_kie_marshalling_Timers_Timer_descriptor =
-            internal_static_org_kie_marshalling_Timers_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_Timers_Timer_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Timers_Timer_descriptor =
+            internal_static_org_drools_marshalling_Timers_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_Timers_Timer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Timers_Timer_descriptor,
+              internal_static_org_drools_marshalling_Timers_Timer_descriptor,
               new java.lang.String[] { "Type", "Expire", "Activation", "Behavior", },
               org.drools.marshalling.impl.ProtobufMessages.Timers.Timer.class,
               org.drools.marshalling.impl.ProtobufMessages.Timers.Timer.Builder.class);
-          internal_static_org_kie_marshalling_Timers_ExpireTimer_descriptor =
-            internal_static_org_kie_marshalling_Timers_descriptor.getNestedTypes().get(1);
-          internal_static_org_kie_marshalling_Timers_ExpireTimer_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Timers_ExpireTimer_descriptor =
+            internal_static_org_drools_marshalling_Timers_descriptor.getNestedTypes().get(1);
+          internal_static_org_drools_marshalling_Timers_ExpireTimer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Timers_ExpireTimer_descriptor,
+              internal_static_org_drools_marshalling_Timers_ExpireTimer_descriptor,
               new java.lang.String[] { "HandleId", "EntryPointId", "ClassName", "NextFireTimestamp", },
               org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer.class,
               org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer.Builder.class);
-          internal_static_org_kie_marshalling_Timers_ActivationTimer_descriptor =
-            internal_static_org_kie_marshalling_Timers_descriptor.getNestedTypes().get(2);
-          internal_static_org_kie_marshalling_Timers_ActivationTimer_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Timers_ActivationTimer_descriptor =
+            internal_static_org_drools_marshalling_Timers_descriptor.getNestedTypes().get(2);
+          internal_static_org_drools_marshalling_Timers_ActivationTimer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Timers_ActivationTimer_descriptor,
+              internal_static_org_drools_marshalling_Timers_ActivationTimer_descriptor,
               new java.lang.String[] { "Activation", "Trigger", },
               org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer.class,
               org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer.Builder.class);
-          internal_static_org_kie_marshalling_Timers_BehaviorTimer_descriptor =
-            internal_static_org_kie_marshalling_Timers_descriptor.getNestedTypes().get(3);
-          internal_static_org_kie_marshalling_Timers_BehaviorTimer_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Timers_BehaviorTimer_descriptor =
+            internal_static_org_drools_marshalling_Timers_descriptor.getNestedTypes().get(3);
+          internal_static_org_drools_marshalling_Timers_BehaviorTimer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Timers_BehaviorTimer_descriptor,
+              internal_static_org_drools_marshalling_Timers_BehaviorTimer_descriptor,
               new java.lang.String[] { "DEPRECATEDNodeId", "DEPRECATEDBehaviorIndex", "HandleId", },
               org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.class,
               org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.Builder.class);
-          internal_static_org_kie_marshalling_Trigger_descriptor =
+          internal_static_org_drools_marshalling_Trigger_descriptor =
             getDescriptor().getMessageTypes().get(19);
-          internal_static_org_kie_marshalling_Trigger_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Trigger_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Trigger_descriptor,
+              internal_static_org_drools_marshalling_Trigger_descriptor,
               new java.lang.String[] { "Type", "Cron", "Interval", "Pit", },
               org.drools.marshalling.impl.ProtobufMessages.Trigger.class,
               org.drools.marshalling.impl.ProtobufMessages.Trigger.Builder.class);
-          internal_static_org_kie_marshalling_Trigger_CronTrigger_descriptor =
-            internal_static_org_kie_marshalling_Trigger_descriptor.getNestedTypes().get(0);
-          internal_static_org_kie_marshalling_Trigger_CronTrigger_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Trigger_CronTrigger_descriptor =
+            internal_static_org_drools_marshalling_Trigger_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_marshalling_Trigger_CronTrigger_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Trigger_CronTrigger_descriptor,
+              internal_static_org_drools_marshalling_Trigger_CronTrigger_descriptor,
               new java.lang.String[] { "StartTime", "EndTime", "RepeatLimit", "RepeatCount", "CronExpression", "NextFireTime", "CalendarName", },
               org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger.class,
               org.drools.marshalling.impl.ProtobufMessages.Trigger.CronTrigger.Builder.class);
-          internal_static_org_kie_marshalling_Trigger_IntervalTrigger_descriptor =
-            internal_static_org_kie_marshalling_Trigger_descriptor.getNestedTypes().get(1);
-          internal_static_org_kie_marshalling_Trigger_IntervalTrigger_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Trigger_IntervalTrigger_descriptor =
+            internal_static_org_drools_marshalling_Trigger_descriptor.getNestedTypes().get(1);
+          internal_static_org_drools_marshalling_Trigger_IntervalTrigger_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Trigger_IntervalTrigger_descriptor,
+              internal_static_org_drools_marshalling_Trigger_IntervalTrigger_descriptor,
               new java.lang.String[] { "StartTime", "EndTime", "RepeatLimit", "RepeatCount", "NextFireTime", "Period", "CalendarName", },
               org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger.class,
               org.drools.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger.Builder.class);
-          internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_descriptor =
-            internal_static_org_kie_marshalling_Trigger_descriptor.getNestedTypes().get(2);
-          internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable = new
+          internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_descriptor =
+            internal_static_org_drools_marshalling_Trigger_descriptor.getNestedTypes().get(2);
+          internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_kie_marshalling_Trigger_PointInTimeTrigger_descriptor,
+              internal_static_org_drools_marshalling_Trigger_PointInTimeTrigger_descriptor,
               new java.lang.String[] { "NextFireTime", },
               org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger.class,
               org.drools.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger.Builder.class);
