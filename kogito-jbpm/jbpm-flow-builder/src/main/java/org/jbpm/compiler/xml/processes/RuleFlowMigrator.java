@@ -107,7 +107,7 @@ public class RuleFlowMigrator
      ************************************************************************/
     public static boolean needToMigrateRF(String xml) throws Exception {
     	return ( xml != null) && 
-    	(xml.indexOf( "org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" ) >= 0 ); 
+    	(xml.indexOf( "org.kie.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" ) >= 0 ); 
     }
     
     
@@ -123,7 +123,7 @@ public class RuleFlowMigrator
      ************************************************************************/
     public static boolean needToMigrateRFM(String xml) throws Exception {
         return ( xml != null) && 
-        (xml.indexOf( "org.drools.ruleflow.core.impl.RuleFlowProcessImpl" ) >= 0 ); 
+        (xml.indexOf( "org.kie.ruleflow.core.impl.RuleFlowProcessImpl" ) >= 0 ); 
     }
     
     

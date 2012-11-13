@@ -20,13 +20,13 @@
     <property name="nestedTransactionAllowed" value="true"/>
   </bean>
 
-  <bean id="htTxMgr" class="org.drools.container.spring.beans.persistence.HumanTaskSpringTransactionManager">
+  <bean id="htTxMgr" class="org.kie.container.spring.beans.persistence.HumanTaskSpringTransactionManager">
     <constructor-arg ref="jpaTxMgr" />
   </bean>
 
   <!-- human-task beans -->
 
-  <bean id="systemEventListener" class="org.drools.SystemEventListenerFactory" factory-method="getSystemEventListener" />
+  <bean id="systemEventListener" class="org.kie.SystemEventListenerFactory" factory-method="getSystemEventListener" />
 
   <bean id="springTaskSessionFactory" class="org.jbpm.task.service.persistence.TaskSessionSpringFactoryImpl"
         init-method="initialize" >

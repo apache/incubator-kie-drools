@@ -55,9 +55,9 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final Package pkg = new Package( "org.kie.test" );
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.kie.process.event");
         process.setName("Event Process");
         
         StartNode startNode = new StartNode();
@@ -143,33 +143,33 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         session.addEventListener( processEventListener );
 
         // execute the process
-        session.startProcess("org.drools.process.event");
+        session.startProcess("org.kie.process.event");
         assertEquals( 16, processEventList.size() );
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName());
-        assertEquals( "org.drools.process.event", ((ProcessCompletedEvent) processEventList.get(7)).getProcessInstance().getProcessId());
-        assertEquals( "org.drools.process.event", ((ProcessCompletedEvent) processEventList.get(8)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessCompletedEvent) processEventList.get(7)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessCompletedEvent) processEventList.get(8)).getProcessInstance().getProcessId());
         assertEquals( "End", ((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(13)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(14)).getNodeInstance().getNodeName());
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
     }
     
     public void testProcessEventListenerWithEvent() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final Package pkg = new Package( "org.kie.test" );
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.kie.process.event");
         process.setName("Event Process");
         
         StartNode startNode = new StartNode();
@@ -270,10 +270,10 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         session.addEventListener( processEventListener );
 
         // execute the process
-        ProcessInstance pi = session.startProcess("org.drools.process.event");
+        ProcessInstance pi = session.startProcess("org.kie.process.event");
         pi.signalEvent("signal", null);
         assertEquals( 20, processEventList.size() );
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
         
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
@@ -285,12 +285,12 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         assertEquals( "Print", ((ProcessNodeTriggeredEvent) processEventList.get(8)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(11)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(11)).getProcessInstance().getProcessId());
         assertEquals( "Event", ((ProcessNodeLeftEvent) processEventList.get(12)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeTriggeredEvent) processEventList.get(13)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeLeftEvent) processEventList.get(14)).getNodeInstance().getNodeName());
-        assertEquals( "org.drools.process.event", ((ProcessCompletedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
-        assertEquals( "org.drools.process.event", ((ProcessCompletedEvent) processEventList.get(16)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessCompletedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessCompletedEvent) processEventList.get(16)).getProcessInstance().getProcessId());
         assertEquals( "End", ((ProcessNodeLeftEvent) processEventList.get(17)).getNodeInstance().getNodeName());
         assertEquals( "Event", ((ProcessNodeLeftEvent) processEventList.get(19)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeTriggeredEvent) processEventList.get(18)).getNodeInstance().getNodeName());
@@ -304,9 +304,9 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final Package pkg = new Package( "org.kie.test" );
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.kie.process.event");
         process.setName("Event Process");
         
         StartNode startNode = new StartNode();
@@ -393,9 +393,9 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         session.addEventListener( processEventListener );
 
         // execute the process
-        session.startProcess("org.drools.process.event");
+        session.startProcess("org.kie.process.event");
         assertEquals( 14, processEventList.size() );
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName());
@@ -408,16 +408,16 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         assertEquals( "Print", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName());
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(13)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(13)).getProcessInstance().getProcessId());
     }
     
     public void testProcessEventListenerWithStartEvent() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final Package pkg = new Package( "org.kie.test" );
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.kie.process.event");
         process.setName("Event Process");
         
         StartNode startNode = new StartNode();
@@ -508,25 +508,25 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         session.addEventListener( processEventListener );
 
         // execute the process
-//        session.startProcess("org.drools.process.event");
+//        session.startProcess("org.kie.process.event");
         session.signalEvent("signal", null);
         assertEquals( 16, processEventList.size() );
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName());
-        assertEquals( "org.drools.process.event", ((ProcessCompletedEvent) processEventList.get(7)).getProcessInstance().getProcessId());
-        assertEquals( "org.drools.process.event", ((ProcessCompletedEvent) processEventList.get(8)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessCompletedEvent) processEventList.get(7)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessCompletedEvent) processEventList.get(8)).getProcessInstance().getProcessId());
         assertEquals( "End", ((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName());
         assertEquals( "End", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName());
         assertEquals( "Print", ((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeLeftEvent) processEventList.get(13)).getNodeInstance().getNodeName());
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(14)).getNodeInstance().getNodeName());
-        assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.process.event", ((ProcessStartedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
     }
 
 }

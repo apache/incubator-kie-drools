@@ -29,7 +29,7 @@ public class AgendaFilterTest {
     @Test
     public void testAgendaFilter() {
         // JBRULES-3374
-        String drl = "package org.drools\n" +
+        String drl = "package org.kie\n" +
                 " \n" +
                 "import org.jbpm.integrationtests.AgendaFilterTest.Message\n" +
                 " \n" +

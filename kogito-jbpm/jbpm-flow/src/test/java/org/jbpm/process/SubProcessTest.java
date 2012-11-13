@@ -52,7 +52,7 @@ public class SubProcessTest extends JbpmTestCase {
     
     public void testSynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.process");
+        process.setId("org.kie.process.process");
         process.setName("Process");
         
         StartNode startNode = new StartNode();
@@ -66,7 +66,7 @@ public class SubProcessTest extends JbpmTestCase {
         SubProcessNode subProcessNode = new SubProcessNode();
         subProcessNode.setName("SubProcessNode");
         subProcessNode.setId(3);
-        subProcessNode.setProcessId("org.drools.process.subprocess");
+        subProcessNode.setProcessId("org.kie.process.subprocess");
         process.addNode(subProcessNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -81,7 +81,7 @@ public class SubProcessTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
-        process.setId("org.drools.process.subprocess");
+        process.setId("org.kie.process.subprocess");
         process.setName("SubProcess");
         
         startNode = new StartNode();
@@ -115,14 +115,14 @@ public class SubProcessTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.startProcess("org.drools.process.process");
+        ksession.startProcess("org.kie.process.process");
         assertTrue(executed);
         assertEquals(0, ksession.getProcessInstances().size());
     }
 
     public void testAsynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.process");
+        process.setId("org.kie.process.process");
         process.setName("Process");
         
         StartNode startNode = new StartNode();
@@ -136,7 +136,7 @@ public class SubProcessTest extends JbpmTestCase {
         SubProcessNode subProcessNode = new SubProcessNode();
         subProcessNode.setName("SubProcessNode");
         subProcessNode.setId(3);
-        subProcessNode.setProcessId("org.drools.process.subprocess");
+        subProcessNode.setProcessId("org.kie.process.subprocess");
         process.addNode(subProcessNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -151,7 +151,7 @@ public class SubProcessTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
-        process.setId("org.drools.process.subprocess");
+        process.setId("org.kie.process.subprocess");
         process.setName("SubProcess");
         
         startNode = new StartNode();
@@ -188,7 +188,7 @@ public class SubProcessTest extends JbpmTestCase {
 			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 			}
         });
-        ksession.startProcess("org.drools.process.process");
+        ksession.startProcess("org.kie.process.process");
         assertNotNull(workItem);
         assertEquals(2, ksession.getProcessInstances().size());
         
@@ -199,7 +199,7 @@ public class SubProcessTest extends JbpmTestCase {
     public void testNonExistentSubProcess() {
 	    String nonExistentSubProcessName = "nonexistent.process";
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.process");
+        process.setId("org.kie.process.process");
         process.setName("Process");
         StartNode startNode = new StartNode();
         startNode.setName("Start");
@@ -224,7 +224,7 @@ public class SubProcessTest extends JbpmTestCase {
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         try{
-            ksession.startProcess("org.drools.process.process");
+            ksession.startProcess("org.kie.process.process");
             fail("should throw exception");
         } catch (RuntimeException re){
             assertTrue(re.getMessage().contains( nonExistentSubProcessName ));

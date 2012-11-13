@@ -58,7 +58,7 @@ public class ProcessEventListenerTest extends JbpmBaseTest {
 
         ((InternalWorkingMemory)session).getProcessRuntime().addEventListener(listener);
         ProcessInstance processInstance =
-        	((InternalWorkingMemory)session).getProcessRuntime().startProcess("org.drools.event");
+        	((InternalWorkingMemory)session).getProcessRuntime().startProcess("org.kie.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance)
                                     ((org.jbpm.process.instance.ProcessInstance) processInstance)
@@ -67,7 +67,7 @@ public class ProcessEventListenerTest extends JbpmBaseTest {
         for (ProcessEvent e: processEventList) {
         	System.out.println(e);
         }
-        assertEquals( "org.drools.event", ((ProcessStartedEvent) processEventList.get(2)).getProcessInstance().getProcessId());
+        assertEquals( "org.kie.event", ((ProcessStartedEvent) processEventList.get(2)).getProcessInstance().getProcessId());
 
     }
     
@@ -121,12 +121,12 @@ public class ProcessEventListenerTest extends JbpmBaseTest {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <variables>\n" +
             "      <variable name=\"MyVar\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>SomeText</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +

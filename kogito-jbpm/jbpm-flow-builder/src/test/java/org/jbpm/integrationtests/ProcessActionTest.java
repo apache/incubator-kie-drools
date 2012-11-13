@@ -32,7 +32,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -45,18 +45,18 @@ public class ProcessActionTest extends JbpmTestCase {
             "    <workItem id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <onEntry>\n" +
@@ -84,7 +84,7 @@ public class ProcessActionTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ProcessInstance processInstance =
-            ksession.startProcess("org.drools.actions");
+            ksession.startProcess("org.kie.actions");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -101,7 +101,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -112,7 +112,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"variable\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -145,7 +145,7 @@ public class ProcessActionTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ProcessInstance processInstance =
-            ksession.startProcess("org.drools.actions");
+            ksession.startProcess("org.kie.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
@@ -165,7 +165,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -176,7 +176,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"variable\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -212,7 +212,7 @@ public class ProcessActionTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ProcessInstance processInstance =
-            ksession.startProcess("org.drools.actions");
+            ksession.startProcess("org.kie.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
@@ -232,7 +232,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -243,7 +243,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"person\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.ProcessActionTest.TestVariable\" />\n" +
+    		"        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.ProcessActionTest.TestVariable\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -273,7 +273,7 @@ public class ProcessActionTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
         ProcessInstance processInstance =
-            ksession.startProcess("org.drools.actions", params);
+            ksession.startProcess("org.kie.actions", params);
         assertEquals(1, list.size());
         assertEquals("John Doe", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -286,7 +286,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -297,7 +297,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"person\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"TestVariable\" />\n" +
+    		"        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"TestVariable\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -327,7 +327,7 @@ public class ProcessActionTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
         ProcessInstance processInstance =
-            ksession.startProcess("org.drools.actions", params);
+            ksession.startProcess("org.kie.actions", params);
         assertEquals(1, list.size());
         assertEquals("John Doe", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -340,7 +340,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions1\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions1\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -368,7 +368,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions2\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions2\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -396,12 +396,12 @@ public class ProcessActionTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ProcessInstance processInstance =
-            ksession.startProcess("org.drools.actions1");
+            ksession.startProcess("org.kie.actions1");
         assertEquals(1, list.size());
         assertEquals("Action1", list.get(0));
         list.clear();
         processInstance =
-        	ksession.startProcess("org.drools.actions2");
+        	ksession.startProcess("org.kie.actions2");
         assertEquals(1, list.size());
         assertEquals("Action2", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

@@ -35,7 +35,7 @@ public class ProcessMultiThreadTest extends JbpmTestCase {
             session = SerializationHelper.getSerialisedStatefulSession(session);
             List<String> list = new ArrayList<String>();
             session.setGlobal("list", list);
-            ProcessInstance processInstance = session.startProcess("org.drools.integrationtests.multithread");
+            ProcessInstance processInstance = session.startProcess("org.kie.integrationtests.multithread");
             final ProcessInstanceSignalRunner[] r = new ProcessInstanceSignalRunner[THREAD_COUNT];
             for ( int i = 0; i < t.length; i++ ) {
                 r[i] = new ProcessInstanceSignalRunner(i, processInstance, "event" + (i+1));

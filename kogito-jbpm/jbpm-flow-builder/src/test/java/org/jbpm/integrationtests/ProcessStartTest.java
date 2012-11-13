@@ -25,7 +25,7 @@ public class ProcessStartTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.start\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.start\" package-name=\"org.jbpm\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
@@ -36,10 +36,10 @@ public class ProcessStartTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"SomeOtherVar\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +
@@ -100,7 +100,7 @@ public class ProcessStartTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.start\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.start\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -108,10 +108,10 @@ public class ProcessStartTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"SomeOtherVar\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +

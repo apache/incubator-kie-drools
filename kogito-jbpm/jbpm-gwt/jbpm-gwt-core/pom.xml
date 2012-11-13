@@ -164,7 +164,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
       <scope>test</scope>
     </dependency>

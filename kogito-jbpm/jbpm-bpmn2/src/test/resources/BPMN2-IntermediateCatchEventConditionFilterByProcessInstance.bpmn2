@@ -19,7 +19,7 @@
       <conditionalEventDefinition id="ConditionalEventDefinition_1">
         <condition xsi:type="tFormalExpression" id="FormalExpression_1" language="http://www.jboss.org/drools/rule">
         
-        p: org.drools.runtime.process.WorkflowProcessInstance()
+        p: org.kie.runtime.process.WorkflowProcessInstance()
         personId: Long() from p.getVariable(&quot;personId&quot;)
         org.jbpm.bpmn2.objects.Person(id == personId, name == &quot;John&quot;)
         

@@ -8,7 +8,7 @@
 		</layout>
 	</appender>
 
-	<logger name="org.drools">
+	<logger name="org.kie">
 		<level value="INFO"/>
 	</logger>
 	

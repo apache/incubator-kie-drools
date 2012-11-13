@@ -49,7 +49,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -127,14 +127,14 @@ public class ProcessSplitTest extends JbpmTestCase {
             "  <header>" +
             "    <imports>" +
             "      <import name=\"org.jbpm.Person\" />" +
-            "      <import name=\"org.drools.runtime.process.WorkflowProcessInstance\" />" +
+            "      <import name=\"org.kie.runtime.process.WorkflowProcessInstance\" />" +
             "    </imports>" +
             "    <globals>" +
             "      <global identifier=\"list\" type=\"java.util.List\" />" +
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -223,7 +223,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"person\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -289,7 +289,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -355,7 +355,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"person\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -421,7 +421,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -487,7 +487,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -553,7 +553,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -619,7 +619,7 @@ public class ProcessSplitTest extends JbpmTestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +

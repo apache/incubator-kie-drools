@@ -37,7 +37,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.jbpm\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
@@ -93,7 +93,7 @@ public class ProcessTimerTest extends JbpmTestCase {
         }).start();
 		
         ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer");
+        	session.startProcess("org.kie.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
@@ -138,7 +138,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.jbpm\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
@@ -149,10 +149,10 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"x\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"y\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +
@@ -205,7 +205,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 		params.put("x", 800);
 		params.put("y", 200);
         ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer", params);
+        	session.startProcess("org.kie.timer", params);
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
@@ -249,7 +249,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"  </header>\n" +
@@ -281,7 +281,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -324,7 +324,7 @@ public class ProcessTimerTest extends JbpmTestCase {
         }).start();
 		
         ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer");
+        	session.startProcess("org.kie.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
@@ -362,7 +362,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -370,7 +370,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"x\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +
@@ -412,7 +412,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("x", 300);
         ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer", params);
+        	session.startProcess("org.kie.timer", params);
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
@@ -450,7 +450,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -495,7 +495,7 @@ public class ProcessTimerTest extends JbpmTestCase {
         }).start();
 		
         ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer");
+        	session.startProcess("org.kie.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
@@ -532,7 +532,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -575,7 +575,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -618,7 +618,7 @@ public class ProcessTimerTest extends JbpmTestCase {
         }).start();
 
         ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer");
+        	session.startProcess("org.kie.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
@@ -655,7 +655,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -708,7 +708,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			}
         }).start();
 
-        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.timer");
+        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.kie.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(2, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());        
@@ -757,7 +757,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.timer\" package-name=\"org.kie\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <globals>\n" +
@@ -800,7 +800,7 @@ public class ProcessTimerTest extends JbpmTestCase {
         }).start();
 		
         ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer");
+        	session.startProcess("org.kie.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());

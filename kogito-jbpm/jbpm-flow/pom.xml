@@ -43,8 +43,8 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.jbpm.flow.core;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,
+            <Require-Bundle>org.kie.core;bundle-version="${drools.osgi.version}"</Require-Bundle>
+            <Import-Package>!org.kie.*,
               <!-- java compilers are optional: only need one at most -->
               org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,
               *</Import-Package>
@@ -61,11 +61,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>knowledge-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>

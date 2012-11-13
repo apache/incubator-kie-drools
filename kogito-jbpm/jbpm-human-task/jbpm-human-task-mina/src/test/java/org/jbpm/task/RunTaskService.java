@@ -54,7 +54,7 @@ public class RunTaskService {
 		SendIcal.initInstance(conf);
 
 		// Use persistence.xml configuration
-		emf = Persistence.createEntityManagerFactory("org.drools.task");
+		emf = Persistence.createEntityManagerFactory("org.kie.task");
 
 		taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 		MockUserInfo userInfo = new MockUserInfo();

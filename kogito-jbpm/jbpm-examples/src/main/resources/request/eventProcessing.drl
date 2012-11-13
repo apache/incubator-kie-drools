@@ -1,6 +1,6 @@
 package com.sample
 
-import org.drools.event.process.ProcessStartedEvent
+import org.kie.event.process.ProcessStartedEvent
 
 rule "CheckProcessStart"
     when

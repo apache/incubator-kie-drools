@@ -22,10 +22,10 @@ import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 public class ProcessFactoryTest extends JbpmTestCase {
 	
 	public void testProcessFactory() {
-		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.drools.process");
+		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.kie.process");
 		factory
 			// header
-			.name("My process").packageName("org.drools")
+			.name("My process").packageName("org.kie")
 			// nodes
 			.startNode(1).name("Start").done()
 			.actionNode(2).name("Action")

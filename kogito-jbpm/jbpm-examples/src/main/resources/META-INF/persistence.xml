@@ -16,8 +16,8 @@
     <mapping-file>META-INF/ExtraIndexes.hbm.xml</mapping-file>
 
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
-    <class>org.drools.persistence.info.SessionInfo</class>
-    <class>org.drools.persistence.info.WorkItemInfo</class>
+    <class>org.kie.persistence.info.SessionInfo</class>
+    <class>org.kie.persistence.info.WorkItemInfo</class>
     
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        

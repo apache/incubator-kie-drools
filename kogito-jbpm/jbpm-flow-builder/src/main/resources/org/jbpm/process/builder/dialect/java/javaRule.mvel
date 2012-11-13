@@ -1,13 +1,13 @@
 @declare{"actionMethod"}
-public static void @{methodName}(org.drools.runtime.process.ProcessContext kcontext@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
-    org.drools.runtime.process.ProcessContext context = kcontext;
+public static void @{methodName}(org.kie.runtime.process.ProcessContext kcontext@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
+    org.kie.runtime.process.ProcessContext context = kcontext;
     @{text}
 }
 @end{}
 
 @declare{"returnValueEvaluatorMethod"}
-public static Object @{methodName}(org.drools.runtime.process.ProcessContext kcontext@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
-    org.drools.runtime.process.ProcessContext context = kcontext;
+public static Object @{methodName}(org.kie.runtime.process.ProcessContext kcontext@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
+    org.kie.runtime.process.ProcessContext context = kcontext;
     @{text}
 }
 @end{}

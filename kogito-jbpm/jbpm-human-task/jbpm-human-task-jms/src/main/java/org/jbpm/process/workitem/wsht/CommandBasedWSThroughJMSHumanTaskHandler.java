@@ -26,7 +26,7 @@ public class CommandBasedWSThroughJMSHumanTaskHandler extends CommandBasedWSHuma
 			TaskClient client = (TaskClient) field.get(this);
 			if (client == null) {
 				client = new TaskClient(new JMSTaskClientConnector(
-						"org.drools.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
+						"org.kie.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
 						new JMSTaskClientHandler(SystemEventListenerFactory
 								.getSystemEventListener()),
 						WSHumanTaskJMSProperties.getInstance().getProperties(),

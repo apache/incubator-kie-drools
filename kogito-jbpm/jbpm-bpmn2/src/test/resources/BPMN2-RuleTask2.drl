@@ -1,6 +1,6 @@
 package com.sample;
 
-import org.drools.runtime.process.WorkflowProcessInstance
+import org.kie.runtime.process.WorkflowProcessInstance
 
 global java.util.List list;
 

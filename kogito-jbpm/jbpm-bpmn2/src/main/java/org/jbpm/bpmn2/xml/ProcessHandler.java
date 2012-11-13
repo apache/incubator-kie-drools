@@ -109,7 +109,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		process.setName(name);
 		process.setType("RuleFlow");
 		if (packageName == null) {
-			packageName = "org.drools.bpmn2";
+			packageName = "org.kie.bpmn2";
 		}
 		process.setPackageName(packageName);
 		if ("true".equals(dynamic)) {
@@ -372,9 +372,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             
                             
                             action = new DroolsConsequenceAction("java", 
-                                    (cancelActivity ? "org.drools.runtime.process.WorkflowProcessInstance pi = (org.drools.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
+                                    (cancelActivity ? "org.kie.runtime.process.WorkflowProcessInstance pi = (org.kie.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
                                     "long nodeInstanceId = -1;"+
-                                    "for (org.drools.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
+                                    "for (org.kie.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
                                      "   if (" +attachedToNodeId +" == nodeInstance.getNodeId()) {"+
                                      "       nodeInstanceId = nodeInstance.getId();"+
                                      "       break;"+
@@ -412,9 +412,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             
                             
                             action = new DroolsConsequenceAction("java", 
-                                    "org.drools.runtime.process.WorkflowProcessInstance pi = (org.drools.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
+                                    "org.kie.runtime.process.WorkflowProcessInstance pi = (org.kie.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
                                     "long nodeInstanceId = -1;"+
-                                    "for (org.drools.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
+                                    "for (org.kie.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
                                     
                                      "   if (" +attachedToNodeId +" == nodeInstance.getNodeId()) {"+
                                      "       nodeInstanceId = nodeInstance.getId();"+
@@ -489,7 +489,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             actionsAttachedTo = new ArrayList<DroolsAction>();
                         }
                         DroolsConsequenceAction actionAttachedTo =  new DroolsConsequenceAction("java", "" +
-                        		"org.drools.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
+                        		"org.kie.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
                         		"if (node instanceof org.jbpm.workflow.core.node.EventNode) {" +
                         		" ((org.jbpm.workflow.core.node.EventNode)node).getEventFilters().clear();" +
                         		"((org.jbpm.workflow.core.node.EventNode)node).addEventFilter(new org.jbpm.process.core.event.EventFilter () " +
@@ -526,7 +526,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             actionsAttachedTo = new ArrayList<DroolsAction>();
                         }
                         DroolsConsequenceAction actionAttachedTo =  new DroolsConsequenceAction("java", "" +
-                                "org.drools.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
+                                "org.kie.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
                                 "if (node instanceof org.jbpm.workflow.core.node.EventNode) {" +
                                 " ((org.jbpm.workflow.core.node.EventNode)node).getEventFilters().clear();" +
                                 "((org.jbpm.workflow.core.node.EventNode)node).addEventFilter(new org.jbpm.process.core.event.EventFilter () " +

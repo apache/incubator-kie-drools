@@ -8,11 +8,11 @@
 		</layout>
 	</appender>
 
-	<logger name="org.drools.marshalling.util.CompareViaReflectionUtil">
+	<logger name="org.kie.marshalling.util.CompareViaReflectionUtil">
 		<level value="INFO"/>
 	</logger>
 	
-	<logger name="org.drools.marshalling.util">
+	<logger name="org.kie.marshalling.util">
 		<level value="DEBUG"/>
 	</logger>
         <logger name="org.jbpm.persistence">

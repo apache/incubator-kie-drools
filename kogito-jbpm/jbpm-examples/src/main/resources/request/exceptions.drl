@@ -1,6 +1,6 @@
 package org.jbpm.examples.request
 
-import org.drools.runtime.process.WorkflowProcessInstance
+import org.kie.runtime.process.WorkflowProcessInstance
 
 rule "Cancellation of request"
     when

@@ -28,7 +28,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -60,7 +60,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         // start process
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-            ksession.startProcess("org.drools.state");
+            ksession.startProcess("org.kie.state");
         // should be in state A
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
@@ -107,7 +107,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -151,7 +151,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.state");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("1", list.get(0));
@@ -164,7 +164,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -208,7 +208,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.state");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("1", list.get(0));
@@ -221,7 +221,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -265,7 +265,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.state");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("2", list.get(0));
@@ -278,7 +278,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.jbpm\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -325,7 +325,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 30);
@@ -342,7 +342,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.jbpm\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -389,7 +389,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 20);
@@ -406,7 +406,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -453,7 +453,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 30);
@@ -470,7 +470,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
@@ -517,7 +517,7 @@ public class ProcessStateTest extends JbpmTestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 30);
@@ -534,7 +534,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <globals>\n" +
@@ -542,7 +542,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"s\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>a</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +
@@ -576,7 +576,7 @@ public class ProcessStateTest extends JbpmTestCase {
         ksession.setGlobal("list", list);
         // start process
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-            ksession.startProcess("org.drools.state");
+            ksession.startProcess("org.kie.state");
         // should be in state A
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
@@ -602,7 +602,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.state\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.state\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <globals>\n" +
@@ -610,7 +610,7 @@ public class ProcessStateTest extends JbpmTestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"s\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>a</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +
@@ -649,7 +649,7 @@ public class ProcessStateTest extends JbpmTestCase {
         }).start();
         // start process
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-            ksession.startProcess("org.drools.state");
+            ksession.startProcess("org.kie.state");
         // should be in state A
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();

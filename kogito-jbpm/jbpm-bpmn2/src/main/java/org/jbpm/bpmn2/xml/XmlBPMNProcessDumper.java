@@ -152,7 +152,7 @@ public class XmlBPMNProcessDumper {
             xmlDump.append("name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getName()) + "\" ");
         }
         String packageName = process.getPackageName();
-        if (packageName != null && !"org.drools.bpmn2".equals(packageName)) {
+        if (packageName != null && !"org.kie.bpmn2".equals(packageName)) {
             xmlDump.append("tns:packageName=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(packageName) + "\" ");
         }
         if (((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic()) {
@@ -466,7 +466,7 @@ public class XmlBPMNProcessDumper {
             	DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         		if (action != null) {
         		    String s = action.getConsequence();
-	            	if (s.startsWith("org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
+	            	if (s.startsWith("org.kie.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.kie.process.instance.context.exception.ExceptionScopeInstance) ((org.kie.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.kie.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
 	            		s = s.substring(327);
 	                    String type = s.substring(0, s.indexOf("\""));
 	            		if (!escalations.contains(type)) {

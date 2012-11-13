@@ -90,7 +90,7 @@ public class WorkItemPersistenceTest {
     @Test
     @Ignore
     public void testCancelNonRegisteredWorkItemHandler() {
-        String processId = "org.drools.actions";
+        String processId = "org.kie.actions";
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId, workName );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -104,7 +104,7 @@ public class WorkItemPersistenceTest {
         parameters.put( "Person",
                         new Person( "John Doe" ) );
 
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.actions",
                                                                   parameters );
         long processInstanceId = processInstance.getId();
         Assert.assertEquals( ProcessInstance.STATE_ACTIVE,
@@ -201,7 +201,7 @@ public class WorkItemPersistenceTest {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.humantask\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -211,18 +211,18 @@ public class WorkItemPersistenceTest {
             "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "    </humanTask>\n" +
@@ -245,7 +245,7 @@ public class WorkItemPersistenceTest {
         DoNothingWorkItemHandler handler = new DoNothingWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
-        ProcessInstance processInstance = ksession.startProcess("org.drools.humantask");
+        ProcessInstance processInstance = ksession.startProcess("org.kie.humantask");
         
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         

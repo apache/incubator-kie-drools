@@ -15,7 +15,7 @@
 // */
 //package org.jbpm.process.workitem.wsht.mina.sync;
 //
-//import org.drools.SystemEventListenerFactory;
+//import org.kie.SystemEventListenerFactory;
 //import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 //import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
 //import org.jbpm.task.service.AsyncTaskServiceWrapper;

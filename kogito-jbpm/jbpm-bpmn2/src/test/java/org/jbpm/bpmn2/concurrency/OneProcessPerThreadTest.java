@@ -83,7 +83,7 @@ public class OneProcessPerThreadTest {
         
         final ProcessInstanceStartRunner[] r = new ProcessInstanceStartRunner[THREAD_COUNT];
         for ( int i = 0; i < t.length; i++ ) {
-            r[i] = new ProcessInstanceStartRunner(ksession, i, "org.drools.integrationtests.multithread");
+            r[i] = new ProcessInstanceStartRunner(ksession, i, "org.kie.integrationtests.multithread");
             t[i] = new Thread( r[i], "thread-" + i );
             try { 
                 t[i].start();

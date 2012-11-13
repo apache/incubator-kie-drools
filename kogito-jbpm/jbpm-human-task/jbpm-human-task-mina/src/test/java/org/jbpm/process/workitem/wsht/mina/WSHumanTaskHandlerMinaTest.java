@@ -15,7 +15,7 @@
 // */
 //package org.jbpm.process.workitem.wsht.mina;
 //
-//import org.drools.SystemEventListenerFactory;
+//import org.kie.SystemEventListenerFactory;
 //import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 //import org.jbpm.process.workitem.wsht.WSHumanTaskHandlerBaseTest;
 //import org.jbpm.task.TestStatefulKnowledgeSession;

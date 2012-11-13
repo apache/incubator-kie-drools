@@ -43,8 +43,8 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.jbpm.flow.builder;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.jbpm.flow.core;bundle-version="${jbpm.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*, !org.jbpm.*, *</Import-Package>
+            <Require-Bundle>org.jbpm.flow.core;bundle-version="${jbpm.osgi.version}", org.kie.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
+            <Import-Package>!org.kie.*, !org.jbpm.*, *</Import-Package>
             <Export-Package>org.jbpm.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Bundle-Activator>org.jbpm.osgi.flow.compiler.Activator</Bundle-Activator>
@@ -60,7 +60,7 @@
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>

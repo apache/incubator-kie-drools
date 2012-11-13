@@ -83,7 +83,7 @@ public class PersistentStatefulSessionTest {
     }
 
     private static String ruleString = ""
-        + "package org.drools.test\n"
+        + "package org.kie.test\n"
         + "global java.util.List list\n"
         + "rule rule1\n"
         + "when\n"
@@ -212,7 +212,7 @@ public class PersistentStatefulSessionTest {
         int origNumObjects = ksession.getObjects().size();
         int id = ksession.getId();
         
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
         ksession.insert( "TestString" );
         logger.debug( "Started process instance " + processInstance.getId() );
 
@@ -277,7 +277,7 @@ public class PersistentStatefulSessionTest {
         UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
         ksession.insert( "TestString" );
         logger.debug( "Started process instance " + processInstance.getId() );
 
@@ -336,7 +336,7 @@ public class PersistentStatefulSessionTest {
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         ksession.getWorkItemManager().registerWorkItemHandler("MyWork", new SystemOutWorkItemHandler());
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
         ksession.insert( "TestString" );
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
@@ -351,7 +351,7 @@ public class PersistentStatefulSessionTest {
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         int id = ksession.getId();
         
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
         logger.debug( "Started process instance " + processInstance.getId() );
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
@@ -382,7 +382,7 @@ public class PersistentStatefulSessionTest {
         ksession.insert(new ArrayList<Object>());
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
@@ -405,7 +405,7 @@ public class PersistentStatefulSessionTest {
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         int id = ksession.getId();
         
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
         logger.debug( "Started process instance " + processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
@@ -490,7 +490,7 @@ public class PersistentStatefulSessionTest {
         };
         ksession.addEventListener(listener);
         
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
         logger.debug( "Started process instance " + processInstance.getId() );
         
         assertEquals(12, events.size());
@@ -510,7 +510,7 @@ public class PersistentStatefulSessionTest {
         ksession.removeEventListener(listener);
         events.clear();
         
-        processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        processInstance = ksession.startProcess( "org.kie.test.TestProcess" );
         logger.debug( "Started process instance " + processInstance.getId() );
         
         assertTrue(events.isEmpty());
@@ -578,7 +578,7 @@ public class PersistentStatefulSessionTest {
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("name", "John Doe");
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess", parameters );
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.test.TestProcess", parameters );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -614,7 +614,7 @@ public class PersistentStatefulSessionTest {
     @Test
     public void testSetFocus() {
         String str = "";
-        str += "package org.drools.test\n";
+        str += "package org.kie.test\n";
         str += "global java.util.List list\n";
         str += "rule rule1\n";
         str += "agenda-group \"badfocus\"";

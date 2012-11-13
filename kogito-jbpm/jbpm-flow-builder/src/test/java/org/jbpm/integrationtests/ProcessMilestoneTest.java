@@ -27,7 +27,7 @@ public class ProcessMilestoneTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.milestone\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.milestone\" package-name=\"org.jbpm\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <imports>\n" +
@@ -56,7 +56,7 @@ public class ProcessMilestoneTest extends JbpmTestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.milestone");
+            workingMemory.startProcess("org.kie.milestone");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workingMemory.insert(new Person("Jane Doe", 20));
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -71,7 +71,7 @@ public class ProcessMilestoneTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.milestone\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.milestone\" package-name=\"org.jbpm\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <imports>\n" +
@@ -80,7 +80,7 @@ public class ProcessMilestoneTest extends JbpmTestCase {
             "    </imports>\n" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -115,14 +115,14 @@ public class ProcessMilestoneTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", john.getName());
         ProcessInstance processInstanceJohn = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.milestone", params);
+            workingMemory.startProcess("org.kie.milestone", params);
         workingMemory.insert(processInstanceJohn);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceJohn.getState());
 
         params = new HashMap<String, Object>();
         params.put("name", jane.getName());
         ProcessInstance processInstanceJane = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.milestone", params);
+            workingMemory.startProcess("org.kie.milestone", params);
         workingMemory.insert(processInstanceJane);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceJane.getState());
         

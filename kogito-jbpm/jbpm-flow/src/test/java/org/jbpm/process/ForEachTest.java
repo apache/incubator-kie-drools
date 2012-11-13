@@ -47,7 +47,7 @@ public class ForEachTest extends JbpmTestCase {
     
     public void testForEach() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.foreach");
+        process.setId("org.kie.process.foreach");
         process.setName("ForEach Process");
         
         List<Variable> variables = new ArrayList<Variable>();
@@ -55,7 +55,7 @@ public class ForEachTest extends JbpmTestCase {
         variable.setName("persons");
         ListDataType listDataType = new ListDataType();
         ObjectDataType personDataType = new ObjectDataType();
-        personDataType.setClassName("org.drools.Person");
+        personDataType.setClassName("org.kie.Person");
         listDataType.setType(personDataType);
         variable.setType(listDataType);
         variables.add(variable);
@@ -74,7 +74,7 @@ public class ForEachTest extends JbpmTestCase {
         forEachNode.setId(3);
         forEachNode.setCollectionExpression("persons");
         personDataType = new ObjectDataType();
-        personDataType.setClassName("org.drools.Person");
+        personDataType.setClassName("org.kie.Person");
         process.addNode(forEachNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -115,7 +115,7 @@ public class ForEachTest extends JbpmTestCase {
         persons.add(new Person("Jane Doe"));
         persons.add(new Person("Jack"));
         parameters.put("persons", persons);
-        ksession.startProcess("org.drools.process.foreach", parameters);
+        ksession.startProcess("org.kie.process.foreach", parameters);
         assertEquals(3, myList.size());
     }
 

@@ -36,7 +36,7 @@ import org.kie.runtime.process.ProcessInstance;
 public class WorkItemTest extends JbpmTestCase {
 
     public void testReachNonRegisteredWorkItemHandler() {
-        String processId = "org.drools.actions";
+        String processId = "org.kie.actions";
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
@@ -52,7 +52,7 @@ public class WorkItemTest extends JbpmTestCase {
 
         ProcessInstance processInstance = null;
         try {
-            processInstance = ksession.startProcess( "org.drools.actions",
+            processInstance = ksession.startProcess( "org.kie.actions",
                                                                  parameters );
             Assert.fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
         } catch ( Throwable e ) {
@@ -62,7 +62,7 @@ public class WorkItemTest extends JbpmTestCase {
     }
 
     public void testCancelNonRegisteredWorkItemHandler() {
-        String processId = "org.drools.actions";
+        String processId = "org.kie.actions";
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
@@ -79,7 +79,7 @@ public class WorkItemTest extends JbpmTestCase {
         parameters.put( "Person",
                         new Person( "John Doe" ) );
 
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
+        ProcessInstance processInstance = ksession.startProcess( "org.kie.actions",
                                                                   parameters );
         long processInstanceId = processInstance.getId();
         Assert.assertEquals( ProcessInstance.STATE_ACTIVE,

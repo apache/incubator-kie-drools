@@ -30,7 +30,7 @@ public class DebugJbpmUnmarshallingTest {
        ByteArrayOutputStream baos = new ByteArrayOutputStream();
        ObjectOutputStream stream = new ObjectOutputStream(baos);
       
-       stream.writeUTF("org.drools.test.TestProcess");
+       stream.writeUTF("org.kie.test.TestProcess");
        byte [] resultBytes = baos.toByteArray();
        stream.close();
        

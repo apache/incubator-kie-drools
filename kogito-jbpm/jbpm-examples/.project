@@ -18,7 +18,7 @@
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>
     <buildCommand>
-      <name>org.drools.eclipse.droolsbuilder</name>
+      <name>org.kie.eclipse.droolsbuilder</name>
     </buildCommand>
   </buildSpec>
   <natures>

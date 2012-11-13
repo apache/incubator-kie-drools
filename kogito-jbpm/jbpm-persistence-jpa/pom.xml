@@ -20,7 +20,7 @@
       <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
     </dependency>
     <dependency>
@@ -145,7 +145,7 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.jbpm.flow-persistence-jpa;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}",org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
+            <Require-Bundle>org.kie.core;bundle-version="${drools.osgi.version}",org.kie.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
             <Import-Package>*</Import-Package>
             <Export-Package>org.jbpm.persistence.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>

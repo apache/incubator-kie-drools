@@ -24,7 +24,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.exception\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -52,7 +52,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+            workingMemory.startProcess("org.kie.exception");
         assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
     }
     
@@ -63,7 +63,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.exception\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -71,11 +71,11 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>SomeValue</value>\n" +
             "      </variable>\n" +
             "      <variable name=\"faultVar\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"    <exceptionHandlers>\n" +
@@ -103,7 +103,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+            workingMemory.startProcess("org.kie.exception");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
@@ -116,7 +116,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.exception\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -145,7 +145,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+            workingMemory.startProcess("org.kie.exception");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
@@ -156,7 +156,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.exception\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -169,11 +169,11 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "    <composite id=\"2\" name=\"Composite\" >\n" +
             "      <variables>\n" +
             "        <variable name=\"SomeVar\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>SomeValue</value>\n" +
             "        </variable>\n" +
             "        <variable name=\"FaultVariable\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </variable>\n" +
             "      </variables>\n" +
     		"      <exceptionHandlers>\n" +
@@ -220,7 +220,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+            workingMemory.startProcess("org.kie.exception");
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -233,7 +233,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.exception\" package-name=\"org.kie\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
 			"    <globals>\n" +
@@ -251,11 +251,11 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
             "    <composite id=\"2\" name=\"Composite\" >\n" +
             "      <variables>\n" +
             "        <variable name=\"SomeVar\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>SomeValue</value>\n" +
             "        </variable>\n" +
             "        <variable name=\"FaultVariable\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.kie.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </variable>\n" +
             "      </variables>\n" +
     		"      <exceptionHandlers>\n" +
@@ -297,7 +297,7 @@ public class ProcessExceptionHandlerTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+            workingMemory.startProcess("org.kie.exception");
         assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
     }

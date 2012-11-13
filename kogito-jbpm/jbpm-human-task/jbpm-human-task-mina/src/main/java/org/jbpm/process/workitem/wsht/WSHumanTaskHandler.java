@@ -107,7 +107,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
     public void connect() {
 		if (!initialized) {
 			if (client == null) {
-				client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
+				client = new TaskClient(new MinaTaskClientConnector("org.kie.process.workitem.wsht.WSHumanTaskHandler",
 											new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
 				boolean connected = client.connect(ipAddress, port);
 		 		if (!connected) {

@@ -109,7 +109,7 @@ public class DemoTaskService {
         ExpressionCompiler compiler = new ExpressionCompiler( str.trim() );
 
         ParserContext context = new ParserContext();
-        context.addPackageImport( "org.drools.task" );
+        context.addPackageImport( "org.kie.task" );
         context.addPackageImport( "java.util" );
         
         context.addImport( "AccessType", AccessType.class );

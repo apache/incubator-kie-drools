@@ -1,11 +1,11 @@
 @declare{"actionInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.jbpm.process.instance.impl.Action, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.Action, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public void execute(org.drools.runtime.process.ProcessContext context) throws Exception {
+    public void execute(org.kie.runtime.process.ProcessContext context) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) context.getKnowledgeRuntime().getGlobal( "@{identifier}" );
         @end{}
@@ -30,11 +30,11 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Actio
 @declare{"returnValueEvaluatorInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.jbpm.process.instance.impl.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.ReturnValueEvaluator, org.kie.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.drools.runtime.process.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.kie.runtime.process.ProcessContext processContext) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) processContext.getKnowledgeRuntime().getGlobal( "@{identifier}" );
         @end{}

@@ -377,7 +377,7 @@ public class TaskService {
                 inputs.put("Operation.Claim", Operation.class);
                 inputs.put("OperationCommand", OperationCommand.class);
 
-                // org.drools.task.query
+                // org.kie.task.query
                 inputs.put("DeadlineSummary", DeadlineSummary.class);
                 inputs.put("TaskSummary", TaskSummary.class);
             }

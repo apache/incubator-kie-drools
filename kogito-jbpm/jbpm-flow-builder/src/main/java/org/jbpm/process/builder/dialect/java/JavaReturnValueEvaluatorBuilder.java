@@ -39,7 +39,7 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
     ReturnValueEvaluatorBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
+     * @see org.kie.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.kie.semantics.java.builder.BuildContext, org.kie.semantics.java.builder.BuildUtils, org.kie.lang.descr.RuleDescr)
      */
     public void build(final PackageBuildContext context,
                       final ReturnValueConstraintEvaluator constraintNode,

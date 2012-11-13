@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.bpmn2
+package org.kie.bpmn2
 
-import org.drools.runtime.process.ProcessContext
+import org.kie.runtime.process.ProcessContext
 
 rule "Auto-activate Hello1" ruleflow-group "Hello"
   when

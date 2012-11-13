@@ -111,7 +111,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         int sessionId = service.getSessionId();
 
         StartProcessCommand startProcessCommand = new StartProcessCommand();
-        startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
+        startProcessCommand.setProcessId( "org.kie.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
 
@@ -226,7 +226,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
-        startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
+        startProcessCommand.setProcessId( "org.kie.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
         ut.commit();
@@ -329,9 +329,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
 	private Collection<KnowledgePackage> getProcessWorkItems() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId( "org.drools.test.TestProcess" );
+        process.setId( "org.kie.test.TestProcess" );
         process.setName( "TestProcess" );
-        process.setPackageName( "org.drools.test" );
+        process.setPackageName( "org.kie.test" );
         StartNode start = new StartNode();
         start.setId( 1 );
         start.setName( "Start" );
@@ -425,7 +425,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                                                                env );
         int sessionId = service.getSessionId();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
-        startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
+        startProcessCommand.setProcessId( "org.kie.test.TestProcess" );
         RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
         long processInstanceId = processInstance.getId();
@@ -482,9 +482,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
 	private Package getProcessSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId( "org.drools.test.TestProcess" );
+        process.setId( "org.kie.test.TestProcess" );
         process.setName( "TestProcess" );
-        process.setPackageName( "org.drools.test" );
+        process.setPackageName( "org.kie.test" );
         
         StartNode start = new StartNode();
         start.setId( 1 );
@@ -509,7 +509,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         SubProcessNode subProcessNode = new SubProcessNode();
         subProcessNode.setId( 3 );
         subProcessNode.setName( "SubProcess" );
-        subProcessNode.setProcessId( "org.drools.test.SubProcess" );
+        subProcessNode.setProcessId( "org.kie.test.SubProcess" );
         process.addNode( subProcessNode );
         
         new ConnectionImpl( actionNode,
@@ -533,9 +533,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                      null );
 
         process = new RuleFlowProcess();
-        process.setId( "org.drools.test.SubProcess" );
+        process.setId( "org.kie.test.SubProcess" );
         process.setName( "SubProcess" );
-        process.setPackageName( "org.drools.test" );
+        process.setPackageName( "org.kie.test" );
         
         start = new StartNode();
         start.setId( 1 );
@@ -612,7 +612,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                                                                env );
         int sessionId = service.getSessionId();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
-        startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
+        startProcessCommand.setProcessId( "org.kie.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
         
@@ -643,9 +643,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
 	private List<KnowledgePackage> getProcessTimer() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId( "org.drools.test.TestProcess" );
+        process.setId( "org.kie.test.TestProcess" );
         process.setName( "TestProcess" );
-        process.setPackageName( "org.drools.test" );
+        process.setPackageName( "org.kie.test" );
         StartNode start = new StartNode();
         start.setId( 1 );
         start.setName( "Start" );
@@ -717,7 +717,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                                                                env );
         int sessionId = service.getSessionId();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
-        startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
+        startProcessCommand.setProcessId( "org.kie.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
 
@@ -735,9 +735,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
 	private List<KnowledgePackage> getProcessTimer2() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId( "org.drools.test.TestProcess" );
+        process.setId( "org.kie.test.TestProcess" );
         process.setName( "TestProcess" );
-        process.setPackageName( "org.drools.test" );
+        process.setPackageName( "org.kie.test" );
         StartNode start = new StartNode();
         start.setId( 1 );
         start.setName( "Start" );

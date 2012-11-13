@@ -1,7 +1,7 @@
 package defaultPackge
 
 
-import org.drools.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.process.WorkflowProcessInstance;
 
 rule "Your First Rule" ruleflow-group "MyRuleFlow"
     when

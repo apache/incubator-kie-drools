@@ -32,7 +32,7 @@ import org.kie.runtime.process.ProcessInstance;
  * InputMarshaller, that delegates in a ProcessInstanceMarshaller to stream in/out runtime
  * information.
  * 
- * @see org.drools.marshalling.impl.OutputMarshaller
+ * @see org.kie.marshalling.impl.OutputMarshaller
  * @see InputMarshaller
  * @see ProcessMarshallerRegistry
  * 
