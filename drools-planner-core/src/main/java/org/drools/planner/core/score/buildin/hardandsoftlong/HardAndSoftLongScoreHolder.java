@@ -17,9 +17,9 @@
 package org.drools.planner.core.score.buildin.hardandsoftlong;
 
 import org.drools.common.AgendaItem;
-import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
+import org.kie.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.RuleContext;
 import org.kie.runtime.rule.WorkingMemory;
