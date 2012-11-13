@@ -368,10 +368,10 @@ public class CommandFactory {
 
     private static void loadProvider() {
         try {
-            Class<CommandFactoryService> cls = (Class<CommandFactoryService>) Class.forName( "org.kie.command.impl.CommandFactoryServiceImpl" );
+            Class<CommandFactoryService> cls = (Class<CommandFactoryService>) Class.forName( "org.drools.command.impl.CommandFactoryServiceImpl" );
             setCommandFactoryProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new RuntimeException( "Provider org.kie.command.impl.CommandFactoryProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.command.impl.CommandFactoryProviderImpl could not be set.",
                                                        e2 );
         }
     }
