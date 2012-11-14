@@ -11,12 +11,12 @@
   <solverBenchmark>
     <name>travelingtournament_tabuSearch</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
       <inputSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.kie.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.travelingtournament.domain.Match</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
@@ -29,12 +29,12 @@
           <moveListFactory>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.kie.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>STEP</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.kie.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -50,13 +50,13 @@
   <solverBenchmark>
     <name>curriculumcourse_tabuSearch</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.kie.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
@@ -72,15 +72,15 @@
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -96,12 +96,12 @@
   <solverBenchmark>
     <name>examination_tabuSearch</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.kie.planner.examples.examination.domain.Examination</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.examination.domain.Exam</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
@@ -110,21 +110,21 @@
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.kie.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -140,12 +140,12 @@
   <solverBenchmark>
     <name>pas_tabuSearch</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.pas.domain.PatientAdmissionSchedule</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/pas/unsolved/testdata01.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.kie.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.pas.domain.BedDesignation</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
@@ -154,11 +154,11 @@
         <maximumMinutesSpend>5</maximumMinutesSpend>
       </termination>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.kie.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <moveListFactory>
-          <moveListFactoryClass>org.kie.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+          <moveListFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
         </moveListFactory>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
@@ -173,12 +173,12 @@
   <solverBenchmark>
     <name>nurseRostering_tabuSearch</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
       <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.kie.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
@@ -193,15 +193,15 @@
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>STEP</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -217,12 +217,12 @@
   <solverBenchmark>
     <name>nurseRostering_simulatedAnnealing</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
       <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.kie.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
@@ -237,15 +237,15 @@
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>STEP</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>

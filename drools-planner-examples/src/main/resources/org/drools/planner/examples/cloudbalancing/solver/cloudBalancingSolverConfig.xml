@@ -3,15 +3,15 @@
   <!--<environmentMode>DEBUG</environmentMode>-->
 
   <!-- Domain model configuration -->
-  <solutionClass>org.kie.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-  <planningEntityClass>org.kie.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
+  <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    <!--<simpleScoreCalculatorClass>org.kie.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator</simpleScoreCalculatorClass>-->
-    <!--<simpleScoreCalculatorClass>org.kie.planner.examples.cloudbalancing.solver.score.CloudBalancingMapBasedSimpleScoreCalculator</simpleScoreCalculatorClass>-->
-    <!--<incrementalScoreCalculatorClass>org.kie.planner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <!--<simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+    <!--<simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingMapBasedSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
     <!--<scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingCompensationActionExperimentScoreRules.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->

@@ -9,7 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.kie.planner" level="info"/>
+  <logger name="org.drools.planner" level="info"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

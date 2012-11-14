@@ -14,48 +14,48 @@
  * limitations under the License.
  */
 
-package org.kie.planner.examples.nurserostering.solver;
+package org.drools.planner.examples.nurserostering.solver;
     dialect "java"
 
-import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.kie.planner.core.score.constraint.IntConstraintOccurrence;
-import org.kie.planner.core.score.constraint.ConstraintType;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
 
-import org.kie.planner.examples.nurserostering.domain.DayOfWeek;
-import org.kie.planner.examples.nurserostering.domain.Employee;
-import org.kie.planner.examples.nurserostering.domain.ShiftAssignment;
-import org.kie.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
-import org.kie.planner.examples.nurserostering.domain.NurseRoster;
-import org.kie.planner.examples.nurserostering.domain.Pattern;
-import org.kie.planner.examples.nurserostering.domain.NurseRosterInfo;
-import org.kie.planner.examples.nurserostering.domain.Shift;
-import org.kie.planner.examples.nurserostering.domain.ShiftDate;
-import org.kie.planner.examples.nurserostering.domain.ShiftType;
-import org.kie.planner.examples.nurserostering.domain.ShiftType2DaysPattern;
-import org.kie.planner.examples.nurserostering.domain.ShiftType3DaysPattern;
-import org.kie.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
-import org.kie.planner.examples.nurserostering.domain.Skill;
-import org.kie.planner.examples.nurserostering.domain.SkillProficiency;
-import org.kie.planner.examples.nurserostering.domain.WeekendDefinition;
-import org.kie.planner.examples.nurserostering.domain.WorkBeforeFreeSequencePattern;
-import org.kie.planner.examples.nurserostering.domain.contract.Contract;
-import org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine;
-import org.kie.planner.examples.nurserostering.domain.contract.ContractLine;
-import org.kie.planner.examples.nurserostering.domain.contract.ContractLineType;
-import org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine;
-import org.kie.planner.examples.nurserostering.domain.contract.PatternContractLine;
-import org.kie.planner.examples.nurserostering.domain.request.DayOffRequest;
-import org.kie.planner.examples.nurserostering.domain.request.DayOnRequest;
-import org.kie.planner.examples.nurserostering.domain.request.ShiftOffRequest;
-import org.kie.planner.examples.nurserostering.domain.request.ShiftOnRequest;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentEnd;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentStart;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeFreeSequence;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
-import org.kie.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
+import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
+import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
+import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
+import org.drools.planner.examples.nurserostering.domain.NurseRoster;
+import org.drools.planner.examples.nurserostering.domain.Pattern;
+import org.drools.planner.examples.nurserostering.domain.NurseRosterInfo;
+import org.drools.planner.examples.nurserostering.domain.Shift;
+import org.drools.planner.examples.nurserostering.domain.ShiftDate;
+import org.drools.planner.examples.nurserostering.domain.ShiftType;
+import org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern;
+import org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern;
+import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
+import org.drools.planner.examples.nurserostering.domain.Skill;
+import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
+import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
+import org.drools.planner.examples.nurserostering.domain.WorkBeforeFreeSequencePattern;
+import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.ContractLineType;
+import org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.PatternContractLine;
+import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentEnd;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentStart;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeSequence;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 
 global HardAndSoftScoreHolder scoreHolder;
 

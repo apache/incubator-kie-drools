@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.kie.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
-  <planningEntityClass>org.kie.planner.examples.tsp.domain.Visit</planningEntityClass>
+  <solutionClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.tsp.domain.Visit</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>

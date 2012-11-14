@@ -175,27 +175,27 @@
     </ShiftTypeSkillRequirement>
   </shiftTypeSkillRequirementList>
   <patternList id="32">
-    <org.kie.planner.examples.nurserostering.domain.ShiftType2DaysPattern id="33">
+    <org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern id="33">
       <id>0</id>
       <code>0</code>
       <weight>1</weight>
       <dayIndex0ShiftType reference="8"/>
       <dayIndex1ShiftType reference="10"/>
-    </org.kie.planner.examples.nurserostering.domain.ShiftType2DaysPattern>
-    <org.kie.planner.examples.nurserostering.domain.ShiftType3DaysPattern id="34">
+    </org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern>
+    <org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern id="34">
       <id>1</id>
       <code>1</code>
       <weight>1</weight>
       <dayIndex0ShiftType reference="10"/>
       <dayIndex1ShiftType reference="6"/>
       <dayIndex2ShiftType reference="10"/>
-    </org.kie.planner.examples.nurserostering.domain.ShiftType3DaysPattern>
-    <org.kie.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern id="35">
+    </org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern>
+    <org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern id="35">
       <id>2</id>
       <code>2</code>
       <weight>1</weight>
       <freeDayOfWeek>FRIDAY</freeDayOfWeek>
-    </org.kie.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern>
+    </org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern>
   </patternList>
   <contractList id="36">
     <Contract id="37">
@@ -204,14 +204,14 @@
       <description>fulltime</description>
       <weekendDefinition>SATURDAY_SUNDAY</weekendDefinition>
       <contractLineList id="38">
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="39">
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="39">
           <id>0</id>
           <contract reference="37"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="40">
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="40">
           <id>1</id>
           <contract reference="37"/>
           <contractLineType>TOTAL_ASSIGNMENTS</contractLineType>
@@ -221,8 +221,8 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>16</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="41">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="41">
           <id>2</id>
           <contract reference="37"/>
           <contractLineType>CONSECUTIVE_WORKING_DAYS</contractLineType>
@@ -232,8 +232,8 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>7</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="42">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="42">
           <id>3</id>
           <contract reference="37"/>
           <contractLineType>CONSECUTIVE_FREE_DAYS</contractLineType>
@@ -243,21 +243,21 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>5</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="43">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="43">
           <id>4</id>
           <contract reference="37"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="44">
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="44">
           <id>5</id>
           <contract reference="37"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
     </Contract>
     <Contract id="45">
@@ -266,14 +266,14 @@
       <description>75_time</description>
       <weekendDefinition>SATURDAY_SUNDAY</weekendDefinition>
       <contractLineList id="46">
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="47">
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="47">
           <id>6</id>
           <contract reference="45"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="48">
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="48">
           <id>7</id>
           <contract reference="45"/>
           <contractLineType>TOTAL_ASSIGNMENTS</contractLineType>
@@ -283,8 +283,8 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>12</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="49">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="49">
           <id>8</id>
           <contract reference="45"/>
           <contractLineType>CONSECUTIVE_WORKING_DAYS</contractLineType>
@@ -294,8 +294,8 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>5</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="50">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="50">
           <id>9</id>
           <contract reference="45"/>
           <contractLineType>CONSECUTIVE_FREE_DAYS</contractLineType>
@@ -305,21 +305,21 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>7</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="51">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="51">
           <id>10</id>
           <contract reference="45"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="52">
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="52">
           <id>11</id>
           <contract reference="45"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
     </Contract>
     <Contract id="53">
@@ -328,14 +328,14 @@
       <description>50_percent</description>
       <weekendDefinition>SATURDAY_SUNDAY</weekendDefinition>
       <contractLineList id="54">
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="55">
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="55">
           <id>12</id>
           <contract reference="53"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="56">
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="56">
           <id>13</id>
           <contract reference="53"/>
           <contractLineType>TOTAL_ASSIGNMENTS</contractLineType>
@@ -345,8 +345,8 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>5</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="57">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="57">
           <id>14</id>
           <contract reference="53"/>
           <contractLineType>CONSECUTIVE_WORKING_DAYS</contractLineType>
@@ -356,8 +356,8 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>5</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="58">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="58">
           <id>15</id>
           <contract reference="53"/>
           <contractLineType>CONSECUTIVE_FREE_DAYS</contractLineType>
@@ -367,89 +367,89 @@
           <maximumEnabled>true</maximumEnabled>
           <maximumValue>8</maximumValue>
           <maximumWeight>1</maximumWeight>
-        </org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="59">
+        </org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="59">
           <id>16</id>
           <contract reference="53"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
-        <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine id="60">
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="60">
           <id>17</id>
           <contract reference="53"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
           <enabled>true</enabled>
           <weight>1</weight>
-        </org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine>
+        </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
     </Contract>
   </contractList>
   <contractLineList id="61">
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="39"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="40"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="41"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="42"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="43"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="44"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="47"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="48"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="49"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="50"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="51"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="52"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="55"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="56"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="57"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="58"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="59"/>
-    <org.kie.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="60"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="39"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="40"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="41"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="42"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="43"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="44"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="47"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="48"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="49"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="50"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="51"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="52"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="55"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="56"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="57"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine reference="58"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="59"/>
+    <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="60"/>
   </contractLineList>
   <patternContractLineList id="62">
     <PatternContractLine id="63">
       <id>0</id>
       <contract reference="37"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.ShiftType2DaysPattern" reference="33"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern" reference="33"/>
     </PatternContractLine>
     <PatternContractLine id="64">
       <id>1</id>
       <contract reference="37"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.ShiftType3DaysPattern" reference="34"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern" reference="34"/>
     </PatternContractLine>
     <PatternContractLine id="65">
       <id>2</id>
       <contract reference="37"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern" reference="35"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern" reference="35"/>
     </PatternContractLine>
     <PatternContractLine id="66">
       <id>3</id>
       <contract reference="45"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.ShiftType2DaysPattern" reference="33"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern" reference="33"/>
     </PatternContractLine>
     <PatternContractLine id="67">
       <id>4</id>
       <contract reference="45"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.ShiftType3DaysPattern" reference="34"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern" reference="34"/>
     </PatternContractLine>
     <PatternContractLine id="68">
       <id>5</id>
       <contract reference="45"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern" reference="35"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern" reference="35"/>
     </PatternContractLine>
     <PatternContractLine id="69">
       <id>6</id>
       <contract reference="53"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.ShiftType2DaysPattern" reference="33"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern" reference="33"/>
     </PatternContractLine>
     <PatternContractLine id="70">
       <id>7</id>
       <contract reference="53"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.ShiftType3DaysPattern" reference="34"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern" reference="34"/>
     </PatternContractLine>
     <PatternContractLine id="71">
       <id>8</id>
       <contract reference="53"/>
-      <pattern class="org.kie.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern" reference="35"/>
+      <pattern class="org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern" reference="35"/>
     </PatternContractLine>
   </patternContractLineList>
   <employeeList id="72">

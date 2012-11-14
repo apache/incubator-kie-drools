@@ -1,4 +1,4 @@
-<org.kie.planner.examples.nqueens.domain.NQueens id="1">
+<org.drools.planner.examples.nqueens.domain.NQueens id="1">
   <id>0</id>
   <n>256</n>
   <columnList id="2">
@@ -2054,1029 +2054,1029 @@
     </Row>
   </rowList>
   <queenList id="516">
-    <org.kie.planner.examples.nqueens.domain.Queen id="517">
+    <org.drools.planner.examples.nqueens.domain.Queen id="517">
       <id>0</id>
       <column reference="3"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="518">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="518">
       <id>1</id>
       <column reference="4"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="519">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="519">
       <id>2</id>
       <column reference="5"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="520">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="520">
       <id>3</id>
       <column reference="6"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="521">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="521">
       <id>4</id>
       <column reference="7"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="522">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="522">
       <id>5</id>
       <column reference="8"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="523">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="523">
       <id>6</id>
       <column reference="9"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="524">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="524">
       <id>7</id>
       <column reference="10"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="525">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="525">
       <id>8</id>
       <column reference="11"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="526">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="526">
       <id>9</id>
       <column reference="12"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="527">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="527">
       <id>10</id>
       <column reference="13"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="528">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="528">
       <id>11</id>
       <column reference="14"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="529">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="529">
       <id>12</id>
       <column reference="15"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="530">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="530">
       <id>13</id>
       <column reference="16"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="531">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="531">
       <id>14</id>
       <column reference="17"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="532">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="532">
       <id>15</id>
       <column reference="18"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="533">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="533">
       <id>16</id>
       <column reference="19"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="534">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="534">
       <id>17</id>
       <column reference="20"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="535">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="535">
       <id>18</id>
       <column reference="21"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="536">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="536">
       <id>19</id>
       <column reference="22"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="537">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="537">
       <id>20</id>
       <column reference="23"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="538">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="538">
       <id>21</id>
       <column reference="24"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="539">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="539">
       <id>22</id>
       <column reference="25"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="540">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="540">
       <id>23</id>
       <column reference="26"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="541">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="541">
       <id>24</id>
       <column reference="27"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="542">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="542">
       <id>25</id>
       <column reference="28"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="543">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="543">
       <id>26</id>
       <column reference="29"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="544">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="544">
       <id>27</id>
       <column reference="30"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="545">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="545">
       <id>28</id>
       <column reference="31"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="546">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="546">
       <id>29</id>
       <column reference="32"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="547">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="547">
       <id>30</id>
       <column reference="33"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="548">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="548">
       <id>31</id>
       <column reference="34"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="549">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="549">
       <id>32</id>
       <column reference="35"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="550">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="550">
       <id>33</id>
       <column reference="36"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="551">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="551">
       <id>34</id>
       <column reference="37"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="552">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="552">
       <id>35</id>
       <column reference="38"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="553">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="553">
       <id>36</id>
       <column reference="39"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="554">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="554">
       <id>37</id>
       <column reference="40"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="555">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="555">
       <id>38</id>
       <column reference="41"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="556">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="556">
       <id>39</id>
       <column reference="42"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="557">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="557">
       <id>40</id>
       <column reference="43"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="558">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="558">
       <id>41</id>
       <column reference="44"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="559">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="559">
       <id>42</id>
       <column reference="45"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="560">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="560">
       <id>43</id>
       <column reference="46"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="561">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="561">
       <id>44</id>
       <column reference="47"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="562">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="562">
       <id>45</id>
       <column reference="48"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="563">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="563">
       <id>46</id>
       <column reference="49"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="564">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="564">
       <id>47</id>
       <column reference="50"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="565">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="565">
       <id>48</id>
       <column reference="51"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="566">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="566">
       <id>49</id>
       <column reference="52"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="567">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="567">
       <id>50</id>
       <column reference="53"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="568">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="568">
       <id>51</id>
       <column reference="54"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="569">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="569">
       <id>52</id>
       <column reference="55"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="570">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="570">
       <id>53</id>
       <column reference="56"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="571">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="571">
       <id>54</id>
       <column reference="57"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="572">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="572">
       <id>55</id>
       <column reference="58"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="573">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="573">
       <id>56</id>
       <column reference="59"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="574">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="574">
       <id>57</id>
       <column reference="60"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="575">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="575">
       <id>58</id>
       <column reference="61"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="576">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="576">
       <id>59</id>
       <column reference="62"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="577">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="577">
       <id>60</id>
       <column reference="63"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="578">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="578">
       <id>61</id>
       <column reference="64"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="579">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="579">
       <id>62</id>
       <column reference="65"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="580">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="580">
       <id>63</id>
       <column reference="66"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="581">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="581">
       <id>64</id>
       <column reference="67"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="582">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="582">
       <id>65</id>
       <column reference="68"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="583">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="583">
       <id>66</id>
       <column reference="69"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="584">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="584">
       <id>67</id>
       <column reference="70"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="585">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="585">
       <id>68</id>
       <column reference="71"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="586">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="586">
       <id>69</id>
       <column reference="72"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="587">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="587">
       <id>70</id>
       <column reference="73"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="588">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="588">
       <id>71</id>
       <column reference="74"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="589">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="589">
       <id>72</id>
       <column reference="75"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="590">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="590">
       <id>73</id>
       <column reference="76"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="591">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="591">
       <id>74</id>
       <column reference="77"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="592">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="592">
       <id>75</id>
       <column reference="78"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="593">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="593">
       <id>76</id>
       <column reference="79"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="594">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="594">
       <id>77</id>
       <column reference="80"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="595">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="595">
       <id>78</id>
       <column reference="81"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="596">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="596">
       <id>79</id>
       <column reference="82"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="597">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="597">
       <id>80</id>
       <column reference="83"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="598">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="598">
       <id>81</id>
       <column reference="84"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="599">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="599">
       <id>82</id>
       <column reference="85"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="600">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="600">
       <id>83</id>
       <column reference="86"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="601">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="601">
       <id>84</id>
       <column reference="87"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="602">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="602">
       <id>85</id>
       <column reference="88"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="603">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="603">
       <id>86</id>
       <column reference="89"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="604">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="604">
       <id>87</id>
       <column reference="90"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="605">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="605">
       <id>88</id>
       <column reference="91"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="606">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="606">
       <id>89</id>
       <column reference="92"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="607">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="607">
       <id>90</id>
       <column reference="93"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="608">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="608">
       <id>91</id>
       <column reference="94"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="609">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="609">
       <id>92</id>
       <column reference="95"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="610">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="610">
       <id>93</id>
       <column reference="96"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="611">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="611">
       <id>94</id>
       <column reference="97"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="612">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="612">
       <id>95</id>
       <column reference="98"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="613">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="613">
       <id>96</id>
       <column reference="99"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="614">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="614">
       <id>97</id>
       <column reference="100"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="615">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="615">
       <id>98</id>
       <column reference="101"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="616">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="616">
       <id>99</id>
       <column reference="102"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="617">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="617">
       <id>100</id>
       <column reference="103"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="618">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="618">
       <id>101</id>
       <column reference="104"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="619">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="619">
       <id>102</id>
       <column reference="105"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="620">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="620">
       <id>103</id>
       <column reference="106"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="621">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="621">
       <id>104</id>
       <column reference="107"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="622">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="622">
       <id>105</id>
       <column reference="108"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="623">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="623">
       <id>106</id>
       <column reference="109"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="624">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="624">
       <id>107</id>
       <column reference="110"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="625">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="625">
       <id>108</id>
       <column reference="111"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="626">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="626">
       <id>109</id>
       <column reference="112"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="627">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="627">
       <id>110</id>
       <column reference="113"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="628">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="628">
       <id>111</id>
       <column reference="114"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="629">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="629">
       <id>112</id>
       <column reference="115"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="630">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="630">
       <id>113</id>
       <column reference="116"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="631">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="631">
       <id>114</id>
       <column reference="117"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="632">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="632">
       <id>115</id>
       <column reference="118"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="633">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="633">
       <id>116</id>
       <column reference="119"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="634">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="634">
       <id>117</id>
       <column reference="120"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="635">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="635">
       <id>118</id>
       <column reference="121"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="636">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="636">
       <id>119</id>
       <column reference="122"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="637">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="637">
       <id>120</id>
       <column reference="123"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="638">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="638">
       <id>121</id>
       <column reference="124"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="639">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="639">
       <id>122</id>
       <column reference="125"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="640">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="640">
       <id>123</id>
       <column reference="126"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="641">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="641">
       <id>124</id>
       <column reference="127"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="642">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="642">
       <id>125</id>
       <column reference="128"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="643">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="643">
       <id>126</id>
       <column reference="129"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="644">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="644">
       <id>127</id>
       <column reference="130"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="645">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="645">
       <id>128</id>
       <column reference="131"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="646">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="646">
       <id>129</id>
       <column reference="132"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="647">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="647">
       <id>130</id>
       <column reference="133"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="648">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="648">
       <id>131</id>
       <column reference="134"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="649">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="649">
       <id>132</id>
       <column reference="135"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="650">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="650">
       <id>133</id>
       <column reference="136"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="651">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="651">
       <id>134</id>
       <column reference="137"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="652">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="652">
       <id>135</id>
       <column reference="138"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="653">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="653">
       <id>136</id>
       <column reference="139"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="654">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="654">
       <id>137</id>
       <column reference="140"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="655">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="655">
       <id>138</id>
       <column reference="141"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="656">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="656">
       <id>139</id>
       <column reference="142"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="657">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="657">
       <id>140</id>
       <column reference="143"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="658">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="658">
       <id>141</id>
       <column reference="144"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="659">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="659">
       <id>142</id>
       <column reference="145"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="660">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="660">
       <id>143</id>
       <column reference="146"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="661">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="661">
       <id>144</id>
       <column reference="147"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="662">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="662">
       <id>145</id>
       <column reference="148"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="663">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="663">
       <id>146</id>
       <column reference="149"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="664">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="664">
       <id>147</id>
       <column reference="150"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="665">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="665">
       <id>148</id>
       <column reference="151"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="666">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="666">
       <id>149</id>
       <column reference="152"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="667">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="667">
       <id>150</id>
       <column reference="153"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="668">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="668">
       <id>151</id>
       <column reference="154"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="669">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="669">
       <id>152</id>
       <column reference="155"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="670">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="670">
       <id>153</id>
       <column reference="156"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="671">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="671">
       <id>154</id>
       <column reference="157"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="672">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="672">
       <id>155</id>
       <column reference="158"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="673">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="673">
       <id>156</id>
       <column reference="159"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="674">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="674">
       <id>157</id>
       <column reference="160"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="675">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="675">
       <id>158</id>
       <column reference="161"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="676">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="676">
       <id>159</id>
       <column reference="162"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="677">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="677">
       <id>160</id>
       <column reference="163"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="678">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="678">
       <id>161</id>
       <column reference="164"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="679">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="679">
       <id>162</id>
       <column reference="165"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="680">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="680">
       <id>163</id>
       <column reference="166"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="681">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="681">
       <id>164</id>
       <column reference="167"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="682">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="682">
       <id>165</id>
       <column reference="168"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="683">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="683">
       <id>166</id>
       <column reference="169"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="684">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="684">
       <id>167</id>
       <column reference="170"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="685">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="685">
       <id>168</id>
       <column reference="171"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="686">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="686">
       <id>169</id>
       <column reference="172"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="687">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="687">
       <id>170</id>
       <column reference="173"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="688">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="688">
       <id>171</id>
       <column reference="174"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="689">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="689">
       <id>172</id>
       <column reference="175"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="690">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="690">
       <id>173</id>
       <column reference="176"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="691">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="691">
       <id>174</id>
       <column reference="177"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="692">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="692">
       <id>175</id>
       <column reference="178"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="693">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="693">
       <id>176</id>
       <column reference="179"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="694">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="694">
       <id>177</id>
       <column reference="180"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="695">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="695">
       <id>178</id>
       <column reference="181"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="696">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="696">
       <id>179</id>
       <column reference="182"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="697">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="697">
       <id>180</id>
       <column reference="183"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="698">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="698">
       <id>181</id>
       <column reference="184"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="699">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="699">
       <id>182</id>
       <column reference="185"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="700">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="700">
       <id>183</id>
       <column reference="186"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="701">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="701">
       <id>184</id>
       <column reference="187"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="702">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="702">
       <id>185</id>
       <column reference="188"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="703">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="703">
       <id>186</id>
       <column reference="189"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="704">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="704">
       <id>187</id>
       <column reference="190"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="705">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="705">
       <id>188</id>
       <column reference="191"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="706">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="706">
       <id>189</id>
       <column reference="192"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="707">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="707">
       <id>190</id>
       <column reference="193"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="708">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="708">
       <id>191</id>
       <column reference="194"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="709">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="709">
       <id>192</id>
       <column reference="195"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="710">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="710">
       <id>193</id>
       <column reference="196"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="711">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="711">
       <id>194</id>
       <column reference="197"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="712">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="712">
       <id>195</id>
       <column reference="198"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="713">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="713">
       <id>196</id>
       <column reference="199"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="714">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="714">
       <id>197</id>
       <column reference="200"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="715">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="715">
       <id>198</id>
       <column reference="201"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="716">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="716">
       <id>199</id>
       <column reference="202"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="717">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="717">
       <id>200</id>
       <column reference="203"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="718">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="718">
       <id>201</id>
       <column reference="204"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="719">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="719">
       <id>202</id>
       <column reference="205"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="720">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="720">
       <id>203</id>
       <column reference="206"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="721">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="721">
       <id>204</id>
       <column reference="207"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="722">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="722">
       <id>205</id>
       <column reference="208"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="723">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="723">
       <id>206</id>
       <column reference="209"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="724">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="724">
       <id>207</id>
       <column reference="210"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="725">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="725">
       <id>208</id>
       <column reference="211"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="726">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="726">
       <id>209</id>
       <column reference="212"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="727">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="727">
       <id>210</id>
       <column reference="213"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="728">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="728">
       <id>211</id>
       <column reference="214"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="729">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="729">
       <id>212</id>
       <column reference="215"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="730">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="730">
       <id>213</id>
       <column reference="216"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="731">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="731">
       <id>214</id>
       <column reference="217"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="732">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="732">
       <id>215</id>
       <column reference="218"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="733">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="733">
       <id>216</id>
       <column reference="219"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="734">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="734">
       <id>217</id>
       <column reference="220"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="735">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="735">
       <id>218</id>
       <column reference="221"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="736">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="736">
       <id>219</id>
       <column reference="222"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="737">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="737">
       <id>220</id>
       <column reference="223"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="738">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="738">
       <id>221</id>
       <column reference="224"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="739">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="739">
       <id>222</id>
       <column reference="225"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="740">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="740">
       <id>223</id>
       <column reference="226"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="741">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="741">
       <id>224</id>
       <column reference="227"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="742">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="742">
       <id>225</id>
       <column reference="228"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="743">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="743">
       <id>226</id>
       <column reference="229"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="744">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="744">
       <id>227</id>
       <column reference="230"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="745">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="745">
       <id>228</id>
       <column reference="231"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="746">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="746">
       <id>229</id>
       <column reference="232"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="747">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="747">
       <id>230</id>
       <column reference="233"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="748">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="748">
       <id>231</id>
       <column reference="234"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="749">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="749">
       <id>232</id>
       <column reference="235"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="750">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="750">
       <id>233</id>
       <column reference="236"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="751">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="751">
       <id>234</id>
       <column reference="237"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="752">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="752">
       <id>235</id>
       <column reference="238"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="753">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="753">
       <id>236</id>
       <column reference="239"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="754">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="754">
       <id>237</id>
       <column reference="240"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="755">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="755">
       <id>238</id>
       <column reference="241"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="756">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="756">
       <id>239</id>
       <column reference="242"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="757">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="757">
       <id>240</id>
       <column reference="243"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="758">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="758">
       <id>241</id>
       <column reference="244"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="759">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="759">
       <id>242</id>
       <column reference="245"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="760">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="760">
       <id>243</id>
       <column reference="246"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="761">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="761">
       <id>244</id>
       <column reference="247"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="762">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="762">
       <id>245</id>
       <column reference="248"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="763">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="763">
       <id>246</id>
       <column reference="249"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="764">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="764">
       <id>247</id>
       <column reference="250"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="765">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="765">
       <id>248</id>
       <column reference="251"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="766">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="766">
       <id>249</id>
       <column reference="252"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="767">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="767">
       <id>250</id>
       <column reference="253"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="768">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="768">
       <id>251</id>
       <column reference="254"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="769">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="769">
       <id>252</id>
       <column reference="255"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="770">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="770">
       <id>253</id>
       <column reference="256"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="771">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="771">
       <id>254</id>
       <column reference="257"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="772">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="772">
       <id>255</id>
       <column reference="258"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
+    </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
-</org.kie.planner.examples.nqueens.domain.NQueens>
+</org.drools.planner.examples.nqueens.domain.NQueens>

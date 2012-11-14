@@ -3096,7 +3096,7 @@
       <originalMachine reference="24"/>
     </MrProcessAssignment>
   </processAssignmentList>
-  <score class="org.kie.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore" id="777">
+  <score class="org.drools.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore" id="777">
     <hardScore>-8</hardScore>
     <softScore>-115689480</softScore>
   </score>

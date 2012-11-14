@@ -446,7 +446,7 @@
     <Visit reference="75"/>
     <Visit reference="81"/>
   </visitList>
-  <score class="org.kie.planner.core.score.buildin.simple.DefaultSimpleScore" id="85">
+  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" id="85">
     <score>-254965</score>
   </score>
 </TravelingSalesmanTour>

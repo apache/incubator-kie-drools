@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.planner.examples.travelingtournament.smart.solver;
+package org.drools.planner.examples.travelingtournament.smart.solver;
     dialect "java"
 
-import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.kie.planner.core.score.constraint.UnweightedConstraintOccurrence;
-import org.kie.planner.core.score.constraint.ConstraintType;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
 
-import org.kie.planner.examples.travelingtournament.domain.Match;
-import org.kie.planner.examples.travelingtournament.domain.Day;
-import org.kie.planner.examples.travelingtournament.domain.Team;
-import org.kie.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.kie.planner.examples.travelingtournament.domain.solver.Hop;
+import org.drools.planner.examples.travelingtournament.domain.Match;
+import org.drools.planner.examples.travelingtournament.domain.Day;
+import org.drools.planner.examples.travelingtournament.domain.Team;
+import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
+import org.drools.planner.examples.travelingtournament.domain.solver.Hop;
 
 global HardAndSoftScoreHolder scoreHolder;
 

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.planner.examples.manners2009.solver;
+package org.drools.planner.examples.manners2009.solver;
     dialect "java"
 
-import org.kie.planner.core.score.buildin.simple.SimpleScoreHolder;
-import org.kie.planner.core.score.constraint.UnweightedConstraintOccurrence;
-import org.kie.planner.core.score.constraint.ConstraintType;
+import org.drools.planner.core.score.buildin.simple.SimpleScoreHolder;
+import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
 
-import org.kie.planner.examples.manners2009.domain.Gender;
-import org.kie.planner.examples.manners2009.domain.Guest;
-import org.kie.planner.examples.manners2009.domain.Hobby;
-import org.kie.planner.examples.manners2009.domain.HobbyPractician;
-import org.kie.planner.examples.manners2009.domain.Job;
-import org.kie.planner.examples.manners2009.domain.JobType;
-import org.kie.planner.examples.manners2009.domain.Manners2009;
-import org.kie.planner.examples.manners2009.domain.Seat;
-import org.kie.planner.examples.manners2009.domain.SeatDesignation;
-import org.kie.planner.examples.manners2009.domain.Table;
+import org.drools.planner.examples.manners2009.domain.Gender;
+import org.drools.planner.examples.manners2009.domain.Guest;
+import org.drools.planner.examples.manners2009.domain.Hobby;
+import org.drools.planner.examples.manners2009.domain.HobbyPractician;
+import org.drools.planner.examples.manners2009.domain.Job;
+import org.drools.planner.examples.manners2009.domain.JobType;
+import org.drools.planner.examples.manners2009.domain.Manners2009;
+import org.drools.planner.examples.manners2009.domain.Seat;
+import org.drools.planner.examples.manners2009.domain.SeatDesignation;
+import org.drools.planner.examples.manners2009.domain.Table;
 
 global SimpleScoreHolder scoreHolder;
 

@@ -1,704 +1,704 @@
-<org.kie.planner.examples.travelingtournament.domain.TravelingTournament id="1">
+<org.drools.planner.examples.travelingtournament.domain.TravelingTournament id="1">
   <dayList id="2">
-    <org.kie.planner.examples.travelingtournament.domain.Day id="3">
+    <org.drools.planner.examples.travelingtournament.domain.Day id="3">
       <index>0</index>
       <id>0</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="4">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="4">
       <index>1</index>
       <id>1</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="5">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="5">
       <index>2</index>
       <id>2</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="6">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="6">
       <index>3</index>
       <id>3</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="7">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="7">
       <index>4</index>
       <id>4</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="8">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="8">
       <index>5</index>
       <id>5</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="9">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="9">
       <index>6</index>
       <id>6</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="10">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="10">
       <index>7</index>
       <id>7</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="11">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="11">
       <index>8</index>
       <id>8</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="12">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="12">
       <index>9</index>
       <id>9</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="13">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="13">
       <index>10</index>
       <id>10</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="14">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="14">
       <index>11</index>
       <id>11</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="15">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="15">
       <index>12</index>
       <id>12</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
-    <org.kie.planner.examples.travelingtournament.domain.Day id="16">
+    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day id="16">
       <index>13</index>
       <id>13</id>
-    </org.kie.planner.examples.travelingtournament.domain.Day>
+    </org.drools.planner.examples.travelingtournament.domain.Day>
   </dayList>
   <teamList id="17">
-    <org.kie.planner.examples.travelingtournament.domain.Team id="18">
+    <org.drools.planner.examples.travelingtournament.domain.Team id="18">
       <name>ATL</name>
       <distanceToTeamMap id="19">
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
           <int>0</int>
         </entry>
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team id="20">
+          <org.drools.planner.examples.travelingtournament.domain.Team id="20">
             <name>PHI</name>
             <distanceToTeamMap id="21">
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
                 <int>665</int>
               </entry>
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
                 <int>0</int>
               </entry>
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team id="22">
+                <org.drools.planner.examples.travelingtournament.domain.Team id="22">
                   <name>MON</name>
                   <distanceToTeamMap id="23">
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
                       <int>929</int>
                     </entry>
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
                       <int>380</int>
                     </entry>
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
                       <int>0</int>
                     </entry>
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team id="24">
+                      <org.drools.planner.examples.travelingtournament.domain.Team id="24">
                         <name>NYM</name>
                         <distanceToTeamMap id="25">
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
                             <int>745</int>
                           </entry>
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
                             <int>80</int>
                           </entry>
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
                             <int>337</int>
                           </entry>
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
                             <int>0</int>
                           </entry>
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team id="26">
+                            <org.drools.planner.examples.travelingtournament.domain.Team id="26">
                               <name>CHI</name>
                               <distanceToTeamMap id="27">
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+                                  <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
                                   <int>587</int>
                                 </entry>
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
+                                  <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
                                   <int>664</int>
                                 </entry>
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
+                                  <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
                                   <int>646</int>
                                 </entry>
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
+                                  <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
                                   <int>712</int>
                                 </entry>
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+                                  <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
                                   <int>0</int>
                                 </entry>
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team id="28">
+                                  <org.drools.planner.examples.travelingtournament.domain.Team id="28">
                                     <name>FLA</name>
                                     <distanceToTeamMap id="29">
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+                                        <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
                                         <int>605</int>
                                       </entry>
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
+                                        <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
                                         <int>1020</int>
                                       </entry>
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
+                                        <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
                                         <int>1380</int>
                                       </entry>
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
+                                        <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
                                         <int>1090</int>
                                       </entry>
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+                                        <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
                                         <int>1190</int>
                                       </entry>
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
+                                        <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
                                         <int>0</int>
                                       </entry>
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team id="30">
+                                        <org.drools.planner.examples.travelingtournament.domain.Team id="30">
                                           <name>CIN</name>
                                           <distanceToTeamMap id="31">
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+                                              <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
                                               <int>370</int>
                                             </entry>
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
+                                              <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
                                               <int>501</int>
                                             </entry>
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
+                                              <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
                                               <int>622</int>
                                             </entry>
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
+                                              <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
                                               <int>567</int>
                                             </entry>
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+                                              <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
                                               <int>250</int>
                                             </entry>
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
+                                              <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
                                               <int>957</int>
                                             </entry>
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
+                                              <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
                                               <int>0</int>
                                             </entry>
                                             <entry>
-                                              <org.kie.planner.examples.travelingtournament.domain.Team id="32">
+                                              <org.drools.planner.examples.travelingtournament.domain.Team id="32">
                                                 <name>PIT</name>
                                                 <distanceToTeamMap id="33">
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="18"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="18"/>
                                                     <int>521</int>
                                                   </entry>
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
                                                     <int>257</int>
                                                   </entry>
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
                                                     <int>408</int>
                                                   </entry>
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
                                                     <int>315</int>
                                                   </entry>
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
                                                     <int>410</int>
                                                   </entry>
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
                                                     <int>1010</int>
                                                   </entry>
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
                                                     <int>253</int>
                                                   </entry>
                                                   <entry>
-                                                    <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
+                                                    <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
                                                     <int>0</int>
                                                   </entry>
                                                 </distanceToTeamMap>
                                                 <id>5</id>
-                                              </org.kie.planner.examples.travelingtournament.domain.Team>
+                                              </org.drools.planner.examples.travelingtournament.domain.Team>
                                               <int>253</int>
                                             </entry>
                                           </distanceToTeamMap>
                                           <id>6</id>
-                                        </org.kie.planner.examples.travelingtournament.domain.Team>
+                                        </org.drools.planner.examples.travelingtournament.domain.Team>
                                         <int>957</int>
                                       </entry>
                                       <entry>
-                                        <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
+                                        <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
                                         <int>1010</int>
                                       </entry>
                                     </distanceToTeamMap>
                                     <id>4</id>
-                                  </org.kie.planner.examples.travelingtournament.domain.Team>
+                                  </org.drools.planner.examples.travelingtournament.domain.Team>
                                   <int>1190</int>
                                 </entry>
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
+                                  <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
                                   <int>250</int>
                                 </entry>
                                 <entry>
-                                  <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
+                                  <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
                                   <int>410</int>
                                 </entry>
                               </distanceToTeamMap>
                               <id>7</id>
-                            </org.kie.planner.examples.travelingtournament.domain.Team>
+                            </org.drools.planner.examples.travelingtournament.domain.Team>
                             <int>712</int>
                           </entry>
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
                             <int>1090</int>
                           </entry>
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
                             <int>567</int>
                           </entry>
                           <entry>
-                            <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
                             <int>315</int>
                           </entry>
                         </distanceToTeamMap>
                         <id>1</id>
-                      </org.kie.planner.examples.travelingtournament.domain.Team>
+                      </org.drools.planner.examples.travelingtournament.domain.Team>
                       <int>337</int>
                     </entry>
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
                       <int>646</int>
                     </entry>
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
                       <int>1380</int>
                     </entry>
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
                       <int>622</int>
                     </entry>
                     <entry>
-                      <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
                       <int>408</int>
                     </entry>
                   </distanceToTeamMap>
                   <id>3</id>
-                </org.kie.planner.examples.travelingtournament.domain.Team>
+                </org.drools.planner.examples.travelingtournament.domain.Team>
                 <int>380</int>
               </entry>
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
                 <int>80</int>
               </entry>
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
                 <int>664</int>
               </entry>
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
                 <int>1020</int>
               </entry>
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
                 <int>501</int>
               </entry>
               <entry>
-                <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
                 <int>257</int>
               </entry>
             </distanceToTeamMap>
             <id>2</id>
-          </org.kie.planner.examples.travelingtournament.domain.Team>
+          </org.drools.planner.examples.travelingtournament.domain.Team>
           <int>665</int>
         </entry>
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
           <int>929</int>
         </entry>
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
           <int>745</int>
         </entry>
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
           <int>587</int>
         </entry>
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
           <int>605</int>
         </entry>
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
           <int>370</int>
         </entry>
         <entry>
-          <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
           <int>521</int>
         </entry>
       </distanceToTeamMap>
       <id>0</id>
-    </org.kie.planner.examples.travelingtournament.domain.Team>
-    <org.kie.planner.examples.travelingtournament.domain.Team reference="24"/>
-    <org.kie.planner.examples.travelingtournament.domain.Team reference="20"/>
-    <org.kie.planner.examples.travelingtournament.domain.Team reference="22"/>
-    <org.kie.planner.examples.travelingtournament.domain.Team reference="28"/>
-    <org.kie.planner.examples.travelingtournament.domain.Team reference="32"/>
-    <org.kie.planner.examples.travelingtournament.domain.Team reference="30"/>
-    <org.kie.planner.examples.travelingtournament.domain.Team reference="26"/>
+    </org.drools.planner.examples.travelingtournament.domain.Team>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="24"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="20"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="22"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="28"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="32"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="30"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="26"/>
   </teamList>
   <matchList id="34">
-    <org.kie.planner.examples.travelingtournament.domain.Match id="35">
+    <org.drools.planner.examples.travelingtournament.domain.Match id="35">
       <homeTeam reference="18"/>
       <awayTeam reference="24"/>
       <day reference="5"/>
       <id>0</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="36">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="36">
       <homeTeam reference="18"/>
       <awayTeam reference="20"/>
       <day reference="4"/>
       <id>1</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="37">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="37">
       <homeTeam reference="18"/>
       <awayTeam reference="22"/>
       <day reference="9"/>
       <id>2</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="38">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="38">
       <homeTeam reference="18"/>
       <awayTeam reference="28"/>
       <day reference="11"/>
       <id>3</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="39">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="39">
       <homeTeam reference="18"/>
       <awayTeam reference="32"/>
       <day reference="8"/>
       <id>4</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="40">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="40">
       <homeTeam reference="18"/>
       <awayTeam reference="30"/>
       <day reference="12"/>
       <id>5</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="41">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="41">
       <homeTeam reference="18"/>
       <awayTeam reference="26"/>
       <day reference="13"/>
       <id>6</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="42">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="42">
       <homeTeam reference="24"/>
       <awayTeam reference="18"/>
       <day reference="15"/>
       <id>7</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="43">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="43">
       <homeTeam reference="24"/>
       <awayTeam reference="20"/>
       <day reference="3"/>
       <id>8</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="44">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="44">
       <homeTeam reference="24"/>
       <awayTeam reference="22"/>
       <day reference="14"/>
       <id>9</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="45">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="45">
       <homeTeam reference="24"/>
       <awayTeam reference="28"/>
       <day reference="8"/>
       <id>10</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="46">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="46">
       <homeTeam reference="24"/>
       <awayTeam reference="32"/>
       <day reference="13"/>
       <id>11</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="47">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="47">
       <homeTeam reference="24"/>
       <awayTeam reference="30"/>
       <day reference="9"/>
       <id>12</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="48">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="48">
       <homeTeam reference="24"/>
       <awayTeam reference="26"/>
       <day reference="7"/>
       <id>13</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="49">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="49">
       <homeTeam reference="20"/>
       <awayTeam reference="18"/>
       <day reference="16"/>
       <id>14</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="50">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="50">
       <homeTeam reference="20"/>
       <awayTeam reference="24"/>
       <day reference="12"/>
       <id>15</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="51">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="51">
       <homeTeam reference="20"/>
       <awayTeam reference="22"/>
       <day reference="13"/>
       <id>16</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="52">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="52">
       <homeTeam reference="20"/>
       <awayTeam reference="28"/>
       <day reference="7"/>
       <id>17</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="53">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="53">
       <homeTeam reference="20"/>
       <awayTeam reference="32"/>
       <day reference="14"/>
       <id>18</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="54">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="54">
       <homeTeam reference="20"/>
       <awayTeam reference="30"/>
       <day reference="8"/>
       <id>19</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="55">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="55">
       <homeTeam reference="20"/>
       <awayTeam reference="26"/>
       <day reference="6"/>
       <id>20</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="56">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="56">
       <homeTeam reference="22"/>
       <awayTeam reference="18"/>
       <day reference="7"/>
       <id>21</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="57">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="57">
       <homeTeam reference="22"/>
       <awayTeam reference="24"/>
       <day reference="16"/>
       <id>22</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="58">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="58">
       <homeTeam reference="22"/>
       <awayTeam reference="20"/>
       <day reference="15"/>
       <id>23</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="59">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="59">
       <homeTeam reference="22"/>
       <awayTeam reference="28"/>
       <day reference="6"/>
       <id>24</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="60">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="60">
       <homeTeam reference="22"/>
       <awayTeam reference="32"/>
       <day reference="12"/>
       <id>25</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="61">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="61">
       <homeTeam reference="22"/>
       <awayTeam reference="30"/>
       <day reference="11"/>
       <id>26</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="62">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="62">
       <homeTeam reference="22"/>
       <awayTeam reference="26"/>
       <day reference="8"/>
       <id>27</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="63">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="63">
       <homeTeam reference="28"/>
       <awayTeam reference="18"/>
       <day reference="3"/>
       <id>28</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="64">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="64">
       <homeTeam reference="28"/>
       <awayTeam reference="24"/>
       <day reference="4"/>
       <id>29</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="65">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="65">
       <homeTeam reference="28"/>
       <awayTeam reference="20"/>
       <day reference="5"/>
       <id>30</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="66">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="66">
       <homeTeam reference="28"/>
       <awayTeam reference="22"/>
       <day reference="10"/>
       <id>31</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="67">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="67">
       <homeTeam reference="28"/>
       <awayTeam reference="32"/>
       <day reference="9"/>
       <id>32</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="68">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="68">
       <homeTeam reference="28"/>
       <awayTeam reference="30"/>
       <day reference="13"/>
       <id>33</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="69">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="69">
       <homeTeam reference="28"/>
       <awayTeam reference="26"/>
       <day reference="12"/>
       <id>34</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="70">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="70">
       <homeTeam reference="32"/>
       <awayTeam reference="18"/>
       <day reference="6"/>
       <id>35</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="71">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="71">
       <homeTeam reference="32"/>
       <awayTeam reference="24"/>
       <day reference="10"/>
       <id>36</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="72">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="72">
       <homeTeam reference="32"/>
       <awayTeam reference="20"/>
       <day reference="11"/>
       <id>37</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="73">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="73">
       <homeTeam reference="32"/>
       <awayTeam reference="22"/>
       <day reference="5"/>
       <id>38</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="74">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="74">
       <homeTeam reference="32"/>
       <awayTeam reference="28"/>
       <day reference="16"/>
       <id>39</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="75">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="75">
       <homeTeam reference="32"/>
       <awayTeam reference="30"/>
       <day reference="7"/>
       <id>40</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="76">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="76">
       <homeTeam reference="32"/>
       <awayTeam reference="26"/>
       <day reference="15"/>
       <id>41</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="77">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="77">
       <homeTeam reference="30"/>
       <awayTeam reference="18"/>
       <day reference="14"/>
       <id>42</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="78">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="78">
       <homeTeam reference="30"/>
       <awayTeam reference="24"/>
       <day reference="6"/>
       <id>43</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="79">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="79">
       <homeTeam reference="30"/>
       <awayTeam reference="20"/>
       <day reference="10"/>
       <id>44</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="80">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="80">
       <homeTeam reference="30"/>
       <awayTeam reference="22"/>
       <day reference="4"/>
       <id>45</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="81">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="81">
       <homeTeam reference="30"/>
       <awayTeam reference="28"/>
       <day reference="15"/>
       <id>46</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="82">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="82">
       <homeTeam reference="30"/>
       <awayTeam reference="32"/>
       <day reference="3"/>
       <id>47</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="83">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="83">
       <homeTeam reference="30"/>
       <awayTeam reference="26"/>
       <day reference="16"/>
       <id>48</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="84">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="84">
       <homeTeam reference="26"/>
       <awayTeam reference="18"/>
       <day reference="10"/>
       <id>49</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="85">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="85">
       <homeTeam reference="26"/>
       <awayTeam reference="24"/>
       <day reference="11"/>
       <id>50</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="86">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="86">
       <homeTeam reference="26"/>
       <awayTeam reference="20"/>
       <day reference="9"/>
       <id>51</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="87">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="87">
       <homeTeam reference="26"/>
       <awayTeam reference="22"/>
       <day reference="3"/>
       <id>52</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="88">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="88">
       <homeTeam reference="26"/>
       <awayTeam reference="28"/>
       <day reference="14"/>
       <id>53</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="89">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="89">
       <homeTeam reference="26"/>
       <awayTeam reference="32"/>
       <day reference="4"/>
       <id>54</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
-    <org.kie.planner.examples.travelingtournament.domain.Match id="90">
+    </org.drools.planner.examples.travelingtournament.domain.Match>
+    <org.drools.planner.examples.travelingtournament.domain.Match id="90">
       <homeTeam reference="26"/>
       <awayTeam reference="30"/>
       <day reference="5"/>
       <id>55</id>
-    </org.kie.planner.examples.travelingtournament.domain.Match>
+    </org.drools.planner.examples.travelingtournament.domain.Match>
   </matchList>
-</org.kie.planner.examples.travelingtournament.domain.TravelingTournament>
+</org.drools.planner.examples.travelingtournament.domain.TravelingTournament>

@@ -4,14 +4,14 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
-      <solutionClass>org.kie.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

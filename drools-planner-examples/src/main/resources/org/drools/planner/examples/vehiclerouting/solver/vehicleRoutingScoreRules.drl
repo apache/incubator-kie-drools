@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.planner.examples.tsp.solver;
+package org.drools.planner.examples.tsp.solver;
     dialect "java"
 
-import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.kie.planner.core.score.constraint.IntConstraintOccurrence;
-import org.kie.planner.core.score.constraint.ConstraintType;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
 
-import org.kie.planner.examples.vehiclerouting.domain.VrpDepot;
-import org.kie.planner.examples.vehiclerouting.domain.VrpLocation;
-import org.kie.planner.examples.vehiclerouting.domain.VrpVehicle;
-import org.kie.planner.examples.vehiclerouting.domain.VrpSchedule;
-import org.kie.planner.examples.vehiclerouting.domain.VrpCustomer;
+import org.drools.planner.examples.vehiclerouting.domain.VrpDepot;
+import org.drools.planner.examples.vehiclerouting.domain.VrpLocation;
+import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
+import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
+import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
 
 global HardAndSoftScoreHolder scoreHolder;
 

@@ -4,12 +4,12 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens256.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.kie.planner.examples.nqueens.domain.NQueens</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.nqueens.domain.Queen</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>

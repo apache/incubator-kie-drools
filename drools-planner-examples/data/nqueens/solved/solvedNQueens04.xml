@@ -1,4 +1,4 @@
-<org.kie.planner.examples.nqueens.domain.NQueens id="1">
+<org.drools.planner.examples.nqueens.domain.NQueens id="1">
   <id>0</id>
   <n>4</n>
   <columnList id="2">
@@ -38,28 +38,28 @@
     </Row>
   </rowList>
   <queenList id="12">
-    <org.kie.planner.examples.nqueens.domain.Queen id="13">
+    <org.drools.planner.examples.nqueens.domain.Queen id="13">
       <id>0</id>
       <column reference="3"/>
       <row reference="9"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="14">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="14">
       <id>1</id>
       <column reference="4"/>
       <row reference="11"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="15">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="15">
       <id>2</id>
       <column reference="5"/>
       <row reference="8"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
-    <org.kie.planner.examples.nqueens.domain.Queen id="16">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="16">
       <id>3</id>
       <column reference="6"/>
       <row reference="10"/>
-    </org.kie.planner.examples.nqueens.domain.Queen>
+    </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
-  <score class="org.kie.planner.core.score.buildin.simple.DefaultSimpleScore" id="17">
+  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" id="17">
     <score>0</score>
   </score>
-</org.kie.planner.examples.nqueens.domain.NQueens>
+</org.drools.planner.examples.nqueens.domain.NQueens>

@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.tsp.domain.TravelingSalesmanTour</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</xstreamAnnotatedClass>
       <inputSolutionFile>data/tsp/unsolved/dj38.xml</inputSolutionFile>
       <inputSolutionFile>data/tsp/unsolved/europe40.xml</inputSolutionFile>
       <inputSolutionFile>data/tsp/unsolved/lu980.xml</inputSolutionFile>
@@ -14,8 +14,8 @@
     </problemBenchmarks>
 
     <solver>
-      <solutionClass>org.kie.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.tsp.domain.Visit</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.tsp.domain.Visit</planningEntityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>

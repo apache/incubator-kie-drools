@@ -4,14 +4,14 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
-      <solutionClass>org.kie.planner.examples.examination.domain.Examination</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.examination.domain.Exam</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
@@ -22,7 +22,7 @@
   <solverBenchmark>
     <solver>
       <!--<customSolverPhase>-->
-        <!--<customSolverPhaseCommandClass>org.kie.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>-->
       <!--</customSolverPhase>-->
       <localSearch>
         <termination>
@@ -31,15 +31,15 @@
         <unionMoveSelector>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
           </moveListFactory>
           <moveListFactory>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.kie.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>

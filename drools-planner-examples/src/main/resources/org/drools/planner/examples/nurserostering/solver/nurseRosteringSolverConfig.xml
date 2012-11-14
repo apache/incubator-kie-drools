@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <solutionClass>org.kie.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
-  <planningEntityClass>org.kie.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+  <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -24,23 +24,23 @@
     <unionMoveSelector>
       <moveListFactory>
         <cacheType>PHASE</cacheType>
-        <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
+        <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
       </moveListFactory>
       <moveListFactory>
         <cacheType>PHASE</cacheType>
-        <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
+        <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
       <moveListFactory>
         <cacheType>STEP</cacheType>
-        <moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
+        <moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
       </moveListFactory>
       <!--<moveListFactory>-->
         <!--<cacheType>STEP</cacheType>-->
-        <!--<moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength2MoveFactory</moveListFactoryClass>-->
+        <!--<moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength2MoveFactory</moveListFactoryClass>-->
       <!--</moveListFactory>-->
       <!--<moveListFactory>-->
         <!--<cacheType>STEP</cacheType>-->
-        <!--<moveListFactoryClass>org.kie.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength3MoveFactory</moveListFactoryClass>-->
+        <!--<moveListFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSequenceSwitchLength3MoveFactory</moveListFactoryClass>-->
       <!--</moveListFactory>-->
     </unionMoveSelector>
     <acceptor>

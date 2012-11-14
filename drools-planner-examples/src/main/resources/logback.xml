@@ -25,7 +25,7 @@
     <!--</encoder>-->
   <!--</appender>-->
 
-  <logger name="org.kie.planner" level="debug"/>
+  <logger name="org.drools.planner" level="debug"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

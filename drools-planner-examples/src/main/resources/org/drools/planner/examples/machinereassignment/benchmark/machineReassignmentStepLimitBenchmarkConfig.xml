@@ -4,18 +4,18 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <problemIOClass>org.kie.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
+      <problemIOClass>org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
       <inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
-      <solutionClass>org.kie.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
-        <incrementalScoreCalculatorClass>org.kie.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
         <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
       </scoreDirectorFactory>
     </solver>
@@ -24,7 +24,7 @@
   <solverBenchmark>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.kie.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <termination>

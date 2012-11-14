@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.planner.examples.curriculumcourse.solver;
+package org.drools.planner.examples.curriculumcourse.solver;
     dialect "java"
 
-import org.kie.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.kie.planner.core.score.constraint.IntConstraintOccurrence;
-import org.kie.planner.core.score.constraint.ConstraintType;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
 
-import org.kie.planner.examples.curriculumcourse.domain.Course;
-import org.kie.planner.examples.curriculumcourse.domain.Curriculum;
-import org.kie.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
-import org.kie.planner.examples.curriculumcourse.domain.Day;
-import org.kie.planner.examples.curriculumcourse.domain.Lecture;
-import org.kie.planner.examples.curriculumcourse.domain.Period;
-import org.kie.planner.examples.curriculumcourse.domain.Room;
-import org.kie.planner.examples.curriculumcourse.domain.Teacher;
-import org.kie.planner.examples.curriculumcourse.domain.Timeslot;
-import org.kie.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
+import org.drools.planner.examples.curriculumcourse.domain.Course;
+import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
+import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
+import org.drools.planner.examples.curriculumcourse.domain.Day;
+import org.drools.planner.examples.curriculumcourse.domain.Lecture;
+import org.drools.planner.examples.curriculumcourse.domain.Period;
+import org.drools.planner.examples.curriculumcourse.domain.Room;
+import org.drools.planner.examples.curriculumcourse.domain.Teacher;
+import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
+import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
 global HardAndSoftScoreHolder scoreHolder;
 
