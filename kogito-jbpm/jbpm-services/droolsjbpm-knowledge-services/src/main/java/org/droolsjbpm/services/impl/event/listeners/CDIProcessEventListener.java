@@ -29,6 +29,7 @@ import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.ProcessInstance;
 import org.droolsjbpm.services.impl.helpers.NodeInstanceDescFactory;
 import org.droolsjbpm.services.impl.helpers.ProcessInstanceDescFactory;
+import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
 import org.jboss.seam.transaction.Transactional;
 
@@ -57,7 +58,16 @@ public class CDIProcessEventListener implements ProcessEventListener {
     }
 
     public void afterProcessStarted(ProcessStartedEvent pse) {
-        
+        int currentState = pse.getProcessInstance().getState();
+        // update state of the ProcessInstanceDesc if it is still active as 
+        // beforeProcessStarted event has its initial value which is Pending
+        if (currentState == ProcessInstance.STATE_ACTIVE) {
+            ProcessInstanceDesc piDesc = (ProcessInstanceDesc) em.createQuery(" from ProcessInstanceDesc pid where pid.id = :piId")
+                    .setParameter("piId", pse.getProcessInstance().getId()).getSingleResult();
+            piDesc.setState(pse.getProcessInstance().getState());
+            
+            em.merge(piDesc);
+        }
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent pce) {

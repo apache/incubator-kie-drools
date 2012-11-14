@@ -39,6 +39,7 @@ public class ProcessInstanceDesc implements Serializable{
     private long id;
     private String processId;
     private String processName;
+    private String processVersion;
     private int state;
     private String[] eventTypes;
     
@@ -55,12 +56,13 @@ public class ProcessInstanceDesc implements Serializable{
         this.dataTimeStamp = new Date();
     }
 
-    public ProcessInstanceDesc(long id, String processId, String processName, 
+    public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
                                 int state, String[] eventTypes, String processDefId, 
                                 String domainName, int sessionId) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
+        this.processVersion = processVersion==null?"":processVersion;
         this.state = state;
         this.eventTypes = eventTypes;
         this.processDefId = processDefId;
@@ -108,6 +110,14 @@ public class ProcessInstanceDesc implements Serializable{
     @Override
     public String toString() {
         return "ProcessInstanceDesc["+dataTimeStamp.toString()+"]{" + "pk=" + pk + ", id=" + id + ", processId=" + processId + ", processName=" + processName + ", state=" + state + ", eventTypes=" + eventTypes + ", processDefId=" + processDefId + ", sessionId=" + sessionId + ", domainName=" + domainName + '}';
+    }
+
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     

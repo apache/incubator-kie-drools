@@ -27,6 +27,7 @@ public class ProcessInstanceDescFactory {
        return new ProcessInstanceDesc(processInstance.getId(),
                                       processInstance.getProcessId(),
                                       processInstance.getProcessName(), 
+                                      processInstance.getProcess().getVersion(),
                                       processInstance.getState(), 
                                       processInstance.getEventTypes() , 
                                       processInstance.getProcess().getId(), 
