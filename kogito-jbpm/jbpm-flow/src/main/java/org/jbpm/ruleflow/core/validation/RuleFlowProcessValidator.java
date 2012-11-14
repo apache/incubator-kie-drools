@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
+import org.kie.definition.process.Process;
 import org.drools.process.core.Work;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.Variable;
@@ -33,6 +37,7 @@ import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -54,10 +59,6 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
-import org.kie.definition.process.Process;
 import org.mvel2.ErrorDetail;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -360,11 +361,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
                 }
                 // TODO: check, if no linked connections, for start and end node(s)
-//                if (forEachNode.getLinkedIncomingNode(org.kie.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
+//                if (forEachNode.getLinkedIncomingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
 //                    errors.add(new ProcessValidationErrorImpl(process,
 //                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked start node"));
 //                }
-//                if (forEachNode.getLinkedOutgoingNode(org.kie.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
+//                if (forEachNode.getLinkedOutgoingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
 //                    errors.add(new ProcessValidationErrorImpl(process,
 //                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked end node"));
 //                }

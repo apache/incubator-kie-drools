@@ -16,8 +16,12 @@
 
 package org.jbpm.task.service.mina.async;
 
+import org.kie.SystemEventListenerFactory;
+import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.TaskLifeCycleBaseAsyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
+import org.jbpm.task.service.mina.MinaTaskClientConnector;
+import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
 public class TaskLifeCycleMinaAsyncTest extends TaskLifeCycleBaseAsyncTest {

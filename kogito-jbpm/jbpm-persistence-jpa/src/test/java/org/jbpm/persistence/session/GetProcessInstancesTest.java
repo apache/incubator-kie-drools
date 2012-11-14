@@ -1,20 +1,12 @@
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.util.HashMap;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.persistence.JbpmTestCase;
-import org.jbpm.persistence.processinstance.JPAProcessInstanceManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -23,6 +15,11 @@ import org.kie.io.ResourceFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.jbpm.persistence.JbpmTestCase;
+import org.jbpm.persistence.processinstance.JPAProcessInstanceManager;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test looks at the behavior of the  {@link JPAProcessInstanceManager} 

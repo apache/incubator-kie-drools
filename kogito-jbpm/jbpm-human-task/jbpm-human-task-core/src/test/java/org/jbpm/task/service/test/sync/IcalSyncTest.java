@@ -16,15 +16,14 @@
 
 package org.jbpm.task.service.test.sync;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
-import static org.jbpm.task.service.test.impl.TestServerUtil.startServer;
+import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.IcalBaseSyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 
 public class IcalSyncTest extends IcalBaseSyncTest {

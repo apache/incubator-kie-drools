@@ -1,96 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-	<classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/javax/transaction/jta/1.1/jta-1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4/mail-1.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr/3.3/antlr-3.3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.3/antlr-runtime-3.3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/asm/asm/3.3/asm-3.3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/codehaus/btm/btm/2.1.2/btm-2.1.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-compress/1.0/commons-compress-1.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-exec/1.0.1/commons-exec-1.0.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-net/commons-net/2.0/commons-net-2.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-api/2.4.6/cxf-api-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-common-utilities/2.4.6/cxf-common-utilities-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-bindings-soap/2.4.6/cxf-rt-bindings-soap-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-bindings-xml/2.4.6/cxf-rt-bindings-xml-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-core/2.4.6/cxf-rt-core-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-databinding-jaxb/2.4.6/cxf-rt-databinding-jaxb-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-frontend-jaxws/2.4.6/cxf-rt-frontend-jaxws-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-frontend-simple/2.4.6/cxf-rt-frontend-simple-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-transports-common/2.4.6/cxf-rt-transports-common-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-transports-http/2.4.6/cxf-rt-transports-http-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-ws-addr/2.4.6/cxf-rt-ws-addr-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-tools-common/2.4.6/cxf-tools-common-2.4.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/compiler/ecj/3.5.1/ecj-3.5.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hibernate/ejb3-persistence/1.0.2.GA/ejb3-persistence-1.0.2.GA.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-javamail_1.4_spec/1.7.1/geronimo-javamail_1.4_spec-1.7.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/h2database/h2/1.3.161/h2-1.3.161.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-annotations/3.4.0.GA/hibernate-annotations-3.4.0.GA.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-commons-annotations/3.1.0.GA/hibernate-commons-annotations-3.1.0.GA.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-core/3.3.2.GA/hibernate-core-3.3.2.GA.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-entitymanager/3.4.0.GA/hibernate-entitymanager-3.4.0.GA.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.1.Final/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hornetq/hornetq-core/2.2.10.Final/hornetq-core-2.2.10.Final.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.2.5/jaxb-impl-2.2.5.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-xjc/2.2.5/jaxb-xjc-2.2.5.jar"/>
-	<classpathentry kind="src" path="/jbpm-bam"/>
-	<classpathentry kind="src" path="/jbpm-bpmn2"/>
-	<classpathentry kind="src" path="/jbpm-flow"/>
-	<classpathentry kind="src" path="/jbpm-flow-builder"/>
-	<classpathentry kind="src" path="/jbpm-human-task-core"/>
-	<classpathentry kind="src" path="/jbpm-human-task-hornetq"/>
-	<classpathentry kind="src" path="/jbpm-human-task-mina"/>
-	<classpathentry kind="src" path="/jbpm-persistence-jpa"/>
-	<classpathentry kind="src" path="/jbpm-test"/>
-	<classpathentry kind="src" path="/jbpm-workitems"/>
-	<classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/joda-time/joda-time/1.6/joda-time-1.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/junit/junit/4.9/junit-4.9.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.1/mina-core-2.0.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/mockito/mockito-all/1.9.0/mockito-all-1.9.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.1.3.Final/mvel2-2.1.3.Final.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/neethi/neethi/3.0.2/neethi-3.0.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/jboss/netty/netty/3.2.0.Final/netty-3.2.0.Final.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/2.4.1/protobuf-java-2.4.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/rome/rome/1.0/rome-1.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/jivesoftware/smack/3.0.4/smack-3.0.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-aop/3.0.6.RELEASE/spring-aop-3.0.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-asm/3.0.6.RELEASE/spring-asm-3.0.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-beans/3.0.6.RELEASE/spring-beans-3.0.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-context/3.0.6.RELEASE/spring-context-3.0.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/3.0.6.RELEASE/spring-core-3.0.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-expression/3.0.6.RELEASE/spring-expression-3.0.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-web/3.0.6.RELEASE/spring-web-3.0.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/stax2-api/3.1.1/stax2-api-3.1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/antlr/stringtemplate/3.2.1/stringtemplate-3.2.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/subethamail/subethasmtp-smtp/1.2/subethasmtp-smtp-1.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/subethamail/subethasmtp-wiser/1.2/subethasmtp-wiser-1.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/woodstox-core-asl/4.1.1/woodstox-core-asl-4.1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/wsdl4j/wsdl4j/1.6.2/wsdl4j-1.6.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.3.04/xml-apis-1.3.04.jar"/>
-	<classpathentry kind="var" path="M2_REPO/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/ws/xmlschema/xmlschema-core/2.0.2/xmlschema-core-2.0.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/thoughtworks/xstream/xstream/1.4.1/xstream-1.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/drools-compiler"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/drools-core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/drools-persistence-jpa"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/knowledge-api"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/knowledge-internal-api"/>
+	<classpathentry kind="con" path="JBPM/jbpm"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -18,10 +18,10 @@ package org.jbpm.bpmn2.structureref;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.kie.KnowledgeBase;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 
 public class StructureRefTest extends JbpmBpmn2TestCase {
     public StructureRefTest() {

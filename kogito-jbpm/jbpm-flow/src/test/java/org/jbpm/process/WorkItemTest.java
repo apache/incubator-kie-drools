@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
@@ -17,6 +19,8 @@ import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkImpl;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.Variable;
@@ -28,15 +32,12 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.Assert;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.junit.Test;
 
 public class WorkItemTest extends JbpmTestCase {
 
     public void testReachNonRegisteredWorkItemHandler() {
-        String processId = "org.kie.actions";
+        String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
@@ -52,7 +53,7 @@ public class WorkItemTest extends JbpmTestCase {
 
         ProcessInstance processInstance = null;
         try {
-            processInstance = ksession.startProcess( "org.kie.actions",
+            processInstance = ksession.startProcess( "org.drools.actions",
                                                                  parameters );
             Assert.fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
         } catch ( Throwable e ) {
@@ -62,7 +63,7 @@ public class WorkItemTest extends JbpmTestCase {
     }
 
     public void testCancelNonRegisteredWorkItemHandler() {
-        String processId = "org.kie.actions";
+        String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
@@ -79,7 +80,7 @@ public class WorkItemTest extends JbpmTestCase {
         parameters.put( "Person",
                         new Person( "John Doe" ) );
 
-        ProcessInstance processInstance = ksession.startProcess( "org.kie.actions",
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
                                                                   parameters );
         long processInstanceId = processInstance.getId();
         Assert.assertEquals( ProcessInstance.STATE_ACTIVE,

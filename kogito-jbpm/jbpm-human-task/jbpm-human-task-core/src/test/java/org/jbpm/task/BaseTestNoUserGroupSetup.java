@@ -15,8 +15,14 @@
  */
 package org.jbpm.task;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.task.service.TaskService;
 import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.identity.UserGroupCallbackOneImpl;
 

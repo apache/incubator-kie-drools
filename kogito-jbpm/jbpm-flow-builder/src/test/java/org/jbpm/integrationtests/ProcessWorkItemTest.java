@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.JbpmTestCase;
-import org.jbpm.Person;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
@@ -21,6 +19,8 @@ import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.process.WorkflowProcessInstance;
+import org.jbpm.JbpmTestCase;
+import org.jbpm.Person;
 
 public class ProcessWorkItemTest extends JbpmTestCase {
     
@@ -31,7 +31,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -40,7 +40,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
     		"        <value>John Doe</value>\n" +
     		"      </variable>\n" +
      		"      <variable name=\"Person\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.kie.Person\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.drools.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
     		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" />\n" +
@@ -104,7 +104,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
         person.setName("John Doe");
         parameters.put("Person", person);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-        	ksession.startProcess("org.kie.actions", parameters);
+        	ksession.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -121,7 +121,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
         person.setName("Jane Doe");
         parameters.put("Person", person);
         processInstance = (WorkflowProcessInstance)
-        	ksession.startProcess("org.kie.actions", parameters);
+        	ksession.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -144,7 +144,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.actions\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -220,7 +220,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
         person.setName("John Doe");
         parameters.put("Person", person);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-        	ksession.startProcess("org.kie.actions", parameters);
+        	ksession.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     

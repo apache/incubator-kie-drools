@@ -16,6 +16,14 @@
 
 package org.jbpm.task;
 
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
+import org.jbpm.task.service.IllegalTaskStateException;
+import org.jbpm.task.utils.CollectionUtils;
+
+import javax.persistence.*;
+
+import java.io.EOFException;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -24,19 +32,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.FaultData;
-import org.jbpm.task.service.IllegalTaskStateException;
-import org.jbpm.task.utils.CollectionUtils;
 
 @Embeddable
 public class TaskData

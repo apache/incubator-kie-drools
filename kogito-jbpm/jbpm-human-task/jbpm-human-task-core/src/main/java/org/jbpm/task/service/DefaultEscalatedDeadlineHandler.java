@@ -28,6 +28,10 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.kie.runtime.Environment;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.jbpm.process.workitem.email.EmailWorkItemHandler;
 import org.jbpm.task.Content;
 import org.jbpm.task.Deadline;
@@ -45,10 +49,6 @@ import org.jbpm.task.Task;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.Environment;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
 import org.mvel2.templates.TemplateRuntime;
 
 public class DefaultEscalatedDeadlineHandler

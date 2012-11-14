@@ -15,11 +15,16 @@
  */
 package org.jbpm.task.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
+import org.kie.runtime.Environment;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.process.workitem.wsht.BlockingAddTaskResponseHandler;
+import org.jbpm.task.AccessType;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
@@ -40,7 +45,6 @@ import org.jbpm.task.service.responsehandlers.BlockingSetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.Environment;
 
 public class SyncTaskServiceWrapper implements TaskService {
 

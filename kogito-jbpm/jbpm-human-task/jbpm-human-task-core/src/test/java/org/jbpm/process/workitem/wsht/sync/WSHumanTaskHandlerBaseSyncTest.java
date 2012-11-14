@@ -15,12 +15,15 @@
  */
 package org.jbpm.process.workitem.wsht.sync;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.process.workitem.wsht.GenericHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.MyObject;
 import org.jbpm.task.AccessType;
@@ -36,8 +39,6 @@ import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 
 public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 

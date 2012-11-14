@@ -5,19 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
+import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.map.EnvironmentBuilder;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.jbpm.persistence.ProcessStorage;
 import org.jbpm.persistence.ProcessStorageEnvironmentBuilder;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.junit.Before;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class MapBasedPersistenceTest extends MapPersistenceTest {
     

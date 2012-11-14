@@ -15,10 +15,10 @@
  */
 package org.jbpm.task.service.hornetq;
 
+import org.kie.SystemEventListenerFactory;
 import org.hornetq.core.config.Configuration;
 import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListenerFactory;
 
 public class HornetQTaskServer extends BaseHornetQTaskServer implements Runnable {
     private TaskService service;

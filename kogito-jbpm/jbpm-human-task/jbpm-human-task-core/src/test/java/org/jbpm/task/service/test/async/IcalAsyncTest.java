@@ -16,15 +16,14 @@
 
 package org.jbpm.task.service.test.async;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
-import static org.jbpm.task.service.test.impl.TestServerUtil.startAsyncServer;
+import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.IcalBaseAsyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 import org.junit.AfterClass;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 
 public class IcalAsyncTest extends IcalBaseAsyncTest {

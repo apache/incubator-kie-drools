@@ -15,8 +15,9 @@
  */
 package org.jbpm.task.service.hornetq;
 
-import org.jbpm.task.service.TaskClient;
 import org.kie.SystemEventListenerFactory;
+import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.TaskClientConnector;
 
 
 public class AsyncHornetQTaskClient extends TaskClient {

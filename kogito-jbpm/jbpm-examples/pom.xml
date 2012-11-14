@@ -56,7 +56,7 @@
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
           <additionalBuildcommands>
-            <buildcommand>org.kie.eclipse.droolsbuilder</buildcommand>
+            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
           </additionalBuildcommands>
         </configuration>
       </plugin>

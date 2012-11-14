@@ -2,6 +2,7 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.HashSet;
 
+import org.kie.definition.process.Process;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

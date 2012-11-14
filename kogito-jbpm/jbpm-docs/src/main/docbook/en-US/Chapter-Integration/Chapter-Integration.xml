@@ -426,7 +426,7 @@ StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSess
     <para>Next, add the task service configuration to your Spring configuration file,
     after which you can get your local task service from your Spring context.</para>
     
-    <programlisting language="xml">&lt;bean id="systemEventListener" class="org.drools.SystemEventListenerFactory" factory-method="getSystemEventListener" /&gt;
+    <programlisting language="xml">&lt;bean id="systemEventListener" class="org.kie.SystemEventListenerFactory" factory-method="getSystemEventListener" /&gt;
 
 &lt;bean id="internalTaskService" class="org.jbpm.task.service.TaskService" &gt;
   &lt;property name="systemEventListener" ref="systemEventListener" /&gt;

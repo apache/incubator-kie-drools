@@ -20,10 +20,10 @@ import javax.naming.InitialContext;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.BaseHandler;
-import org.jbpm.task.service.Command;
 import org.jbpm.task.service.TaskClientConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jbpm.task.service.Command;
 
 public class JMSTaskClientConnector implements TaskClientConnector {
 	

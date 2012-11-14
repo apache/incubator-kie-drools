@@ -246,9 +246,9 @@ NotificationWorkItemHandler should be created (implementing the WorkItemHandler 
 
 <programlisting language="java">package com.sample;
 
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 public class NotificationWorkItemHandler implements WorkItemHandler {
 

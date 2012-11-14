@@ -4,6 +4,7 @@ import org.drools.compiler.xml.XmlDumper;
 import org.drools.xml.ExtensibleXmlParser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 

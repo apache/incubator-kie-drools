@@ -39,7 +39,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 		DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
 		if (action != null) {
 		    String s = action.getConsequence();
-		    if (s.startsWith("org.kie.process.instance.impl.WorkItemImpl workItem = new org.kie.process.instance.impl.WorkItemImpl();")) {
+		    if (s.startsWith("org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 String variable = (String) actionNode.getMetaData("MappingVariable");
@@ -88,7 +88,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 String type = s.substring(0, s.indexOf("\""));
                 xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type.substring(11)) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
-            } else if (s.startsWith("org.kie.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.kie.process.instance.context.exception.ExceptionScopeInstance) ((org.kie.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.kie.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
+            } else if (s.startsWith("org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 s = s.substring(327);

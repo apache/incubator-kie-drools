@@ -16,9 +16,9 @@
 
 package org.jbpm.task.service.test.impl;
 
+import org.kie.SystemEventListenerFactory;
 import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListenerFactory;
 
 public class TestTaskServer extends BaseTestTaskServer implements Runnable {
 

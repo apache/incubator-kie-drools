@@ -17,7 +17,6 @@
 package org.jbpm.process;
 
 import java.util.ArrayList;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,14 +25,14 @@ import java.util.Set;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.impl.EnvironmentFactory;
-import org.drools.impl.InternalKnowledgeBase;
 import org.kie.definition.KnowledgePackage;
+import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
-import org.kie.definition.process.Process;
 import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.InternalKnowledgeBase;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;

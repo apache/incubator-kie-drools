@@ -5,12 +5,12 @@ import java.lang.reflect.Field;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.kie.SystemEventListenerFactory;
+import org.kie.runtime.KnowledgeRuntime;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.WSHumanTaskJMSProperties;
-import org.kie.SystemEventListenerFactory;
-import org.kie.runtime.KnowledgeRuntime;
 
 @Deprecated
 public class CommandBasedWSThroughJMSHumanTaskHandler extends CommandBasedWSHumanTaskHandler {
@@ -26,7 +26,7 @@ public class CommandBasedWSThroughJMSHumanTaskHandler extends CommandBasedWSHuma
 			TaskClient client = (TaskClient) field.get(this);
 			if (client == null) {
 				client = new TaskClient(new JMSTaskClientConnector(
-						"org.kie.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
+						"org.drools.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
 						new JMSTaskClientHandler(SystemEventListenerFactory
 								.getSystemEventListener()),
 						WSHumanTaskJMSProperties.getInstance().getProperties(),

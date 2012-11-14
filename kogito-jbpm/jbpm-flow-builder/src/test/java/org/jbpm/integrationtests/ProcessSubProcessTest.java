@@ -10,11 +10,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.kie.runtime.process.ProcessInstance;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessSubProcessTest extends JbpmTestCase {
 

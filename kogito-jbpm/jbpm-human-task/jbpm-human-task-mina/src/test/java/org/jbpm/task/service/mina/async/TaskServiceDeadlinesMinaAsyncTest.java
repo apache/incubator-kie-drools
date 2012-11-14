@@ -17,8 +17,12 @@ package org.jbpm.task.service.mina.async;
 
 import java.util.Properties;
 
+import org.kie.SystemEventListenerFactory;
+import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseAsyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
+import org.jbpm.task.service.mina.MinaTaskClientConnector;
+import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 import org.subethamail.wiser.Wiser;
 

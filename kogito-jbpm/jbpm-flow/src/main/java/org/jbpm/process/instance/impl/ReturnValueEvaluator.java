@@ -18,7 +18,6 @@ package org.jbpm.process.instance.impl;
 
 import org.kie.runtime.process.ProcessContext;
 
-
 public interface ReturnValueEvaluator {
     
     public Object evaluate(ProcessContext processContext) throws Exception;

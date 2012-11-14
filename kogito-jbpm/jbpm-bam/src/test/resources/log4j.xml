@@ -13,11 +13,11 @@
 	</logger>
 
     <!--  marshalling utils -->
-	<logger name="org.kie.marshalling.util.CompareViaReflectionUtil">
+	<logger name="org.drools.marshalling.util.CompareViaReflectionUtil">
 		<level value="INFO"/>
 	</logger>
   
-	<logger name="org.kie.marshalling.util">
+	<logger name="org.drools.marshalling.util">
 		<level value="DEBUG"/>
 	</logger>
 

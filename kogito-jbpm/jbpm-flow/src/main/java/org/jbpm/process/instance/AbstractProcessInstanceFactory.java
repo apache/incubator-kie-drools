@@ -19,10 +19,10 @@ package org.jbpm.process.instance;
 import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
+import org.kie.definition.process.Process;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.kie.definition.process.Process;
 
 public abstract class AbstractProcessInstanceFactory implements ProcessInstanceFactory {
 	

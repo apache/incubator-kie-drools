@@ -18,14 +18,10 @@ package org.jbpm.task.service.base.async;
 import java.io.StringReader;
 import java.util.Map;
 
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.BaseTestNoUserGroupSetup;
-import org.jbpm.task.Content;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
+import org.jbpm.task.*;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
+
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;

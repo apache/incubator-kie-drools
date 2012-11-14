@@ -28,6 +28,7 @@ import org.apache.mina.transport.socket.SocketConnector;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.jbpm.task.service.BaseHandler;
 import org.jbpm.task.service.TaskClientConnector;
+import org.jbpm.task.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

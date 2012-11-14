@@ -17,17 +17,30 @@
 package org.jbpm.bpmn2;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.drools.SessionConfiguration;
+import org.drools.*;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.kie.definition.process.Process;
+import org.kie.event.process.DefaultProcessEventListener;
+import org.kie.event.process.ProcessStartedEvent;
 import org.drools.impl.EnvironmentFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.process.WorkflowProcessInstance;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -41,23 +54,7 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.definition.process.Process;
-import org.kie.event.process.DefaultProcessEventListener;
-import org.kie.event.process.ProcessStartedEvent;
-import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.junit.AfterClass;
 
 public class StandaloneBPMNProcessTest extends TestCase {
     

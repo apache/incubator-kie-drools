@@ -22,14 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BaseTestNoUserGroupSetup;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
+import org.jbpm.task.*;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddAttachmentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingAddCommentResponseHandler;

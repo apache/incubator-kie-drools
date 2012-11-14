@@ -8,13 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.io.impl.ReaderResource;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.Message;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
+import org.drools.io.impl.ReaderResource;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
@@ -22,9 +20,11 @@ import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.FactHandle;
+import org.jbpm.JbpmTestCase;
+import org.jbpm.Message;
 
 public class ProcessActionTest extends JbpmTestCase {
-
+    
     public void testOnEntryExit() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -60,8 +60,8 @@ public class ProcessActionTest extends JbpmTestCase {
             "        </parameter>\n" +
             "      </work>\n" +
             "      <onEntry>\n" +
-            "        <action type=\"expression\" name=\"Print\" dialect=\"mvel\" >list.add(\"Executing on entry action\");</action>\n" +
-            "      </onEntry>\n" +
+            "        <action type=\"expression\" name=\"Print\" dialect=\"mvel\" >list.add(\"Executing on entry action\");</action>\n" + 
+            "      </onEntry>\n" + 
             "      <onExit>\n" +
             "        <action type=\"expression\" name=\"Print\" dialect=\"java\" >list.add(\"Executing on exit action1\");</action>\n" +
             "        <action type=\"expression\" name=\"Print\" dialect=\"java\" >list.add(\"Executing on exit action2\");</action>\n" +
@@ -93,7 +93,7 @@ public class ProcessActionTest extends JbpmTestCase {
         assertEquals(3, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-
+    
     public void testActionContextJava() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -129,7 +129,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
-			"    </actionNode>\n" +
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -157,7 +157,7 @@ public class ProcessActionTest extends JbpmTestCase {
         assertFalse(factHandles.isEmpty());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-
+    
 	public void testActionContextMVEL() {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -193,7 +193,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
-			"    </actionNode>\n" +
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -254,7 +254,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
 			"list.add(person.getName());\n" +
 			"</action>\n" +
-			"    </actionNode>\n" +
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -278,7 +278,7 @@ public class ProcessActionTest extends JbpmTestCase {
         assertEquals("John Doe", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-
+	
 	public void testActionVariableMVEL() {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -308,7 +308,7 @@ public class ProcessActionTest extends JbpmTestCase {
 			"      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Triggered\");\n" +
 			"list.add(person.name);\n" +
 			"</action>\n" +
-			"    </actionNode>\n" +
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -332,7 +332,7 @@ public class ProcessActionTest extends JbpmTestCase {
         assertEquals("John Doe", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-
+	
     public void testActionNameConflict() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -352,7 +352,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"java\" >list.add(\"Action1\");</action>\n" +
-			"    </actionNode>\n" +
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -380,7 +380,7 @@ public class ProcessActionTest extends JbpmTestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"java\" >list.add(\"Action2\");</action>\n" +
-			"    </actionNode>\n" +
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -406,7 +406,7 @@ public class ProcessActionTest extends JbpmTestCase {
         assertEquals("Action2", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-
+	
 	private static class TestWorkItemHandler implements WorkItemHandler {
         private WorkItem workItem;
         public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -418,18 +418,18 @@ public class ProcessActionTest extends JbpmTestCase {
             return workItem;
         }
     }
-
+	
 	public static class TestVariable {
-
+		
 		private String name;
-
+		
 		public TestVariable(String name) {
 			this.name = name;
 		}
-
+		
 		public String getName() {
 			return name;
 		}
-
+	
 	}
 }

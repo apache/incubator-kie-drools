@@ -19,6 +19,7 @@ package org.jbpm.task.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.kie.runtime.Environment;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
@@ -42,7 +43,6 @@ import org.jbpm.task.service.TaskClientHandler.TaskOperationResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.Environment;
 
 public class TaskClient implements AsyncTaskService{
 

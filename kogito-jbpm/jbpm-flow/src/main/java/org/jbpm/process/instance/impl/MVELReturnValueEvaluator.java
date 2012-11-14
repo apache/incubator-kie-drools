@@ -25,15 +25,15 @@ import java.io.Serializable;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalWorkingMemory;
+import org.kie.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.spi.GlobalResolver;
-import org.kie.definition.KnowledgePackage;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.process.ProcessContext;
+import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 

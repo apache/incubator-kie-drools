@@ -26,29 +26,10 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AllowedToDelegate;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.BooleanExpression;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.Delegation;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Notification;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
+import org.kie.SystemEventListenerFactory;
+import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.mina.MinaTaskServer;
-import org.kie.SystemEventListenerFactory;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -109,7 +90,7 @@ public class DemoTaskService {
         ExpressionCompiler compiler = new ExpressionCompiler( str.trim() );
 
         ParserContext context = new ParserContext();
-        context.addPackageImport( "org.kie.task" );
+        context.addPackageImport( "org.drools.task" );
         context.addPackageImport( "java.util" );
         
         context.addImport( "AccessType", AccessType.class );

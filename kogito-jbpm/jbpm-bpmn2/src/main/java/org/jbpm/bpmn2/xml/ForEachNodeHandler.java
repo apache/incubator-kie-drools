@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.xml.XmlDumper;
+import org.kie.definition.process.Connection;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ForEachNode;
-import org.kie.definition.process.Connection;
 import org.xml.sax.Attributes;
 
 public class ForEachNodeHandler extends AbstractNodeHandler {

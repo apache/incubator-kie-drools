@@ -15,14 +15,18 @@
  */
 package org.jbpm.task.event;
 
-import static org.jbpm.task.service.persistence.TaskPersistenceManager.addParametersToMap;
+import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Query;
+
 import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.event.entity.TaskEventType;
+import org.jbpm.task.service.IncorrectParametersException;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

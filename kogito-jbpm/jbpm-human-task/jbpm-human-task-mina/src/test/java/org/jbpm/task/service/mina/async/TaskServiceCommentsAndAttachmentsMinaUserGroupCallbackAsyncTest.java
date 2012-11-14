@@ -16,6 +16,7 @@
 
 package org.jbpm.task.service.mina.async;
 
+import org.kie.SystemEventListenerFactory;
 import org.jbpm.task.service.base.async.TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 import org.jbpm.task.service.mina.MinaTaskServer;

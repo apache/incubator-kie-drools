@@ -1,7 +1,6 @@
 package org.jbpm.task.service.persistence;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.deserialize;
-import static org.jbpm.task.service.test.impl.TestServerUtil.serialize;
+import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +11,7 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.kie.SystemEventListenerFactory;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.BooleanExpression;
@@ -22,7 +22,6 @@ import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListenerFactory;
 
 public class DataModelTest extends BaseTest {
 

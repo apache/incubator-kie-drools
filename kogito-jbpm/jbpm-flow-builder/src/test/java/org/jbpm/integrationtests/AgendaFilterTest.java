@@ -1,15 +1,5 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.command.runtime.rule.FireAllRulesCommand;
-import org.drools.event.DebugProcessEventListener;
-import org.drools.rule.Rule;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
@@ -17,19 +7,33 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.command.Command;
 import org.kie.command.CommandFactory;
+import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.kie.definition.type.FactType;
+import org.drools.event.DebugProcessEventListener;
 import org.kie.event.rule.DebugAgendaEventListener;
 import org.kie.io.ResourceFactory;
+import org.drools.rule.Rule;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.AgendaFilter;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
+import static org.junit.Assert.fail;
 
 public class AgendaFilterTest {
 
     @Test
     public void testAgendaFilter() {
         // JBRULES-3374
-        String drl = "package org.kie\n" +
+        String drl = "package org.drools\n" +
                 " \n" +
                 "import org.jbpm.integrationtests.AgendaFilterTest.Message\n" +
                 " \n" +

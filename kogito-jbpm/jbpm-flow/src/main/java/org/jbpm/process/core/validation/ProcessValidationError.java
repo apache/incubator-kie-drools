@@ -16,6 +16,7 @@
 
 package org.jbpm.process.core.validation;
 
+import org.kie.definition.process.Process;
 
 /**
  * Represents a RuleFlow validation error. 
@@ -24,7 +25,7 @@ package org.jbpm.process.core.validation;
  */
 public interface ProcessValidationError {
 
-    org.kie.definition.process.Process getProcess();
+    Process getProcess();
     
     String getMessage();
     

@@ -2,6 +2,8 @@ package org.jbpm.process.builder;
 
 import java.util.List;
 
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
@@ -10,8 +12,6 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.Process;
 
 public class ExtendedNodeBuilder
     implements

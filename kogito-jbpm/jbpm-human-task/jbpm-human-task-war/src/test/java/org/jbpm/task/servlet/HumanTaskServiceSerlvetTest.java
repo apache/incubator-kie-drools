@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
+import org.kie.SystemEventListenerFactory;
 import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.identity.UserGroupCallbackManager;
@@ -22,7 +23,6 @@ import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.SystemEventListenerFactory;
 
 
 public class HumanTaskServiceSerlvetTest {

@@ -1,47 +1,37 @@
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.runtime.EnvironmentName.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
+import javax.transaction.*;
 
 import junit.framework.Assert;
+
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.io.impl.ClassPathResource;
+import org.kie.builder.*;
+import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.impl.WorkImpl;
+
+import org.drools.runtime.process.*;
 import org.jbpm.persistence.JbpmTestCase;
-import org.jbpm.persistence.session.objects.MyEntity;
-import org.jbpm.persistence.session.objects.MyEntityMethods;
-import org.jbpm.persistence.session.objects.MyEntityOnlyFields;
-import org.jbpm.persistence.session.objects.MySubEntity;
-import org.jbpm.persistence.session.objects.MySubEntityMethods;
-import org.jbpm.persistence.session.objects.MyVariableExtendingSerializable;
-import org.jbpm.persistence.session.objects.MyVariableSerializable;
-import org.jbpm.persistence.session.objects.TestWorkItemHandler;
+import org.jbpm.persistence.session.objects.*;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.Action;
@@ -50,22 +40,8 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.jbpm.workflow.core.node.*;
+import org.junit.*;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -232,7 +208,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
 
         logger.debug("### Retrieving process instance ###");
         ksession = reloadSession( ksession, kbase, env );
-        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) 
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
         	ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
         assertEquals("SomeString", processInstance.getVariable("x"));

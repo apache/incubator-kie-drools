@@ -16,6 +16,7 @@
 
 package org.jbpm.task;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Date;
@@ -26,11 +27,14 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.kie.SystemEventListenerFactory;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.mina.MinaTaskServer;
-import org.kie.SystemEventListenerFactory;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class RunTaskService {
 
@@ -54,7 +58,7 @@ public class RunTaskService {
 		SendIcal.initInstance(conf);
 
 		// Use persistence.xml configuration
-		emf = Persistence.createEntityManagerFactory("org.kie.task");
+		emf = Persistence.createEntityManagerFactory("org.drools.task");
 
 		taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 		MockUserInfo userInfo = new MockUserInfo();

@@ -26,6 +26,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;

@@ -22,7 +22,7 @@ public class ProcessRuleFlowGroupTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.ruleset\" package-name=\"org.jbpm\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.ruleset\" package-name=\"org.jbpm\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -63,7 +63,7 @@ public class ProcessRuleFlowGroupTest extends JbpmTestCase {
         workingMemory.insert(person);
         // start process
         RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance)
-            workingMemory.startProcess("org.kie.ruleset");
+            workingMemory.startProcess("org.drools.ruleset");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workingMemory.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

@@ -3,13 +3,13 @@ package org.jbpm.compiler.xml.processes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.io.impl.ClassPathResource;
-import org.jbpm.JbpmTestCase;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
+import org.drools.io.impl.ClassPathResource;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.jbpm.JbpmTestCase;
 
 public class ActionNodeTest extends JbpmTestCase {
     public void testSingleActionNode() throws Exception {                

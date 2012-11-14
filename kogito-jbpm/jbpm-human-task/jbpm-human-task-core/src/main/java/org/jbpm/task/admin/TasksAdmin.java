@@ -17,7 +17,6 @@ package org.jbpm.task.admin;
 
 import java.util.Date;
 import java.util.List;
-
 import org.jbpm.task.query.TaskSummary;
 
 

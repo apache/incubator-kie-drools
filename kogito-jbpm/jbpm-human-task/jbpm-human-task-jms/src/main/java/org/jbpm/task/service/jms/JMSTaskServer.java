@@ -4,9 +4,9 @@ import java.util.Properties;
 
 import javax.naming.Context;
 
+import org.kie.SystemEventListenerFactory;
 import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListenerFactory;
 
 public class JMSTaskServer extends BaseJMSTaskServer {
     private TaskService service;

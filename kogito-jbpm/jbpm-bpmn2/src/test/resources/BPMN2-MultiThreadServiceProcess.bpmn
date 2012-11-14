@@ -13,7 +13,7 @@
 
   <itemDefinition id="_idItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="org.kie.integrationtests.multithread" name="flow" tns:packageName="org.kie.integrationtests" >
+  <process processType="Private" isExecutable="true" id="org.drools.integrationtests.multithread" name="flow" tns:packageName="org.drools.integrationtests" >
 
     <extensionElements>
      <tns:global identifier="list" type="java.util.List" />
@@ -48,7 +48,7 @@
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="org.kie.integrationtests.multithread" >
+    <bpmndi:BPMNPlane bpmnElement="org.drools.integrationtests.multithread" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="18" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>

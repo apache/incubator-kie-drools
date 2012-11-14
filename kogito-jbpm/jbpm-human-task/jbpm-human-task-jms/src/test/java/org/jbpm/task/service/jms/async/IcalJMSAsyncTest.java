@@ -22,15 +22,17 @@ import javax.naming.Context;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.kie.SystemEventListenerFactory;
+import org.kie.util.ChainedProperties;
+import org.kie.util.ClassLoaderUtil;
 import org.easymock.EasyMock;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.IcalBaseAsyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
-import org.kie.SystemEventListenerFactory;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.subethamail.wiser.Wiser;
 
 public class IcalJMSAsyncTest extends IcalBaseAsyncTest {

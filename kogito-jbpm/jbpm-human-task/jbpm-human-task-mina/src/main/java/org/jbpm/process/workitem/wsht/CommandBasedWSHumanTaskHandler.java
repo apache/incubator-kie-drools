@@ -24,6 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.SystemEventListenerFactory;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.Content;
@@ -52,12 +58,6 @@ import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.SystemEventListenerFactory;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +116,7 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
     public void connect() {
 		if (client == null) {
-			client = new TaskClient(new MinaTaskClientConnector("org.kie.process.workitem.wsht.WSHumanTaskHandler", 
+			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler", 
 																new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
 			boolean connected = client.connect(ipAddress, port);
 			if (!connected) {

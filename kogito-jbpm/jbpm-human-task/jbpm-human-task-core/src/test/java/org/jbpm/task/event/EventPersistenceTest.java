@@ -25,6 +25,8 @@ import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
+import org.jbpm.task.event.TaskEventKey;
+import org.jbpm.task.event.TaskEventsAdmin;
 import org.jbpm.task.event.entity.TaskClaimedEvent;
 import org.jbpm.task.event.entity.TaskCreatedEvent;
 import org.jbpm.task.event.entity.TaskEvent;
@@ -37,6 +39,8 @@ import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
+import org.junit.After;
+import org.junit.Before;
 
 public class EventPersistenceTest extends BaseTest {
     protected TaskService client;

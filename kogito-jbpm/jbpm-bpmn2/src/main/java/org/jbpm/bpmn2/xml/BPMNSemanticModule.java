@@ -25,9 +25,9 @@ import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StateNode;
-import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 

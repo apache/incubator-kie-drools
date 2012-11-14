@@ -49,7 +49,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		        if (actions.size() == 1) {
 		            DroolsConsequenceAction action = (DroolsConsequenceAction) actions.get(0);
 		            String s = action.getConsequence();
-		            if (s.startsWith("org.kie.process.instance.impl.WorkItemImpl workItem = new org.kie.process.instance.impl.WorkItemImpl();")) {
+		            if (s.startsWith("org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();")) {
 		                xmlDump.append(">" + EOL);
                         String variable = (String) endNode.getMetaData("MappingVariable");
                         if (variable != null) {

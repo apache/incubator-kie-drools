@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.definition.process.Connection;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.compiler.xml.XmlWorkflowProcessDumper;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -12,7 +13,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.CompositeNode;
-import org.kie.definition.process.Connection;
 
 public class CompositeNodeHandler extends AbstractNodeHandler {
 

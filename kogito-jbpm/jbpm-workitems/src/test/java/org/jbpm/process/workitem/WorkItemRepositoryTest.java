@@ -2,6 +2,7 @@ package org.jbpm.process.workitem;
 
 import java.util.Collection;
 
+
 import junit.framework.TestCase;
 
 public class WorkItemRepositoryTest extends TestCase {

@@ -1,9 +1,9 @@
 package org.jbpm.integration.console;
 
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class StatefulKnowledgeSessionUtilTest extends JbpmGwtCoreTestCase {
 

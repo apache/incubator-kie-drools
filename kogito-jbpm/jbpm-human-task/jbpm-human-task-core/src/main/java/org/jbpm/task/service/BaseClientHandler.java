@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.task.service.ResponseHandler;
+import org.jbpm.task.service.BaseHandler;
 
 public class BaseClientHandler implements BaseHandler {
 

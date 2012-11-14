@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.compiler.ReturnValueDescr;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
 import org.drools.lang.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
@@ -15,9 +18,6 @@ import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Split;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.Process;
 
 public class SplitNodeBuilder implements ProcessNodeBuilder {
 

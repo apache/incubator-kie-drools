@@ -3,12 +3,12 @@ package org.jbpm.task.service.local;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
-import org.jbpm.task.service.TaskService;
 import org.kie.SystemEventListenerFactory;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
+import org.jbpm.task.service.TaskService;
 
 public class LocalHumanTaskService {
 	

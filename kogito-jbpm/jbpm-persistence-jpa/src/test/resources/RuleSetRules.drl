@@ -1,4 +1,4 @@
-package org.kie.test
+package org.drools.test
 
 import java.util.List
 

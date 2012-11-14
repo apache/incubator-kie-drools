@@ -16,8 +16,8 @@
 
 package org.jbpm.process.core.validation.impl;
 
+import org.kie.definition.process.Process;
 import org.jbpm.process.core.validation.ProcessValidationError;
-import org.kie.definition.process.Process; 
 
 public class ProcessValidationErrorImpl implements ProcessValidationError {
 

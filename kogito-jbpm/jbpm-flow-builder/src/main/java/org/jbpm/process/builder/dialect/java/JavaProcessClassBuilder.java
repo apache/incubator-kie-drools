@@ -33,7 +33,7 @@ public class JavaProcessClassBuilder
     ProcessClassBuilder {
 
     /* (non-Javadoc)
-     * @see org.kie.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.kie.rule.builder.BuildContext, org.kie.rule.builder.dialect.java.BuildUtils, org.kie.lang.descr.RuleDescr)
+     * @see org.drools.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.rule.builder.BuildContext, org.drools.rule.builder.dialect.java.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
     public String  buildRule(final ProcessBuildContext context) {
         // If there is no compiled code, return

@@ -26,6 +26,7 @@ import org.jbpm.task.Group;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
+import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.IncorrectParametersException;

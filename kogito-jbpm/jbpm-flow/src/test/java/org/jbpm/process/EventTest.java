@@ -19,9 +19,14 @@ package org.jbpm.process;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
+import org.kie.runtime.process.ProcessInstance;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.Variable;
@@ -39,24 +44,19 @@ import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.StartNode;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.ProcessInstance;
 
 public class EventTest extends JbpmTestCase {
     
     public void testEvent1() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.event");
+        process.setId("org.drools.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
         Variable variable = new Variable();
         variable.setName("event");
         ObjectDataType personDataType = new ObjectDataType();
-        personDataType.setClassName("org.kie.Person");
+        personDataType.setClassName("org.drools.Person");
         variable.setType(personDataType);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
@@ -129,7 +129,7 @@ public class EventTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.kie.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -140,14 +140,14 @@ public class EventTest extends JbpmTestCase {
     
     public void testEvent2() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.event");
+        process.setId("org.drools.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
         Variable variable = new Variable();
         variable.setName("event");
         ObjectDataType personDataType = new ObjectDataType();
-        personDataType.setClassName("org.kie.Person");
+        personDataType.setClassName("org.drools.Person");
         variable.setType(personDataType);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
@@ -216,7 +216,7 @@ public class EventTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.kie.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -230,14 +230,14 @@ public class EventTest extends JbpmTestCase {
 
     public void testEvent3() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.event");
+        process.setId("org.drools.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
         Variable variable = new Variable();
         variable.setName("event");
         ObjectDataType personDataType = new ObjectDataType();
-        personDataType.setClassName("org.kie.Person");
+        personDataType.setClassName("org.drools.Person");
         variable.setType(personDataType);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
@@ -329,7 +329,7 @@ public class EventTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.kie.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -348,14 +348,14 @@ public class EventTest extends JbpmTestCase {
     
     public void testEvent4() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.event");
+        process.setId("org.drools.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
         Variable variable = new Variable();
         variable.setName("event");
         ObjectDataType personDataType = new ObjectDataType();
-        personDataType.setClassName("org.kie.Person");
+        personDataType.setClassName("org.drools.Person");
         variable.setType(personDataType);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
@@ -443,7 +443,7 @@ public class EventTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.kie.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         processInstance.signalEvent("myEvent", null);
         assertEquals(2, myList.size());
@@ -452,14 +452,14 @@ public class EventTest extends JbpmTestCase {
     
     public void testEvent5() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.event");
+        process.setId("org.drools.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
         Variable variable = new Variable();
         variable.setName("event");
         ObjectDataType personDataType = new ObjectDataType();
-        personDataType.setClassName("org.kie.Person");
+        personDataType.setClassName("org.drools.Person");
         variable.setType(personDataType);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
@@ -535,7 +535,7 @@ public class EventTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.kie.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");

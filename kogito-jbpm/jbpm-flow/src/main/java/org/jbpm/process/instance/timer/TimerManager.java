@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.common.InternalKnowledgeRuntime;
@@ -38,16 +39,17 @@ import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
+import org.kie.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 import org.drools.time.impl.IntervalTrigger;
+import org.drools.time.impl.JDKTimerService.JDKJobHandle;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
 import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.time.SessionClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

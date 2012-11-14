@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeSessionCleanup implements MethodRule {
 

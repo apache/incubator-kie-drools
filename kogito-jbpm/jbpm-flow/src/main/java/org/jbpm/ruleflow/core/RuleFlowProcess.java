@@ -16,14 +16,14 @@
 
 package org.jbpm.ruleflow.core;
 
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.impl.NodeContainerImpl;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.StartNode;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
 
 public class RuleFlowProcess extends WorkflowProcessImpl {
 
@@ -84,7 +84,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         
         private static final long serialVersionUID = 510l;
 
-        protected void validateAddNode(org.jbpm.workflow.core.Node node) {
+        protected void validateAddNode(Node node) {
             super.validateAddNode(node);
             StartNode startNode = getStart();
             if ((node instanceof StartNode) && (startNode != null && startNode.getTriggers() == null)) {

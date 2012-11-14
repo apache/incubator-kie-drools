@@ -16,10 +16,10 @@
 
 package org.jbpm.task.service.local.sync;
 
-import org.jbpm.task.service.base.sync.IcalBaseSyncTest;
-import org.jbpm.task.service.local.LocalTaskService;
 import org.kie.util.ChainedProperties;
 import org.kie.util.ClassLoaderUtil;
+import org.jbpm.task.service.base.sync.IcalBaseSyncTest;
+import org.jbpm.task.service.local.LocalTaskService;
 import org.subethamail.wiser.Wiser;
 
 public class IcalLocalSyncTest extends IcalBaseSyncTest {

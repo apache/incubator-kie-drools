@@ -21,10 +21,10 @@ import java.io.IOException;
 import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkflowProcessInstance;
 
 /**
  * A ProcessInstanceMarshaller must contain all the write/read logic for nodes
@@ -32,7 +32,7 @@ import org.kie.runtime.process.ProcessInstance;
  * InputMarshaller, that delegates in a ProcessInstanceMarshaller to stream in/out runtime
  * information.
  * 
- * @see org.kie.marshalling.impl.OutputMarshaller
+ * @see org.drools.marshalling.impl.OutputMarshaller
  * @see InputMarshaller
  * @see ProcessMarshallerRegistry
  * 

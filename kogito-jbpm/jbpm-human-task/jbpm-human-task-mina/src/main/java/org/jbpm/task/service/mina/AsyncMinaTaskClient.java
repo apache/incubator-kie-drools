@@ -15,8 +15,8 @@
  */
 package org.jbpm.task.service.mina;
 
-import org.jbpm.task.service.TaskClient;
 import org.kie.SystemEventListenerFactory;
+import org.jbpm.task.service.TaskClient;
 
 
 public class AsyncMinaTaskClient extends TaskClient {

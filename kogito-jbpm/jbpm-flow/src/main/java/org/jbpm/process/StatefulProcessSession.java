@@ -6,18 +6,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import org.kie.KnowledgeBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.base.MapGlobalResolver;
+import org.kie.command.Command;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.time.TimerService;
-import org.drools.time.TimerServiceFactory;
-import org.jbpm.process.instance.InternalProcessRuntime;
-import org.jbpm.process.instance.ProcessRuntimeImpl;
-import org.kie.KnowledgeBase;
-import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
@@ -40,6 +36,10 @@ import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
+import org.drools.time.TimerService;
+import org.drools.time.TimerServiceFactory;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessRuntimeImpl;
 
 public class StatefulProcessSession implements StatefulKnowledgeSession, InternalKnowledgeRuntime {
 

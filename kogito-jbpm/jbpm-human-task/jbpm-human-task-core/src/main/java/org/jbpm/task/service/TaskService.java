@@ -28,39 +28,16 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.kie.SystemEventListener;
 import org.jbpm.eventmessaging.EventKeys;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AllowedToDelegate;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BooleanExpression;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.Delegation;
-import org.jbpm.task.EmailNotification;
-import org.jbpm.task.EmailNotificationHeader;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Notification;
-import org.jbpm.task.NotificationType;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.StatusChange;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
-import org.jbpm.task.UserInfo;
-import org.jbpm.task.WorkItemNotification;
+import org.jbpm.task.*;
 import org.jbpm.task.admin.TasksAdmin;
 import org.jbpm.task.event.MessagingTaskEventListener;
 import org.jbpm.task.event.TaskEventListener;
@@ -70,7 +47,6 @@ import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.persistence.TaskSessionFactory;
 import org.jbpm.task.service.persistence.TaskSessionFactoryImpl;
-import org.kie.SystemEventListener;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -377,7 +353,7 @@ public class TaskService {
                 inputs.put("Operation.Claim", Operation.class);
                 inputs.put("OperationCommand", OperationCommand.class);
 
-                // org.kie.task.query
+                // org.drools.task.query
                 inputs.put("DeadlineSummary", DeadlineSummary.class);
                 inputs.put("TaskSummary", TaskSummary.class);
             }

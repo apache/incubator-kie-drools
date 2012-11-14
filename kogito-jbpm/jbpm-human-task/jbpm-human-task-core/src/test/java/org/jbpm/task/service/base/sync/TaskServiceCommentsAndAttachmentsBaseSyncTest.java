@@ -17,19 +17,9 @@ package org.jbpm.task.service.base.sync;
 
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.jbpm.task.AccessType;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskService;
+import org.jbpm.task.*;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.utils.CollectionUtils;
 

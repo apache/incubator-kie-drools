@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.bpmn2;
+package org.drools.bpmn2;
 
 rule "Start Hello1" ruleflow-group "Hello"
   when

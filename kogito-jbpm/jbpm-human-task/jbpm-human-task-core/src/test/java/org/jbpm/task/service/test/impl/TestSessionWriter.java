@@ -16,8 +16,7 @@
 
 package org.jbpm.task.service.test.impl;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.pause;
-import static org.jbpm.task.service.test.impl.TestServerUtil.serialize;
+import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;

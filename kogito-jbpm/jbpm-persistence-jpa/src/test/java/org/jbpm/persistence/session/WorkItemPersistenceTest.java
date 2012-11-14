@@ -1,54 +1,20 @@
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.WorkItemHandlerNotFoundException;
+import org.drools.*;
+
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
-import org.drools.persistence.jta.JtaTransactionManager;
-import org.drools.process.core.ParameterDefinition;
-import org.drools.process.core.Work;
-import org.drools.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.process.core.datatype.impl.type.StringDataType;
-import org.drools.process.core.impl.ParameterDefinitionImpl;
-import org.drools.process.core.impl.WorkImpl;
-import org.drools.runtime.process.ProcessRuntimeFactory;
-import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
-import org.jbpm.persistence.session.objects.Person;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.impl.ConnectionImpl;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.jbpm.workflow.core.node.StartNode;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
@@ -56,8 +22,26 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.jta.JtaTransactionManager;
+import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.Work;
+import org.drools.process.core.datatype.impl.type.*;
+import org.drools.process.core.impl.ParameterDefinitionImpl;
+import org.drools.process.core.impl.WorkImpl;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
+import org.drools.runtime.process.ProcessRuntimeFactory;
+import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
+import org.jbpm.persistence.session.objects.Person;
+import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
+import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.jbpm.workflow.core.node.*;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +74,7 @@ public class WorkItemPersistenceTest {
     @Test
     @Ignore
     public void testCancelNonRegisteredWorkItemHandler() {
-        String processId = "org.kie.actions";
+        String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId, workName );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -104,7 +88,7 @@ public class WorkItemPersistenceTest {
         parameters.put( "Person",
                         new Person( "John Doe" ) );
 
-        ProcessInstance processInstance = ksession.startProcess( "org.kie.actions",
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
                                                                   parameters );
         long processInstanceId = processInstance.getId();
         Assert.assertEquals( ProcessInstance.STATE_ACTIVE,
@@ -201,7 +185,7 @@ public class WorkItemPersistenceTest {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.humantask\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -245,7 +229,7 @@ public class WorkItemPersistenceTest {
         DoNothingWorkItemHandler handler = new DoNothingWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
-        ProcessInstance processInstance = ksession.startProcess("org.kie.humantask");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.humantask");
         
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         

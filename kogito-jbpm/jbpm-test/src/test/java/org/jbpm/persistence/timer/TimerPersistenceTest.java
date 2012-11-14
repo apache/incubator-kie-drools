@@ -1,26 +1,24 @@
 package org.jbpm.persistence.timer;
 
-import static org.jbpm.test.JBPMHelper.loadStatefulKnowledgeSession;
-import static org.jbpm.test.JBPMHelper.newStatefulKnowledgeSession;
-import static org.jbpm.test.JBPMHelper.processStateName;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.jbpm.test.JBPMHelper.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.kie.KnowledgeBase;
 import org.drools.process.instance.WorkItemHandler;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 import org.jbpm.test.JBPMHelper;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

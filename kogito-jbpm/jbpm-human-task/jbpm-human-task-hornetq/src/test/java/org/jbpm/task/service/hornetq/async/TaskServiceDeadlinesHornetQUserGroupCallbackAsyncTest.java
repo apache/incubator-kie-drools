@@ -17,10 +17,11 @@
 package org.jbpm.task.service.hornetq.async;
 
 import java.util.Properties;
-
 import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
+
+
 import org.subethamail.wiser.Wiser;
 
 public class TaskServiceDeadlinesHornetQUserGroupCallbackAsyncTest extends TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest {

@@ -25,10 +25,15 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.impl.EnvironmentFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.MyObject;
 import org.jbpm.task.AccessType;
@@ -46,12 +51,8 @@ import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 import org.subethamail.wiser.Wiser;
 
 

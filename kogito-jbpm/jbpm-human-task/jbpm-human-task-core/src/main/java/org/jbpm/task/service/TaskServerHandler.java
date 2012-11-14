@@ -17,13 +17,9 @@
 package org.jbpm.task.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.kie.SystemEventListener;
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
@@ -33,7 +29,6 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskServiceSession.TransactedOperation;
-import org.kie.SystemEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

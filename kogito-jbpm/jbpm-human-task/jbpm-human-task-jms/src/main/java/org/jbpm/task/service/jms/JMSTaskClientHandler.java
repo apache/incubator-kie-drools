@@ -9,10 +9,10 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.kie.SystemEventListener;
 import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler;
-import org.kie.SystemEventListener;
 
 public class JMSTaskClientHandler extends BaseClientHandler {
 	private TaskClientHandler handler;

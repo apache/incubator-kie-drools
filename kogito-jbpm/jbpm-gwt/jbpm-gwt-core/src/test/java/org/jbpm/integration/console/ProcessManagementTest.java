@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.definition.process.Process;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.NodeInstance;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
@@ -12,12 +15,11 @@ import org.jboss.bpm.console.client.model.ProcessInstanceRef.STATE;
 import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
 
 public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 

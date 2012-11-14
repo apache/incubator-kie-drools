@@ -2,13 +2,13 @@ package org.jbpm.process.builder;
 
 import java.util.Collection;
 
-import org.jbpm.JbpmTestCase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.io.ResourceFactory;
+import org.jbpm.JbpmTestCase;
 
 public class KnowledgeBuilderTest extends JbpmTestCase {
 	

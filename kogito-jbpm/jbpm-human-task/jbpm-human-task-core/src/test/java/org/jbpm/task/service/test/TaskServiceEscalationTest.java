@@ -16,8 +16,7 @@
 
 package org.jbpm.task.service.test;
 
-import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClientConnector;
-import static org.jbpm.task.service.test.impl.TestServerUtil.startServer;
+import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.persistence.TaskServiceEscalationBaseTest;

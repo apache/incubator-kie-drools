@@ -16,13 +16,7 @@
 
 package org.jbpm.task.service.base.async;
 
-import static org.jbpm.task.event.entity.TaskEventType.Claim;
-import static org.jbpm.task.event.entity.TaskEventType.Complete;
-import static org.jbpm.task.event.entity.TaskEventType.Forward;
-import static org.jbpm.task.event.entity.TaskEventType.Release;
-import static org.jbpm.task.event.entity.TaskEventType.Started;
-import static org.jbpm.task.event.entity.TaskEventType.Stop;
-
+import static org.jbpm.task.event.entity.TaskEventType.*;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;

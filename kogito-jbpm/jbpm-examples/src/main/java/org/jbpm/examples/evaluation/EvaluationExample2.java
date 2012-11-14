@@ -5,11 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
-import org.jbpm.task.TaskService;
-import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.SyncTaskServiceWrapper;
-import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.kie.KnowledgeBase;
 import org.kie.SystemEventListenerFactory;
 import org.kie.builder.KnowledgeBuilder;
@@ -19,6 +14,11 @@ import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 
 
 /**

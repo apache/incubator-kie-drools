@@ -19,6 +19,7 @@ package org.jbpm.task.service.mina.async;
 import java.util.Properties;
 
 import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseUserGroupCallbackAsyncTest;
+
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 import org.jbpm.task.service.mina.MinaTaskServer;
 import org.subethamail.wiser.Wiser;

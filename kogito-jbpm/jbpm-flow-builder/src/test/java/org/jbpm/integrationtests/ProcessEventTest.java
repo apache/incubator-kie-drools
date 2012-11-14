@@ -10,10 +10,10 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.kie.runtime.process.ProcessInstance;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessEventTest extends JbpmTestCase {
     
@@ -24,7 +24,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -63,7 +63,7 @@ public class ProcessEventTest extends JbpmTestCase {
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
         ProcessInstance processInstance =
-            session.startProcess("org.kie.event");
+            session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) 
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
@@ -77,7 +77,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -111,7 +111,7 @@ public class ProcessEventTest extends JbpmTestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = session.startProcess("org.kie.event");
+        ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
         session = SerializationHelper.getSerialisedStatefulSession(session);
@@ -130,7 +130,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -164,7 +164,7 @@ public class ProcessEventTest extends JbpmTestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = session.startProcess("org.kie.event");
+        ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals("SomeText", ((VariableScopeInstance) 
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
@@ -186,7 +186,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -220,7 +220,7 @@ public class ProcessEventTest extends JbpmTestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = session.startProcess("org.kie.event");
+        ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals("SomeText", ((VariableScopeInstance) 
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
@@ -239,7 +239,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -290,7 +290,7 @@ public class ProcessEventTest extends JbpmTestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         ProcessInstance processInstance =
-            workingMemory.startProcess("org.kie.event");
+            workingMemory.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance)
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
@@ -304,7 +304,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -350,7 +350,7 @@ public class ProcessEventTest extends JbpmTestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = session.startProcess("org.kie.event");
+        ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         session = SerializationHelper.getSerialisedStatefulSession(session);
@@ -369,7 +369,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -415,7 +415,7 @@ public class ProcessEventTest extends JbpmTestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = session.startProcess("org.kie.event");
+        ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         session = SerializationHelper.getSerialisedStatefulSession(session);
@@ -434,7 +434,7 @@ public class ProcessEventTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.event\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
     		"    <variables>\n" +
@@ -480,7 +480,7 @@ public class ProcessEventTest extends JbpmTestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = session.startProcess("org.kie.event");
+        ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         session = SerializationHelper.getSerialisedStatefulSession(session);

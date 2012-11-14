@@ -23,12 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
+import org.kie.definition.process.Process;
+import org.kie.runtime.rule.Agenda;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
-import org.kie.runtime.rule.Agenda;
 
 /**
  * Default implementation of a process instance.
@@ -41,7 +42,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 	
 	private long id;
     private String processId;
-    private transient org.kie.definition.process.Process process;
+    private transient Process process;
     private int state = STATE_PENDING;
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
@@ -57,12 +58,12 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         return this.id;
     }
 
-    public void setProcess(final org.kie.definition.process.Process process) {
+    public void setProcess(final Process process) {
         this.processId = process.getId();
-        this.process = process;
+        this.process = ( Process ) process;
     }
 
-    public org.kie.definition.process.Process getProcess() {
+    public Process getProcess() {
         if (this.process == null) {
             this.process = kruntime.getKnowledgeBase().getProcess(processId);
         }

@@ -1,24 +1,11 @@
 <projectDescription>
   <name>jbpm-examples</name>
-  <comment>Run JBPMExamplesApp to try the jBPM examples. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
-  <projects>
-    <project>jbpm-bam</project>
-    <project>jbpm-bpmn2</project>
-    <project>jbpm-flow</project>
-    <project>jbpm-flow-builder</project>
-    <project>jbpm-human-task-core</project>
-    <project>jbpm-human-task-hornetq</project>
-    <project>jbpm-human-task-mina</project>
-    <project>jbpm-persistence-jpa</project>
-    <project>jbpm-test</project>
-    <project>jbpm-workitems</project>
-  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>
     <buildCommand>
-      <name>org.kie.eclipse.droolsbuilder</name>
+      <name>org.drools.eclipse.droolsbuilder</name>
     </buildCommand>
   </buildSpec>
   <natures>

@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -107,7 +108,7 @@ public class RuleFlowMigrator
      ************************************************************************/
     public static boolean needToMigrateRF(String xml) throws Exception {
     	return ( xml != null) && 
-    	(xml.indexOf( "org.kie.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" ) >= 0 ); 
+    	(xml.indexOf( "org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" ) >= 0 ); 
     }
     
     
@@ -123,7 +124,7 @@ public class RuleFlowMigrator
      ************************************************************************/
     public static boolean needToMigrateRFM(String xml) throws Exception {
         return ( xml != null) && 
-        (xml.indexOf( "org.kie.ruleflow.core.impl.RuleFlowProcessImpl" ) >= 0 ); 
+        (xml.indexOf( "org.drools.ruleflow.core.impl.RuleFlowProcessImpl" ) >= 0 ); 
     }
     
     

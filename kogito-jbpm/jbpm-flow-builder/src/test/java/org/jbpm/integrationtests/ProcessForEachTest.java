@@ -12,11 +12,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.process.instance.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
+import org.jbpm.JbpmTestCase;
+import org.jbpm.process.instance.ProcessInstance;
 
 public class ProcessForEachTest extends JbpmTestCase {
     
@@ -28,7 +28,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.kie.ForEach\" package-name=\"org.kie\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -79,7 +79,7 @@ public class ProcessForEachTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.ForEach", params);
+            workingMemory.startProcess("org.drools.ForEach", params);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(3, myList.size());
     }
@@ -91,7 +91,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.kie.ForEach\" package-name=\"org.kie\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
             "  <header>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
@@ -153,7 +153,7 @@ public class ProcessForEachTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.ForEach", params);
+            workingMemory.startProcess("org.drools.ForEach", params);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(10000, myList.size());
     }
@@ -165,7 +165,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.kie.ForEach\" package-name=\"org.kie\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -213,7 +213,7 @@ public class ProcessForEachTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.ForEach", params);
+            workingMemory.startProcess("org.drools.ForEach", params);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
@@ -224,7 +224,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.kie.ForEach\" package-name=\"org.kie\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -269,7 +269,7 @@ public class ProcessForEachTest extends JbpmTestCase {
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.ForEach");
+            workingMemory.startProcess("org.drools.ForEach");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
@@ -280,7 +280,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.kie.ForEach\" package-name=\"org.jbpm\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.jbpm\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -295,7 +295,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "  <nodes>\n" +
             "    <forEach id=\"2\" name=\"ForEach\" variableName=\"item\" collectionExpression=\"collection\" >\n" +
             "      <nodes>\n" +
-			"    <subProcess id=\"1\" name=\"SubProcess\" processId=\"org.kie.subflow\" independent=\"false\" />\n" +
+			"    <subProcess id=\"1\" name=\"SubProcess\" processId=\"org.drools.subflow\" independent=\"false\" />\n" +
             "      </nodes>\n" +
             "      <connections>\n" +
             "      </connections>\n" +
@@ -321,7 +321,7 @@ public class ProcessForEachTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.subflow\" package-name=\"org.jbpm\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.subflow\" package-name=\"org.jbpm\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
@@ -355,7 +355,7 @@ public class ProcessForEachTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.ForEach", params);
+            workingMemory.startProcess("org.drools.ForEach", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(4, workingMemory.getProcessInstances().size());
         processInstance.setState(ProcessInstance.STATE_ABORTED);
@@ -369,7 +369,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.kie.ForEach\" package-name=\"org.jbpm\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.jbpm\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -384,7 +384,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "  <nodes>\n" +
             "    <forEach id=\"2\" name=\"ForEach\" variableName=\"item\" collectionExpression=\"collection\" >\n" +
             "      <nodes>\n" +
-			"    <subProcess id=\"1\" name=\"SubProcess\" processId=\"org.kie.subflow\" />\n" +
+			"    <subProcess id=\"1\" name=\"SubProcess\" processId=\"org.drools.subflow\" />\n" +
             "      </nodes>\n" +
             "      <connections>\n" +
             "      </connections>\n" +
@@ -410,7 +410,7 @@ public class ProcessForEachTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.subflow\" package-name=\"org.jbpm\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.subflow\" package-name=\"org.jbpm\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
@@ -444,7 +444,7 @@ public class ProcessForEachTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.ForEach", params);
+            workingMemory.startProcess("org.drools.ForEach", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(4, workingMemory.getProcessInstances().size());
         processInstance.setState(ProcessInstance.STATE_ABORTED);
@@ -458,7 +458,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.kie.ForEach\" package-name=\"org.kie\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -521,7 +521,7 @@ public class ProcessForEachTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.ForEach", params);
+            workingMemory.startProcess("org.drools.ForEach", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         processInstance.signalEvent("MyEvent", null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

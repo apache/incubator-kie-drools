@@ -6,18 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.io.impl.ByteArrayResource;
-import org.drools.io.impl.ReaderResource;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.Person;
-import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
+import org.drools.io.impl.ByteArrayResource;
+import org.drools.io.impl.ReaderResource;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.jbpm.JbpmTestCase;
+import org.jbpm.Person;
+import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
 
 public class ProcessUpgradeTest extends JbpmTestCase {
     

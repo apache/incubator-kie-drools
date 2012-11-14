@@ -15,35 +15,29 @@
  */
 package org.jbpm.bpmn2.persistence;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.impl.EnvironmentFactory;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
+
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
-import org.kie.event.process.DefaultProcessEventListener;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.process.ProcessNodeLeftEvent;
+import org.kie.event.process.*;
+import org.drools.impl.EnvironmentFactory;
 import org.kie.io.ResourceFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
+
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
+import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.junit.*;
 
 public class TimerPersistenceTest {
     

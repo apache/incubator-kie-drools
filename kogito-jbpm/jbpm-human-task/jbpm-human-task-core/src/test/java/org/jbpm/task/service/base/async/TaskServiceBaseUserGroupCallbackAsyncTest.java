@@ -15,19 +15,15 @@
  */
 package org.jbpm.task.service.base.async;
 
+import org.jbpm.task.MvelFilePath;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.BaseTestNoUserGroupSetup;
-import org.jbpm.task.Group;
-import org.jbpm.task.MvelFilePath;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
+import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.service.TaskServer;

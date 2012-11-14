@@ -20,6 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
@@ -32,11 +37,6 @@ import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

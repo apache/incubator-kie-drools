@@ -18,11 +18,11 @@ package org.jbpm.task.service.hornetq;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.SystemEventListener;
 import org.hornetq.api.core.client.ClientProducer;
 import org.hornetq.api.core.client.ClientSession;
 import org.jbpm.task.service.TaskServerHandler;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListener;
 
 public class HornetQTaskServerHandler {
 

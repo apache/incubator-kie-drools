@@ -10,17 +10,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import org.drools.agent.impl.PrintStreamSystemEventListener;
-import org.drools.core.util.FileManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.SystemEventListenerFactory;
 import org.kie.agent.KnowledgeAgent;
 import org.kie.agent.KnowledgeAgentFactory;
+import org.drools.agent.impl.PrintStreamSystemEventListener;
+import org.drools.core.util.FileManager;
 import org.kie.io.ResourceChangeScannerConfiguration;
 import org.kie.io.ResourceFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ScannerChangeSetTest {
 

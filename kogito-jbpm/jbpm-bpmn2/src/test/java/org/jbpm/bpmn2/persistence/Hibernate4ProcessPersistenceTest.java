@@ -1,50 +1,33 @@
 package org.jbpm.bpmn2.persistence;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static junit.framework.Assert.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.jbpm.bpmn2.JbpmBpmn2TestCase.TestWorkItemHandler;
-import org.jbpm.bpmn2.SimpleBPMNProcessTest;
-import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
-import org.jbpm.bpmn2.xml.BPMNSemanticModule;
-import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
-import org.jbpm.compiler.xml.XmlProcessReader;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
-import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
+
+import org.drools.compiler.PackageBuilderConfiguration;
+import org.kie.builder.*;
 import org.kie.definition.process.Process;
 import org.kie.io.ResourceFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
+
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.SimpleBPMNProcessTest;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase.TestWorkItemHandler;
+import org.jbpm.bpmn2.xml.*;
+import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.process.audit.*;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

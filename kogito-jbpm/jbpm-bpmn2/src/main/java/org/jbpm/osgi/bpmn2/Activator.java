@@ -18,9 +18,9 @@ package org.jbpm.osgi.bpmn2;
 
 import java.util.Hashtable;
 
+import org.kie.Service;
 import org.drools.compiler.BPMN2ProcessProvider;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
-import org.kie.Service;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

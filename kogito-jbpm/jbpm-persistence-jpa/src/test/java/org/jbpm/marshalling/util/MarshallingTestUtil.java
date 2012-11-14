@@ -15,26 +15,16 @@
  */
 package org.jbpm.marshalling.util;
 
-import static org.jbpm.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
-import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.getDatasourceProperties;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.jbpm.marshalling.util.MarshallingDBUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,9 +44,6 @@ import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.drools.process.instance.WorkItem;
-import org.drools.time.impl.DefaultTimerJobInstance;
-import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.marshalling.Marshaller;
@@ -65,6 +52,9 @@ import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
+import org.drools.time.impl.DefaultTimerJobInstance;
+import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -455,7 +445,7 @@ public class MarshallingTestUtil {
         else { 
             kbase = KnowledgeBaseFactory.newKnowledgeBase();
         }
-        ObjectMarshallingStrategy [] strategies 
+        ObjectMarshallingStrategy[] strategies
             = new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() };
         strategies = addProcessInstanceResolverStrategyIfAvailable(strategies);
         Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, strategies );

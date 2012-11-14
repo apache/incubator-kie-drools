@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -14,6 +13,7 @@ import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 
 public class EvaluationExample {
 

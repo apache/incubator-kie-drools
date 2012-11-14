@@ -3,9 +3,9 @@ package org.jbpm.examples.quickstarts;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to test a process.

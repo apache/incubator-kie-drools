@@ -1,32 +1,27 @@
 package org.jbpm.bpmn2.persistence;
 
 import static junit.framework.Assert.assertTrue;
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import org.jbpm.bpmn2.concurrency.MultipleProcessesPerThreadTest;
-import org.jbpm.persistence.util.PersistenceUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
+
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
+
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
+import org.jbpm.bpmn2.concurrency.MultipleProcessesPerThreadTest;
+import org.jbpm.persistence.util.PersistenceUtil;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

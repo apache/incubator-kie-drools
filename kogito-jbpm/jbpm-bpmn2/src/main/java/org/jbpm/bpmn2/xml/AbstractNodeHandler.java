@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.drools.compiler.xml.XmlDumper;
 import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

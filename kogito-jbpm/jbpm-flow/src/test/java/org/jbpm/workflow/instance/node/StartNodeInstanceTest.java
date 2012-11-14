@@ -21,17 +21,17 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 import org.drools.common.InternalKnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.NodeInstance;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
 
 public class StartNodeInstanceTest extends TestCase {
     

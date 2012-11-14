@@ -1,16 +1,12 @@
 package org.jbpm.bpmn2.concurrency;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jbpm.bpmn2.objects.Status;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -20,6 +16,9 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
+import org.jbpm.bpmn2.objects.Status;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +82,7 @@ public class OneProcessPerThreadTest {
         
         final ProcessInstanceStartRunner[] r = new ProcessInstanceStartRunner[THREAD_COUNT];
         for ( int i = 0; i < t.length; i++ ) {
-            r[i] = new ProcessInstanceStartRunner(ksession, i, "org.kie.integrationtests.multithread");
+            r[i] = new ProcessInstanceStartRunner(ksession, i, "org.drools.integrationtests.multithread");
             t[i] = new Thread( r[i], "thread-" + i );
             try { 
                 t[i].start();

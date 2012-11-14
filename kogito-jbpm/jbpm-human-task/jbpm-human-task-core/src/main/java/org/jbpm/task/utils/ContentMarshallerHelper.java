@@ -15,32 +15,27 @@
  */
 package org.jbpm.task.utils;
 
+import com.google.protobuf.ExtensionRegistry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.MarshallerReaderContext;
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.MarshallingConfigurationImpl;
-import org.drools.marshalling.impl.PersisterHelper;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.impl.*;
 import org.drools.marshalling.impl.ProtobufMessages.Header;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.service.ContentData;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.marshalling.ObjectMarshallingStrategyStore;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.protobuf.ExtensionRegistry;
 
 public class ContentMarshallerHelper {
 

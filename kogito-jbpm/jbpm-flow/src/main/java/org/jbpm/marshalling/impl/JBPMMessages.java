@@ -13127,7 +13127,7 @@ public final class JBPMMessages {
     org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance getTimer();
     org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder getTimerOrBuilder();
     
-    // optional .org.kie.marshalling.Trigger trigger = 2;
+    // optional .org.drools.marshalling.Trigger trigger = 2;
     boolean hasTrigger();
     org.drools.marshalling.impl.ProtobufMessages.Trigger getTrigger();
     org.drools.marshalling.impl.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder();
@@ -13854,7 +13854,7 @@ public final class JBPMMessages {
       return timer_;
     }
     
-    // optional .org.kie.marshalling.Trigger trigger = 2;
+    // optional .org.drools.marshalling.Trigger trigger = 2;
     public static final int TRIGGER_FIELD_NUMBER = 2;
     private org.drools.marshalling.impl.ProtobufMessages.Trigger trigger_;
     public boolean hasTrigger() {
@@ -14265,7 +14265,7 @@ public final class JBPMMessages {
         return timerBuilder_;
       }
       
-      // optional .org.kie.marshalling.Trigger trigger = 2;
+      // optional .org.drools.marshalling.Trigger trigger = 2;
       private org.drools.marshalling.impl.ProtobufMessages.Trigger trigger_ = org.drools.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.marshalling.impl.ProtobufMessages.Trigger, org.drools.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.marshalling.impl.ProtobufMessages.TriggerOrBuilder> triggerBuilder_;

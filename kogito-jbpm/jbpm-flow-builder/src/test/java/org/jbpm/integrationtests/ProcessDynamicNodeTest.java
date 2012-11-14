@@ -7,28 +7,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.workflow.instance.node.DynamicNodeInstance;
-import org.jbpm.workflow.instance.node.DynamicUtils;
-import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
+import org.drools.compiler.DroolsError;
+import org.drools.compiler.PackageBuilder;
 import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
+import org.drools.rule.Package;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.process.WorkflowProcessInstance;
+import org.jbpm.JbpmTestCase;
+import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.workflow.instance.node.DynamicNodeInstance;
+import org.jbpm.workflow.instance.node.DynamicUtils;
 
 public class ProcessDynamicNodeTest extends JbpmTestCase {
     
@@ -39,7 +39,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.kie.dynamic\" package-name=\"org.kie\" >\n" +
+            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.dynamic\" package-name=\"org.drools\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <globals>\n" +
@@ -94,7 +94,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.dynamic");
+            workingMemory.startProcess("org.drools.dynamic");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(4, list.size());
     }
@@ -106,7 +106,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.kie.dynamic\" package-name=\"org.kie\" >\n" +
+            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.dynamic\" package-name=\"org.drools\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <globals>\n" +
@@ -162,7 +162,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Work", testHandler);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.dynamic");
+            workingMemory.startProcess("org.drools.dynamic");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, list.size());
         WorkItem workItem = testHandler.getWorkItem(); 
@@ -178,7 +178,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
                 "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-                "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.kie.dynamic\" package-name=\"org.kie\" >\n" +
+                "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.dynamic\" package-name=\"org.drools\" >\n" +
                 "\n" +
                 "  <header>\n" +
                 "  </header>\n" +
@@ -212,7 +212,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
 		TestWorkItemHandler handler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 		// start a new process instance
-		ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.kie.dynamic");
+		ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.drools.dynamic");
 		DynamicNodeInstance dynamicContext = (DynamicNodeInstance) 
 			((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -231,7 +231,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
                 "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-                "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.kie.dynamic\" package-name=\"org.kie\" >\n" +
+                "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.dynamic\" package-name=\"org.drools\" >\n" +
                 "\n" +
                 "  <header>\n" +
                 "  </header>\n" +
@@ -262,7 +262,7 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
                 "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-                "         type=\"RuleFlow\" name=\"subflow\" id=\"org.kie.subflow\" package-name=\"org.kie\" >\n" +
+                "         type=\"RuleFlow\" name=\"subflow\" id=\"org.drools.subflow\" package-name=\"org.drools\" >\n" +
                 "\n" +
                 "  <header>\n" +
         		"    <variables>\n" +
@@ -299,14 +299,14 @@ public class ProcessDynamicNodeTest extends JbpmTestCase {
 		TestWorkItemHandler handler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 		// start a new process instance
-		ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.kie.dynamic");
+		ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.drools.dynamic");
 		DynamicNodeInstance dynamicContext = (DynamicNodeInstance) 
 			((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("x", "NewValue");
 		assertNull(handler.getWorkItem());
 		assertEquals(0, dynamicContext.getNodeInstances().size());
-		DynamicUtils.addDynamicSubProcess(dynamicContext, ksession, "org.kie.subflow", parameters);
+		DynamicUtils.addDynamicSubProcess(dynamicContext, ksession, "org.drools.subflow", parameters);
 		assertNotNull(handler.getWorkItem());
 		assertEquals(1, dynamicContext.getNodeInstances().size());
 		logger.close();

@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.jbpm.process.workitem.transform.Transformer;
+
 public class FileTransformer {
 
 	// All transform methods must be static and must contain the @Transformer annotation

@@ -17,13 +17,18 @@
 package org.jbpm.process.workitem.wsht;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
@@ -32,17 +37,12 @@ import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.PermissionDeniedException;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.service.*;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 
 public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 

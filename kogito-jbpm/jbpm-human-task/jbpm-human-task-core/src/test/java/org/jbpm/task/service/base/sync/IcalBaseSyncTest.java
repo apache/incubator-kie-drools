@@ -16,27 +16,14 @@
 
 package org.jbpm.task.service.base.sync;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import javax.mail.BodyPart;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.*;
 import javax.mail.internet.MimeMessage.RecipientType;
-import javax.mail.internet.MimeMultipart;
 
-import org.jbpm.task.BaseTest;
-import org.jbpm.task.MockUserInfo;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskService;
+import org.jbpm.task.*;
 import org.jbpm.task.service.TaskServer;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;

@@ -10,11 +10,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.process.instance.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
+import org.jbpm.JbpmTestCase;
+import org.jbpm.process.instance.ProcessInstance;
 
 public class ProcessHumanTaskTest extends JbpmTestCase {
     
@@ -25,7 +25,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.humantask\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -67,7 +67,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.humantask");
+            workingMemory.startProcess("org.drools.humantask");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -82,7 +82,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.humantask\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "    <swimlanes>\n" +
@@ -145,7 +145,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.humantask");
+            workingMemory.startProcess("org.drools.humantask");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -169,7 +169,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.humantask\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -211,7 +211,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.humantask");
+            workingMemory.startProcess("org.drools.humantask");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -226,7 +226,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.kie.humantask\" package-name=\"org.kie\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -271,7 +271,7 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.kie.humantask");
+            workingMemory.startProcess("org.drools.humantask");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);

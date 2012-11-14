@@ -3,11 +3,11 @@ package org.jbpm.process.builder;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
+import org.kie.definition.process.Process;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
-import org.kie.definition.process.Process;
 
 public class ProcessBuildContext extends PackageBuildContext {
 	

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.definition.process.Process;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
@@ -75,7 +76,6 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.definition.process.Process;
 
 public class XMLPersistenceTest extends JbpmTestCase {
     

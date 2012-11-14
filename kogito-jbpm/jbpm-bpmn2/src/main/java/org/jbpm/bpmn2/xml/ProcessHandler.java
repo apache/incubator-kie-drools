@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -59,8 +61,6 @@ import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.StateNode;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -109,7 +109,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		process.setName(name);
 		process.setType("RuleFlow");
 		if (packageName == null) {
-			packageName = "org.kie.bpmn2";
+			packageName = "org.drools.bpmn2";
 		}
 		process.setPackageName(packageName);
 		if ("true".equals(dynamic)) {

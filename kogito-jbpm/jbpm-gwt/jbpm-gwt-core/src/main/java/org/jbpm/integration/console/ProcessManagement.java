@@ -18,16 +18,19 @@ package org.jbpm.integration.console;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.definition.process.Process;
+import org.kie.runtime.process.NodeInstance;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.STATE;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.definition.process.Process;
 
 public class ProcessManagement  extends SessionInitializer implements org.jboss.bpm.console.server.integration.ProcessManagement {
 

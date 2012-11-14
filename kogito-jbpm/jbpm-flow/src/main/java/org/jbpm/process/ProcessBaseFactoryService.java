@@ -18,13 +18,13 @@ package org.jbpm.process;
 
 import java.util.Properties;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.SessionConfiguration;
-import org.drools.impl.EnvironmentFactory;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactoryService;
+import org.drools.RuleBaseConfiguration;
+import org.drools.SessionConfiguration;
+import org.drools.impl.EnvironmentFactory;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;

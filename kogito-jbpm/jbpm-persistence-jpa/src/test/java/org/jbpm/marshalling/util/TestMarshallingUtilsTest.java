@@ -15,41 +15,32 @@
  */
 package org.jbpm.marshalling.util;
 
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.jbpm.marshalling.util.CompareViaReflectionUtil.compareInstances;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.jbpm.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
-import static org.jbpm.marshalling.util.MarshallingTestUtil.unmarshallObject;
-import static org.jbpm.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.runtime.EnvironmentName.*;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.impl.EnvironmentFactory;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
+import org.drools.impl.EnvironmentFactory;
+
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.conf.TimerJobFactoryOption;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,9 +78,9 @@ public class TestMarshallingUtilsTest {
     @Test
     @Ignore
     public void testUnmarshallingSpecificMarshalledData() {
-        String testMethodAndSnapNum = "org.kie.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
+        String testMethodAndSnapNum = "org.drools.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
         // =
-        // "org.kie.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
+        // "org.drools.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
         HashMap<String, Object> testContext = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);
         EntityManagerFactory emf = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
         List<MarshalledData> marshalledDataList = retrieveMarshallingData(emf);

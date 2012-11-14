@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.jbpm.bpmn2.objects.Status;
-import org.jbpm.persistence.util.LoggingPrintStream;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
@@ -22,10 +18,14 @@ import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
 import org.kie.io.ResourceFactory;
+import org.jbpm.persistence.util.LoggingPrintStream;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
+import org.jbpm.bpmn2.objects.Status;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,9 +15,9 @@
         -->
         <mapping-file>META-INF/ExtraIndexes.hbm.xml</mapping-file>
         
-        <class>org.kie.persistence.info.SessionInfo</class>
+        <class>org.drools.persistence.info.SessionInfo</class>
         <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
-        <class>org.kie.persistence.info.WorkItemInfo</class>
+        <class>org.drools.persistence.info.WorkItemInfo</class>
         
         <properties>
             <property name="hibernate.max_fetch_depth" value="3"/>

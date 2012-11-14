@@ -21,10 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.datatype.impl.type.ListDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.Variable;
@@ -38,13 +42,9 @@ import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.StartNode;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
 
 public class ForEachTest extends JbpmTestCase {
-
+    
     public void testForEach() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.foreach");
@@ -118,4 +118,5 @@ public class ForEachTest extends JbpmTestCase {
         ksession.startProcess("org.drools.process.foreach", parameters);
         assertEquals(3, myList.size());
     }
+
 }

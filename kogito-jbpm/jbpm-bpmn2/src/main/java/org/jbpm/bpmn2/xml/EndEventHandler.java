@@ -166,11 +166,11 @@ public class EndEventHandler extends AbstractNodeHandler {
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
                 
                 actions.add(new DroolsConsequenceAction("java",
-                    "org.kie.process.instance.impl.WorkItemImpl workItem = new org.kie.process.instance.impl.WorkItemImpl();" + EOL + 
+                    "org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();" + EOL + 
                     "workItem.setName(\"Send Task\");" + EOL + 
                     "workItem.setParameter(\"MessageType\", \"" + message.getType() + "\");" + EOL + 
                     (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
-                    "((org.kie.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
+                    "((org.drools.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }
             xmlNode = xmlNode.getNextSibling();

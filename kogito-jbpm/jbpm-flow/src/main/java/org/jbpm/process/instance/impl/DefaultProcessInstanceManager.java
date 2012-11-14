@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.jbpm.process.instance.ProcessInstanceManager;
 import org.kie.runtime.process.ProcessInstance;
+import org.jbpm.process.instance.ProcessInstanceManager;
 
 public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 

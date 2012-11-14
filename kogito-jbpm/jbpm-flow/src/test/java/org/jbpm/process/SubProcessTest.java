@@ -16,10 +16,17 @@
 
 package org.jbpm.process;
 
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -32,13 +39,6 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 
 public class SubProcessTest extends JbpmTestCase {
 
@@ -52,7 +52,7 @@ public class SubProcessTest extends JbpmTestCase {
     
     public void testSynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.process");
+        process.setId("org.drools.process.process");
         process.setName("Process");
         
         StartNode startNode = new StartNode();
@@ -66,7 +66,7 @@ public class SubProcessTest extends JbpmTestCase {
         SubProcessNode subProcessNode = new SubProcessNode();
         subProcessNode.setName("SubProcessNode");
         subProcessNode.setId(3);
-        subProcessNode.setProcessId("org.kie.process.subprocess");
+        subProcessNode.setProcessId("org.drools.process.subprocess");
         process.addNode(subProcessNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -81,7 +81,7 @@ public class SubProcessTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
-        process.setId("org.kie.process.subprocess");
+        process.setId("org.drools.process.subprocess");
         process.setName("SubProcess");
         
         startNode = new StartNode();
@@ -115,14 +115,14 @@ public class SubProcessTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.startProcess("org.kie.process.process");
+        ksession.startProcess("org.drools.process.process");
         assertTrue(executed);
         assertEquals(0, ksession.getProcessInstances().size());
     }
 
     public void testAsynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.process");
+        process.setId("org.drools.process.process");
         process.setName("Process");
         
         StartNode startNode = new StartNode();
@@ -136,7 +136,7 @@ public class SubProcessTest extends JbpmTestCase {
         SubProcessNode subProcessNode = new SubProcessNode();
         subProcessNode.setName("SubProcessNode");
         subProcessNode.setId(3);
-        subProcessNode.setProcessId("org.kie.process.subprocess");
+        subProcessNode.setProcessId("org.drools.process.subprocess");
         process.addNode(subProcessNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -151,7 +151,7 @@ public class SubProcessTest extends JbpmTestCase {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
-        process.setId("org.kie.process.subprocess");
+        process.setId("org.drools.process.subprocess");
         process.setName("SubProcess");
         
         startNode = new StartNode();
@@ -188,7 +188,7 @@ public class SubProcessTest extends JbpmTestCase {
 			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 			}
         });
-        ksession.startProcess("org.kie.process.process");
+        ksession.startProcess("org.drools.process.process");
         assertNotNull(workItem);
         assertEquals(2, ksession.getProcessInstances().size());
         
@@ -199,7 +199,7 @@ public class SubProcessTest extends JbpmTestCase {
     public void testNonExistentSubProcess() {
 	    String nonExistentSubProcessName = "nonexistent.process";
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.kie.process.process");
+        process.setId("org.drools.process.process");
         process.setName("Process");
         StartNode startNode = new StartNode();
         startNode.setName("Start");
@@ -224,7 +224,7 @@ public class SubProcessTest extends JbpmTestCase {
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         try{
-            ksession.startProcess("org.kie.process.process");
+            ksession.startProcess("org.drools.process.process");
             fail("should throw exception");
         } catch (RuntimeException re){
             assertTrue(re.getMessage().contains( nonExistentSubProcessName ));

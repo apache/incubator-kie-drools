@@ -20,7 +20,7 @@
     <property name="nestedTransactionAllowed" value="true"/>
   </bean>
 
-  <bean id="htTxMgr" class="org.kie.container.spring.beans.persistence.HumanTaskSpringTransactionManager">
+  <bean id="htTxMgr" class="org.drools.container.spring.beans.persistence.HumanTaskSpringTransactionManager">
     <constructor-arg ref="jpaTxMgr" />
   </bean>
 

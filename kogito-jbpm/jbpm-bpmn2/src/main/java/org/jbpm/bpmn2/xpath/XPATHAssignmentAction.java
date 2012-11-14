@@ -8,9 +8,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.drools.process.instance.WorkItem;
+import org.kie.runtime.process.ProcessContext;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.workflow.core.node.Assignment;
-import org.kie.runtime.process.ProcessContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

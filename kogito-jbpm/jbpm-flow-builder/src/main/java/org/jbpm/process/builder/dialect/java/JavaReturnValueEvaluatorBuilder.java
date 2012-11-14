@@ -16,12 +16,15 @@
 
 package org.jbpm.process.builder.dialect.java;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.java.JavaDialect;
@@ -39,7 +42,7 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
     ReturnValueEvaluatorBuilder {
 
     /* (non-Javadoc)
-     * @see org.kie.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.kie.semantics.java.builder.BuildContext, org.kie.semantics.java.builder.BuildUtils, org.kie.lang.descr.RuleDescr)
+     * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
     public void build(final PackageBuildContext context,
                       final ReturnValueConstraintEvaluator constraintNode,

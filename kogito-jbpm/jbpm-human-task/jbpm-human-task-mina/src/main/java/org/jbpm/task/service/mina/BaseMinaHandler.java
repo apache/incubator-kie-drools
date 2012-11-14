@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
-import org.jbpm.task.service.BaseHandler;
 import org.kie.task.service.ResponseHandler;
+import org.jbpm.task.service.BaseHandler;
 
 public class BaseMinaHandler extends IoHandlerAdapter implements BaseHandler
 {       

@@ -1,41 +1,36 @@
 package org.jbpm.persistence.processinstance;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
+import javax.persistence.*;
 import javax.transaction.UserTransaction;
 
-import org.drools.io.impl.ClassPathResource;
-import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
-import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
-import org.jbpm.persistence.processinstance.objects.NonSerializableClass;
-import org.jbpm.persistence.util.PersistenceUtil;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.kie.KnowledgeBase;
+
+import org.drools.io.impl.ClassPathResource;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
+
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
+import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
+import org.jbpm.persistence.processinstance.objects.NonSerializableClass;
+import org.jbpm.persistence.util.PersistenceUtil;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

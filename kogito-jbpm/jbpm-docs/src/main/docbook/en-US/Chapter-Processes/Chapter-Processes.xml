@@ -1333,7 +1333,7 @@ Person( name == ( processInstance.getVariable("name") ) )
     <para>Actions have access to globals and the variables that are defined
     for the process and the predefined variable <code>kcontext</code>.  This
     variable is of type
-    <code>org.drools.runtime.process.ProcessContext</code> and can be used for
+    <code>org.kie.runtime.process.ProcessContext</code> and can be used for
     several tasks:</para>
       <itemizedlist>
         <listitem><para>Getting the current node instance (if applicable).  The node

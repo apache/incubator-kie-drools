@@ -15,10 +15,10 @@
  */
 package org.jbpm.process.workitem.wsht;
 
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.utils.OnErrorAction;
 import org.kie.runtime.KnowledgeRuntime;
+import org.jbpm.task.AsyncTaskService;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 /**
  *
  * This class provides the default configurations for a HornetQ WorkItem Handler

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.TaskService;
@@ -26,8 +28,6 @@ import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.junit.Test;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 
 public class MultipleHandlersTest extends BaseTest {
 

@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.SystemEventListener;
+import org.kie.task.service.ResponseHandler;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
-import org.kie.SystemEventListener;
-import org.kie.task.service.ResponseHandler;
 
 public class TaskClientHandler {
 
