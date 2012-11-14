@@ -19,12 +19,12 @@ package org.jbpm.workflow.instance.node;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.definition.process.Connection;
+import org.kie.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.definition.process.Connection;
-import org.kie.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of a join node.

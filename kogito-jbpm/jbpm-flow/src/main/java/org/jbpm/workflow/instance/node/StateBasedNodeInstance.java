@@ -26,8 +26,12 @@ import java.util.regex.Pattern;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
+import org.kie.event.rule.ActivationCreatedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.spi.Activation;
 import org.drools.time.TimeUtils;
@@ -45,10 +49,6 @@ import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
 
 public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {
@@ -320,7 +320,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
             Declaration declaration = (Declaration) it.next();
             if ("processInstance".equals(declaration.getIdentifier())
-            		|| "org.kie.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
+            		|| "org.drools.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
                 Object value = declaration.getValue(
                     ((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).session,
                     ((InternalFactHandle) activation.getTuple().get(declaration)).getObject());

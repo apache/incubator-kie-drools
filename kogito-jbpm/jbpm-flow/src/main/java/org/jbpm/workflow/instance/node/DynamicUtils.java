@@ -19,25 +19,25 @@ package org.jbpm.workflow.instance.node;
 import java.util.Map;
 
 import org.drools.command.CommandService;
+import org.kie.command.Context;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalKnowledgeRuntime;
+import org.kie.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.NodeInstance;
+import org.kie.runtime.process.WorkItem;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.command.Context;
-import org.kie.definition.process.Process;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.WorkItem;
 
 public class DynamicUtils {
 	

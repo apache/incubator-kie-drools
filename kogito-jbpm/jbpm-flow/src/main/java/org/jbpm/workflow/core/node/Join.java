@@ -16,8 +16,8 @@
 
 package org.jbpm.workflow.core.node;
 
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.definition.process.Connection;
+import org.jbpm.workflow.core.impl.NodeImpl;
 
 /**
  * Default implementation of a join.

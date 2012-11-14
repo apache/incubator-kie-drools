@@ -113,15 +113,15 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
         public void internalTrigger(org.kie.runtime.process.NodeInstance fromm, String type) {
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
-            ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+            ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             if (collection.isEmpty()) {
             	ForEachNodeInstance.this.triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
             } else {
             	List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
             	for (Object o: collection) {
             		String variableName = getForEachNode().getVariableName();
-            		org.jbpm.workflow.instance.NodeInstance nodeInstance = (org.jbpm.workflow.instance.NodeInstance)
-            		((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
+            		NodeInstance nodeInstance = (NodeInstance)
+            		((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
             		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
             			nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
             		variableScopeInstance.setVariable(variableName, o);
@@ -167,7 +167,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
                 subprocessVariableScopeInstance.setVariable(getForEachNode().getOutputCollectionExpression(), outputCollection);
             }
             if (getNodeInstanceContainer().getNodeInstances().size() == 1) {
-            	((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+            	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {
                 	
                 	if (System.getProperty("jbpm.enable.multi.con") == null) {

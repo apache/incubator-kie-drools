@@ -77,7 +77,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return getCompositeNode();
     }
     
-    public void internalTrigger(final NodeInstance from, String type) {
+    public void internalTrigger(final org.kie.runtime.process.NodeInstance from, String type) {
     	super.internalTrigger(from, type);
         CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(type);
         if (nodeAndType != null) {
@@ -159,7 +159,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             for (Iterator<NodeInstance> iterator = nodeInstances.iterator(); iterator.hasNext(); ) {
                 NodeInstance nodeInstance = iterator.next();
                 if (nodeInstance instanceof NodeInstanceContainer) {
-                    result.addAll(((org.jbpm.workflow.instance.NodeInstanceContainer)
+                    result.addAll(((NodeInstanceContainer)
                 		nodeInstance).getNodeInstances(true));
                 }
             }

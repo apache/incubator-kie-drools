@@ -16,11 +16,11 @@
 
 package org.jbpm.workflow.instance.node;
 
+import org.kie.runtime.process.NodeInstance;
 import org.drools.spi.ProcessContext;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of an action node.

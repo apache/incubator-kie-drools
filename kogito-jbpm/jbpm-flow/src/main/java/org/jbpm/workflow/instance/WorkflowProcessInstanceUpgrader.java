@@ -17,16 +17,15 @@
 package org.jbpm.workflow.instance;
 
 import java.util.HashMap;
-import org.kie.definition.process.Process;
 import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
-import org.jbpm.workflow.core.impl.NodeImpl;
-import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.definition.process.WorkflowProcess;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.NodeInstance;
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 public class WorkflowProcessInstanceUpgrader {
 
@@ -55,7 +54,7 @@ public class WorkflowProcessInstanceUpgrader {
             return;
         }
         synchronized (processInstance) {
-        	Process oldProcess = processInstance.getProcess();
+        	org.kie.definition.process.Process oldProcess = processInstance.getProcess();
 	        processInstance.disconnect();
 	        processInstance.setProcess(oldProcess);
 	        updateNodeInstances(processInstance, nodeMapping);

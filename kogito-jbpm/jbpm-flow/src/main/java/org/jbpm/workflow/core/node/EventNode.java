@@ -19,11 +19,11 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.definition.process.Connection;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.kie.definition.process.Connection;
 
 public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
 

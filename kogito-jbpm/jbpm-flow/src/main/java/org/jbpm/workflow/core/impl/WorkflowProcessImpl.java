@@ -16,10 +16,10 @@
 
 package org.jbpm.workflow.core.impl;
 
-import org.jbpm.process.core.impl.ProcessImpl;
-import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.NodeContainer;
+import org.jbpm.process.core.impl.ProcessImpl;
+import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Default implementation of a RuleFlow process.

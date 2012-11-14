@@ -16,8 +16,8 @@
 
 package org.jbpm.workflow.instance;
 
-import org.jbpm.process.instance.ContextInstance;
 import org.kie.definition.process.Node;
+import org.jbpm.process.instance.ContextInstance;
 
 /**
  * Represents a node instance in a RuleFlow. This is the runtime counterpart

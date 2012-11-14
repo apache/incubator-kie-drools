@@ -20,8 +20,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.workflow.core.Connection;
 import org.kie.definition.process.Node;
+import org.jbpm.workflow.core.Connection;
 
 /**
  * Default implementation of a connection.

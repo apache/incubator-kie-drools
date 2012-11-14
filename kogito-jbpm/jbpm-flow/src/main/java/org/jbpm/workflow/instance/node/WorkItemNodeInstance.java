@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.kie.definition.process.Node;

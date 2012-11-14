@@ -16,9 +16,9 @@
 
 package org.jbpm.workflow.core.node;
 
+import org.kie.definition.process.Connection;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.kie.definition.process.Connection;
 
 
 /**

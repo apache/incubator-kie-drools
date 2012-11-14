@@ -16,8 +16,8 @@
 
 package org.jbpm.workflow.core;
 
-import org.jbpm.process.core.Context;
 import org.kie.definition.process.Node;
+import org.jbpm.process.core.Context;
 
 /**
  * 

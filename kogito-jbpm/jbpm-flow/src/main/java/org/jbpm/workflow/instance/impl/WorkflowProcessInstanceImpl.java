@@ -27,6 +27,11 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalKnowledgeRuntime;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
+import org.kie.definition.process.WorkflowProcess;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.NodeInstanceContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -42,11 +47,7 @@ import org.jbpm.workflow.instance.node.EndNodeInstance;
 import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
-import org.kie.definition.process.WorkflowProcess;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.NodeInstanceContainer;
+import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 
 /**
  * Default implementation of a RuleFlow process instance.

@@ -17,6 +17,10 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.common.InternalKnowledgeRuntime;
+import org.kie.definition.process.Connection;
+import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.spi.Activation;
 import org.jbpm.workflow.core.Constraint;
@@ -24,10 +28,6 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
-import org.kie.definition.process.Connection;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.NodeInstance;
 
 public class StateNodeInstance extends CompositeContextNodeInstance implements EventListener {
 

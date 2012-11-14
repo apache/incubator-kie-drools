@@ -18,13 +18,13 @@ package org.jbpm.workflow.instance.impl;
 
 import java.util.List;
 
+import org.kie.runtime.process.NodeInstance;
 import org.drools.spi.ProcessContext;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.kie.runtime.process.NodeInstance;
 
 public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 

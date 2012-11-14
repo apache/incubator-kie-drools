@@ -19,6 +19,7 @@ package org.jbpm.workflow.instance.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.definition.process.Node;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -61,7 +62,6 @@ import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.ThrowLinkNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.definition.process.Node;
 
 public class NodeInstanceFactoryRegistry {
 	

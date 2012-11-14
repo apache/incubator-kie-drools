@@ -18,6 +18,9 @@ package org.jbpm.workflow.instance;
 
 import java.util.Collection;
 
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
+
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -28,13 +31,13 @@ public interface NodeInstanceContainer extends org.kie.runtime.process.NodeInsta
 
     NodeInstance getFirstNodeInstance(long nodeId);
 
-    NodeInstance getNodeInstance(org.kie.definition.process.Node node);
+    NodeInstance getNodeInstance(Node node);
 
     void addNodeInstance(NodeInstance nodeInstance);
 
     void removeNodeInstance(NodeInstance nodeInstance);
     
-    org.kie.definition.process.NodeContainer getNodeContainer();
+    NodeContainer getNodeContainer();
     
     void nodeInstanceCompleted(NodeInstance nodeInstance, String outType);
     
