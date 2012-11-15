@@ -62,11 +62,9 @@ public class CDIProcessEventListener implements ProcessEventListener {
         // update state of the ProcessInstanceDesc if it is still active as 
         // beforeProcessStarted event has its initial value which is Pending
         if (currentState == ProcessInstance.STATE_ACTIVE) {
-            ProcessInstanceDesc piDesc = (ProcessInstanceDesc) em.createQuery(" from ProcessInstanceDesc pid where pid.id = :piId")
-                    .setParameter("piId", pse.getProcessInstance().getId()).getSingleResult();
-            piDesc.setState(pse.getProcessInstance().getState());
-            
-            em.merge(piDesc);
+            ProcessInstance processInstance = pse.getProcessInstance();
+            int sessionId = ((StatefulKnowledgeSession)pse.getKnowledgeRuntime()).getId();
+            em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance));
         }
     }
 

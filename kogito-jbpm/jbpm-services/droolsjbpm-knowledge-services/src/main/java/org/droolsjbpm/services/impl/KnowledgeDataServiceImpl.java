@@ -51,6 +51,13 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
 
         return processInstances;
     }
+    
+    public Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states) { 
+        List<ProcessInstanceDesc> processInstances = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id ) and pi.state in (:states)")
+                .setParameter("states", states).getResultList();
+
+        return processInstances;
+    }
 
     public Collection<ProcessInstanceDesc> getProcessInstancesBySessionId(String sessionId) {
         List<ProcessInstanceDesc> processInstances = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.sessionId=:sessionId, pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id )")

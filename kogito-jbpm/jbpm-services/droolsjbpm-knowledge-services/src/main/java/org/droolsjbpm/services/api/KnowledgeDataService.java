@@ -16,6 +16,8 @@
 package org.droolsjbpm.services.api;
 
 import java.util.Collection;
+import java.util.List;
+
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
@@ -27,6 +29,8 @@ import org.droolsjbpm.services.impl.model.VariableStateDesc;
  */
 public interface KnowledgeDataService {
     Collection<ProcessInstanceDesc> getProcessInstances();
+    
+    Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states);
 
     Collection<ProcessInstanceDesc> getProcessInstancesBySessionId(String sessionId);
 
