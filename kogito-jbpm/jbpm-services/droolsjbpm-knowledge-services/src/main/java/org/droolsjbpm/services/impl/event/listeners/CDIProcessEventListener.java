@@ -59,8 +59,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
 
     public void afterProcessStarted(ProcessStartedEvent pse) {
         int currentState = pse.getProcessInstance().getState();
-        // update state of the ProcessInstanceDesc if it is still active as 
-        // beforeProcessStarted event has its initial value which is Pending
+
         if (currentState == ProcessInstance.STATE_ACTIVE) {
             ProcessInstance processInstance = pse.getProcessInstance();
             int sessionId = ((StatefulKnowledgeSession)pse.getKnowledgeRuntime()).getId();

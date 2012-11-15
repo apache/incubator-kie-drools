@@ -78,7 +78,7 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
     }
 
     public ProcessInstanceDesc getProcessInstanceById(int sessionId, long processId) {
-         List<ProcessInstanceDesc> processInstances = em.createQuery("select pid from ProcessInstanceDesc pid where pid.id=:processId AND pid.sessionId=:sessionId ORDER BY pid.dataTimeStamp DESC")
+         List<ProcessInstanceDesc> processInstances = em.createQuery("select pid from ProcessInstanceDesc pid where pid.id=:processId AND pid.sessionId=:sessionId ORDER BY pid.pk DESC")
                 .setParameter("processId", processId)
                 .setParameter("sessionId", sessionId)
                 .setMaxResults(1).getResultList();
