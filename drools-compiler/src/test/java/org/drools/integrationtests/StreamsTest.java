@@ -378,6 +378,43 @@ public class StreamsTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testEntryPointWithAccumulateAndMVEL() throws Exception {
+        String str = "package org.drools\n" +
+                "rule R1 dialect 'mvel'\n" +
+                "    when\n" +
+                "        $n : Number() from accumulate( \n" +
+                "                 StockTick() from entry-point ep1,\n" +
+                "                 count(1))" +
+                "    then\n" +
+                "end\n";
+
+        // read in the source
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, str );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        org.drools.event.rule.AgendaEventListener ael = mock(org.drools.event.rule.AgendaEventListener.class);
+        ksession.addEventListener(ael);
+
+        WorkingMemoryEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint("ep1");
+
+        ep1.insert(new StockTick(1,
+                "RHT",
+                10,
+                1000));
+        int rulesFired = ksession.fireAllRules();
+        assertEquals(1,
+                rulesFired);
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        verify(ael,
+                times(1)).afterActivationFired(captor.capture());
+        List<org.drools.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+
+        Assert.assertThat(aafe.get(0).getActivation().getRule().getName(),
+                is("R1"));
+    }
+    
+    @Test
     public void testGetEntryPointList() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
