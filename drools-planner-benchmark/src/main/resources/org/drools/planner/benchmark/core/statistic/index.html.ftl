@@ -461,7 +461,7 @@
                                             </div>
                                         </#if>
                                         <div class="btn-group download-btn-group">
-                                            <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CVS file</button>
+                                            <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CSV file</button>
                                         </div>
                                     </div>
                                     <#assign firstRow = false>
