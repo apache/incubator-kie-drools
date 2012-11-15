@@ -392,7 +392,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        org.drools.event.rule.AgendaEventListener ael = mock(org.drools.event.rule.AgendaEventListener.class);
+        org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
         WorkingMemoryEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint("ep1");
@@ -405,10 +405,10 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(1,
                 rulesFired);
 
-        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
         verify(ael,
                 times(1)).afterActivationFired(captor.capture());
-        List<org.drools.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat(aafe.get(0).getActivation().getRule().getName(),
                 is("R1"));
