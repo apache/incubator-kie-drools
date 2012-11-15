@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
+import org.jbpm.task.Content;
 
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
@@ -105,9 +106,12 @@ public class TasksAdminImpl implements TasksAdmin {
             long taskId = sum.getId();
             // Only remove archived tasks
             Task task = (Task) tpm.findEntity(Task.class, taskId);
+            Content content = (Content)tpm.findEntity(Content.class, task.getTaskData().getDocumentContentId());
             if (task.isArchived()) {
                 tpm.deleteEntity(task);
-
+                if(content != null){
+                    tpm.deleteEntity(content);
+                }
                 removedTasks++;
             } else {
                 logger.error(" The Task cannot be removed if it wasn't archived first !!");
