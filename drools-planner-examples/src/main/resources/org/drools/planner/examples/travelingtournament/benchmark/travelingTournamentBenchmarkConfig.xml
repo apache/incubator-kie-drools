@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
+  <benchmarkDirectory>local/data/travelingtournament</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
-      <inputSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inputSolutionFile>
+      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
     <solver>
@@ -15,7 +15,7 @@
       <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-        <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
         <maximumHoursSpend>2</maximumHoursSpend>
@@ -29,15 +29,15 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
+          <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+          </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -54,15 +54,15 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
+          <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+          </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -81,15 +81,15 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
+          <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+          </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -108,15 +108,15 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
+          <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+          </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>
+            <moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
@@ -135,15 +135,15 @@
     <!--<solver>-->
       <!--<localSearch>-->
         <!--<unionMoveSelector>-->
-          <!--<moveListFactory>-->
+          <!--<swapMoveSelector>-->
             <!--<cacheType>PHASE</cacheType>-->
             <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-            <!--<moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.MatchSwapMoveFactory</moveListFactoryClass>-->
-          <!--</moveListFactory>-->
+            <!--<moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>-->
+          <!--</swapMoveSelector>-->
           <!--<moveListFactory>-->
             <!--<cacheType>STEP</cacheType>-->
             <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-            <!--<moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveListFactoryClass>-->
+            <!--<moveListFactoryClass>org.drools.planner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactoryeListFactoryClass>-->
           <!--</moveListFactory>-->
         <!--</unionMoveSelector>-->
         <!--<acceptor>-->

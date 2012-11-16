@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.travelingtournament.app.smart;
+package org.drools.planner.examples.travelingtournament.app;
 
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 
-public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
+public class TravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String BENCHMARK_CONFIG_PREFIX
-            = "/org/drools/planner/examples/travelingtournament/benchmark/smart/";
+            = "/org/drools/planner/examples/travelingtournament/benchmark/";
     public static final String BENCHMARK_CONFIG
-            = BENCHMARK_CONFIG_PREFIX + "smartTravelingTournamentBenchmarkConfig.xml";
+            = BENCHMARK_CONFIG_PREFIX + "travelingTournamentBenchmarkConfig.xml";
     public static final String STEP_LIMIT_BENCHMARK_CONFIG
-            = BENCHMARK_CONFIG_PREFIX + "smartTravelingTournamentStepLimitBenchmarkConfig.xml";
+            = BENCHMARK_CONFIG_PREFIX + "travelingTournamentStepLimitBenchmarkConfig.xml";
 
     public static void main(String[] args) {
         String benchmarkConfig;
@@ -41,7 +41,7 @@ public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = BENCHMARK_CONFIG;
         }
-        new SmartTravelingTournamentBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new TravelingTournamentBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }

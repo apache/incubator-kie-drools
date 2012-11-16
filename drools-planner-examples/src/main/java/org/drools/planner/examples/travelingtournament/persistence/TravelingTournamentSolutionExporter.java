@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.travelingtournament.persistence.smart;
+package org.drools.planner.examples.travelingtournament.persistence;
 
 import java.io.IOException;
 
@@ -25,16 +25,16 @@ import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.core.solution.Solution;
 
-public class SmartTravelingTournamentSolutionExporter extends AbstractTxtSolutionExporter {
+public class TravelingTournamentSolutionExporter extends AbstractTxtSolutionExporter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".trick.txt";
 
     public static void main(String[] args) {
-        new SmartTravelingTournamentSolutionExporter().convertAll();
+        new TravelingTournamentSolutionExporter().convertAll();
     }
 
-    public SmartTravelingTournamentSolutionExporter() {
-        super(new SmartTravelingTournamentDaoImpl());
+    public TravelingTournamentSolutionExporter() {
+        super(new TravelingTournamentDaoImpl());
     }
 
     @Override
@@ -43,10 +43,10 @@ public class SmartTravelingTournamentSolutionExporter extends AbstractTxtSolutio
     }
 
     public TxtOutputBuilder createTxtOutputBuilder() {
-        return new SmartTravelingTournamentOutputBuilder();
+        return new TravelingTournamentOutputBuilder();
     }
 
-    public class SmartTravelingTournamentOutputBuilder extends TxtOutputBuilder {
+    public class TravelingTournamentOutputBuilder extends TxtOutputBuilder {
 
         private TravelingTournament travelingTournament;
 

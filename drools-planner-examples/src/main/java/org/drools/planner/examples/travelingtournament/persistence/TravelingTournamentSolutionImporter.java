@@ -22,21 +22,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.core.solution.Solution;
 
-public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSolutionImporter {
+public class TravelingTournamentSolutionImporter extends AbstractTxtSolutionImporter {
 
-    protected TravelingTournamentSolutionImporter(SolutionDao solutionDao) {
-        super(solutionDao);
+    public static void main(String[] args) {
+        new TravelingTournamentSolutionImporter().convertAll();
     }
 
-    public abstract class TravelingTournamentInputBuilder extends TxtInputBuilder {
+    public TravelingTournamentSolutionImporter() {
+        super(new TravelingTournamentDaoImpl());
+    }
+
+    public TxtInputBuilder createTxtInputBuilder() {
+        return new TravelingTournamentInputBuilder();
+    }
+
+    public class TravelingTournamentInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             TravelingTournament travelingTournament = new TravelingTournament();
@@ -126,7 +133,47 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
             travelingTournament.setMatchList(matchList);
         }
 
-        protected abstract void initializeMatchDays(TravelingTournament travelingTournament);
+        /**
+         * Canonical pattern initialization (see papers).
+         * @param travelingTournament the traveling tournament
+         */
+        protected void initializeMatchDays(TravelingTournament travelingTournament) {
+            int n = travelingTournament.getN();
+            for (int i = 0; i < (n - 1); i++) {
+                initializeMatchPairs(travelingTournament, (n - 1), i, i);
+            }
+            for (int startA = 1, startB = (n - 2); startA < (n - 1); startA += 2, startB -= 2) {
+                for (int i = 0; i < (n - 1); i++) {
+                    int a = (startA + i) % (n - 1);
+                    int b = (startB + i) % (n - 1);
+                    initializeMatchPairs(travelingTournament, a, b, i);
+                }
+            }
+        }
+
+        private void initializeMatchPairs(TravelingTournament travelingTournament, int a, int b, int i) {
+            if ((i % 6) >= 3) { // Might not be a 100% the canonical pattern
+                // Swap them
+                int oldA = a;
+                a = b;
+                b = oldA;
+            }
+            Team aTeam = travelingTournament.getTeamList().get(a);
+            Team bTeam = travelingTournament.getTeamList().get(b);
+            Match m1 = findMatch(travelingTournament.getMatchList(), aTeam, bTeam);
+            m1.setDay(travelingTournament.getDayList().get(i));
+            Match m2 = findMatch(travelingTournament.getMatchList(), bTeam, aTeam);
+            m2.setDay(travelingTournament.getDayList().get(i + travelingTournament.getN() - 1));
+        }
+
+        private Match findMatch(List<Match> matchList, Team homeTeam, Team awayTeam) {
+            for (Match match : matchList) {
+                if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
+                    return match;
+                }
+            }
+            throw new IllegalStateException("Nothing found for: " + homeTeam + " and " + awayTeam);
+        }
 
     }
 

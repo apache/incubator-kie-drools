@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.travelingtournament.app.smart;
+package org.drools.planner.examples.travelingtournament.app;
 
 import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.core.Solver;
+import org.drools.planner.examples.common.app.CommonApp;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.travelingtournament.app.AbstractTravelingTournamentApp;
-import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentDaoImpl;
-import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentSolutionExporter;
-import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentSolutionImporter;
+import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentDaoImpl;
+import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentSolutionExporter;
+import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentSolutionImporter;
+import org.drools.planner.examples.travelingtournament.swingui.TravelingTournamentPanel;
 
-public class SmartTravelingTournamentApp extends AbstractTravelingTournamentApp {
+public class TravelingTournamentApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentSolverConfig.xml";
+            = "/org/drools/planner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
 
     public static void main(String[] args) {
-        new SmartTravelingTournamentApp().init();
+        new TravelingTournamentApp().init();
     }
 
     @Override
@@ -43,18 +45,23 @@ public class SmartTravelingTournamentApp extends AbstractTravelingTournamentApp 
     }
 
     @Override
+    protected SolutionPanel createSolutionPanel() {
+        return new TravelingTournamentPanel();
+    }
+
+    @Override
     protected SolutionDao createSolutionDao() {
-        return new SmartTravelingTournamentDaoImpl();
+        return new TravelingTournamentDaoImpl();
     }
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new SmartTravelingTournamentSolutionImporter();
+        return new TravelingTournamentSolutionImporter();
     }
 
     @Override
     protected AbstractSolutionExporter createSolutionExporter() {
-        return new SmartTravelingTournamentSolutionExporter();
+        return new TravelingTournamentSolutionExporter();
     }
 
 }

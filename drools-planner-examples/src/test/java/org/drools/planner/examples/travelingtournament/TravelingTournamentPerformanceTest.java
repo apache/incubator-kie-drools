@@ -21,19 +21,19 @@ import java.io.File;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentDaoImpl;
+import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentDaoImpl;
 import org.junit.Test;
 
 public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentSolverConfig.xml";
+        return "/org/drools/planner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new SmartTravelingTournamentDaoImpl();
+        return new TravelingTournamentDaoImpl();
     }
 
     // ************************************************************************
@@ -42,13 +42,13 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
 
     @Test(timeout = 600000)
     public void solveComp01_initialized() {
-        File unsolvedDataFile = new File("data/travelingtournament/smart/unsolved/1-nl10.xml");
+        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-75968soft");
     }
 
     @Test(timeout = 600000)
     public void solveTestdata01_initializedDebug() {
-        File unsolvedDataFile = new File("data/travelingtournament/smart/unsolved/1-nl10.xml");
+        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.DEBUG);
     }
 

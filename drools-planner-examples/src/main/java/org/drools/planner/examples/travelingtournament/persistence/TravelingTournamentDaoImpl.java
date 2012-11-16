@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.travelingtournament.persistence.smart;
+package org.drools.planner.examples.travelingtournament.persistence;
 
 import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
-public class SmartTravelingTournamentDaoImpl extends XStreamSolutionDaoImpl {
+public class TravelingTournamentDaoImpl extends XStreamSolutionDaoImpl {
 
-    public SmartTravelingTournamentDaoImpl() {
-        super("travelingtournament/smart", TravelingTournament.class);
+    public TravelingTournamentDaoImpl() {
+        super("travelingtournament", TravelingTournament.class);
     }
 
 }

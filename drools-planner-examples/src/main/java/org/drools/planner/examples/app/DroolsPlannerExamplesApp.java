@@ -45,7 +45,7 @@ import org.drools.planner.examples.nqueens.swingui.NQueensPanel;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
 import org.drools.planner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.drools.planner.examples.pas.app.PatientAdmissionScheduleApp;
-import org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp;
+import org.drools.planner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.drools.planner.examples.examination.app.ExaminationApp;
 import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.manners2009.app.Manners2009App;
@@ -217,7 +217,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Assign matches to days.",
                 null, new Runnable() {
             public void run() {
-                new SmartTravelingTournamentApp().init(DroolsPlannerExamplesApp.this, false);
+                new TravelingTournamentApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(new JPanel());

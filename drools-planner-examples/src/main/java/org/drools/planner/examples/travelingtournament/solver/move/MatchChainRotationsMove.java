@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.travelingtournament.solver.smart.move;
+package org.drools.planner.examples.travelingtournament.solver.move;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,14 +28,13 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
-import org.drools.planner.examples.travelingtournament.solver.move.TravelingTournamentMoveHelper;
 
-public class MultipleMatchListRotateMove implements Move {
+public class MatchChainRotationsMove implements Move {
 
     private List<Match> firstMatchList;
     private List<Match> secondMatchList;
 
-    public MultipleMatchListRotateMove(List<Match> firstMatchList, List<Match> secondMatchList) {
+    public MatchChainRotationsMove(List<Match> firstMatchList, List<Match> secondMatchList) {
         this.firstMatchList = firstMatchList;
         this.secondMatchList = secondMatchList;
     }
@@ -49,7 +48,7 @@ public class MultipleMatchListRotateMove implements Move {
         Collections.reverse(inverseFirstMatchList);
         List<Match> inverseSecondMatchList = new ArrayList<Match>(secondMatchList);
         Collections.reverse(inverseSecondMatchList);
-        return new MultipleMatchListRotateMove(inverseFirstMatchList, inverseSecondMatchList);
+        return new MatchChainRotationsMove(inverseFirstMatchList, inverseSecondMatchList);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
@@ -93,8 +92,8 @@ public class MultipleMatchListRotateMove implements Move {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MultipleMatchListRotateMove) {
-            MultipleMatchListRotateMove other = (MultipleMatchListRotateMove) o;
+        } else if (o instanceof MatchChainRotationsMove) {
+            MatchChainRotationsMove other = (MatchChainRotationsMove) o;
             return new EqualsBuilder()
                     .append(firstMatchList, other.firstMatchList)
                     .append(secondMatchList, other.secondMatchList)

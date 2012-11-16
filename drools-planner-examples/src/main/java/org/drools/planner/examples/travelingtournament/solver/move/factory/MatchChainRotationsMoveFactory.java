@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.travelingtournament.solver.smart.move.factory;
+package org.drools.planner.examples.travelingtournament.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,10 +31,9 @@ import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.solver.smart.move.MultipleMatchListRotateMove;
+import org.drools.planner.examples.travelingtournament.solver.move.MatchChainRotationsMove;
 
-// TODO rename to MatchRotationMoveFactory
-public class SmartTravelingTournamentMoveFactory implements MoveListFactory {
+public class MatchChainRotationsMoveFactory implements MoveListFactory {
 
     public List<Move> createMoveList(Solution solution) {
         TravelingTournament travelingTournament = (TravelingTournament) solution;
@@ -120,7 +119,7 @@ public class SmartTravelingTournamentMoveFactory implements MoveListFactory {
                         // if size is 2 then addCachedHomeAwaySwapMoves will have done it
                         if (rotateList.size() > 2) {
                             List<Match> emptyList = Collections.emptyList();
-                            Move rotateMove = new MultipleMatchListRotateMove(rotateList, emptyList);
+                            Move rotateMove = new MatchChainRotationsMove(rotateList, emptyList);
                             moveList.add(rotateMove);
                         }
                     }
@@ -213,7 +212,7 @@ public class SmartTravelingTournamentMoveFactory implements MoveListFactory {
             // if size is 1 then addCachedHomeAwaySwapMoves will have done it
             // if size is 2 then addDayRotation will have done it by 1 list of size 4
             if (firstRotateList.size() > 2) {
-                Move rotateMove = new MultipleMatchListRotateMove(firstRotateList, secondRotateList);
+                Move rotateMove = new MatchChainRotationsMove(firstRotateList, secondRotateList);
                 moveList.add(rotateMove);
             }
         }
