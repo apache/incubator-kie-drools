@@ -201,7 +201,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public void triggerCompleted(WorkItem workItem) {
         this.workItem = workItem;
         WorkItemNode workItemNode = getWorkItemNode();
-        if (workItemNode != null) {
+        if (workItemNode != null && workItem.getState() == WorkItem.COMPLETED) {
             for (Iterator<DataAssociation> iterator = getWorkItemNode().getOutAssociations().iterator(); iterator.hasNext(); ) {
                 DataAssociation association = iterator.next();
                 if (association.getAssignments() == null || association.getAssignments().isEmpty()) {

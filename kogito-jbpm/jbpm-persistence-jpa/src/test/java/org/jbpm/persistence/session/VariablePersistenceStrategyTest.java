@@ -515,6 +515,71 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
     	assertEquals(3L, JPAPlaceholderResolverStrategy.getClassIdValue(subEntity));
     }
     
+    @Test
+    public void testAbortWorkItemWithVariablePersistence() throws Exception{
+        MyEntity myEntity = new MyEntity("This is a test Entity");
+        MyVariableSerializable myVariableSerializable = new MyVariableSerializable("This is a test SerializableObject");
+        EntityManager em = emf.createEntityManager();
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        utx.begin();
+        
+        em.joinTransaction();
+        em.persist(myEntity);
+        utx.commit();
+        em.close();
+        Environment env = createEnvironment();
+        KnowledgeBase kbase = createKnowledgeBase( "VPSProcessWithWorkItems.rf" );
+        StatefulKnowledgeSession ksession = createSession( kbase , env);
+        
+        logger.debug("### Starting process ###");
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("x", "SomeString");
+        parameters.put("y", myEntity);
+        parameters.put("z", myVariableSerializable);
+        long processInstanceId = ksession.startProcess( "com.sample.ruleflow", parameters ).getId();
+    
+        TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull( workItem );
+    
+        logger.debug("### Retrieving process instance ###");
+        ksession = reloadSession( ksession, kbase , env);
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
+               ksession.getProcessInstance( processInstanceId );
+        assertNotNull( processInstance );
+        assertEquals("SomeString", processInstance.getVariable("x"));
+        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
+        assertNull(processInstance.getVariable("a"));
+        assertNull(processInstance.getVariable("b"));
+        assertNull(processInstance.getVariable("c"));
+    
+        logger.debug("### Completing first work item ###");
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("zeta", processInstance.getVariable("z"));
+        results.put("equis", processInstance.getVariable("x")+"->modifiedResult");
+    
+        // we simulate a failure here, aborting the work item
+        ksession.getWorkItemManager().abortWorkItem( workItem.getId() );
+    
+        workItem = handler.getWorkItem();
+        assertNotNull( workItem );
+    
+        logger.debug("### Retrieving process instance ###");
+        ksession = reloadSession( ksession, kbase, env );
+               processInstance = (WorkflowProcessInstance)
+                       ksession.getProcessInstance(processInstanceId);
+               assertNotNull(processInstance);
+        logger.debug("######## Getting the already Persisted Variables #########");
+        // we expect the variables to be unmodifed
+        assertEquals("SomeString", processInstance.getVariable("x"));
+        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
+        assertEquals("Some new String", processInstance.getVariable("a"));
+        assertEquals("This is a new test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
+        assertEquals("This is a new test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("c")).getText());
+    }    
+    
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase, Environment env){
         return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
     }
