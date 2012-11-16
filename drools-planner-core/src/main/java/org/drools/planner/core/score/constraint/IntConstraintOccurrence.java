@@ -24,7 +24,7 @@ public class IntConstraintOccurrence extends ConstraintOccurrence {
     protected int weight;
 
     public IntConstraintOccurrence(String ruleId, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, causes);
+        this(ruleId, ConstraintType.HARD, causes);
     }
 
     public IntConstraintOccurrence(String ruleId, ConstraintType constraintType, Object... causes) {
@@ -32,7 +32,7 @@ public class IntConstraintOccurrence extends ConstraintOccurrence {
     }
 
     public IntConstraintOccurrence(String ruleId, int weight, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, weight, causes);
+        this(ruleId, ConstraintType.HARD, weight, causes);
     }
 
     public IntConstraintOccurrence(String ruleId, ConstraintType constraintType, int weight, Object... causes) {

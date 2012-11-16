@@ -26,23 +26,23 @@ import org.kie.runtime.rule.WorkingMemory;
 
 public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
 
-    protected long hardConstraintsBroken;
-    protected long softConstraintsBroken;
+    protected long hardScore;
+    protected long softScore;
 
-    public long getHardConstraintsBroken() {
-        return hardConstraintsBroken;
+    public long getHardScore() {
+        return hardScore;
     }
 
-    public void setHardConstraintsBroken(long hardConstraintsBroken) {
-        this.hardConstraintsBroken = hardConstraintsBroken;
+    public void setHardScore(long hardScore) {
+        this.hardScore = hardScore;
     }
 
-    public long getSoftConstraintsBroken() {
-        return softConstraintsBroken;
+    public long getSoftScore() {
+        return softScore;
     }
 
-    public void setSoftConstraintsBroken(long softConstraintsBroken) {
-        this.softConstraintsBroken = softConstraintsBroken;
+    public void setSoftScore(long softScore) {
+        this.softScore = softScore;
     }
 
     // ************************************************************************
@@ -50,31 +50,31 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
     // ************************************************************************
 
     public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
-        hardConstraintsBroken += - weight; // TODO remove minus and refactor hardConstraintsBroken
+        hardScore += weight;
         AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
         agendaItem.setActivationUnMatchListener(
                 new ActivationUnMatchListener() {
                     public void unMatch(WorkingMemory workingMemory, Activation activation) {
-                        hardConstraintsBroken -= - weight; // TODO remove minus and refactor hardConstraintsBroken
+                        hardScore -= weight;
                     }
                 }
         );
     }
 
     public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
-        softConstraintsBroken += - weight; // TODO remove minus and refactor softConstraintsBroken
+        softScore += weight;
         AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
         agendaItem.setActivationUnMatchListener(
                 new ActivationUnMatchListener() {
                     public void unMatch(WorkingMemory workingMemory, Activation activation) {
-                        softConstraintsBroken -= - weight; // TODO remove minus and refactor softConstraintsBroken
+                        softScore -= weight;
                     }
                 }
         );
     }
 
     public Score extractScore() {
-        return DefaultHardAndSoftLongScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);
+        return DefaultHardAndSoftLongScore.valueOf(hardScore, softScore);
     }
 
 }

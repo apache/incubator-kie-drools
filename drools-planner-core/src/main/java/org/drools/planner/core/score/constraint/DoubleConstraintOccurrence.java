@@ -24,7 +24,7 @@ public class DoubleConstraintOccurrence extends ConstraintOccurrence {
     protected double weight;
 
     public DoubleConstraintOccurrence(String ruleId, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, causes);
+        this(ruleId, ConstraintType.HARD, causes);
     }
 
     public DoubleConstraintOccurrence(String ruleId, ConstraintType constraintType, Object... causes) {
@@ -32,7 +32,7 @@ public class DoubleConstraintOccurrence extends ConstraintOccurrence {
     }
 
     public DoubleConstraintOccurrence(String ruleId, double weight, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, weight, causes);
+        this(ruleId, ConstraintType.HARD, weight, causes);
     }
 
     public DoubleConstraintOccurrence(String ruleId, ConstraintType constraintType, double weight, Object... causes) {

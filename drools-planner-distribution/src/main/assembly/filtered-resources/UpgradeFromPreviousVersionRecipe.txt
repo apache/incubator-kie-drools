@@ -2304,3 +2304,73 @@ From 5.5.0.Final to 6.0.0.Beta1
 If you have any custom hacks for that, take a look at the reference manual how to replace them with a nullable variable.
 
 [MINOR] <assertionScoreDirectorFactory> no longer needs a <scoreDefinition*>: it inherits it from its parent.
+
+[MAJOR] If you are using Drools and HardAndSoft*Score:
+ConstraintType no longer has NEGATIVE_HARD, NEGATIVE_SOFT and POSITIVE. It only has HARD and SOFT now.
+As a result, all negative weights are now a negative number. All positive weights are now a positive number.
+HardAndSoft*ScoreHolder replaced setHardConstraintsBroken() and setSoftConstraintsBroken()
+with setHardScore() and setSoftScore().
+Before in *ScoreRules.drl:
+        insertLogical(new IntConstraintOccurrence(..., ConstraintType.NEGATIVE_HARD,
+                $x,
+                ...));
+After in *ScoreRules.drl:
+        insertLogical(new IntConstraintOccurrence(..., ConstraintType.HARD,
+                - $x,
+                ...));
+Before in *ScoreRules.drl:
+        insertLogical(new IntConstraintOccurrence(..., ConstraintType.NEGATIVE_SOFT,
+                $x,
+                ...));
+After in *ScoreRules.drl:
+        insertLogical(new IntConstraintOccurrence(..., ConstraintType.SOFT,
+                - $x,
+                ...));
+Before in *ScoreRules.drl:
+        insertLogical(new IntConstraintOccurrence(..., ConstraintType.POSITIVE,
+                - $x,
+                ...));
+After in *ScoreRules.drl:
+        insertLogical(new IntConstraintOccurrence(..., ConstraintType.SOFT,
+                $x,
+                ...));
+Before in *ScoreRules.drl:
+    rule "hardConstraintsBroken" salience -1
+        when
+            $hardTotal : Number() from accumulate(
+                IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+                sum($weight)
+            )
+        then
+            scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
+    end
+    rule "softConstraintsBroken" salience -1
+        when
+            $softTotal : Number() from accumulate(
+                IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+                sum($weight)
+            )
+        then
+            scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
+    end
+After in *ScoreRules.drl:
+    rule "accumulateHardScore" salience -1
+        when
+            $hardTotal : Number() from accumulate(
+                IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
+                sum($weight)
+            )
+        then
+            scoreHolder.setHardScore($hardTotal.intValue());
+    end
+    rule "accumulateSoftScore" salience -1
+        when
+            $softTotal : Number() from accumulate(
+                IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
+                sum($weight)
+            )
+        then
+            scoreHolder.setSoftScore($softTotal.intValue());
+    end
+Refactor similarly for LongConstraintOccurrence and longValue().
+

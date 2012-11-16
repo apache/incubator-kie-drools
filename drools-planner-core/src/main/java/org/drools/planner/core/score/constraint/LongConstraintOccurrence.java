@@ -24,7 +24,7 @@ public class LongConstraintOccurrence extends ConstraintOccurrence {
     protected long weight;
 
     public LongConstraintOccurrence(String ruleId, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, causes);
+        this(ruleId, ConstraintType.HARD, causes);
     }
 
     public LongConstraintOccurrence(String ruleId, ConstraintType constraintType, Object... causes) {
@@ -32,7 +32,7 @@ public class LongConstraintOccurrence extends ConstraintOccurrence {
     }
 
     public LongConstraintOccurrence(String ruleId, long weight, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, weight, causes);
+        this(ruleId, ConstraintType.HARD, weight, causes);
     }
 
     public LongConstraintOccurrence(String ruleId, ConstraintType constraintType, long weight, Object... causes) {

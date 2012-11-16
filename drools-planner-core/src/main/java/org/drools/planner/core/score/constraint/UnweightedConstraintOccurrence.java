@@ -19,7 +19,7 @@ package org.drools.planner.core.score.constraint;
 public class UnweightedConstraintOccurrence extends ConstraintOccurrence {
 
     public UnweightedConstraintOccurrence(String ruleId, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, causes);
+        this(ruleId, ConstraintType.HARD, causes);
     }
 
     public UnweightedConstraintOccurrence(String ruleId, ConstraintType constraintType, Object... causes) {

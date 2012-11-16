@@ -54,8 +54,8 @@ rule "conflictingLecturesInSamePeriod"
         $leftLecture : Lecture(course == $leftCourse, $period : period)
         $rightLecture : Lecture(course == $rightCourse, period == $period, this != $leftLecture)
     then
-        insertLogical(new IntConstraintOccurrence("conflictingLecturesInSamePeriod",
-                ConstraintType.NEGATIVE_HARD, 1,
+        insertLogical(new IntConstraintOccurrence("conflictingLecturesInSamePeriod", ConstraintType.HARD,
+                -1,
                 $leftLecture, $rightLecture));
 end
 
@@ -69,8 +69,8 @@ rule "roomOccupancy"
         // rightLecture has the same period
         $rightLecture : Lecture(period == $period, room == $room, id > $leftId, $rightId : id)
     then
-        insertLogical(new IntConstraintOccurrence("roomOccupancy", ConstraintType.NEGATIVE_HARD,
-                1,
+        insertLogical(new IntConstraintOccurrence("roomOccupancy", ConstraintType.HARD,
+                -1,
                 $leftLecture, $rightLecture));
 end
 
@@ -80,8 +80,8 @@ rule "unavailablePeriodPenalty"
         $unavailablePeriodPenalty : UnavailablePeriodPenalty($course : course, $period : period)
         $lecture : Lecture(course == $course, period == $period)
     then
-        insertLogical(new IntConstraintOccurrence("unavailablePeriodPenalty", ConstraintType.NEGATIVE_HARD,
-                1,
+        insertLogical(new IntConstraintOccurrence("unavailablePeriodPenalty", ConstraintType.HARD,
+                -1,
                 $lecture));
 end
 
@@ -98,8 +98,8 @@ rule "roomCapacity"
         $room : Room($capacity : capacity)
         $lecture : Lecture(room == $room, studentSize > $capacity, $studentSize : studentSize)
     then
-        insertLogical(new IntConstraintOccurrence("roomCapacity", ConstraintType.NEGATIVE_SOFT,
-                ($studentSize - $capacity),
+        insertLogical(new IntConstraintOccurrence("roomCapacity", ConstraintType.SOFT,
+                ($capacity - $studentSize),
                 $room, $lecture));
 end
 
@@ -116,8 +116,8 @@ rule "minimumWorkingDays"
         // An uninitialized schedule should have no constraints broken
         exists Lecture(course == $course)
     then
-        insertLogical(new IntConstraintOccurrence("minimumWorkingDays", ConstraintType.NEGATIVE_SOFT,
-                (($minWorkingDaySize - $dayCount.intValue()) * 5),
+        insertLogical(new IntConstraintOccurrence("minimumWorkingDays", ConstraintType.SOFT,
+                (($dayCount.intValue() - $minWorkingDaySize) * 5),
                 $course));
 end
 
@@ -140,8 +140,8 @@ rule "curriculumCompactness"
             day == $day, timeslotIndex == ($timeslotIndex + 1)
         )
     then
-        insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.NEGATIVE_SOFT,
-                2,
+        insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.SOFT,
+                -2,
                 $lecture, $curriculum));
 end
 
@@ -156,8 +156,8 @@ rule "roomStability"
             count($room)
         )
     then
-        insertLogical(new IntConstraintOccurrence("roomStability", ConstraintType.NEGATIVE_SOFT,
-                ($roomCount.intValue() - 1),
+        insertLogical(new IntConstraintOccurrence("roomStability", ConstraintType.SOFT,
+                -($roomCount.intValue() - 1),
                 $course));
 end
 
@@ -166,25 +166,25 @@ end
 // ############################################################################
 
 // Accumulate hard constraints
-rule "hardConstraintsBroken"
+rule "accumulateHardScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardScore($hardTotal.intValue());
 end
 
 // Accumulate soft constraints
-rule "softConstraintsBroken"
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end

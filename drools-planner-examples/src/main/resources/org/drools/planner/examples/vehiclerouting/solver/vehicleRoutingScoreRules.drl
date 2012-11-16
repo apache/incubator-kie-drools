@@ -43,8 +43,8 @@ rule "vehicleCapacity"
             sum($demand)
         )
     then
-        insertLogical(new IntConstraintOccurrence("vehicleCapacity", ConstraintType.NEGATIVE_HARD,
-                $demandTotal.intValue() - $capacity,
+        insertLogical(new IntConstraintOccurrence("vehicleCapacity", ConstraintType.HARD,
+                $capacity - $demandTotal.intValue(),
                 $vehicle));
 end
 
@@ -56,8 +56,8 @@ rule "distanceToPreviousAppearance"
     when
         $customer : VrpCustomer(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
     then
-        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.NEGATIVE_SOFT,
-                $distanceToPreviousAppearance,
+        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.SOFT,
+                - $distanceToPreviousAppearance,
                 $customer));
 end
 
@@ -67,8 +67,8 @@ rule "distanceFromLastCustomerToDepot"
         not VrpCustomer(previousAppearance == $customer)
     then
         VrpVehicle vehicle = $customer.getVehicle();
-        insertLogical(new IntConstraintOccurrence("distanceFromLastCustomerToDepot", ConstraintType.NEGATIVE_SOFT,
-                $customer.getDistanceTo(vehicle),
+        insertLogical(new IntConstraintOccurrence("distanceFromLastCustomerToDepot", ConstraintType.SOFT,
+                - $customer.getDistanceTo(vehicle),
                 $customer));
 end
 
@@ -77,25 +77,25 @@ end
 // ############################################################################
 
 // Accumulate hard constraints
-rule "hardConstraintsBroken"
+rule "accumulateHardScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardScore($hardTotal.intValue());
 end
 
 // Accumulate soft constraints
-rule "softConstraintsBroken"
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end

@@ -36,8 +36,8 @@ rule "distanceToPreviousAppearance"
     when
         $visit : Visit(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
     then
-        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.NEGATIVE_SOFT,
-                $distanceToPreviousAppearance,
+        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.SOFT,
+                - $distanceToPreviousAppearance,
                 $visit));
 end
 
@@ -47,8 +47,8 @@ rule "distanceFromLastVisitToDomicile"
         not Visit(previousAppearance == $visit)
         $domicile : Domicile()
     then
-        insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.NEGATIVE_SOFT,
-                $visit.getDistanceTo($domicile),
+        insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.SOFT,
+                - $visit.getDistanceTo($domicile),
                 $visit, $domicile));
 end
 
@@ -56,12 +56,12 @@ end
 // Calculate score
 // ############################################################################
 
-rule "softConstraintsBroken"
+rule "accumulateScore"
     when
         $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setScore(- $softTotal.intValue());
+        scoreHolder.setScore($softTotal.intValue());
 end

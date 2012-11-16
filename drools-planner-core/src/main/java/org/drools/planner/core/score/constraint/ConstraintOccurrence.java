@@ -30,7 +30,7 @@ public abstract class ConstraintOccurrence implements Comparable<ConstraintOccur
     protected Object[] causes;
 
     public ConstraintOccurrence(String ruleId, Object... causes) {
-        this(ruleId, ConstraintType.NEGATIVE_HARD, causes);
+        this(ruleId, ConstraintType.HARD, causes);
     }
 
     public ConstraintOccurrence(String ruleId, ConstraintType constraintType, Object... causes) {

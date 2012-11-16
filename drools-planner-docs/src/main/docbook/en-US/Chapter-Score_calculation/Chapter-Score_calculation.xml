@@ -34,7 +34,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Score_calculation/positiveAndNegativeConstraints.png"></imagedata>
+          <imagedata fileref="images/Chapter-Score_calculation/positiveAndNegativeConstraints.png"/>
         </imageobject>
       </mediaobject>
 
@@ -67,7 +67,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Score_calculation/scoreWeighting.png"></imagedata>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreWeighting.png"/>
         </imageobject>
       </mediaobject>
 
@@ -95,7 +95,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Score_calculation/scoreLevels.png"></imagedata>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreLevels.png"/>
         </imageobject>
       </mediaobject>
 
@@ -133,7 +133,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-Score_calculation/paretoOptimizationScoring.png"
-                     format="PNG"></imagedata>
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -714,7 +714,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Score_calculation/unsolvedNQueens04.png" format="PNG"></imagedata>
+            <imagedata fileref="images/Chapter-Score_calculation/unsolvedNQueens04.png" format="PNG"/>
           </imageobject>
         </mediaobject>
 
@@ -767,7 +767,7 @@ rule "multipleQueensDescendingDiagonal"
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
 end
 
-rule "hardConstraintsBroken"
+rule "accumulateScore"
     when
         $occurrenceCount : Number() from accumulate(
             $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
@@ -791,9 +791,9 @@ rule "roomCapacity"
     when
         ...
     then
-        insertLogical(new IntConstraintOccurrence("roomCapacity", ConstraintType.NEGATIVE_SOFT,
-                ($studentSize - $capacity),
-                ...));
+        insertLogical(new IntConstraintOccurrence("roomCapacity", ConstraintType.SOFT,
+                ($capacity - $studentSize),
+                $room, $lecture));
 end
 
 // CurriculumCompactness: Lectures belonging to a curriculum should be adjacent
@@ -805,22 +805,22 @@ rule "curriculumCompactness"
     when
         ...
     then
-        insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.NEGATIVE_SOFT,
-                2,
-                ...));
+        insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.SOFT,
+                -2,
+                $lecture, $curriculum));
 end
 
 
 // Accumulate soft constraints
-rule "softConstraintsBroken"
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             sum($weight)
         )
     then
-        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end</programlisting>
       </section>
     </section>
@@ -898,7 +898,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Score_calculation/deltaBasedScoreCalculationNQueens04.png" format="PNG"></imagedata>
+            <imagedata fileref="images/Chapter-Score_calculation/deltaBasedScoreCalculationNQueens04.png" format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>

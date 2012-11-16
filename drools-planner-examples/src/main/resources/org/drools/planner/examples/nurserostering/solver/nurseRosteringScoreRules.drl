@@ -74,8 +74,8 @@ global HardAndSoftScoreHolder scoreHolder;
 //            count($assignment)
 //        )
 //    then
-//        insertLogical(new IntConstraintOccurrence("requiredEmployeeSizePerShift", ConstraintType.NEGATIVE_HARD,
-//                Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue()),
+//        insertLogical(new IntConstraintOccurrence("requiredEmployeeSizePerShift", ConstraintType.HARD,
+//                - Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue()),
 //                $shift));
 //end
 
@@ -85,8 +85,8 @@ rule "oneShiftPerDay"
         $leftAssignment : ShiftAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate)
         $rightAssignment : ShiftAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
     then
-        insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.NEGATIVE_HARD,
-                1,
+        insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.HARD,
+                -1,
                 $leftAssignment, $rightAssignment));
 end
 
@@ -118,8 +118,8 @@ rule "minimumTotalAssignments"
         EmployeeAssignmentTotal(employeeContract == $contract, total < $minimumValue,
             $employee : employee, $total : total)
     then
-        insertLogical(new IntConstraintOccurrence("minimumTotalAssignments", ConstraintType.NEGATIVE_SOFT,
-                ($minimumValue - $total) * $contractLine.getMinimumWeight(),
+        insertLogical(new IntConstraintOccurrence("minimumTotalAssignments", ConstraintType.SOFT,
+                ($total - $minimumValue) * $contractLine.getMinimumWeight(),
                 $employee));
 end
 
@@ -133,8 +133,8 @@ rule "maximumTotalAssignments"
         EmployeeAssignmentTotal(employeeContract == $contract, total > $maximumValue,
             $employee : employee, $total : total)
     then
-        insertLogical(new IntConstraintOccurrence("maximumTotalAssignments", ConstraintType.NEGATIVE_SOFT,
-                ($total - $maximumValue) * $contractLine.getMaximumWeight(),
+        insertLogical(new IntConstraintOccurrence("maximumTotalAssignments", ConstraintType.SOFT,
+                ($maximumValue - $total) * $contractLine.getMaximumWeight(),
                 $employee));
 end
 
@@ -204,8 +204,8 @@ rule "minimumConsecutiveWorkingDays"
             $dayLength : dayLength
         )
     then
-        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-                ($minimumValue - $dayLength) * $contractLine.getMinimumWeight(),
+        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.SOFT,
+                ($dayLength - $minimumValue) * $contractLine.getMinimumWeight(),
                 $employeeWorkSequence));
 end
 
@@ -224,8 +224,8 @@ rule "maximumConsecutiveWorkingDays"
             $dayLength : dayLength
         )
     then
-        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-                ($dayLength - $maximumValue) * $contractLine.getMaximumWeight(),
+        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.SOFT,
+                ($maximumValue - $dayLength) * $contractLine.getMaximumWeight(),
                 $employeeWorkSequence));
 end
 
@@ -314,8 +314,8 @@ rule "minimumConsecutiveFreeDays"
             $dayLength : dayLength
         )
     then
-        insertLogical(new IntConstraintOccurrence("minimumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
-                ($minimumValue - $dayLength) * $contractLine.getMinimumWeight(),
+        insertLogical(new IntConstraintOccurrence("minimumConsecutiveFreeDays", ConstraintType.SOFT,
+                ($dayLength - $minimumValue) * $contractLine.getMinimumWeight(),
                 $employeeFreeSequence));
 end
 
@@ -334,8 +334,8 @@ rule "maximumConsecutiveFreeDays"
             $dayLength : dayLength
         )
     then
-        insertLogical(new IntConstraintOccurrence("maximumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
-                ($dayLength - $maximumValue) * $contractLine.getMaximumWeight(),
+        insertLogical(new IntConstraintOccurrence("maximumConsecutiveFreeDays", ConstraintType.SOFT,
+                ($maximumValue - $dayLength) * $contractLine.getMaximumWeight(),
                 $employeeFreeSequence));
 end
 
@@ -412,8 +412,8 @@ rule "minimumConsecutiveWorkingWeekends"
             $weekendLength : weekendLength
         )
     then
-        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingWeekends", ConstraintType.NEGATIVE_SOFT,
-                ($minimumValue - $weekendLength) * $contractLine.getMinimumWeight(),
+        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingWeekends", ConstraintType.SOFT,
+                ($weekendLength - $minimumValue) * $contractLine.getMinimumWeight(),
                 $employeeWeekendSequence));
 end
 
@@ -432,8 +432,8 @@ rule "maximumConsecutiveWorkingWeekends"
             $weekendLength : weekendLength
         )
     then
-        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingWeekends", ConstraintType.NEGATIVE_SOFT,
-                ($weekendLength - $maximumValue) * $contractLine.getMaximumWeight(),
+        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingWeekends", ConstraintType.SOFT,
+                ($maximumValue - $weekendLength) * $contractLine.getMaximumWeight(),
                 $employeeWeekendSequence));
 end
 
@@ -451,8 +451,8 @@ rule "startOnNotFirstDayOfWeekend"
             $distanceToFirstDayOfWeekend : distanceToFirstDayOfWeekend
         )
     then
-        insertLogical(new IntConstraintOccurrence("startOnNotFirstDayOfWeekend", ConstraintType.NEGATIVE_SOFT,
-                $distanceToFirstDayOfWeekend * $contractLine.getWeight(),
+        insertLogical(new IntConstraintOccurrence("startOnNotFirstDayOfWeekend", ConstraintType.SOFT,
+                - $distanceToFirstDayOfWeekend * $contractLine.getWeight(),
                 $employeeConsecutiveAssignmentStart));
 end
 rule "endOnNotLastDayOfWeekend"
@@ -467,8 +467,8 @@ rule "endOnNotLastDayOfWeekend"
             $distanceToLastDayOfWeekend : distanceToLastDayOfWeekend
         )
     then
-        insertLogical(new IntConstraintOccurrence("endOnNotLastDayOfWeekend", ConstraintType.NEGATIVE_SOFT,
-                $distanceToLastDayOfWeekend * $contractLine.getWeight(),
+        insertLogical(new IntConstraintOccurrence("endOnNotLastDayOfWeekend", ConstraintType.SOFT,
+                - $distanceToLastDayOfWeekend * $contractLine.getWeight(),
                 $employeeConsecutiveAssignmentEnd));
 end
 
@@ -489,8 +489,8 @@ rule "identicalShiftTypesDuringWeekend"
             count($assignment)
         )
     then
-        insertLogical(new IntConstraintOccurrence("identicalShiftTypesDuringWeekend", ConstraintType.NEGATIVE_SOFT,
-                ($weekendLength - $weekendAssignmentTotal.intValue()) * $contractLine.getWeight(),
+        insertLogical(new IntConstraintOccurrence("identicalShiftTypesDuringWeekend", ConstraintType.SOFT,
+                ($weekendAssignmentTotal.intValue() - $weekendLength) * $contractLine.getWeight(),
                 $employee, $sundayIndex, $shiftType));
 end
 
@@ -503,8 +503,8 @@ rule "dayOffRequest"
         $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
         $assignment : ShiftAssignment(employee == $employee, shiftDate == $shiftDate)
     then
-        insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
-                $weight,
+        insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.SOFT,
+                - $weight,
                 $dayOffRequest, $assignment));
 end
 rule "dayOnRequest"
@@ -512,8 +512,8 @@ rule "dayOnRequest"
         $dayOnRequest : DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
         not ShiftAssignment(employee == $employee, shiftDate == $shiftDate)
     then
-        insertLogical(new IntConstraintOccurrence("dayOnRequest", ConstraintType.NEGATIVE_SOFT,
-                $weight,
+        insertLogical(new IntConstraintOccurrence("dayOnRequest", ConstraintType.SOFT,
+                - $weight,
                 $dayOnRequest));
 end
 
@@ -523,8 +523,8 @@ rule "shiftOffRequest"
         $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight)
         $assignment : ShiftAssignment(employee == $employee, shift == $shift)
     then
-        insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
-                $weight,
+        insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.SOFT,
+                - $weight,
                 $shiftOffRequest, $assignment));
 end
 rule "shiftOnRequest"
@@ -532,8 +532,8 @@ rule "shiftOnRequest"
         $shiftOnRequest : ShiftOnRequest($employee : employee, $shift : shift, $weight : weight)
         not ShiftAssignment(employee == $employee, shift == $shift)
     then
-        insertLogical(new IntConstraintOccurrence("shiftOnRequest", ConstraintType.NEGATIVE_SOFT,
-                $weight,
+        insertLogical(new IntConstraintOccurrence("shiftOnRequest", ConstraintType.SOFT,
+                - $weight,
                 $shiftOnRequest));
 end
 
@@ -546,8 +546,8 @@ rule "alternativeSkill"
         ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill)
         not SkillProficiency(employee == $employee, skill == $skill)
     then
-        insertLogical(new IntConstraintOccurrence("alternativeSkill", ConstraintType.NEGATIVE_SOFT,
-                $contractLine.getWeight(),
+        insertLogical(new IntConstraintOccurrence("alternativeSkill", ConstraintType.SOFT,
+                - $contractLine.getWeight(),
                 $assignment));
 end
 
@@ -573,10 +573,11 @@ rule "unwantedPatternFreeBefore2DaysWithAWorkDayPattern"
         )
     then
         insertLogical(new IntConstraintOccurrence("unwantedPatternFreeBefore2DaysWithAWorkDayPattern",
-                ConstraintType.NEGATIVE_SOFT,
-                $pattern.getWeight(),
+                ConstraintType.SOFT,
+                - $pattern.getWeight(),
                 $employee, $pattern, $freeDayIndex));
 end
+
 // TODO support WorkBeforeFreeSequencePattern too (not needed for competition)
 //rule "unwantedPatternWorkBeforeFreeSequencePattern"
 //    when
@@ -602,8 +603,8 @@ end
 //        )
 //    then
 //        insertLogical(new IntConstraintOccurrence("unwantedPatternWorkBeforeFreeSequencePattern",
-//                ConstraintType.NEGATIVE_SOFT,
-//                $pattern.getWeight(),
+//                ConstraintType.SOFT,
+//                - $pattern.getWeight(),
 //                $employee, $pattern, $workDayIndex));
 //end
 rule "unwantedPatternShiftType2DaysPattern"
@@ -627,8 +628,8 @@ rule "unwantedPatternShiftType2DaysPattern"
             shiftDateDayIndex == ($firstDayIndex + 1)
         )
     then
-        insertLogical(new IntConstraintOccurrence("unwantedPatternShiftType2DaysPattern", ConstraintType.NEGATIVE_SOFT,
-                $pattern.getWeight(),
+        insertLogical(new IntConstraintOccurrence("unwantedPatternShiftType2DaysPattern", ConstraintType.SOFT,
+                - $pattern.getWeight(),
                 $employee, $pattern, $firstDayIndex));
 end
 rule "unwantedPatternShiftType3DaysPattern"
@@ -658,8 +659,8 @@ rule "unwantedPatternShiftType3DaysPattern"
             shiftDateDayIndex == ($firstDayIndex + 2)
         )
     then
-        insertLogical(new IntConstraintOccurrence("unwantedPatternShiftType3DaysPattern", ConstraintType.NEGATIVE_SOFT,
-                $pattern.getWeight(),
+        insertLogical(new IntConstraintOccurrence("unwantedPatternShiftType3DaysPattern", ConstraintType.SOFT,
+                - $pattern.getWeight(),
                 $employee, $pattern, $firstDayIndex));
 end
 
@@ -668,25 +669,25 @@ end
 // ############################################################################
 
 // Accumulate hard constraints
-rule "hardConstraintsBroken"
+rule "accumulateHardScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardScore($hardTotal.intValue());
 end
 
 // Accumulate soft constraints
-rule "softConstraintsBroken"
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end

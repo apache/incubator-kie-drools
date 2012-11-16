@@ -41,8 +41,8 @@ rule "requiredCpuPowerTotal"
             sum($requiredCpuPower)
         )
     then
-        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.NEGATIVE_HARD,
-                $requiredCpuPowerTotal.intValue() - $cpuPower,
+        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.HARD,
+                $cpuPower - $requiredCpuPowerTotal.intValue(),
                 $computer));
 end
 
@@ -56,8 +56,8 @@ rule "requiredMemoryTotal"
             sum($requiredMemory)
         )
     then
-        insertLogical(new IntConstraintOccurrence("requiredMemoryTotal", ConstraintType.NEGATIVE_HARD,
-                $requiredMemoryTotal.intValue() - $memory,
+        insertLogical(new IntConstraintOccurrence("requiredMemoryTotal", ConstraintType.HARD,
+                $memory - $requiredMemoryTotal.intValue(),
                 $computer));
 end
 
@@ -71,8 +71,8 @@ rule "requiredNetworkBandwidthTotal"
             sum($requiredNetworkBandwidth)
         )
     then
-        insertLogical(new IntConstraintOccurrence("requiredNetworkBandwidthTotal", ConstraintType.NEGATIVE_HARD,
-                $requiredNetworkBandwidthTotal.intValue() - $networkBandwidth,
+        insertLogical(new IntConstraintOccurrence("requiredNetworkBandwidthTotal", ConstraintType.HARD,
+                $networkBandwidth - $requiredNetworkBandwidthTotal.intValue(),
                 $computer));
 end
 
@@ -85,8 +85,8 @@ rule "computerCost"
         $computer : CloudComputer($cost : cost)
         exists CloudProcess(computer == $computer)
     then
-        insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.NEGATIVE_SOFT,
-                $cost,
+        insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.SOFT,
+                - $cost,
                 $computer));
 end
 
@@ -95,25 +95,25 @@ end
 // ############################################################################
 
 // Accumulate hard constraints
-rule "hardConstraintsBroken"
+rule "accumulateHardScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardScore($hardTotal.intValue());
 end
 
 // Accumulate soft constraints
-rule "softConstraintsBroken"
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end

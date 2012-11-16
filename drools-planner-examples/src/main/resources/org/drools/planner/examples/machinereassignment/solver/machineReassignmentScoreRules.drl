@@ -72,8 +72,8 @@ rule "maximumCapacityNonTransientlyConsumed"
         $machineUsage : MrMachineUsage(transientlyConsumed == false, maximumAvailable < 0,
                 $maximumAvailable : maximumAvailable)
     then
-        insertLogical(new LongConstraintOccurrence("maximumCapacity", ConstraintType.NEGATIVE_HARD,
-                - $maximumAvailable,
+        insertLogical(new LongConstraintOccurrence("maximumCapacity", ConstraintType.HARD,
+                $maximumAvailable,
                 $machineUsage));
 end
 rule "maximumCapacityTransientlyConsumed"
@@ -83,8 +83,8 @@ rule "maximumCapacityTransientlyConsumed"
         MrMachineTransientUsage(resource == $resource, machine == $machine,
                 $maximumAvailable < usage, $transientUsage : usage)
     then
-        insertLogical(new LongConstraintOccurrence("maximumCapacityTransientlyConsumed", ConstraintType.NEGATIVE_HARD,
-                $transientUsage - $maximumAvailable,
+        insertLogical(new LongConstraintOccurrence("maximumCapacityTransientlyConsumed", ConstraintType.HARD,
+                $maximumAvailable - $transientUsage,
                 $machineUsage));
 end
 
@@ -94,8 +94,8 @@ rule "serviceConflict"
         $leftProcessAssignment : MrProcessAssignment($service : service, $machine : machine, $leftId : id)
         $rightProcessAssignment : MrProcessAssignment(service == $service, machine == $machine, id > $leftId)
     then
-        insertLogical(new LongConstraintOccurrence("serviceConflict", ConstraintType.NEGATIVE_HARD,
-                1,
+        insertLogical(new LongConstraintOccurrence("serviceConflict", ConstraintType.HARD,
+                -1,
                 $leftProcessAssignment, $rightProcessAssignment));
 end
 
@@ -109,8 +109,8 @@ rule "serviceLocationSpread"
             count($location)
         )
     then
-        insertLogical(new LongConstraintOccurrence("serviceLocationSpread", ConstraintType.NEGATIVE_HARD,
-                $locationSpread - $spreadCount.intValue(),
+        insertLogical(new LongConstraintOccurrence("serviceLocationSpread", ConstraintType.HARD,
+                $spreadCount.intValue() - $locationSpread,
                 $service));
 end
 
@@ -121,8 +121,8 @@ rule "serviceDependency"
         $processAssignment : MrProcessAssignment(service == $fromService, $neighborhood : neighborhood)
         not MrProcessAssignment(service == $toService, neighborhood == $neighborhood)
     then
-        insertLogical(new LongConstraintOccurrence("serviceDependency", ConstraintType.NEGATIVE_HARD,
-                1,
+        insertLogical(new LongConstraintOccurrence("serviceDependency", ConstraintType.HARD,
+                -1,
                 $serviceDependency, $processAssignment));
 end
 
@@ -136,8 +136,8 @@ rule "loadCost"
         $machineUsage : MrMachineUsage(safetyAvailable < 0,
                 $safetyAvailable : safetyAvailable, $loadCostWeight : loadCostWeight)
     then
-        insertLogical(new LongConstraintOccurrence("loadCost", ConstraintType.NEGATIVE_SOFT,
-                - $safetyAvailable * $loadCostWeight,
+        insertLogical(new LongConstraintOccurrence("loadCost", ConstraintType.SOFT,
+                $safetyAvailable * $loadCostWeight,
                 $machineUsage));
 end
 
@@ -152,8 +152,8 @@ rule "balanceCost"
                 maximumAvailable < $originAvailable * $multiplicand,
                 $targetAvailable : maximumAvailable)
     then
-        insertLogical(new LongConstraintOccurrence("balanceCost", ConstraintType.NEGATIVE_SOFT,
-                (($originAvailable * $multiplicand) - $targetAvailable) * $weight,
+        insertLogical(new LongConstraintOccurrence("balanceCost", ConstraintType.SOFT,
+                ($targetAvailable - ($originAvailable * $multiplicand)) * $weight,
                 $balancePenalty, $machine));
 end
 
@@ -163,8 +163,8 @@ rule "processMoveCost"
         MrGlobalPenaltyInfo(processMoveCostWeight > 0, $processMoveCostWeight : processMoveCostWeight)
         $processAssignment : MrProcessAssignment(moved == true, processMoveCost > 0, $processMoveCost : processMoveCost)
     then
-        insertLogical(new LongConstraintOccurrence("processMoveCost", ConstraintType.NEGATIVE_SOFT,
-                $processMoveCost * $processMoveCostWeight,
+        insertLogical(new LongConstraintOccurrence("processMoveCost", ConstraintType.SOFT,
+                - $processMoveCost * $processMoveCostWeight,
                 $processAssignment));
 end
 
@@ -189,8 +189,8 @@ rule "serviceMoveCost"
         not MrServiceMovedProcessesCount(movedProcessesCount > $movedProcessesCount)
         not MrServiceMovedProcessesCount(movedProcessesCount == $movedProcessesCount, serviceId < $serviceId)
     then
-        insertLogical(new LongConstraintOccurrence("serviceMoveCost", ConstraintType.NEGATIVE_SOFT,
-                $movedProcessesCount * $serviceMoveCostWeight,
+        insertLogical(new LongConstraintOccurrence("serviceMoveCost", ConstraintType.SOFT,
+                - $movedProcessesCount * $serviceMoveCostWeight,
                 $service));
 end
 
@@ -200,8 +200,8 @@ rule "machineMoveCost"
         MrGlobalPenaltyInfo(machineMoveCostWeight > 0, $machineMoveCostWeight : machineMoveCostWeight)
         $processAssignment : MrProcessAssignment(moved == true, machineMoveCost > 0, $machineMoveCost : machineMoveCost)
     then
-        insertLogical(new LongConstraintOccurrence("machineMoveCost", ConstraintType.NEGATIVE_SOFT,
-                $machineMoveCost * $machineMoveCostWeight,
+        insertLogical(new LongConstraintOccurrence("machineMoveCost", ConstraintType.SOFT,
+                - $machineMoveCost * $machineMoveCostWeight,
                 $processAssignment));
 end
 
@@ -210,25 +210,25 @@ end
 // ############################################################################
 
 // Accumulate hard constraints
-rule "hardConstraintsBroken"
+rule "accumulateHardScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         accumulate(
-            LongConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            LongConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
             $hardTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setHardConstraintsBroken($hardTotal.longValue());
+        scoreHolder.setHardScore($hardTotal.intValue());
 end
 
 // Accumulate soft constraints
-rule "softConstraintsBroken"
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         accumulate(
-            LongConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            LongConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             $softTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setSoftConstraintsBroken($softTotal.longValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end

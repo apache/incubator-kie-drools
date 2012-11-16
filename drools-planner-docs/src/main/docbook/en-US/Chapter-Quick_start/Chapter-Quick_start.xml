@@ -63,7 +63,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_start/cloudBalanceUseCase.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_start/cloudBalanceUseCase.png"/>
         </imageobject>
       </mediaobject>
 
@@ -100,7 +100,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_start/cloudBalanceClassDiagram.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_start/cloudBalanceClassDiagram.png"/>
         </imageobject>
       </mediaobject>
 
@@ -596,8 +596,8 @@ rule "requiredCpuPowerTotal"
             sum($requiredCpuPower)
         )
     then
-        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.NEGATIVE_HARD,
-                $requiredCpuPowerTotal.intValue() - $cpuPower,
+        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.HARD,
+                $cpuPower - $requiredCpuPowerTotal.intValue(),
                 $computer));
 end
 
@@ -614,15 +614,15 @@ end
 // ############################################################################
 
 // Accumulate hard constraints
-rule "hardConstraintsBroken"
+rule "accumulateHardScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
             sum($weight)
         )
     then
-        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardScore($hardTotal.intValue());
 end</programlisting>
         </example>
 
@@ -641,8 +641,8 @@ rule "computerCost"
         $computer : CloudComputer($cost : cost)
         exists CloudProcess(computer == $computer)
     then
-        insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.NEGATIVE_SOFT,
-                $cost,
+        insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.SOFT,
+                - $cost,
                 $computer));
 end
 
@@ -651,20 +651,20 @@ end
 // ############################################################################
 
 // Accumulate soft constraints
-rule "softConstraintsBroken"
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
         $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
             sum($weight)
         )
     then
-        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end</programlisting>
         </example>
 
         <para>If you use the Drools rule engine for score calculation, you can integrate with other Drools technologies,
-        such as decision tables (XSL or web based), the Guvnor rule repository, ...</para>
+        such as decision tables (XLS or web based), the Guvnor rule repository, ...</para>
       </section>
     </section>
 

@@ -95,7 +95,7 @@ end
 // Calculate score
 // ############################################################################
 
-rule "hardConstraintsBroken"
+rule "accumulateScore"
     when
         $occurrenceCount : Number() from accumulate(
             $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
