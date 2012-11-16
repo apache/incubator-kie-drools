@@ -139,9 +139,8 @@
       <para>You can mix different move types. Usually you're better off preferring small (fine-grained) moves over big
       (course-grained) moves because the score delta calculation will pay off more. However, as the traveling tournament
       example proves, if you can remove a hard constraint by using a certain set of big moves, you can win performance
-      and scalability. Try it yourself: run both the simple (small moves) and the smart (big moves) version of the
-      traveling tournament example. The smart version evaluates a lot less unfeasible solutions, which enables it to
-      outperform and outscale the simple version.</para>
+      and scalability. A big moves version could evaluate a lot less unfeasible solutions, which enables it to
+      outperform and outscale a small moves version.</para>
     </section>
 
     <section>

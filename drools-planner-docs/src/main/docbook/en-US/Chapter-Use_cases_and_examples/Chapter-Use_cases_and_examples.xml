@@ -57,7 +57,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
-                         format="PNG"></imagedata>
+                         format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -78,7 +78,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/solvedNQueens04.png" format="PNG"></imagedata>
+              <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/solvedNQueens04.png" format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -98,7 +98,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotNQueens.png"></imagedata>
+              <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotNQueens.png"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -203,8 +203,8 @@
           </tgroup>
         </table>
 
-        <para>The Drools Planner implementation of the N queens example has not been optimized because it functions as a beginner example.
-        Nevertheless, it can easily handle 64 queens.</para>
+        <para>The Drools Planner implementation of the N queens example has not been optimized because it functions as a
+        beginner example. Nevertheless, it can easily handle 64 queens.</para>
       </section>
 
       <section>
@@ -281,7 +281,7 @@
                 <entry morerows="3"><mediaobject>
                     <imageobject>
                       <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
-                                 format="PNG"></imagedata>
+                                 format="PNG"/>
                     </imageobject>
                   </mediaobject></entry>
 
@@ -574,7 +574,7 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png"/>
           </imageobject>
         </mediaobject>
       </section>
@@ -678,7 +678,7 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png"/>
           </imageobject>
         </mediaobject>
       </section>
@@ -893,7 +893,7 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationDomainDiagram.png"></imagedata>
+              <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationDomainDiagram.png"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -919,19 +919,19 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringUseCase.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringUseCase.png"/>
           </imageobject>
         </mediaobject>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringHardConstraints.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringHardConstraints.png"/>
           </imageobject>
         </mediaobject>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringSoftConstraints.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringSoftConstraints.png"/>
           </imageobject>
         </mediaobject>
       </section>
@@ -972,28 +972,13 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
         </itemizedlist>
 
         <para>The problem is defined on <link xlink:href="http://mat.gsia.cmu.edu/TOURN/">Michael Trick's website (which
-        contains several world records too)</link>.</para>
+        contains the world records too)</link>.</para>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/travelingTournamentUseCase.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/travelingTournamentUseCase.png"/>
           </imageobject>
         </mediaobject>
-      </section>
-
-      <section>
-        <title>Simple and smart implementation</title>
-
-        <para>There are 2 implementations (simple and smart) to demonstrate the importance of some performance tips. The
-        <literal>DroolsPlannerExamplesApp</literal> always runs the smart implementation, but with these commands you
-        can compare the 2 implementations yourself:</para>
-
-        <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
-...
-$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
-...</programlisting>
-
-        <para>The smart implementation performs and scales exponentially better than the simple implementation.</para>
       </section>
 
       <section>
@@ -1004,7 +989,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
         <table>
           <title>Traveling tournament problem size</title>
 
-          <tgroup cols="7">
+          <tgroup cols="6">
             <thead>
               <row>
                 <entry># teams</entry>
@@ -1012,8 +997,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
                 <entry># days</entry>
 
                 <entry># matches</entry>
-
-                <entry># possible solutions (simple)</entry>
 
                 <entry># possible solutions (smart)</entry>
 
@@ -1031,8 +1014,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
 
                 <entry>12</entry>
 
-                <entry>2176782336</entry>
-
                 <entry>&lt;= 518400</entry>
 
                 <entry>?</entry>
@@ -1046,8 +1027,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
                 <entry>10</entry>
 
                 <entry>30</entry>
-
-                <entry>1000000000000000000000000000000</entry>
 
                 <entry>&lt;= 47784725839872000000</entry>
 
@@ -1063,8 +1042,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
 
                 <entry>56</entry>
 
-                <entry>1.52464943788290465606136043e+64</entry>
-
                 <entry>&lt;= 5.77608277425558771434498864e+43</entry>
 
                 <entry>?</entry>
@@ -1078,8 +1055,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
                 <entry>18</entry>
 
                 <entry>90</entry>
-
-                <entry>9.43029892325559280477052413e+112</entry>
 
                 <entry>&lt;= 1.07573451027871200629339068e+79</entry>
 
@@ -1095,8 +1070,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
 
                 <entry>132</entry>
 
-                <entry>1.58414112478195320415135060e+177</entry>
-
                 <entry>&lt;= 2.01650616733413376416949843e+126</entry>
 
                 <entry>?</entry>
@@ -1110,8 +1083,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
                 <entry>26</entry>
 
                 <entry>182</entry>
-
-                <entry>3.35080635695103223315189511e+257</entry>
 
                 <entry>&lt;= 1.73513467024013808570420241e+186</entry>
 
@@ -1127,8 +1098,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
 
                 <entry>240</entry>
 
-                <entry>3.22924601799855400751522483e+354</entry>
-
                 <entry>&lt;= 2.45064610271441678267620602e+259</entry>
 
                 <entry>?</entry>
@@ -1142,8 +1111,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
                 <entry>2 * (n - 1)</entry>
 
                 <entry>n * (n - 1)</entry>
-
-                <entry>(2 * (n - 1)) ^ (n * (n - 1))</entry>
 
                 <entry>&lt;= (((2 * (n - 1))!) ^ (n / 2))</entry>
 
