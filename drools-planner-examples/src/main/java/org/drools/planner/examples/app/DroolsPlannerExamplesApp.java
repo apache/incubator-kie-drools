@@ -117,7 +117,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "No 2 queens must be able to attack each other.",
                 NQueensPanel.LOGO_PATH, new Runnable() {
                     public void run() {
-                        new NQueensApp().init(false);
+                        new NQueensApp().init(DroolsPlannerExamplesApp.this, false);
                     }
                 }));
         panel.add(createExampleButton("Cloud balancing",
@@ -126,7 +126,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Each computer used inflicts a maintenance cost.",
                 CloudBalancingPanel.LOGO_PATH, new Runnable() {
             public void run() {
-                new CloudBalancingApp().init(false);
+                new CloudBalancingApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Traveling salesman",
@@ -135,7 +135,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Find the shortest route to visit all cities.",
                 TspPanel.LOGO_PATH, new Runnable() {
             public void run() {
-                new TspApp().init(false);
+                new TspApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Manners 2009",
@@ -143,7 +143,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Assign guests to seats at tables.",
                 null, new Runnable() {
             public void run() {
-                new Manners2009App().init(false);
+                new Manners2009App().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         return panel;
@@ -160,7 +160,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Assign lectures to periods and rooms.",
                 null, new Runnable() {
             public void run() {
-                new CurriculumCourseApp().init(false);
+                new CurriculumCourseApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Machine reassignment",
@@ -168,7 +168,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Reassign processes to machines.",
                 MachineReassignmentPanel.LOGO_PATH, new Runnable() {
             public void run() {
-                new MachineReassignmentApp().init(false);
+                new MachineReassignmentApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Vehicle routing",
@@ -176,7 +176,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Pick up all items of all customers with a few vehicles in the shortest route possible.",
                 VehicleRoutingPanel.LOGO_PATH, new Runnable() {
             public void run() {
-                new VehicleRoutingApp().init(false);
+                new VehicleRoutingApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Hospital bed planning",
@@ -184,7 +184,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Assign patients to beds.",
                 null, new Runnable() {
             public void run() {
-                new PatientAdmissionScheduleApp().init(false);
+                new PatientAdmissionScheduleApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         return panel;
@@ -201,7 +201,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Assign exams to timeslots and rooms.",
                 null, new Runnable() {
             public void run() {
-                new ExaminationApp().init(false);
+                new ExaminationApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Employee rostering",
@@ -209,7 +209,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Assign shifts to employees.",
                 NurseRosteringPanel.LOGO_PATH, new Runnable() {
             public void run() {
-                new NurseRosteringApp().init(false);
+                new NurseRosteringApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Sport scheduling",
@@ -217,14 +217,14 @@ public class DroolsPlannerExamplesApp extends JFrame {
                         "Assign matches to days.",
                 null, new Runnable() {
             public void run() {
-                new SmartTravelingTournamentApp().init(false);
+                new SmartTravelingTournamentApp().init(DroolsPlannerExamplesApp.this, false);
             }
         }));
         panel.add(new JPanel());
         // TODO TrainDesign is still in working progress
 //        contentPane.add(createExampleButton("Train design", "(RAS2011)", new Runnable() {
 //            public void run() {
-//                new TrainDesignApp().init(false);
+//                new TrainDesignApp().init(DroolsPlannerExamplesApp.this, false);
 //            }
 //        }));
         return panel;

@@ -16,10 +16,7 @@
 
 package org.drools.planner.examples.common.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -102,10 +99,10 @@ public class SolverAndPersistenceFrame extends JFrame {
         resultLabel.setText("Latest best score: " + solution.getScore());
     }
 
-    public void init() {
+    public void init(Component centerForComponent) {
         setContentPane(createContentPane());
         pack();
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(centerForComponent);
     }
 
     private JPanel createContentPane() {

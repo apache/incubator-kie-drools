@@ -26,6 +26,8 @@ import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
 
+import java.awt.*;
+
 public abstract class CommonApp extends LoggingMain {
 
     private SolverAndPersistenceFrame solverAndPersistenceFrame;
@@ -37,12 +39,12 @@ public abstract class CommonApp extends LoggingMain {
     }
 
     public void init() {
-        init(true);
+        init(null, true);
     }
 
-    public void init(boolean exitOnClose) {
+    public void init(Component centerForComponent, boolean exitOnClose) {
         solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
-        solverAndPersistenceFrame.init();
+        solverAndPersistenceFrame.init(centerForComponent);
         solverAndPersistenceFrame.setVisible(true);
     }
 
