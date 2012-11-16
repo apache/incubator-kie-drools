@@ -42,6 +42,10 @@ public class Team extends AbstractPersistable {
         this.distanceToTeamMap = distanceToTeamMap;
     }
 
+    public int getDistance(Team other) {
+        return distanceToTeamMap.get(other);
+    }
+
     @Override
     public String toString() {
         return getName();

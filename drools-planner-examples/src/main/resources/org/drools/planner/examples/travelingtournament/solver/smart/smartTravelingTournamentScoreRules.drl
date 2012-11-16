@@ -18,14 +18,13 @@ package org.drools.planner.examples.travelingtournament.smart.solver;
     dialect "java"
 
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
-import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.domain.solver.Hop;
 
 global HardAndSoftScoreHolder scoreHolder;
 
@@ -36,31 +35,37 @@ global HardAndSoftScoreHolder scoreHolder;
 // multipleMatchesPerTeamPerDay is obsolete because it is always 0
 
 rule "fourConsecutiveHomeMatches"
-  when
-    $m : Match($homeTeam : homeTeam, $day1 : day)
-    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1))
-    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 2))
-    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 3))
-  then
-    insertLogical(new UnweightedConstraintOccurrence("fourConsecutiveHomeMatches", $m));
+    when
+        $m : Match($homeTeam : homeTeam, $day1 : day)
+        Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1))
+        Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 2))
+        Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 3))
+    then
+        insertLogical(new IntConstraintOccurrence("fourConsecutiveHomeMatches", ConstraintType.HARD,
+                -1,
+                $m));
 end
 
 rule "fourConsecutiveAwayMatches"
-  when
-    $m : Match($awayTeam : awayTeam, $day1 : day)
-    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 1))
-    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 2))
-    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 3))
-  then
-    insertLogical(new UnweightedConstraintOccurrence("fourConsecutiveAwayMatches", $m));
+    when
+        $m : Match($awayTeam : awayTeam, $day1 : day)
+        Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 1))
+        Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 2))
+        Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 3))
+    then
+        insertLogical(new IntConstraintOccurrence("fourConsecutiveAwayMatches", ConstraintType.HARD,
+                -1,
+                $m));
 end
 
 rule "matchRepeater"
-  when
-    $m : Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day)
-    Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1))
-  then
-    insertLogical(new UnweightedConstraintOccurrence("matchRepeater", $m));
+    when
+        $m : Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day)
+        Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1))
+    then
+        insertLogical(new IntConstraintOccurrence("matchRepeater", ConstraintType.HARD,
+                -1,
+                $m));
 end
 
 // ############################################################################
@@ -69,63 +74,75 @@ end
 
 rule "startToAwayHop"
     when
-        Match($toTeam : homeTeam, $team : awayTeam, $day : day)
+        $m : Match($toTeam : homeTeam, $team : awayTeam, $day : day)
         not Day(eval(index == $day.getIndex() - 1))
     then
-        insertLogical(new Hop($team, $team, $toTeam));
+        insertLogical(new IntConstraintOccurrence("startToAwayHop", ConstraintType.SOFT,
+                - $team.getDistance($toTeam),
+                $m));
 end
 rule "homeToAwayHop"
     when
-        Match($team : homeTeam, $day1 : day)
-        Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
+        $m1 : Match($team : homeTeam, $day1 : day)
+        $m2 : Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
     then
-        insertLogical(new Hop($team, $team, $toTeam));
+        insertLogical(new IntConstraintOccurrence("homeToAwayHop", ConstraintType.SOFT,
+                - $team.getDistance($toTeam),
+                $m1, $m2));
 end
 rule "awayToAwayHop"
     when
-        Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day)
-        Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
+        $m1 : Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day)
+        $m2 : Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
     then
-        insertLogical(new Hop($team, $fromTeam, $toTeam));
+        insertLogical(new IntConstraintOccurrence("awayToAwayHop", ConstraintType.SOFT,
+                - $fromTeam.getDistance($toTeam),
+                $m1, $m2));
 end
 rule "awayToHomeHop"
     when
-        Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day)
-        Match(homeTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
+        $m1 : Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day)
+        $m2 : Match(homeTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
     then
-        insertLogical(new Hop($team, $fromTeam, $team));
+        insertLogical(new IntConstraintOccurrence("awayToHomeHop", ConstraintType.SOFT,
+                - $fromTeam.getDistance($team),
+                $m1, $m2));
 end
 rule "awayToEndHop"
     when
-        Match($fromTeam : homeTeam, $team : awayTeam, $day : day)
+        $m : Match($fromTeam : homeTeam, $team : awayTeam, $day : day)
         not Day(eval(index == $day.getIndex() + 1))
     then
-        insertLogical(new Hop($team, $fromTeam, $team));
+        insertLogical(new IntConstraintOccurrence("awayToEndHop", ConstraintType.SOFT,
+                - $fromTeam.getDistance($team),
+                $m));
 end
 
 // ############################################################################
 // Calculate score
 // ############################################################################
 
-rule "hardConstraintsBroken"
+// Accumulate hard constraints
+rule "accumulateHardScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
-        $occurrenceCount : Number() from accumulate(
-            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
-            count($unweightedConstraintOccurrence)
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setHardConstraintsBroken($occurrenceCount.intValue());
+        scoreHolder.setHardScore($hardTotal.intValue());
 end
 
-rule "softConstraintsBroken"
+// Accumulate soft constraints
+rule "accumulateSoftScore"
         salience -1 // Do the other rules first (optional, for performance)
     when
-        $totalDistance : Number() from accumulate(
-            Hop($distance : distance),
-            sum($distance)
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreHolder.setSoftConstraintsBroken($totalDistance.intValue());
+        scoreHolder.setSoftScore($softTotal.intValue());
 end
 
