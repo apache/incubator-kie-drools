@@ -37,7 +37,6 @@ import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.solver.simple.move.DayChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -100,9 +99,10 @@ public class TravelingTournamentPanel extends SolutionPanel {
                     "Select day", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Day toDay = (Day) dayListField.getSelectedItem();
-                Move move = new DayChangeMove(match, toDay);
-                solutionBusiness.doMove(move);
-                solverAndPersistenceFrame.resetScreen();
+                // TODO FIXME
+                throw new UnsupportedOperationException();
+//                solutionBusiness.doMove(new ChangeMove(match, toDay));
+//                solverAndPersistenceFrame.resetScreen();
             }
         }
 
