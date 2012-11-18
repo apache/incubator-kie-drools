@@ -34,6 +34,7 @@ public class TravelingTournamentApp extends CommonApp {
             = "/org/drools/planner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new TravelingTournamentApp().init();
     }
 

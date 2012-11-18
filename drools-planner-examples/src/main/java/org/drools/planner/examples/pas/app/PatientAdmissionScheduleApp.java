@@ -34,6 +34,7 @@ public class PatientAdmissionScheduleApp extends CommonApp {
             = "/org/drools/planner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new PatientAdmissionScheduleApp().init();
     }
 

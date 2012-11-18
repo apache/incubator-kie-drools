@@ -30,6 +30,7 @@ public class CloudBalancingApp extends CommonApp {
             = "/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new CloudBalancingApp().init();
     }
 

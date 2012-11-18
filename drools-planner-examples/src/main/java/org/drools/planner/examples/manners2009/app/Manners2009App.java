@@ -32,6 +32,7 @@ public class Manners2009App extends CommonApp {
             = "/org/drools/planner/examples/manners2009/solver/manners2009SolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new Manners2009App().init();
     }
 

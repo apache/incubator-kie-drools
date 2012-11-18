@@ -39,6 +39,7 @@ public class ExaminationApp extends CommonApp {
             = "/org/drools/planner/examples/examination/solver/examinationSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new ExaminationApp().init();
     }
 

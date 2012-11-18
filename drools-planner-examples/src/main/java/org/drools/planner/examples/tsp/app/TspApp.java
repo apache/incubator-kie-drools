@@ -32,6 +32,7 @@ public class TspApp extends CommonApp {
             = "/org/drools/planner/examples/tsp/solver/tspSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new TspApp().init();
     }
 

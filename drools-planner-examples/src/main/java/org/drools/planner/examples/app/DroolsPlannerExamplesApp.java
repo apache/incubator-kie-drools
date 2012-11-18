@@ -37,6 +37,7 @@ import javax.swing.border.TitledBorder;
 
 import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.drools.planner.examples.cloudbalancing.swingui.CloudBalancingPanel;
+import org.drools.planner.examples.common.app.CommonApp;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.drools.planner.examples.machinereassignment.swingui.MachineReassignmentPanel;
@@ -57,12 +58,13 @@ import org.drools.planner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
 public class DroolsPlannerExamplesApp extends JFrame {
 
     public static void main(String[] args) {
+        CommonApp.fixateLookAndFeel();
         DroolsPlannerExamplesApp droolsPlannerExamplesApp = new DroolsPlannerExamplesApp();
         droolsPlannerExamplesApp.pack();
         droolsPlannerExamplesApp.setLocationRelativeTo(null);
         droolsPlannerExamplesApp.setVisible(true);
     }
-    
+
     private JTextArea descriptionTextArea;
 
     public DroolsPlannerExamplesApp() {

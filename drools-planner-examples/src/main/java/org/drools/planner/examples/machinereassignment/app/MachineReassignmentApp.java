@@ -34,6 +34,7 @@ public class MachineReassignmentApp extends CommonApp {
             = "/org/drools/planner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new MachineReassignmentApp().init();
     }
 

@@ -34,6 +34,7 @@ public class CurriculumCourseApp extends CommonApp {
             = "/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new CurriculumCourseApp().init();
     }
 

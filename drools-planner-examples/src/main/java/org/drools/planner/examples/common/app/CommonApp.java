@@ -17,6 +17,8 @@
 package org.drools.planner.examples.common.app;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.business.SolutionBusiness;
@@ -25,17 +27,51 @@ import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.drools.planner.examples.nurserostering.swingui.NurseRosteringPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 
 public abstract class CommonApp extends LoggingMain {
+
+    protected static final Logger logger = LoggerFactory.getLogger(CommonApp.class);
+
+    /**
+     * Some examples are not compatible with every native LookAndFeel.
+     * For example, {@link NurseRosteringPanel} is incompatible with Mac.
+     */
+    public static void fixateLookAndFeel() {
+        String lookAndFeelName = "Metal"; // "Nimbus" is nicer but incompatible
+        Exception lookAndFeelException;
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if (lookAndFeelName.equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    return;
+                }
+            }
+            lookAndFeelException = null;
+        } catch (UnsupportedLookAndFeelException e) {
+            lookAndFeelException = e;
+        } catch (ClassNotFoundException e) {
+            lookAndFeelException = e;
+        } catch (InstantiationException e) {
+            lookAndFeelException = e;
+        } catch (IllegalAccessException e) {
+            lookAndFeelException = e;
+        }
+        logger.warn("Could not switch to lookAndFeel (" + lookAndFeelName + "). Layout might be incorrect.",
+                lookAndFeelException);
+    }
 
     private SolverAndPersistenceFrame solverAndPersistenceFrame;
     private SolutionBusiness solutionBusiness;
 
     public CommonApp() {
         solutionBusiness = createSolutionBusiness();
-        solverAndPersistenceFrame = new SolverAndPersistenceFrame(solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName());
+        solverAndPersistenceFrame = new SolverAndPersistenceFrame(
+                solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName());
     }
 
     public void init() {

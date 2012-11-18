@@ -48,6 +48,7 @@ public class NQueensApp extends CommonApp {
             = "/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new NQueensApp().init();
     }
 

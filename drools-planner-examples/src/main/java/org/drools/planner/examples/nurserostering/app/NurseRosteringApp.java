@@ -34,6 +34,7 @@ public class NurseRosteringApp extends CommonApp {
             = "/org/drools/planner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new NurseRosteringApp().init();
     }
 

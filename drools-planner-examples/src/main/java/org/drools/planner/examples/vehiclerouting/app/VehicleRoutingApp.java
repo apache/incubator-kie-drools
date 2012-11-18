@@ -32,6 +32,7 @@ public class VehicleRoutingApp extends CommonApp {
             = "/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
 
     public static void main(String[] args) {
+        fixateLookAndFeel();
         new VehicleRoutingApp().init();
     }
 
