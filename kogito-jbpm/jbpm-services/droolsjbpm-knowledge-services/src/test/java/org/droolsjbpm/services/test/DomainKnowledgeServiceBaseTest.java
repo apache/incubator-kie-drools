@@ -55,12 +55,12 @@ public abstract class DomainKnowledgeServiceBaseTest {
         
         StatefulKnowledgeSession ksession = knowledgeService.getSessionByBusinessKey("default");
         
-        assertEquals(1, dataService.getProcesses().size());
+        assertEquals(2, dataService.getProcesses().size());
         
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
         Collection<Process> processes = ksession.getKnowledgeBase().getProcesses();
 
-        assertEquals(1, processes.size());
+        assertEquals(2, processes.size());
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);
         ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
@@ -200,7 +200,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         StatefulKnowledgeSession ksession = knowledgeService.getSessionByBusinessKey("default");
          Collection<Process> processes = ksession.getKnowledgeBase().getProcesses();
 
-        assertEquals(1, processes.size());
+        assertEquals(2, processes.size());
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);
         ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());

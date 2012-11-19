@@ -22,23 +22,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.apache.commons.io.IOUtils;
+import org.drools.io.impl.ClassPathResource;
+import org.droolsjbpm.services.api.KnowledgeDomainService;
+import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
+import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
+import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
-import org.drools.io.impl.ByteArrayResource;
-import org.drools.io.impl.ClassPathResource;
+import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.droolsjbpm.services.api.KnowledgeDomainService;
-import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
-import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -77,23 +80,26 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
         kbaseEventListener.setDomainName(domainName);
         processListener.setDomainName(domainName);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        String processLocation = "example/humanTask.bpmn";
-        String processId = "org.jbpm.writedocument";
-        
-        
-        ClassPathResource classPathResource = new ClassPathResource(processLocation);
-        
-        StringWriter writer = new StringWriter();
-        try {
-            IOUtils.copy(classPathResource.getInputStream(), writer, "UTF-8");
-        } catch (IOException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        String[] processLocation = {"example/humanTask.bpmn", "example/signal.bpmn"};
+        String[] processId = {"org.jbpm.writedocument", "signal"};
+        ClassPathResource classPathResource = null;
+        StringWriter writer = null;
+        int currentIndex = 0;
+        for (String location : processLocation) {
+            classPathResource = new ClassPathResource(location);
+            
+            writer = new StringWriter();
+            try {
+                IOUtils.copy(classPathResource.getInputStream(), writer, "UTF-8");
+            } catch (IOException ex) {
+                Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String processString = writer.toString();
+            availableProcesses.put(processId[currentIndex], processString);
+            
+            kbuilder.add(ResourceFactory.newClassPathResource(location), ResourceType.BPMN2);
+            currentIndex++;
         }
-        String processString = writer.toString();
-        availableProcesses.put(processId, processString);
-        
-        kbuilder.add(new ByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
-        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addEventListener(kbaseEventListener);
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
