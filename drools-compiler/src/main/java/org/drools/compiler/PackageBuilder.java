@@ -1338,6 +1338,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             return null;
         TypeDeclaration typeDeclaration = getCachedTypeDeclaration( cls );
         if (typeDeclaration != null) {
+            registerTypeDeclaration( packageName, typeDeclaration );
             return typeDeclaration;
         }
         typeDeclaration = getExistingTypeDeclaration( cls );
@@ -1348,11 +1349,17 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         typeDeclaration = createTypeDeclarationForBean( cls );
         initTypeDeclaration( cls, typeDeclaration );
-        PackageRegistry packageRegistry = pkgRegistryMap.get( packageName );
-        if (packageRegistry != null) {
-            packageRegistry.getPackage().addTypeDeclaration( typeDeclaration );
-        }
+        registerTypeDeclaration( packageName, typeDeclaration );
         return typeDeclaration;
+    }
+
+    private void registerTypeDeclaration(String packageName, TypeDeclaration typeDeclaration) {
+        if ( typeDeclaration.getNature() == TypeDeclaration.Nature.DECLARATION || packageName.equals(typeDeclaration.getTypeClass().getPackage().getName()) ) {
+            PackageRegistry packageRegistry = pkgRegistryMap.get( packageName );
+            if (packageRegistry != null) {
+                packageRegistry.getPackage().addTypeDeclaration( typeDeclaration );
+            }
+        }
     }
 
     public TypeDeclaration getTypeDeclaration( Class<?> cls ) {

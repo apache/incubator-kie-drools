@@ -33,7 +33,9 @@ import org.kie.io.ResourceFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
@@ -2359,5 +2361,134 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
 
         assertTrue(((KnowledgeBuilderImpl)kbuilder).hasWarnings());
+    }
+
+    @Test(timeout = 5000)
+    public void testTypeDeclarationInitializationForPropertyReactive() {
+        // JBRULES-3686
+        String rule = "package org.drools\n" +
+                "import java.util.Map;\n" +
+                "import java.util.EnumMap;\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.DataSample;\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Model;\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Parameter;\n" +
+                "\n" +
+                "rule 'Init'\n" +
+                "when\n" +
+                "    $m: Model()\n" +
+                "then\n" +
+                "    insert(new DataSample($m));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule 1\"\n" +
+                "when\n" +
+                "    $m: Model()\n" +
+                "    $d: DataSample(model == $m)\n" +
+                "then\n" +
+                "    modify($d){\n" +
+                "        addValue(Parameter.PARAM_A, 10.0)\n" +
+                "    }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule 2\"\n" +
+                "when\n" +
+                "    $m: Model()\n" +
+                "    $d: DataSample(model == $m, $v: values[Parameter.PARAM_A] > 9.0)\n" +
+                "then\n" +
+                "    modify($d){\n" +
+                "        addMessage(\"Hello\")\n" +
+                "    }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Data without messages\"\n" +
+                "salience -100\n" +
+                "when\n" +
+                "    $m: Model()\n" +
+                "    $d: DataSample(model == $m, messaged == false)\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Model());
+        ksession.fireAllRules();
+    }
+
+    @PropertyReactive
+    public static class DataSample {
+        private Model model;
+        private Map<Parameter, Double> values = new EnumMap<Parameter, Double>(Parameter.class);
+        private List<String> messages = new ArrayList<String>();
+
+        public DataSample() {
+        }
+
+        public DataSample(Model model) {
+            this.model = model;
+        }
+
+
+        public Model getModel() {
+            return model;
+        }
+
+        public void setModel(Model model) {
+            this.model = model;
+        }
+
+        public Map<Parameter, Double> getValues() {
+            return values;
+        }
+
+        public void setValues(Map<Parameter, Double> values) {
+            this.values = values;
+        }
+
+        @Modifies({"values"})
+        public void addValue(Parameter p, double value){
+            this.values.put(p, value);
+        }
+
+        public boolean isEmpty(){
+            return this.values.isEmpty();
+        }
+
+        public List<String> getMessages() {
+            return messages;
+        }
+
+        public void setMessages(List<String> messages) {
+            this.messages = messages;
+        }
+
+        @Modifies({"messages", "messaged"})
+        public void addMessage(String message){
+            this.messages.add(message);
+        }
+
+        public boolean isMessaged(){
+            return !this.messages.isEmpty();
+        }
+
+        public void setMessaged(boolean b){
+        }
+    }
+
+    public static class Model {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
+
+    public static enum Parameter {
+        PARAM_A, PARAM_B
     }
 }
