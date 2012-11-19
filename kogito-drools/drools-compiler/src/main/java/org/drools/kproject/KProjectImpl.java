@@ -1,6 +1,14 @@
 package org.drools.kproject;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -177,18 +185,87 @@ public class KProjectImpl implements KProject {
     }
 
     public String toXML() {
-        return new XStream().toXML(this);
+        return MARSHALLER.toXML(this);
     }
 
     public static KProject fromXML(InputStream kProjectStream) {
-        return (KProject)new XStream().fromXML(kProjectStream);
+        return MARSHALLER.fromXML(kProjectStream);
     }
 
     public static KProject fromXML(java.io.File kProjectFile) {
-        return (KProject)new XStream().fromXML(kProjectFile);
+        return MARSHALLER.fromXML(kProjectFile);
     }
 
     public static KProject fromXML(URL kProjectUrl) {
-        return (KProject)new XStream().fromXML(kProjectUrl);
+        return MARSHALLER.fromXML(kProjectUrl);
+    }
+
+    private static final KProjectMarshaller MARSHALLER = new KProjectMarshaller();
+
+    private static class KProjectMarshaller {
+        private final XStream xStream = new XStream(new DomDriver());
+
+        private KProjectMarshaller() {
+            xStream.registerConverter(new KProjectConverter());
+            xStream.registerConverter(new KBaseImpl.KBaseConverter());
+            xStream.registerConverter(new KSessionImpl.KSessionConverter());
+            xStream.alias("kproject", KProjectImpl.class);
+            xStream.alias("kbase", KBaseImpl.class);
+            xStream.alias("ksession", KSessionImpl.class);
+        }
+
+        public String toXML(KProject kProject) {
+            return xStream.toXML(kProject);
+        }
+
+        public KProject fromXML(InputStream kProjectStream) {
+            return (KProject)xStream.fromXML(kProjectStream);
+        }
+
+        public KProject fromXML(java.io.File kProjectFile) {
+            return (KProject)xStream.fromXML(kProjectFile);
+        }
+
+        public KProject fromXML(URL kProjectUrl) {
+            return (KProject)xStream.fromXML(kProjectUrl);
+        }
+    }
+
+    public static class KProjectConverter extends AbstractXStreamConverter {
+
+        public KProjectConverter() {
+            super(KProjectImpl.class);
+        }
+
+        public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+            KProjectImpl kProject = (KProjectImpl) value;
+            writeAttribute(writer, "kBasesPath", kProject.getKBasesPath());
+            writeAttribute(writer, "kProjectPath", kProject.getKProjectPath());
+            writeObject(writer, context, "groupArtifactVersion", kProject.getGroupArtifactVersion());
+            writeObjectList(writer, context, "kbases", "kbase", kProject.getKBases().values());
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
+            final KProjectImpl kProject = new KProjectImpl();
+            kProject.setKBasesPath(reader.getAttribute("kBasesPath"));
+            kProject.setKProjectPath(reader.getAttribute("kProjectPath"));
+
+            readNodes(reader, new AbstractXStreamConverter.NodeReader() {
+                public void onNode(HierarchicalStreamReader reader, String name, String value) {
+                    if ("groupArtifactVersion".equals(name)) {
+                        kProject.setGroupArtifactVersion((GroupArtifactVersion) context.convertAnother(reader.getValue(), GroupArtifactVersion.class));
+                    } else if ("kbases".equals(name)) {
+                        Map<String, KBase> kBases = new HashMap<String, KBase>();
+                        for (KBaseImpl kBase : readObjectList(reader, context, KBaseImpl.class)) {
+                            kBase.setKProject(kProject);
+                            kBases.put(kBase.getQName(), kBase);
+                        }
+                        kProject.setKBases(kBases);
+                    }
+                }
+            });
+
+            return kProject;
+        }
     }
 }

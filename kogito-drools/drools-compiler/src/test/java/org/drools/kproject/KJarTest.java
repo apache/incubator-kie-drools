@@ -113,8 +113,7 @@ public class KJarTest {
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        XStream xstream = new XStream();
-        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), xstream.toXML( kproj ));
+        fileManager.write( fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KProjectImpl)kproj).toXML() );
 
         KnowledgeContainer kcontainer = KnowledgeBuilderFactory.newKnowledgeContainer();
 

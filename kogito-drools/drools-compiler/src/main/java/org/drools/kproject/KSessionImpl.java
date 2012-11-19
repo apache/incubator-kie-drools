@@ -1,12 +1,17 @@
 package org.drools.kproject;
 
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.runtime.conf.ClockTypeOption;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.drools.ClockType;
-import org.kie.runtime.conf.ClockTypeOption;
 
 public class KSessionImpl
         implements
@@ -22,6 +27,8 @@ public class KSessionImpl
     private KBaseImpl                        kBase;
     
     private transient PropertyChangeListener listener;
+
+    private KSessionImpl() { }
 
     public KSessionImpl(KBaseImpl kBase,
                         String namespace,
@@ -157,4 +164,33 @@ public class KSessionImpl
         return "KSession [namespace=" + namespace + ", name=" + name + ", clockType=" + clockType + ", annotations=" + annotations + "]";
     }
 
+    public static class KSessionConverter extends AbstractXStreamConverter {
+
+        public KSessionConverter() {
+            super(KSessionImpl.class);
+        }
+
+        public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+            KSessionImpl kSession = (KSessionImpl) value;
+            writer.addAttribute("name", kSession.getName());
+            writer.addAttribute("namespace", kSession.getNamespace());
+            writer.addAttribute("type", kSession.getType());
+            if (kSession.getClockType() != null) {
+                writer.addAttribute("clockType", kSession.getClockType().getClockType());
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+            KSessionImpl kSession = new KSessionImpl();
+            kSession.setName(reader.getAttribute("name"));
+            kSession.setNamespace(reader.getAttribute("namespace"));
+            kSession.setType(reader.getAttribute("type"));
+
+            String clockType = reader.getAttribute("clockType");
+            if (clockType != null) {
+                kSession.setClockType(ClockTypeOption.get(clockType));
+            }
+            return kSession;
+        }
+    }
 }

@@ -33,6 +33,7 @@ import javax.enterprise.util.AnnotationLiteral;
 
 import org.drools.kproject.KBaseImpl;
 import org.drools.kproject.KProject;
+import org.drools.kproject.KProjectImpl;
 import org.drools.kproject.KSessionImpl;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -473,8 +474,7 @@ public class KProjectExtension
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();;
             try {
-                XStream xstream = new XStream();
-                KProject kProject = (KProject) xstream.fromXML( url );
+                KProject kProject = KProjectImpl.fromXML(url);
                 String kProjectId = kProject.getGroupArtifactVersion().getGroupId() + ":" + kProject.getGroupArtifactVersion().getArtifactId();
                 urls.put( kProjectId, fixURL( url ) );
                 kProjects.put( kProjectId, kProject );
