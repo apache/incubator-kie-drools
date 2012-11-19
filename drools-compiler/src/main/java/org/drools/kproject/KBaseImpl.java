@@ -10,9 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.conf.ClockTypeOption;
 
 public class KBaseImpl
         implements
@@ -36,6 +41,11 @@ public class KBaseImpl
     private KProjectImpl                     kProject;
 
     private transient PropertyChangeListener listener;
+
+    private KBaseImpl() {
+        this.includes = new HashSet<String>();
+        this.files = new ArrayList<String>();
+    }
 
     public KBaseImpl(KProjectImpl kProject,
                      String namespace,
@@ -267,4 +277,60 @@ public class KBaseImpl
         return "KBase [namespace=" + namespace + ", name=" + name + ", files=" + files + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
     }
 
+    public static class KBaseConverter extends AbstractXStreamConverter {
+
+        public KBaseConverter() {
+            super(KBaseImpl.class);
+        }
+
+        public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+            KBaseImpl kBase = (KBaseImpl) value;
+            writer.addAttribute("name", kBase.getName());
+            writer.addAttribute("namespace", kBase.getNamespace());
+            if (kBase.getEventProcessingMode() != null) {
+                writer.addAttribute("eventProcessingMode", kBase.getEventProcessingMode().getMode());
+            }
+            if (kBase.getEqualsBehavior() != null) {
+                writer.addAttribute("equalsBehavior", kBase.getEqualsBehavior().toString());
+            }
+            writeList(writer, "files", "file", kBase.getFiles());
+            writeList(writer, "includes", "include", kBase.getIncludes());
+            writeObjectList(writer, context, "ksessions", "ksession", kBase.getKSessions().values());
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
+            final KBaseImpl kBase = new KBaseImpl();
+            kBase.setName(reader.getAttribute("name"));
+            kBase.setNamespace(reader.getAttribute("namespace"));
+
+            String eventMode = reader.getAttribute("eventProcessingMode");
+            if (eventMode != null) {
+                kBase.setEventProcessingMode(EventProcessingOption.determineEventProcessingMode(eventMode));
+            }
+            String equalsBehavior = reader.getAttribute("equalsBehavior");
+            if (equalsBehavior != null) {
+                kBase.setEqualsBehavior(AssertBehaviorOption.valueOf(equalsBehavior));
+            }
+
+            readNodes(reader, new AbstractXStreamConverter.NodeReader() {
+                public void onNode(HierarchicalStreamReader reader, String name, String value) {
+                    if ("ksessions".equals(name)) {
+                        Map<String, KSession> kSessions = new HashMap<String, KSession>();
+                        for (KSessionImpl kSession : readObjectList(reader, context, KSessionImpl.class)) {
+                            kSession.setKBase(kBase);
+                            kSessions.put( kSession.getQName(), kSession );
+                        }
+                        kBase.setKSessions(kSessions);
+                    } else if ("files".equals(name)) {
+                        kBase.setFiles(readList(reader));
+                    } else if ("includes".equals(name)) {
+                        for (String include : readList(reader)) {
+                            kBase.addInclude(include);
+                        }
+                    }
+                }
+            });
+            return kBase;
+        }
+    }
 }

@@ -102,9 +102,8 @@ public class AbstractKnowledgeTest {
         File fle2 = fld2.getFile( "beans.xml" );
         fle2.create( new ByteArrayInputStream( generateBeansXML( kproj ).getBytes() ) );
 
-        XStream xstream = new XStream();
         fle2 = fld2.getFile( "kproject.xml" );
-        fle2.create( new ByteArrayInputStream( xstream.toXML( kproj ).getBytes() ) );
+        fle2.create( new ByteArrayInputStream( ((KProjectImpl)kproj).toXML().getBytes() ) );
 
         String kBase1R1 = getRule( namespace + ".test1", "rule1" );
         String kBase1R2 = getRule( namespace + ".test1", "rule2" );
