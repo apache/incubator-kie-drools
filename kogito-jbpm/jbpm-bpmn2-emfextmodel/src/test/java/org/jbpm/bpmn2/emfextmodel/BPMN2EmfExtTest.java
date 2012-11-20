@@ -30,7 +30,7 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.jboss.drools.DocumentRoot;
 import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.DroolsPackage;
-import org.jboss.drools.ElementParametersType;
+import org.jboss.drools.ElementParameters;
 import org.jboss.drools.GlobalType;
 import org.jboss.drools.ImportType;
 import org.jboss.drools.MetadataType;
@@ -42,7 +42,6 @@ import org.jboss.drools.ParameterValue;
 import org.jboss.drools.ProcessAnalysisDataType;
 import org.jboss.drools.Scenario;
 import org.jboss.drools.ScenarioParameters;
-import org.jboss.drools.ScenarioParametersType;
 import org.jboss.drools.TimeParameters;
 import org.jboss.drools.TimeUnit;
 import org.jboss.drools.UniformDistributionType;
@@ -82,10 +81,10 @@ public class BPMN2EmfExtTest extends TestCase {
         Scenario defaultScenario = DroolsFactory.eINSTANCE.createScenario();
         defaultScenario.setId("default");
         defaultScenario.setName("Scenario");
-        ScenarioParametersType scenarioParams = DroolsFactory.eINSTANCE.createScenarioParametersType();
+        ScenarioParameters scenarioParams = DroolsFactory.eINSTANCE.createScenarioParameters();
         scenarioParams.setBaseTimeUnit(TimeUnit.S);
         defaultScenario.setScenarioParameters(scenarioParams);
-        ElementParametersType elementParams = DroolsFactory.eINSTANCE.createElementParametersType();
+        ElementParameters elementParams = DroolsFactory.eINSTANCE.createElementParameters();
         elementParams.setElementId("mytask");
         TimeParameters elementTimeParams = DroolsFactory.eINSTANCE.createTimeParameters();
         
@@ -129,7 +128,7 @@ public class BPMN2EmfExtTest extends TestCase {
         assertNotNull(outScenario.getScenarioParameters());
         assertNotNull(outScenario.getElementParameters());
         assertEquals(outScenario.getElementParameters().size(), 1);
-        ElementParametersType outElementParamType = outScenario.getElementParameters().get(0);
+        ElementParameters outElementParamType = outScenario.getElementParameters().get(0);
         assertNotNull(outElementParamType.getTimeParameters());
         TimeParameters outTimeParams = outElementParamType.getTimeParameters();
         assertNotNull(outTimeParams.getProcessingTime());

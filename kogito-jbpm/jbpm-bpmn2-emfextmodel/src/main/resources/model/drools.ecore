@@ -643,12 +643,6 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ElementParametersType" eSuperTypes="#//ElementParameters">
-    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-      <details key="name" value="ElementParameters_._type"/>
-      <details key="kind" value="elementOnly"/>
-    </eAnnotations>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnumParameterType" eSuperTypes="#//ParameterValue">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="EnumParameter_._type"/>
@@ -1186,7 +1180,7 @@
       <details key="name" value="Scenario"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="scenarioParameters" eType="#//ScenarioParametersType"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scenarioParameters" eType="#//ScenarioParameters"
         containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -1195,7 +1189,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elementParameters" upperBound="-1"
-        eType="#//ElementParametersType" containment="true" resolveProxies="false">
+        eType="#//ElementParameters" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
         <details key="name" value="ElementParameters"/>
@@ -1336,12 +1330,6 @@
         <details key="name" value="seed"/>
       </eAnnotations>
     </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ScenarioParametersType" eSuperTypes="#//ScenarioParameters">
-    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-      <details key="name" value="ScenarioParameters_._type"/>
-      <details key="kind" value="elementOnly"/>
-    </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="StringParameterType" eSuperTypes="#//ConstantParameter">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">

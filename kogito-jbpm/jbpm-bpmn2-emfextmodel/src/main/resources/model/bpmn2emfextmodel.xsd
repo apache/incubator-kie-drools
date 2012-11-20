@@ -105,20 +105,10 @@
 	</element>
 	<complexType name="Scenario">
 		<sequence minOccurs="0">
-			<element name="ScenarioParameters" minOccurs="0">
-				<complexType>
-					<complexContent>
-						<extension base="drools:ScenarioParameters" />
-					</complexContent>
-				</complexType>
-			</element>
-			<element name="ElementParameters" minOccurs="0" maxOccurs="unbounded">
-				<complexType>
-					<complexContent>
-						<extension base="drools:ElementParameters" />
-					</complexContent>
-				</complexType>
-			</element>
+			<element name="ScenarioParameters" minOccurs="0" type="drools:ScenarioParameters" >
+            </element>
+            <element name="ElementParameters" minOccurs="0" maxOccurs="unbounded" type="drools:ElementParameters">
+            </element>
 			<element name="Calendar" type="drools:Calendar" minOccurs="0"
 				maxOccurs="unbounded" />
 			<element name="VendorExtension" type="drools:VendorExtension"

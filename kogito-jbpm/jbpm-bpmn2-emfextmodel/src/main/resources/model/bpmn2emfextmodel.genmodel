@@ -123,7 +123,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ElementParameters/elementId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ElementParameters/id"/>
     </genClasses>
-    <genClasses ecoreClass="drools.ecore#//ElementParametersType"/>
     <genClasses ecoreClass="drools.ecore#//EnumParameterType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute drools.ecore#//EnumParameterType/group"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//EnumParameterType/parameterValueGroup"/>
@@ -244,7 +243,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ScenarioParameters/replication"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ScenarioParameters/seed"/>
     </genClasses>
-    <genClasses ecoreClass="drools.ecore#//ScenarioParametersType"/>
     <genClasses ecoreClass="drools.ecore#//StringParameterType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//StringParameterType/value"/>
     </genClasses>

@@ -75,7 +75,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case DroolsPackage.DURATION_PARAMETER_TYPE: return createDurationParameterType();
 			case DroolsPackage.ELEMENT_PARAMETERS: return createElementParameters();
-			case DroolsPackage.ELEMENT_PARAMETERS_TYPE: return createElementParametersType();
 			case DroolsPackage.ENUM_PARAMETER_TYPE: return createEnumParameterType();
 			case DroolsPackage.ERLANG_DISTRIBUTION_TYPE: return createErlangDistributionType();
 			case DroolsPackage.EXPRESSION_PARAMETER_TYPE: return createExpressionParameterType();
@@ -102,7 +101,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.RESOURCE_PARAMETERS: return createResourceParameters();
 			case DroolsPackage.SCENARIO: return createScenario();
 			case DroolsPackage.SCENARIO_PARAMETERS: return createScenarioParameters();
-			case DroolsPackage.SCENARIO_PARAMETERS_TYPE: return createScenarioParametersType();
 			case DroolsPackage.STRING_PARAMETER_TYPE: return createStringParameterType();
 			case DroolsPackage.TIME_PARAMETERS: return createTimeParameters();
 			case DroolsPackage.TRIANGULAR_DISTRIBUTION_TYPE: return createTriangularDistributionType();
@@ -307,16 +305,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public ElementParameters createElementParameters() {
 		ElementParametersImpl elementParameters = new ElementParametersImpl();
 		return elementParameters;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ElementParametersType createElementParametersType() {
-		ElementParametersTypeImpl elementParametersType = new ElementParametersTypeImpl();
-		return elementParametersType;
 	}
 
 	/**
@@ -577,16 +565,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	public ScenarioParameters createScenarioParameters() {
 		ScenarioParametersImpl scenarioParameters = new ScenarioParametersImpl();
 		return scenarioParameters;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ScenarioParametersType createScenarioParametersType() {
-		ScenarioParametersTypeImpl scenarioParametersType = new ScenarioParametersTypeImpl();
-		return scenarioParametersType;
 	}
 
 	/**

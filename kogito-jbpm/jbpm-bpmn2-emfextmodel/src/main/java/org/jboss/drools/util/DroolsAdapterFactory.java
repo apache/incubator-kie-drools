@@ -120,10 +120,6 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 				return createElementParametersAdapter();
 			}
 			@Override
-			public Adapter caseElementParametersType(ElementParametersType object) {
-				return createElementParametersTypeAdapter();
-			}
-			@Override
 			public Adapter caseEnumParameterType(EnumParameterType object) {
 				return createEnumParameterTypeAdapter();
 			}
@@ -226,10 +222,6 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseScenarioParameters(ScenarioParameters object) {
 				return createScenarioParametersAdapter();
-			}
-			@Override
-			public Adapter caseScenarioParametersType(ScenarioParametersType object) {
-				return createScenarioParametersTypeAdapter();
 			}
 			@Override
 			public Adapter caseStringParameterType(StringParameterType object) {
@@ -466,20 +458,6 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createElementParametersAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.jboss.drools.ElementParametersType <em>Element Parameters Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.jboss.drools.ElementParametersType
-	 * @generated
-	 */
-	public Adapter createElementParametersTypeAdapter() {
 		return null;
 	}
 
@@ -844,20 +822,6 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createScenarioParametersAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.jboss.drools.ScenarioParametersType <em>Scenario Parameters Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.jboss.drools.ScenarioParametersType
-	 * @generated
-	 */
-	public Adapter createScenarioParametersTypeAdapter() {
 		return null;
 	}
 

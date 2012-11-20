@@ -175,13 +175,6 @@ public class DroolsSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DroolsPackage.ELEMENT_PARAMETERS_TYPE: {
-				ElementParametersType elementParametersType = (ElementParametersType)theEObject;
-				T result = caseElementParametersType(elementParametersType);
-				if (result == null) result = caseElementParameters(elementParametersType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case DroolsPackage.ENUM_PARAMETER_TYPE: {
 				EnumParameterType enumParameterType = (EnumParameterType)theEObject;
 				T result = caseEnumParameterType(enumParameterType);
@@ -356,13 +349,6 @@ public class DroolsSwitch<T> {
 			case DroolsPackage.SCENARIO_PARAMETERS: {
 				ScenarioParameters scenarioParameters = (ScenarioParameters)theEObject;
 				T result = caseScenarioParameters(scenarioParameters);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DroolsPackage.SCENARIO_PARAMETERS_TYPE: {
-				ScenarioParametersType scenarioParametersType = (ScenarioParametersType)theEObject;
-				T result = caseScenarioParametersType(scenarioParametersType);
-				if (result == null) result = caseScenarioParameters(scenarioParametersType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -628,21 +614,6 @@ public class DroolsSwitch<T> {
 	 * @generated
 	 */
 	public T caseElementParameters(ElementParameters object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Element Parameters Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Element Parameters Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseElementParametersType(ElementParametersType object) {
 		return null;
 	}
 
@@ -1033,21 +1004,6 @@ public class DroolsSwitch<T> {
 	 * @generated
 	 */
 	public T caseScenarioParameters(ScenarioParameters object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Scenario Parameters Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Scenario Parameters Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseScenarioParametersType(ScenarioParametersType object) {
 		return null;
 	}
 

@@ -31,7 +31,6 @@ import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.DurationParameterType;
 import org.jboss.drools.ElementParameters;
-import org.jboss.drools.ElementParametersType;
 import org.jboss.drools.EnumParameterType;
 import org.jboss.drools.ErlangDistributionType;
 import org.jboss.drools.ExpressionParameterType;
@@ -59,7 +58,6 @@ import org.jboss.drools.ResourceParameters;
 import org.jboss.drools.ResultType;
 import org.jboss.drools.Scenario;
 import org.jboss.drools.ScenarioParameters;
-import org.jboss.drools.ScenarioParametersType;
 import org.jboss.drools.StringParameterType;
 import org.jboss.drools.TimeParameters;
 import org.jboss.drools.TimeUnit;
@@ -170,13 +168,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * @generated
 	 */
 	private EClass elementParametersEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass elementParametersTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -359,13 +350,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * @generated
 	 */
 	private EClass scenarioParametersEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass scenarioParametersTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1291,15 +1275,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getElementParametersType() {
-		return elementParametersTypeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getEnumParameterType() {
 		return enumParameterTypeEClass;
 	}
@@ -2146,15 +2121,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getScenarioParametersType() {
-		return scenarioParametersTypeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getStringParameterType() {
 		return stringParameterTypeEClass;
 	}
@@ -2685,8 +2651,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEAttribute(elementParametersEClass, ELEMENT_PARAMETERS__ELEMENT_ID);
 		createEAttribute(elementParametersEClass, ELEMENT_PARAMETERS__ID);
 
-		elementParametersTypeEClass = createEClass(ELEMENT_PARAMETERS_TYPE);
-
 		enumParameterTypeEClass = createEClass(ENUM_PARAMETER_TYPE);
 		createEAttribute(enumParameterTypeEClass, ENUM_PARAMETER_TYPE__GROUP);
 		createEAttribute(enumParameterTypeEClass, ENUM_PARAMETER_TYPE__PARAMETER_VALUE_GROUP);
@@ -2807,8 +2771,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		createEAttribute(scenarioParametersEClass, SCENARIO_PARAMETERS__REPLICATION);
 		createEAttribute(scenarioParametersEClass, SCENARIO_PARAMETERS__SEED);
 
-		scenarioParametersTypeEClass = createEClass(SCENARIO_PARAMETERS_TYPE);
-
 		stringParameterTypeEClass = createEClass(STRING_PARAMETER_TYPE);
 		createEAttribute(stringParameterTypeEClass, STRING_PARAMETER_TYPE__VALUE);
 
@@ -2908,7 +2870,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		decimalParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
 		distributionParameterEClass.getESuperTypes().add(this.getParameterValue());
 		durationParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
-		elementParametersTypeEClass.getESuperTypes().add(this.getElementParameters());
 		enumParameterTypeEClass.getESuperTypes().add(this.getParameterValue());
 		erlangDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
 		expressionParameterTypeEClass.getESuperTypes().add(this.getParameterValue());
@@ -2921,7 +2882,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		poissonDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
 		propertyTypeEClass.getESuperTypes().add(this.getParameter());
 		randomDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
-		scenarioParametersTypeEClass.getESuperTypes().add(this.getScenarioParameters());
 		stringParameterTypeEClass.getESuperTypes().add(this.getConstantParameter());
 		triangularDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
 		truncatedNormalDistributionTypeEClass.getESuperTypes().add(this.getDistributionParameter());
@@ -3023,8 +2983,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEAttribute(getElementParameters_ElementId(), theXMLTypePackage.getString(), "elementId", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getElementParameters_Id(), theXMLTypePackage.getID(), "id", null, 0, 1, ElementParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(elementParametersTypeEClass, ElementParametersType.class, "ElementParametersType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
 		initEClass(enumParameterTypeEClass, EnumParameterType.class, "EnumParameterType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEnumParameterType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, EnumParameterType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEnumParameterType_ParameterValueGroup(), ecorePackage.getEFeatureMapEntry(), "parameterValueGroup", null, 1, -1, EnumParameterType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
@@ -3121,8 +3079,8 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEReference(getResourceParameters_Role(), this.getParameter(), null, "role", null, 0, -1, ResourceParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(scenarioEClass, Scenario.class, "Scenario", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getScenario_ScenarioParameters(), this.getScenarioParametersType(), null, "scenarioParameters", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getScenario_ElementParameters(), this.getElementParametersType(), null, "elementParameters", null, 0, -1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getScenario_ScenarioParameters(), this.getScenarioParameters(), null, "scenarioParameters", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getScenario_ElementParameters(), this.getElementParameters(), null, "elementParameters", null, 0, -1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getScenario_Calendar(), this.getCalendar(), null, "calendar", null, 0, -1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getScenario_VendorExtension(), this.getVendorExtension(), null, "vendorExtension", null, 0, -1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenario_Author(), theXMLTypePackage.getString(), "author", null, 0, 1, Scenario.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3144,8 +3102,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		initEAttribute(getScenarioParameters_BaseTimeUnit(), this.getTimeUnit(), "baseTimeUnit", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenarioParameters_Replication(), theXMLTypePackage.getInt(), "replication", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getScenarioParameters_Seed(), theXMLTypePackage.getLong(), "seed", null, 0, 1, ScenarioParameters.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(scenarioParametersTypeEClass, ScenarioParametersType.class, "ScenarioParametersType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(stringParameterTypeEClass, StringParameterType.class, "StringParameterType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getStringParameterType_Value(), theXMLTypePackage.getString(), "value", null, 0, 1, StringParameterType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3869,13 +3825,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 			 "name", "id"
 		   });		
 		addAnnotation
-		  (elementParametersTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "ElementParameters_._type",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
 		  (enumParameterTypeEClass, 
 		   source, 
 		   new String[] {
@@ -4597,13 +4546,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "seed"
-		   });		
-		addAnnotation
-		  (scenarioParametersTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "ScenarioParameters_._type",
-			 "kind", "elementOnly"
 		   });		
 		addAnnotation
 		  (stringParameterTypeEClass, 

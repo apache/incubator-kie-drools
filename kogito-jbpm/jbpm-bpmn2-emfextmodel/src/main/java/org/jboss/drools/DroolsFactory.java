@@ -139,15 +139,6 @@ public interface DroolsFactory extends EFactory {
 	ElementParameters createElementParameters();
 
 	/**
-	 * Returns a new object of class '<em>Element Parameters Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Element Parameters Type</em>'.
-	 * @generated
-	 */
-	ElementParametersType createElementParametersType();
-
-	/**
 	 * Returns a new object of class '<em>Enum Parameter Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -380,15 +371,6 @@ public interface DroolsFactory extends EFactory {
 	 * @generated
 	 */
 	ScenarioParameters createScenarioParameters();
-
-	/**
-	 * Returns a new object of class '<em>Scenario Parameters Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Scenario Parameters Type</em>'.
-	 * @generated
-	 */
-	ScenarioParametersType createScenarioParametersType();
 
 	/**
 	 * Returns a new object of class '<em>String Parameter Type</em>'.

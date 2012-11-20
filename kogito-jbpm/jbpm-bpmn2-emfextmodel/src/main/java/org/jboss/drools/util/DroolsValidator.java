@@ -123,8 +123,6 @@ public class DroolsValidator extends EObjectValidator {
 				return validateDurationParameterType((DurationParameterType)value, diagnostics, context);
 			case DroolsPackage.ELEMENT_PARAMETERS:
 				return validateElementParameters((ElementParameters)value, diagnostics, context);
-			case DroolsPackage.ELEMENT_PARAMETERS_TYPE:
-				return validateElementParametersType((ElementParametersType)value, diagnostics, context);
 			case DroolsPackage.ENUM_PARAMETER_TYPE:
 				return validateEnumParameterType((EnumParameterType)value, diagnostics, context);
 			case DroolsPackage.ERLANG_DISTRIBUTION_TYPE:
@@ -177,8 +175,6 @@ public class DroolsValidator extends EObjectValidator {
 				return validateScenario((Scenario)value, diagnostics, context);
 			case DroolsPackage.SCENARIO_PARAMETERS:
 				return validateScenarioParameters((ScenarioParameters)value, diagnostics, context);
-			case DroolsPackage.SCENARIO_PARAMETERS_TYPE:
-				return validateScenarioParametersType((ScenarioParametersType)value, diagnostics, context);
 			case DroolsPackage.STRING_PARAMETER_TYPE:
 				return validateStringParameterType((StringParameterType)value, diagnostics, context);
 			case DroolsPackage.TIME_PARAMETERS:
@@ -335,15 +331,6 @@ public class DroolsValidator extends EObjectValidator {
 	 */
 	public boolean validateElementParameters(ElementParameters elementParameters, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(elementParameters, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateElementParametersType(ElementParametersType elementParametersType, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(elementParametersType, diagnostics, context);
 	}
 
 	/**
@@ -578,15 +565,6 @@ public class DroolsValidator extends EObjectValidator {
 	 */
 	public boolean validateScenarioParameters(ScenarioParameters scenarioParameters, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(scenarioParameters, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateScenarioParametersType(ScenarioParametersType scenarioParametersType, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(scenarioParametersType, diagnostics, context);
 	}
 
 	/**

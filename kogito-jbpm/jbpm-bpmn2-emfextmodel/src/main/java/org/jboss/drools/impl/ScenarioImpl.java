@@ -20,9 +20,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.jboss.drools.Calendar;
 import org.jboss.drools.DroolsPackage;
-import org.jboss.drools.ElementParametersType;
+import org.jboss.drools.ElementParameters;
 import org.jboss.drools.Scenario;
-import org.jboss.drools.ScenarioParametersType;
+import org.jboss.drools.ScenarioParameters;
 import org.jboss.drools.VendorExtension;
 
 /**
@@ -60,7 +60,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * @generated
 	 * @ordered
 	 */
-	protected ScenarioParametersType scenarioParameters;
+	protected ScenarioParameters scenarioParameters;
 
 	/**
 	 * The cached value of the '{@link #getElementParameters() <em>Element Parameters</em>}' containment reference list.
@@ -70,7 +70,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ElementParametersType> elementParameters;
+	protected EList<ElementParameters> elementParameters;
 
 	/**
 	 * The cached value of the '{@link #getCalendar() <em>Calendar</em>}' containment reference list.
@@ -316,7 +316,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScenarioParametersType getScenarioParameters() {
+	public ScenarioParameters getScenarioParameters() {
 		return scenarioParameters;
 	}
 
@@ -325,8 +325,8 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetScenarioParameters(ScenarioParametersType newScenarioParameters, NotificationChain msgs) {
-		ScenarioParametersType oldScenarioParameters = scenarioParameters;
+	public NotificationChain basicSetScenarioParameters(ScenarioParameters newScenarioParameters, NotificationChain msgs) {
+		ScenarioParameters oldScenarioParameters = scenarioParameters;
 		scenarioParameters = newScenarioParameters;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DroolsPackage.SCENARIO__SCENARIO_PARAMETERS, oldScenarioParameters, newScenarioParameters);
@@ -340,7 +340,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setScenarioParameters(ScenarioParametersType newScenarioParameters) {
+	public void setScenarioParameters(ScenarioParameters newScenarioParameters) {
 		if (newScenarioParameters != scenarioParameters) {
 			NotificationChain msgs = null;
 			if (scenarioParameters != null)
@@ -359,9 +359,9 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<ElementParametersType> getElementParameters() {
+	public EList<ElementParameters> getElementParameters() {
 		if (elementParameters == null) {
-			elementParameters = new EObjectContainmentEList<ElementParametersType>(ElementParametersType.class, this, DroolsPackage.SCENARIO__ELEMENT_PARAMETERS);
+			elementParameters = new EObjectContainmentEList<ElementParameters>(ElementParameters.class, this, DroolsPackage.SCENARIO__ELEMENT_PARAMETERS);
 		}
 		return elementParameters;
 	}
@@ -670,11 +670,11 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DroolsPackage.SCENARIO__SCENARIO_PARAMETERS:
-				setScenarioParameters((ScenarioParametersType)newValue);
+				setScenarioParameters((ScenarioParameters)newValue);
 				return;
 			case DroolsPackage.SCENARIO__ELEMENT_PARAMETERS:
 				getElementParameters().clear();
-				getElementParameters().addAll((Collection<? extends ElementParametersType>)newValue);
+				getElementParameters().addAll((Collection<? extends ElementParameters>)newValue);
 				return;
 			case DroolsPackage.SCENARIO__CALENDAR:
 				getCalendar().clear();
@@ -727,7 +727,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.SCENARIO__SCENARIO_PARAMETERS:
-				setScenarioParameters((ScenarioParametersType)null);
+				setScenarioParameters((ScenarioParameters)null);
 				return;
 			case DroolsPackage.SCENARIO__ELEMENT_PARAMETERS:
 				getElementParameters().clear();

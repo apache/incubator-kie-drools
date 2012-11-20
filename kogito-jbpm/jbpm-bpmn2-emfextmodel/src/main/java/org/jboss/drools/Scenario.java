@@ -45,13 +45,13 @@ public interface Scenario extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Scenario Parameters</em>' containment reference.
-	 * @see #setScenarioParameters(ScenarioParametersType)
+	 * @see #setScenarioParameters(ScenarioParameters)
 	 * @see org.jboss.drools.DroolsPackage#getScenario_ScenarioParameters()
 	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='ScenarioParameters' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	ScenarioParametersType getScenarioParameters();
+	ScenarioParameters getScenarioParameters();
 
 	/**
 	 * Sets the value of the '{@link org.jboss.drools.Scenario#getScenarioParameters <em>Scenario Parameters</em>}' containment reference.
@@ -61,11 +61,11 @@ public interface Scenario extends EObject {
 	 * @see #getScenarioParameters()
 	 * @generated
 	 */
-	void setScenarioParameters(ScenarioParametersType value);
+	void setScenarioParameters(ScenarioParameters value);
 
 	/**
 	 * Returns the value of the '<em><b>Element Parameters</b></em>' containment reference list.
-	 * The list contents are of type {@link org.jboss.drools.ElementParametersType}.
+	 * The list contents are of type {@link org.jboss.drools.ElementParameters}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Element Parameters</em>' containment reference list isn't clear,
@@ -78,7 +78,7 @@ public interface Scenario extends EObject {
 	 *        extendedMetaData="kind='element' name='ElementParameters' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<ElementParametersType> getElementParameters();
+	EList<ElementParameters> getElementParameters();
 
 	/**
 	 * Returns the value of the '<em><b>Calendar</b></em>' containment reference list.
