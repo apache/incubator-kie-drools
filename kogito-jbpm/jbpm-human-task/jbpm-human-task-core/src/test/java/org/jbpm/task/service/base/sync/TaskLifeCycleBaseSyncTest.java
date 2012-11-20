@@ -82,8 +82,9 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
         assertEquals(Status.InProgress, tasks.get(0).getStatus());
-
+        
         client.complete(taskId, users.get("bobba").getId(), null);
+        Thread.sleep(1000);
         Date completedBy = new Date();
         
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
