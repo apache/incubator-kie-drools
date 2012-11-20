@@ -51,6 +51,8 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
+import static org.drools.kproject.KBaseImpl.getFiles;
+
 public class KProjectExtension
         implements
         Extension {
@@ -195,9 +197,7 @@ public class KProjectExtension
             return this.kBase;
         }
 
-        private void addFiles(CompositeKnowledgeBuilder ckbuilder, org.drools.kproject.KBase modelToAdd, String urlPathToAdd) {
-            List<String> files = modelToAdd.getFiles();
-
+        private void addFiles(CompositeKnowledgeBuilder ckbuilder, org.drools.kproject.KBase kBase, String urlPathToAdd) {
             String rootPath = urlPathToAdd;
             if ( rootPath.lastIndexOf( ':' ) > 0 ) {
                 rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
@@ -206,7 +206,7 @@ public class KProjectExtension
             if ( urlPathToAdd.endsWith( ".jar" ) ) {  
                 File actualZipFile = new File( rootPath );
                 if ( !actualZipFile.exists() ) {
-                    log.error( "Unable to build KBase:" + modelToAdd.getName() + " as jarPath cannot be found\n" + rootPath );
+                    log.error( "Unable to build KBase:" + kBase.getName() + " as jarPath cannot be found\n" + rootPath );
                    // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
                 
@@ -214,12 +214,12 @@ public class KProjectExtension
                 try {
                     zipFile = new ZipFile( actualZipFile );
                 } catch ( Exception e ) {
-                    log.error( "Unable to build KBase:" + modelToAdd.getName() + " as jar cannot be opened\n" + e.getMessage() );
+                    log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be opened\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
                 }  
        
                 try {
-                    for ( String file : files ) {
+                    for ( String file : getFiles(kBase.getQName(), zipFile) ) {
                         ZipEntry zipEntry = zipFile.getEntry( file );
                         ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
                     }
@@ -229,16 +229,16 @@ public class KProjectExtension
                     } catch ( IOException e1 ) {
     
                     }
-                    log.error( "Unable to build KBase:" + modelToAdd.getName() + " as jar cannot be read\n" + e.getMessage() );
+                    log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be read\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
             } else {
                 try {
-                    for ( String file : files ) {
+                    for ( String file : getFiles(kBase.getQName(), new File(rootPath)) ) {
                         ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
                     }
                 } catch ( Exception e) {
-                    log.error( "Unable to build KBase:" + modelToAdd.getName() + "\n" + e.getMessage() );
+                    log.error( "Unable to build KBase:" + kBase.getName() + "\n" + e.getMessage() );
                 }
             }
         }

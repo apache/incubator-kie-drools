@@ -33,6 +33,7 @@ import java.util.zip.ZipOutputStream;
 import static org.drools.builder.impl.KBaseUnitCachingFactory.evictKBaseUnit;
 import static org.drools.builder.impl.KBaseUnitCachingFactory.getOrCreateKBaseUnit;
 import static org.drools.core.util.IoUtils.copyFile;
+import static org.drools.kproject.KBaseImpl.getFiles;
 import static org.drools.kproject.KProjectImpl.fromXML;
 
 public class KnowledgeContainerImpl implements KnowledgeContainer {
@@ -98,7 +99,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         copyFile(kProjectFile, new File(outputFolder, KPROJECT_JAR_PATH));
 
         for (KBase kBase : kProject.getKBases().values()) {
-            for (String kBaseFile : kBase.getFiles()) {
+            for (String kBaseFile : getFiles(kBase.getQName(), rootFolder)) {
                 String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
                 copyFile(new File(rootFolder + "/src", file), new File(outputFolder, kBaseFile));
             }
@@ -171,11 +172,12 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     }
 
     private File writeKJar(File rootFolder, File outputFolder, String jarName, KProject kProject) {
+        File kBasesFolder = new File(rootFolder, "src/" + KBASES_FOLDER);
         Map<String, String> jarEntries = new HashMap<String, String>();
         jarEntries.put(KPROJECT_RELATIVE_PATH, KPROJECT_JAR_PATH);
         for (KBase kBase : kProject.getKBases().values()) {
-            for (String kBaseFile : kBase.getFiles()) {
-                jarEntries.put("src/" + KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile, kBaseFile);
+            for (String kBaseFile : getFiles(kBase.getQName(), kBasesFolder)) {
+                jarEntries.put("src/" + KBASES_FOLDER + "/" + kBaseFile, kBaseFile);
             }
         }
         return writeAsJar(rootFolder, outputFolder, jarName, jarEntries);

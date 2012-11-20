@@ -1,6 +1,5 @@
 package org.drools.kproject;
 
-import com.thoughtworks.xstream.XStream;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
@@ -51,10 +50,7 @@ public class AbstractKnowledgeTest {
         kproj.setKProjectPath( "src/main/resources/" );
         kproj.setKBasesPath( "src/kbases" );
 
-        List<String> files = asList( namespace + "/test1/rule1.drl", namespace + "/test1/rule2.drl" );
-
         KBase kBase1 = kproj.newKBase( namespace + ".test1", "KBase1" )
-                .setFiles( files )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
@@ -69,9 +65,7 @@ public class AbstractKnowledgeTest {
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        files = asList( namespace + "/test2/rule1.drl", namespace + "/test2/rule2.drl" );
         KBase kBase2 = kproj.newKBase( namespace + ".test2", "KBase2" )
-                .setFiles( files )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
@@ -82,7 +76,6 @@ public class AbstractKnowledgeTest {
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KBase kBase3 = kproj.newKBase( namespace + ".test3", "KBase3" )
-                .setFiles( asList( new String[]{} ) )
                 .addInclude( kBase1.getQName() )
                 .addInclude( kBase2.getQName() )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
@@ -95,7 +88,6 @@ public class AbstractKnowledgeTest {
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         MemoryFileSystem mfs = new MemoryFileSystem();
-        KProjectChangeLogCommiter.commit( kproj, mfs );
 
         Folder fld2 = mfs.getFolder( "META-INF" );
         fld2.create();
@@ -111,8 +103,8 @@ public class AbstractKnowledgeTest {
         String kbase2R1 = getRule( namespace + ".test2", "rule1" );
         String kbase2R2 = getRule( namespace + ".test2", "rule2" );
 
-        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getQName() + "/" + kBase1.getNamespace().replace( '.', '/' );
-        String fldKB2 = kproj.getKBasesPath() + "/" + kBase2.getQName() + "/" + kBase2.getNamespace().replace( '.', '/' );
+        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getQName();
+        String fldKB2 = kproj.getKBasesPath() + "/" + kBase2.getQName();
 
         mfs.getFolder( fldKB1 ).create();
         mfs.getFolder( fldKB2 ).create();
@@ -219,7 +211,7 @@ public class AbstractKnowledgeTest {
                                 List<String> classes) {
         for ( KBase kbase : kproj.getKBases().values() ) {
             Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getQName() );
-            Folder trgFolder = trgMfs.getRootFolder();
+            Folder trgFolder = trgMfs.getFolder(kbase.getQName());
 
             copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
         }
@@ -268,8 +260,11 @@ public class AbstractKnowledgeTest {
         }
 
         Collection<Resource> col = (Collection<Resource>) srcFolder.getMembers();
+        if (col == null) {
+            return;
+        }
 
-        for ( Resource rs : srcFolder.getMembers() ) {
+        for ( Resource rs : col ) {
             if ( rs instanceof Folder ) {
                 copyFolder( srcMfs, (Folder) rs, trgMfs, trgFolder.getFolder( ((Folder) rs).getName() ), kproj );
             } else {

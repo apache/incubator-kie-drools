@@ -1,7 +1,7 @@
 package org.drools.kproject;
 
-import com.thoughtworks.xstream.XStream;
 import org.drools.builder.impl.KnowledgeContainerImpl;
+import org.drools.core.util.FileManager;
 import org.junit.Test;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeContainer;
@@ -28,9 +28,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
 
         // create a kjar and deploy it
         // the deploy method causes the compilation of all the KnowledgeBases defined in the kjar
-        // TODO Q: is it ok? to compile all the kbases during the deploy? would it be better to have a lazy compilation?
         // the method returns true if and only if ALL the kbases can be compiled without errors
-        // TODO Q: how to report the compilation problems of a specific kbase? I'd prefer to avoid Exception if possible
         File kJar1 = createKJar(kContainer, "test1.jar", "rule1", "rule2");
         kContainer.deploy(kJar1);
 
@@ -38,11 +36,13 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         StatefulKnowledgeSession ksession = kContainer.getStatefulKnowlegeSession("org.test.KSession1");
         checkKSession(ksession, "rule1", "rule2");
 
+        this.fileManager.tearDown();
+        this.fileManager = new FileManager();
+        this.fileManager.setUp();
+
         // deploy a second kjar
         // since it contains the definition of a kbase with the same QName of one already
         // defined with the former deploy it will replace the old one
-        // TODO Q: I am not considering the name of the single drl files inside the kjar
-        //         as (I think) the kagent does. Is that correct?
         File kJar2 = createKJar(kContainer, "test2.jar", "rule2", "rule3");
         kContainer.deploy(kJar2);
 
@@ -95,7 +95,6 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
 
         KProject kproj = new KProjectImpl();
         KBase kBase1 = kproj.newKBase( "org.test", "KBase1" )
-                .setFiles( files )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 

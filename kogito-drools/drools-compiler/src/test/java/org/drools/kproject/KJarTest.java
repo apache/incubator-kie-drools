@@ -104,7 +104,6 @@ public class KJarTest {
 
         KProject kproj = new KProjectImpl();
         KBase kBase1 = kproj.newKBase( "org.test", "KBase1" )
-                .setFiles( asList( "org/test/rule.drl", "org/test/decA.drl", "org/test/decB.drl" ) )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 

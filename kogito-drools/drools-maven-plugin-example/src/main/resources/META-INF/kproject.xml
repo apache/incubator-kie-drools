@@ -1,21 +1,11 @@
 <kproject>
   <kbases>
     <kbase name="FireAlarmKBase" namespace="org.drools">
-      <files>
-        <file>org.drools.sample/alarm.drl</file>
-        <file>org.drools.sample/rules.drl</file>
-        <file>org.drools.sample/rules2.drl</file>
-      </files>
       <ksessions>
         <ksession name="FireAlarmKBase.session" namespace="org.drools" type="stateful"/>
       </ksessions>
     </kbase>
     <kbase name="KBase1" namespace="org.test">
-      <files>
-        <file>org.drools.test/rule.drl</file>
-        <file>org.drools.test/decA.drl</file>
-        <file>org.drools.test/decB.drl</file>
-      </files>
       <ksessions>
         <ksession name="KBase1.session" namespace="org.test" type="stateful"/>
       </ksessions>

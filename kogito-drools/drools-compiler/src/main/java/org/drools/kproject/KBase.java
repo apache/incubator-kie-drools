@@ -4,51 +4,48 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipFile;
 
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 
 public interface KBase {
 
-    public KSession newKSession(String namespace, String name);
+    KSession newKSession(String namespace, String name);
 
-    public KBase removeKSession(String qName);
+    KBase removeKSession(String qName);
 
-    public Map<String, KSession> getKSessions();
+    Map<String, KSession> getKSessions();
 
-    public Set<String> getIncludes();
+    Set<String> getIncludes();
 
-    public KBase addInclude(String kBaseQName);
+    KBase addInclude(String kBaseQName);
 
-    public KBase removeInclude(String kBaseQName);
+    KBase removeInclude(String kBaseQName);
 
-    public PropertyChangeListener getListener();
+    PropertyChangeListener getListener();
 
-    public KBase setListener(PropertyChangeListener listener);
+    KBase setListener(PropertyChangeListener listener);
 
-    public String getNamespace();
+    String getNamespace();
 
-    public KBase setNamespace(String namespace);
+    KBase setNamespace(String namespace);
 
-    public String getName();
+    String getName();
 
-    public KBase setName(String name);
+    KBase setName(String name);
 
-    public String getQName();
+    String getQName();
 
-    public List<String> getFiles();
+    AssertBehaviorOption getEqualsBehavior();
 
-    public KBase setFiles(List<String> files);
+    KBase setEqualsBehavior(AssertBehaviorOption equalsBehaviour);
 
-    public AssertBehaviorOption getEqualsBehavior();
+    EventProcessingOption getEventProcessingMode();
 
-    public KBase setEqualsBehavior(AssertBehaviorOption equalsBehaviour);
+    KBase setEventProcessingMode(EventProcessingOption eventProcessingMode);
 
-    public EventProcessingOption getEventProcessingMode();
+    List<String> getAnnotations();
 
-    public KBase setEventProcessingMode(EventProcessingOption eventProcessingMode);
-
-    public List<String> getAnnotations();
-
-    public KBase setAnnotations(List<String> annotations);
+    KBase setAnnotations(List<String> annotations);
 }

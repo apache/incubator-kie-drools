@@ -1,23 +1,28 @@
 package org.drools.kproject;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
+import org.drools.core.util.Predicate;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
-import org.kie.runtime.conf.ClockTypeOption;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static org.drools.core.util.IoUtils.recursiveListFile;
 
 public class KBaseImpl
         implements
@@ -27,8 +32,6 @@ public class KBaseImpl
     private String                           name;
     
     private Set<String>                      includes;
-
-    private List<String>                     files;
 
     private List<String>                     annotations;
 
@@ -44,7 +47,6 @@ public class KBaseImpl
 
     private KBaseImpl() {
         this.includes = new HashSet<String>();
-        this.files = new ArrayList<String>();
     }
 
     public KBaseImpl(KProjectImpl kProject,
@@ -54,7 +56,6 @@ public class KBaseImpl
         this.namespace = namespace;
         this.includes = new HashSet<String>();
         this.name = name;
-        this.files = new ArrayList<String>();
         this.kSessions = Collections.emptyMap();
     }
 
@@ -198,24 +199,6 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getFiles()
-     */
-    public List<String> getFiles() {
-        return files;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setFiles(java.util.List)
-     */
-    public KBase setFiles(List<String> files) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "files", this.files, files ) );
-        }
-        this.files = files;
-        return this;
-    }
-
-    /* (non-Javadoc)
      * @see org.kie.kproject.KBase#getEqualsBehavior()
      */
     public AssertBehaviorOption getEqualsBehavior() {
@@ -274,7 +257,41 @@ public class KBaseImpl
      */
     @Override
     public String toString() {
-        return "KBase [namespace=" + namespace + ", name=" + name + ", files=" + files + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
+        return "KBase [namespace=" + namespace + ", name=" + name + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
+    }
+
+    public static List<String> getFiles(String kBaseQName, ZipFile zipFile) {
+        List<String> files = new ArrayList<String>();
+        Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
+        while (zipEntries.hasMoreElements()) {
+            ZipEntry zipEntry = zipEntries.nextElement();
+            String fileName = zipEntry.getName();
+            if (filterFileInKBase(kBaseQName, fileName)) {
+                files.add(fileName);
+            }
+        }
+        return files;
+    }
+
+    public static List<String> getFiles(String kBaseQName, java.io.File root) {
+        java.io.File kBaseRoot = null;
+        for (java.io.File child : root.listFiles()) {
+            if (child.getName().equals(kBaseQName)) {
+                kBaseRoot = child;
+                break;
+            }
+        }
+
+        return recursiveListFile(kBaseRoot, kBaseQName + "/", new Predicate<java.io.File>() {
+            public boolean apply(java.io.File file) {
+                String fileName = file.getName();
+                return fileName.endsWith(".drl") || fileName.endsWith(".bpm2");
+            }
+        });
+    }
+
+    private static boolean filterFileInKBase(String kBaseQName, String fileName) {
+        return fileName.startsWith(kBaseQName) && (fileName.endsWith(".drl") || fileName.endsWith(".bpm2"));
     }
 
     public static class KBaseConverter extends AbstractXStreamConverter {
@@ -293,7 +310,7 @@ public class KBaseImpl
             if (kBase.getEqualsBehavior() != null) {
                 writer.addAttribute("equalsBehavior", kBase.getEqualsBehavior().toString());
             }
-            writeList(writer, "files", "file", kBase.getFiles());
+            // writeList(writer, "files", "file", kBase.getFiles());
             writeList(writer, "includes", "include", kBase.getIncludes());
             writeObjectList(writer, context, "ksessions", "ksession", kBase.getKSessions().values());
         }
@@ -321,8 +338,6 @@ public class KBaseImpl
                             kSessions.put( kSession.getQName(), kSession );
                         }
                         kBase.setKSessions(kSessions);
-                    } else if ("files".equals(name)) {
-                        kBase.setFiles(readList(reader));
                     } else if ("includes".equals(name)) {
                         for (String include : readList(reader)) {
                             kBase.addInclude(include);

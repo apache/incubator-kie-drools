@@ -188,37 +188,6 @@ public class KProjectDirtyLogTest {
     }          
 
     @Test
-    public void testKBaseModified() {
-        KProject kproj = new KProjectImpl();
-
-        KProjectChangeLog dirtyLog = new KProjectChangeLog();
-        kproj.setListener( dirtyLog );
-
-        KBase kbase1 = kproj.newKBase( "org.test1", "KBase1" );
-        kbase1.setEqualsBehavior( AssertBehaviorOption.IDENTITY );
-        kbase1.setEventProcessingMode( EventProcessingOption.CLOUD );
-
-        kbase1.setEqualsBehavior( AssertBehaviorOption.EQUALITY );
- 
-        assertTrue( dirtyLog.getAddedKBases().contains( kbase1.getQName() ) );
-
-        dirtyLog.reset();
-
-        kbase1.setEventProcessingMode( EventProcessingOption.STREAM );
-        assertTrue( dirtyLog.getAddedKBases().contains( kbase1.getQName() ) );
-
-        dirtyLog.reset();
-
-        kbase1.setFiles( new ArrayList<String>() );
-        assertTrue( dirtyLog.getAddedKBases().contains( kbase1.getQName() ) );
-        
-        kproj.removeKBase( kbase1.getQName() );
-        assertEquals( 1, dirtyLog.getRemovedKBases().size() );
-        assertEquals( 0, dirtyLog.getAddedKBases().size() );        
-        assertTrue( dirtyLog.getRemovedKBases().contains( kbase1.getQName() ) );       
-    }
-
-    @Test
     public void testKSessionAdded() {
         KProject kproj = new KProjectImpl();
 
