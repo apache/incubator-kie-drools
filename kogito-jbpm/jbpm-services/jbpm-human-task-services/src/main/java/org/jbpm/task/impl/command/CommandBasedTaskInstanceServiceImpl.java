@@ -209,5 +209,9 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     public SubTasksStrategy getSubTaskStrategy(long taskId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void setTaskNames(long taskId, List<I18NText> taskNames) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

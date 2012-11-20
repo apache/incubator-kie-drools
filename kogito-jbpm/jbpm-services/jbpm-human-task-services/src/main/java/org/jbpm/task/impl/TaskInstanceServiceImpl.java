@@ -220,6 +220,11 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         task.setPriority(priority);
     }
     
+    public void setTaskNames(long taskId, List<I18NText> taskNames) {
+        Task task = em.find(Task.class, taskId);
+        task.setNames(taskNames);
+    }
+    
     public void skip(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Skip, taskId, userId, null, null, null);
     }
@@ -663,4 +668,6 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         Task task = em.find(Task.class, taskId);
         return task.getSubTaskStrategy();
     }
+
+    
 }

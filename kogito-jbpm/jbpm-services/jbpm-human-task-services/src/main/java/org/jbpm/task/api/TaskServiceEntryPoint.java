@@ -175,6 +175,8 @@ public interface TaskServiceEntryPoint {
     void setOutput(long taskId, String userId, Object outputContentData);
 
     void setPriority(long taskId, int priority);
+    
+    void setTaskNames(long taskId, List<I18NText> taskNames);
 
     void skip(long taskId, String userId);
 

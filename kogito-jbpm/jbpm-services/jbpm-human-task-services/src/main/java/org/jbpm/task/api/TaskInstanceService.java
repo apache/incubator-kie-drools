@@ -83,6 +83,8 @@ public interface TaskInstanceService {
 
     void setPriority(long taskId, int priority);
     
+    void setTaskNames(long taskId, List<I18NText> taskNames);
+    
     void setExpirationDate(long taskId, Date date);
     
     public void setDescriptions(long taskId, List<I18NText> descriptions);

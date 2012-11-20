@@ -229,5 +229,9 @@ public class SubTaskDecorator implements TaskInstanceService {
     public SubTasksStrategy getSubTaskStrategy(long taskId) {
         return instanceService.getSubTaskStrategy(taskId);
     }
+
+    public void setTaskNames(long taskId, List<I18NText> taskNames) {
+        instanceService.setTaskNames(taskId, taskNames);
+    }
     
 }

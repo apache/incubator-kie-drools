@@ -537,6 +537,10 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public Comment getCommentById(long commentId) {
         return taskCommentService.getCommentById(commentId);
     }
+
+    public void setTaskNames(long taskId, List<I18NText> taskName) {
+        taskInstanceService.setTaskNames(taskId, taskName);
+    }
     
     
     
