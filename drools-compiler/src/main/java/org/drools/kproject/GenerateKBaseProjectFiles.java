@@ -73,24 +73,4 @@ public class GenerateKBaseProjectFiles {
 
         return s;
     }
-    public static String generateKBaseFiles(KProject kproject,
-                                            KBase kbase,
-                                            FileSystem fs) {
-        Path kbasePath = fs.getFolder( kproject.getKBasesPath() + "/" + kbase.getQName() ).getPath();
-
-        List<String> files = new ArrayList<String>( kbase.getFiles() );
-        Collections.sort( files );
-
-        StringBuilder sbuilder = new StringBuilder();
-        boolean first = true;
-        for ( String file : files ) {
-            if ( !first ) {
-                sbuilder.append( ", " );
-            }
-            sbuilder.append( file );
-            first = false;
-        }
-
-        return sbuilder.toString();
-    }
 }

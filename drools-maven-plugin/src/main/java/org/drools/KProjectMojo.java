@@ -4,6 +4,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.drools.builder.impl.KnowledgeContainerImpl;
+import org.drools.core.util.Predicate;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KProjectImpl;
 import org.drools.kproject.KSession;
@@ -62,10 +63,8 @@ public class KProjectMojo extends AbstractMojo {
             String namespace = dotPos > 0 ? qName.substring(0, dotPos) : "";
             String kBaseName = dotPos > 0 ? qName.substring(dotPos+1) : qName;
 
-            KBase kBase = kproj.newKBase( namespace, kBaseName )
-                    .setFiles(recursiveListFile(kBaseFolder));
-
-            KSession ksession1 = kBase.newKSession( namespace, kBaseName + ".session" )
+            kproj.newKBase( namespace, kBaseName )
+                    .newKSession( namespace, kBaseName + ".session" )
                     .setType( "stateful" );
         }
 

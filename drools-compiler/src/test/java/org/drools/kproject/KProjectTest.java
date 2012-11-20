@@ -69,7 +69,7 @@ public class KProjectTest extends AbstractKnowledgeTest {
     }
 
     @Test
-    public void ctreatCreateMultpleJarAndFileResources() throws IOException,
+    public void createMultpleJarAndFileResources() throws IOException,
                        ClassNotFoundException,
                        InterruptedException {
         createKProjectJar( "jar1", true );
@@ -169,47 +169,6 @@ public class KProjectTest extends AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test1:rule2" ) );
         assertTrue( list.contains( jarName + ".test2:rule1" ) );
         assertTrue( list.contains( jarName + ".test2:rule2" ) );
-    }
-
-    public List<String> compile(KProject kproj,
-                                MemoryFileSystem srcMfs,
-                                MemoryFileSystem trgMfs,
-                                List<String> classes) {
-        for ( KBase kbase : kproj.getKBases().values() ) {
-            Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getQName() );
-            Folder trgFolder = trgMfs.getRootFolder();
-
-            copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
-        }
-
-        Folder srcFolder = srcMfs.getFolder( "META-INF" );
-        Folder trgFolder = trgMfs.getFolder( "META-INF" );
-        trgFolder.create();
-
-        copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
-
-        //printFs(trgMfs, trgMfs.getRootFolder());
-        // populateClasses(kproj, classes);
-
-        System.out.println( classes );
-
-        EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
-        settings.setSourceVersion( "1.5" );
-        settings.setTargetVersion( "1.5" );
-        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings );
-        CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), trgMfs, trgMfs );
-
-        if ( res.getErrors().length > 0 ) {
-            fail( res.getErrors()[0].getMessage() );
-            //fail(res.getErrors().toString());
-        }
-
-        List<String> classes2 = new ArrayList<String>( classes.size() );
-        for ( String str : classes ) {
-            classes2.add( filenameToClassname( str ) );
-        }
-
-        return classes2;
     }
 
     public void populateClasses(KProject kproject,

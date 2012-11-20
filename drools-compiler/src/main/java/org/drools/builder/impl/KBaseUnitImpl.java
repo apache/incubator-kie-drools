@@ -1,6 +1,7 @@
 package org.drools.builder.impl;
 
 import org.drools.kproject.KBase;
+import org.drools.kproject.KBaseImpl;
 import org.drools.kproject.KSession;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static org.drools.kproject.KBaseImpl.getFiles;
 
 public class KBaseUnitImpl implements KBaseUnit {
 
@@ -137,7 +140,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             }
 
             try {
-                for ( String file : kBase.getFiles() ) {
+                for ( String file : getFiles(kBase.getQName(), zipFile) ) {
                     ZipEntry zipEntry = zipFile.getEntry( file );
                     ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
                 }
@@ -151,7 +154,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             }
         } else {
             try {
-                for ( String file : kBase.getFiles() ) {
+                for ( String file : getFiles(kBase.getQName(), new File(rootPath)) ) {
                     ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
                 }
             } catch ( Exception e) {

@@ -106,21 +106,27 @@ public class IoUtils {
     }
 
     public static List<String> recursiveListFile(File folder) {
+        return recursiveListFile(folder, "", Predicate.PassAll.INSTANCE);
+    }
+
+    public static List<String> recursiveListFile(File folder, String prefix, Predicate<? super File> filter) {
         List<String> files = new ArrayList<String>();
         for (File child : folder.listFiles()) {
-            filesInFolder(files, child, "");
+            filesInFolder(files, child, prefix, filter);
         }
         return files;
     }
 
-    private static void filesInFolder(List<String> files, File file, String relativePath) {
+    private static void filesInFolder(List<String> files, File file, String relativePath, Predicate<? super File> filter) {
         if (file.isDirectory()) {
             relativePath += file.getName() + "/";
             for (File child : file.listFiles()) {
-                filesInFolder(files, child, relativePath);
+                filesInFolder(files, child, relativePath, filter);
             }
         } else {
-            files.add(relativePath + file.getName());
+            if (filter.apply(file)) {
+                files.add(relativePath + file.getName());
+            }
         }
     }
 }
