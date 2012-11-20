@@ -70,6 +70,13 @@
         solution and offers no support in calculating that score efficiently.</para>
       </listitem>
     </itemizedlist>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Optimization_algorithms/architectureOverview.png"/>
+      </imageobject>
+    </mediaobject>
+
   </section>
 
   <section>
