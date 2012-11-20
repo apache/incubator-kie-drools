@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.jboss.org/drools"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:drools="http://www.jboss.org/drools">
+
+	<attribute name="packageName">
+		<simpleType>
+			<restriction base="string" />
+		</simpleType>
+	</attribute>
+
+	<attribute name="version">
+		<simpleType>
+			<restriction base="string" />
+		</simpleType>
+	</attribute>
+
+	<attribute name="ruleFlowGroup">
+		<simpleType>
+			<restriction base="string" />
+		</simpleType>
+	</attribute>
+
+	<attribute name="taskName">
+		<simpleType>
+			<restriction base="string" />
+		</simpleType>
+	</attribute>
+
+	<attribute name="priority">
+		<simpleType>
+			<restriction base="integer">
+				<minInclusive value="1" />
+			</restriction>
+		</simpleType>
+	</attribute>
+
+	<attributeGroup name="onxscriptattributes">
+		<attribute name="scriptFormat" type="string" use="required" />
+	</attributeGroup>
+
+	<attributeGroup name="importattributes">
+		<attribute name="name" type="string" use="required" />
+	</attributeGroup>
+
+	<attributeGroup name="globalattributes">
+		<attribute name="identifier" type="string" use="required" />
+		<attribute name="type" type="string" use="required" />
+	</attributeGroup>
+
+	<element name="onEntry-script">
+		<complexType>
+			<sequence>
+				<element name="script" minOccurs="1" maxOccurs="1" type="string" />
+			</sequence>
+			<attributeGroup ref="drools:onxscriptattributes" />
+		</complexType>
+	</element>
+
+	<element name="onExit-script">
+		<complexType>
+			<sequence>
+				<element name="script" minOccurs="1" maxOccurs="1" type="string" />
+			</sequence>
+			<attributeGroup ref="drools:onxscriptattributes" />
+		</complexType>
+	</element>
+
+	<element name="import">
+		<complexType>
+			<attributeGroup ref="drools:importattributes" />
+		</complexType>
+	</element>
+
+	<element name="global">
+		<complexType>
+			<attributeGroup ref="drools:globalattributes" />
+		</complexType>
+	</element>
+
+	<element name="metadata">
+		<complexType>
+			<sequence>
+				<element maxOccurs="unbounded" ref="drools:metaentry" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="metaentry">
+		<complexType>
+			<sequence>
+				<element name="name" type="string" minOccurs="1" maxOccurs="1" />
+				<element name="value" type="string" minOccurs="1" maxOccurs="1" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<!-- START BPS v 0.4 -->
+	<element name="ProcessAnalysisData">
+		<complexType>
+			<sequence maxOccurs="unbounded">
+				<element name="Scenario" type="drools:Scenario" />
+			</sequence>
+		</complexType>
+	</element>
+	<complexType name="Scenario">
+		<sequence minOccurs="0">
+			<element name="ScenarioParameters" minOccurs="0" type="drools:ScenarioParameters" >
+            </element>
+            <element name="ElementParameters" minOccurs="0" maxOccurs="unbounded" type="drools:ElementParameters">
+            </element>
+			<element name="Calendar" type="drools:Calendar" minOccurs="0"
+				maxOccurs="unbounded" />
+			<element name="VendorExtension" type="drools:VendorExtension"
+				minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="ID" use="required" />
+		<attribute name="name" type="string" />
+		<attribute name="description" type="string" />
+		<attribute name="author" type="string" />
+		<attribute name="vendor" type="string" />
+		<attribute name="version" type="string" />
+		<attribute name="inherits" type="IDREF" />
+		<attribute name="result" type="IDREF" />
+		<attribute name="created" type="dateTime" />
+		<attribute name="modified" type="dateTime" />
+	</complexType>
+	<complexType name="ScenarioParameters">
+		<sequence minOccurs="0">
+			<element name="Start" type="drools:Parameter" minOccurs="0" />
+			<element name="Duration" type="drools:Parameter" minOccurs="0" />
+			<element name="PropertyParameters" type="drools:PropertyParameters"
+				minOccurs="0" />
+		</sequence>
+		<attribute name="replication" type="int" />
+		<attribute name="seed" type="long" />
+		<attribute name="baseTimeUnit" type="drools:TimeUnit" />
+		<attribute name="baseCurrencyUnit" type="string" />
+	</complexType>
+	<complexType name="VendorExtension">
+		<sequence minOccurs="0">
+			<any namespace="##other" />
+		</sequence>
+		<attribute name="name" type="string" use="required" />
+		<anyAttribute namespace="##other" />
+	</complexType>
+	<complexType name="ElementParameters">
+		<sequence minOccurs="0">
+			<element name="TimeParameters" type="drools:TimeParameters"
+				minOccurs="0" />
+			<element name="ControlParameters" type="drools:ControlParameters"
+				minOccurs="0" />
+			<element name="ResourceParameters" type="drools:ResourceParameters"
+				minOccurs="0" />
+			<element name="PriorityParameters" type="drools:PriorityParameters"
+				minOccurs="0" />
+			<element name="CostParameters" type="drools:CostParameters"
+				minOccurs="0" />
+			<element name="PropertyParameters" type="drools:PropertyParameters"
+				minOccurs="0" />
+			<element name="VendorExtension" type="drools:VendorExtension"
+				minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="ID" />
+		<attribute name="elementId" type="string" />
+	</complexType>
+	<complexType name="TimeParameters">
+		<sequence minOccurs="0">
+			<element name="TransferTime" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="QueueTime" type="drools:Parameter" minOccurs="0" />
+			<element name="WaitTime" type="drools:Parameter" minOccurs="0" />
+			<element name="SetUpTime" type="drools:Parameter" minOccurs="0" />
+			<element name="ProcessingTime" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="ValidationTime" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="ReworkTime" type="drools:Parameter" minOccurs="0" />
+			<element name="TimeUnit" type="drools:TimeUnit" />
+		</sequence>
+	</complexType>
+	<complexType name="ControlParameters">
+		<sequence minOccurs="0">
+			<element name="Probability" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="InterTriggerTimer" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="MaxTriggerCount" type="drools:Parameter"
+				minOccurs="0" />
+		</sequence>
+	</complexType>
+	<complexType name="CostParameters">
+		<sequence minOccurs="0">
+			<element name="FixedCost" type="drools:Parameter" minOccurs="0" />
+			<element name="UnitCost" type="drools:Parameter" minOccurs="0" />
+			<element name="CurrencyUnit" type="string" minOccurs="0" />
+		</sequence>
+	</complexType>
+	<complexType name="ResourceParameters">
+		<sequence minOccurs="0">
+			<element name="Selection" type="drools:Parameter" minOccurs="0" />
+			<element name="Availability" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="Quantity" type="drools:Parameter" minOccurs="0" />
+			<element name="Workinghours" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="Role" type="drools:Parameter" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	<complexType name="PriorityParameters">
+		<sequence minOccurs="0">
+			<element name="Interruptible" type="drools:Parameter"
+				minOccurs="0" />
+			<element name="Priority" type="drools:Parameter" minOccurs="0" />
+		</sequence>
+	</complexType>
+	<complexType name="PropertyParameters">
+		<sequence minOccurs="0">
+			<element name="Property" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<complexContent>
+						<extension base="drools:Parameter">
+							<attribute name="name" type="string" use="required" />
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="Parameter">
+		<sequence minOccurs="0">
+			<element name="ResultRequest" type="drools:ResultType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<element ref="drools:ParameterValue" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="kpi" type="boolean" default="false" />
+		<attribute name="sla" type="boolean" default="false" />
+	</complexType>
+	<complexType name="Calendar">
+		<simpleContent>
+			<extension base="string">
+				<attribute name="id" type="ID" />
+				<attribute name="name" type="string" />
+			</extension>
+		</simpleContent>
+	</complexType>
+	<element name="ParameterValue" type="drools:ParameterValue" />
+	<complexType name="ParameterValue">
+		<attribute name="validFor" type="IDREF" />
+		<attribute name="instance" type="string" />
+		<attribute name="result" type="drools:ResultType" />
+	</complexType>
+	<element name="EnumParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ParameterValue">
+					<sequence maxOccurs="unbounded">
+						<annotation>
+							<documentation>Even if here we reference a list of Parameter
+								Values, only Constant Parameters are valid here. There is just
+								no real way of expressing it in xsd.
+							</documentation>
+						</annotation>
+						<element ref="drools:ParameterValue" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ExpressionParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ParameterValue">
+					<attribute name="value" type="string" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<complexType name="ConstantParameter">
+		<complexContent>
+			<extension base="drools:ParameterValue" />
+		</complexContent>
+	</complexType>
+	<element name="StringParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="string" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="NumericParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="long" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="DecimalParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="decimal" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="FloatingParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="BooleanParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="boolean" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="DurationParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="duration" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="DateTimeParameter" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:ConstantParameter">
+					<attribute name="value" type="dateTime" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<complexType name="DistributionParameter">
+		<complexContent>
+			<extension base="drools:ParameterValue">
+				<attribute name="discrete" type="boolean" default="false" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="LogNormalDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="mean" type="double" />
+					<attribute name="standardDeviation" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="PoissonDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="mean" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="WeibullDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="shape" type="double" />
+					<attribute name="scale" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="UniformDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="min" type="double" />
+					<attribute name="max" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="RandomDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="min" type="double"/>
+					<attribute name="max" type="double"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="NormalDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="mean" type="double" />
+					<attribute name="standardDeviation" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="BetaDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="shape" type="double" />
+					<attribute name="scale" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="NegativeExponentialDistribution"
+		substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="mean" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="BinomialDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="probability" type="double" />
+					<attribute name="trials" type="long" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="TruncatedNormalDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="mean" type="double" />
+					<attribute name="standardDeviation" type="double" />
+					<attribute name="min" type="double" />
+					<attribute name="max" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ErlangDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="mean" type="double" />
+					<attribute name="k" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="TriangularDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="mostLikely" type="double" />
+					<attribute name="min" type="double" />
+					<attribute name="max" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="GammaDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<attribute name="shape" type="double" />
+					<attribute name="scale" type="double" />
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="UserDistribution" substitutionGroup="drools:ParameterValue">
+		<complexType>
+			<complexContent>
+				<extension base="drools:DistributionParameter">
+					<sequence maxOccurs="unbounded">
+						<element ref="drools:UserDistributionDataPoint" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="UserDistributionDataPoint">
+		<complexType>
+			<sequence>
+				<element ref="drools:ParameterValue" />
+			</sequence>
+			<attribute name="probability" type="float" />
+		</complexType>
+	</element>
+	<simpleType name="TimeUnit">
+		<restriction base="string">
+			<enumeration value="ms" />
+			<enumeration value="s" />
+			<enumeration value="min" />
+			<enumeration value="hour" />
+			<enumeration value="day" />
+			<enumeration value="year" />
+		</restriction>
+	</simpleType>
+	<simpleType name="ResultType">
+		<restriction base="string">
+			<enumeration value="enum" />
+			<enumeration value="min" />
+			<enumeration value="max" />
+			<enumeration value="mean" />
+			<enumeration value="count" />
+			<enumeration value="sum" />
+		</restriction>
+	</simpleType>
+	<!-- END BPS v. 0.4 -->
+</schema>
