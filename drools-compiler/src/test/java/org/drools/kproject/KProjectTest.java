@@ -174,11 +174,11 @@ public class KProjectTest extends AbstractKnowledgeTest {
     public void populateClasses(KProject kproject,
                                 List<String> classes) {
         for ( KBase kBase : kproject.getKBases().values() ) {
-            classes.add(kBase.getNamespace().replace('.', '/') + "/" + kBase.getName() + "Producer.java");
-            classes.add( kBase.getNamespace().replace( '.', '/' ) + "/" + kBase.getName() + ".java" );
+            classes.add(kBase.getName() + "Producer.java");
+            classes.add(kBase.getName() + ".java" );
             for ( KSession kSession : kBase.getKSessions().values() ) {
-                classes.add( kSession.getNamespace().replace( '.', '/' ) + "/" + kSession.getName() + "Producer.java" );
-                classes.add( kSession.getNamespace().replace( '.', '/' ) + "/" + kSession.getName() + ".java" );
+                classes.add( kSession.getName() + "Producer.java" );
+                classes.add( kSession.getName() + ".java" );
             }
         }
     }

@@ -31,7 +31,7 @@ public class BuildMojo extends AbstractMojo {
     private File rootFolder;
 
     /**
-     * Project root folder.
+     * Project sourceFolder folder.
      *
      * @parameter default-value="src/kbases"
      * @required

@@ -104,12 +104,11 @@ public class KProjectImpl implements KProject {
     /* (non-Javadoc)
      * @see org.kie.kproject.KProject#addKBase(org.kie.kproject.KBaseImpl)
      */
-    public KBase newKBase(String namespace,
-                         String name) {
-        KBase kbase = new KBaseImpl(this, namespace, name);
+    public KBase newKBase(String name) {
+        KBase kbase = new KBaseImpl(this, name);
         Map<String, KBase> newMap = new HashMap<String, KBase>();
         newMap.putAll( this.kBases );        
-        newMap.put( kbase.getQName(), kbase );
+        newMap.put( kbase.getName(), kbase );
         setKBases( newMap );   
         
         return kbase;
@@ -258,7 +257,7 @@ public class KProjectImpl implements KProject {
                         Map<String, KBase> kBases = new HashMap<String, KBase>();
                         for (KBaseImpl kBase : readObjectList(reader, context, KBaseImpl.class)) {
                             kBase.setKProject(kProject);
-                            kBases.put(kBase.getQName(), kBase);
+                            kBases.put(kBase.getName(), kBase);
                         }
                         kProject.setKBases(kBases);
                     }

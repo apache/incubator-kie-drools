@@ -1,13 +1,13 @@
 <kproject>
   <kbases>
-    <kbase name="FireAlarmKBase" namespace="org.drools">
+    <kbase name="KBase1">
       <ksessions>
-        <ksession name="FireAlarmKBase.session" namespace="org.drools" type="stateful"/>
+        <ksession name="KBase1.session" type="stateful"/>
       </ksessions>
     </kbase>
-    <kbase name="KBase1" namespace="org.test">
+    <kbase name="FireAlarmKBase">
       <ksessions>
-        <ksession name="KBase1.session" namespace="org.test" type="stateful"/>
+        <ksession name="FireAlarmKBase.session" type="stateful"/>
       </ksessions>
     </kbase>
   </kbases>

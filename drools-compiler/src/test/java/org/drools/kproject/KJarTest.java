@@ -49,13 +49,13 @@ public class KJarTest {
     public void testKBUnit() throws Exception {
         createKJar();
 
-        KBaseUnit unit = KnowledgeBaseFactory.getKBaseUnit("org.test.KBase1");
+        KBaseUnit unit = KnowledgeBaseFactory.getKBaseUnit("KBase1");
         if ( unit.hasErrors() ) {
             fail( unit.getErrors().toString() );
         }
 
         KnowledgeBase kbase = unit.getKnowledgeBase();
-        StatefulKnowledgeSession ksession = unit.newStatefulKnowledegSession( "org.test.KSession1" );
+        StatefulKnowledgeSession ksession = unit.newStatefulKnowledegSession( "KSession1" );
         useKSession(kbase, ksession);
     }
 
@@ -64,7 +64,7 @@ public class KJarTest {
     public void testSessionFactory() throws Exception {
         createKJar();
 
-        StatefulKnowledgeSession ksession = KnowledgeBaseFactory.getStatefulKnowlegeSession("org.test.KSession1");
+        StatefulKnowledgeSession ksession = KnowledgeBaseFactory.getStatefulKnowlegeSession("KSession1");
 
         useKSession(ksession.getKnowledgeBase(), ksession);
     }
@@ -73,8 +73,8 @@ public class KJarTest {
     public void testKBaseAndSessionFactories() throws Exception {
         createKJar();
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.getKnowledgeBase("org.test.KBase1");
-        StatefulKnowledgeSession ksession = KnowledgeBaseFactory.getStatefulKnowlegeSession("org.test.KSession1");
+        KnowledgeBase kbase = KnowledgeBaseFactory.getKnowledgeBase("KBase1");
+        StatefulKnowledgeSession ksession = KnowledgeBaseFactory.getStatefulKnowlegeSession("KSession1");
 
         useKSession(kbase, ksession);
     }
@@ -98,16 +98,16 @@ public class KJarTest {
                 "end\n";
 
 
-        fileManager.write(fileManager.newFile("src/kbases/org.test.KBase1/org/test/rule.drl"), rule);
-        fileManager.write(fileManager.newFile("src/kbases/org.test.KBase1/org/test/decA.drl"), declarationA);
-        fileManager.write(fileManager.newFile("src/kbases/org.test.KBase1/org/test/decB.drl"), declarationB);
+        fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/rule.drl"), rule);
+        fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decA.drl"), declarationA);
+        fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decB.drl"), declarationB);
 
         KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase( "org.test", "KBase1" )
+        KBase kBase1 = kproj.newKBase( "KBase1" )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( "org.test", "KSession1" )
+        KSession ksession1 = kBase1.newKSession( "KSession1" )
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );

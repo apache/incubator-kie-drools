@@ -58,13 +58,9 @@ public class KProjectMojo extends AbstractMojo {
         KProjectImpl kproj = new KProjectImpl();
 
         for (File kBaseFolder : sourceFolder.listFiles()) {
-            String qName = kBaseFolder.getName();
-            int dotPos = qName.lastIndexOf('.');
-            String namespace = dotPos > 0 ? qName.substring(0, dotPos) : "";
-            String kBaseName = dotPos > 0 ? qName.substring(dotPos+1) : qName;
-
-            kproj.newKBase( namespace, kBaseName )
-                    .newKSession( namespace, kBaseName + ".session" )
+            String kBaseName = kBaseFolder.getName();
+            kproj.newKBase( kBaseName )
+                    .newKSession( kBaseName + ".session" )
                     .setType( "stateful" );
         }
 

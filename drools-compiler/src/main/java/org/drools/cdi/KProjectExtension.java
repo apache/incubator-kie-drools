@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -49,8 +48,6 @@ import org.kie.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.XStream;
-
 import static org.drools.kproject.KBaseImpl.getFiles;
 
 public class KProjectExtension
@@ -59,8 +56,8 @@ public class KProjectExtension
 
     private static final Logger                       log = LoggerFactory.getLogger( KProjectExtension.class );
 
-    private Set<String>                               kBaseQNames;
-    private Set<String>                               kSessionQNames;
+    private Set<String>                               kBaseNames;
+    private Set<String>                               kSessionNames;
 
     private Map<String, String>                       kBaseURLs;
     private Map<String, KProject>                     kProjects;
@@ -87,18 +84,18 @@ public class KProjectExtension
             for ( InjectionPoint ip : pit.getInjectionTarget().getInjectionPoints() ) {
                 KBase kBase = ip.getAnnotated().getAnnotation( KBase.class );
                 if ( kBase != null ) {
-                    if ( kBaseQNames == null ) {
-                        kBaseQNames = new HashSet<String>();
+                    if ( kBaseNames == null ) {
+                        kBaseNames = new HashSet<String>();
                     }
-                    kBaseQNames.add( kBase.value() );
+                    kBaseNames.add(kBase.value());
                 }
 
                 KSession kSession = ip.getAnnotated().getAnnotation( KSession.class );
                 if ( kSession != null ) {
-                    if ( kSessionQNames == null ) {
-                        kSessionQNames = new HashSet<String>();
+                    if ( kSessionNames == null ) {
+                        kSessionNames = new HashSet<String>();
                     }
-                    kSessionQNames.add( kSession.value() );
+                    kSessionNames.add(kSession.value());
                 }
             }
         }
@@ -111,8 +108,8 @@ public class KProjectExtension
             // if kProjects null, processInjectionTarget was not called, so beans to create
 
             Map<String, KBaseBean> kBaseBeans = new HashMap<String, KProjectExtension.KBaseBean>();
-            if ( kBaseQNames != null ) {
-                for ( String kBaseQName : kBaseQNames ) {
+            if ( kBaseNames != null ) {
+                for ( String kBaseQName : kBaseNames) {
                     KBaseBean bean = new KBaseBean( kBases.get( kBaseQName ),
                                                     kBaseURLs.get( kBaseQName ),
                                                     kBaseBeans );
@@ -120,12 +117,15 @@ public class KProjectExtension
                     abd.addBean( bean );
                 }
             }
-            kBaseQNames = null;
+            kBaseNames = null;
 
-            if ( kSessionQNames != null ) {
-                for ( String kSessionQName : kSessionQNames ) {
-                    org.drools.kproject.KSession kSession = kSessions.get( kSessionQName );
-                    KBaseBean bean = kBaseBeans.get( ((KSessionImpl)kSession).getKBase().getQName() );
+            if ( kSessionNames != null ) {
+                for ( String kSessionName : kSessionNames) {
+                    org.drools.kproject.KSession kSession = kSessions.get( kSessionName );
+                    if (kSession == null) {
+                        throw new RuntimeException("Unknown KnowledgeSession: " + kSessionName);
+                    }
+                    KBaseBean bean = kBaseBeans.get( ((KSessionImpl)kSession).getKBase().getName() );
                     if ( "stateless".equals( kSession.getType() ) ) {
                         abd.addBean( new StatelessKSessionBean( kSession, bean ) );
                     } else {
@@ -133,7 +133,7 @@ public class KProjectExtension
                     }
                 }
             }
-            kSessionQNames = null;
+            kSessionNames = null;
             
             kBaseURLs = null;
             kProjects = null;
@@ -170,7 +170,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kBaseModel.getQName();
+                                                                                                           return kBaseModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -219,7 +219,7 @@ public class KProjectExtension
                 }  
        
                 try {
-                    for ( String file : getFiles(kBase.getQName(), zipFile) ) {
+                    for ( String file : getFiles(kBase.getName(), zipFile) ) {
                         ZipEntry zipEntry = zipFile.getEntry( file );
                         ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
                     }
@@ -234,7 +234,7 @@ public class KProjectExtension
                 }
             } else {
                 try {
-                    for ( String file : getFiles(kBase.getQName(), new File(rootPath)) ) {
+                    for ( String file : getFiles(kBase.getName(), new File(rootPath)) ) {
                         ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
                     }
                 } catch ( Exception e) {
@@ -327,7 +327,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kSessionModel.getQName();
+                                                                                                           return kSessionModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -405,7 +405,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kSessionModel.getQName();
+                                                                                                           return kSessionModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -485,14 +485,14 @@ public class KProjectExtension
 
         for ( KProject kProject : kProjects.values() ) {
             for ( org.drools.kproject.KBase kBase : kProject.getKBases().values() ) {
-                kBases.put( kBase.getQName(), kBase );
+                kBases.put( kBase.getName(), kBase );
                 ((KBaseImpl) kBase).setKProject( kProject ); // should already be set, but just in case
 
                 String kProjectId = kProject.getGroupArtifactVersion().getGroupId() + ":" + kProject.getGroupArtifactVersion().getArtifactId();
-                kBaseURLs.put( kBase.getQName(), urls.get( kProjectId ) );
+                kBaseURLs.put( kBase.getName(), urls.get( kProjectId ) );
                 for ( org.drools.kproject.KSession kSession : kBase.getKSessions().values() ) {
                     ((KSessionImpl) kSession).setKBase( kBase ); // should already be set, but just in case
-                    kSessions.put( kSession.getQName(),
+                    kSessions.put( kSession.getName(),
                                    kSession );
                 }
             }

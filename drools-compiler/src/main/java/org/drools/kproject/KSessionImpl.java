@@ -5,7 +5,6 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.conf.AssertBehaviorOption;
 import org.kie.runtime.conf.ClockTypeOption;
 
 import java.beans.PropertyChangeEvent;
@@ -16,7 +15,6 @@ import java.util.List;
 public class KSessionImpl
         implements
         KSession {
-    private String                           namespace;
     private String                           name;
 
     private String                           type;
@@ -30,11 +28,8 @@ public class KSessionImpl
 
     private KSessionImpl() { }
 
-    public KSessionImpl(KBaseImpl kBase,
-                        String namespace,
-                        String name) {
+    public KSessionImpl(KBaseImpl kBase, String name) {
         this.kBase = kBase;
-        this.namespace = namespace;
         this.name = name;
         this.annotations = new ArrayList<String>();
     }
@@ -63,24 +58,6 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#getNamespace()
-     */
-    public String getNamespace() {
-        return namespace;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#setNamespace(java.lang.String)
-     */
-    public KSession setNamespace(String namespace) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "namespace", this.namespace, namespace ) );
-        }
-        this.namespace = namespace;
-        return this;
-    }
-
-    /* (non-Javadoc)
      * @see org.kie.kproject.KSession#getName()
      */
     public String getName() {
@@ -96,13 +73,6 @@ public class KSessionImpl
         }
         this.name = name;
         return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#getQName()
-     */
-    public String getQName() {
-        return this.namespace + "." + this.name;
     }
 
     /* (non-Javadoc)
@@ -161,7 +131,7 @@ public class KSessionImpl
 
     @Override
     public String toString() {
-        return "KSession [namespace=" + namespace + ", name=" + name + ", clockType=" + clockType + ", annotations=" + annotations + "]";
+        return "KSession [name=" + name + ", clockType=" + clockType + ", annotations=" + annotations + "]";
     }
 
     public static class KSessionConverter extends AbstractXStreamConverter {
@@ -173,7 +143,6 @@ public class KSessionImpl
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             KSessionImpl kSession = (KSessionImpl) value;
             writer.addAttribute("name", kSession.getName());
-            writer.addAttribute("namespace", kSession.getNamespace());
             writer.addAttribute("type", kSession.getType());
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
@@ -183,7 +152,6 @@ public class KSessionImpl
         public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
             KSessionImpl kSession = new KSessionImpl();
             kSession.setName(reader.getAttribute("name"));
-            kSession.setNamespace(reader.getAttribute("namespace"));
             kSession.setType(reader.getAttribute("type"));
 
             String clockType = reader.getAttribute("clockType");

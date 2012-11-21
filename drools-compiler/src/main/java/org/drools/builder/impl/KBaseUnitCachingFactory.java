@@ -15,7 +15,7 @@ public class KBaseUnitCachingFactory {
     private static final Map<String, KBaseUnitImpl> cache = new EvictionCache<String, KBaseUnitImpl>(EVICTION_TIME);
 
     static KBaseUnitImpl getOrCreateKBaseUnit(String url, KBase kBase) {
-        String kBaseName = kBase.getQName();
+        String kBaseName = kBase.getName();
         KBaseUnitImpl unit = cache.get(kBaseName);
         if (unit == null) {
             unit = new KBaseUnitImpl(url, kBase);
